@@ -1,0 +1,424 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1?api-version=2025-12-24-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","name":"napster-test1","type":"napster.companionapi/organizations","location":"eastus2euap","tags":{"testName1":"TestValue1"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T10:49:57.9680074Z","lastModifiedBy":"b09e79d3-cc90-4893-ae93-b72e105a7d3c","lastModifiedByType":"Application","lastModifiedAt":"2026-06-22T09:24:41.3207052Z"},"identity":{"type":"None"},"properties":{"marketplace":{"subscriptionId":"09fffd7d-d000-4467-cc23-d82b97e9431d","subscriptionStatus":"Subscribed","saasResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Microsoft.SaaS/resources/a4fa84fc_dsafsa","offerDetails":{"publisherId":"touchcastinc1655995956899","offerId":"napster_companion_api","planId":"napster_companion_api_feb_2026","planName":"Pay
+        As You Go","termUnit":"P1M","termId":"n7ja87drquhy"}},"provisioningState":"Succeeded","user":{"emailAddress":"test@example.com","upn":"test@example.com"},"partnerProperties":{"application":"dsaf"},"singleSignOnProperties":{"type":"OpenId","state":"Initial","url":"https://companion-api.napsterai.dev/admin/ms-auth","aadDomains":["MicrosoftCustomerLed.onmicrosoft.com"]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1339'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:25:21 GMT
+      etag:
+      - '"00007784-0000-3300-0000-6a38ff5b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 464031B84BD9409DB8CA6AB3E01E8817 Ref B: PNQ231110906023 Ref C: 2026-06-22T09:25:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "eastus2euap", "properties":
+      {"marketplace": {"offerDetails": {"offerId": "napster_companion_api", "planId":
+      "napster_companion_api_feb_2026", "planName": "Pay As You Go", "publisherId":
+      "touchcastinc1655995956899", "termId": "n7ja87drquhy", "termUnit": "P1M"}, "saasResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Microsoft.SaaS/resources/a4fa84fc_dsafsa",
+      "subscriptionId": "09fffd7d-d000-4467-cc23-d82b97e9431d"}, "partnerProperties":
+      {"application": "dsaf"}, "singleSignOnProperties": {"aadDomains": ["MicrosoftCustomerLed.onmicrosoft.com"],
+      "state": "Initial", "type": "OpenId", "url": "https://companion-api.napsterai.dev/admin/ms-auth"},
+      "user": {"emailAddress": "test@example.com", "upn": "test@example.com"}}, "tags":
+      {"testName1": "TestValue1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '853'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1?api-version=2025-12-24-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","name":"napster-test1","type":"napster.companionapi/organizations","location":"eastus2euap","tags":{"testName1":"TestValue1"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T10:49:57.9680074Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-22T09:25:22.2830795Z"},"identity":{"type":"None"},"properties":{"marketplace":{"subscriptionId":"09fffd7d-d000-4467-cc23-d82b97e9431d","subscriptionStatus":"PendingFulfillmentStart","saasResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Microsoft.SaaS/resources/a4fa84fc_dsafsa","offerDetails":{"publisherId":"touchcastinc1655995956899","offerId":"napster_companion_api","planId":"napster_companion_api_feb_2026","planName":"Pay
+        As You Go","termUnit":"P1M","termId":"n7ja87drquhy"}},"provisioningState":"Accepted","user":{"emailAddress":"test@example.com","upn":"test@example.com"},"partnerProperties":{"application":"dsaf"},"singleSignOnProperties":{"type":"OpenId","state":"Initial","url":"https://companion-api.napsterai.dev/admin/ms-auth","aadDomains":["MicrosoftCustomerLed.onmicrosoft.com"]}}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171267987083&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=O_eXzyTkYXWT0I4R3Xrs407oCGptRQ0bzDSSu40xcq15VB-wz31dSzpoxscOapoj2dzUipUt3hK9cYUPpaTfeBvSWVSBs4JJ4C7EbA_RUR8eNzWtlUbo6_pkk7YdNlxRDXIBmsz4kcrEzB0IAqw-rtk5RvRa0Fcx6s5iFnvwOSMYtVeoLTbyV9ABZgQa5gkgF4IOKEol3dMu0Ym2l-WXDHlUgoNwoGK302kcWNBDVz6uqj1YE9JElVL7heXQ1snFuTtuFwqqk06v7IPABBM7vvfZIMuPXCMZKEmHd0RGQgY5JGWgLJ05MPQJORPKtaKal4bvwWkzciBA3043LuJcYA&h=xGE31GsX8YDt6npcpWwsgJPRFoEnx19rBK2DCo73bhE
+      cache-control:
+      - no-cache
+      content-length:
+      - '1324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:25:26 GMT
+      etag:
+      - '"00008084-0000-3300-0000-6a38ff860000"'
+      expires:
+      - '-1'
+      location:
+      - https://centraluseuap.management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171268143326&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=z7s2f6uK_UdWtMZsjvp3PsNq0VY-tYbL-ewuhXxmC3CsZI-UMLA-dDPHo_h4wJRtIaPp2mKCNv6I5BrqPSUNjv0mqKwEGgbOiDgnOtytU_rOWG0uHeuImLHAL62eyIqYQm36yazYwrcbqX13UKq0yj03O4Fs_TrF2VR0vdXBoHjHdjhrhpv1G50XqA0tg4Gup-2SpgV7kGYg6P9iMPHpVG-OGwzB2zH2FENDl7xP8rLM-CBJn7rSmhmB3Dw-CME2DgQ1MVplY72AZg7lAn68OggdQhvOtSiKYXS21vn9fAE-X46Uo_4ZuZ58W4ZJ7_mAoTfOA1AEEq7cWD75EgYd6A&h=l8FH6U1umopSDlUfQqOSWhjl4UeydtEsmV8nv7rRfpM
+      mise-correlation-id:
+      - c264ae9e-6894-4062-9fa1-be19c2969d39
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=90986210-9aba-4706-b58b-7a9f3b652899/westeurope/7cdb8027-8c49-43a1-81f7-3efcf21dc709
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: F814772679474B59B3D1B121EA2717C3 Ref B: PNQ231110909025 Ref C: 2026-06-22T09:25:22Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171267987083&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=O_eXzyTkYXWT0I4R3Xrs407oCGptRQ0bzDSSu40xcq15VB-wz31dSzpoxscOapoj2dzUipUt3hK9cYUPpaTfeBvSWVSBs4JJ4C7EbA_RUR8eNzWtlUbo6_pkk7YdNlxRDXIBmsz4kcrEzB0IAqw-rtk5RvRa0Fcx6s5iFnvwOSMYtVeoLTbyV9ABZgQa5gkgF4IOKEol3dMu0Ym2l-WXDHlUgoNwoGK302kcWNBDVz6uqj1YE9JElVL7heXQ1snFuTtuFwqqk06v7IPABBM7vvfZIMuPXCMZKEmHd0RGQgY5JGWgLJ05MPQJORPKtaKal4bvwWkzciBA3043LuJcYA&h=xGE31GsX8YDt6npcpWwsgJPRFoEnx19rBK2DCo73bhE
+  response:
+    body:
+      string: '{"id":"/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","name":"2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","status":"Accepted","startTime":"2026-06-22T09:25:24.49477Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '507'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:25:27 GMT
+      etag:
+      - '"810038a9-0000-3300-0000-6a38ff840000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: E32D99BD4B194AE4AF5840C0CDC245D4 Ref B: PNQ231110909025 Ref C: 2026-06-22T09:25:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171267987083&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=O_eXzyTkYXWT0I4R3Xrs407oCGptRQ0bzDSSu40xcq15VB-wz31dSzpoxscOapoj2dzUipUt3hK9cYUPpaTfeBvSWVSBs4JJ4C7EbA_RUR8eNzWtlUbo6_pkk7YdNlxRDXIBmsz4kcrEzB0IAqw-rtk5RvRa0Fcx6s5iFnvwOSMYtVeoLTbyV9ABZgQa5gkgF4IOKEol3dMu0Ym2l-WXDHlUgoNwoGK302kcWNBDVz6uqj1YE9JElVL7heXQ1snFuTtuFwqqk06v7IPABBM7vvfZIMuPXCMZKEmHd0RGQgY5JGWgLJ05MPQJORPKtaKal4bvwWkzciBA3043LuJcYA&h=xGE31GsX8YDt6npcpWwsgJPRFoEnx19rBK2DCo73bhE
+  response:
+    body:
+      string: '{"id":"/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","name":"2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","status":"Accepted","startTime":"2026-06-22T09:25:24.49477Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '507'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:25:58 GMT
+      etag:
+      - '"810038a9-0000-3300-0000-6a38ff840000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 4179B41A28034B76BAC2F7D5DA042FB5 Ref B: PNQ231110906052 Ref C: 2026-06-22T09:25:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171267987083&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=O_eXzyTkYXWT0I4R3Xrs407oCGptRQ0bzDSSu40xcq15VB-wz31dSzpoxscOapoj2dzUipUt3hK9cYUPpaTfeBvSWVSBs4JJ4C7EbA_RUR8eNzWtlUbo6_pkk7YdNlxRDXIBmsz4kcrEzB0IAqw-rtk5RvRa0Fcx6s5iFnvwOSMYtVeoLTbyV9ABZgQa5gkgF4IOKEol3dMu0Ym2l-WXDHlUgoNwoGK302kcWNBDVz6uqj1YE9JElVL7heXQ1snFuTtuFwqqk06v7IPABBM7vvfZIMuPXCMZKEmHd0RGQgY5JGWgLJ05MPQJORPKtaKal4bvwWkzciBA3043LuJcYA&h=xGE31GsX8YDt6npcpWwsgJPRFoEnx19rBK2DCo73bhE
+  response:
+    body:
+      string: '{"id":"/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","name":"2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","status":"Accepted","startTime":"2026-06-22T09:25:24.49477Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '507'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:26:30 GMT
+      etag:
+      - '"810038a9-0000-3300-0000-6a38ff840000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 65D7FAD278B5421F91B799AAA125019A Ref B: PNQ231110909023 Ref C: 2026-06-22T09:26:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171267987083&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=O_eXzyTkYXWT0I4R3Xrs407oCGptRQ0bzDSSu40xcq15VB-wz31dSzpoxscOapoj2dzUipUt3hK9cYUPpaTfeBvSWVSBs4JJ4C7EbA_RUR8eNzWtlUbo6_pkk7YdNlxRDXIBmsz4kcrEzB0IAqw-rtk5RvRa0Fcx6s5iFnvwOSMYtVeoLTbyV9ABZgQa5gkgF4IOKEol3dMu0Ym2l-WXDHlUgoNwoGK302kcWNBDVz6uqj1YE9JElVL7heXQ1snFuTtuFwqqk06v7IPABBM7vvfZIMuPXCMZKEmHd0RGQgY5JGWgLJ05MPQJORPKtaKal4bvwWkzciBA3043LuJcYA&h=xGE31GsX8YDt6npcpWwsgJPRFoEnx19rBK2DCo73bhE
+  response:
+    body:
+      string: '{"id":"/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","name":"2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","status":"Accepted","startTime":"2026-06-22T09:25:24.49477Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '507'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:27:00 GMT
+      etag:
+      - '"810038a9-0000-3300-0000-6a38ff840000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: D440A779276D40DCB6796C0CBD2B4E36 Ref B: PNQ231110909025 Ref C: 2026-06-22T09:27:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15?api-version=2025-12-24-preview&t=639177171267987083&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=O_eXzyTkYXWT0I4R3Xrs407oCGptRQ0bzDSSu40xcq15VB-wz31dSzpoxscOapoj2dzUipUt3hK9cYUPpaTfeBvSWVSBs4JJ4C7EbA_RUR8eNzWtlUbo6_pkk7YdNlxRDXIBmsz4kcrEzB0IAqw-rtk5RvRa0Fcx6s5iFnvwOSMYtVeoLTbyV9ABZgQa5gkgF4IOKEol3dMu0Ym2l-WXDHlUgoNwoGK302kcWNBDVz6uqj1YE9JElVL7heXQ1snFuTtuFwqqk06v7IPABBM7vvfZIMuPXCMZKEmHd0RGQgY5JGWgLJ05MPQJORPKtaKal4bvwWkzciBA3043LuJcYA&h=xGE31GsX8YDt6npcpWwsgJPRFoEnx19rBK2DCo73bhE
+  response:
+    body:
+      string: '{"id":"/providers/Napster.CompanionAPI/locations/EASTUS2EUAP/operationStatuses/2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","name":"2b841e3c-f696-4450-9d0c-6929f658caa9*C10B1757E970110284D02D16E17E763BF5F88420D50831715EFB81E067CAFB15","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","status":"Succeeded","startTime":"2026-06-22T09:25:24.49477Z","endTime":"2026-06-22T09:27:07.4571565Z","error":{"code":"","message":""},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:27:31 GMT
+      etag:
+      - '"810045d2-0000-3300-0000-6a38ffeb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 547B86EA0026414A9E573E5E11F02294 Ref B: PNQ231110906023 Ref C: 2026-06-22T09:27:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - napster companion-api organization update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --organizationname --partner-properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.13 (Linux-6.8.0-1052-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1?api-version=2025-12-24-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Napster.CompanionAPI/organizations/napster-test1","name":"napster-test1","type":"napster.companionapi/organizations","location":"eastus2euap","tags":{"testName1":"TestValue1"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T10:49:57.9680074Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-22T09:25:22.2830795Z"},"identity":{"type":"None"},"properties":{"marketplace":{"subscriptionId":"09fffd7d-d000-4467-cc23-d82b97e9431d","subscriptionStatus":"PendingFulfillmentStart","saasResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest0001/providers/Microsoft.SaaS/resources/a4fa84fc_dsafsa","offerDetails":{"publisherId":"touchcastinc1655995956899","offerId":"napster_companion_api","planId":"napster_companion_api_feb_2026","planName":"Pay
+        As You Go","termUnit":"P1M","termId":"n7ja87drquhy"}},"provisioningState":"Succeeded","user":{"emailAddress":"test@example.com","upn":"test@example.com"},"partnerProperties":{"application":"dsaf"},"singleSignOnProperties":{"type":"OpenId","state":"Initial","url":"https://companion-api.napsterai.dev/admin/ms-auth","aadDomains":["MicrosoftCustomerLed.onmicrosoft.com"]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1325'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 09:27:32 GMT
+      etag:
+      - '"00009d84-0000-3300-0000-6a38ffeb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 927149A7FA54409DA52B3660D8CB7099 Ref B: PNQ231110909025 Ref C: 2026-06-22T09:27:32Z'
+    status:
+      code: 200
+      message: OK
+version: 1
