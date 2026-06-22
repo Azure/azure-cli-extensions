@@ -1144,6 +1144,7 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    enable_control_plane_metrics=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     # opentelemetry parameters
@@ -1375,6 +1376,8 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
+    enable_control_plane_metrics=False,
+    disable_control_plane_metrics=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     disable_azure_monitor_app_monitoring=False,

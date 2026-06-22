@@ -3,9 +3,12 @@
 Release History
 ===============
 
-1.11.2
+1.11.3
 ++++++++++++++++
 * [Breaking] `az dataprotection backup-policy retention-rule set` validates against duplicate retention-rule names. AzureBlob: OperationalStore retention lifecycles must now use the retention rule name `--name Default_OperationalStore`. Using `--name Default` with an OperationalStore lifecycle for AzureBlobis no longer accepted. 
+1.11.2
+++++++
+* `az dataprotection enable-backup trigger`: Auto-install the `k8s-extension` CLI extension when enabling AKS backup if it is not already installed.
 
 1.11.1
 ++++++
