@@ -11,7 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 MARKETPLACE = (
     "{{"
-    "subscription-id:09fffd7d-d000-4467-cc23-d82b97e9431d,"
+    "subscription-id:00000000-0000-0000-0000-000000000000,"
     "offer-details:{{"
     "publisher-id:touchcastinc1655995956899,"
     "offer-id:napster_companion_api,"
@@ -20,15 +20,15 @@ MARKETPLACE = (
     "term-unit:P1M,"
     "term-id:n7ja87drquhy"
     "}},"
-    "saas-resource-id:/subscriptions/61641157-140c-4b97-b365-30ff76d9f82e"
+    "saas-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000"
     "/resourceGroups/acctest0001/providers/Microsoft.SaaS/resources/a4fa84fc_dsafsa"
     "}}"
 )
 
 USER = (
     "{{"
-    "email-address:yashikajain@microsoft.com,"
-    "upn:yashikajain@microsoft.com"
+    "email-address:test@example.com,"
+    "upn:test@example.com"
     "}}"
 )
 
@@ -55,7 +55,7 @@ class NapsterOrganizationScenario(ScenarioTest):
             'delete_org': 'napster-test2',
             'location': 'eastus2euap',
             'saas_resource_id': (
-                '/subscriptions/61641157-140c-4b97-b365-30ff76d9f82e'
+                '/subscriptions/00000000-0000-0000-0000-000000000000'
                 '/resourceGroups/acctest0001'
                 '/providers/Microsoft.SaaS/resources/a4fa84fc_dsafsa'
             ),
