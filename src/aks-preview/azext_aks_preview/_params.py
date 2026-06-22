@@ -1342,6 +1342,7 @@ def load_arguments(self, _):
                  "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
