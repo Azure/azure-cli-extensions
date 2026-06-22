@@ -30,7 +30,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'westus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}')
         self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {graph} -p /pk ').get_output_in_json()
@@ -49,7 +49,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'rts': restore_ts_string
         })
 
-        self.cmd('az cosmosdb create -n {restored_acc} -g {rg} --is-restore-request true --restore-source {db_id} --restore-timestamp {rts}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {restored_acc} -g {rg} --is-restore-request true --restore-source {db_id} --restore-timestamp {rts}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -70,7 +70,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -90,7 +90,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'rts': restore_ts_string
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --disable-local-auth true')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -112,7 +112,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -162,7 +162,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'westus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table}').get_output_in_json()
 
@@ -180,7 +180,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'rts': restore_ts_string
         })
 
-        self.cmd('az cosmosdb create -n {restored_acc} -g {rg} --is-restore-request true --restore-source {db_id} --restore-timestamp {rts}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {restored_acc} -g {rg} --is-restore-request true --restore-source {db_id} --restore-timestamp {rts}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -200,7 +200,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'westcentralus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -220,7 +220,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'dt': True
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --disable-ttl {dt}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --disable-ttl {dt} --disable-local-auth true')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -240,7 +240,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
         self.kwargs.update({
@@ -287,7 +287,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         # This should fail as account doesn't exist
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
@@ -355,7 +355,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         # This should fail as account doesn't exist
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb mongodb retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind MongoDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind MongoDB')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
@@ -420,7 +420,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         # This should fail as account doesn't exist
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}'))
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableGremlin')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableGremlin')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
@@ -485,7 +485,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         # This should fail as account doesn't exist
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}'))
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableTable')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableTable')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as collection doesn't exist
@@ -541,7 +541,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -575,7 +575,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -612,7 +612,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         })
 
         # Create periodic backup account (by default is --backup-policy-type is not specified, then it is a Periodic account)
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc} --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -668,7 +668,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'loc': 'eastus2'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous35Days --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous35Days --locations regionName={loc} --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -704,11 +704,11 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         })
 
         # Create periodic backup account (by default is --backup-policy-type is not specified, then it is a Periodic account)
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -805,7 +805,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         print('Finished setting up new KeyVault')
 
         # Create PITR account with User Identity 1
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --key-uri {keyVaultKeyUri} --assign-identity {user_id_1} --default-identity {default_id1}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --key-uri {keyVaultKeyUri} --assign-identity {user_id_1} --default-identity {default_id1}')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -911,7 +911,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'target_loc': target_loc
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=False --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=False --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -943,7 +943,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'source_loc_for_xrr': source_loc_for_xrr
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc} --disable-local-auth true')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -975,7 +975,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'target_loc': target_loc
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -1007,7 +1007,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'source_loc_for_xrr': source_loc_for_xrr
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc} --disable-local-auth true')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()

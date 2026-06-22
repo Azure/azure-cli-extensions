@@ -20,7 +20,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database')
     def test_cosmosdb_gremlin_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
-        location = "WestUS"
+        location = "eastus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -28,7 +28,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --capabilities EnableGremlin  --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --capabilities EnableGremlin  --backup-policy-type Continuous --locations regionName={loc}')
 
         assert not self.cmd('az cosmosdb gremlin database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
@@ -61,7 +61,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         new_default_ttl = 2000
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "eastus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -75,7 +75,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}')
 
         assert not self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
@@ -118,7 +118,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         new_default_ttl = 2000
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "eastus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -132,7 +132,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             'loc': location
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --capabilities EnableGremlin --backup-policy-type Continuous --locations regionName={loc}')
         self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}')
 
         assert not self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
@@ -220,10 +220,10 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'table_name': table_name,
-            'loc': 'eastus2'
+            'loc': 'westcentralus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
 
         assert not self.cmd('az cosmosdb table exists -g {rg} -a {acc} -n {table_name}').get_output_in_json()
 

@@ -48,7 +48,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         self.cmd('az group update -n {rg} --tags Az.Sec.DisableLocalAuth.CosmosDB::Skip=true')
 
         logger.info("Creating CosmosDB account")
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc}')
         
         logger.info("Enabling soft delete on account (must be done via update)")
         self.cmd(
