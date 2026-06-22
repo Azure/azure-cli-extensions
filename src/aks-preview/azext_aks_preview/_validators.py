@@ -799,6 +799,14 @@ def validate_disable_windows_outbound_nat(namespace):
                 '--disable-windows-outbound-nat can only be set for Windows nodepools')
 
 
+def validate_driver_type(namespace):
+    """Validates driver_type can only be used with Windows os-type."""
+    if namespace.driver_type:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() != "windows":
+            raise ArgumentUsageError(
+                '--driver-type can only be set for Windows nodes')
+
+
 def validate_defender_config_parameter(namespace):
     if namespace.defender_config and not namespace.enable_defender:
         raise RequiredArgumentMissingError("Please specify --enable-defnder")

@@ -125,6 +125,18 @@ def set_machine_hardware_profile(cmd, raw_parameters):
         vm_size=vm_size,
         ultra_ssd_enabled=enable_ultra_ssd
     )
+
+    driver_type = raw_parameters.get("driver_type")
+    if driver_type is not None:
+        GPUProfile = cmd.get_models(
+            "GPUProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="machines"
+        )
+        machine_hardware_profile.gpu_profile = GPUProfile(
+            driver_type=driver_type
+        )
+
     return machine_hardware_profile
 
 
@@ -201,6 +213,7 @@ def set_machine_os_profile(cmd, raw_parameters):
         os_sku=os_sku,
         enable_fips=enable_fips
     )
+
     return machineOSProfile
 
 

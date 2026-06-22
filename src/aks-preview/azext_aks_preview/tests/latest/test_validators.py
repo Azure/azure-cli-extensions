@@ -149,6 +149,12 @@ class DisableWindowsOutboundNatNamespace:
         self.disable_windows_outbound_nat = disable_windows_outbound_nat
 
 
+class DriverTypeNamespace:
+    def __init__(self, os_type, driver_type):
+        self.os_type = os_type
+        self.driver_type = driver_type
+
+
 class ArtifactStreamingNamespace:
     def __init__(self, os_type, enable_artifact_streaming=False, disable_artifact_streaming=False):
         self.os_type = os_type
@@ -387,6 +393,40 @@ class TestDisableWindowsOutboundNAT(unittest.TestCase):
             )
         self.assertTrue(
             "--disable-windows-outbound-nat can only be set for Windows nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
+
+
+class TestDriverType(unittest.TestCase):
+    def test_pass_if_os_type_windows(self):
+        validators.validate_driver_type(
+            DriverTypeNamespace("Windows", "CUDA")
+        )
+
+    def test_pass_if_driver_type_none(self):
+        validators.validate_driver_type(
+            DriverTypeNamespace("Linux", None)
+        )
+
+    def test_fail_if_os_type_linux(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_driver_type(
+                DriverTypeNamespace("Linux", "CUDA")
+            )
+        self.assertTrue(
+            "--driver-type can only be set for Windows nodes"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_driver_type(
+                DriverTypeNamespace("invalid", "GRID")
+            )
+        self.assertTrue(
+            "--driver-type can only be set for Windows nodes"
             in str(cm.exception),
             msg=str(cm.exception),
         )

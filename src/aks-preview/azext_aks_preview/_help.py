@@ -2889,6 +2889,9 @@ helps['aks machine add'] = """
        - name: --eviction-policy
          type: string
          short-summary: The eviction policy for machine. This cannot be specified unless the priority is 'Spot'. If not specified, the default is 'Delete'.
+       - name: --driver-type
+         type: string
+         short-summary: Specify the type of GPU driver to install when creating Windows machines. Valid values are "GRID" and "CUDA". If not provided, AKS selects the driver based on system compatibility.
 """
 
 helps['aks machine update'] = """

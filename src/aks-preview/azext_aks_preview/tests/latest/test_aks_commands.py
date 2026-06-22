@@ -2866,6 +2866,91 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_machine_add_windows_params(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "location": resource_group_location,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "nodepool_name": nodepool_name,
+                "machine_name": "machinetest1",
+                "vm_size": "Standard_D4s_v3",
+            }
+        )
+
+        # create aks cluster
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value}",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # add machines nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group}"
+            " --cluster-name={name} "
+            "--name={nodepool_name} "
+            "--mode=Machines",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("mode", "Machines"),
+            ],
+        )
+
+        # add machine with Windows os-type and driver-type
+        self.cmd(
+            "aks machine add "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} "
+            " --nodepool-name={nodepool_name} "
+            " --machine-name={machine_name} "
+            " --vm-size={vm_size} "
+            " --os-type Windows "
+            " --driver-type CUDA"
+        )
+
+        # show the machine and verify Windows-specific settings
+        show_cmd = (
+            "aks machine show "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} "
+            " --nodepool-name={nodepool_name} "
+            " --machine-name={machine_name} -o json"
+        )
+        machine_show = self.cmd(show_cmd).get_output_in_json()
+        assert machine_show["properties"]["hardware"]["gpuProfile"]["driverType"] == "CUDA"
+
+        # negative test: --driver-type with Linux os-type should fail
+        self.cmd(
+            "aks machine add "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} "
+            " --nodepool-name={nodepool_name} "
+            " --machine-name=machinelinux1 "
+            " --vm-size={vm_size} "
+            " --os-type Linux "
+            " --driver-type CUDA",
+            expect_failure=True,
+        )
+
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_operations_cmds(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(

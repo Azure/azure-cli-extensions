@@ -202,6 +202,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_driver_type,
     validate_asm_egress_name,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -2599,6 +2600,13 @@ def load_arguments(self, _):
             "eviction_policy",
             arg_type=get_enum_type(node_eviction_policies),
             validator=validate_eviction_policy,
+        )
+        # gpu setting
+        c.argument(
+            "driver_type",
+            arg_type=get_enum_type(gpu_driver_types),
+            is_preview=True,
+            validator=validate_driver_type,
         )
 
     with self.argument_context("aks machine update") as c:
