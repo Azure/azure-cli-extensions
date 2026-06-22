@@ -143,7 +143,8 @@ from ._models import (
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
 
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
-                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity,
+                     is_acr_registry)
 from ._utils_validation import validate_image_name
 
 from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
@@ -1204,7 +1205,7 @@ def create_or_update_github_action(cmd,
     # Registry
     if registry_username is None or registry_password is None:
         # If registry is Azure Container Registry, we can try inferring credentials
-        if not registry_url or ACR_IMAGE_SUFFIX not in registry_url:
+        if not registry_url or not is_acr_registry(registry_url):
             raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
         logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
         parsed = urlparse(registry_url)
@@ -3482,7 +3483,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
     if (not username or not password) and not identity:
         # If registry is Azure Container Registry, we can try inferring credentials
-        if ACR_IMAGE_SUFFIX not in server:
+        if not is_acr_registry(server):
             raise RequiredArgumentMissingError('Registry username and password are required if you are not using Azure Container Registry.')
         not disable_warnings and logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
         parsed = urlparse(server)

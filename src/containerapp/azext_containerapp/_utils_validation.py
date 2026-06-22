@@ -6,6 +6,7 @@
 import re
 
 from azure.cli.core.azclierror import ValidationError
+from ._constants import ACR_IMAGE_SUFFIXES
 
 _VALID_IMAGE_NAME_RE = re.compile(r'^[a-zA-Z0-9._:/@-]+$')
 
@@ -17,3 +18,10 @@ def validate_image_name(name):
             f"Invalid container image name: {name!r}. "
             "Image names may only contain alphanumeric characters, '.', '_', ':', '/', '@', and '-'."
         )
+
+
+def is_acr_registry(server):
+    """Return True if the registry server belongs to any Azure Container Registry domain (all sovereign clouds)."""
+    if not server:
+        return False
+    return any(suffix in server for suffix in ACR_IMAGE_SUFFIXES)
