@@ -22,7 +22,7 @@ def validate_client_certificates(ns):
 
 def validate_soft_delete_configuration(cmd, ns):
     """ Builds the soft delete configuration from a JSON string or a JSON file. """
-    from azure.mgmt.cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration
     from azure.cli.core.util import get_file_json, shell_safe_json_parse
     import os
 

@@ -720,7 +720,11 @@ def cli_cosmosdb_mongo_role_definition_create(client,
         privileges=mongo_role_definition_body['Privileges'],
         roles=mongo_role_definition_body['Roles'])
 
-    return client.begin_create_update_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name, mongo_role_definition_create_resource)
+    return client.begin_create_update_mongo_role_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_role_definition_id=mongo_role_definition_body['Id'],
+        create_update_mongo_role_definition_parameters=mongo_role_definition_create_resource)
 
 
 def cli_cosmosdb_mongo_role_definition_update(client,
@@ -729,7 +733,10 @@ def cli_cosmosdb_mongo_role_definition_update(client,
                                               mongo_role_definition_body):
     '''Update an existing Azure Cosmos DB Mongo Role Definition'''
     logger.debug('reading Mongo role definition')
-    mongo_role_definition = client.get_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name)
+    mongo_role_definition = client.get_mongo_role_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_role_definition_id=mongo_role_definition_body['Id'])
 
     if mongo_role_definition_body['RoleName'] != mongo_role_definition.role_name:
         raise InvalidArgumentValueError('Cannot update Mongo Role Definition Name.')
@@ -741,7 +748,11 @@ def cli_cosmosdb_mongo_role_definition_update(client,
         privileges=mongo_role_definition_body['Privileges'],
         roles=mongo_role_definition_body['Roles'])
 
-    return client.begin_create_update_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name, mongo_role_definition_update_resource)
+    return client.begin_create_update_mongo_role_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_role_definition_id=mongo_role_definition_body['Id'],
+        create_update_mongo_role_definition_parameters=mongo_role_definition_update_resource)
 
 
 def cli_cosmosdb_mongo_role_definition_exists(client,
@@ -750,7 +761,10 @@ def cli_cosmosdb_mongo_role_definition_exists(client,
                                               mongo_role_definition_id):
     """Checks if an Azure Cosmos DB Mongo Role Definition exists"""
     try:
-        client.get_mongo_role_definition(mongo_role_definition_id, resource_group_name, account_name)
+        client.get_mongo_role_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_role_definition_id=mongo_role_definition_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
@@ -770,7 +784,11 @@ def cli_cosmosdb_mongo_user_definition_create(client,
         mechanisms=mongo_user_definition_body['Mechanisms'],
         roles=mongo_user_definition_body['Roles'])
 
-    return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_create_resource)
+    return client.begin_create_update_mongo_user_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_user_definition_id=mongo_user_definition_body['Id'],
+        create_update_mongo_user_definition_parameters=mongo_user_definition_create_resource)
 
 
 def cli_cosmosdb_mongo_user_definition_update(client,
@@ -780,7 +798,10 @@ def cli_cosmosdb_mongo_user_definition_update(client,
     '''Update an existing Azure Cosmos DB Mongo User Definition'''
     logger.debug('reading Mongo user definition')
     try:
-        mongo_user_definition = client.get_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name)
+        mongo_user_definition = client.get_mongo_user_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_user_definition_id=mongo_user_definition_body['Id'])
 
         mongo_user_definition_update_resource = MongoUserDefinitionCreateUpdateParameters(
             user_name=mongo_user_definition.user_name,
@@ -790,7 +811,11 @@ def cli_cosmosdb_mongo_user_definition_update(client,
             mechanisms=mongo_user_definition_body['Mechanisms'],
             roles=mongo_user_definition_body['Roles'])
 
-        return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_update_resource)
+        return client.begin_create_update_mongo_user_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_user_definition_id=mongo_user_definition_body['Id'],
+            create_update_mongo_user_definition_parameters=mongo_user_definition_update_resource)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
@@ -801,7 +826,10 @@ def cli_cosmosdb_mongo_user_definition_exists(client,
                                               mongo_user_definition_id):
     """Checks if an Azure Cosmos DB Mongo User Definition exists"""
     try:
-        client.get_mongo_user_definition(mongo_user_definition_id, resource_group_name, account_name)
+        client.get_mongo_user_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_user_definition_id=mongo_user_definition_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
@@ -859,7 +887,8 @@ def cli_cosmosdb_create(cmd,
                         default_priority_level=None,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
-                        capacity_mode=None):
+                        capacity_mode=None,
+                        disable_local_auth=None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -918,7 +947,8 @@ def cli_cosmosdb_create(cmd,
                                     default_priority_level=default_priority_level,
                                     enable_prpp_autoscale=enable_prpp_autoscale,
                                     enable_partition_merge=enable_partition_merge,
-                                    capacity_mode=capacity_mode)
+                                    capacity_mode=capacity_mode,
+                                    disable_local_auth=disable_local_auth)
 
 
 # pylint: disable=too-many-branches
@@ -1101,7 +1131,8 @@ def cli_cosmosdb_restore(cmd,
                          tables_to_restore=None,
                          public_network_access=None,
                          source_backup_location=None,
-                         disable_ttl=None):
+                         disable_ttl=None,
+                         disable_local_auth=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1151,7 +1182,8 @@ def cli_cosmosdb_restore(cmd,
                                     arm_location=target_restorable_account.location,
                                     public_network_access=public_network_access,
                                     source_backup_location=source_backup_location,
-                                    disable_ttl=disable_ttl)
+                                    disable_ttl=disable_ttl,
+                                    disable_local_auth=disable_local_auth)
 
 
 # pylint: disable=too-many-statements
@@ -1202,7 +1234,8 @@ def _create_database_account(client,
                              enable_prpp_autoscale=None,
                              disable_ttl=None,
                              enable_partition_merge=None,
-                             capacity_mode=None):
+                             capacity_mode=None,
+                             disable_local_auth=None):
     consistency_policy = None
     if default_consistency_level is not None:
         consistency_policy = ConsistencyPolicy(default_consistency_level=default_consistency_level,
@@ -1357,7 +1390,8 @@ def _create_database_account(client,
         default_priority_level=default_priority_level,
         enable_per_region_per_partition_autoscale=enable_prpp_autoscale,
         enable_partition_merge=enable_partition_merge,
-        capacity_mode=capacity_mode
+        capacity_mode=capacity_mode,
+        disable_local_auth=disable_local_auth
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)

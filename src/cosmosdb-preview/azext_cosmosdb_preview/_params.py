@@ -448,6 +448,7 @@ def load_arguments(self, _):
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('enable_partition_merge', arg_type=get_three_state_flag(), is_preview=True, help="Flag to enable partition merge on the account.")
+        c.argument('disable_local_auth', arg_type=get_three_state_flag(), help="Flag to disable local authentication and ensure only MSI and AAD can be used exclusively for authentication.")
 
     for scope in ['cosmosdb create', 'cosmosdb update']:
         with self.argument_context(scope) as c:
@@ -502,6 +503,7 @@ def load_arguments(self, _):
         c.argument('public_network_access', options_list=['--public-network-access', '-p'], arg_type=get_enum_type(['ENABLED', 'DISABLED']), help="Sets public network access in server to either Enabled or Disabled.")
         c.argument('source_backup_location', help="This is the location of the source account where backups are located. Provide this value if the source and target are in different locations.", is_preview=True)
         c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True)
+        c.argument('disable_local_auth', arg_type=get_three_state_flag(), help="Flag to disable local authentication and ensure only MSI and AAD can be used exclusively for authentication.")
 
     # Restorable Database Accounts
     with self.argument_context('cosmosdb restorable-database-account show') as c:
