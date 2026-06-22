@@ -11,6 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
+
+21.0.0b6
+++++++++
+* `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property `azureMonitorProfile.metrics.controlPlane.enabled` (replaces the AFEC-gated preview).
+
+21.0.0b5
++++++++
+* `az aks prepared-image-specification`: Add new command.
 * `az aks upgrade`: Fix `--node-image-only` to skip Machines mode agent pools, which do not support node image version upgrade.
 * `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
 

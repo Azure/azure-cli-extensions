@@ -22,9 +22,9 @@ class Compare(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-05-01-preview",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/deploymentversions/{}/compare", "2025-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/deploymentversions/{}/compare", "2025-09-01-preview"],
         ]
     }
 
@@ -150,7 +150,7 @@ class Compare(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-01-preview",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -287,6 +287,7 @@ class _CompareHelper:
     @classmethod
     def _build_schema_afd_origin_group_properties_read(cls, _schema):
         if cls._schema_afd_origin_group_properties_read is not None:
+            _schema.authentication = cls._schema_afd_origin_group_properties_read.authentication
             _schema.deployment_status = cls._schema_afd_origin_group_properties_read.deployment_status
             _schema.health_probe_settings = cls._schema_afd_origin_group_properties_read.health_probe_settings
             _schema.load_balancing_settings = cls._schema_afd_origin_group_properties_read.load_balancing_settings
@@ -299,6 +300,7 @@ class _CompareHelper:
         cls._schema_afd_origin_group_properties_read = _schema_afd_origin_group_properties_read = AAZObjectType()
 
         afd_origin_group_properties_read = _schema_afd_origin_group_properties_read
+        afd_origin_group_properties_read.authentication = AAZObjectType()
         afd_origin_group_properties_read.deployment_status = AAZStrType(
             serialized_name="deploymentStatus",
             flags={"read_only": True},
@@ -323,6 +325,14 @@ class _CompareHelper:
         afd_origin_group_properties_read.traffic_restoration_time_to_healed_or_new_endpoints_in_minutes = AAZIntType(
             serialized_name="trafficRestorationTimeToHealedOrNewEndpointsInMinutes",
         )
+
+        authentication = _schema_afd_origin_group_properties_read.authentication
+        authentication.scope = AAZStrType()
+        authentication.type = AAZStrType()
+        authentication.user_assigned_identity = AAZObjectType(
+            serialized_name="userAssignedIdentity",
+        )
+        cls._build_schema_resource_reference_read(authentication.user_assigned_identity)
 
         health_probe_settings = _schema_afd_origin_group_properties_read.health_probe_settings
         health_probe_settings.probe_interval_in_seconds = AAZIntType(
@@ -349,6 +359,7 @@ class _CompareHelper:
             serialized_name="successfulSamplesRequired",
         )
 
+        _schema.authentication = cls._schema_afd_origin_group_properties_read.authentication
         _schema.deployment_status = cls._schema_afd_origin_group_properties_read.deployment_status
         _schema.health_probe_settings = cls._schema_afd_origin_group_properties_read.health_probe_settings
         _schema.load_balancing_settings = cls._schema_afd_origin_group_properties_read.load_balancing_settings
@@ -369,6 +380,7 @@ class _CompareHelper:
             _schema.host_name = cls._schema_afd_origin_properties_read.host_name
             _schema.http_port = cls._schema_afd_origin_properties_read.http_port
             _schema.https_port = cls._schema_afd_origin_properties_read.https_port
+            _schema.origin_capacity_resource = cls._schema_afd_origin_properties_read.origin_capacity_resource
             _schema.origin_group_name = cls._schema_afd_origin_properties_read.origin_group_name
             _schema.origin_host_header = cls._schema_afd_origin_properties_read.origin_host_header
             _schema.priority = cls._schema_afd_origin_properties_read.priority
@@ -396,13 +408,15 @@ class _CompareHelper:
         )
         afd_origin_properties_read.host_name = AAZStrType(
             serialized_name="hostName",
-            flags={"required": True},
         )
         afd_origin_properties_read.http_port = AAZIntType(
             serialized_name="httpPort",
         )
         afd_origin_properties_read.https_port = AAZIntType(
             serialized_name="httpsPort",
+        )
+        afd_origin_properties_read.origin_capacity_resource = AAZObjectType(
+            serialized_name="originCapacityResource",
         )
         afd_origin_properties_read.origin_group_name = AAZStrType(
             serialized_name="originGroupName",
@@ -420,6 +434,16 @@ class _CompareHelper:
             serialized_name="sharedPrivateLinkResource",
         )
         afd_origin_properties_read.weight = AAZIntType()
+
+        origin_capacity_resource = _schema_afd_origin_properties_read.origin_capacity_resource
+        origin_capacity_resource.enabled = AAZStrType()
+        origin_capacity_resource.origin_ingress_rate_threshold = AAZIntType(
+            serialized_name="originIngressRateThreshold",
+        )
+        origin_capacity_resource.origin_request_rate_threshold = AAZIntType(
+            serialized_name="originRequestRateThreshold",
+        )
+        origin_capacity_resource.region = AAZStrType()
 
         shared_private_link_resource = _schema_afd_origin_properties_read.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrType(
@@ -444,6 +468,7 @@ class _CompareHelper:
         _schema.host_name = cls._schema_afd_origin_properties_read.host_name
         _schema.http_port = cls._schema_afd_origin_properties_read.http_port
         _schema.https_port = cls._schema_afd_origin_properties_read.https_port
+        _schema.origin_capacity_resource = cls._schema_afd_origin_properties_read.origin_capacity_resource
         _schema.origin_group_name = cls._schema_afd_origin_properties_read.origin_group_name
         _schema.origin_host_header = cls._schema_afd_origin_properties_read.origin_host_header
         _schema.priority = cls._schema_afd_origin_properties_read.priority
@@ -560,6 +585,7 @@ class _CompareHelper:
             _schema.enabled_state = cls._schema_route_properties_read.enabled_state
             _schema.endpoint_name = cls._schema_route_properties_read.endpoint_name
             _schema.forwarding_protocol = cls._schema_route_properties_read.forwarding_protocol
+            _schema.grpc_state = cls._schema_route_properties_read.grpc_state
             _schema.https_redirect = cls._schema_route_properties_read.https_redirect
             _schema.link_to_default_domain = cls._schema_route_properties_read.link_to_default_domain
             _schema.origin_group = cls._schema_route_properties_read.origin_group
@@ -593,6 +619,9 @@ class _CompareHelper:
         route_properties_read.forwarding_protocol = AAZStrType(
             serialized_name="forwardingProtocol",
         )
+        route_properties_read.grpc_state = AAZStrType(
+            serialized_name="grpcState",
+        )
         route_properties_read.https_redirect = AAZStrType(
             serialized_name="httpsRedirect",
         )
@@ -601,7 +630,6 @@ class _CompareHelper:
         )
         route_properties_read.origin_group = AAZObjectType(
             serialized_name="originGroup",
-            flags={"required": True},
         )
         cls._build_schema_resource_reference_read(route_properties_read.origin_group)
         route_properties_read.origin_path = AAZStrType(
@@ -663,6 +691,7 @@ class _CompareHelper:
         _schema.enabled_state = cls._schema_route_properties_read.enabled_state
         _schema.endpoint_name = cls._schema_route_properties_read.endpoint_name
         _schema.forwarding_protocol = cls._schema_route_properties_read.forwarding_protocol
+        _schema.grpc_state = cls._schema_route_properties_read.grpc_state
         _schema.https_redirect = cls._schema_route_properties_read.https_redirect
         _schema.link_to_default_domain = cls._schema_route_properties_read.link_to_default_domain
         _schema.origin_group = cls._schema_route_properties_read.origin_group
@@ -689,9 +718,7 @@ class _CompareHelper:
         cls._schema_rule_properties_read = _schema_rule_properties_read = AAZObjectType()
 
         rule_properties_read = _schema_rule_properties_read
-        rule_properties_read.actions = AAZListType(
-            flags={"required": True},
-        )
+        rule_properties_read.actions = AAZListType()
         rule_properties_read.conditions = AAZListType()
         rule_properties_read.deployment_status = AAZStrType(
             serialized_name="deploymentStatus",
@@ -700,9 +727,7 @@ class _CompareHelper:
         rule_properties_read.match_processing_behavior = AAZStrType(
             serialized_name="matchProcessingBehavior",
         )
-        rule_properties_read.order = AAZIntType(
-            flags={"required": True},
-        )
+        rule_properties_read.order = AAZIntType()
         rule_properties_read.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
@@ -719,6 +744,30 @@ class _CompareHelper:
         _element.name = AAZStrType(
             flags={"required": True},
         )
+
+        disc_afd_url_signing = _schema_rule_properties_read.actions.Element.discriminate_by("name", "AfdUrlSigning")
+        disc_afd_url_signing.parameters = AAZObjectType(
+            flags={"required": True},
+        )
+
+        parameters = _schema_rule_properties_read.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters
+        parameters.algorithm = AAZStrType()
+        parameters.key_group_reference = AAZObjectType(
+            serialized_name="keyGroupReference",
+            flags={"required": True},
+        )
+        cls._build_schema_resource_reference_read(parameters.key_group_reference)
+        parameters.parameter_name_override = AAZListType(
+            serialized_name="parameterNameOverride",
+        )
+        parameters.type_name = AAZStrType(
+            serialized_name="typeName",
+            flags={"required": True},
+        )
+
+        parameter_name_override = _schema_rule_properties_read.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters.parameter_name_override
+        parameter_name_override.Element = AAZObjectType()
+        cls._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
 
         disc_cache_expiration = _schema_rule_properties_read.actions.Element.discriminate_by("name", "CacheExpiration")
         disc_cache_expiration.parameters = AAZObjectType(
@@ -755,6 +804,26 @@ class _CompareHelper:
         )
         parameters.query_string_behavior = AAZStrType(
             serialized_name="queryStringBehavior",
+            flags={"required": True},
+        )
+        parameters.type_name = AAZStrType(
+            serialized_name="typeName",
+            flags={"required": True},
+        )
+
+        disc_edge_action = _schema_rule_properties_read.actions.Element.discriminate_by("name", "EdgeAction")
+        disc_edge_action.parameters = AAZObjectType(
+            flags={"required": True},
+        )
+
+        parameters = _schema_rule_properties_read.actions.Element.discriminate_by("name", "EdgeAction").parameters
+        parameters.edge_action_reference = AAZObjectType(
+            serialized_name="edgeActionReference",
+            flags={"required": True},
+        )
+        cls._build_schema_resource_reference_read(parameters.edge_action_reference)
+        parameters.invocation_point = AAZStrType(
+            serialized_name="invocationPoint",
             flags={"required": True},
         )
         parameters.type_name = AAZStrType(
@@ -901,16 +970,7 @@ class _CompareHelper:
 
         parameter_name_override = _schema_rule_properties_read.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override
         parameter_name_override.Element = AAZObjectType()
-
-        _element = _schema_rule_properties_read.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override.Element
-        _element.param_indicator = AAZStrType(
-            serialized_name="paramIndicator",
-            flags={"required": True},
-        )
-        _element.param_name = AAZStrType(
-            serialized_name="paramName",
-            flags={"required": True},
-        )
+        cls._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
 
         conditions = _schema_rule_properties_read.conditions
         conditions.Element = AAZObjectType()
@@ -1650,12 +1710,12 @@ class _CompareHelper:
         transforms.Element = AAZStrType()
 
         frontend_endpoint_links = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.frontend_endpoint_links
-        frontend_endpoint_links.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        frontend_endpoint_links.Element = AAZObjectType()
 
         _element = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.frontend_endpoint_links.Element
-        _element.id = AAZStrType()
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
 
         managed_rules = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.managed_rules
         managed_rules.managed_rule_sets = AAZListType(
@@ -1769,20 +1829,20 @@ class _CompareHelper:
         _element.state = AAZStrType()
 
         routing_rule_links = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.routing_rule_links
-        routing_rule_links.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        routing_rule_links.Element = AAZObjectType()
 
         _element = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.routing_rule_links.Element
-        _element.id = AAZStrType()
-
-        security_policy_links = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.security_policy_links
-        security_policy_links.Element = AAZObjectType(
+        _element.id = AAZStrType(
             flags={"read_only": True},
         )
 
+        security_policy_links = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.security_policy_links
+        security_policy_links.Element = AAZObjectType()
+
         _element = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.properties.security_policy_links.Element
-        _element.id = AAZStrType()
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
 
         sku = _schema_security_policy_properties_with_embedded_waf_policy_read.parameters.waf_policy.sku
         sku.name = AAZStrType()
@@ -1811,6 +1871,30 @@ class _CompareHelper:
         _schema.parameters = cls._schema_security_policy_properties_with_embedded_waf_policy_read.parameters
         _schema.profile_name = cls._schema_security_policy_properties_with_embedded_waf_policy_read.profile_name
         _schema.provisioning_state = cls._schema_security_policy_properties_with_embedded_waf_policy_read.provisioning_state
+
+    _schema_url_signing_param_identifier_read = None
+
+    @classmethod
+    def _build_schema_url_signing_param_identifier_read(cls, _schema):
+        if cls._schema_url_signing_param_identifier_read is not None:
+            _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
+            _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
+            return
+
+        cls._schema_url_signing_param_identifier_read = _schema_url_signing_param_identifier_read = AAZObjectType()
+
+        url_signing_param_identifier_read = _schema_url_signing_param_identifier_read
+        url_signing_param_identifier_read.param_indicator = AAZStrType(
+            serialized_name="paramIndicator",
+            flags={"required": True},
+        )
+        url_signing_param_identifier_read.param_name = AAZStrType(
+            serialized_name="paramName",
+            flags={"required": True},
+        )
+
+        _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
+        _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
 
 
 __all__ = ["Compare"]

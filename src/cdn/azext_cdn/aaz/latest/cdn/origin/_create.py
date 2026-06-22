@@ -17,17 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new origin within the specified endpoint.
 
-    :example: Create an additional origin
-        az cdn origin create -g group --host-name example.contoso.com --profile-name profile --endpoint-name endpoint -n origin --host-name example.contoso.com --origin-host-header example.contoso.com --http-port 80 --https-port 443
-
-    :example: Create a private origin
-        az cdn origin create -g group --host-name example.contoso.com --profile-name profile --endpoint-name endpoint -n origin --http-port 80 --https-port 443 --private-link-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group/providers/Microsoft.Network/privateLinkServices/pls --private-link-location EastUS --private-link-approval-message 'Please approve this request'
+    :example: Origins_Create
+        az cdn origin create --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --origin-name www-someDomain-net --enabled True --host-name www.someDomain.net --http-port 80 --https-port 443 --origin-host-header www.someDomain.net --priority 1 --private-link-approval-message Please approve the connection request for this Private Link --private-link-location eastus --private-link-resource-id /subscriptions/subid/resourcegroups/rg1/providers/Microsoft.Network/privateLinkServices/pls1 --weight 50
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origins/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origins/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -62,6 +59,11 @@ class Create(AAZCommand):
             options=["--profile-name"],
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -172,7 +174,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -181,7 +183,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -232,7 +234,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

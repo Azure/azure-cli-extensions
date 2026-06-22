@@ -252,6 +252,7 @@ from azext_aks_preview._validators import (
     validate_drain_batch_size,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
+    validate_prepared_image_specification_id,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -1134,6 +1135,17 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
+        c.argument(
+            "enable_control_plane_metrics",
+            options_list=["--enable-control-plane-metrics", "--enable-cp-metrics"],
+            action="store_true",
+            help=(
+                "Enable collection of Azure Monitor managed Prometheus control plane metrics for managed "
+                "cluster components (controlplane-apiserver and controlplane-etcd targets by default). "
+                "Requires Azure Monitor metrics to be enabled "
+                "(already enabled or via --enable-azure-monitor-metrics)."
+            ),
+        )
         c.argument("enable_azure_monitor_app_monitoring",
                    is_preview=True,
                    action="store_true"
@@ -1330,6 +1342,14 @@ def load_arguments(self, _):
                  "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",
+        # prepared image specification
+        c.argument(
+            'prepared_image_specification_id',
+            options_list=["--prepared-image-specification-id", "--pis-id"],
+            is_preview=True,
+            validator=validate_prepared_image_specification_id,
+            help='The resource ID of the prepared image specification to use for provisioning nodes in the default '
+                 'node pool.'
         )
 
     with self.argument_context("aks update") as c:
@@ -1656,6 +1676,27 @@ def load_arguments(self, _):
                 target="--disable-azuremonitormetrics",
                 redirect="--disable-azure-monitor-metrics",
                 hide=True,
+            ),
+        )
+        c.argument("disable_azure_monitor_metrics", action="store_true")
+        c.argument(
+            "enable_control_plane_metrics",
+            options_list=["--enable-control-plane-metrics", "--enable-cp-metrics"],
+            action="store_true",
+            help=(
+                "Enable collection of Azure Monitor managed Prometheus control plane metrics for managed "
+                "cluster components (controlplane-apiserver and controlplane-etcd targets by default). "
+                "Requires Azure Monitor metrics to be enabled "
+                "(already enabled or via --enable-azure-monitor-metrics)."
+            ),
+        )
+        c.argument(
+            "disable_control_plane_metrics",
+            options_list=["--disable-control-plane-metrics", "--disable-cp-metrics"],
+            action="store_true",
+            help=(
+                "Disable collection of Azure Monitor managed Prometheus control plane metrics. "
+                "Sets azureMonitorProfile.metrics.controlPlane.enabled=false on the cluster."
             ),
         )
         c.argument("enable_azure_monitor_app_monitoring",
@@ -2320,6 +2361,14 @@ def load_arguments(self, _):
                  'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
             is_preview=True,
         )
+        # prepared image specification
+        c.argument(
+            'prepared_image_specification_id',
+            options_list=["--prepared-image-specification-id", "--pis-id"],
+            is_preview=True,
+            validator=validate_prepared_image_specification_id,
+            help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -2443,6 +2492,14 @@ def load_arguments(self, _):
             arg_type=get_enum_type(gpu_mig_strategies),
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
+        )
+        # prepared image specification
+        c.argument(
+            'prepared_image_specification_id',
+            options_list=["--prepared-image-specification-id", "--pis-id"],
+            is_preview=True,
+            validator=validate_prepared_image_specification_id,
+            help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
@@ -3508,6 +3565,91 @@ def load_arguments(self, _):
             options_list=["--all"],
             action="store_true",
             help="Show all VM SKU information including those not available for the current subscription.",
+        )
+
+    with self.argument_context("aks prepared-image-specification create") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+        c.argument(
+            "container_images",
+            nargs="+",
+            help="Container images.",
+        )
+        c.argument(
+            "customization_scripts",
+            type=validate_file_or_dict,
+            help="Customization scripts. Expected value: json-string/@json-file.",
+        )
+        c.argument(
+            "assign_identity",
+            validator=validate_assign_identity,
+            help="Specify an existing user assigned identity.",
+        )
+        c.argument(
+            "version",
+            required=True,
+            help="The prepared image specification version.",
+        )
+
+    with self.argument_context("aks prepared-image-specification update") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification delete") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification show") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification version delete") as c:
+        c.argument(
+            "pis_name",
+            required=True,
+            help="The prepared image specification name.",
+        )
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The version name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification version list") as c:
+        c.argument(
+            "pis_name",
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification version show") as c:
+        c.argument(
+            "pis_name",
+            required=True,
+            help="The prepared image specification name.",
+        )
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The version name.",
         )
 
 

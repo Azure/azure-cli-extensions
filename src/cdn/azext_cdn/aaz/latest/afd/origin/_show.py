@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get an existing origin within an origin group.
+
+    :example: AFDOrigins_Get
+        az afd origin show --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --origin-name origin1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -142,7 +145,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -209,13 +212,15 @@ class Show(AAZCommand):
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
-                flags={"required": True},
             )
             properties.http_port = AAZIntType(
                 serialized_name="httpPort",
             )
             properties.https_port = AAZIntType(
                 serialized_name="httpsPort",
+            )
+            properties.origin_capacity_resource = AAZObjectType(
+                serialized_name="originCapacityResource",
             )
             properties.origin_group_name = AAZStrType(
                 serialized_name="originGroupName",
@@ -233,6 +238,16 @@ class Show(AAZCommand):
                 serialized_name="sharedPrivateLinkResource",
             )
             properties.weight = AAZIntType()
+
+            origin_capacity_resource = cls._schema_on_200.properties.origin_capacity_resource
+            origin_capacity_resource.enabled = AAZStrType()
+            origin_capacity_resource.origin_ingress_rate_threshold = AAZIntType(
+                serialized_name="originIngressRateThreshold",
+            )
+            origin_capacity_resource.origin_request_rate_threshold = AAZIntType(
+                serialized_name="originRequestRateThreshold",
+            )
+            origin_capacity_resource.region = AAZStrType()
 
             shared_private_link_resource = cls._schema_on_200.properties.shared_private_link_resource
             shared_private_link_resource.group_id = AAZStrType(

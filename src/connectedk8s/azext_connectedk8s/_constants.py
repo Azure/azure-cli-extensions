@@ -476,7 +476,7 @@ Outbound_Connectivity_Check_Failed_For_Cluster_Connect = (
 )
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.032281"
+CLIENT_PROXY_VERSION = "1.3.033892"
 CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
@@ -491,7 +491,7 @@ DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
 # URL constants
 CLIENT_PROXY_MCR_TARGET = "azureconnectivity/proxy"
 HELM_MCR_URL = "azurearck8s/helm"
-HELM_VERSION = "v3.12.2"
+HELM_VERSION = "v3.20.1"
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
 Azure_Access_Token_Variable = "AZURE_ACCESS_TOKEN"
 Provisioned_Cluster_Kind = "provisionedcluster"

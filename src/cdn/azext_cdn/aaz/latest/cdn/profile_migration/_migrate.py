@@ -23,9 +23,9 @@ class Migrate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/cdnmigratetoafd", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/cdnmigratetoafd", "2025-09-01-preview"],
         ]
     }
 
@@ -90,7 +90,7 @@ class Migrate(AAZCommand):
             options=["--sku"],
             arg_group="Sku",
             help="Name of the pricing tier.",
-            enum={"Custom_Verizon": "Custom_Verizon", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Premium_Verizon": "Premium_Verizon", "StandardPlus_955BandWidth_ChinaCdn": "StandardPlus_955BandWidth_ChinaCdn", "StandardPlus_AvgBandWidth_ChinaCdn": "StandardPlus_AvgBandWidth_ChinaCdn", "StandardPlus_ChinaCdn": "StandardPlus_ChinaCdn", "Standard_955BandWidth_ChinaCdn": "Standard_955BandWidth_ChinaCdn", "Standard_Akamai": "Standard_Akamai", "Standard_AvgBandWidth_ChinaCdn": "Standard_AvgBandWidth_ChinaCdn", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor", "Standard_ChinaCdn": "Standard_ChinaCdn", "Standard_Microsoft": "Standard_Microsoft", "Standard_Verizon": "Standard_Verizon"},
+            enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Custom_Verizon": "Custom_Verizon", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Premium_Verizon": "Premium_Verizon", "StandardPlus_955BandWidth_ChinaCdn": "StandardPlus_955BandWidth_ChinaCdn", "StandardPlus_AvgBandWidth_ChinaCdn": "StandardPlus_AvgBandWidth_ChinaCdn", "StandardPlus_ChinaCdn": "StandardPlus_ChinaCdn", "Standard_955BandWidth_ChinaCdn": "Standard_955BandWidth_ChinaCdn", "Standard_Akamai": "Standard_Akamai", "Standard_AvgBandWidth_ChinaCdn": "Standard_AvgBandWidth_ChinaCdn", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor", "Standard_ChinaCdn": "Standard_ChinaCdn", "Standard_Microsoft": "Standard_Microsoft", "Standard_Verizon": "Standard_Verizon"},
         )
         return cls._args_schema
 
@@ -175,7 +175,7 @@ class Migrate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all of the existing origins within a profile.
+
+    :example: Routes_ListByEndpoint
+        az afd route list --resource-group RG --profile-name profile1 --endpoint-name endpoint1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes", "2025-09-01-preview"],
         ]
     }
 
@@ -132,7 +135,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -169,7 +172,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -214,6 +217,9 @@ class List(AAZCommand):
             properties.forwarding_protocol = AAZStrType(
                 serialized_name="forwardingProtocol",
             )
+            properties.grpc_state = AAZStrType(
+                serialized_name="grpcState",
+            )
             properties.https_redirect = AAZStrType(
                 serialized_name="httpsRedirect",
             )
@@ -222,7 +228,6 @@ class List(AAZCommand):
             )
             properties.origin_group = AAZObjectType(
                 serialized_name="originGroup",
-                flags={"required": True},
             )
             _ListHelper._build_schema_resource_reference_read(properties.origin_group)
             properties.origin_path = AAZStrType(

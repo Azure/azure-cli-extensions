@@ -17,17 +17,14 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new origin group within the specified endpoint.
 
-    :example: Update which origins are included in an origin group.
-        az cdn origin-group update -g group --profile-name profile --endpoint-name endpoint -n origin-group --origins origin-0,origin-2
-
-    :example: Update an origin group with a custom health probe
-        az cdn origin-group update -g group --profile-name profile --endpoint-name endpoint -n origin-group --origins origin-0,origin-1 --probe-path /healthz --probe-interval 90 --probe-protocol HTTPS --probe-method GET
+    :example: OriginGroups_Create
+        az cdn origin-group update --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --origin-group-name origingroup1 --health-probe-settings "{probe-interval-in-seconds:120,probe-path:/health.aspx,probe-protocol:Http,probe-request-type:GET}" --formatted-origins "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/endpoints/endpoint1/origins/origin1}]" --response-based-origin-error-detection-settings "{response-based-detected-error-types:TcpErrorsOnly,response-based-failover-threshold-percentage:10}"
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origingroups/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origingroups/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -67,6 +64,11 @@ class Update(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -85,6 +87,7 @@ class Update(AAZCommand):
             options=["--formatted-origins"],
             arg_group="Properties",
             help="The source of the content being delivered via CDN within given origin group.",
+            nullable=True,
         )
         _args_schema.response_based_origin_error_detection_settings = AAZObjectArg(
             options=["--response-based-origin-error-detection-settings"],
@@ -122,7 +125,7 @@ class Update(AAZCommand):
             options=["probe-protocol"],
             help="Protocol to use for health probe.",
             nullable=True,
-            enum={"Http": "Http", "Https": "Https", "NotSet": "NotSet"},
+            enum={"Grpc": "Grpc", "Http": "Http", "Https": "Https", "NotSet": "NotSet"},
         )
         health_probe_settings.probe_request_type = AAZStrArg(
             options=["probe-request-type"],
@@ -277,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -324,7 +327,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -333,7 +336,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -384,7 +387,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -447,7 +450,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("healthProbeSettings", AAZObjectType, ".health_probe_settings")
-                properties.set_prop("origins", AAZListType, ".formatted_origins", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("origins", AAZListType, ".formatted_origins")
                 properties.set_prop("responseBasedOriginErrorDetectionSettings", AAZObjectType, ".response_based_origin_error_detection_settings")
                 properties.set_prop("trafficRestorationTimeToHealedOrNewEndpointsInMinutes", AAZIntType, ".traffic_restoration_time_to_healed_or_new_endpoints_in_minutes")
 
@@ -531,9 +534,7 @@ class _UpdateHelper:
         properties.health_probe_settings = AAZObjectType(
             serialized_name="healthProbeSettings",
         )
-        properties.origins = AAZListType(
-            flags={"required": True},
-        )
+        properties.origins = AAZListType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
