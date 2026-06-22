@@ -46,7 +46,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9-]{1,60}$",
             ),
         )
         _args_schema.cluster_name = AAZStrArg(
