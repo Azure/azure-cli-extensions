@@ -38,7 +38,7 @@ from knack.log import get_logger
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
     MANAGED_ENVIRONMENT_TYPE, CONNECTED_ENVIRONMENT_TYPE, ACR_IMAGE_SUFFIX
-from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
+from ._clients import ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
@@ -768,7 +768,7 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
         environment_type = self.get_argument_environment_type()
         if not env and not environment_type:
-            return ManagedEnvironmentClient
+            return ManagedEnvironmentPreviewClient
 
         parsed_env = parse_resource_id(env)
 
