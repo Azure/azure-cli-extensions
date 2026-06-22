@@ -4,6 +4,7 @@ Release History
 ===============
 1.11.1
 +++++++
+* Pinned `jsonschema` to `<4.18.0` to avoid missing native `rpds` module errors.
 * Added ARM64 support for Helm binary installation.
 * Handle removal of '--all' flag in Helm 4 to ensure compatibility.
 * Added Helm overrides support for Application Gateway for Containers (AGC).
