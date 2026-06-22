@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
+* `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
+* Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+
+21.0.0b6
+++++++++
+* `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property `azureMonitorProfile.metrics.controlPlane.enabled` (replaces the AFEC-gated preview).
 
 21.0.0b5
 +++++++
