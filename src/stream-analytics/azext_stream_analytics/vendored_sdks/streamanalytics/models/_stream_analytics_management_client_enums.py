@@ -27,7 +27,7 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
 
 
 class AuthenticationMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Authentication Mode. Valid modes are ``ConnectionString``\ , ``Msi`` and 'UserToken'.
+    """Authentication Mode. Valid modes are ``ConnectionString``\\ , ``Msi`` and 'UserToken'.
     """
 
     MSI = "Msi"
