@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
+* Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
 
 21.0.0b6
 ++++++++
