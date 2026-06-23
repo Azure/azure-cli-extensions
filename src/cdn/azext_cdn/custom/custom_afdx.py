@@ -55,11 +55,23 @@ def _add_arg_option(arg, option):
         arg._options = [option, *arg._options]
 
 
+def _add_arg_option_if_exists(args_schema, arg_name, option):
+    arg = getattr(args_schema, '_fields', {}).get(arg_name)
+    if arg is not None:
+        _add_arg_option(arg, option)
+
+
 def _get_serialized_value(data, *keys):
     for key in keys:
         if key in data:
             return data[key]
     return None
+
+
+def _get_resource_reference_id(data):
+    if isinstance(data, dict):
+        return _get_serialized_value(data, "id")
+    return data
 
 
 def _update_action_argument_schema(args_schema):
@@ -359,7 +371,7 @@ class AFDSecurityPolicyCreate(_AFDSecurityPolicyCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        _add_arg_option(args_schema.web_application_firewall_embedded, "--waf-embedded")
+        _add_arg_option_if_exists(args_schema, 'web_application_firewall_embedded', "--waf-embedded")
         return args_schema
 
 
@@ -367,7 +379,7 @@ class AFDSecurityPolicyUpdate(_AFDSecurityPolicyUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        _add_arg_option(args_schema.web_application_firewall_embedded, "--waf-embedded")
+        _add_arg_option_if_exists(args_schema, 'web_application_firewall_embedded', "--waf-embedded")
         return args_schema
 
     def post_instance_update(self, instance):
@@ -381,7 +393,7 @@ class AFDSecurityPolicyUpdate(_AFDSecurityPolicyUpdate):
                     parameters.associations = web_application_firewall.get("associations")
                 waf_policy = _get_serialized_value(web_application_firewall, "waf_policy", "waf-policy")
                 if waf_policy is not None:
-                    parameters.waf_policy.id = waf_policy
+                    parameters.waf_policy.id = _get_resource_reference_id(waf_policy)
 
     def _output(self, *args, **kwargs):
         result = super()._output(*args, **kwargs)
@@ -395,13 +407,18 @@ class AFDSecurityPolicyUpdate(_AFDSecurityPolicyUpdate):
                         {
                             "domains": association.get("domains"),
                             "patternsToMatch": _get_serialized_value(
-                                association, "patterns_to_match", "patterns-to-match", "patternsToMatch")
+                                association, "patterns_to_match", "patterns-to-match", "patternsToMatch"),
+                            "routes": association.get("routes")
                         }
                         for association in web_application_firewall.get("associations") or []
                     ]
+                if "is_profile_level" in web_application_firewall:
+                    parameters["isProfileLevel"] = web_application_firewall.get("is_profile_level")
+                if "is-profile-level" in web_application_firewall:
+                    parameters["isProfileLevel"] = web_application_firewall.get("is-profile-level")
                 waf_policy = _get_serialized_value(web_application_firewall, "waf_policy", "waf-policy")
                 if waf_policy is not None:
-                    parameters["wafPolicy"] = {"id": waf_policy}
+                    parameters["wafPolicy"] = {"id": _get_resource_reference_id(waf_policy)}
         return result
 
 

@@ -375,14 +375,19 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks)
 
     def afd_security_policy_create_cmd(self, resource_group_name, profile_name, security_policy_name, domains,
-                                       waf_policy, checks=None):
-        web_application_firewall = {
-            'waf-policy': waf_policy,
-            'associations': [{
-                'domains': [{'id': domain} for domain in domains],
-                'patterns-to-match': ['/*']
-            }]
+                                       waf_policy, checks=None, is_profile_level=None, routes=None):
+        association = {
+            'domains': [{'id': domain} for domain in domains],
+            'patterns-to-match': ['/*']
         }
+        if routes is not None:
+            association['routes'] = [{'id': route} for route in routes]
+        web_application_firewall = {
+            'waf-policy': {'id': waf_policy},
+            'associations': [association]
+        }
+        if is_profile_level is not None:
+            web_application_firewall['is-profile-level'] = is_profile_level
         cmd = f'afd security-policy create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--security-policy-name {security_policy_name} ' \
               f'--web-application-firewall {_json_arg(web_application_firewall)}'
@@ -390,17 +395,23 @@ class CdnAfdScenarioMixin:
         return self.cmd(cmd, checks)
 
     def afd_security_policy_update_cmd(self, resource_group_name, profile_name, security_policy_name, domains=None,
-                                       waf_policy=None, checks=None):
+                                       waf_policy=None, checks=None, is_profile_level=None, routes=None):
         cmd = f'afd security-policy update -g {resource_group_name} --profile-name {profile_name} ' \
               f'--security-policy-name {security_policy_name}'
         web_application_firewall = {}
-        if domains:
-            web_application_firewall['associations'] = [{
-                'domains': [{'id': domain} for domain in domains],
+        if domains is not None or routes is not None:
+            association = {
                 'patterns-to-match': ['/*']
-            }]
+            }
+            if domains is not None:
+                association['domains'] = [{'id': domain} for domain in domains]
+            if routes is not None:
+                association['routes'] = [{'id': route} for route in routes]
+            web_application_firewall['associations'] = [association]
         if waf_policy:
-            web_application_firewall['waf-policy'] = waf_policy
+            web_application_firewall['waf-policy'] = {'id': waf_policy}
+        if is_profile_level is not None:
+            web_application_firewall['is-profile-level'] = is_profile_level
         if web_application_firewall:
             cmd += f' --web-application-firewall {_json_arg(web_application_firewall)}'
 
