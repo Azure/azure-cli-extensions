@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "qumulo storage file-system create",
 )
 class Create(AAZCommand):
-    """Create a new Qumulo file system storage resource.
+"""Create a new Qumulo file system storage resource.
 
     :example: FileSystems_CreateOrUpdate_MaximumSet
-        az qumulo storage file-system create --resource-group ankit-test --file-system-name cli-test-qumulo  --marketplace-details "{marketplaceSubscriptionId:f854a7e2-9fef-4a9b-cdd6-64251b873f71,planId:azure-native-qumulo-v 3,offerId:qumulo-saas-mpp,publisherId:qumulo1584033880660,marketplaceSubscriptionStatus:Subscribed}" --storage-sku  Hot --user-details "{email:kaurnavjot@microsoft.com}" --delegated-subnet-id /subscriptions/fc35d936-3b89-41f8-8110- a24b56826c37/resourcegroups/aptest/providers/Microsoft.Network/virtualNetworks/eavn2/subnets/default  --admin-password Test1234!@#$ --availability-zone 1 --tags "{}" --location eastasia
+        az qumulo storage file-system create -g <resource-group> -n <file-system-name> --marketplace-details "{offerId:<offerId>,planId:<planId>,publisherId:<publisherId>}" --storage-sku <Hot|Cold> --user-details "{email:user@example.com}" --delegated-subnet-id /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<vnet>/subnets/<subnet> --admin-password <password> --availability-zone <zone> --tags "{}" --location <location>
     """
 
     _aaz_info = {
