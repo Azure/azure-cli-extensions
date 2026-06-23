@@ -205,13 +205,15 @@ class StreamAnalyticsClientTest(ScenarioTest):
             }
         }
         self.kwargs["policy_param"] = json.dumps(policy_param)
+        # scope the assignment to this test's resource group so it can't leak into other tests
+        self.kwargs["scope"] = self.cmd("group show -n {rg}").get_output_in_json()["id"]
         self.cmd(
             "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
             --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --scope {scope} \
             --params '{policy_param}'"
         )
-        # subscription-scoped assignment leaks across resource groups; remove it after the test
-        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi")
+        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi --scope {scope}")
 
         # create a streaming job
         self.cmd(
@@ -373,13 +375,15 @@ class StreamAnalyticsClientTest(ScenarioTest):
             }
         }
         self.kwargs["policy_param"] = json.dumps(policy_param)
+        # scope the assignment to this test's resource group so it can't leak into other tests
+        self.kwargs["scope"] = self.cmd("group show -n {rg}").get_output_in_json()["id"]
         self.cmd(
             "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
             --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --scope {scope} \
             --params '{policy_param}'"
         )
-        # subscription-scoped assignment leaks across resource groups; remove it after the test
-        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi")
+        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi --scope {scope}")
 
         # create a streaming job
         self.cmd(
@@ -550,13 +554,15 @@ class StreamAnalyticsClientTest(ScenarioTest):
             }
         }
         self.kwargs["policy_param"] = json.dumps(policy_param)
+        # scope the assignment to this test's resource group so it can't leak into other tests
+        self.kwargs["scope"] = self.cmd("group show -n {rg}").get_output_in_json()["id"]
         self.cmd(
             "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
             --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --scope {scope} \
             --params '{policy_param}'"
         )
-        # subscription-scoped assignment leaks across resource groups; remove it after the test
-        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi")
+        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi --scope {scope}")
 
         # create a streaming job
         self.cmd(
