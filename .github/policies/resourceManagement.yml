@@ -345,17 +345,6 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
-            label: Appservice-kube
-        then:
-        - mentionUsers:
-            mentionees:
-            - Juliehzl
-            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
-            assignMentionees: False
-      - if:
-        - hasLabel:
-            label: Service Attention
-        - hasLabel:
             label: Arc enabled servers
         then:
         - mentionUsers:
@@ -4063,19 +4052,6 @@ configuration:
       - isAction:
           action: Opened
       - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ appservice-kube ]'
-            isRegex: False
-      then:
-      - addReply:
-          reply: >-
-            Hi,
-
-            Please review the pull request.
-      description: '[ appservice-kube ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
