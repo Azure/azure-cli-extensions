@@ -17,7 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database', location='eastus2')
     def test_cosmosdb_gremlin_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         location = "eastus2"
@@ -52,7 +52,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         ]).get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph', location='eastus2')
     def test_cosmosdb_gremlin_graph(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         gp_name = self.create_random_name(prefix='cli', length=15)
@@ -109,7 +109,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         ]).get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database_graph_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database_graph_restore', location='eastus2')
     def test_cosmosdb_gremlin_database_graph_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         gp_name = self.create_random_name(prefix='cli', length=15)
@@ -213,14 +213,14 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         ]).get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restore', location='eastus2')
     def test_cosmosdb_table(self, resource_group):
         table_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'table_name': table_name,
-            'loc': 'westcentralus'
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')

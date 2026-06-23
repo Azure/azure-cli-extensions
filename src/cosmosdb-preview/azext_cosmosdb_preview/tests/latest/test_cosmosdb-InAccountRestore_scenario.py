@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_database')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_database', location='westcentralus')
     def test_cosmosdb_sql_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         location = "westcentralus"
@@ -50,7 +50,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert not self.cmd('az cosmosdb sql database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container', location='westcentralus')
     def test_cosmosdb_sql_container(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         location = "westcentralus"
@@ -84,7 +84,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql container delete -g {rg} -a {acc} -d {db_name} -n {col} --yes')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_restore', location='westcentralus')
     def test_cosmosdb_sql_normal_database_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         location = "westcentralus"
@@ -221,7 +221,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(database_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore', location='westcentralus')
     def test_cosmosdb_sql_normal_database_prov_container_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
@@ -304,7 +304,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert container_show["name"] == ctn_name
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_prov_container_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_prov_container_restore', location='westcentralus')
     def test_cosmosdb_sql_shared_database_prov_container_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
@@ -389,7 +389,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert container_show["name"] == ctn_name
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database', location='westcentralus')
     def test_cosmosdb_mongodb_database(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         location = "westcentralus"
@@ -420,7 +420,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(database_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection', location='westcentralus')
     def test_cosmosdb_mongodb_collection(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         partition_key = "/thePartitionKey"
@@ -454,7 +454,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb mongodb collection delete -g {rg} -a {acc} -d {db_name} -n {col} --yes')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_normal_database_prov_collection_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_normal_database_prov_collection_restore', location='westcentralus')
     def test_cosmosdb_mongodb_normal_database_prov_collection_restore(self, resource_group):
         col_name = self.create_random_name(prefix='cli', length=15)
         location = "westcentralus"
@@ -543,7 +543,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(collection_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_shared_database_prov_collection_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_shared_database_prov_collection_restore', location='westcentralus')
     def test_cosmosdb_mongodb_shared_database_prov_collection_restore(self, resource_group):
         col_name = self.create_random_name(prefix='cli', length=15)
         col_name2 = self.create_random_name(prefix='cli', length=15)
@@ -637,7 +637,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(database_list) == 0
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt', location='westcentralus')
     def test_cosmosdb_sql_normal_database_prov_container_restore_nt(self, resource_group):
         # InAccount No timestamp restore validation
         # Step 1: Initialize variables
