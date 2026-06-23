@@ -74,7 +74,7 @@
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "The kind of workspace to create: V1 or V2. Empty string omits the property entirely, letting the service apply its default (V1)."
+                "description": "The kind of workspace to create: V1 or V2. Empty string defaults to V1."
             }
         }
     },
@@ -93,7 +93,11 @@
             "identity": {
                 "type": "SystemAssigned"
             },
-            "properties": "[union(createObject('providers', parameters('providers'), 'storageAccount', parameters('storageAccountId')), if(empty(parameters('workspaceKind')), createObject(), createObject('workspaceKind', parameters('workspaceKind'))))]"
+            "properties": {
+                "providers": "[parameters('providers')]",
+                "storageAccount": "[parameters('storageAccountId')]",
+                "workspaceKind": "[if(empty(parameters('workspaceKind')), 'V1', parameters('workspaceKind'))]"
+            }
         },
         {
             "apiVersion": "2019-10-01",
