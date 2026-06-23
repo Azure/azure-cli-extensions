@@ -11,7 +11,12 @@ import yaml
 import time
 import tempfile
 import os
+import subprocess
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+
+
+def _is_live_mode() -> bool:
+    return os.environ.get("AZURE_TEST_RUN_LIVE", "").lower() == "true"
 
 
 class DeploymentTemplateScenarioTest(MLBaseScenarioTest):
@@ -27,11 +32,17 @@ class DeploymentTemplateScenarioTest(MLBaseScenarioTest):
     def setUpClass(cls):
         """Set up test registry before all tests."""
         super().setUpClass()
-        cls._create_registry()
+        if _is_live_mode():
+            cls._create_registry()
+        else:
+            print(f"\n[SETUP] Skipping registry creation (playback mode)")
 
     @classmethod
     def _create_registry(cls):
-        """Create a test registry for deployment template testing."""
+        """Create a test registry for deployment template testing.
+
+        Uses an out-of-band `az` subprocess so this network call never enters the VCR cassette.
+        """
         print(f"\n[SETUP] Creating test registry: {cls.registry_name}")
         registry_yaml = f"""
 description: Test registry for deployment template testing
@@ -40,36 +51,43 @@ location: WestCentralUS
 replication_locations:
   - location: WestCentralUS
 """
-        # Write temporary registry config
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(registry_yaml)
             registry_yaml_path = f.name
 
         try:
-            # Create registry
-            cls.cmd(f"az ml registry create -g {cls.resource_group} --file {registry_yaml_path}")
-            if cls.is_live:
+            result = subprocess.run(
+                ["az", "ml", "registry", "create",
+                 "-g", cls.resource_group, "--file", registry_yaml_path],
+                capture_output=True, text=True, shell=False,
+            )
+            if result.returncode == 0:
+                print("[SETUP] Registry created successfully")
                 print("[SETUP] Waiting 30s for registry creation to complete...")
                 time.sleep(30)
-            print("[SETUP] Registry created successfully")
-        except Exception as e:
-            print(f"[SETUP] Registry may already exist: {e}")
+            else:
+                # Tolerate "already exists" so the suite is idempotent across reruns
+                print(f"[SETUP] Registry create returned {result.returncode}: {result.stderr.strip()[:500]}")
         finally:
-            # Clean up temporary file
             try:
                 os.unlink(registry_yaml_path)
-            except:
+            except OSError:
                 pass
 
     @classmethod
     def tearDownClass(cls):
         """Clean up test registry after all tests."""
-        print(f"\n[TEARDOWN] Deleting test registry: {cls.registry_name}")
-        try:
-            cls.cmd(f"az ml registry delete -g {cls.resource_group} --name {cls.registry_name} --yes")
-            print("[TEARDOWN] Registry deleted successfully")
-        except Exception as e:
-            print(f"[TEARDOWN] Error deleting registry: {e}")
+        if _is_live_mode():
+            print(f"\n[TEARDOWN] Deleting test registry: {cls.registry_name}")
+            try:
+                subprocess.run(
+                    ["az", "ml", "registry", "delete",
+                     "-g", cls.resource_group, "--name", cls.registry_name, "--yes"],
+                    capture_output=True, text=True, shell=False,
+                )
+                print("[TEARDOWN] Registry delete submitted")
+            except Exception as e:
+                print(f"[TEARDOWN] Error deleting registry: {e}")
         super().tearDownClass()
 
     def _get_config_path(self):

@@ -14,56 +14,66 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '497'
+      - '474'
       Content-Type:
       - application/json
       User-Agent:
-      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
-        Python/3.7.3 (Windows-10-10.0.19041-SP0)
+      - azureml-cli-v2/2.38.1 azure-ai-ml/1.32.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/testadlsgen2000016?api-version=0000-00-00&skipValidation=true
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/mafong-master/datastores/testadlsgen2000016",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/kchawla-ws/datastores/testadlsgen2000016",
         "name": "testadlsgen2000016", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
         "properties": {"description": null, "tags": {}, "properties": null, "isDefault":
         false, "credentials": {"credentialsType": "ServicePrincipal", "authorityUrl":
         "https://login.microsoftonline.com", "resourceUrl": "https://storage.azure.com/",
         "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "clientId": "f7152bb4-cfa5-4cc9-9516-c34b65a10d04"},
-        "datastoreType": "AzureDataLakeGen2", "filesystem": "a-file-system", "accountName":
-        "cliv2testblob", "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
-        "None"}, "systemData": {"createdAt": "2022-04-25T19:13:14.6769107Z", "createdBy":
-        "Man Fong", "createdByType": "User", "lastModifiedAt": "2022-04-25T19:13:15.2966651Z",
-        "lastModifiedBy": "Man Fong", "lastModifiedByType": "User"}}'
+        "subscriptionId": null, "resourceGroup": null, "datastoreType": "AzureDataLakeGen2",
+        "filesystem": "a-file-system", "accountName": "cliv2testblob", "endpoint":
+        "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "None"}, "systemData": {"createdAt": "2026-06-11T23:40:48.7146487+00:00",
+        "createdBy": "Test User", "createdByType": "User", "lastModifiedAt":
+        "2026-06-11T23:40:48.939715+00:00", "lastModifiedBy": "Test User",
+        "lastModifiedByType": "User"}}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus-02
       cache-control:
       - no-cache
       content-length:
-      - '1051'
+      - '1122'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 Apr 2022 19:13:32 GMT
+      - Mon, 15 Jun 2026 17:26:08 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mafong/providers/Microsoft.MachineLearningServices/workspaces/mafong-master/datastores/testadlsgen2000016?api-version=2022-02-01-preview&skipValidation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kchawla-rg/providers/Microsoft.MachineLearningServices/workspaces/kchawla-ws/datastores/testadlsgen2000016?api-version=2024-07-01-preview&skipValidation=true
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aml-cluster:
-      - vienna-test-westus2-01
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7b119936-993f-49c4-adcf-31b1c1caa15b/eastus/551cd4cf-3d53-4ca2-95de-bc84ddfc7e1c
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-ms-response-type:
       - standard
+      x-msedge-ref:
+      - 'Ref A: BC6EF0A74F27462DBE719CA65FEAC35B Ref B: MWH011020808052 Ref C: 2026-06-15T17:26:08Z'
       x-request-time:
-      - '0.205'
+      - '0.654'
     status:
       code: 201
       message: Created

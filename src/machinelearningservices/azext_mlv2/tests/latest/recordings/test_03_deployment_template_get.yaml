@@ -9,32 +9,32 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.11
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
         (Windows-10-10.0.26200-SP0)
     method: GET
     uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/test-cli-reg/discovery
   response:
     body:
-      string: '{"registryId": "f8c25193-1c5b-4477-9d64-b99d2e48967c", "registryName":
+      string: '{"registryId": "19702245-42e3-4d53-8efa-0e48981ddafc", "registryName":
         "test-cli-reg", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
-        "eastus2", "regions": ["eastus2"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "westcentralus", "regions": ["westcentralus"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
         "resourceGroup": "test-cli-rg", "workspaceName": null, "primaryRegionResourceProviderUri":
-        "https://cert-eastus2.experiments.azureml.net/", "registryFqdns": {"eastus2":
-        {"uri": "https://eastus2.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        "https://cert-westcentralus.experiments.azureml.net/", "registryFqdns": {"westcentralus":
+        {"uri": "https://westcentralus.api.azureml.ms"}}, "intellectualPropertyPublisher":
         null, "isTradeRestricted": false}'
     headers:
       azureml-served-by-cluster:
-      - vienna-eastus-02
+      - vienna-eastus-01
       connection:
       - keep-alive
       content-length:
-      - '528'
+      - '558'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Nov 2025 16:40:00 GMT
+      - Mon, 15 Jun 2026 17:20:48 GMT
       mise-correlation-id:
-      - 20d19c9e-3384-413f-ae37-d2e0d9fc15b3
+      - 91aa69c0-6b48-4cd6-9cf9-feb82d176cb0
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
@@ -48,7 +48,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.393'
+      - '0.038'
     status:
       code: 200
       message: OK
@@ -62,40 +62,40 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+      - azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg?api-version=0000-00-00
   response:
     body:
-      string: '{"tags": {}, "location": "eastus2", "identity": {"type": "SystemAssigned",
-        "principalId": "b265b0dc-d87f-4730-98f5-6a62e5d6830c", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
+      string: '{"tags": {}, "location": "westcentralus", "identity": {"type": "SystemAssigned",
+        "principalId": "e28d3888-18c2-4a47-8d9b-8594b8c346dc", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
         "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg",
         "name": "test-cli-reg", "type": "Microsoft.MachineLearningServices/registries",
-        "properties": {"registryId": "f8c25193-1c5b-4477-9d64-b99d2e48967c", "regionDetails":
-        [{"location": "eastus2", "storageAccountDetails": [{"userCreatedStorageAccount":
-        null, "systemCreatedStorageAccount": {"storageAccountName": "974d4d59413",
-        "storageAccountType": "Standard_LRS", "storageAccountHnsEnabled": false, "armResourceId":
-        {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/974d4d59413"}}}],
+        "properties": {"registryId": "19702245-42e3-4d53-8efa-0e48981ddafc", "regionDetails":
+        [{"location": "westcentralus", "storageAccountDetails": [{"userCreatedStorageAccount":
+        null, "systemCreatedStorageAccount": {"storageAccountName": "d0d8b16cc3e",
+        "storageAccountType": "standard_lrs", "storageAccountHnsEnabled": false, "armResourceId":
+        {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/d0d8b16cc3e"}}}],
         "acrDetails": [{"userCreatedAcrAccount": null, "systemCreatedAcrAccount":
-        {"acrAccountName": "3d8edf7d5bb", "acrAccountSku": "Premium", "armResourceId":
-        {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/3d8edf7d5bb"}}}]}],
+        {"acrAccountName": "0b615d9d977", "acrAccountSku": "Premium", "armResourceId":
+        {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/0b615d9d977"}}}]}],
         "intellectualPropertyPublisher": null, "publicNetworkAccess": "Enabled", "discoveryUrl":
-        "https://eastus2.api.azureml.ms/registrymanagement/v1.0/registries/test-cli-reg/discovery",
+        "https://westcentralus.api.azureml.ms/registrymanagement/v1.0/registries/test-cli-reg/discovery",
         "managedResourceGroup": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000"},
-        "mlFlowRegistryUri": "azureml://eastus2.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg",
+        "mlFlowRegistryUri": "azureml://westcentralus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg",
         "privateEndpointConnections": [], "managedResourceGroupSettings": null, "syndicatedRegistries":
         []}, "systemData": null}'
     headers:
       azureml-served-by-cluster:
-      - vienna-eastus2-01
+      - vienna-westcentralus-02
       cache-control:
       - no-cache
       content-length:
-      - '1883'
+      - '1907'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Nov 2025 16:40:10 GMT
+      - Mon, 15 Jun 2026 17:20:51 GMT
       expires:
       - '-1'
       pragma:
@@ -115,9 +115,9 @@ interactions:
       x-ms-response-type:
       - standard
       x-msedge-ref:
-      - 'Ref A: CEB794844DE44D7DB27CEE6C24BAFA40 Ref B: MAA201060513045 Ref C: 2025-11-07T16:40:10Z'
+      - 'Ref A: 424C4D2AC27F4536B3E76F6513A86E77 Ref B: MWH011020806040 Ref C: 2026-06-15T17:20:50Z'
       x-request-time:
-      - '0.023'
+      - '0.018'
     status:
       code: 200
       message: OK
@@ -131,18 +131,20 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/2.38.1 azure-ai-ml/1.30.0 azsdk-python-mgmt-machinelearningservices/0.1.0
-        Python/3.10.11 (Windows-10-10.0.26200-SP0)
+      - azureml-cli-v2/2.38.1 azure-ai-ml/1.32.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://eastus2.api.azureml.ms/genericasset/v2.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg/deploymenttemplates/test-deployment-template/versions/1?api-version=0000-00-00
+    uri: https://westcentralus.api.azureml.ms/genericasset/v2.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg/deploymenttemplates/test-deployment-template/versions/1?api-version=0000-00-00
   response:
     body:
       string: '{"type": "deploymenttemplates", "name": "test-deployment-template",
-        "stage": "Development", "version": "1", "description": "Updated_description_for_deployment_template_testing",
-        "createdBy": {"userObjectId": "e7ae4769-61f9-4372-8392-79c1757a70b0", "userTenantId":
-        "72f988bf-86f1-41af-91ab-2d7cd011db47", "userName": "Kshitij Chawla"}, "capabilities":
-        [], "createdTime": "2025-11-07T07:25:14.9461737+00:00", "modifiedTime": "2025-11-07T16:18:07.7135691+00:00",
-        "tags": {"stage": "Open", "environment": "test", "updated": "True"}, "deploymentTemplateType":
+        "stage": "Development", "version": "1", "id": "azureml://registries/test-cli-reg/deploymenttemplates/test-deployment-template/versions/1",
+        "description": "Updated_description_for_deployment_template_testing", "createdBy":
+        {"userObjectId": "7b119936-993f-49c4-adcf-31b1c1caa15b", "userTenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "userName": "Test User"}, "capabilities": [], "createdTime": "2026-06-11T23:19:56.0823465+00:00",
+        "modifiedTime": "2026-06-15T17:20:52.1492677+00:00", "tags": {"stage": "Open",
+        "author": "test-automation", "project": "cli-testing", "iteration": "second-update",
+        "validated": "True", "environment": "test", "updated": "True"}, "deploymentTemplateType":
         "Managed", "environmentId": "azureml://registries/kchawla-reg/environments/kchawla-environment/versions/1",
         "environmentVariables": {"MODEL_BASE_PATH": "/var/azureml-app/azureml-models/tfs-model1/1",
         "MODEL_NAME": "half_plus_two", "ENABLE_INFERENCESERVER_DIAGNOSTICSLOG_AML_VISIBILITY":
@@ -152,23 +154,23 @@ interactions:
         1, "path": "/v1/models/half_plus_two", "port": 8501, "scheme": "HTTP", "httpMethod":
         "GET"}, "readinessProbe": {"initialDelay": "PT5M", "period": "PT10S", "timeout":
         "PT2S", "failureThreshold": 30, "successThreshold": 1, "path": "/v1/models/half_plus_two",
-        "port": 8501, "scheme": "HTTP", "httpMethod": "GET"}, "allowedInstanceType":
+        "port": 8501, "scheme": "HTTP", "httpMethod": "GET"}, "allowedInstanceTypes":
         ["Standard_DS3_v2", "Standard_DS4_v2"], "defaultInstanceType": "Standard_DS3_v2",
         "instanceCount": 3, "scoringPath": "/v1/models/half_plus_two:predict", "scoringPort":
         8501}'
     headers:
       azureml-served-by-cluster:
-      - vienna-eastus2-02
+      - vienna-westcentralus-02
       connection:
       - keep-alive
       content-length:
-      - '1606'
+      - '1815'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Nov 2025 16:40:12 GMT
+      - Mon, 15 Jun 2026 17:20:52 GMT
       mise-correlation-id:
-      - dd5dc6b1-4e1d-4085-8e3d-e557832ca2c2
+      - 10f95fbf-e5e7-4798-ad6e-370686c26b3f
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
@@ -182,7 +184,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.077'
+      - '0.052'
     status:
       code: 200
       message: OK
