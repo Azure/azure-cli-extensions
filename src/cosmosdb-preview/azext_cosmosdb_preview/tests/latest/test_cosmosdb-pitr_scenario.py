@@ -150,7 +150,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert len(restorable_resources[0]['graphNames']) == 1
         assert restorable_resources[0]['graphNames'][0] == graph
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_using_create', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_using_create', location='eastus2')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_table_account_restore_using_create(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
@@ -159,7 +159,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': 'westus2'
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
