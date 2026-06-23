@@ -9,6 +9,7 @@ from azext_aks_preview._client_factory import (
     cf_agent_pools,
     cf_managed_namespaces,
     cf_maintenance_configurations,
+    cf_maintenance_windows,
     cf_managed_clusters,
     cf_mc_snapshots,
     cf_nodepool_snapshots,
@@ -136,6 +137,12 @@ def load_command_table(self, _):
         client_factory=cf_maintenance_configurations,
     )
 
+    maintenance_window_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._operations#MaintenanceWindowsOperations.{}",
+        client_factory=cf_maintenance_windows,
+    )
+
     nodepool_snapshot_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._operations#SnapshotsOperations.{}",
@@ -225,6 +232,22 @@ def load_command_table(self, _):
         g.custom_command("add", "aks_maintenanceconfiguration_add")
         g.custom_command("update", "aks_maintenanceconfiguration_update")
         g.custom_command("delete", "aks_maintenanceconfiguration_delete")
+
+    # AKS maintenance window commands (peer ARM resource, preview API only).
+    # Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+    # feature to be registered on the subscription; the RP enforces this and
+    # surfaces 403 if it isn't.
+    with self.command_group(
+        "aks maintenancewindow",
+        maintenance_window_sdk,
+        client_factory=cf_maintenance_windows,
+    ) as g:
+        g.custom_command("list", "aks_maintenancewindow_list")
+        g.custom_show_command("show", "aks_maintenancewindow_show")
+        g.custom_command("create", "aks_maintenancewindow_create", supports_no_wait=True)
+        g.custom_command("update", "aks_maintenancewindow_update", supports_no_wait=True)
+        g.custom_command("delete", "aks_maintenancewindow_delete", supports_no_wait=True, confirmation=True)
+        g.wait_command("wait")
 
     # AKS loadbalancer commands
     with self.command_group(

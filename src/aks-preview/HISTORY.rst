@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
 * `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
 * Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
 
