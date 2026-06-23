@@ -12,8 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks create`: Add `--node-disruption-policy` (preview) to set the node disruption policy at cluster creation time. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
+* `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
 * `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
 * Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+* `az aks update`: Fix misleading error when updating outbound type to `userDefinedRouting` or `userAssignedNATGateway`. For managed VNet clusters (unsupported), a clear error message is now shown instead of asking for `--vnet-subnet-id`. For BYO VNet clusters, the update works correctly without requiring the user to re-specify the subnet.
 
 21.0.0b6
 ++++++++
