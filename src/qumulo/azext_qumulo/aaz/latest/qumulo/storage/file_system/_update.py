@@ -79,7 +79,7 @@ class Update(AAZCommand):
         _args_schema.cluster_login_url = AAZStrArg(
             options=["--cluster-login-url"],
             arg_group="Properties",
-            help="File system Id of the resource",
+            help="Cluster login URL of the resource",
             nullable=True,
         )
         _args_schema.delegated_subnet_id = AAZStrArg(
@@ -146,12 +146,9 @@ class Update(AAZCommand):
         )
 
         user_details = cls._args_schema.user_details
-        user_details.email = AAZPasswordArg(
+        user_details.email = AAZStrArg(
             options=["email"],
             help="User Email",
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
         )
 
         # define Arg Group "Resource"

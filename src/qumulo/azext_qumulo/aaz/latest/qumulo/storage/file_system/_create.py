@@ -95,7 +95,7 @@ class Create(AAZCommand):
         _args_schema.cluster_login_url = AAZStrArg(
             options=["--cluster-login-url"],
             arg_group="Properties",
-            help="File system Id of the resource",
+            help="Cluster login URL of the resource",
         )
         _args_schema.delegated_subnet_id = AAZStrArg(
             options=["--delegated-subnet-id"],
@@ -156,13 +156,10 @@ class Create(AAZCommand):
         private_ips.Element = AAZStrArg()
 
         user_details = cls._args_schema.user_details
-        user_details.email = AAZPasswordArg(
+        user_details.email = AAZStrArg(
             options=["email"],
             help="User Email",
             required=True,
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
         )
 
         # define Arg Group "Resource"
