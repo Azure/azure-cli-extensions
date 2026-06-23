@@ -548,7 +548,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return disable_local_accounts
 
-    def _get_outbound_type(
+    def _get_outbound_type(  # pylint: disable=too-many-branches
         self,
         enable_validation: bool = False,
         read_only: bool = False,
@@ -632,9 +632,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
                 ]:
                     if self.get_vnet_subnet_id() in ["", None]:
-                        raise RequiredArgumentMissingError(
-                            "--vnet-subnet-id must be specified for userDefinedRouting and it must "
-                            "be pre-configured with a route table with egress rules"
+                        if self.decorator_mode == DecoratorMode.CREATE:
+                            raise RequiredArgumentMissingError(
+                                "--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                                "be pre-configured with a route table with egress rules"
+                            )
+                        raise InvalidArgumentValueError(
+                            f"Updating outbound type to {outbound_type} is only supported for "
+                            "clusters using a custom (BYO) virtual network. Managed VNet clusters "
+                            f"cannot be updated to {outbound_type}. Please refer to "
+                            "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype"
+                            "#updating-outboundtype-after-cluster-creation for supported migration paths."
                         )
 
                 if (
