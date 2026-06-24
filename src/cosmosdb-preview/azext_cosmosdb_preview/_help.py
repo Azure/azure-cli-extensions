@@ -1974,3 +1974,20 @@ examples:
     text: |
       az cosmosdb sql softdeleted-container recover --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
 """
+
+helps['cosmosdb keys regenerate'] = """
+type: command
+short-summary: Regenerate an access key for a Azure Cosmos DB database account.
+parameters:
+  - name: --key-kind
+    short-summary: The access key to regenerate.
+  - name: --skip-safe-rotation
+    short-summary: Skip the account keys last usage check that blocks key regeneration when the key was recently used.
+examples:
+  - name: Regenerate an access key for a Azure Cosmos DB database account.
+    text: |
+      az cosmosdb keys regenerate --resource-group MyResourceGroup --name MyAccount --key-kind primary
+  - name: Regenerate an access key, skipping the account keys last usage check.
+    text: |
+      az cosmosdb keys regenerate --resource-group MyResourceGroup --name MyAccount --key-kind primary --skip-safe-rotation true
+"""
