@@ -13,33 +13,32 @@ from knack.help_files import helps  # pylint: disable=unused-import
 helps['provisionedmachine'] = """
     type: group
     short-summary: Manage provisioned machine resources.
-    long-summary: Commands for managing Azure Provisioned Machine resources including SSH certificate creation.
 """
 
-helps['provisionedmachine cert-create'] = """
+helps['provisionedmachine ssh-cert-create'] = """
     type: command
-    short-summary: Create a short-lived SSH certificate signed by a private CA key in Azure Key Vault.
+    short-summary: Create a short-lived SSH certificate for authenticating to a provisioned machine.
     long-summary: |
-        Generates an ephemeral SSH key pair, determines the caller's RBAC role
-        on the target ProvisionedMachine resource via PIM-based JIT access, and
-        sends the public key along with metadata (userPublicKey, username, role,
-        expiry) to Key Vault for signing.
+        Generates an SSH certificate signed by the device's CA key stored in
+        Azure Key Vault. The certificate includes the caller's identity and
+        role, and is valid for the duration of the active access window.
 
-        The user's role is NOT taken as input — it is resolved automatically from
-        the RBAC role assignment on the device resource.
-
-        The extension uses the following custom Azure roles:
-          - Provisioned Machine Admin        (full SSH with sudo)
-          - Provisioned Machine Contributor  (SSH without sudo)
-          - Provisioned Machine Reader       (view-only; SSH restricted on device)
-        Certificates are generated for all roles — access restrictions are
-        enforced on the device side, not by the CLI.
-
-        The user identity is derived automatically from the Entra login context.
-        The certificate expiry is derived from the PIM activation's remaining duration.
-        Returns the signed SSH user certificate and the freshly generated private key.
+        Requires an active eligible role on the target device resource.
+        The caller's identity and role are resolved automatically.
+    parameters:
+        - name: --vault-name -v
+          short-summary: Name of the Azure Key Vault containing the SSH CA signing key.
+        - name: --resource-id -r
+          short-summary: Fully qualified ARM resource ID of the target device.
+        - name: --cert-path
+          short-summary: Custom output path for the certificate file. Defaults to a temporary directory.
+        - name: --private-key-path
+          short-summary: Custom output path for the private key file. Defaults to a temporary directory.
     examples:
-        - name: Create a certificate (expiry derived from PIM activation)
+        - name: Create a certificate using default output paths
           text: |
-            az provisionedmachine cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice
+            az provisionedmachine ssh-cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice
+        - name: Create a certificate with custom output paths
+          text: |
+            az provisionedmachine ssh-cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice --private-key-path ~/.ssh/device_key --cert-path ~/.ssh/device_cert.pub
 """

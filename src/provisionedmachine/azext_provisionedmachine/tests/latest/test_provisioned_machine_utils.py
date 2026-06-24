@@ -324,44 +324,68 @@ class TestCheckPimEligibility(unittest.TestCase):
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core._profile.Profile')
     def test_pim_activated_passes(self, mock_profile_cls, mock_oid, mock_get):
-        """PIM-activated assignment should pass."""
+        """Active SelfActivate/Provisioned request should pass."""
         cmd, profile_mock = self._setup_cmd_with_profile(mock_oid)
         mock_profile_cls.return_value = profile_mock
 
         mock_get.return_value = self._mock_response(200, {
             "value": [{"properties": {
-                "assignmentType": "Activated",
-                "endDateTime": "2099-01-01T00:00:00Z"
+                "principalId": "oid-123",
+                "requestType": "SelfActivate",
+                "status": "Provisioned",
+                "roleDefinitionId": "/role/def/1",
+                "scheduleInfo": {
+                    "startDateTime": "2099-01-01T00:00:00Z",
+                    "expiration": {"type": "AfterDuration", "duration": "PT4H"}
+                }
             }}]
         })
 
-        instances, start_time, end_time = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
-        self.assertEqual(len(instances), 1)
+        active, start_time, end_time = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
+        self.assertEqual(len(active), 1)
         self.assertIn("T", start_time)
         self.assertIn("T", end_time)
 
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core._profile.Profile')
-    def test_direct_assignment_blocked(self, mock_profile_cls, mock_oid, mock_get):
-        """Direct/permanent assignment (Assigned) should be rejected."""
+    def test_deactivated_role_blocked(self, mock_profile_cls, mock_oid, mock_get):
+        """Deactivated (Revoked) activation should be rejected."""
         cmd, profile_mock = self._setup_cmd_with_profile(mock_oid)
         mock_profile_cls.return_value = profile_mock
 
         mock_get.return_value = self._mock_response(200, {
-            "value": [{"properties": {"assignmentType": "Assigned"}}]
+            "value": [
+                {"properties": {
+                    "principalId": "oid-123",
+                    "requestType": "SelfActivate",
+                    "status": "Provisioned",
+                    "roleDefinitionId": "/role/def/1",
+                    "createdOn": "2099-01-01T00:00:00Z",
+                    "scheduleInfo": {
+                        "startDateTime": "2099-01-01T00:00:00Z",
+                        "expiration": {"type": "AfterDuration", "duration": "PT4H"}
+                    }
+                }},
+                {"properties": {
+                    "principalId": "oid-123",
+                    "requestType": "SelfDeactivate",
+                    "status": "Revoked",
+                    "roleDefinitionId": "/role/def/1",
+                    "createdOn": "2099-01-01T01:00:00Z"
+                }},
+            ]
         })
 
         with self.assertRaises(azclierror.AuthenticationError) as ctx:
             pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
-        self.assertIn("direct (permanent)", str(ctx.exception))
-        self.assertIn("PIM-based JIT activation is required", str(ctx.exception))
+        self.assertIn("expired or been deactivated", str(ctx.exception))
 
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core._profile.Profile')
     def test_no_assignments_blocked(self, mock_profile_cls, mock_oid, mock_get):
-        """No assignments at all should be rejected."""
+        """No requests at all should be rejected."""
         cmd, profile_mock = self._setup_cmd_with_profile(mock_oid)
         mock_profile_cls.return_value = profile_mock
 
@@ -387,23 +411,27 @@ class TestCheckPimEligibility(unittest.TestCase):
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core._profile.Profile')
-    def test_mixed_only_activated_returned(self, mock_profile_cls, mock_oid, mock_get):
-        """When both Activated and Assigned exist, only Activated should pass."""
+    def test_expired_activation_blocked(self, mock_profile_cls, mock_oid, mock_get):
+        """Expired activation (start + duration < now) should be rejected."""
         cmd, profile_mock = self._setup_cmd_with_profile(mock_oid)
         mock_profile_cls.return_value = profile_mock
 
         mock_get.return_value = self._mock_response(200, {
-            "value": [
-                {"properties": {"assignmentType": "Assigned"}},
-                {"properties": {"assignmentType": "Activated", "endDateTime": "2099-01-01T00:00:00Z"}},
-                {"properties": {"assignmentType": "Assigned"}},
-            ]
+            "value": [{"properties": {
+                "principalId": "oid-123",
+                "requestType": "SelfActivate",
+                "status": "Provisioned",
+                "roleDefinitionId": "/role/def/1",
+                "scheduleInfo": {
+                    "startDateTime": "2020-01-01T00:00:00Z",
+                    "expiration": {"type": "AfterDuration", "duration": "PT1H"}
+                }
+            }}]
         })
 
-        instances, start_time, end_time = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
-        self.assertEqual(len(instances), 1)
-        self.assertIn("T", start_time)
-        self.assertIn("T", end_time)
+        with self.assertRaises(azclierror.AuthenticationError) as ctx:
+            pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
+        self.assertIn("expired or been deactivated", str(ctx.exception))
 
 
 class TestResolveUserRole(unittest.TestCase):
@@ -435,8 +463,7 @@ class TestResolveUserRole(unittest.TestCase):
         )
 
         result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
-        # TEMPORARY: admin maps to "Owner" until custom role creation is re-enabled
-        self.assertEqual(result, "Owner")
+        self.assertEqual(result, "Provisioned Machine Admin")
 
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
@@ -494,8 +521,7 @@ class TestResolveUserRole(unittest.TestCase):
         ]
 
         result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
-        # TEMPORARY: admin maps to "Owner" until custom role creation is re-enabled
-        self.assertEqual(result, "Owner")
+        self.assertEqual(result, "Provisioned Machine Admin")
 
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
@@ -1030,7 +1056,7 @@ class TestSignCertificateMetadata(unittest.TestCase):
 
         metadata = {
             "username": "user",
-            "role": "Contributor",
+            "role": "Provisioned Machine Admin",
             "deviceId": "myDevice",
             "startTime": "2026-05-26T10:00:00Z",
             "endTime": "2026-05-26T14:00:00Z",

@@ -10,12 +10,18 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    with self.argument_context('provisionedmachine cert-create') as c:
+    with self.argument_context('provisionedmachine ssh-cert-create') as c:
         c.argument('vault_name', options_list=['--vault-name', '-v'],
-                   help='Name of the Azure Key Vault that holds the private CA signing key (ssh-ca).',
+                   help='Name of the Azure Key Vault containing the SSH CA signing key.',
                    required=True)
         c.argument('resource_id', options_list=['--resource-id', '-r'],
-                   help='Fully qualified ARM resource ID of the ProvisionedMachine. '
-                        'Used to determine the user\'s RBAC role (Reader/Contributor/Admin) '
-                        'via PIM-based JIT access.',
+                   help='Fully qualified ARM resource ID of the target device.',
                    required=True)
+        c.argument('cert_path', options_list=['--cert-path'],
+                   help='Output path for the signed SSH certificate file. '
+                        'Defaults to a secure temporary directory if not specified.',
+                   required=False, default=None)
+        c.argument('private_key_path', options_list=['--private-key-path'],
+                   help='Output path for the generated private key file. '
+                        'Defaults to a secure temporary directory if not specified.',
+                   required=False, default=None)

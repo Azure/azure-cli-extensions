@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 """
-Tests for the ``az ssh cert-create`` command (custom.ssh_cert_create).
+Tests for the ``az provisionedmachine ssh-cert-create`` command (custom.ssh_cert_create).
 
 All external dependencies (RBAC, Key Vault, key generation) are mocked.
 Tests verify the orchestration logic, input validation, PIM-derived expiry,

@@ -66,7 +66,7 @@ _VAULT_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$")
 PROVISIONED_MACHINE_ROLES = {
     "reader": "Provisioned Machine Reader",
     "contributor": "Provisioned Machine Contributor",
-    "admin": "Owner",  # TEMPORARY: using Owner until custom role creation is re-enabled
+    "admin": "Provisioned Machine Admin",
 }
 
 # Permissions matrix per role.
@@ -83,15 +83,6 @@ ROLE_PERMISSIONS = {
                    "collect-logs", "manage-networking"],
     },
     "Provisioned Machine Admin": {
-        "ssh_allowed": True,
-        "certificate_types": ["config-app", "ssh-non-sudo", "ssh-sudo"],
-        "portal": ["view", "create", "manage-updates", "manage-nics",
-                   "manage-disks", "reset-device", "keyvault-access",
-                   "delete", "grant-access", "pim-setup",
-                   "collect-logs", "manage-networking"],
-    },
-    # TEMPORARY: Owner mapping until custom role creation is re-enabled
-    "Owner": {
         "ssh_allowed": True,
         "certificate_types": ["config-app", "ssh-non-sudo", "ssh-sudo"],
         "portal": ["view", "create", "manage-updates", "manage-nics",
@@ -168,11 +159,19 @@ def extract_username_alias(upn):
 def check_pim_eligibility(cmd, resource_id):
     """Verify the current user has an **active** PIM role assignment on *resource_id*.
 
-    Queries the PIM Role Assignment Schedule Instances API to confirm that
-    the user has activated JIT access.  Raises ``AuthenticationError`` if
-    no active PIM assignment is found.
+    Queries the PIM Role Assignment Schedule Requests API to confirm that
+    the user has an active SelfActivate request.  This is the reliable source
+    for both built-in and custom role PIM activations.
 
-    Returns (instances, startTime, endTime).
+    A PIM activation is considered active when:
+    - requestType == "SelfActivate"
+    - status == "Provisioned"
+    - No subsequent "SelfDeactivate"/"Revoked" for the same role
+    - startDateTime + duration > now (not expired)
+
+    Raises ``AuthenticationError`` if no active PIM assignment is found.
+
+    Returns (active_requests, startTime, endTime).
     """
     from azure.cli.core._profile import Profile
 
@@ -191,9 +190,8 @@ def check_pim_eligibility(cmd, resource_id):
     url = (
         f"https://management.azure.com{resource_id}"
         f"/providers/Microsoft.Authorization"
-        f"/roleAssignmentScheduleInstances"
+        f"/roleAssignmentScheduleRequests"
         f"?api-version={api_version}"
-        f"&$filter=assignedTo('{user_object_id}')"
     )
 
     try:
@@ -217,22 +215,83 @@ def check_pim_eligibility(cmd, resource_id):
         )
 
     data = resp.json()
-    instances = data.get("value", [])
+    all_requests = data.get("value", [])
 
-    # Filter for PIM-activated assignments only.
-    pim_activated = [
-        inst for inst in instances
-        if (inst.get("properties", {}).get("assignmentType", "")).lower() == "activated"
+    # Filter to current user's requests only.
+    user_requests = [
+        r for r in all_requests
+        if r.get("properties", {}).get("principalId", "").lower() == user_object_id.lower()
     ]
 
-    if not pim_activated:
-        has_direct = len(instances) > 0
-        if has_direct:
+    # Find active SelfActivate requests (Provisioned) and deactivated ones (Revoked).
+    activations = [
+        r for r in user_requests
+        if r.get("properties", {}).get("requestType", "").lower() == "selfactivate"
+        and r.get("properties", {}).get("status", "").lower() == "provisioned"
+    ]
+
+    # Build a map of the latest deactivation time per roleDefinitionId.
+    deactivation_times = {}
+    for r in user_requests:
+        props = r.get("properties", {})
+        if (props.get("requestType", "").lower() == "selfdeactivate"
+                and props.get("status", "").lower() == "revoked"):
+            role_def_id = props.get("roleDefinitionId", "").lower()
+            created = props.get("createdOn", "")
+            if created:
+                try:
+                    dt = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
+                    if role_def_id not in deactivation_times or dt > deactivation_times[role_def_id]:
+                        deactivation_times[role_def_id] = dt
+                except (ValueError, TypeError):
+                    pass
+
+    # Filter out activations that have been subsequently deactivated (by timestamp)
+    # or that have expired.
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    active = []
+    for r in activations:
+        props = r.get("properties", {})
+        role_def_id = props.get("roleDefinitionId", "").lower()
+
+        # Get activation creation time.
+        activation_created = props.get("createdOn", "")
+        activation_dt = None
+        if activation_created:
+            try:
+                activation_dt = datetime.datetime.fromisoformat(activation_created.replace("Z", "+00:00"))
+            except (ValueError, TypeError):
+                pass
+
+        # Skip if deactivated AFTER this activation.
+        if role_def_id in deactivation_times and activation_dt:
+            if deactivation_times[role_def_id] > activation_dt:
+                continue
+
+        # Check if expired (startDateTime + duration).
+        sched = props.get("scheduleInfo", {})
+        start_str = sched.get("startDateTime")
+        duration = sched.get("expiration", {}).get("duration", "")
+        if start_str and duration:
+            try:
+                start_dt = datetime.datetime.fromisoformat(start_str.replace("Z", "+00:00"))
+                hours = _parse_iso_duration_hours(duration)
+                if hours > 0:
+                    end_dt = start_dt + datetime.timedelta(hours=hours)
+                    if end_dt <= now_utc:
+                        continue  # Expired.
+            except (ValueError, TypeError):
+                pass  # If we can't parse, assume still active.
+
+        active.append(r)
+
+    if not active:
+        # Check if user has any eligibility at all to give a better error message.
+        has_any_activation = len(activations) > 0
+        if has_any_activation:
             raise azclierror.AuthenticationError(
-                f"You have a direct (permanent) role assignment on resource "
-                f"'{resource_id}', but PIM-based JIT activation is required. "
-                f"Direct role assignments are not accepted for SSH certificate "
-                f"generation. Please activate your role via PIM first:\n"
+                f"Your PIM activation on resource '{resource_id}' has expired or been "
+                f"deactivated. Please re-activate your PIM-eligible role and retry:\n"
                 f"  1. Go to Azure Portal → Privileged Identity Management → My roles\n"
                 f"  2. Select Azure resources → find your eligible role\n"
                 f"  3. Click 'Activate' and provide a justification\n"
@@ -247,24 +306,27 @@ def check_pim_eligibility(cmd, resource_id):
             f"  4. Wait 1-2 minutes for propagation, then retry."
         )
 
-    # Extract the expiry from the PIM activation's endDateTime.
-    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    # Determine the latest expiry from active requests.
     latest_end = None
-    for inst in pim_activated:
-        end_str = inst.get("properties", {}).get("endDateTime")
-        if end_str:
+    for r in active:
+        sched = r.get("properties", {}).get("scheduleInfo", {})
+        start_str = sched.get("startDateTime")
+        duration = sched.get("expiration", {}).get("duration", "")
+        if start_str and duration:
             try:
-                end_dt = datetime.datetime.fromisoformat(end_str.replace("Z", "+00:00"))
-                if latest_end is None or end_dt > latest_end:
-                    latest_end = end_dt
+                start_dt = datetime.datetime.fromisoformat(start_str.replace("Z", "+00:00"))
+                hours = _parse_iso_duration_hours(duration)
+                if hours > 0:
+                    end_dt = start_dt + datetime.timedelta(hours=hours)
+                    if latest_end is None or end_dt > latest_end:
+                        latest_end = end_dt
             except (ValueError, TypeError):
-                logger.debug("Could not parse endDateTime '%s'.", end_str)
+                logger.debug("Could not parse scheduleInfo for expiry.")
 
+    # If we couldn't determine expiry, default to 8 hours from now.
     if latest_end is None:
-        raise azclierror.CLIInternalError(
-            "PIM activation found but endDateTime is missing. "
-            "Cannot determine certificate expiry."
-        )
+        latest_end = now_utc + datetime.timedelta(hours=8)
+        logger.info("Could not determine PIM expiry; defaulting to 8-hour window.")
 
     if latest_end <= now_utc:
         raise azclierror.AuthenticationError(
@@ -276,11 +338,23 @@ def check_pim_eligibility(cmd, resource_id):
     end_time = latest_end.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     remaining_hours = (latest_end - now_utc).total_seconds() / 3600.0
-    logger.info("Found %d PIM-activated assignment(s) for user '%s' on '%s'. "
+    logger.info("Found %d active PIM activation(s) for user '%s' on '%s'. "
                 "Remaining: %.2f hours (until %s).",
-                len(pim_activated), user_object_id, resource_id,
+                len(active), user_object_id, resource_id,
                 remaining_hours, latest_end.isoformat())
-    return pim_activated, start_time, end_time
+    return active, start_time, end_time
+
+
+def _parse_iso_duration_hours(duration):
+    """Parse an ISO 8601 duration string (e.g. PT4H, PT1H30M) and return total hours."""
+    hours = 0.0
+    h_match = re.search(r"(\d+)H", duration)
+    m_match = re.search(r"(\d+)M", duration)
+    if h_match:
+        hours += int(h_match.group(1))
+    if m_match:
+        hours += int(m_match.group(1)) / 60.0
+    return hours
 
 
 def resolve_user_role(cmd, resource_id):
@@ -318,7 +392,10 @@ def resolve_user_role(cmd, resource_id):
             f"'{resource_id}'. Ensure PIM-based JIT access has been activated."
         )
 
-    role_priority = {"Provisioned Machine Admin": 3, "Owner": 3, "Provisioned Machine Contributor": 2, "Provisioned Machine Reader": 1}
+    role_priority = {"Provisioned Machine Admin": 3,
+                     "Provisioned Machine Contributor": 2,
+                     "Provisioned Machine Reader": 1}
+
     best_role = None
     best_priority = 0
 
@@ -332,7 +409,8 @@ def resolve_user_role(cmd, resource_id):
         role_name = (role_def.role_name or "").lower()
 
         for key, standard in PROVISIONED_MACHINE_ROLES.items():
-            if key in role_name:
+            # Match by dict key (e.g. "admin" in "provisioned machine admin")
+            if key in role_name or standard.lower() in role_name:
                 priority = role_priority.get(standard, 0)
                 if priority > best_priority:
                     best_role = standard
@@ -704,14 +782,10 @@ def _build_cert_body(user_e, user_n, serial, key_id, principals,
     buf += struct.pack(">Q", valid_after)
     buf += struct.pack(">Q", valid_before)
 
-    # critical options: no-port-forwarding, no-agent-forwarding
-    crit_buf = bytearray()
-    for opt_name in sorted(["no-port-forwarding", "no-agent-forwarding"]):
-        crit_buf += _ssh_string(opt_name.encode())
-        crit_buf += _ssh_string(b"")   # empty value
-    buf += _ssh_string(bytes(crit_buf))
+    # critical options: empty (no restrictions beyond extensions)
+    buf += _ssh_string(b"")
 
-    # extensions: permit-pty
+    # extensions: permit-pty only (agent/port/X11 forwarding disabled by omission)
     ext_buf = bytearray()
     for ext_name in sorted(["permit-pty"]):
         ext_buf += _ssh_string(ext_name.encode())

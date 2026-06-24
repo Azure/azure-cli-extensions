@@ -18,52 +18,55 @@ from azure.cli.core.style import Style, print_styled_text
 logger = get_logger(__name__)
 
 
-def ssh_cert_create(cmd, vault_name, resource_id):
-    """Create a short-lived SSH certificate signed by a CA key in Key Vault.
-
-    Step 1 - Prepare:
-        Generate ephemeral key pair, resolve PIM role.
-
-    Step 2 - Sign via Key Vault Sign API:
-        Build an OpenSSH certificate body in memory, hash with SHA-512,
-        send the digest to Key Vault Sign API (RS512).
-        The CA private key is non-exportable and never leaves Key Vault.
-        Produces a native OpenSSH certificate with principals:
-        username=<user>, role=<role>.
-
-    Step 3 - Return to user:
-        Signed SSH user certificate + freshly generated user_private key.
-    """
+def ssh_cert_create(cmd, vault_name, resource_id, cert_path=None, private_key_path=None):
+    """Create a short-lived SSH certificate for authenticating to a provisioned machine."""
+    import shutil
     from . import provisioned_machine_utils as pm
 
-    telemetry.set_command_details('provisionedmachine cert-create')
+    telemetry.set_command_details('provisionedmachine ssh-cert-create')
 
     # Validate inputs.
     pm.validate_resource_id(resource_id)
     pm.validate_vault_name(vault_name)
 
-    private_key_path = None
-    cert_path = None
+    # Validate custom output paths if provided.
+    if private_key_path:
+        parent = os.path.dirname(os.path.abspath(private_key_path))
+        if not os.path.isdir(parent):
+            raise azclierror.InvalidArgumentValueError(
+                f"Directory '{parent}' does not exist. "
+                f"Please create it or use a different --private-key-path."
+            )
+    if cert_path:
+        parent = os.path.dirname(os.path.abspath(cert_path))
+        if not os.path.isdir(parent):
+            raise azclierror.InvalidArgumentValueError(
+                f"Directory '{parent}' does not exist. "
+                f"Please create it or use a different --cert-path."
+            )
+
+    tmp_private_key_path = None
+    tmp_cert_path = None
     try:
         # -- Step 1: Prepare -----------------------------------------------
         username = pm.get_current_user_principal(cmd)
         logger.info("Derived username: %s", username)
 
-        # Verify the user has an active PIM assignment (JIT activated).
+        # Verify the user has an active eligible role (JIT activated).
         _pim_instances, start_time, end_time = pm.check_pim_eligibility(cmd, resource_id)
-        logger.info("PIM eligibility confirmed for resource: %s (valid %s to %s)",
+        logger.info("Eligibility confirmed for resource: %s (valid %s to %s)",
                     resource_id, start_time, end_time)
 
-        # Resolve role from RBAC assignment on the resource.
+        # Resolve role from assignment on the resource.
         role = pm.resolve_user_role(cmd, resource_id)
         logger.info("Resolved role: %s", role)
 
         # Extract device ID from resource ID.
         device_id = pm.extract_device_id(resource_id)
-        logger.info("Device ID: %s (KV key: %s-ssh-ca)", device_id, device_id)
+        logger.info("Device ID: %s", device_id)
 
         # Generate fresh ephemeral SSH key pair.
-        private_key_path, public_key_path = pm.generate_ephemeral_keypair()
+        tmp_private_key_path, public_key_path = pm.generate_ephemeral_keypair()
 
         certificate_metadata = {
             "username": username,
@@ -74,34 +77,55 @@ def ssh_cert_create(cmd, vault_name, resource_id):
             "publicKeyPath": public_key_path,
         }
 
-        # -- Step 2: Sign via Key Vault Sign API --------------------------
+        # -- Step 2: Sign -------------------------------------------------
         signed_certificate = pm.sign_certificate_metadata(
             cmd, vault_name, certificate_metadata
         )
-        cert_path = signed_certificate["certificatePath"]
+        tmp_cert_path = signed_certificate["certificatePath"]
 
-        # -- Step 3: Return to user ----------------------------------------
+        # -- Step 3: Move to user-specified paths (if provided) -----------
+        final_private_key = tmp_private_key_path
+        final_cert = tmp_cert_path
+
+        if private_key_path:
+            shutil.copy2(tmp_private_key_path, private_key_path)
+            import oschmod  # pylint: disable=import-outside-toplevel
+            oschmod.set_mode(private_key_path, 0o600)
+            final_private_key = os.path.abspath(private_key_path)
+
+        if cert_path:
+            shutil.copy2(tmp_cert_path, cert_path)
+            import oschmod  # pylint: disable=import-outside-toplevel
+            oschmod.set_mode(cert_path, 0o600)
+            final_cert = os.path.abspath(cert_path)
+
+        # Clean up temp files if user provided custom paths for both.
+        if private_key_path and cert_path:
+            pm.cleanup_ephemeral_files(tmp_private_key_path, tmp_cert_path)
+
+        # -- Step 4: Return to user ----------------------------------------
         result = {
-            "privateKeyPath": private_key_path,
-            "certificatePath": cert_path,
+            "privateKeyPath": final_private_key,
+            "certificatePath": final_cert,
         }
 
         print_styled_text((Style.SUCCESS,
                            f"SSH certificate created successfully.\n"
-                           f"  Private key : {private_key_path}\n"
-                           f"  Certificate : {cert_path}\n"
-                           f"  Usage: ssh -i {private_key_path} "
-                           f"-o CertificateFile={cert_path} "
+                           f"  Private key : {final_private_key}\n"
+                           f"  Certificate : {final_cert}\n"
+                           f"  Usage: ssh -i {final_private_key} "
+                           f"-o CertificateFile={final_cert} "
                            f"{username}_jit@<device-hostname>"))
 
-        logger.warning("The private key at %s is sensitive. "
-                       "Delete it once the certificate expires.",
-                       os.path.dirname(private_key_path))
+        if not (private_key_path and cert_path):
+            logger.warning("The private key at %s is sensitive. "
+                           "Delete it once the certificate expires.",
+                           os.path.dirname(final_private_key))
 
         telemetry.set_success()
         return result
 
     except Exception:
         # Clean up sensitive ephemeral files on failure.
-        pm.cleanup_ephemeral_files(private_key_path, cert_path)
+        pm.cleanup_ephemeral_files(tmp_private_key_path, tmp_cert_path)
         raise

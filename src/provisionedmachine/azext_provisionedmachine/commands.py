@@ -13,4 +13,4 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('provisionedmachine') as g:
-        g.custom_command('cert-create', 'ssh_cert_create')
+        g.custom_command('ssh-cert-create', 'ssh_cert_create')
