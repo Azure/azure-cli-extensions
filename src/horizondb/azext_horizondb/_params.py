@@ -11,8 +11,10 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type,
     tags_type,
+    get_three_state_flag,
     get_enum_type)
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
+from azext_horizondb._validators import validate_parameters
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
@@ -67,6 +69,36 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
         parameter_group_arg_type = CLIArgumentType(
             options_list=['--parameter-group'],
             help='The resource ID of the parameter group.')
+
+        parameter_group_name_arg_type = CLIArgumentType(
+            metavar='NAME',
+            options_list=['--name', '-n'],
+            id_part='name',
+            help='Name of the parameter group.')
+
+        parameters_arg_type = CLIArgumentType(
+            options_list=['--parameters'],
+            nargs='+',
+            required=True,
+            validator=validate_parameters,
+            help="Space-separated list of parameters in 'name=value' format. "
+                 "At least one parameter is required; any parameters you do not "
+                 "specify inherit the PostgreSQL defaults for the parameter group.")
+
+        description_arg_type = CLIArgumentType(
+            options_list=['--description'],
+            help='Description of the parameter group.')
+
+        pg_version_arg_type = CLIArgumentType(
+            options_list=['--pg-version'],
+            type=int,
+            help='PostgreSQL major version for the parameter group.')
+
+        apply_immediately_arg_type = CLIArgumentType(
+            options_list=['--apply-immediately'],
+            arg_type=get_three_state_flag(),
+            help='Indicates whether the parameters should be applied immediately.')
+
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('cluster_name', arg_type=cluster_name_arg_type)
@@ -88,6 +120,21 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('parameter_group', arg_type=parameter_group_arg_type)
 
         with self.argument_context('horizondb delete') as c:
+            c.argument('yes', arg_type=yes_arg_type)
+
+        with self.argument_context('horizondb parameter-group') as c:
+            c.argument('resource_group_name', arg_type=resource_group_name_type)
+            c.argument('parameter_group_name', arg_type=parameter_group_name_arg_type)
+
+        with self.argument_context('horizondb parameter-group create') as c:
+            c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False)
+            c.argument('tags', tags_type)
+            c.argument('parameters', arg_type=parameters_arg_type)
+            c.argument('description', arg_type=description_arg_type)
+            c.argument('pg_version', arg_type=pg_version_arg_type)
+            c.argument('apply_immediately', arg_type=apply_immediately_arg_type)
+
+        with self.argument_context('horizondb parameter-group delete') as c:
             c.argument('yes', arg_type=yes_arg_type)
 
     _horizondb_params()
