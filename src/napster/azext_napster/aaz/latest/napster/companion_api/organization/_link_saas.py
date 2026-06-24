@@ -46,7 +46,7 @@ class LinkSaas(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.organizationname = AAZStrArg(
-            options=["--organizationname"],
+            options=["-n", "--name", "--organizationname"],
             help="Name of the Organization resource",
             required=True,
             id_part="name",
@@ -63,8 +63,8 @@ class LinkSaas(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.saa_s_resource_id = AAZStrArg(
-            options=["--saa-s-resource-id"],
+        _args_schema.saas_resource_id = AAZStrArg(
+            options=["--saas-resource-id"],
             arg_group="Body",
             help="SaaS resource id",
         )
@@ -176,7 +176,7 @@ class LinkSaas(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("saaSResourceId", AAZStrType, ".saa_s_resource_id")
+            _builder.set_prop("saaSResourceId", AAZStrType, ".saas_resource_id")
 
             return self.serialize_content(_content_value)
 

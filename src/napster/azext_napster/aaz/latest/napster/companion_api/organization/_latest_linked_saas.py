@@ -45,7 +45,7 @@ class LatestLinkedSaas(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.organizationname = AAZStrArg(
-            options=["--organizationname"],
+            options=["-n", "--name", "--organizationname"],
             help="Name of the Organization resource",
             required=True,
             id_part="name",
