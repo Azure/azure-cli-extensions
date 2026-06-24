@@ -10,7 +10,7 @@ class NapsterScenario(ScenarioTest):
     def test_napster_scenario(self):
         self.kwargs.update({
             'resource_group': 'acctest0001',
-            'name': 'napster-test-saml',
+            'name': 'napster-test-saml2',
             'location': 'eastus2euap',
             'marketplace_subscription_id': '09fffd7d-d000-4467-cc23-d82b97e9431d',
             'publisher_id': 'touchcastinc1655995956899',
@@ -27,6 +27,7 @@ class NapsterScenario(ScenarioTest):
             'user_phone_number': '+1-425-555-1234',
             'application': 'dsaf',
             'enterprise_app_id': 'b2c3d4e5-f6a7-4b5c-8d9e-0f1a2b3c4d5e',
+            'saas_guid': 'cf5efb81-27d3-4a5b-cd08-2603a402ccab',
         })
 
         # Create organization
@@ -70,6 +71,22 @@ class NapsterScenario(ScenarioTest):
             checks=[
                 self.check('name', '{name}'),
             ]
+        )
+
+        # Activate SaaS resource
+        self.cmd(
+            'az napster companion-api activate-saas '
+            '--saas-guid {saas_guid} '
+            '--publisher-id {publisher_id}',
+            checks=[]
+        )
+
+        # Get the latest linked SaaS
+        self.cmd(
+            'az napster companion-api organization latest-linked-saas '
+            '--resource-group {resource_group} '
+            '--organizationname {name}',
+            checks=[]
         )
 
         # Delete organization at the end
