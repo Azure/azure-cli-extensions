@@ -83,7 +83,7 @@ jobs:
       # pkginfo-based metadata module (decoupled from wheel==0.30.0), so azdev must be
       # installed here. Install from the merged azure-cli-dev-tools source until azdev
       # 0.2.11b1 is published to PyPI, then switch this to: pip install --upgrade "azdev==0.2.11b1"
-      pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@49390f30c6a822620d2fbdf88889c4445d22666f#egg=azdev"
+      pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@644d296d9ca9b322b438d5ca21141b247258d0e5#egg=azdev"
       pip install requests packaging setuptools
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
