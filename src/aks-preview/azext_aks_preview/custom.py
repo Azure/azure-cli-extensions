@@ -1440,6 +1440,10 @@ def aks_create(
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    # backup (delegates to the dataprotection extension)
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_file=None,
     # prepared image specification
     prepared_image_specification_id=None,
 ):
@@ -1702,6 +1706,10 @@ def aks_update(
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
+    # backup (delegates to the dataprotection extension)
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_file=None,
     # node disruption policy
     node_disruption_policy=None,
     # control plane scaling

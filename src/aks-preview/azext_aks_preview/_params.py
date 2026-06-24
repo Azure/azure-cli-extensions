@@ -568,6 +568,10 @@ upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
 ]
 
+# AKS backup strategy presets exposed by --backup-strategy.
+# NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
+aks_backup_strategies = ["Week", "Month", "DisasterRecovery", "Custom"]
+
 node_disruption_policies = [
     CONST_NODE_DISRUPTION_POLICY_ALLOW,
     CONST_NODE_DISRUPTION_POLICY_BLOCK,
@@ -1318,6 +1322,34 @@ def load_arguments(self, _):
             is_preview=True,
             help="Enable continuous control plane and addon monitor for the cluster.",
         )
+        # Backup (delegates to the dataprotection extension)
+        c.argument(
+            "enable_backup",
+            action="store_true",
+            is_preview=True,
+            help="Enable Azure Backup for this AKS cluster. Orchestrates the same flow as "
+                 "'az dataprotection enable-backup trigger' (requires the 'dataprotection' extension). "
+                 "Implicitly waits for cluster creation to complete (ignores --no-wait).",
+        )
+        c.argument(
+            "backup_strategy",
+            arg_type=get_enum_type(aks_backup_strategies),
+            is_preview=True,
+            help="Backup strategy preset. Week (default, 7-day operational retention), Month "
+                 "(30-day operational retention), DisasterRecovery (7-day operational + 90-day vault "
+                 "retention), Custom (bring your own vault and policy via --backup-configuration). "
+                 "Only valid with --enable-backup.",
+        )
+        c.argument(
+            "backup_configuration_file",
+            options_list=["--backup-configuration"],
+            type=validate_file_or_dict,
+            is_preview=True,
+            help="Backup configuration as inline JSON string or @file.json. "
+                 "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
+                 "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
+                 "for Custom strategy. Only valid with --enable-backup.",
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -1988,6 +2020,33 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="Disable continuous control plane and addon monitor for the cluster.",
+        )
+        # Backup (delegates to the dataprotection extension)
+        c.argument(
+            "enable_backup",
+            action="store_true",
+            is_preview=True,
+            help="Enable Azure Backup for this AKS cluster. Orchestrates the same flow as "
+                 "'az dataprotection enable-backup trigger' (requires the 'dataprotection' extension).",
+        )
+        c.argument(
+            "backup_strategy",
+            arg_type=get_enum_type(aks_backup_strategies),
+            is_preview=True,
+            help="Backup strategy preset. Week (default, 7-day operational retention), Month "
+                 "(30-day operational retention), DisasterRecovery (7-day operational + 90-day vault "
+                 "retention), Custom (bring your own vault and policy via --backup-configuration). "
+                 "Only valid with --enable-backup.",
+        )
+        c.argument(
+            "backup_configuration_file",
+            options_list=["--backup-configuration"],
+            type=validate_file_or_dict,
+            is_preview=True,
+            help="Backup configuration as inline JSON string or @file.json. "
+                 "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
+                 "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
+                 "for Custom strategy. Only valid with --enable-backup.",
         )
         c.argument(
             "control_plane_scaling_size",
