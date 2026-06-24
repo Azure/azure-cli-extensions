@@ -10,9 +10,12 @@
 # ---------------------------------------------------------
 import json
 import re
+import subprocess
 import sys
 import traceback
+import yaml
 from os import environ, getenv, pardir, path
+from pathlib import Path
 from typing import Dict, Tuple, Union
 from uuid import uuid4
 from webbrowser import open_new_tab
@@ -44,11 +47,13 @@ from azure.ai.ml.exceptions import (
     ValidationErrorType,
     ValidationException,
 )
+from azure.cli.core.azclierror import CLIInternalError, FileOperationError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.telemetry import add_extension_event
 from azure.core.exceptions import ResourceNotFoundError
 from azure.core.polling import LROPoller
+from azure.identity import DefaultAzureCredential
 from knack.log import get_logger
 
 from .raise_error import log_and_raise_error
@@ -473,3 +478,165 @@ def modify_sys_path_for_rslex_mount(allow_rslex_not_installed: bool = False):
             + "--query path)) azureml-dataprep-rslex`"
         )
     sys.path = [python_path] + sys.path
+
+
+def _load_self_serve_config():
+    """
+    Loads the self-serve configuration JSON file.
+    """
+    config_path = path.abspath(path.join(path.dirname(__file__), "..", "config", "self-serve-config.json"))
+    try:
+        with open(config_path, "r", encoding="utf-8") as config_file:
+            module_logger.debug(f"Found configuration file at {config_path}")
+            config = json.load(config_file)
+        return config
+    except FileNotFoundError as err:
+        raise FileOperationError(f"Configuration file not found at {config_path}") from err
+    except json.JSONDecodeError as err:
+        raise FileOperationError(
+            f"Configuration file at {config_path} is not valid JSON: {err}") from err
+
+
+def _resolve_self_serve_target(location: str = None) -> Tuple[str, Dict]:
+    config = _load_self_serve_config()
+    requested_target = (location or getenv("MPSS_ENV_LOCATION", "prod")).lower()
+    location_aliases = config.get("LOCATION_ALIASES", {})
+    resolved_target = location_aliases.get(requested_target, requested_target)
+    return resolved_target, config
+
+
+def get_self_serve_base_url(location: str = None) -> str:
+    """
+    Resolve the global MPSS base URL.
+
+    MPSS_ENV_LOCATION supports prod (default), canary, int, localhost, and
+    legacy regional aliases such as eastus/eastus2/eastus2euap.
+    """
+    resolved_target, config = _resolve_self_serve_target(location)
+    location_to_url_mapping = config.get("LOCATION_TO_URL", {})
+    resolved_base_url = location_to_url_mapping.get(resolved_target)
+
+    if not resolved_base_url:
+        module_logger.warning(
+            f"MPSS target '{resolved_target}' is not recognized. Falling back to prod "
+            f"({location_to_url_mapping.get('prod')})."
+        )
+        resolved_base_url = location_to_url_mapping.get("prod")
+
+    module_logger.debug(f"Resolved MPSS target: {resolved_target}")
+    module_logger.debug(f"Resolved url: {resolved_base_url}")
+    return resolved_base_url
+
+
+def get_location_from_base_url(base_url: str) -> str:
+    """
+    Retrieves the logical MPSS target from a given base URL.
+    """
+    resolved_target, config = _resolve_self_serve_target()
+    location_to_url_mapping = config.get("LOCATION_TO_URL", {})
+    url_to_location_mapping = {v: k for k, v in location_to_url_mapping.items()}
+    location_aliases = config.get("LOCATION_ALIASES", {})
+
+    if base_url in url_to_location_mapping:
+        return url_to_location_mapping[base_url]
+
+    if base_url.startswith(("https://", "http://")):
+        host_name = base_url.split("//", 1)[1].split(":")[0].split(".")[0].lower()
+        if host_name == "mpss":
+            return "prod"
+        if host_name == "mpss-canary":
+            return "canary"
+        if host_name == "mpss-int":
+            return "int"
+        if host_name in location_aliases:
+            return location_aliases[host_name]
+        if host_name == "localhost":
+            return "localhost"
+        return host_name
+
+    return resolved_target
+
+
+def run_registry_mgmt_cmd(args):
+    """
+    Runs registry management command with the provided arguments.
+    :param args: List of arguments to pass to the registry management command.
+    """
+    try:
+        return subprocess.run(
+            ["registry-mgmt"] + args,
+            stdout=None,  # None = inherit parent's stdout for seamless output as registry tool prints unicode chars
+            stderr=None,  # None = inherit parent's stderr for seamless output as registry tool prints unicode chars
+            text=True,
+            check=True,
+        )
+    except FileNotFoundError as ex:
+        raise CLIInternalError(
+            "The 'registry-mgmt' tool was not found. Install it with "
+            "'pip install azureml-registry-tools' and ensure it is on your PATH.") from ex
+    except subprocess.CalledProcessError as ex:
+        raise CLIInternalError(
+            f"registry-mgmt command failed with exit code {ex.returncode}. "
+            "See the output above for details.") from ex
+
+
+def parse_azureml_model_uri(uri: str):
+    """
+    Extract registry_name, model_name, and version from an AzureML model URI.
+
+    Example:
+        azureml://registries/<registry_name>/models/<model_name>/versions/<model_version>
+    """
+    pattern = r"^azureml://registries/([^/]+)/models/([^/]+)/versions/([^/]+)$"
+    match = re.match(pattern, uri.strip())
+
+    if not match:
+        module_logger.error(f"Invalid AzureML model URI format: {uri}")
+        return
+
+    registry_name, model_name, model_version = match.groups()
+    return {
+        "registry_name": registry_name,
+        "model_name": model_name,
+        "model_version": model_version
+    }
+
+
+def get_registry_info(registry_name: str):
+    """
+    Retrieve the subscription ID and resource group name for a given registry.
+    """
+    credential = DefaultAzureCredential()
+    ml_client = MLClient(credential, registry_name=registry_name)
+    if not ml_client.subscription_id or not ml_client.resource_group_name:
+        raise CLIInternalError(
+            f"Could not resolve the subscription and resource group for registry '{registry_name}'. "
+            "Ensure the registry exists and that you have access to it.")
+    return {
+        "registry_name": registry_name,
+        "subscription_id": ml_client.subscription_id,
+        "resource_group_name": ml_client.resource_group_name,
+    }
+
+
+def load_inline_md_files(spec_path: str) -> dict:
+    spec_path = Path(spec_path).resolve()
+    base_dir = spec_path.parent
+    with spec_path.open(encoding="utf-8") as f:
+        spec_content = yaml.safe_load(f)
+
+    if not isinstance(spec_content, dict):
+        raise FileOperationError(
+            f"The YAML file '{spec_path}' is empty or not a valid mapping of fields.")
+
+    desc = spec_content.get("description")
+    if isinstance(desc, str) and desc.endswith(".md"):
+        spec_content["description"] = (base_dir / desc).read_text(encoding="utf-8")
+
+    tags = spec_content.get("tags", {})
+    if isinstance(tags, dict):
+        for k, v in tags.items():
+            if isinstance(v, str) and v.endswith(".md"):
+                tags[k] = (base_dir / v).read_text(encoding="utf-8")
+
+    return spec_content
