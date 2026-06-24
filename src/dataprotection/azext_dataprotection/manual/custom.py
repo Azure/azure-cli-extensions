@@ -705,6 +705,17 @@ def dataprotection_backup_policy_create_lifecycle(source_datastore, retention_du
 
 
 def dataprotection_backup_policy_retention_set_in_policy(policy, name, lifecycles):
+    datasource_type = helper.get_client_datasource_type(policy["datasourceTypes"][0])
+    manifest = helper.load_manifest(datasource_type)
+
+    default_retention_mapping = manifest.get("policySettings", {}).get("defaultRetentionRuleNames") or {}
+    mapped_default_names = []
+    if default_retention_mapping:
+        mapped_default_names = helper.validate_retention_rule_matches_mapped_store(
+            name, default_retention_mapping, lifecycles, datasource_type)
+        helper.validate_exclusive_source_store_assignment(
+            name, manifest, default_retention_mapping, lifecycles, datasource_type)
+
     retention_policy_index = -1
     for index in range(0, len(policy["policyRules"])):
         if policy["policyRules"][index]["objectType"] == "AzureRetentionRule" and policy["policyRules"][index]["name"] == name:
@@ -712,17 +723,15 @@ def dataprotection_backup_policy_retention_set_in_policy(policy, name, lifecycle
             break
 
     if retention_policy_index == -1:
-        datasource_type = helper.get_client_datasource_type(policy["datasourceTypes"][0])
-        manifest = helper.load_manifest(datasource_type)
         if manifest["policySettings"]["disableAddRetentionRule"]:
             raise InvalidArgumentValueError("Adding New Retention Rule is not supported for " + datasource_type + " datasource type")
 
-        if name not in manifest["policySettings"]["supportedRetentionTags"]:
+        if name not in manifest["policySettings"]["supportedRetentionTags"] and name not in mapped_default_names:
             raise InvalidArgumentValueError("Selected Retention Rule " + name + " is not applicable for Datasource Type " + datasource_type)
 
         new_retention_rule = {
             "objectType": "AzureRetentionRule",
-            "isDefault": name == "Default",
+            "isDefault": name == "Default" or name in mapped_default_names,
             "name": name,
             "lifecycles": lifecycles
         }
