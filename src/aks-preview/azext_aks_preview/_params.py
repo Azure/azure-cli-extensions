@@ -1254,6 +1254,12 @@ def load_arguments(self, _):
                 'by that action.'
             )
         )
+        c.argument(
+            "node_disruption_policy",
+            arg_type=get_enum_type(node_disruption_policies),
+            is_preview=True,
+            help="Set the node disruption policy for the cluster.",
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
