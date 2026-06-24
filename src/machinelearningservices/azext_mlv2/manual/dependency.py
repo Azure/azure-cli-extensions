@@ -8,11 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import os
-
 REQUIREMENTS = []
-_current_dir = os.path.dirname(os.path.abspath(__file__))
-_requirements_path = os.path.join(_current_dir, 'requirements.txt')
-with open(_requirements_path, "rt") as fd:
+with open("azext_mlv2/manual/requirements.txt", "rt") as fd:
     REQUIREMENTS = [line.strip() for line in fd if line.strip() and not line.strip().startswith('#')]
 DEPENDENCIES = REQUIREMENTS
