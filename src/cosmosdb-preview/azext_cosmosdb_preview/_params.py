@@ -56,6 +56,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     BackupStorageRedundancy,
     CapacityMode,
     ContinuousTier,
+    KeyKind,
     DefaultPriorityLevel)
 
 from azure.cli.core.util import shell_safe_json_parse
@@ -434,6 +435,10 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb') as c:
         c.argument('account_name', arg_type=name_type, help='Name of the Cosmos DB database account', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
         c.argument('database_id', options_list=['--db-name', '-d'], help='Database Name')
+
+    with self.argument_context('cosmosdb keys regenerate') as c:
+        c.argument('key_kind', arg_type=get_enum_type(KeyKind), help="The access key to regenerate.")
+        c.argument('skip_account_keys_last_usage_check', options_list=['--skip-safe-rotation'], arg_type=get_three_state_flag(), is_preview=True, help="Skip the account keys last usage check that blocks key regeneration when the key was recently used.")
 
     # CosmosDB account create with gremlin and tables to restore
     with self.argument_context('cosmosdb create') as c:
