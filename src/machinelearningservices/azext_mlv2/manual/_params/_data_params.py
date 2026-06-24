@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.ai.ml.constants._common import AssetTypes, YAMLRefDocLinks
+from azure.ai.ml.constants._common import AssetTypes, YAMLRefDocLinks  # pylint: disable=no-name-in-module,import-error
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 
 from ._common_params import (add_archived_only_param, add_common_params,

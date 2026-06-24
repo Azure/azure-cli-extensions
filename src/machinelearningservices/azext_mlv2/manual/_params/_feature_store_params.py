@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.ai.ml.constants._common import YAMLRefDocLinks
+from azure.ai.ml.constants._common import YAMLRefDocLinks  # pylint: disable=no-name-in-module,import-error
 from azure.cli.core.commands.parameters import ALL, LocalContextAction, LocalContextAttribute, resource_group_name_type
 
 from ._common_params import (
