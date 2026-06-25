@@ -5,6 +5,7 @@
 
 import os
 import unittest
+from unittest import mock
 
 from knack.util import CLIError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -16,6 +17,17 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
+
+    def setUp(self):
+        super().setUp()
+        # The point-in-time restore scenarios sleep for several minutes so the
+        # service can process the restore operations. Those waits only matter
+        # against a live backend, so skip them during cassette playback to keep
+        # test runs fast.
+        if not self.is_live:
+            sleep_patcher = mock.patch('time.sleep')
+            sleep_patcher.start()
+            self.addCleanup(sleep_patcher.stop)
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_using_create', location='westus2')
     @AllowLargeResponse(size_kb=9999)

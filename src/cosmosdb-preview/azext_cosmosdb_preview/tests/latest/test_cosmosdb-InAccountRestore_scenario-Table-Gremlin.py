@@ -5,6 +5,7 @@
 
 import os
 import unittest
+from unittest import mock
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -15,6 +16,17 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
+
+    def setUp(self):
+        super().setUp()
+        # The in-account restore scenarios sleep for several minutes so the
+        # service can process the restore operations. Those waits only matter
+        # against a live backend, so skip them during cassette playback to keep
+        # test runs fast.
+        if not self.is_live:
+            sleep_patcher = mock.patch('time.sleep')
+            sleep_patcher.start()
+            self.addCleanup(sleep_patcher.stop)
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database', location='eastus2')
