@@ -21,9 +21,9 @@ class ResetOs(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-12-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}/jobs/ProvisionOs", "2025-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}/jobs/ProvisionOs", "2026-05-01-preview"],
         ]
     }
 
@@ -83,7 +83,7 @@ class ResetOs(AAZCommand):
                 f"/subscriptions/{self.ctx.subscription_id}"
                 f"/resourceGroups/{args.resource_group.to_serialized_data()}"
                 f"/providers/Microsoft.AzureStackHCI/edgeMachines/{args.edge_machine_name.to_serialized_data()}"
-                f"?api-version=2025-12-01-preview"
+                f"?api-version=2026-05-01-preview"
             )
 
             response = send_raw_request(self.ctx.cli_ctx, "GET", url)
@@ -182,7 +182,7 @@ class ResetOs(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

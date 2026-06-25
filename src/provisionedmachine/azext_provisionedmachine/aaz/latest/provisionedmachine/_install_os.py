@@ -16,15 +16,24 @@ from azure.cli.core.aaz import *
 class InstallOs(AAZCommand):
     """Install Operating System on a specific Provisioned Machine resource.
 
-    :example: Install AzureLinux Operating System on a provisioned machine
-        az provisionedmachine install-os -g myResourceGroup -n myProvisionedMachine --os-image AzureLinux --version 3.0 --ssh-public-key "ssh-rsa AAAAB3..."
+    When --os-image-version is not specified, the latest available version is automatically
+    resolved for both AzureLinux and HCI image types.
+
+    :example: Install AzureLinux Operating System (auto-selects latest version)
+        az provisionedmachine install-os -g myResourceGroup -n myProvisionedMachine --os-image-type AzureLinux --ssh-public-key "ssh-rsa AAAAB3..."
+
+    :example: Install HCI Operating System (auto-selects latest version)
+        az provisionedmachine install-os -g myResourceGroup -n myProvisionedMachine --os-image-type HCI --key-vault-secret-id "/subscriptions/.../secrets/mySecret"
+
+    :example: Install HCI Operating System with a specific version
+        az provisionedmachine install-os -g myResourceGroup -n myProvisionedMachine --os-image-type HCI --os-image-version 10.2504.0.64 --key-vault-secret-id "/subscriptions/.../secrets/mySecret"
 
     """
 
     _aaz_info = {
-        "version": "2025-12-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}/jobs/ProvisionOs", "2025-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}/jobs/ProvisionOs", "2026-05-01-preview"],
         ]
     }
 
@@ -60,17 +69,17 @@ class InstallOs(AAZCommand):
         )
 
         # Define Arg Group "OS Configuration"
-        _args_schema.os_image = AAZStrArg(
-            options=["--os-image"],
+        _args_schema.os_image_type = AAZStrArg(
+            options=["--os-image-type"],
             arg_group="OS Configuration",
-            help="Name of the OS image for this provisioned machine. Allowed values: HCI, AzureLinux.",
+            help="Type of OS image for this provisioned machine. ⚡ CHANGED: Renamed from --os-image",
             enum={"HCI": "HCI", "AzureLinux": "AzureLinux"},
             required=True,
         )
-        _args_schema.version = AAZStrArg(
-            options=["-v", "--version"],
+        _args_schema.os_image_version = AAZStrArg(
+            options=["--os-image-version"],
             arg_group="OS Configuration",
-            help="Version string. Required for HCI (VSR version). Optional for AzureLinux (OS version, defaults to 3.0).",
+            help="Version of the OS image. If not specified, the latest available version is automatically selected. ⚡ CHANGED: Renamed from --version -v",
         )
 
         # Define Arg Group "Authentication"
@@ -149,25 +158,19 @@ class InstallOs(AAZCommand):
         from azure.cli.core.azclierror import RequiredArgumentMissingError
 
         # Validate machine state first
-        self._validate_machine_state()
+        machine_data = self._validate_machine_state()
 
         args = self.ctx.args
-        os_image = args.os_image.to_serialized_data()
+        os_image_type = args.os_image_type.to_serialized_data()
 
-        if os_image == "AzureLinux":
-            # AzureLinux requires: os-image + ssh-public-key
+        # Validate required auth args first (fast fail before network calls)
+        if os_image_type == "AzureLinux":
             ssh_key = args.ssh_public_key.to_serialized_data() if has_value(args.ssh_public_key) else None
             if not ssh_key:
                 raise RequiredArgumentMissingError(
                     "SSH public key (--ssh-public-key) is required when using AzureLinux OS image."
                 )
-        elif os_image == "HCI":
-            # HCI requires: os-image + version + key-vault-secret-id
-            version = args.version.to_serialized_data() if has_value(args.version) else None
-            if not version:
-                raise RequiredArgumentMissingError(
-                    "Version (--version) is required when using HCI OS image."
-                )
+        elif os_image_type == "HCI":
             kv_secret = args.key_vault_secret_id.to_serialized_data() if has_value(args.key_vault_secret_id) else None
             if not kv_secret:
                 raise RequiredArgumentMissingError(
@@ -175,6 +178,12 @@ class InstallOs(AAZCommand):
                 )
             # Validate Key Vault secret ID format
             self._validate_key_vault_secret_id(kv_secret)
+
+        # Auto-resolve latest version if not provided
+        if not has_value(args.os_image_version) or not args.os_image_version.to_serialized_data():
+            location = machine_data.get("location", "")
+            resolved_version = self._resolve_latest_version(os_image_type, location)
+            args.os_image_version = resolved_version
 
         # Validate IP address format
         if has_value(args.ip_address):
@@ -220,7 +229,8 @@ class InstallOs(AAZCommand):
             self._validate_hostname(hostname)
 
     def _validate_machine_state(self):
-        """Validate that the provisioned machine is in 'Unpurposed' or 'Transitioning' state before install-os."""
+        """Validate that the provisioned machine is in 'Unpurposed' or 'Transitioning' state before install-os.
+        Returns the machine data for reuse (e.g., extracting location)."""
         from azure.cli.core.util import send_raw_request
         from azure.cli.core.azclierror import InvalidArgumentValueError
         import logging
@@ -234,7 +244,7 @@ class InstallOs(AAZCommand):
                 f"/subscriptions/{self.ctx.subscription_id}"
                 f"/resourceGroups/{args.resource_group.to_serialized_data()}"
                 f"/providers/Microsoft.AzureStackHCI/edgeMachines/{args.edge_machine_name.to_serialized_data()}"
-                f"?api-version=2025-12-01-preview"
+                f"?api-version=2026-05-01-preview"
             )
 
             response = send_raw_request(self.ctx.cli_ctx, "GET", url)
@@ -249,6 +259,7 @@ class InstallOs(AAZCommand):
                         f"Machine is in '{machine_state}' state. Install-os is only allowed when machine is in 'Unpurposed' or 'Transitioning' state."
                     )
                 logger.info("Machine state validated: %s", machine_state)
+                return data
             else:
                 raise InvalidArgumentValueError(
                     f"Failed to get provisioned machine '{args.edge_machine_name.to_serialized_data()}': HTTP {response.status_code}"
@@ -260,6 +271,77 @@ class InstallOs(AAZCommand):
             raise InvalidArgumentValueError(
                 f"Error validating machine state: {str(e)}"
             )
+
+    def _resolve_latest_version(self, os_image_type, location):
+        """Resolve the latest available OS image version by calling the os-image list API.
+
+        The API returns images sorted in descending order by version
+        (guaranteed by RP's GetNLatestRecipesAsync which uses
+        OrderByDescending(Version.Parse(FullSolutionVersion))).
+        So the first image is always the latest.
+        """
+        from azure.cli.core.util import send_raw_request
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        if not location:
+            raise ResourceNotFoundError(
+                "Could not determine location of provisioned machine. "
+                "Please specify --os-image-version explicitly."
+            )
+
+        try:
+            # Call os-image list API to get available versions
+            os_images_url = (
+                f"/subscriptions/{self.ctx.subscription_id}"
+                f"/providers/Microsoft.AzureStackHCI/locations/{location}/osImages"
+                f"?api-version=2026-05-01-preview&solution-type={os_image_type}"
+            )
+            response = send_raw_request(self.ctx.cli_ctx, "GET", os_images_url)
+            data = response.json()
+            images = data.get("value", [])
+
+            if not images:
+                raise ResourceNotFoundError(
+                    f"No OS images found for type '{os_image_type}' in location '{location}'. "
+                    f"Please specify --os-image-version explicitly."
+                )
+
+            # API returns images sorted descending by version — first item is the latest
+            latest_version = images[0].get("properties", {}).get("validatedSolutionRecipeVersion", "")
+
+            if not latest_version:
+                raise ResourceNotFoundError(
+                    f"Could not determine latest version for '{os_image_type}'. "
+                    f"Please specify --os-image-version explicitly."
+                )
+
+            logger.info("Auto-resolved latest %s version: %s", os_image_type, latest_version)
+            return latest_version
+
+        except ResourceNotFoundError:
+            raise
+        except Exception as e:
+            raise ResourceNotFoundError(
+                f"Error resolving latest OS image version: {str(e)}. "
+                f"Please specify --os-image-version explicitly."
+            )
+
+    @staticmethod
+    def _compare_versions(v1, v2):
+        """Compare two version strings. Returns >0 if v1 > v2, <0 if v1 < v2, 0 if equal."""
+        parts1 = [int(x) for x in v1.split(".") if x.isdigit()]
+        parts2 = [int(x) for x in v2.split(".") if x.isdigit()]
+        # Pad shorter list with zeros
+        max_len = max(len(parts1), len(parts2))
+        parts1.extend([0] * (max_len - len(parts1)))
+        parts2.extend([0] * (max_len - len(parts2)))
+        for a, b in zip(parts1, parts2):
+            if a != b:
+                return a - b
+        return 0
 
     def _validate_ipv4_address(self, ip_address, param_name):
         """Validate IPv4 address format."""
@@ -505,7 +587,7 @@ class InstallOs(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -529,7 +611,7 @@ class InstallOs(AAZCommand):
 
             # Get values from args
             edge_machine_name = args.edge_machine_name.to_serialized_data()
-            os_image = args.os_image.to_serialized_data()
+            os_image_type = args.os_image_type.to_serialized_data()
 
             # Build network adapter configuration
             # Auto-determine IP allocation method: Manual if ip_address, subnet_mask, and gateway are all provided
@@ -593,12 +675,12 @@ class InstallOs(AAZCommand):
             }
 
             # Build provisioning request based on OS image type
-            if os_image == "HCI":
+            if os_image_type == "HCI":
                 os_profile = {
                     "osType": "HCI"
                 }
-                if has_value(args.version):
-                    os_profile["vsrVersion"] = args.version.to_serialized_data()
+                if has_value(args.os_image_version):
+                    os_profile["vsrVersion"] = args.os_image_version.to_serialized_data()
 
                 user_details = [
                     {
@@ -615,8 +697,8 @@ class InstallOs(AAZCommand):
                     "deviceConfiguration": device_configuration
                 }
 
-            elif os_image == "AzureLinux":
-                os_version = args.version.to_serialized_data() if has_value(args.version) else "3.0"
+            elif os_image_type == "AzureLinux":
+                os_version = args.os_image_version.to_serialized_data() if has_value(args.os_image_version) else "3.0"
 
                 os_profile = {
                     "osName": "AzureLinux",
