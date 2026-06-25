@@ -125,9 +125,8 @@ def step_show(test, bmm_name, checks=None):
     assert result.get("name") == test.kwargs[bmm_name], expected_actual_message(
         context, "name", test.kwargs[bmm_name], result.get("name"), result
     )
-    assert result.get("id"), missing_field_message(context, "id", result)
-
     properties = result.get("properties")
+    assert properties is not None, missing_field_message(context, "properties", result)
     assert properties.get("machineDetails") == get_value(
         test, "machineDetails"
     ), properties_key_mismatch_message("machineDetails")

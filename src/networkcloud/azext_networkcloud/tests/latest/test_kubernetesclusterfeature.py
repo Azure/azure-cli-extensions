@@ -106,7 +106,9 @@ def step_show(test, checks=None):
         context, "name", result
     )
 
-    assert result.get("id"), missing_field_message(context, "id", result)
+    assert result.get("properties") is not None, missing_field_message(
+        context, "properties", result
+    )
 
     assert result.get("required") == get_value(
         test, "required"

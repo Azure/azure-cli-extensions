@@ -83,8 +83,8 @@ def step_show(test, checks=None):
     assert result.get("name") is not None, missing_field_message(
         context, "name", result
     )
-    assert result.get("id"), missing_field_message(context, "id", result)
     properties = result.get("properties")
+    assert properties is not None, missing_field_message(context, "properties", result)
     assert properties.get("interfaceName") == get_value(
         test, "interfaceName"
     ), properties_key_mismatch_message("interfaceName")

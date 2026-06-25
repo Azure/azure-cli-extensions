@@ -63,7 +63,10 @@ def _list_or_paged_result(value):
 
 
 def get_value(test, key):
-    return re.sub(r"^['\"]|['\"]$", "", test.kwargs.get(key))
+    value = test.kwargs.get(key)
+    if value is None:
+        raise AssertionError(f"Test variable '{key}' was not set in test.kwargs.")
+    return re.sub(r"^['\"]|['\"]$", "", str(value))
 
 
 def get_json_string(attribute):
@@ -79,7 +82,7 @@ def get_json_string(attribute):
 
 def show_properties(properties):
     """Print the show response properties for debugging test execution."""
-    print("Kubernetescluster show properties:")
+    print("Show response properties:")
     print(json.dumps(properties, indent=2, sort_keys=True, default=str))
 
 

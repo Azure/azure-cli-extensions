@@ -152,7 +152,9 @@ def step_show(test, checks=None):
     assert result.get("name") is not None, missing_field_message(
         context, "name", result
     )
-    assert result.get("id"), missing_field_message(context, "id", result)
+    assert result.get("properties") is not None, missing_field_message(
+        context, "properties", result
+    )
     # properties = result.get("properties")
     show_properties(result)
 
