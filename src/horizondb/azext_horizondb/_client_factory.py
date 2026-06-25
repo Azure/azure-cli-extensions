@@ -36,3 +36,11 @@ def resource_client_factory(cli_ctx, subscription_id=None):
 
 def cf_horizondb_clusters(cli_ctx, _):
     return get_horizondb_management_client(cli_ctx).horizon_db_clusters
+
+
+def cf_horizondb_private_endpoint_connections(cli_ctx, _):
+    return get_horizondb_management_client(cli_ctx).horizon_db_private_endpoint_connections
+
+
+def cf_horizondb_private_link_resources(cli_ctx, _):
+    return get_horizondb_management_client(cli_ctx).horizon_db_private_link_resources
