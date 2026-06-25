@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing delivery rule within a rule set.
 
-    :example: Remove a rule with name rule1.
-        az afd rule delete -g group --rule-set-name ruleSetName --profile-name profile --rule-name rule1
+    :example: Rules_Delete
+        az afd rule delete --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1
     """
 
     _aaz_info = {

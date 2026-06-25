@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Start(AAZCommand):
     """Starts an existing CDN endpoint that is on a stopped state.
 
-    :example: Start a CDN endpoint.
-        az cdn endpoint start -g group -n endpoint --profile-name profile-name
+    :example: Endpoints_Start
+        az cdn endpoint start --resource-group RG --profile-name profile1 --endpoint-nameendpoint-name endpoint1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/start", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/start", "2025-09-01-preview"],
         ]
     }
 
@@ -56,6 +56,11 @@ class Start(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -91,7 +96,7 @@ class Start(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -100,7 +105,7 @@ class Start(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -147,7 +152,7 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -341,6 +346,30 @@ class _StartHelper:
             flags={"required": True},
         )
 
+        disc_afd_url_signing = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning")
+        disc_afd_url_signing.parameters = AAZObjectType(
+            flags={"required": True},
+        )
+
+        parameters = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters
+        parameters.algorithm = AAZStrType()
+        parameters.key_group_reference = AAZObjectType(
+            serialized_name="keyGroupReference",
+            flags={"required": True},
+        )
+        cls._build_schema_resource_reference_read(parameters.key_group_reference)
+        parameters.parameter_name_override = AAZListType(
+            serialized_name="parameterNameOverride",
+        )
+        parameters.type_name = AAZStrType(
+            serialized_name="typeName",
+            flags={"required": True},
+        )
+
+        parameter_name_override = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters.parameter_name_override
+        parameter_name_override.Element = AAZObjectType()
+        cls._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
+
         disc_cache_expiration = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "CacheExpiration")
         disc_cache_expiration.parameters = AAZObjectType(
             flags={"required": True},
@@ -376,6 +405,26 @@ class _StartHelper:
         )
         parameters.query_string_behavior = AAZStrType(
             serialized_name="queryStringBehavior",
+            flags={"required": True},
+        )
+        parameters.type_name = AAZStrType(
+            serialized_name="typeName",
+            flags={"required": True},
+        )
+
+        disc_edge_action = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "EdgeAction")
+        disc_edge_action.parameters = AAZObjectType(
+            flags={"required": True},
+        )
+
+        parameters = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "EdgeAction").parameters
+        parameters.edge_action_reference = AAZObjectType(
+            serialized_name="edgeActionReference",
+            flags={"required": True},
+        )
+        cls._build_schema_resource_reference_read(parameters.edge_action_reference)
+        parameters.invocation_point = AAZStrType(
+            serialized_name="invocationPoint",
             flags={"required": True},
         )
         parameters.type_name = AAZStrType(
@@ -522,16 +571,7 @@ class _StartHelper:
 
         parameter_name_override = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override
         parameter_name_override.Element = AAZObjectType()
-
-        _element = _schema_endpoint_read.properties.delivery_policy.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override.Element
-        _element.param_indicator = AAZStrType(
-            serialized_name="paramIndicator",
-            flags={"required": True},
-        )
-        _element.param_name = AAZStrType(
-            serialized_name="paramName",
-            flags={"required": True},
-        )
+        cls._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
 
         conditions = _schema_endpoint_read.properties.delivery_policy.rules.Element.conditions
         conditions.Element = AAZObjectType()
@@ -1302,6 +1342,30 @@ class _StartHelper:
         resource_reference_read.id = AAZStrType()
 
         _schema.id = cls._schema_resource_reference_read.id
+
+    _schema_url_signing_param_identifier_read = None
+
+    @classmethod
+    def _build_schema_url_signing_param_identifier_read(cls, _schema):
+        if cls._schema_url_signing_param_identifier_read is not None:
+            _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
+            _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
+            return
+
+        cls._schema_url_signing_param_identifier_read = _schema_url_signing_param_identifier_read = AAZObjectType()
+
+        url_signing_param_identifier_read = _schema_url_signing_param_identifier_read
+        url_signing_param_identifier_read.param_indicator = AAZStrType(
+            serialized_name="paramIndicator",
+            flags={"required": True},
+        )
+        url_signing_param_identifier_read.param_name = AAZStrType(
+            serialized_name="paramName",
+            flags={"required": True},
+        )
+
+        _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
+        _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
 
 
 __all__ = ["Start"]

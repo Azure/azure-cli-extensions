@@ -6,8 +6,8 @@
 # pylint: disable=line-too-long, too-many-locals
 
 from knack.log import get_logger
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
-from azure.cli.core.azclierror import AzCLIError
 
 logger = get_logger(__name__)
 
@@ -42,6 +42,42 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
                        resource=resource)
 
 
+def horizondb_cluster_update(client, resource_group_name, cluster_name,
+                             administrator_login_password=None, tags=None,
+                             v_cores=None,
+                             parameter_group=None,
+                             no_wait=False):
+    from azext_horizondb.vendored_sdks.models import (
+        HorizonDbClusterForPatchUpdate,
+        HorizonDbClusterParameterGroupConnectionProperties,
+        HorizonDbClusterPropertiesForPatchUpdate,
+    )
+
+    cluster_properties = {}
+    if administrator_login_password is not None:
+        cluster_properties["administrator_login_password"] = administrator_login_password
+    if v_cores is not None:
+        cluster_properties["v_cores"] = v_cores
+    if parameter_group is not None:
+        cluster_properties["parameter_group"] = HorizonDbClusterParameterGroupConnectionProperties(id=parameter_group)
+
+    patch_properties = {}
+    if tags is not None:
+        patch_properties["tags"] = tags
+    if cluster_properties:
+        patch_properties["properties"] = HorizonDbClusterPropertiesForPatchUpdate(**cluster_properties)
+
+    if not patch_properties:
+        raise ArgumentUsageError("Specify at least one argument to update.")
+
+    properties = HorizonDbClusterForPatchUpdate(**patch_properties)
+
+    return sdk_no_wait(no_wait, client.begin_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       properties=properties)
+
+
 def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_wait=False, yes=False):
     if not yes:
         user_confirmation(
@@ -56,7 +92,7 @@ def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_
             local_context_file.remove_option('horizondb', 'cluster_name')
     except Exception as ex:  # pylint: disable=broad-except
         logger.error(ex)
-        raise AzCLIError(ex)
+        raise CLIInternalError(str(ex)) from ex
     return result
 
 

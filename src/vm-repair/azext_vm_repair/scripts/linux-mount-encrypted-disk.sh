@@ -95,7 +95,11 @@ data_os_lvm_check () {
 	then
 		#Updaing the below command to use lsblk instead of fdisk for accounting for different distros
 		#export root_part=`fdisk -l ${data_disk} 2>&1 | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
-		export root_part=`lsblk ${data_disk} -l -n -p -b 2>&1 | grep -w -v ${data_disk} |awk '$4 > 600000000{print $1}'` >> ${logpath}/${logfile}
+		# Select the largest partition on the data disk (root is always the largest).
+		# Using sort+head instead of a size threshold to avoid matching /boot partitions
+		# that exceed 600MB (e.g. Ubuntu 24.04 has a ~913MB /boot on partition 16).
+		root_part=$(lsblk "${data_disk}" -l -n -p -b 2>>"${logpath}/${logfile}" | grep -w -v "${data_disk}" | sort -k4 -rn | awk 'NR==1{print $1}')
+		export root_part
 		echo "`date` LVM not found on the data disk" >> ${logpath}/${logfile}
 		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
 	else

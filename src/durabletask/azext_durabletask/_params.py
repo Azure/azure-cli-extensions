@@ -29,3 +29,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('identity', options_list=['--identity'],
                    help='Resource ID of a user-assigned managed identity. '
                         'If omitted, the system-assigned managed identity is used.')
+
+    with self.argument_context('durabletask scheduler restart') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'],
+                   help='Name of the resource group containing the scheduler.',
+                   required=True)
+        c.argument('scheduler_name', options_list=['--name', '-n'],
+                   help='Name of the Durable Task scheduler.',
+                   required=True)

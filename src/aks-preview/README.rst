@@ -234,6 +234,9 @@ Released version and adopted API version
     * - 20.0.0b7 ~ 20.0.0b8
       - 2026-02-02-preview
       -
-    * - 21.0.0b1 ~ latest
+    * - 21.0.0b1 ~ 21.0.0b3
       - 2026-03-02-preview
+      -
+    * - 21.0.0b4 ~ latest
+      - 2026-04-02-preview
       -
