@@ -8,17 +8,42 @@
 from knack.log import get_logger
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
+from ..utils.temp_cluster_capabilities import temp_cluster_capabilities
+from ..utils.validators import is_supported_vcore
+from ..utils._util import (
+    check_resource_group,
+    generate_missing_cluster_parameters)
 
 logger = get_logger(__name__)
 
+HORIZONDB_VERSION_DEFAULT = 17
 
-def horizondb_cluster_create(client, resource_group_name, cluster_name, location,
-                             administrator_login, administrator_login_password,
-                             tags=None, version=None,
+def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name=None, location=None,
+                             administrator_login=None, administrator_login_password=None,
+                             tags=None, version=HORIZONDB_VERSION_DEFAULT,
                              replica_count=None, v_cores=None,
                              zone_placement_policy=None,
                              no_wait=False):
     from azext_horizondb.vendored_sdks.models import HorizonDbCluster, HorizonDbClusterProperties
+
+    if not check_resource_group(resource_group_name):
+        resource_group_name = None
+
+    # Generate missing parameters
+    resource_group_name, cluster_name, location = generate_missing_cluster_parameters(cmd, resource_group_name, cluster_name,
+                                                                                      location)
+
+    if v_cores is not None:
+        cluster_capability = (temp_cluster_capabilities.get("value") or [{}])[0]
+        processor_capabilities = (cluster_capability.get("supportedProcessor") or [{}])[0]
+
+        if not is_supported_vcore(processor_capabilities, v_cores):
+            supported_vcores = processor_capabilities.get("supportedVcores", [])
+            raise ArgumentUsageError(
+                "Invalid value for '--v-cores'. Supported values: {}".format(
+                    ", ".join(str(v) for v in supported_vcores)
+                )
+            )
 
     properties = HorizonDbClusterProperties(
         administrator_login=administrator_login,

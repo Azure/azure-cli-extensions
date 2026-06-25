@@ -15,6 +15,9 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 
+HORIZONDB_MAX_READ_REPLICA_COUNT = 15
+
+
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
 
     # HorizonDB
@@ -39,11 +42,13 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         administrator_login_arg_type = CLIArgumentType(
             options_list=['--administrator-login'],
-            help='The administrator login name for the cluster.')
+            help='The administrator login name for the cluster.',
+            required=True)
 
         administrator_login_password_arg_type = CLIArgumentType(
             options_list=['--administrator-login-password', '-p'],
-            help='The administrator login password.')
+            help='The administrator login password.',
+            required=True)
 
         version_arg_type = CLIArgumentType(
             options_list=['--version', '-v'],
@@ -52,6 +57,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
         replica_count_arg_type = CLIArgumentType(
             options_list=['--replica-count'],
             type=int,
+            max = HORIZONDB_MAX_READ_REPLICA_COUNT,
             help='Number of replicas.')
 
         v_cores_arg_type = CLIArgumentType(

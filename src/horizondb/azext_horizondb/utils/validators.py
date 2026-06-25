@@ -7,6 +7,7 @@ from knack.prompting import NoTTYException, prompt_pass
 from knack.util import CLIError
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group, validate_tags)
+from typing import Any, Dict, Iterable, Optional
 
 
 def password_validator(ns):
@@ -30,3 +31,15 @@ def get_combined_validator(validators):
             validator(namespace)
 
     return _final_validator_impl
+
+
+def is_supported_vcore(processor_capabilities: Optional[Dict[str, Any]], vcore_arg: Any) -> bool:
+    supported_vcores: Iterable[Any] = (processor_capabilities or {}).get("supportedVcores", [])
+
+    try:
+        processor_vcore_options = [int(v) for v in supported_vcores]
+        parsed_vcore_arg = int(vcore_arg)
+    except (TypeError, ValueError):
+        return False
+
+    return parsed_vcore_arg in processor_vcore_options
