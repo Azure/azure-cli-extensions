@@ -72,9 +72,9 @@
         },
         "workspaceKind": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "V1",
             "metadata": {
-                "description": "The kind of workspace to create: V1 or V2. Empty string defaults to V1."
+                "description": "The kind of workspace to create: V1 or V2. Defaults to V1."
             }
         }
     },
@@ -96,7 +96,7 @@
             "properties": {
                 "providers": "[parameters('providers')]",
                 "storageAccount": "[parameters('storageAccountId')]",
-                "workspaceKind": "[if(empty(parameters('workspaceKind')), 'V1', parameters('workspaceKind'))]"
+                "workspaceKind": "[parameters('workspaceKind')]"
             }
         },
         {
