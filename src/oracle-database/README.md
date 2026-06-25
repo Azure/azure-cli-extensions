@@ -22,6 +22,9 @@ az oracle-database autonomous-database list --resource-group MyResourceGroup
 #### Delete an Autonomous Database ####
 az oracle-database autonomous-database delete --name MyAutoDB --resource-group MyResourceGroup --yes --no-wait
 
+#### Generate an Autonomous Database Wallet ####
+az oracle-database autonomous-database generate-wallet --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --password <wallet-password> --generate-type All --is-regional true --file wallet-MyAutoDB.zip
+
 #### Create an Exadb VM Cluster ####
 az oracle-database exadb-vm-cluster create --name MyVmCluster --resource-group MyResourceGroup --location eastus --zone 1 --exascale-db-storage-vault-id <vault_id> --display-name MyVmCluster --enabled-ecpu-count 16 --grid-image-ocid <ocid> --hostname myexahost --node-count 2 --shape Exadata.X9M --ssh-public-keys '<ssh_key>' --vnet-id <vnet_id> --subnet-id <subnet_id> --total-ecpu-count 32 --vm-file-system-storage total-size-in-gbs=1024
 

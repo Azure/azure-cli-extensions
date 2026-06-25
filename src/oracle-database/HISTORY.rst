@@ -6,6 +6,7 @@ Release History
 2.0.4
 ++++++
 * Fixed autonomous database update discriminator databaseType
+* Save generated autonomous database wallets as zip files
 
 2.0.3
 ++++++
