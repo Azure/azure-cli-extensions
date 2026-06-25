@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
 from azure.cli.core.commands import CliCommandType
 from azext_cosmosdb_preview._client_factory import (
     cf_cassandra_cluster,

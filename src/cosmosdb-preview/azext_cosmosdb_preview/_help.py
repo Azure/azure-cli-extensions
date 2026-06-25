@@ -1858,9 +1858,6 @@ helps['cosmosdb softdeleted-account list'] = """
 type: command
 short-summary: List soft-deleted Azure Cosmos DB accounts.
 examples:
-  - name: List all soft-deleted Azure Cosmos DB accounts in a subscription.
-    text: |
-      az cosmosdb softdeleted-account list
   - name: List soft-deleted Azure Cosmos DB accounts in a specific location.
     text: |
       az cosmosdb softdeleted-account list --location westus
