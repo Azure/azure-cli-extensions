@@ -13,9 +13,8 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type)
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
-
-
-HORIZONDB_MAX_READ_REPLICA_COUNT = 15
+from .utils.validators import (
+    validate_replica_count)
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
@@ -41,7 +40,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
                 scopes=['horizondb']))
 
         administrator_login_arg_type = CLIArgumentType(
-            options_list=['--administrator-login'],
+            options_list=['--administrator-login', '-u'],
             help='The administrator login name for the cluster.',
             required=True)
 
@@ -55,10 +54,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='The version of the HorizonDb cluster.')
 
         replica_count_arg_type = CLIArgumentType(
-            options_list=['--replica-count'],
+            options_list=['--replica-count', '-r'],
             type=int,
-            max = HORIZONDB_MAX_READ_REPLICA_COUNT,
-            help='Number of replicas.')
+            validator=validate_replica_count,
+            help='Number of replicas. Must be between 1 and 16, inclusive.')
 
         v_cores_arg_type = CLIArgumentType(
             options_list=['--v-cores'],
@@ -66,7 +65,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='Number of vCores.')
 
         zone_placement_policy_arg_type = CLIArgumentType(
-            options_list=['--zone-placement-policy'],
+            options_list=['--zone-placement-policy', '-z'],
             arg_type=get_enum_type(['Strict', 'BestEffort']),
             help='Defines how replicas are placed across availability zones.')
 

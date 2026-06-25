@@ -10,6 +10,21 @@ from azure.cli.core.commands.validators import (
 from typing import Any, Dict, Iterable, Optional
 
 
+def check_resource_group(resource_group_name):
+    # check if rg is already null originally
+    if not resource_group_name:
+        return False
+
+    # replace single and double quotes with empty string
+    resource_group_name = resource_group_name.replace("'", '')
+    resource_group_name = resource_group_name.replace('"', '')
+
+    # check if rg is empty after removing quotes
+    if not resource_group_name:
+        return False
+    return True
+
+
 def password_validator(ns):
     if not ns.administrator_login_password:
         try:
@@ -43,3 +58,14 @@ def is_supported_vcore(processor_capabilities: Optional[Dict[str, Any]], vcore_a
         return False
 
     return parsed_vcore_arg in processor_vcore_options
+
+
+def validate_resource_group(resource_group_name):
+    if not check_resource_group(resource_group_name):
+        raise CLIError('Resource group name cannot be empty.')
+
+
+# Argument Validators
+def validate_replica_count(ns):
+    if ns.replica_count < 1 or ns.replica_count > 16:
+        raise ValueError('Replica count must be between 1 and 16, inclusive.')

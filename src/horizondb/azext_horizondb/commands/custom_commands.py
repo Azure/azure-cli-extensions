@@ -9,7 +9,9 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
 from ..utils.temp_cluster_capabilities import temp_cluster_capabilities
-from ..utils.validators import is_supported_vcore
+from ..utils.validators import (
+    is_supported_vcore,
+    validate_resource_group)
 from ..utils._util import (
     check_resource_group,
     generate_missing_cluster_parameters)
@@ -17,6 +19,7 @@ from ..utils._util import (
 logger = get_logger(__name__)
 
 HORIZONDB_VERSION_DEFAULT = 17
+
 
 def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name=None, location=None,
                              administrator_login=None, administrator_login_password=None,
@@ -75,6 +78,8 @@ def horizondb_cluster_update(client, resource_group_name, cluster_name,
         HorizonDbClusterForPatchUpdate,
         HorizonDbClusterPropertiesForPatchUpdate,
     )
+
+    validate_resource_group(resource_group_name)
 
     cluster_properties = {}
     if administrator_login_password is not None:
