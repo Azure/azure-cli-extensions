@@ -40,3 +40,11 @@ def cf_horizondb_clusters(cli_ctx, _):
 
 def cf_horizondb_firewall_rules(cli_ctx, _):
     return get_horizondb_management_client(cli_ctx).horizon_db_firewall_rules
+
+
+def cf_horizondb_private_endpoint_connections(cli_ctx, _):
+    return get_horizondb_management_client(cli_ctx).horizon_db_private_endpoint_connections
+
+
+def cf_horizondb_private_link_resources(cli_ctx, _):
+    return get_horizondb_management_client(cli_ctx).horizon_db_private_link_resources
