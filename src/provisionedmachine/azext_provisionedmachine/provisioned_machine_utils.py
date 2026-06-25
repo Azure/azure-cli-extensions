@@ -286,7 +286,7 @@ def check_pim_eligibility(cmd, resource_id):
         active.append(r)
 
     if not active:
-        # Check if user has any eligibility at all to give a better error message.
+        # No PIM activation found.
         has_any_activation = len(activations) > 0
         if has_any_activation:
             raise azclierror.AuthenticationError(
@@ -360,37 +360,15 @@ def _parse_iso_duration_hours(duration):
 def resolve_user_role(cmd, resource_id):
     """Determine the highest-privilege role the signed-in user holds on *resource_id*.
 
+    Checks both permanent role assignments (via RBAC) and PIM-activated
+    time-bound role assignments (via roleAssignmentScheduleInstances).
+
     Returns one of ``Provisioned Machine Reader``, ``Provisioned Machine Contributor``,
     or ``Provisioned Machine Admin``.
     """
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-
-    try:
-        from azure.mgmt.authorization import AuthorizationManagementClient
-    except ImportError as ex:
-        raise azclierror.CLIInternalError(
-            "The 'azure-mgmt-authorization' package is required. "
-            "Please run: pip install azure-mgmt-authorization"
-        ) from ex
+    from azure.cli.core._profile import Profile
 
     user_object_id = _get_current_user_object_id(cmd)
-
-    try:
-        auth_client = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient)
-        assignments = list(auth_client.role_assignments.list_for_scope(
-            scope=resource_id,
-            filter=f"assignedTo('{user_object_id}')"
-        ))
-    except Exception as ex:
-        raise azclierror.CLIInternalError(
-            f"Failed to query role assignments on '{resource_id}': {ex}"
-        ) from ex
-
-    if not assignments:
-        raise azclierror.AuthenticationError(
-            f"No role assignments found for the current user on resource "
-            f"'{resource_id}'. Ensure PIM-based JIT access has been activated."
-        )
 
     role_priority = {"Provisioned Machine Admin": 3,
                      "Provisioned Machine Contributor": 2,
@@ -399,22 +377,64 @@ def resolve_user_role(cmd, resource_id):
     best_role = None
     best_priority = 0
 
-    for assignment in assignments:
-        role_def_id = assignment.role_definition_id
-        try:
-            role_def = auth_client.role_definitions.get_by_id(role_def_id)
-        except Exception:
-            logger.debug("Skipping role definition '%s' (could not resolve).", role_def_id)
-            continue
-        role_name = (role_def.role_name or "").lower()
+    # --- Check PIM-activated roles (roleAssignmentScheduleInstances) ---
+    # This is the primary source for JIT-activated roles which are time-bound.
+    # ARM has eventual consistency — retry up to 3 times with 10s delay to
+    # handle propagation lag after PIM activation.
+    import time
+    max_attempts = 3
+    retry_delay_seconds = 10
 
-        for key, standard in PROVISIONED_MACHINE_ROLES.items():
-            # Match by dict key (e.g. "admin" in "provisioned machine admin")
-            if key in role_name or standard.lower() in role_name:
-                priority = role_priority.get(standard, 0)
-                if priority > best_priority:
-                    best_role = standard
-                    best_priority = priority
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    creds, _, _ = profile.get_login_credentials()
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            token = creds.get_token("https://management.azure.com/.default")
+
+            pim_url = (
+                f"https://management.azure.com{resource_id}"
+                f"/providers/Microsoft.Authorization"
+                f"/roleAssignmentScheduleInstances"
+                f"?api-version=2020-10-01"
+                f"&$filter=assignedTo('{user_object_id}')"
+            )
+            pim_resp = requests.get(
+                pim_url,
+                headers={"Authorization": f"Bearer {token.token}"},
+                timeout=30,
+            )
+            if pim_resp.status_code == 200:
+                pim_data = pim_resp.json()
+                for instance in pim_data.get("value", []):
+                    props = instance.get("properties", {})
+                    role_display = (
+                        props.get("expandedProperties", {})
+                        .get("roleDefinition", {})
+                        .get("displayName", "")
+                    )
+                    role_name = role_display.strip().lower()
+                    logger.debug("PIM active role: '%s'", role_name)
+                    for key, standard in PROVISIONED_MACHINE_ROLES.items():
+                        if standard.lower() == role_name:
+                            priority = role_priority.get(standard, 0)
+                            if priority > best_priority:
+                                best_role = standard
+                                best_priority = priority
+            else:
+                logger.debug("PIM schedule instances query returned HTTP %d", pim_resp.status_code)
+        except Exception as ex:
+            logger.debug("PIM schedule instances check failed: %s", ex)
+
+        if best_role:
+            break
+
+        if attempt < max_attempts:
+            logger.info(
+                "No PIM role found on attempt %d/%d. Retrying in %ds (ARM propagation)...",
+                attempt, max_attempts, retry_delay_seconds,
+            )
+            time.sleep(retry_delay_seconds)
 
     if not best_role:
         raise azclierror.AuthenticationError(

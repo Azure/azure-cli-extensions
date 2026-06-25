@@ -25,7 +25,10 @@ param(
     [string]$AcrName      = "jitsshtester",
     [string]$ImageName    = "jitsshtester.azurecr.io/jit-ssh-test:0.0.1",
     [string]$ContainerName = "ssh-jit-tester",
-    [int]$SshPort         = 2222
+    [int]$SshPort         = 2222,
+    # --- Skip phases ---
+    # --- Test selection: comma-separated test IDs (e.g. "2.5,2.7,3.5") or empty for all ---
+    [string]$RunTests = ""
 )
 
 $ErrorActionPreference = "Continue"
@@ -34,9 +37,28 @@ $resultsFile = "e2e-results-$ts.csv"
 $results = @()
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
+# Parse test filter — supports individual IDs ("2.5,3.3") or phase prefixes ("2,3")
+$script:testFilter = @()
+if ($RunTests) {
+    $script:testFilter = $RunTests -split "," | ForEach-Object { $_.Trim() }
+    Write-Host "Test filter active: running only [$($script:testFilter -join ', ')]" -ForegroundColor Yellow
+}
+function Should-RunTest([string]$Id) {
+    if ($script:testFilter.Count -eq 0) { return $true }  # No filter = run all
+    foreach ($f in $script:testFilter) {
+        if ($Id -eq $f) { return $true }          # Exact match: "2.5"
+        if ($Id.StartsWith("$f.")) { return $true } # Phase prefix: "2" matches "2.5"
+    }
+    return $false
+}
+
 # ── helpers ──────────────────────────────────────────────────
 function Run-Test {
     param([string]$Id,[string]$Name,[string]$Desc,[string]$Cmd,[string]$Expected,[scriptblock]$Block)
+    if (-not (Should-RunTest $Id)) {
+        # Silently skip filtered-out tests
+        return
+    }
     Write-Host "`n=== [$Id] $Name ===" -ForegroundColor Cyan
     Write-Host "  $Desc" -ForegroundColor Gray
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
@@ -96,8 +118,38 @@ Write-Host "Wheel: $WhlPath`n" -ForegroundColor Green
 $dummyRid = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/X/Y/Z"
 
 # ═════════════════════════════════════════════════════════════
+# CLEANUP: Cancel any pending PIM requests from previous runs
+# ═════════════════════════════════════════════════════════════
+Write-Host "─── Cancelling stale pending PIM requests ───" -ForegroundColor Magenta
+$tokClean = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+$cleanScopes = @($EdgeMachine, $KvResourceId)
+foreach ($cleanScope in $cleanScopes) {
+    $pendingReqs = Invoke-RestMethod -Uri "https://management.azure.com${cleanScope}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokClean"} -EA SilentlyContinue
+    $stalePending = @($pendingReqs.value | Where-Object { $_.properties.status -eq "PendingApproval" -and $_.properties.principalId -eq $userOid })
+    if ($stalePending.Count -gt 0) {
+        foreach ($sp in $stalePending) {
+            $cancelGuid = [guid]::NewGuid().ToString()
+            $roleName = $sp.properties.expandedProperties.roleDefinition.displayName
+            $linkedEid = $sp.properties.linkedRoleEligibilityScheduleId
+            $rdId = $sp.properties.roleDefinitionId
+            Write-Host "  Cancelling pending: $roleName on $cleanScope" -ForegroundColor Yellow
+            $cancelBody = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${rdId}','requestType':'SelfDeactivate','justification':'E2E cleanup - cancel stale request'}}"
+            az rest --method PUT --url "https://management.azure.com${cleanScope}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${cancelGuid}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $cancelBody 2>&1 | Out-Null
+        }
+        Write-Host "  Cancelled $($stalePending.Count) stale request(s) on $cleanScope" -ForegroundColor Green
+    } else {
+        Write-Host "  No pending requests on $cleanScope" -ForegroundColor Green
+    }
+}
+Start-Sleep 5
+
+# ═════════════════════════════════════════════════════════════
 # 1. EXTENSION INSTALLATION & HELP
 # ═════════════════════════════════════════════════════════════
+# Always reinstall from wheel to ensure latest code is used
+az extension remove --name provisionedmachine 2>$null
+az extension add --source $WhlPath --yes 2>&1 | Out-Null
+
 Write-Host "─── Phase 1: Extension Installation & Help ───" -ForegroundColor Magenta
 
 Run-Test "1.1" "Install extension" "Install from .whl file" `
@@ -110,7 +162,7 @@ Run-Test "1.1" "Install extension" "Install from .whl file" `
 
 Run-Test "1.2" "Verify extension listed" "Confirm version 1.0.0b3 in list" `
     'az extension list -o table' "provisionedmachine 1.0.0b3" {
-    $q = '[?name==''provisionedmachine''].{N:name,V:version}'
+    $q = '[?name==''provisionedmachine''].{Name:name,Version:version}'
     $o = az extension list --query $q -o table 2>&1 | Out-String
     if ($o -notmatch "provisionedmachine") { throw "Not listed" }; $o.Trim()
 }
@@ -174,121 +226,195 @@ Run-Test "2.4" "Invalid resource ID - deleted/non-existent machine" "Resource do
 function Deactivate-AllPmRoles {
     $allPmRoles = @("Provisioned Machine Admin", "Provisioned Machine Reader", "Provisioned Machine Contributor")
     
-    # Remove ALL PM role assignments (including inherited from parent RG/subscription)
+    # Remove any direct RBAC PM role assignments (cleanup from prior runs)
     $allAssignments = az role assignment list --assignee $userOid --scope $EdgeMachine --include-inherited --query "[?contains(roleDefinitionName, 'Provisioned Machine')]" -o json 2>$null | ConvertFrom-Json
     if ($allAssignments -and $allAssignments.Count -gt 0) {
         foreach ($a in $allAssignments) {
             Write-Host "    Removing direct assignment: $($a.roleDefinitionName) (scope: $($a.scope))" -ForegroundColor Gray
             az role assignment delete --ids $a.id 2>&1 | Out-Null
         }
-        Start-Sleep 5
-    }
-    
-    $minDurationHit = $false
-    foreach ($rn in $allPmRoles) {
-        $rd = az role definition list --name $rn --query "[0].id" -o tsv 2>$null
-        if ($rd) {
-            $dg = [guid]::NewGuid().ToString()
-            $deactOut = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${rd}','requestType':'SelfDeactivate','justification':'E2E role isolation'}}" 2>&1 | Out-String
-            if ($deactOut -match "minimum.*duration|not allowed before|ActiveDurationTooShort|MinimumActiveDuration") {
-                Write-Host "    '$rn' cannot be deactivated yet (min activation duration). Will wait..." -ForegroundColor Yellow
-                $minDurationHit = $true
-            }
-        }
     }
 
-    # If any role hit minimum duration error, wait 5 minutes then retry deactivation
-    if ($minDurationHit) {
-        Write-Host "    Waiting 5 min for minimum activation duration to pass..." -ForegroundColor Yellow
-        $waitElapsed = 0
-        while ($waitElapsed -lt 300) {
-            Start-Sleep 10; $waitElapsed += 10
-            if ($waitElapsed % 60 -eq 0) { Write-Host "    Waited ${waitElapsed}s / 300s..." -ForegroundColor Gray }
-        }
-        # Retry deactivation after waiting
+    # Send PIM SelfDeactivate for all PM roles on edge machine + parent scopes
+    $emParts = $EdgeMachine -split "/"
+    $subScope = "/subscriptions/$($emParts[2])"
+    $rgScope = "/subscriptions/$($emParts[2])/resourceGroups/$($emParts[4])"
+    $allScopes = @($EdgeMachine, $rgScope, $subScope)
+    foreach ($scope in $allScopes) {
         foreach ($rn in $allPmRoles) {
             $rd = az role definition list --name $rn --query "[0].id" -o tsv 2>$null
             if ($rd) {
-                $dg2 = [guid]::NewGuid().ToString()
-                az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg2}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${rd}','requestType':'SelfDeactivate','justification':'E2E role isolation retry'}}" 2>&1 | Out-Null
+                $dg = [guid]::NewGuid().ToString()
+                az rest --method PUT --url "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${rd}','requestType':'SelfDeactivate','justification':'E2E role isolation'}}" 2>&1 | Out-Null
             }
         }
     }
 
-    # Poll for up to 5 minutes (every 10s) — confirm deactivation via role assignment schedule API
-    Write-Host "    Polling for PIM deactivation (every 10s, max 5min)..." -ForegroundColor Gray
-    $maxWait = 300; $elapsed = 0
+    # Poll: confirm no PM roles visible via schedule instances + RBAC (max 60s)
+    Write-Host "    Polling for PM role removal (every 10s, max 60s)..." -ForegroundColor Gray
+    $maxWait = 60; $elapsed = 0
     while ($elapsed -lt $maxWait) {
         Start-Sleep 10; $elapsed += 10
-        # Query active role assignment schedules to confirm no PM roles are active
-        $tokDeact = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
-        $schedResp = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokDeact"} -EA SilentlyContinue
-        $activePm = @($schedResp.value | Where-Object {
-            $dn = $_.properties.expandedProperties.roleDefinition.displayName
-            $dn -match "Provisioned Machine"
-        })
-        if ($activePm.Count -eq 0) {
-            Write-Host "    PIM deactivated after ${elapsed}s (confirmed via API)" -ForegroundColor Green
+        # Check RBAC direct assignments
+        $rbacAssignments = az role assignment list --assignee $userOid --scope $EdgeMachine --include-inherited --query "[?contains(roleDefinitionName, 'Provisioned Machine')]" -o json 2>$null | ConvertFrom-Json
+        $rbacCount = if ($rbacAssignments) { $rbacAssignments.Count } else { 0 }
+        # Check PIM schedule instances
+        $tokChk = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+        $pimActive = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokChk"} -EA SilentlyContinue
+        $pimPmRoles = $pimActive.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -match "Provisioned Machine" }
+        $pimCount = if ($pimPmRoles) { @($pimPmRoles).Count } else { 0 }
+        if ($rbacCount -eq 0 -and $pimCount -eq 0) {
+            Write-Host "    All PM roles removed after ${elapsed}s" -ForegroundColor Green
             return
         }
-        $activeNames = ($activePm | ForEach-Object { $_.properties.expandedProperties.roleDefinition.displayName }) -join ", "
-        Write-Host "    Still active: $activeNames (${elapsed}s)" -ForegroundColor Gray
+        $activeNames = @()
+        if ($rbacAssignments) { $activeNames += $rbacAssignments | ForEach-Object { $_.roleDefinitionName } }
+        if ($pimPmRoles) { $activeNames += $pimPmRoles | ForEach-Object { $_.properties.expandedProperties.roleDefinition.displayName } }
+        Write-Host "    Still active: $(($activeNames | Select-Object -Unique) -join ', ') (${elapsed}s)" -ForegroundColor Gray
     }
-    Write-Host "    WARNING: PIM still active after 5min polling" -ForegroundColor Yellow
+    Write-Host "    WARNING: PM roles still visible after ${maxWait}s" -ForegroundColor Yellow
 }
 
-# Helper: Activate a specific role (polls for approval up to 5 min every 10s)
+# Helper: Activate a specific role via PIM SelfActivate (polls for approval up to 5 min)
 function Activate-SingleRole {
     param([string]$RoleName2, [string]$RoleDef2)
     
-    $tok3 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
-    $er3 = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tok3"} -EA SilentlyContinue
-    $eid3 = ($er3.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 -and $_.properties.memberType -eq "Direct" }).name
+    $tokEm = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
     
-    # Create eligibility if not exists
-    if (-not $eid3) {
-        $eg3 = [guid]::NewGuid().ToString()
-        $eb3 = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${RoleDef2}','requestType':'AdminAssign','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT1H'}}}}"
-        az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleRequests/${eg3}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $eb3 2>&1 | Out-Null
-        Start-Sleep 8
-        $tok3 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
-        $er3 = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tok3"}
-        $eid3 = ($er3.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 -and $_.properties.memberType -eq "Direct" }).name
+    # Find PIM eligibility for this role on the edge machine
+    $emElig = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokEm"} -EA SilentlyContinue
+    $emEid = ($emElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 -and $_.properties.memberType -eq "Direct" }).name
+    
+    if (-not $emEid) {
+        # Check parent scopes (RG, subscription) for inherited eligibility
+        $emParts = $EdgeMachine -split "/"
+        $rgScope = "/subscriptions/$($emParts[2])/resourceGroups/$($emParts[4])"
+        $subScope = "/subscriptions/$($emParts[2])"
+        foreach ($scope in @($rgScope, $subScope)) {
+            $parentElig = Invoke-RestMethod -Uri "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokEm"} -EA SilentlyContinue
+            $emEid = ($parentElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 }).name
+            if ($emEid) { break }
+        }
     }
-    if (-not $eid3) { throw "Could not get eligibility for $RoleName2" }
     
-    # Attempt activation — if PendingApproval, poll every 10s for 5 min
-    $ag3 = [guid]::NewGuid().ToString()
-    $ab3 = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${RoleDef2}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${eid3}','justification':'E2E role test','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT5M'}}}}"
-    $actOut3 = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${ag3}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $ab3 2>&1 | Out-String
+    if (-not $emEid) { throw "No PIM eligibility found for $RoleName2 on $EdgeMachine (or parent scopes)" }
     
-    if ($actOut3 -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') { return }
+    # Attempt PIM SelfActivate — single request only
+    $ag = [guid]::NewGuid().ToString()
+    $ab = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${RoleDef2}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${emEid}','justification':'E2E test - $RoleName2','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT30M'}}}}"
+    $ar = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${ag}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $ab 2>&1 | Out-String
     
-    if ($actOut3 -match "PendingApproval|PendingRoleAssignment|Pending") {
-        Write-Host "    '$RoleName2' pending approval — polling every 10s for 5min..." -ForegroundColor Yellow
-        Write-Host "    >>> Please APPROVE in Azure Portal: '$RoleName2' on $EdgeMachine <<<" -ForegroundColor Yellow
-        $maxWait = 300; $elapsed = 0
+    if ($ar -match '"status"\s*:\s*"Provisioned"') {
+        Write-Host "    PIM activated: $RoleName2" -ForegroundColor Green
+        Write-Host "    Waiting 30s for ARM propagation..." -ForegroundColor Gray
+        Start-Sleep 30
+        return
+    }
+    if ($ar -match "RoleAssignmentExists") {
+        Write-Host "    PIM already active: $RoleName2" -ForegroundColor Green
+        return
+    }
+    if ($ar -match "PendingApproval|PendingRoleAssignmentRequest") {
+        # Check if role is already active via schedule instances
+        $tokEm2 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+        $emActive = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokEm2"} -EA SilentlyContinue
+        $emFound = $emActive.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 }
+        if ($emFound) {
+            Write-Host "    PIM already active: $RoleName2 (confirmed via schedule instances)" -ForegroundColor Green
+            return
+        }
+        
+        Write-Host "    PIM for $RoleName2 : PENDING APPROVAL" -ForegroundColor Yellow
+        Write-Host "    >>> Please APPROVE '$RoleName2' on $EdgeMachine <<<" -ForegroundColor Yellow
+        Write-Host "    Polling for 10 minutes..." -ForegroundColor Yellow
+        $maxWait = 600; $elapsed = 0
         while ($elapsed -lt $maxWait) {
             Start-Sleep 10; $elapsed += 10
-            # Check if cert-create now works (means PIM got approved)
-            $check = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
-            if ($check -match "certificatePath") {
-                Write-Host "    Approved and active after ${elapsed}s" -ForegroundColor Green
+            # Monitor only — check schedule instances
+            $tokEm3 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+            $emActive3 = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokEm3"} -EA SilentlyContinue
+            $emFound3 = $emActive3.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 }
+            if ($emFound3) {
+                Write-Host "    PIM $RoleName2 active after ${elapsed}s" -ForegroundColor Green
+                Write-Host "    Waiting 30s for ARM propagation..." -ForegroundColor Gray
+                Start-Sleep 30
                 return
             }
-            # Also try re-activating in case the pending cleared
-            $ag4 = [guid]::NewGuid().ToString()
-            $reAct = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${ag4}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $ab3 2>&1 | Out-String
-            if ($reAct -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
-                Write-Host "    Activated after ${elapsed}s" -ForegroundColor Green
-                return
-            }
-            if ($elapsed % 60 -eq 0) { Write-Host "    Waiting... (${elapsed}s / 300s)" -ForegroundColor Gray }
+            if ($elapsed % 60 -eq 0) { Write-Host "    Waiting for $RoleName2 approval... (${elapsed}s / 600s)" -ForegroundColor Gray }
         }
-        throw "Timed out waiting for approval of '$RoleName2' after 5 minutes. Approve in Portal: $EdgeMachine"
+        throw "PIM approval for $RoleName2 timed out after 10min. Please approve and re-run."
+    }
+    throw "PIM SelfActivate failed for $RoleName2 : $ar"
+}
+
+# Helper: Activate PM role + KV Crypto User PIM in parallel, poll both for 10 min
+function Activate-PmAndKv-Parallel {
+    param([string]$RoleName2, [string]$RoleDef2)
+    
+    # KV Crypto User is pre-activated for PT3H before role tests start.
+    # This function only activates the PM role now.
+    
+    $tokInit = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+    
+    # --- Find PM eligibility (retry up to 3 times for ARM propagation after deactivation) ---
+    $emEid = $null
+    for ($eligRetry = 1; $eligRetry -le 3; $eligRetry++) {
+        $tokInit = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+        $emElig = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokInit"} -EA SilentlyContinue
+        $emEid = ($emElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 -and $_.properties.memberType -eq "Direct" }).name
+        if (-not $emEid) {
+            $emParts = $EdgeMachine -split "/"
+            foreach ($scope in @("/subscriptions/$($emParts[2])/resourceGroups/$($emParts[4])", "/subscriptions/$($emParts[2])")) {
+                $parentElig = Invoke-RestMethod -Uri "https://management.azure.com${scope}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokInit"} -EA SilentlyContinue
+                $emEid = ($parentElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 }).name
+                if ($emEid) { break }
+            }
+        }
+        if ($emEid) { break }
+        if ($eligRetry -lt 3) {
+            Write-Host "    Eligibility for $RoleName2 not found (attempt $eligRetry/3), retrying in 10s..." -ForegroundColor Gray
+            Start-Sleep 10
+        }
+    }
+    if (-not $emEid) { throw "No PIM eligibility found for $RoleName2 on $EdgeMachine (or parent scopes)" }
+    
+    # --- Activate PM role — single request only ---
+    $pmGuid = [guid]::NewGuid().ToString()
+    $pmBody = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${RoleDef2}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${emEid}','justification':'E2E test - $RoleName2','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT30M'}}}}"
+    $pmResult = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${pmGuid}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $pmBody 2>&1 | Out-String
+    
+    if ($pmResult -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
+        Write-Host "    PIM activated: $RoleName2" -ForegroundColor Green
+        Write-Host "    Waiting 30s for ARM propagation..." -ForegroundColor Gray
+        Start-Sleep 30
+        return
     }
     
-    throw "Activation failed for $RoleName2 : $actOut3"
+    # --- Pending approval: poll for PM role only ---
+    Write-Host "    PIM PENDING APPROVAL: $RoleName2" -ForegroundColor Yellow
+    Write-Host "    >>> Please APPROVE '$RoleName2' on $EdgeMachine <<<" -ForegroundColor Yellow
+    Write-Host "    Polling for 10 minutes (every 10s)..." -ForegroundColor Yellow
+    
+    $maxWait = 600; $elapsed = 0
+    while ($elapsed -lt $maxWait) {
+        Start-Sleep 10; $elapsed += 10
+        $tok = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+        
+        $emActive = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tok"} -EA SilentlyContinue
+        $emFound = $emActive.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $RoleName2 }
+        if ($emFound) {
+            Write-Host "    PIM $RoleName2 active after ${elapsed}s" -ForegroundColor Green
+            Write-Host "    Waiting 30s for ARM propagation..." -ForegroundColor Gray
+            Start-Sleep 30
+            return
+        }
+        
+        if ($elapsed % 60 -eq 0) {
+            Write-Host "    Waiting: $RoleName2 (${elapsed}s / 600s)" -ForegroundColor Gray
+        }
+    }
+    
+    throw "PIM approval timed out after 10min for: $RoleName2. Please approve and re-run."
 }
 
 # Helper: Ensure KV Crypto User PIM is active (needed for cert signing)
@@ -297,14 +423,7 @@ function Ensure-KvPim {
     $kvRd = "/subscriptions/$Subscription/providers/Microsoft.Authorization/roleDefinitions/12338af0-0e69-4776-bea7-57ae8d297424"
     $tokKv = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
     
-    # Check if already active via schedule instances
-    $kvSched = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKv"} -EA SilentlyContinue
-    $kvActive = @($kvSched.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole })
-    if ($kvActive.Count -gt 0) {
-        Write-Host "    KV Crypto User PIM: already active" -ForegroundColor Green
-        return
-    }
-    
+    # Always attempt activation (don't just trust schedule instances — they can be stale)
     # Check eligibility
     $kvElig = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKv"} -EA SilentlyContinue
     $kvEid = ($kvElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole -and $_.properties.memberType -eq "Direct" }).name
@@ -321,32 +440,139 @@ function Ensure-KvPim {
     }
     if (-not $kvEid) { throw "Cannot get KV Crypto User eligibility" }
     
-    # Activate
+    # Attempt activation (PT1H) — RoleAssignmentExists means it's already active
     $ag = [guid]::NewGuid().ToString()
-    $ab = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${kvRd}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${kvEid}','justification':'E2E cert test','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT30M'}}}}"
+    $ab = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${kvRd}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${kvEid}','justification':'E2E cert test','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT1H'}}}}"
     $ar = az rest --method PUT --url "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${ag}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $ab 2>&1 | Out-String
     
-    if ($ar -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
-        Write-Host "    KV Crypto User PIM: ACTIVATED" -ForegroundColor Green
+    if ($ar -match '"status"\s*:\s*"Provisioned"') {
+        Write-Host "    KV Crypto User PIM: ACTIVATED (PT1H)" -ForegroundColor Green
         return
     }
-    if ($ar -match "PendingApproval") {
+    if ($ar -match "RoleAssignmentExists") {
+        Write-Host "    KV Crypto User PIM: already active (confirmed via activation attempt)" -ForegroundColor Green
+        return
+    }
+    if ($ar -match "PendingApproval|PendingRoleAssignmentRequest") {
+        # Check if KV is already active despite the pending request
+        $tokKv2 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+        $kvActive = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKv2"} -EA SilentlyContinue
+        $kvFound = $kvActive.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole }
+        if ($kvFound) {
+            Write-Host "    KV Crypto User PIM: already active (confirmed via schedule instances)" -ForegroundColor Green
+            return
+        }
+
         Write-Host "    KV Crypto User PIM: PENDING APPROVAL" -ForegroundColor Yellow
         Write-Host "    >>> Please APPROVE 'Key Vault Crypto User' on $KvResourceId <<<" -ForegroundColor Yellow
+        Write-Host "    Polling for 5 minutes..." -ForegroundColor Yellow
         $maxWait = 300; $elapsed = 0
         while ($elapsed -lt $maxWait) {
             Start-Sleep 10; $elapsed += 10
-            $ag2 = [guid]::NewGuid().ToString()
-            $reAct = az rest --method PUT --url "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${ag2}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $ab 2>&1 | Out-String
-            if ($reAct -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
-                Write-Host "    KV Crypto User approved after ${elapsed}s" -ForegroundColor Green
+            # Monitor only — check schedule instances
+            $tokKv3 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+            $kvActive3 = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKv3"} -EA SilentlyContinue
+            $kvFound3 = $kvActive3.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole }
+            if ($kvFound3) {
+                Write-Host "    KV Crypto User active after ${elapsed}s" -ForegroundColor Green
                 return
             }
             if ($elapsed % 60 -eq 0) { Write-Host "    Waiting for KV approval... (${elapsed}s / 300s)" -ForegroundColor Gray }
         }
-        throw "KV Crypto User PIM approval timed out after 5min"
+        throw "KV Crypto User PIM approval timed out after 5min. Please approve and re-run."
     }
     Write-Host "    KV Crypto User PIM activation: $ar" -ForegroundColor Yellow
+}
+
+# ═════════════════════════════════════════════════════════════
+# TEST 3.5 (MOVED FIRST): No KV Crypto User PIM = cert fails
+# Must run BEFORE KV pre-activation so KV is deactivated.
+# ═════════════════════════════════════════════════════════════
+Run-Test "3.5" "No KV Crypto User PIM = cert fails" "Deactivate KV Crypto User, verify cert fails with KV access denied" `
+    "Deactivate KV PIM, then ssh-cert-create" "Correctly failed - KV access denied without Crypto User PIM" {
+    # First, activate Edge Machine Admin so PIM check passes (isolate the KV failure)
+    $adminDef35 = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
+    Activate-SingleRole -RoleName2 "Provisioned Machine Admin" -RoleDef2 $adminDef35
+    Start-Sleep 5
+    
+    # Deactivate KV Crypto User PIM (may already be inactive)
+    $kvRd35 = "/subscriptions/$Subscription/providers/Microsoft.Authorization/roleDefinitions/12338af0-0e69-4776-bea7-57ae8d297424"
+    $dg35 = [guid]::NewGuid().ToString()
+    $kvDeact = az rest --method PUT --url "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg35}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${kvRd35}','requestType':'SelfDeactivate','justification':'E2E test - verify KV PIM required'}}" 2>&1 | Out-String
+    
+    if ($kvDeact -match "minimum.*duration|not allowed before|ActiveDurationTooShort") {
+        Write-Host "    KV Crypto User: min duration not met, waiting 5 min..." -ForegroundColor Yellow
+        Start-Sleep 300
+        $dg35b = [guid]::NewGuid().ToString()
+        az rest --method PUT --url "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg35b}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${kvRd35}','requestType':'SelfDeactivate','justification':'E2E - KV deactivation retry'}}" 2>&1 | Out-Null
+    }
+    
+    # Wait for KV deactivation propagation
+    Write-Host "    Waiting 15s for KV Crypto User deactivation..." -ForegroundColor Gray
+    Start-Sleep 15
+    
+    # Attempt cert-create - should fail with KV access denied (Sign permission missing)
+    $o = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
+    if ($o -match "certificatePath") {
+        throw "BUG: Cert generated without KV Crypto User PIM! KV should deny signing."
+    }
+    if ($o -notmatch "Access denied|Forbidden|401|Key Sign|vault|Unauthorized|denied") {
+        throw "Unexpected error (expected KV access denied): $o"
+    }
+    Write-Host "    Correctly failed: no KV Crypto User PIM = no signing permission" -ForegroundColor Green
+    "Correctly failed - KV access denied without Crypto User PIM"
+}
+
+# ── Pre-activate KV Crypto User for PT3H (after 3.5 confirmed KV denial) ──
+# This avoids KV data-plane RBAC propagation issues caused by rapid deactivation/reactivation.
+# KV stays active for remainder of tests since 3.5 already ran.
+if (Should-RunTest "2.5" -or (Should-RunTest "2.6") -or (Should-RunTest "2.7") -or (Should-RunTest "2.7a") -or (Should-RunTest "2.7b") -or (Should-RunTest "5")) {
+    Write-Host "`n── Pre-activating KV Crypto User (PT3H) for role tests ──" -ForegroundColor Cyan
+    $kvRole = "Key Vault Crypto User"
+    $kvRd = "/subscriptions/$Subscription/providers/Microsoft.Authorization/roleDefinitions/12338af0-0e69-4776-bea7-57ae8d297424"
+    $tokKvPre = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+    
+    # Check if already active
+    $kvActiveChk = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKvPre"} -EA SilentlyContinue
+    $kvAlready = $kvActiveChk.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole }
+    
+    if ($kvAlready) {
+        Write-Host "  KV Crypto User already active — skipping activation" -ForegroundColor Green
+    } else {
+        # Find eligibility
+        $kvEligPre = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKvPre"} -EA SilentlyContinue
+        $kvEidPre = ($kvEligPre.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole -and $_.properties.memberType -eq "Direct" }).name
+        if (-not $kvEidPre) { throw "No PIM eligibility for KV Crypto User on $KvResourceId" }
+        
+        $kvGuidPre = [guid]::NewGuid().ToString()
+        $kvBodyPre = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${kvRd}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${kvEidPre}','justification':'E2E role tests - KV pre-activation','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT3H'}}}}"
+        $kvResPre = az rest --method PUT --url "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${kvGuidPre}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $kvBodyPre 2>&1 | Out-String
+        
+        if ($kvResPre -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
+            Write-Host "  KV Crypto User PIM: ACTIVATED (PT3H)" -ForegroundColor Green
+        } elseif ($kvResPre -match "PendingApproval|PendingRoleAssignmentRequest") {
+            Write-Host "  >>> Please APPROVE 'Key Vault Crypto User' on $KvResourceId <<<" -ForegroundColor Yellow
+            Write-Host "  Polling for 10 minutes..." -ForegroundColor Yellow
+            $kvMaxPre = 600; $kvElPre = 0
+            while ($kvElPre -lt $kvMaxPre) {
+                Start-Sleep 10; $kvElPre += 10
+                $tokKvPre2 = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+                $kvAct2 = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKvPre2"} -EA SilentlyContinue
+                $kvF2 = $kvAct2.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq $kvRole }
+                if ($kvF2) {
+                    Write-Host "  KV Crypto User active after ${kvElPre}s" -ForegroundColor Green
+                    break
+                }
+                if ($kvElPre % 60 -eq 0) { Write-Host "  Waiting for KV approval... (${kvElPre}s / 600s)" -ForegroundColor Gray }
+            }
+            if (-not $kvF2) { throw "KV Crypto User PIM approval timed out. Please approve and re-run." }
+        } else {
+            Write-Host "  KV activation response: $kvResPre" -ForegroundColor Yellow
+        }
+        # Wait for KV data-plane propagation
+        Write-Host "  Waiting 60s for KV data-plane RBAC propagation..." -ForegroundColor Gray
+        Start-Sleep 60
+    }
 }
 
 Run-Test "2.5" "Reader role on Provisioned Machine" "Deactivate all, assign Reader, verify cert" `
@@ -354,26 +580,9 @@ Run-Test "2.5" "Reader role on Provisioned Machine" "Deactivate all, assign Read
     $readerDef = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
     if (-not $readerDef) { throw "Provisioned Machine Reader role not found" }
     
-    # Deactivate all roles first (Admin has highest priority, must be gone)
+    # Deactivate all PM roles, then activate Reader + KV in parallel
     Deactivate-AllPmRoles
-    
-    # Explicitly ensure Admin and Contributor are deactivated (they outrank Reader)
-    $adminDef25 = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
-    $contribDef25 = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
-    foreach ($higherDef in @($adminDef25, $contribDef25)) {
-        if ($higherDef) {
-            $dg25 = [guid]::NewGuid().ToString()
-            az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg25}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${higherDef}','requestType':'SelfDeactivate','justification':'Ensure only Reader is active'}}" 2>&1 | Out-Null
-        }
-    }
-    Start-Sleep 5
-    
-    # Activate only Reader
-    Activate-SingleRole -RoleName2 "Provisioned Machine Reader" -RoleDef2 $readerDef
-    Start-Sleep 5
-    
-    # Ensure KV Crypto User PIM is active (required for cert signing)
-    Ensure-KvPim
+    Activate-PmAndKv-Parallel -RoleName2 "Provisioned Machine Reader" -RoleDef2 $readerDef
     
     # Generate cert
     $o = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
@@ -393,31 +602,38 @@ Run-Test "2.5" "Reader role on Provisioned Machine" "Deactivate all, assign Read
     "Certificate generated with role=Provisioned Machine Reader"
 }
 
-Run-Test "2.6" "Admin role on Provisioned Machine" "Deactivate all, assign Admin, verify cert" `
+Run-Test "2.6" "Contributor role on Provisioned Machine" "Deactivate all, assign Contributor, verify cert" `
+    "Isolate Contributor role, ssh-cert-create" "Certificate generated with role=Provisioned Machine Contributor" {
+    $contribDef = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
+    if (-not $contribDef) { throw "Provisioned Machine Contributor role not found" }
+    
+    # Deactivate all PM roles, then activate Contributor + KV in parallel
+    Deactivate-AllPmRoles
+    Activate-PmAndKv-Parallel -RoleName2 "Provisioned Machine Contributor" -RoleDef2 $contribDef
+    
+    # Generate cert
+    $o = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
+    if ($o -notmatch "certificatePath") { throw "Cert gen failed: $o" }
+    
+    $m = [regex]::Match($o, '\{[^}]+\}')
+    if ($m.Success) {
+        $j = $m.Value | ConvertFrom-Json
+        $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
+        if ($certOut -match "role=Provisioned Machine Admin") { throw "Admin role still active! Priority conflict. Got: $certOut" }
+        if ($certOut -notmatch "role=Provisioned Machine Contributor") { throw "Cert does not have Contributor role. Got: $certOut" }
+        Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
+    }
+    "Certificate generated with role=Provisioned Machine Contributor"
+}
+
+Run-Test "2.7" "Admin role on Provisioned Machine" "Deactivate all, assign Admin, verify cert" `
     "Isolate Admin role, ssh-cert-create" "Certificate generated with role=Provisioned Machine Admin" {
     $adminDef = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
     if (-not $adminDef) { throw "Provisioned Machine Admin role not found" }
     
-    # Deactivate all roles first (Reader/Contributor must be gone)
+    # Deactivate all PM roles, then activate Admin + KV in parallel
     Deactivate-AllPmRoles
-    
-    # Explicitly ensure Reader and Contributor are deactivated
-    $readerDef26 = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
-    $contribDef26 = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
-    foreach ($otherDef in @($readerDef26, $contribDef26)) {
-        if ($otherDef) {
-            $dg26 = [guid]::NewGuid().ToString()
-            az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg26}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${otherDef}','requestType':'SelfDeactivate','justification':'Ensure only Admin is active'}}" 2>&1 | Out-Null
-        }
-    }
-    Start-Sleep 5
-    
-    # Activate only Admin
-    Activate-SingleRole -RoleName2 "Provisioned Machine Admin" -RoleDef2 $adminDef
-    Start-Sleep 5
-    
-    # Ensure KV Crypto User PIM is active (required for cert signing)
-    Ensure-KvPim
+    Activate-PmAndKv-Parallel -RoleName2 "Provisioned Machine Admin" -RoleDef2 $adminDef
     
     # Generate cert
     $o = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
@@ -433,30 +649,44 @@ Run-Test "2.6" "Admin role on Provisioned Machine" "Deactivate all, assign Admin
     "Certificate generated with role=Provisioned Machine Admin"
 }
 
-Run-Test "2.7" "Contributor role on Provisioned Machine" "Deactivate all, assign Contributor, verify cert" `
-    "Isolate Contributor role, ssh-cert-create" "Certificate generated with role=Provisioned Machine Contributor" {
-    $contribDef = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
-    if (-not $contribDef) { throw "Provisioned Machine Contributor role not found" }
+# --- Role Priority Tests: multiple roles active simultaneously ---
+
+Run-Test "2.7a" "Priority: Admin wins over Reader+Contributor" "Activate Admin+Reader+KV, verify Admin in cert" `
+    "Admin > Contributor > Reader priority" "Certificate generated with role=Provisioned Machine Admin" {
+    $adminDef = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
+    $readerDef = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
     
-    # Deactivate all roles first (Admin outranks Contributor, must be gone)
+    # Activate Admin (Reader may still be active from prior test — that's fine)
     Deactivate-AllPmRoles
-    
-    # Explicitly ensure Admin is deactivated (it outranks Contributor)
-    $adminDef27 = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
-    if ($adminDef27) {
-        $dg27 = [guid]::NewGuid().ToString()
-        az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${dg27}?api-version=2020-10-01" --headers "Content-Type=application/json" --body "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${adminDef27}','requestType':'SelfDeactivate','justification':'Ensure only Contributor is active'}}" 2>&1 | Out-Null
+    Activate-PmAndKv-Parallel -RoleName2 "Provisioned Machine Admin" -RoleDef2 $adminDef
+    # Also activate Reader to create multi-role scenario
+    Write-Host "    Activating secondary role: Provisioned Machine Reader" -ForegroundColor Gray
+    $tokPri = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+    $emElig = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokPri"} -EA SilentlyContinue
+    $readerEid = ($emElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq "Provisioned Machine Reader" -and $_.properties.memberType -eq "Direct" }).name
+    if ($readerEid) {
+        $rGuid = [guid]::NewGuid().ToString()
+        $rBody = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${readerDef}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${readerEid}','justification':'E2E priority test','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT30M'}}}}"
+        $rResult = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${rGuid}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $rBody 2>&1 | Out-String
+        if ($rResult -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
+            Write-Host "    Reader PIM activated" -ForegroundColor Green
+        } elseif ($rResult -match "PendingApproval") {
+            Write-Host "    >>> Please APPROVE 'Provisioned Machine Reader' on $EdgeMachine <<<" -ForegroundColor Yellow
+            $rMax = 600; $rEl = 0
+            while ($rEl -lt $rMax) {
+                Start-Sleep 10; $rEl += 10
+                $tokR = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+                $rAct = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokR"} -EA SilentlyContinue
+                $rFound = $rAct.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq "Provisioned Machine Reader" }
+                if ($rFound) { Write-Host "    Reader active after ${rEl}s" -ForegroundColor Green; break }
+                if ($rEl % 60 -eq 0) { Write-Host "    Waiting: Reader (${rEl}s / 600s)" -ForegroundColor Gray }
+            }
+        }
+        Write-Host "    Waiting 30s for ARM propagation..." -ForegroundColor Gray
+        Start-Sleep 30
     }
-    Start-Sleep 5
     
-    # Activate only Contributor
-    Activate-SingleRole -RoleName2 "Provisioned Machine Contributor" -RoleDef2 $contribDef
-    Start-Sleep 5
-    
-    # Ensure KV Crypto User PIM is active (required for cert signing)
-    Ensure-KvPim
-    
-    # Generate cert
+    # Generate cert — should pick Admin (highest priority)
     $o = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
     if ($o -notmatch "certificatePath") { throw "Cert gen failed: $o" }
     
@@ -464,8 +694,57 @@ Run-Test "2.7" "Contributor role on Provisioned Machine" "Deactivate all, assign
     if ($m.Success) {
         $j = $m.Value | ConvertFrom-Json
         $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
-        if ($certOut -match "role=Provisioned Machine Admin") { throw "Admin role still active! Priority conflict. Got: $certOut" }
-        if ($certOut -notmatch "role=Provisioned Machine Contributor") { throw "Cert does not have Contributor role. Got: $certOut" }
+        if ($certOut -notmatch "role=Provisioned Machine Admin") { throw "Expected Admin priority but got: $certOut" }
+        Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
+    }
+    "Certificate generated with role=Provisioned Machine Admin"
+}
+
+Run-Test "2.7b" "Priority: Contributor wins over Reader" "Activate Contributor+Reader+KV, verify Contributor in cert" `
+    "Contributor > Reader priority" "Certificate generated with role=Provisioned Machine Contributor" {
+    $contribDef = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
+    $readerDef = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
+    
+    # Deactivate all, then activate Contributor
+    Deactivate-AllPmRoles
+    Activate-PmAndKv-Parallel -RoleName2 "Provisioned Machine Contributor" -RoleDef2 $contribDef
+    # Also activate Reader
+    Write-Host "    Activating secondary role: Provisioned Machine Reader" -ForegroundColor Gray
+    $tokPri = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+    $emElig = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleEligibilityScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokPri"} -EA SilentlyContinue
+    $readerEid = ($emElig.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq "Provisioned Machine Reader" -and $_.properties.memberType -eq "Direct" }).name
+    if ($readerEid) {
+        $rGuid = [guid]::NewGuid().ToString()
+        $rBody = "{'properties':{'principalId':'${userOid}','roleDefinitionId':'${readerDef}','requestType':'SelfActivate','linkedRoleEligibilityScheduleId':'${readerEid}','justification':'E2E priority test','scheduleInfo':{'expiration':{'type':'AfterDuration','duration':'PT30M'}}}}"
+        $rResult = az rest --method PUT --url "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleRequests/${rGuid}?api-version=2020-10-01" --headers "Content-Type=application/json" --body $rBody 2>&1 | Out-String
+        if ($rResult -match '"status"\s*:\s*"Provisioned"|RoleAssignmentExists') {
+            Write-Host "    Reader PIM activated" -ForegroundColor Green
+        } elseif ($rResult -match "PendingApproval") {
+            Write-Host "    >>> Please APPROVE 'Provisioned Machine Reader' on $EdgeMachine <<<" -ForegroundColor Yellow
+            $rMax = 600; $rEl = 0
+            while ($rEl -lt $rMax) {
+                Start-Sleep 10; $rEl += 10
+                $tokR = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+                $rAct = Invoke-RestMethod -Uri "https://management.azure.com${EdgeMachine}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokR"} -EA SilentlyContinue
+                $rFound = $rAct.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq "Provisioned Machine Reader" }
+                if ($rFound) { Write-Host "    Reader active after ${rEl}s" -ForegroundColor Green; break }
+                if ($rEl % 60 -eq 0) { Write-Host "    Waiting: Reader (${rEl}s / 600s)" -ForegroundColor Gray }
+            }
+        }
+        Write-Host "    Waiting 30s for ARM propagation..." -ForegroundColor Gray
+        Start-Sleep 30
+    }
+    
+    # Generate cert — should pick Contributor (higher than Reader)
+    $o = az provisionedmachine ssh-cert-create --vault-name $VaultName --resource-id $EdgeMachine 2>&1 | Out-String
+    if ($o -notmatch "certificatePath") { throw "Cert gen failed: $o" }
+    
+    $m = [regex]::Match($o, '\{[^}]+\}')
+    if ($m.Success) {
+        $j = $m.Value | ConvertFrom-Json
+        $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
+        if ($certOut -match "role=Provisioned Machine Admin") { throw "Admin should not be active! Got: $certOut" }
+        if ($certOut -notmatch "role=Provisioned Machine Contributor") { throw "Expected Contributor priority but got: $certOut" }
         Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
     }
     "Certificate generated with role=Provisioned Machine Contributor"
@@ -711,28 +990,23 @@ try {
         $null = Prompt-Manual "Activate '$RoleName' on Edge Machine manually: $EdgeMachine"
     }
     
-    # --- Activate Key Vault PIM ---
-    Write-Host "  [2/2] Key Vault: Key Vault Crypto User ($pimDuration)..." -ForegroundColor Gray
-    $kvResult = Activate-PimRole -Scope $KvResourceId -Role "Key Vault Crypto User" -Duration $pimDuration -Oid $userOid
-    
-    if ($kvResult -eq "ACTIVATED") {
-        Write-Host "    Key Vault PIM: ACTIVATED" -ForegroundColor Green
-    } elseif ($kvResult -eq "ALREADY_ACTIVE") {
-        Write-Host "    Key Vault PIM: Already active" -ForegroundColor Green
-    } elseif ($kvResult -eq "PENDING_APPROVAL") {
-        Write-Host "    Key Vault PIM: PENDING APPROVAL" -ForegroundColor Yellow
-        $null = Prompt-Manual "Approve 'Key Vault Crypto User' PIM on vault: $KvResourceId"
-    } elseif ($kvResult -eq "NO_ELIGIBILITY") {
-        # KV Crypto User might be direct assignment (not PIM) - that is fine
-        Write-Host "    Key Vault: No PIM eligibility (may have direct RBAC - OK)" -ForegroundColor Gray
+    # --- Key Vault PIM: already activated for PT1H after test 3.5 ---
+    Write-Host "  [2/2] Key Vault: KV Crypto User (already active from PT1H activation after Phase 3)" -ForegroundColor Gray
+    $tokKvChk = az account get-access-token --resource https://management.azure.com --query accessToken -o tsv 2>$null
+    $kvSchedChk = Invoke-RestMethod -Uri "https://management.azure.com${KvResourceId}/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01&`$filter=assignedTo('${userOid}')" -Headers @{Authorization="Bearer $tokKvChk"} -EA SilentlyContinue
+    $kvActiveChk = @($kvSchedChk.value | Where-Object { $_.properties.expandedProperties.roleDefinition.displayName -eq "Key Vault Crypto User" })
+    if ($kvActiveChk.Count -gt 0) {
+        Write-Host "    Key Vault PIM: confirmed active (PT1H)" -ForegroundColor Green
     } else {
-        Write-Host "    Key Vault PIM: $kvResult" -ForegroundColor Yellow
-        $null = Prompt-Manual "Activate 'Key Vault Crypto User' on vault manually: $KvResourceId"
+        # Fallback: re-activate if not found (shouldn't happen unless approval timed out)
+        Write-Host "    Key Vault PIM: not active, re-activating..." -ForegroundColor Yellow
+        $kvFallback = Activate-PimRole -Scope $KvResourceId -Role "Key Vault Crypto User" -Duration "PT30M" -Oid $userOid
+        Write-Host "    Key Vault PIM fallback: $kvFallback" -ForegroundColor $(if ($kvFallback -match "ACTIV") { "Green" } else { "Yellow" })
     }
     
     Start-Sleep 5
     $pimOk = $true
-    Write-Host "  PIM activation complete. Window: $pimDuration" -ForegroundColor Green
+    Write-Host "  PIM activation complete. Window: $pimDuration (EM) + PT1H (KV)" -ForegroundColor Green
     
 } catch {
     Write-Host "  Error: $_" -ForegroundColor Red
