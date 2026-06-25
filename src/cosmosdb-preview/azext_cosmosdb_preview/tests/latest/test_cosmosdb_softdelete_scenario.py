@@ -43,9 +43,6 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
             'rg': resource_group,
             'loc': location
         })
-        
-        logger.info("Tagging RG to skip DisableLocalAuth policy")
-        self.cmd('az group update -n {rg} --tags Az.Sec.DisableLocalAuth.CosmosDB::Skip=true')
 
         logger.info("Creating CosmosDB account")
         self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc}')
