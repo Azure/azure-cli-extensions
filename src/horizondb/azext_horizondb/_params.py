@@ -72,6 +72,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
         parameter_group_arg_type = CLIArgumentType(
             options_list=['--parameter-group'],
             help='The resource ID of the parameter group.')
+
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('cluster_name', arg_type=cluster_name_arg_type)
