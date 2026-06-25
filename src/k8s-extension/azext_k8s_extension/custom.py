@@ -229,7 +229,6 @@ def create_k8s_extension(
         extension_instance.auto_upgrade_mode,
     )
     __validate_auto_upgrade_mode(
-        extension_instance.version,
         extension_instance.auto_upgrade_minor_version,
         extension_instance.auto_upgrade_mode,
     )
@@ -352,7 +351,6 @@ def update_k8s_extension(
     )
 
     __validate_auto_upgrade_mode(
-        upd_extension.version,
         upd_extension.auto_upgrade_minor_version,
         upd_extension.auto_upgrade_mode,
     )
@@ -949,18 +947,29 @@ def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version, aut
             message = "To pin to specific version, auto-upgrade-minor-version must be set to 'false'."
             raise MutuallyExclusiveArgumentError(message)
 
+        if auto_upgrade_mode is None:
+            # Allow explicit '--auto-upgrade false' with a pinned version even when
+            # '--auto-upgrade-mode' is omitted.
+            if auto_upgrade_minor_version is False:
+                return
+            message = "To pin to specific version, auto-upgrade-mode must be set to 'none'."
+            raise RequiredArgumentMissingError(message)
+
+        normalized_auto_upgrade_mode = auto_upgrade_mode
+        if hasattr(normalized_auto_upgrade_mode, "value"):
+            normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.value
+        normalized_auto_upgrade_mode = str(normalized_auto_upgrade_mode).strip().lower()
+        if "." in normalized_auto_upgrade_mode:
+            normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.split(".")[-1]
+
+        if normalized_auto_upgrade_mode != "none":
+            message = "To pin to specific version, auto-upgrade-mode must be set to 'none'."
+            raise MutuallyExclusiveArgumentError(message)
+
         auto_upgrade_minor_version = False
+        auto_upgrade_mode = "none"
 
-    if auto_upgrade_minor_version is not None and auto_upgrade_mode is not None:
-        message = "auto-upgrade-mode cannot be specified together with auto-upgrade-minor-version."
-        raise MutuallyExclusiveArgumentError(message)
-
-
-def __validate_auto_upgrade_mode(version, auto_upgrade_minor_version, auto_upgrade_mode):
-    if version is not None and auto_upgrade_mode is not None:
-        message = "To pin to specific version, auto-upgrade-mode must not be provided."
-        raise MutuallyExclusiveArgumentError(message)
-
+def __validate_auto_upgrade_mode(auto_upgrade_minor_version, auto_upgrade_mode):
     if auto_upgrade_minor_version is not None and auto_upgrade_mode is not None:
         message = "auto-upgrade-mode cannot be specified together with auto-upgrade-minor-version."
         raise MutuallyExclusiveArgumentError(message)
