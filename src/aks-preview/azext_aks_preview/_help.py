@@ -55,6 +55,14 @@ helps['aks create'] = f"""
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the default node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --node-osdisk-diskencryptionset-id -d
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
@@ -283,6 +291,20 @@ helps['aks create'] = f"""
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
+        - name: --enable-fips
+          type: bool
+          short-summary: Enable FIPS mode at the cluster level.
+          long-summary: |-
+            Enables FIPS compliance for all AKS-managed components, such as the node
+            operating system, addons, and managed containerized components
+            (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
+            (https://aka.ms/aks/fips) for more details.
+            Requires Kubernetes version 1.34 or later and the
+            Microsoft.ContainerService/EnableFIPSPreview feature to be registered
+            on the subscription. All node pools must be FIPS-enabled; this command
+            enables FIPS on the default node pool during cluster creation. Some
+            addons and extensions aren't supported with cluster-wide FIPS. Verify
+            addon and extension compatibility before enabling this preview feature.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -358,6 +380,10 @@ helps['aks create'] = f"""
         - name: --node-public-ip-prefix-id
           type: string
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. Requires the NodePublicIPv6PrefixPreview feature flag.
         - name: --enable-managed-identity
           type: bool
           short-summary: Using managed identity to manage cluster resource group. You can explicitly specify "--service-principal" and "--client-secret" to disable managed identity, otherwise it will be enabled.
@@ -421,9 +447,6 @@ helps['aks create'] = f"""
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
-        - name: --disk-driver-version
-          type: string
-          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-file-driver
           type: bool
           short-summary: Disable AzureFile CSI Driver.
@@ -583,6 +606,9 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-control-plane-metrics --enable-cp-metrics
+          type: bool
+          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (controlplane-apiserver and controlplane-etcd targets by default). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics).
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -817,6 +843,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
+        - name: Create a kubernetes cluster with Azure Backup enabled (default Week strategy). Requires the 'dataprotection' extension. Implicitly waits for cluster creation.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --generate-ssh-keys --enable-backup --yes
 
 """
 
@@ -917,13 +945,13 @@ helps['aks update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
         - name: --disable-cluster-autoscaler -d
           type: bool
-          short-summary: Disable cluster autoscaler.
+          short-summary: Disable cluster autoscaler. For VirtualMachines pools, converts all autoscale profiles back to manual scale profiles.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluster autoscaler.
+          short-summary: Update min-count or max-count for cluster autoscaler. Not supported for VirtualMachines pools; use 'az aks nodepool auto-scale update' instead.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
@@ -1131,9 +1159,6 @@ helps['aks update'] = """
           long-summary: |
               Network dataplane used in the Kubernetes cluster.
               Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
-        - name: --disk-driver-version
-          type: string
-          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -1249,6 +1274,27 @@ helps['aks update'] = """
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
+        - name: --enable-fips
+          type: bool
+          short-summary: Enable FIPS mode at the cluster level.
+          long-summary: |-
+            Enables FIPS compliance for all AKS-managed components, such as the node
+            operating system, addons, and managed containerized components
+            (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
+            (https://aka.ms/aks/fips) for more details.
+            Requires Kubernetes version 1.34 or later and the
+            Microsoft.ContainerService/EnableFIPSPreview feature to be registered
+            on the subscription. Existing node pools must already be FIPS-enabled
+            before enabling this cluster-level setting, and future node pools must
+            also be created with FIPS enabled. Some addons and extensions aren't
+            supported with cluster-wide FIPS. Verify addon and extension
+            compatibility before enabling this preview feature.
+        - name: --disable-fips
+          type: bool
+          short-summary: Disable FIPS mode at the cluster level.
+          long-summary: |-
+            Disables cluster-wide FIPS enforcement for AKS-managed components.
+            This doesn't disable FIPS on existing node pools.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
@@ -1291,6 +1337,9 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-control-plane-metrics --enable-cp-metrics
+          type: bool
+          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (controlplane-apiserver and controlplane-etcd targets by default). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics).
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -1312,6 +1361,9 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --disable-control-plane-metrics --disable-cp-metrics
+          type: bool
+          short-summary: Disable collection of Azure Monitor managed Prometheus control plane metrics. Leaves Azure Monitor metrics enabled.
         - name: --enable-azure-monitor-app-monitoring
           type: bool
           short-summary: Enable Azure Monitor Application Monitoring
@@ -1503,6 +1555,8 @@ helps['aks update'] = """
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
+      - name: Disable FIPS mode at the cluster level.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-fips
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Upgrade load balancer sku to standard
@@ -1561,6 +1615,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
       - name: Enable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+      - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
+      - name: Enable Azure Backup with a custom strategy using an existing vault and policy
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --backup-strategy Custom --backup-configuration @config.json --yes
       - name: Disable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-monitor-logs
       - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled
@@ -1927,6 +1985,187 @@ helps['aks maintenanceconfiguration update'] = """
                 }
 """
 
+helps['aks maintenancewindow'] = """
+    type: group
+    short-summary: Commands to manage MaintenanceWindow peer ARM resources.
+    long-summary: |
+        MaintenanceWindow is a resource-group-scoped ARM resource that defines
+        a reusable maintenance schedule. Users can link this resource to a
+        pre-existing maintenanceConfiguration via `maintenanceWindowId`, so
+        multiple managedCluster maintenance configurations share a single
+        MaintenanceWindow and the schedule lives in one place.
+
+        Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+        feature to be registered on the subscription. Auto-approval is enabled:
+        `az feature register --namespace Microsoft.ContainerService --name AKSSharedMaintenanceWindowPreview`
+"""
+
+helps['aks maintenancewindow show'] = """
+    type: command
+    short-summary: Show a MaintenanceWindow.
+"""
+
+helps['aks maintenancewindow list'] = """
+    type: command
+    short-summary: List MaintenanceWindows in a resource group, or across the subscription if --resource-group is omitted.
+"""
+
+helps['aks maintenancewindow delete'] = """
+    type: command
+    short-summary: Delete a MaintenanceWindow.
+"""
+
+helps['aks maintenancewindow create'] = """
+    type: command
+    short-summary: Create a MaintenanceWindow.
+    long-summary: |
+        Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+        feature to be registered on the subscription. Register once (auto-approved):
+        `az feature register --namespace Microsoft.ContainerService --name AKSSharedMaintenanceWindowPreview`
+    parameters:
+        - name: --location -l
+          type: string
+          short-summary: Location for the MaintenanceWindow. Defaults to the resource group's location when omitted.
+        - name: --schedule-type
+          type: string
+          short-summary: Recurrence type. One of Daily, Weekly, AbsoluteMonthly or RelativeMonthly.
+        - name: --start-date
+          type: string
+          short-summary: The date the maintenance window activates. e.g. 2026-06-01. If not specified, the window activates immediately.
+        - name: --start-time
+          type: string
+          short-summary: The start time of the maintenance window. Accepted values are from '00:00' to '23:59'. --utc-offset applies to this field.
+        - name: --duration
+          type: int
+          short-summary: The length of the maintenance window in hours. Range 4-24.
+        - name: --utc-offset
+          type: string
+          short-summary: The UTC offset in format +/-HH:mm. For example, '+05:30' for IST or '-07:00' for PST. Default is '+00:00'.
+        - name: --interval-days
+          type: int
+          short-summary: Number of days between occurrences. Daily schedule only.
+        - name: --interval-weeks
+          type: int
+          short-summary: Number of weeks between occurrences. Weekly schedule only.
+        - name: --interval-months
+          type: int
+          short-summary: Number of months between occurrences. AbsoluteMonthly or RelativeMonthly schedules only.
+        - name: --day-of-week
+          type: string
+          short-summary: Day of week the maintenance occurs. e.g. Monday. Weekly or RelativeMonthly schedules only.
+        - name: --day-of-month
+          type: int
+          short-summary: Day of month the maintenance occurs. e.g. 15. AbsoluteMonthly schedule only.
+        - name: --week-index
+          type: string
+          short-summary: Instance of the day-of-week the maintenance occurs (First, Second, Third, Fourth, Last). RelativeMonthly schedule only.
+        - name: --config-file
+          type: string
+          short-summary: Path to a JSON file describing the MaintenanceWindow body. Use when you need to set fields without dedicated flags (e.g. notAllowedDates / blackout date ranges).
+    examples:
+        - name: Create a weekly Saturday window (the canonical "production weekends" shape).
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n production-weekends -l eastus \\
+              --schedule-type Weekly --day-of-week Saturday --interval-weeks 1 \\
+              --start-time "02:00" --duration 8 --utc-offset=-07:00 \\
+              --tags environment=production
+        - name: Create a daily window every 2 days from a specific start date.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n nightly -l eastus \\
+              --schedule-type Daily --interval-days 2 \\
+              --start-date 2026-06-01 --start-time "00:00" --duration 6 --utc-offset=-08:00
+        - name: Create an absolute monthly window on the 15th.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n monthly-15 -l eastus \\
+              --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 \\
+              --start-time "09:30" --duration 6 --utc-offset=+05:30
+        - name: Create a relative monthly window on the last Friday.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n last-friday -l eastus \\
+              --schedule-type RelativeMonthly --day-of-week Friday --week-index Last --interval-months 1 \\
+              --start-time "01:00" --duration 4 --utc-offset=+00:00
+        - name: Create a weekly window with blackout dates via a config file.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n weekly-with-holidays -l eastus \\
+              --config-file ./mw-body.json
+              The contents of mw-body.json:
+              {
+                "properties": {
+                  "schedule": { "weekly": { "intervalWeeks": 1, "dayOfWeek": "Saturday" } },
+                  "startTime": "02:00",
+                  "durationHours": 8,
+                  "utcOffset": "-07:00",
+                  "notAllowedDates": [
+                    { "start": "2026-12-23", "end": "2027-01-05" },
+                    { "start": "2026-07-04", "end": "2026-07-05" }
+                  ]
+                }
+              }
+"""
+
+helps['aks maintenancewindow update'] = """
+    type: command
+    short-summary: Update a MaintenanceWindow.
+    long-summary: |
+        Read-modify-write semantics matching `az aks update` and
+        `az aks nodepool update`: the existing MW is fetched, your supplied
+        fields are merged onto it, and the resulting body is PUT back.
+        Fields you do not supply are preserved as-is (existing tags,
+        existing schedule scalars, existing blackout dates, etc.).
+
+        When you do supply a schedule arg (--schedule-type / --interval-* /
+        --day-of-week / --day-of-month / --week-index), the schedule shape
+        is re-built end-to-end from your args (you cannot partially mix
+        Daily + Weekly fields — pick one schedule type and supply its
+        required args).
+
+        --tags follows `aks update` convention: passing --tags replaces the
+        whole tags dictionary; omit --tags to keep the existing tags.
+
+        --location cannot be changed (TrackedResource semantics — ARM
+        rejects location changes on PUT). If supplied with a different
+        value than the existing location it is ignored with a warning.
+
+        --config-file: when supplied, the JSON file's `properties` block
+        replaces the existing `properties` wholesale. This is the only
+        way today to mutate notAllowedDates / blackout date ranges.
+        Individual schedule flags are ignored on this path; tags follow
+        the same `--tags` rule as without --config-file.
+    examples:
+        - name: Update only tags (existing schedule is preserved).
+          text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --tags environment=staging
+        - name: Update only the schedule's day-of-week (existing duration / start-time / tags preserved).
+          text: |
+            az aks maintenancewindow update -g rg-maintenance -n production-weekends \\
+              --schedule-type Weekly --day-of-week Sunday --interval-weeks 1
+        - name: Change duration only (existing schedule shape preserved).
+          text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --duration 6
+        - name: Replace blackout dates via a config file (preserves tags, location).
+          text: |
+            az aks maintenancewindow update -g rg-maintenance -n production-weekends --config-file ./mw-body.json
+              The contents of mw-body.json should include a complete properties block, e.g.:
+              {
+                "properties": {
+                  "schedule": { "weekly": { "intervalWeeks": 1, "dayOfWeek": "Saturday" } },
+                  "startTime": "02:00",
+                  "durationHours": 8,
+                  "utcOffset": "-07:00",
+                  "notAllowedDates": [ { "start": "2026-12-23", "end": "2027-01-05" } ]
+                }
+              }
+"""
+
+helps['aks maintenancewindow wait'] = """
+    type: command
+    short-summary: Wait for a MaintenanceWindow to reach a desired state.
+    long-summary: |
+        If an operation on a MaintenanceWindow was interrupted or was started
+        with `--no-wait`, use this command to wait for it to complete.
+    examples:
+        - name: Wait for a MaintenanceWindow to be created.
+          text: az aks maintenancewindow wait -g rg-maintenance -n production-weekends --created
+"""
+
 helps['aks namespace'] = """
     type: group
     short-summary: Commands to manage namespace in managed Kubernetes cluster.
@@ -2106,6 +2345,14 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -2161,6 +2408,10 @@ helps['aks nodepool add'] = """
         - name: --node-public-ip-prefix-id
           type: string
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes. Must use VMSS agent pool type.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. Requires the NodePublicIPv6PrefixPreview feature flag.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
@@ -2281,6 +2532,13 @@ helps['aks nodepool add'] = """
         - name: --localdns-config
           type: string
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
+        - name: --secondary-network-interfaces --secondary-nics
+          type: string
+          short-summary: Secondary network interface configurations as a JSON string or `@filename`.
+          long-summary: |-
+            Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
+            Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
+            Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2403,13 +2661,13 @@ helps['aks nodepool update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
+          short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
         - name: --disable-cluster-autoscaler -d
           type: bool
-          short-summary: Disable cluster autoscaler.
+          short-summary: Disable cluster autoscaler. For VirtualMachines pools, converts all autoscale profiles back to manual scale profiles.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluster autoscaler.
+          short-summary: Update min-count or max-count for cluster autoscaler. Not supported for VirtualMachines pools; use 'az aks nodepool auto-scale update' instead.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
@@ -2521,6 +2779,9 @@ helps['aks nodepool update'] = """
         - name: --gpu-driver
           type: string
           short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None".
+        - name: --crg-id
+          type: string
+          short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2538,6 +2799,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-vm-size Standard_D4s_v3
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
+      - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
+        text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """
 
 helps['aks nodepool get-upgrades'] = """
@@ -2686,6 +2949,62 @@ helps['aks nodepool manual-scale delete'] = """
         - name: --current-vm-sizes
           type: string
           short-summary: Comma-separated list of sizes in the manual to be deleted.
+"""
+
+helps['aks nodepool auto-scale'] = """
+    type: group
+    short-summary: Commands to manage nodepool virtualMachineProfile.scale.autoscale.
+"""
+
+helps['aks nodepool auto-scale add'] = """
+    type: command
+    short-summary: Add a new autoscale profile to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --node-vm-size
+          type: string
+          short-summary: VM size for the autoscale profile.
+        - name: --min-count
+          type: int
+          short-summary: Minimum number of nodes for autoscaling.
+        - name: --max-count
+          type: int
+          short-summary: Maximum number of nodes for autoscaling.
+    examples:
+        - name: Add an autoscale profile to a VirtualMachines agentpool
+          text: az aks nodepool auto-scale add -g MyResourceGroup --cluster-name MyMC --name MyNodePool --node-vm-size Standard_D2s_v3 --min-count 3 --max-count 5
+"""
+
+helps['aks nodepool auto-scale update'] = """
+    type: command
+    short-summary: Update an existing autoscale profile of a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-node-vm-size
+          type: string
+          short-summary: The current VM size of the autoscale profile to be updated.
+        - name: --node-vm-size
+          type: string
+          short-summary: The new VM size for the autoscale profile.
+        - name: --min-count
+          type: int
+          short-summary: Minimum number of nodes for autoscaling.
+        - name: --max-count
+          type: int
+          short-summary: Maximum number of nodes for autoscaling.
+    examples:
+        - name: Update an existing autoscale profile in a VirtualMachines agentpool
+          text: az aks nodepool auto-scale update -g MyResourceGroup --cluster-name MyMC --name MyNodePool --current-node-vm-size Standard_D2s_v3 --node-vm-size Standard_D8s_v3 --min-count 2 --max-count 4
+"""
+
+helps['aks nodepool auto-scale delete'] = """
+    type: command
+    short-summary: Delete an existing autoscale profile from a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-node-vm-size
+          type: string
+          short-summary: The VM size of the autoscale profile to be deleted.
+    examples:
+        - name: Delete an autoscale profile from a VirtualMachines agentpool
+          text: az aks nodepool auto-scale delete -g MyResourceGroup --cluster-name MyMC --name MyNodePool --current-node-vm-size Standard_D2s_v3
 """
 
 helps['aks machine'] = """
@@ -4584,4 +4903,63 @@ helps['aks jwtauthenticator show'] = """
     examples:
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
+"""
+
+helps['aks prepared-image-specification'] = """
+    type: group
+    short-summary: Commands to manage prepared image specifications.
+"""
+
+helps['aks prepared-image-specification create'] = """
+    type: command
+    short-summary: Create a new prepared image specification.
+    examples:
+        - name: Create a new prepared image specification specifying a container image.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --container-images myacr.azurecr.io/myimage:latest
+        - name: Create a new prepared image specification specifying a customization script.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --customization-scripts '[{"name":"myscript","script":"/bin/true","scriptType":"Bash","executionPoint":"NodeImageBuildTime"}]'
+        - name: Create a new prepared image specification specifying a managed identity.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --assign-identity /subscriptions/MySubscription/resourceGroups/AnotherResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity
+        - name: Create a new prepared image specification specifying tags.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --tags k1=v1 k2=v2
+"""
+
+helps['aks prepared-image-specification update'] = """
+    type: command
+    short-summary: Update a prepared image specification.
+"""
+
+helps['aks prepared-image-specification delete'] = """
+    type: command
+    short-summary: Delete a prepared image specification.
+"""
+
+helps['aks prepared-image-specification list'] = """
+    type: command
+    short-summary: List prepared image specifications.
+"""
+
+helps['aks prepared-image-specification show'] = """
+    type: command
+    short-summary: Show a prepared image specification.
+"""
+
+helps['aks prepared-image-specification version'] = """
+    type: group
+    short-summary: Commands to manage prepared image specification versions.
+"""
+
+helps['aks prepared-image-specification version delete'] = """
+    type: command
+    short-summary: Delete a prepared image specification version.
+"""
+
+helps['aks prepared-image-specification version list'] = """
+    type: command
+    short-summary: List prepared image specification versions.
+"""
+
+helps['aks prepared-image-specification version show'] = """
+    type: command
+    short-summary: Show a prepared image specification version.
 """

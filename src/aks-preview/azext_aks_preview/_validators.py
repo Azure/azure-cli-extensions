@@ -21,7 +21,8 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
-    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_SKU_AZURELINUX,
+    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_DISK_TYPE_MANAGED,
+    CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER)
 from azext_aks_preview._helpers import _fuzzy_match
 from azure.cli.core import keys
@@ -391,6 +392,32 @@ def validate_node_public_ip_tags(ns):
         for item in ns.node_public_ip_tags:
             tags_dict.update(validate_tag(item))
         ns.node_public_ip_tags = tags_dict
+
+
+def validate_node_public_ip_prefix_ids(ns):
+    """Validate --node-public-ip-prefix-ids value and mutual exclusion with --node-public-ip-prefix-id."""
+    ids_value = getattr(ns, "node_public_ip_prefix_ids", None)
+    singular_value = getattr(ns, "node_public_ip_prefix_id", None)
+    if ids_value and singular_value:
+        raise MutuallyExclusiveArgumentError(
+            "--node-public-ip-prefix-ids and --node-public-ip-prefix-id cannot be used at the same time."
+        )
+    if ids_value is not None:
+        parsed = [x.strip() for x in ids_value.split(",") if x.strip()] if isinstance(ids_value, str) else ids_value
+        if not parsed:
+            raise InvalidArgumentValueError(
+                "--node-public-ip-prefix-ids must contain at least one public IP prefix resource ID."
+            )
+        if len(parsed) > 2:
+            raise InvalidArgumentValueError(
+                "--node-public-ip-prefix-ids accepts at most two public IP prefix resource IDs "
+                "(one IPv4 and one IPv6)."
+            )
+        for prefix_id in parsed:
+            if not is_valid_resource_id(prefix_id):
+                raise InvalidArgumentValueError(
+                    f"'{prefix_id}' is not a valid Azure resource ID for --node-public-ip-prefix-ids."
+                )
 
 
 def validate_nodepool_labels(namespace):
@@ -914,6 +941,21 @@ def validate_start_time(namespace):
         raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
 
 
+def validate_duration_hours(namespace):
+    """Validates --duration for aks maintenancewindow / maintenanceconfiguration commands.
+
+    The RP enforces 4-24 hours; fail locally with a clear argparse error
+    instead of letting the user discover the constraint via an opaque
+    server-side 400.
+    """
+    if namespace.duration_hours is None:
+        return
+    if not isinstance(namespace.duration_hours, int) or namespace.duration_hours < 4 or namespace.duration_hours > 24:
+        raise InvalidArgumentValueError(
+            f'--duration must be an integer between 4 and 24 hours (inclusive). Got: {namespace.duration_hours}.'
+        )
+
+
 def validate_os_sku(namespace):
     os_sku = namespace.os_sku
     if os_sku in [CONST_OS_SKU_MARINER, CONST_OS_SKU_CBLMARINER]:
@@ -950,6 +992,22 @@ def validate_asm_egress_name(namespace):
             f"Istio egress name {name} is invalid. Name must be between 1 and "
             f"{CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH} characters, must consist of lower case alphanumeric "
             "characters, '-' or '.', and must start and end with an alphanumeric character."
+        )
+
+
+def validate_os_disk_full_caching(namespace):
+    """Reject --enable-osdisk-full-caching when OS disk type is explicitly Managed.
+
+    Full-cache OS disk requires Ephemeral storage; failing fast at the CLI gives
+    a clearer error than waiting for an ARM round-trip.
+    """
+    if not getattr(namespace, "enable_os_disk_full_caching", False):
+        return
+    node_osdisk_type = getattr(namespace, "node_osdisk_type", None)
+    if node_osdisk_type == CONST_OS_DISK_TYPE_MANAGED:
+        raise ArgumentUsageError(
+            "--enable-osdisk-full-caching requires Ephemeral OS disk; "
+            "it cannot be used with --node-osdisk-type Managed."
         )
 
 
@@ -1186,4 +1244,21 @@ def validate_nat_gateway_v2_params(namespace):
                 "--nat-gateway-outbound-ips, and "
                 "--nat-gateway-outbound-ip-prefixes are only "
                 "valid with --outbound-type managedNATGatewayV2."
+            )
+
+
+def validate_prepared_image_specification_id(namespace):
+    if namespace.prepared_image_specification_id:
+        if not is_valid_resource_id(namespace.prepared_image_specification_id):
+            raise InvalidArgumentValueError(
+                "--prepared-image-specification-id is not a valid Azure resource ID."
+            )
+        parsed = parse_resource_id(namespace.prepared_image_specification_id)
+        resource_type = (parsed.get("type", "") + "/" + parsed.get("resource_type", "")).lower()
+        resource_namespace = parsed.get("namespace", "").lower()
+        if resource_namespace != "microsoft.containerservice" or \
+                resource_type != "preparedimagespecifications/versions":
+            raise InvalidArgumentValueError(
+                "--prepared-image-specification-id must be a resource ID of type "
+                "Microsoft.ContainerService/preparedImageSpecifications/versions."
             )

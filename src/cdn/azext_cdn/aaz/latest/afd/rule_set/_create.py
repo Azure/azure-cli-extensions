@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new rule set within the specified profile.
 
-    :example: Create a new rule set under the specified profile.
-        az afd rule-set create -g group --rule-set-name ruleset1 --profile-name profile
+    :example: RuleSets_Create
+        az afd rule-set create --resource-group RG --profile-name profile1 --rule-set-name ruleSet1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

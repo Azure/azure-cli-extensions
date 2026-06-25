@@ -3,6 +3,15 @@
 Release History
 ===============
 
+2.1.0
++++++
+* Add command for generating container policy definitions from radius application templates
+* Add command to insert generated policy into radius application templates
+
+2.0.1
++++++
+* Fix accidental docker dependency even when using tar
+
 2.0.0
 +++++
 * Fix path traversal when generating policies from untrusted image tar files

@@ -4,13 +4,70 @@ Release History
 ===============
 
 Guidance
-++++++++
++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
+
+21.0.0b7
+++++++++
+* `az aks create`: Add `--node-disruption-policy` (preview) to set the node disruption policy at cluster creation time. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
+* `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+* `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
+* `az aks update`: Fix misleading error when updating outbound type to `userDefinedRouting` or `userAssignedNATGateway`. For managed VNet clusters (unsupported), a clear error message is now shown instead of asking for `--vnet-subnet-id`. For BYO VNet clusters, the update works correctly without requiring the user to re-specify the subnet.
+* Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+
+21.0.0b6
+++++++++
+* `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property `azureMonitorProfile.metrics.controlPlane.enabled` (replaces the AFEC-gated preview).
+
+21.0.0b5
++++++++
+* `az aks prepared-image-specification`: Add new command.
+* `az aks upgrade`: Fix `--node-image-only` to skip Machines mode agent pools, which do not support node image version upgrade.
+
+21.0.0b4
++++++++
+* `az aks nodepool add`: Add `--secondary-network-interfaces`/`--secondary-nics` (preview) to configure secondary network interfaces on agent pool nodes. Accepts inline JSON or `@file`. Property is immutable after node pool creation.
+* `az aks update`: Add `--control-plane-scaling-size` parameter to update the control plane scaling size on an existing cluster with available sizes 'H2', 'H4', and 'H8'.
+* `az aks bastion`: Fix `--subscription` not being passed to internal `az network bastion tunnel` and bastion discovery commands.
+* `az aks update`: Add `--node-disruption-policy` (preview) to update the node disruption policy for a cluster. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
+* Vendor new SDK and bump API version to 2026-04-02-preview.
+
+21.0.0b3
++++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
+
+21.0.0b2
+++++++++
+* `az aks create`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
+* `az aks nodepool add`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
+* `az aks create` and `az aks nodepool add`: Add `--enable-osdisk-full-caching` (preview) to enable the full-cache ephemeral OS disk feature for a node pool. Requires AFEC registration `Microsoft.ContainerService/FullCachePreview`. Property is immutable after node pool creation.
+* Clean up unused disk driver version constants and remove obsolete CSI driver v2 tests following the removal of `--disk-driver-version` in 21.0.0b1.
+* `az aks create/update`: Add `--enable-fips` (preview) to enable FIPS mode at the cluster level and `az aks update --disable-fips` to disable it. Requires Kubernetes version 1.34 or later and AFEC registration `Microsoft.ContainerService/EnableFIPSPreview`.
+
+21.0.0b1
+++++++
+* [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
+
+20.0.0b8
++++++++
+* `az aks nodepool update`: Support `--enable-cluster-autoscaler` for VirtualMachines pools to convert all manual scale profiles to autoscale profiles.
+* `az aks nodepool update`: Support `--disable-cluster-autoscaler` for VirtualMachines pools to convert all autoscale profiles back to manual scale profiles.
+* `az aks nodepool update`: Block `--update-cluster-autoscaler` for VirtualMachines pools; use `az aks nodepool auto-scale update` instead.
+* `az aks nodepool auto-scale add`: New command to add an autoscale profile to a VirtualMachines agent pool.
+* `az aks nodepool auto-scale update`: New command to update an existing autoscale profile of a VirtualMachines agent pool.
+* `az aks nodepool auto-scale delete`: New command to delete an existing autoscale profile from a VirtualMachines agent pool.
+
+20.0.0b7
+++++++
+* `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
 * Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
 

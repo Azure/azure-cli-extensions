@@ -68,6 +68,9 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                        JMESPathCheck('@[1].name', origin_name1)]
         self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, checks=list_checks)
         self.afd_origin_delete_cmd(resource_group, profile_name, origin_group_name, origin_name1)
+        list_checks = [JMESPathCheck('length(@)', 1),
+                   JMESPathCheck('@[0].name', origin_name)]
+        self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, checks=list_checks)
 
         update_checks = [JMESPathCheck('name', origin_name),
                          JMESPathCheck('hostName', "plstestcli.blob.core.windows.net"),
@@ -116,11 +119,8 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('sharedPrivateLinkResource.privateLinkLocation', "eastus"),
                          JMESPathCheck('sharedPrivateLinkResource.requestMessage', "Private link service from AFD"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--http-port 80 --enable-private-link --private-link-resource ' \
-                  + f' /subscriptions/{self.get_subscription_id()}/resourceGroups/CliDevReservedGroup/providers/Microsoft.Storage/storageAccounts/plstestcli' \
-                  + ' --private-link-sub-resource blob' \
-                  + ' --private-link-location eastus' \
-                  + ' --private-link-request-message "Private link service from AFD"'
+        options = '--http-port 80 ' \
+                  f'--shared-private-link-resource \'{{"private-link":{{"id":"/subscriptions/{self.get_subscription_id()}/resourceGroups/CliDevReservedGroup/providers/Microsoft.Storage/storageAccounts/plstestcli"}},"group-id":"blob","private-link-location":"eastus","request-message":"Private link service from AFD"}}\''
         self.afd_origin_update_cmd(resource_group,
                                    profile_name,
                                    origin_group_name,
@@ -141,7 +141,7 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('sharedPrivateLinkResource.privateLinkLocation', "eastus"),
                          JMESPathCheck('sharedPrivateLinkResource.requestMessage', "Private link service from AFD"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--private-link-sub-resource table'
+        options = '--shared-private-link-resource \'{"group-id":"table"}\''
         self.afd_origin_update_cmd(resource_group,
                                    profile_name,
                                    origin_group_name,
@@ -159,15 +159,10 @@ class CdnAfdOriginScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('enforceCertificateNameCheck', True),
                          JMESPathCheck('sharedPrivateLinkResource', None),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--weight 99 --enable-private-link false --enabled-state Disabled'
+        options = '--weight 99 --enabled-state Disabled --shared-private-link-resource null'
         self.afd_origin_update_cmd(resource_group,
                                    profile_name,
                                    origin_group_name,
                                    origin_name,
                                    options=options,
                                    checks=update_checks)
-
-        self.afd_origin_delete_cmd(resource_group, profile_name, origin_group_name, origin_name)
-
-        list_checks = [JMESPathCheck('length(@)', 0)]
-        self.afd_origin_list_cmd(resource_group, profile_name, origin_group_name, list_checks)

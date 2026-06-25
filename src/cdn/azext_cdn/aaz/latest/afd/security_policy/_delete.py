@@ -17,12 +17,15 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an existing security policy within profile.
+
+    :example: SecurityPolicies_Delete
+        az afd security-policy delete --resource-group RG --profile-name profile1 --security-policy-name securityPolicy1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -155,7 +158,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }

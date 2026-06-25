@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
+
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
@@ -16,7 +18,9 @@ class CdnAfdProfileScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         profile_name = self.create_random_name(prefix='profile', length=24)
 
         tags = '{{tag1:value1,tag2:value2}}'
-        self.afd_profile_create_cmd(resource_group, profile_name, tags=tags, options="--origin-response-timeout-seconds 100 --identity-type SystemAssigned")
+        self.afd_profile_create_cmd(resource_group, profile_name, tags=tags,
+                        options=f"--origin-response-timeout-seconds 100 "
+                            f"--identity '{{\"type\":\"SystemAssigned\"}}'")
 
         list_checks = [JMESPathCheck('length(@)', 1),
                        JMESPathCheck('@[0].location', "Global"),
@@ -50,6 +54,13 @@ class CdnAfdProfileScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                     tags=tags,
                                     checks=update_checks)
 
+        identity_name_1 = self.create_random_name(prefix='uai', length=24)
+        identity_id_1 = self.cmd(
+            f'identity create -g {resource_group} -n {identity_name_1}').get_output_in_json()['id']
+        identity_name_2 = self.create_random_name(prefix='uai', length=24)
+        identity_id_2 = self.cmd(
+            f'identity create -g {resource_group} -n {identity_name_2}').get_output_in_json()['id']
+
         update_checks = [JMESPathCheck('location', "Global"),
                          JMESPathCheck('sku.name', 'Standard_AzureFrontDoor'),
                          JMESPathCheck('tags.tag1', None),
@@ -58,9 +69,13 @@ class CdnAfdProfileScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('tags.tag4', 'value4'),
                          JMESPathCheck('identity.type', 'UserAssigned'),
                          JMESPathCheck('originResponseTimeoutSeconds', 30)]
+        identity = json.dumps({
+            'type': 'UserAssigned',
+            'user-assigned-identities': {identity_id_1: {}}
+        }, separators=(',', ':'))
         self.afd_profile_update_cmd(resource_group,
                                     profile_name,
-                                    options='--origin-response-timeout-seconds 30 --identity-type UserAssigned --user-assigned-identities /subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourcegroups/azsecpackautoconfigrg/providers/microsoft.managedidentity/userassignedidentities/azsecpackautoconfigua-westeurope',
+                                    options=f"--origin-response-timeout-seconds 30 --identity '{identity}'",
                                     checks=update_checks)
 
         update_checks = [JMESPathCheck('location', "Global"),
@@ -72,9 +87,13 @@ class CdnAfdProfileScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('identity.type', 'UserAssigned'),
                          JMESPathCheck('length(identity.userAssignedIdentities)', 2),
                          JMESPathCheck('originResponseTimeoutSeconds', 30)]
+        identity = json.dumps({
+            'type': 'UserAssigned',
+            'user-assigned-identities': {identity_id_1: {}, identity_id_2: {}}
+        }, separators=(',', ':'))
         self.afd_profile_update_cmd(resource_group,
                                     profile_name,
-                                    options='--identity-type UserAssigned --user-assigned-identities /subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourcegroups/cdnrp-test-g-rg/providers/microsoft.managedidentity/userassignedidentities/cdnrptestaadidentity /subscriptions/27cafca8-b9a4-4264-b399-45d0c9cca1ab/resourcegroups/azsecpackautoconfigrg/providers/microsoft.managedidentity/userassignedidentities/azsecpackautoconfigua-westeurope',
+                                    options=f"--identity '{identity}'",
                                     checks=update_checks)
 
         usage_checks = [JMESPathCheck('length(@)', 7)]

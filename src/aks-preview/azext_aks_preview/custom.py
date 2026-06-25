@@ -19,8 +19,8 @@ from math import isnan
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
+    CUSTOM_MGMT_AKS_PIS_PREVIEW,
     cf_agent_pools,
-    get_compute_client,
 )
 from azext_aks_preview._consts import (
     ADDONS,
@@ -38,6 +38,7 @@ from azext_aks_preview._consts import (
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
+    CONST_NODEPOOL_MODE_MACHINES,
     CONST_NODEPOOL_MODE_USER,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     CONST_ROTATION_POLL_INTERVAL,
@@ -110,6 +111,10 @@ from azext_aks_preview.bastion.bastion import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+    constructSchedule,
+)
+from azext_aks_preview.maintenancewindow import (
+    constructMaintenanceWindowResource,
 )
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
@@ -128,6 +133,10 @@ from azext_aks_preview.machine import (
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
     aks_jwtauthenticator_update_internal,
+)
+from azext_aks_preview.prepared_image_specification import (
+    ensure_pis_managed_identity_permission_for_agentpool,
+    ensure_pis_managed_identity_permission_for_cluster,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -167,6 +176,7 @@ from azure.cli.core.commands.client_factory import (
 )
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
+    get_file_json,
     in_cloud_console,
     sdk_no_wait,
     send_raw_request,
@@ -938,6 +948,246 @@ def aks_maintenanceconfiguration_update(
     return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
+# ---------------------------------------------------------------------------
+# aks maintenancewindow (peer ARM resource, preview API only)
+# ---------------------------------------------------------------------------
+
+def aks_maintenancewindow_list(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name=None,
+):
+    if resource_group_name is None or resource_group_name == "":
+        return client.list_by_subscription()
+    return client.list(resource_group_name)
+
+
+def aks_maintenancewindow_show(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    maintenance_window_name,
+):
+    return client.get(resource_group_name, maintenance_window_name)
+
+
+# pylint: disable=unused-argument
+def aks_maintenancewindow_create(
+    cmd,
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    location=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None,
+    tags=None,
+    config_file=None,
+    no_wait=False,
+):
+    # Mirror aks_nodepool_snapshot_create: default --location to the
+    # resource group's location when the caller doesn't specify one.
+    if location is None:
+        location = get_rg_location(cmd.cli_ctx, resource_group_name)
+
+    # --config-file path (mirrors `aks maintenanceconfiguration add`): when
+    # supplied, the JSON body wholly defines the MaintenanceWindow resource;
+    # individual schedule flags are ignored. This is the only way to express
+    # fields the dedicated flags don't cover (e.g. notAllowedDates / blackout
+    # date ranges) until those get their own flags.
+    if config_file is not None:
+        body = get_file_json(config_file)
+        # Stamp location + tags from CLI args onto the parsed body so the
+        # caller doesn't need to repeat them in the JSON.
+        if isinstance(body, dict):
+            body.setdefault("location", location)
+            if tags is not None:
+                body["tags"] = tags
+        return sdk_no_wait(
+            no_wait,
+            client.begin_create_or_update,
+            resource_group_name,
+            maintenance_window_name,
+            body,
+        )
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    resource = constructMaintenanceWindowResource(cmd, raw_parameters)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        maintenance_window_name,
+        resource,
+    )
+
+
+# pylint: disable=unused-argument
+def aks_maintenancewindow_update(
+    cmd,
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None,
+    tags=None,
+    location=None,
+    config_file=None,
+    no_wait=False,
+):
+    """Read-modify-write update for the MaintenanceWindow peer resource.
+
+    Mirrors the CLI convention used by `az aks update`,
+    `az aks nodepool update`, and `az containerapp update`: fetch the
+    existing resource, apply user-supplied changes on top, then PUT.
+    Fields the caller didn't supply are preserved as-is. Tags follow the
+    `aks` family convention — when `--tags` is passed, the whole tags dict
+    is replaced (no additive merge); otherwise existing tags are kept.
+
+    `--config-file` (mirrors MTC's pattern): when supplied, the JSON file's
+    `properties` block replaces existing.properties wholesale (this is the
+    only path that can set/clear notAllowedDates today, until a dedicated
+    flag lands). location + tags from the existing resource are preserved
+    unless overridden by --tags or by `location`/`tags` keys in the JSON.
+
+    `--location` cannot be changed (TrackedResource semantics — ARM rejects
+    location changes with a 400); if supplied it must match the existing
+    location, otherwise it's silently ignored in favor of the existing one.
+    """
+    existing = client.get(resource_group_name, maintenance_window_name)
+    if existing.properties is None:
+        # Defensive — every MW the RP returns must have properties; if it
+        # doesn't, surface a clear local error rather than crashing on a
+        # None attribute access during the merge.
+        raise CLIError(
+            f'Existing MaintenanceWindow "{maintenance_window_name}" in resource group '
+            f'"{resource_group_name}" has no properties; refusing to merge.'
+        )
+
+    # --config-file path: JSON's `properties` (if present) replaces the
+    # whole properties block; remaining individual schedule args are
+    # ignored. Tags + location follow the same precedence rules as the
+    # non-config-file path below.
+    if config_file is not None:
+        body = get_file_json(config_file)
+        if not isinstance(body, dict):
+            raise CLIError(
+                f'--config-file must contain a JSON object (got: {type(body).__name__}).'
+            )
+        if "properties" in body:
+            # Re-marshal the dict into the typed model so the SDK can serialize
+            # it correctly on PUT. Cheapest path is to send the raw dict
+            # directly — the SDK accepts dict bodies for create_or_update.
+            existing_as_dict = existing.as_dict() if hasattr(existing, "as_dict") else dict(existing)
+            existing_as_dict["properties"] = body["properties"]
+            if tags is not None:
+                existing_as_dict["tags"] = tags
+            elif "tags" in body:
+                existing_as_dict["tags"] = body["tags"]
+            # location stays immutable
+            return sdk_no_wait(
+                no_wait,
+                client.begin_create_or_update,
+                resource_group_name,
+                maintenance_window_name,
+                existing_as_dict,
+            )
+
+    # Tags: caller-supplied replaces the whole dict, matching `aks update`
+    # semantics (managed_cluster_decorator.update_tags). Existing tags are
+    # preserved when --tags is omitted.
+    if tags is not None:
+        existing.tags = tags
+
+    # Schedule: if any schedule arg was supplied, the caller is changing the
+    # schedule shape end-to-end (you can't partially specify a Weekly+Daily
+    # mix; constructSchedule rejects cross-type args). Build a fresh
+    # Schedule from the user's args and replace existing.properties.schedule.
+    # Otherwise, leave the existing schedule untouched.
+    raw_parameters = locals()
+    schedule_arg_keys = (
+        "schedule_type",
+        "interval_days",
+        "interval_weeks",
+        "interval_months",
+        "day_of_week",
+        "day_of_month",
+        "week_index",
+    )
+    if any(raw_parameters.get(k) is not None for k in schedule_arg_keys):
+        # constructSchedule validates exclusivity (raises on cross-type args)
+        # and requires schedule_type to be one of the four known values.
+        existing.properties.schedule = constructSchedule(cmd, raw_parameters)
+
+    # Per-window scalars: assign only when the caller supplied a value.
+    # `is not None` so passing --start-date "" or --start-time "" still
+    # reaches the validator (which decides whether empty is valid).
+    if duration_hours is not None:
+        existing.properties.duration_hours = duration_hours
+    if utc_offset is not None:
+        existing.properties.utc_offset = utc_offset
+    if start_date is not None:
+        existing.properties.start_date = start_date
+    if start_time is not None:
+        existing.properties.start_time = start_time
+
+    # --location is ignored on update by ARM contract; surface a clear
+    # local warning if the caller asked for a mismatching location instead
+    # of letting ARM reject the PUT with an opaque 400.
+    if location is not None and location.lower() != (existing.location or "").lower():
+        logger.warning(
+            "--location cannot be changed on an existing MaintenanceWindow "
+            "(it is immutable post-create). Ignoring --location=%s; keeping "
+            "existing location %s.",
+            location, existing.location,
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        maintenance_window_name,
+        existing,
+    )
+
+
+def aks_maintenancewindow_delete(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    no_wait=False,
+):
+    # Confirmation is handled by the CLI core via `confirmation=True` on the
+    # command registration in commands.py (which auto-injects --yes/-y and
+    # respects AZURE_CORE_DISABLE_CONFIRM_PROMPT). No need for a hand-rolled
+    # prompt here — matches `aks delete` / `aks nodepool delete` shape.
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        maintenance_window_name,
+    )
+
+
 # pylint: disable=too-many-locals, unused-argument
 def aks_create(
     cmd,
@@ -1011,7 +1261,6 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
-    disk_driver_version=None,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -1056,6 +1305,7 @@ def aks_create(
     pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
+    node_public_ip_prefix_ids=None,
     enable_cluster_autoscaler=False,
     min_count=None,
     max_count=None,
@@ -1066,6 +1316,7 @@ def aks_create(
     nodepool_initialization_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
+    enable_os_disk_full_caching=False,
     vm_set_type=None,
     zones=None,
     ppg=None,
@@ -1073,6 +1324,7 @@ def aks_create(
     enable_encryption_at_host=False,
     enable_ultra_ssd=False,
     enable_fips_image=False,
+    enable_fips=False,
     kubelet_config=None,
     linux_os_config=None,
     host_group_id=None,
@@ -1137,6 +1389,7 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    enable_control_plane_metrics=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     # opentelemetry parameters
@@ -1161,6 +1414,8 @@ def aks_create(
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     node_provisioning_default_pools=None,
+    # node disruption policy
+    node_disruption_policy=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -1185,6 +1440,12 @@ def aks_create(
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    # backup (delegates to the dataprotection extension)
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_file=None,
+    # prepared image specification
+    prepared_image_specification_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1218,6 +1479,8 @@ def aks_create(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_cluster(cmd, mc)
 
     # send request to create a real managed cluster
     return aks_create_decorator.create_mc(mc)
@@ -1279,7 +1542,6 @@ def aks_update(
     disable_defender=False,
     defender_config=None,
     enable_disk_driver=False,
-    disk_driver_version=None,
     disable_disk_driver=False,
     enable_file_driver=False,
     disable_file_driver=False,
@@ -1344,6 +1606,8 @@ def aks_update(
     image_cleaner_interval_hours=None,
     enable_image_integrity=False,
     disable_image_integrity=False,
+    enable_fips=False,
+    disable_fips=False,
     enable_service_account_image_pull=False,
     disable_service_account_image_pull=False,
     service_account_image_pull_default_managed_identity_id=None,
@@ -1363,6 +1627,8 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
+    enable_control_plane_metrics=False,
+    disable_control_plane_metrics=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     disable_azure_monitor_app_monitoring=False,
@@ -1440,6 +1706,14 @@ def aks_update(
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
+    # backup (delegates to the dataprotection extension)
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_file=None,
+    # node disruption policy
+    node_disruption_policy=None,
+    # control plane scaling
+    control_plane_scaling_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1720,8 +1994,12 @@ def aks_upgrade(cmd,
         # nodepools of a cluster. The SDK only support upgrade single nodepool at a time.
         for agent_pool_profile in (instance.agent_pool_profiles or []):
             if vmas_cluster:
-                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
-                               'can only be applied on VirtualMachineScaleSets and VirtualMachines(Preview) cluster.')
+                raise CLIError('This cluster is using AvailabilitySet. Node image upgrade only operation '
+                               'can only be applied on VirtualMachineScaleSets and VirtualMachines cluster.')
+            # Skip Machines mode pools to avoid a known client-side error: these pools are containers of individual machines and do not support node image version upgrade.
+            if agent_pool_profile.mode == CONST_NODEPOOL_MODE_MACHINES:
+                logger.warning("Skipping node image upgrade for agent pool '%s': Machines mode pools do not support node image version upgrade.", agent_pool_profile.name)
+                continue
             agent_pool_client = cf_agent_pools(cmd.cli_ctx)
             _upgrade_single_nodepool_image_version(
                 True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
@@ -1802,6 +2080,10 @@ def aks_upgrade(cmd,
 
     if upgrade_all:
         for agent_profile in (instance.agent_pool_profiles or []):
+            # Skip Machines mode pools to avoid a known client-side error: these pools are containers of individual machines and do not support Kubernetes version upgrade.
+            if agent_profile.mode == CONST_NODEPOOL_MODE_MACHINES:
+                logger.warning("Skipping Kubernetes version upgrade for agent pool '%s': Machines mode pools do not support Kubernetes version upgrade.", agent_profile.name)
+                continue
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 
@@ -1924,6 +2206,7 @@ def aks_agentpool_add(
     pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
+    node_public_ip_prefix_ids=None,
     enable_cluster_autoscaler=False,
     min_count=None,
     max_count=None,
@@ -1936,6 +2219,7 @@ def aks_agentpool_add(
     node_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
+    enable_os_disk_full_caching=False,
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
@@ -1990,6 +2274,10 @@ def aks_agentpool_add(
     vm_sizes=None,
     # local DNS
     localdns_config=None,
+    # secondary network interfaces
+    secondary_network_interfaces=None,
+    # prepared image specification
+    prepared_image_specification_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2010,6 +2298,9 @@ def aks_agentpool_add(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_agentpool(cmd, agentpool, resource_group_name, cluster_name)
+
     # send request to add a real agentpool
     return aks_agentpool_add_decorator.add_agentpool(agentpool)
 
@@ -2068,6 +2359,10 @@ def aks_agentpool_update(
     node_vm_size=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    # crg
+    crg_id=None,
+    # prepared image specification
+    prepared_image_specification_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2088,6 +2383,9 @@ def aks_agentpool_update(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_agentpool(cmd, agentpool, resource_group_name, cluster_name)
+
     # send request to update the real agentpool
     return aks_agentpool_update_decorator.update_agentpool(agentpool)
 
@@ -2721,6 +3019,119 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
     if not manual_exists:
         raise InvalidArgumentValueError(
             f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_add(cmd,
+                                 client,
+                                 resource_group_name,
+                                 cluster_name,
+                                 nodepool_name,
+                                 node_vm_size,
+                                 min_count,
+                                 max_count,
+                                 no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot add autoscale profile to a non-virtualmachines node pool.")
+    AutoScaleProfile = cmd.get_models(
+        "AutoScaleProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    new_autoscale_profile = AutoScaleProfile(
+        size=node_vm_size,
+        min_count=int(min_count),
+        max_count=int(max_count),
+    )
+    if instance.virtual_machines_profile.scale.autoscale is None:
+        instance.virtual_machines_profile.scale.autoscale = []
+    instance.virtual_machines_profile.scale.autoscale.append(new_autoscale_profile)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_update(cmd,    # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    nodepool_name,
+                                    current_node_vm_size,
+                                    node_vm_size=None,
+                                    min_count=None,
+                                    max_count=None,
+                                    no_wait=False):
+    if node_vm_size is None and min_count is None and max_count is None:
+        raise RequiredArgumentMissingError(
+            "specify --node-vm-size, --min-count, or --max-count (or a combination)."
+        )
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot update autoscale profile in a non-virtualmachines node pool.")
+
+    autoscale_exists = False
+    for a in instance.virtual_machines_profile.scale.autoscale:
+        if a.size == current_node_vm_size:
+            autoscale_exists = True
+            if node_vm_size is not None:
+                a.size = node_vm_size
+            if min_count is not None:
+                a.min_count = int(min_count)
+            if max_count is not None:
+                a.max_count = int(max_count)
+            break
+    if not autoscale_exists:
+        raise InvalidArgumentValueError(
+            f"Autoscale profile with size {current_node_vm_size} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_delete(cmd,    # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    nodepool_name,
+                                    current_node_vm_size,
+                                    no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot delete autoscale profile from a non-virtualmachines node pool.")
+
+    autoscale_exists = False
+    for a in instance.virtual_machines_profile.scale.autoscale:
+        if a.size == current_node_vm_size:
+            autoscale_exists = True
+            instance.virtual_machines_profile.scale.autoscale.remove(a)
+            break
+    if not autoscale_exists:
+        raise InvalidArgumentValueError(
+            f"Autoscale profile with size {current_node_vm_size} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(
@@ -4725,29 +5136,34 @@ def _aks_run_command(
             command += f" {all_endpoints}"
             logger.debug("Full command: %s", command)
 
-        compute_client = get_compute_client(cmd.cli_ctx)
-
         if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
-            RunCommandInput = cmd.get_models('RunCommandInput',
-                                             resource_type=ResourceType.MGMT_COMPUTE,
-                                             operation_group="virtual_machine_scale_sets")
+            from azure.cli.command_modules.vm.aaz.latest.vmss.run_command import Invoke as VMSSRunInvoke
+            command_args = {
+                'instance_id': instance_id,
+                'resource_group': managed_resource_group,
+                'vmss_name': vmss_name,
+                'command_id': "RunShellScript",
+                'script': [command]
+            }
             command_result = LongRunningOperation(cmd.cli_ctx)(
-                compute_client.virtual_machine_scale_set_vms.begin_run_command(
-                    managed_resource_group, vmss_name, instance_id,
-                    RunCommandInput(command_id="RunShellScript", script=[command])))
+                VMSSRunInvoke(cli_ctx=cmd.cli_ctx)(command_args=command_args))
         elif vm_set_type == CONST_AVAILABILITY_SET:
-            RunCommandInput = cmd.get_models('RunCommandInput',
-                                             resource_type=ResourceType.MGMT_COMPUTE,
-                                             operation_group="virtual_machine_run_commands")
+            from azure.cli.command_modules.vm.aaz.latest.vm.run_command import Invoke as VMRunInvoke
+            command_args = {
+                'resource_group': managed_resource_group,
+                'vm_name': vm_name,
+                'command_id': "RunShellScript",
+                'script': [command]
+            }
             command_result = LongRunningOperation(cmd.cli_ctx)(
-                compute_client.virtual_machines.begin_run_command(
-                    managed_resource_group, vm_name,
-                    RunCommandInput(command_id="RunShellScript", script=[command])))
+                VMRunInvoke(cli_ctx=cmd.cli_ctx)(command_args=command_args))
         else:
             raise ValidationError(f"VM set type {vm_set_type} is not supported!")
 
-        display_status = command_result.value[0].display_status
-        message = command_result.value[0].message
+        display_status, message = '', ''
+        if len(command_result.get('value', [])) > 0:
+            display_status = command_result['value'][0].get('displayStatus')
+            message = command_result['value'][0].get('message')
         if display_status != "Provisioning succeeded":
             raise InvalidArgumentValueError(
                 f"Can not run command with returned code {display_status} and message {message}")
@@ -4785,13 +5201,44 @@ def _aks_verify_resource(resource, resource_type):
                               f"Image version must be at least {CONST_MIN_NODE_IMAGE_VERSION}.")
 
 
+def _aks_verify_resource_by_aaz(resource, resource_type):
+    if resource.get('provisioningState') != CONST_NODE_PROVISIONING_STATE_SUCCEEDED:
+        raise ValidationError(f"Node pool {resource.get('name')} is in {resource.get('provisioningState')} state!")
+
+    node_image_version = ""
+    os_type = ""
+    if resource_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        node_image_version = resource.get('nodeImageVersion')
+        os_type = resource.get('osType')
+    else:
+        node_image_version = resource.get('storageProfile', {}).get('imageReference', {}).get('id')
+        os_type = resource.get('storageProfile', {}).get('osDisk', {}).get('osType')
+
+    if not os_type or os_type != CONST_DEFAULT_NODE_OS_TYPE:
+        raise ValidationError(f"Resource must be of type {CONST_DEFAULT_NODE_OS_TYPE}!")
+
+    if not node_image_version:
+        raise ValidationError(f"No image version found for {resource.get('name')}! Cannot verify supported versions.")
+
+    if resource_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        version = node_image_version.split("-")[-1]
+    else:
+        version = node_image_version.split("/")[-1]
+
+    if version < CONST_MIN_NODE_IMAGE_VERSION:
+        raise ValidationError(f"Node image version {version} is not supported! "
+                              f"Image version must be at least {CONST_MIN_NODE_IMAGE_VERSION}.")
+
+
 def _aks_get_node_name_vmss(
         cmd,
         resource_group,
         cluster_name,
         node_name,
         managed_resource_group):
-    compute_client = get_compute_client(cmd.cli_ctx)
+    from azure.cli.command_modules.vm.aaz.latest.vmss import List as VMSSList
+    from azure.cli.command_modules.vm.operations.vmss import VMSSListInstances
+    from azure.cli.command_modules.vm.operations.vmss_vms import VMSSVMSShow
 
     if not node_name:
         logger.debug("No node name specified, will randomly select a node from the cluster")
@@ -4815,35 +5262,45 @@ def _aks_get_node_name_vmss(
         if not nodepool_name:
             raise ValidationError("No suitable node pool found in the cluster.")
 
-        vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
+        vmss_list = VMSSList(cli_ctx=cmd.cli_ctx)({
+            'resource_group': managed_resource_group
+        })
         if not vmss_list:
             raise ValidationError(f"No VMSS found in the managed resource group {managed_resource_group}!")
 
         for vmss in vmss_list:
-            vmss_tag = vmss.tags.get("aks-managed-poolName")
+            vmss_tag = vmss.get('tags', {}).get("aks-managed-poolName")
             if vmss_tag and vmss_tag == nodepool_name:
-                vmss_name = vmss.name
+                vmss_name = vmss.get('name')
                 logger.debug("Select VMSS: %s", vmss_name)
                 break
         if not vmss_name:
             raise ValidationError(f"No VMSS pool matched AKS node pool {nodepool_name}!")
 
-        instances = list(compute_client.virtual_machine_scale_set_vms.list(managed_resource_group, vmss_name))
-        if not instances:
+        command_args = {
+            'resource_group': managed_resource_group,
+            'virtual_machine_scale_set_name': vmss_name
+        }
+        instances = list(VMSSListInstances(cli_ctx=cmd.cli_ctx)(command_args=command_args))
+        if not instances or len(instances) < 1:
             raise ValidationError(f"No instances found in the VMSS {vmss_name}!")
 
-        instance_id = instances[0].instance_id
+        instance_id = instances[0].get('instanceId')
         logger.debug("Select instance id: %s", instance_id)
     else:
         index = node_name.find("vmss")
         if index != -1:
             vmss_name = node_name[:index + 4]
-            instance_id = int(node_name[index + 4:], base=36)
-            instance_info = compute_client.virtual_machine_scale_set_vms.get(
-                managed_resource_group, vmss_name, instance_id)
+            instance_id = str(int(node_name[index + 4:], base=36))
+            command_args = {
+                'instance_id': instance_id,
+                'resource_group': managed_resource_group,
+                'vm_scale_set_name': vmss_name
+            }
+            instance_info = VMSSVMSShow(cli_ctx=cmd.cli_ctx)(command_args=command_args)
             if not instance_info:
                 raise ValidationError(f"Instance id {instance_id} not found in VMSS {vmss_name}!")
-            _aks_verify_resource(instance_info, CONST_VIRTUAL_MACHINES)
+            _aks_verify_resource_by_aaz(instance_info, CONST_VIRTUAL_MACHINES)
         else:
             raise ValidationError(f"Node name {node_name} is invalid!")
 
@@ -4854,20 +5311,22 @@ def _aks_get_node_name_as(
         cmd,
         node_name,
         managed_resource_group):
-    compute_client = get_compute_client(cmd.cli_ctx)
-
+    from azure.cli.command_modules.vm.aaz.latest.vm import List as VMList
+    from azure.cli.command_modules.vm.operations.vm import VMShow
     if not node_name:
         logger.debug("No node name specified, will randomly select a node from the cluster")
 
-        vm_list = compute_client.virtual_machines.list(managed_resource_group)
+        vm_list = VMList(cli_ctx=cmd.cli_ctx)(command_args={
+            'resource_group': managed_resource_group
+        })
         if not vm_list:
             raise ValidationError(f"No VM found in the managed resource group {managed_resource_group}!")
 
         vm_name = ""
         for vm in vm_list:
             try:
-                _aks_verify_resource(vm, CONST_VIRTUAL_MACHINES)
-                vm_name = vm.name
+                _aks_verify_resource_by_aaz(vm, CONST_VIRTUAL_MACHINES)
+                vm_name = vm.get('name')
                 logger.debug("Select VM: %s", vm_name)
                 break
             except ValidationError as ex:
@@ -4878,10 +5337,14 @@ def _aks_get_node_name_as(
             raise ValidationError("No suitable VM found in the managed resource!")
     else:
         vm_name = node_name
-        vm_info = compute_client.virtual_machines.get(managed_resource_group, vm_name)
+        command_args = {
+            'resource_group': managed_resource_group,
+            'vm_name': vm_name
+        }
+        vm_info = VMShow(cli_ctx=cmd.cli_ctx)(command_args=command_args)
         if not vm_info:
             raise ValidationError(f"VM {vm_name} not found in the managed resource group {managed_resource_group}!")
-        _aks_verify_resource(vm_info, CONST_VIRTUAL_MACHINES)
+        _aks_verify_resource_by_aaz(vm_info, CONST_VIRTUAL_MACHINES)
 
     return vm_name
 
@@ -5419,10 +5882,11 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
 
     try:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
         mc = client.get(resource_group_name, name)
         mc_id = mc.id
         nrg = mc.node_resource_group
-        bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+        bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg], subscription_id)
         port = aks_bastion_get_local_port(port)
 
         # Fetch credentials only if kubeconfig not provided
@@ -5454,6 +5918,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
                 port,
                 mc_id,
                 kubeconfig_path,
+                subscription_id=subscription_id,
                 test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
             )
         )
@@ -5552,3 +6017,105 @@ def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, ak
 def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     return client.get(resource_group_name, cluster_name, name, headers=headers)
+
+
+def aks_prepared_image_specification_create(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    location=None,
+    tags=None,
+    container_images=None,
+    customization_scripts=None,
+    assign_identity=None,
+    version=None,
+    no_wait=False,
+):
+    PreparedImageSpecification = cmd.get_models(
+        "PreparedImageSpecification",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    PreparedImageSpecificationProperties = cmd.get_models(
+        "PreparedImageSpecificationProperties",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    PreparedImageSpecificationManagedIdentityProfile = cmd.get_models(
+        "PreparedImageSpecificationManagedIdentityProfile",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    if location is None:
+        location = get_rg_location(cmd.cli_ctx, resource_group_name)
+
+    identity_profile = None
+    if assign_identity is not None:
+        identity_profile = PreparedImageSpecificationManagedIdentityProfile(
+            resource_id=assign_identity,
+        )
+
+    pis = PreparedImageSpecification(
+        name=name,
+        location=location,
+        tags=tags,
+        properties=PreparedImageSpecificationProperties(
+            container_images=container_images,
+            customization_scripts=customization_scripts,
+            identity_profile=identity_profile,
+            version=version,
+        ),
+    )
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, pis)
+
+
+def aks_prepared_image_specification_update(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    tags=None,
+):
+    PreparedImageSpecificationPatch = cmd.get_models(
+        "PreparedImageSpecificationPatch",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    patch = PreparedImageSpecificationPatch(
+        tags=tags,
+    )
+
+    return client.update(resource_group_name, name, patch)
+
+
+def aks_prepared_image_specification_delete(cmd, client, resource_group_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
+
+
+def aks_prepared_image_specification_show(cmd, client, resource_group_name, name):
+    return client.get(resource_group_name, name)
+
+
+def aks_prepared_image_specification_list(cmd, client, resource_group_name=None):
+    if resource_group_name is None:
+        return client.list_by_subscription()
+
+    return client.list_by_resource_group(resource_group_name)
+
+
+def aks_prepared_image_specification_version_delete(cmd, client, resource_group_name, pis_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete_version, resource_group_name, pis_name, name)
+
+
+def aks_prepared_image_specification_version_show(cmd, client, resource_group_name, pis_name, name):
+    return client.get_version(resource_group_name, pis_name, name)
+
+
+def aks_prepared_image_specification_version_list(cmd, client, resource_group_name, pis_name):
+    return client.list_versions(resource_group_name, pis_name)

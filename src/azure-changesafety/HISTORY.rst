@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.0.0b2
++++++++
+* Fix ``--additional-data`` argument to accept free-form nested JSON (e.g., SafeFly payloads).
+* Fix ``--change-definition`` details to accept free-form nested JSON (e.g., ApiOperations with operations array).
+* Inject ``additionalData`` into request body via content override (AAZ builder workaround).
+* Add content injection for ``additionalData`` in both Create and Update commands.
+
 1.0.0b1
 +++++++
 * Initial release.

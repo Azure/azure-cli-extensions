@@ -26,6 +26,17 @@ examples:
 """
 
 
+helps['horizondb update'] = """
+type: command
+short-summary: Update an existing Azure HorizonDB cluster.
+examples:
+  - name: Update an existing HorizonDB cluster to have 6 vCores.
+    text: az horizondb update --name examplecluster --resource-group exampleresourcegroup --v-cores 6
+  - name: Assign a parameter group to an existing HorizonDB cluster.
+    text: az horizondb update --name examplecluster --resource-group exampleresourcegroup --parameter-group /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.HorizonDb/parameterGroups/{parameterGroup}
+"""
+
+
 helps['horizondb delete'] = """
 type: command
 short-summary: Delete an Azure HorizonDB cluster.

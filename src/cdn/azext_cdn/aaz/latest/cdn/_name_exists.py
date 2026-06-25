@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class NameExists(AAZCommand):
     """Check the availability of a resource name. This is needed for resources where name is globally unique, such as a CDN endpoint.
 
-    :example: Check whether the resource name contoso is available or not.
-        az cdn name-exists --name contoso
+    :example: CheckNameAvailabilityWithSubscription
+        az cdn name-exists --name sampleName --type Microsoft.Cdn/Profiles/Endpoints
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cdn/checknameavailability", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cdn/checknameavailability", "2025-09-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class NameExists(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

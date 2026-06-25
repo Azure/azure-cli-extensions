@@ -296,6 +296,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions["ensure_container_insights_for_monitoring"] = (
                 ensure_container_insights_for_monitoring_preview
             )
+            # AKS backup (delegates to the dataprotection extension)
+            from azext_aks_preview.aks_backup import enable_aks_backup
+            external_functions["enable_aks_backup"] = enable_aks_backup
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -545,7 +548,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return disable_local_accounts
 
-    def _get_outbound_type(
+    def _get_outbound_type(  # pylint: disable=too-many-branches
         self,
         enable_validation: bool = False,
         read_only: bool = False,
@@ -629,9 +632,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
                 ]:
                     if self.get_vnet_subnet_id() in ["", None]:
-                        raise RequiredArgumentMissingError(
-                            "--vnet-subnet-id must be specified for userDefinedRouting and it must "
-                            "be pre-configured with a route table with egress rules"
+                        if self.decorator_mode == DecoratorMode.CREATE:
+                            raise RequiredArgumentMissingError(
+                                "--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                                "be pre-configured with a route table with egress rules"
+                            )
+                        raise InvalidArgumentValueError(
+                            f"Updating outbound type to {outbound_type} is only supported for "
+                            "clusters using a custom (BYO) virtual network. Managed VNet clusters "
+                            f"cannot be updated to {outbound_type}. Please refer to "
+                            "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype"
+                            "#updating-outboundtype-after-cluster-creation for supported migration paths."
                         )
 
                 if (
@@ -1821,6 +1832,61 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_kubernetes_version(read_only=False)
 
+    def _validate_enable_fips_kubernetes_version(self) -> None:
+        kubernetes_version = self._get_kubernetes_version(read_only=True)
+        if not kubernetes_version:
+            return
+
+        version_parts = str(kubernetes_version).lstrip("v").split(".")
+        if len(version_parts) < 2:
+            return
+        try:
+            major = int(version_parts[0])
+            minor = int(version_parts[1].split("-")[0])
+        except ValueError:
+            return
+        if (major, minor) < (1, 34):
+            raise InvalidArgumentValueError("--enable-fips requires Kubernetes version 1.34 or later.")
+
+    def _get_enable_fips_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_fips") and self.mc.enable_fips is not None:
+            return self.mc.enable_fips
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableFIPS")
+        return None
+
+    def get_enable_fips(self) -> bool:
+        """Obtain the value of enable_fips.
+        :return: bool
+        """
+        enable_fips = self.raw_param.get("enable_fips", False)
+        if enable_fips and self.get_disable_fips():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_fips_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_fips = value_obtained_from_mc
+
+        if enable_fips:
+            self._validate_enable_fips_kubernetes_version()
+        return bool(enable_fips)
+
+    def get_disable_fips(self) -> bool:
+        """Obtain the value of disable_fips.
+        :return: bool
+        """
+        disable_fips = self.raw_param.get("disable_fips", False)
+        if disable_fips and self.raw_param.get("enable_fips", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        return bool(disable_fips)
+
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
 
@@ -1828,9 +1894,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
-        disk_driver_version = self.raw_param.get("disk_driver_version")
 
-        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
+        if not enable_disk_driver and not disable_disk_driver:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()  # pylint: disable=no-member
 
@@ -1840,29 +1905,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "--disable-disk-driver at the same time."
             )
 
-        if disable_disk_driver and disk_driver_version:
-            raise ArgumentUsageError(
-                "The parameter --disable-disk-driver cannot be used "
-                "when --disk-driver-version is specified.")
-
-        if self.decorator_mode == DecoratorMode.UPDATE and disk_driver_version and not enable_disk_driver:
-            raise ArgumentUsageError(
-                "Parameter --enable-disk-driver is required "
-                "when --disk-driver-version is specified during update.")
-
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False
             else:
                 profile.enabled = True
-                if disk_driver_version:
-                    profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
-                if disk_driver_version:
-                    profile.version = disk_driver_version
             elif disable_disk_driver:
                 msg = (
                     "Please make sure there are no existing PVs and PVCs "
@@ -2610,6 +2661,109 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_azure_monitor_metrics(enable_validation=True)
+
+    def validate_control_plane_metrics_params(self) -> None:
+        """Validate the --enable/--disable-control-plane-metrics flag combo and
+        its interaction with --enable/--disable-azure-monitor-metrics.
+
+        Raises MutuallyExclusiveArgumentError or RequiredArgumentMissingError on
+        an invalid combination. Returns nothing — use this when you want to
+        surface validation errors without consuming a parameter value.
+
+        Reads raw_param directly so the getters can also delegate here from
+        their enable_validation=True path without recursing.
+        """
+        enable_cp = self.raw_param.get("enable_control_plane_metrics")
+        disable_cp = self.raw_param.get("disable_control_plane_metrics")
+        # On create, the property may already be set on the incoming mc object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.azure_monitor_profile and
+                self.mc.azure_monitor_profile.metrics and
+                self.mc.azure_monitor_profile.metrics.control_plane
+            ):
+                enable_cp = self.mc.azure_monitor_profile.metrics.control_plane.enabled
+
+        if enable_cp and disable_cp:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-control-plane-metrics and --disable-control-plane-metrics "
+                "at the same time."
+            )
+
+        if enable_cp:
+            # Reject combining enable-control-plane-metrics with disable-azure-monitor-metrics
+            # in the same command — the resulting payload would be inconsistent.
+            if self._get_disable_azure_monitor_metrics(False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-control-plane-metrics together with "
+                    "--disable-azure-monitor-metrics."
+                )
+            # Must have Azure Monitor metrics enabled (either already or in this command).
+            already_enabled = (
+                self.mc and
+                self.mc.azure_monitor_profile and
+                self.mc.azure_monitor_profile.metrics and
+                self.mc.azure_monitor_profile.metrics.enabled
+            )
+            enabling_now = self._get_enable_azure_monitor_metrics(False)
+            if not already_enabled and not enabling_now:
+                raise RequiredArgumentMissingError(
+                    "--enable-control-plane-metrics requires Azure Monitor metrics to be enabled. "
+                    "Specify --enable-azure-monitor-metrics or run on a cluster that already has "
+                    "Azure Monitor metrics enabled."
+                )
+
+    def _get_enable_control_plane_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_control_plane_metrics.
+        When enable_validation is True, the flag combinations are validated via
+        validate_control_plane_metrics_params before the value is returned.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_control_plane_metrics = self.raw_param.get("enable_control_plane_metrics")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.azure_monitor_profile and
+                self.mc.azure_monitor_profile.metrics and
+                self.mc.azure_monitor_profile.metrics.control_plane
+            ):
+                enable_control_plane_metrics = self.mc.azure_monitor_profile.metrics.control_plane.enabled
+        if enable_validation:
+            self.validate_control_plane_metrics_params()
+        return bool(enable_control_plane_metrics)
+
+    def get_enable_control_plane_metrics(self) -> bool:
+        """Obtain the value of enable_control_plane_metrics.
+        This function will verify the parameter by default. If both enable_control_plane_metrics and
+        disable_control_plane_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_control_plane_metrics(enable_validation=True)
+
+    def _get_disable_control_plane_metrics(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_control_plane_metrics.
+        When enable_validation is True, the flag combinations are validated via
+        validate_control_plane_metrics_params before the value is returned.
+
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_control_plane_metrics = self.raw_param.get("disable_control_plane_metrics")
+        if enable_validation:
+            self.validate_control_plane_metrics_params()
+        return bool(disable_control_plane_metrics)
+
+    def get_disable_control_plane_metrics(self) -> bool:
+        """Obtain the value of disable_control_plane_metrics.
+        This function will verify the parameter by default. If both enable_control_plane_metrics and
+        disable_control_plane_metrics are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_control_plane_metrics(enable_validation=True)
 
     def _get_enable_azure_monitor_app_monitoring(self, enable_validation=True) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_app_monitoring.
@@ -3778,6 +3932,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("node_provisioning_mode")
 
+    def get_node_disruption_policy(self) -> Union[str, None]:
+        """Obtain the value of node_disruption_policy.
+        """
+        return self.raw_param.get("node_disruption_policy")
+
     def get_node_provisioning_default_pools(self) -> Union[str, None]:
         """Obtain the value of node_provisioning_default_pools.
         """
@@ -4297,6 +4456,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_fips():
+            mc.enable_fips = True
+            if mc.agent_pool_profiles:
+                for agentpool in mc.agent_pool_profiles:
+                    agentpool.enable_fips = True
+        return mc
+
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -4637,6 +4807,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 metric_annotations_allow_list=str(ksm_metric_annotations_allow_list)
             ))
         mc.azure_monitor_profile.metrics.kube_state_metrics = kube_state_metrics
+
+        # NOTE: control_plane.enabled is intentionally NOT set here on the create flow.
+        # If we set it on this initial PUT, the RP would schedule the control-plane-metrics
+        # collection pod (CCP) before the DCRA (Data Collection Rule Association) has been
+        # created in postprocessing. The CCP would then crash-loop with "DCRA not found"
+        # until the next reconciliation.
+        # Instead, we defer the flip to the addon_put step inside
+        # link_azure_monitor_profile_artifacts (postprocessing_after_mc_created), which
+        # runs *after* DCRA creation. The validator still runs here to surface flag
+        # combination errors early.
+        self.context.validate_control_plane_metrics_params()
+
         self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
 
     def _setup_azure_monitor_app_monitoring(self, mc: ManagedCluster) -> None:
@@ -4755,6 +4937,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
+        # Surface control-plane-metrics flag combination errors even when the
+        # parent metrics flag was not specified, so users get a clear error
+        # instead of a silent ignore when they pass --enable-control-plane-metrics
+        # on its own.
+        self.context.validate_control_plane_metrics_params()
 
         if self.context.get_enable_azure_monitor_metrics():
             self._setup_azure_monitor_metrics(mc)
@@ -5035,6 +5223,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up the nodeDisruptionPolicy field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        policy = self.context.get_node_disruption_policy()
+        if policy is not None:
+            if mc.node_disruption_profile is None:
+                mc.node_disruption_profile = (
+                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
+                )
+
+            # set policy
+            mc.node_disruption_profile.node_disruption_policy = policy
+
+        return mc
+
     def set_up_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -5189,6 +5396,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up FIPS mode at the cluster level
+        mc = self.set_up_enable_fips(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -5231,6 +5440,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_container_storage(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
+        # set up node disruption policy
+        mc = self.set_up_node_disruption_policy(mc)
         # set up agentpool profile ssh access
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
@@ -5308,6 +5519,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             "enable_azure_container_storage",
             default_value=False
         )
+        enable_backup = self.context.raw_param.get("enable_backup", False)
 
         # pylint: disable=too-many-boolean-expressions
         if (
@@ -5317,7 +5529,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             azuremonitormetrics_addon_enabled or
             (enable_managed_identity and attach_acr) or
             need_grant_vnet_permission_to_cluster_identity or
-            enable_azure_container_storage
+            enable_azure_container_storage or
+            enable_backup
         ):
             return True
         return False
@@ -5567,13 +5780,28 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             except Exception as e:  # pylint: disable=broad-except
                 logger.warning("Could not get signed in user: %s", str(e))
             else:
+                # signed_in_user_get() calls Graph /me, which only succeeds for a delegated
+                # (interactive) user; service principal / managed identity logins raise GraphError
+                # and are handled by the except branch above. So the assignee here is always a User.
                 self.context.external_functions.add_role_assignment_executor(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service RBAC Cluster Admin",
                     user["id"],
                     scope=cluster.id,
                     resolve_assignee=False,
+                    assignee_principal_type="User",
                 )
+
+        # Enable Azure Backup for the AKS cluster (delegates to dataprotection extension)
+        if self.context.raw_param.get("enable_backup", False):
+            self.context.external_functions.enable_aks_backup(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.raw_param.get("backup_strategy"),
+                self.context.raw_param.get("backup_configuration_file"),
+                self.context.raw_param.get("yes", False),
+            )
 
     def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
         etag, match_condition = _get_etag_match_condition(
@@ -6699,6 +6927,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_fips():
+            mc.enable_fips = False
+            return mc
+
+        if not self.context.get_enable_fips():
+            return mc
+
+        non_fips_nodepools = [
+            agentpool.name
+            for agentpool in (mc.agent_pool_profiles or [])
+            if agentpool.enable_fips is not True
+        ]
+        if non_fips_nodepools:
+            raise InvalidArgumentValueError(
+                "--enable-fips requires all node pools in the cluster to be FIPS-enabled. "
+                "Enable FIPS on these node pools first: {}.".format(", ".join(non_fips_nodepools))
+            )
+
+        mc.enable_fips = True
+        return mc
+
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -6922,6 +7175,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Handle disable Azure Monitor metrics
         if self.context.get_disable_azure_monitor_metrics():
             self._disable_azure_monitor_metrics(mc)
+
+        # Handle enable / disable of control plane metrics independently of the parent metrics flag,
+        # so users can toggle control plane metrics on a cluster that already has metrics enabled.
+        if self.context.get_enable_control_plane_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()  # pylint: disable=no-member
+            if mc.azure_monitor_profile.metrics is None:
+                # Should not normally happen — validation requires metrics to be enabled — but guard
+                # against partially-populated profiles to avoid AttributeError.
+                mc.azure_monitor_profile.metrics = (
+                    self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)  # pylint: disable=no-member
+                )
+            mc.azure_monitor_profile.metrics.control_plane = (
+                self.models.ManagedClusterAzureMonitorProfileMetricsControlPlane(enabled=True)  # pylint: disable=no-member
+            )
+
+        if self.context.get_disable_control_plane_metrics():
+            if (
+                mc.azure_monitor_profile and
+                mc.azure_monitor_profile.metrics
+            ):
+                mc.azure_monitor_profile.metrics.control_plane = (
+                    self.models.ManagedClusterAzureMonitorProfileMetricsControlPlane(enabled=False)  # pylint: disable=no-member
+                )
 
         if self.context.get_enable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
@@ -7644,6 +7921,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the nodeDisruptionPolicy field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        policy = self.context.get_node_disruption_policy()
+        if policy is not None:
+            if mc.node_disruption_profile is None:
+                mc.node_disruption_profile = (
+                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
+                )
+
+            # set policy
+            mc.node_disruption_profile.node_disruption_policy = policy
+
+        return mc
+
     def update_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the aiToolchainOperatorProfile field of the managed cluster
 
@@ -8087,6 +8383,26 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            if mc.control_plane_scaling_profile is None:
+                mc.control_plane_scaling_profile = (
+                    self.models.ManagedClusterControlPlaneScalingProfile(  # pylint: disable=no-member
+                        scaling_size=control_plane_scaling_size,
+                    )
+                )
+            else:
+                mc.control_plane_scaling_profile.scaling_size = control_plane_scaling_size
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -8106,6 +8422,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update FIPS mode at the cluster level
+        mc = self.update_enable_fips(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
@@ -8181,6 +8499,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_http_proxy_enabled(mc)
         # update user-defined scheduler configuration for kube-scheduler upstream
         mc = self.update_upstream_kubescheduler_user_configuration(mc)
+        # update node disruption policy
+        mc = self.update_node_disruption_policy(mc)
+        # update control plane scaling profile
+        mc = self.update_control_plane_scaling_profile(mc)
         # update ManagedSystem pools, must at end
         mc = self.update_managed_system_pools(mc)
 
@@ -8206,10 +8528,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             monitoring_addon_postprocessing_required = self.context.get_intermediate(
                 "monitoring_addon_postprocessing_required", default_value=False
             )
+            enable_backup = self.context.raw_param.get("enable_backup", False)
             # Note: monitoring_addon_disable_postprocessing_required is no longer used - cleanup is done upfront
+            # pylint: disable=too-many-boolean-expressions
             if (enable_azure_container_storage or disable_azure_container_storage) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
-               (monitoring_addon_postprocessing_required):
+               (monitoring_addon_postprocessing_required) or \
+               enable_backup:
                 return True
         return postprocessing_required
 
@@ -8441,6 +8766,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     raise CLIError('App Routing must be enabled to attach keyvault.\n')
             else:
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
+
+        # Enable Azure Backup for the AKS cluster (delegates to dataprotection extension)
+        if self.context.raw_param.get("enable_backup", False):
+            self.context.external_functions.enable_aks_backup(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.raw_param.get("backup_strategy"),
+                self.context.raw_param.get("backup_configuration_file"),
+                self.context.raw_param.get("yes", False),
+            )
 
     def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
         etag, match_condition = _get_etag_match_condition(
