@@ -33,6 +33,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     "kubernetes==24.2.0",
     "oras==0.2.25",
+    "azure-mgmt-network>=18.0.0",
 ]
 
 VERSION = "1.8.0"
