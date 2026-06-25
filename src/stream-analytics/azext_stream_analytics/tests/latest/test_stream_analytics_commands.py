@@ -205,11 +205,15 @@ class StreamAnalyticsClientTest(ScenarioTest):
             }
         }
         self.kwargs["policy_param"] = json.dumps(policy_param)
+        # scope the assignment to this test's resource group so it can't leak into other tests
+        self.kwargs["scope"] = self.cmd("group show -n {rg}").get_output_in_json()["id"]
         self.cmd(
             "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
             --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --scope {scope} \
             --params '{policy_param}'"
         )
+        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi --scope {scope}")
 
         # create a streaming job
         self.cmd(
@@ -266,7 +270,6 @@ class StreamAnalyticsClientTest(ScenarioTest):
 
         self.assertIn("RequestDisallowedByPolicy", str(cm.exception))
 
-
     @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
     def test_input_sql_reference_authentication_mode(self):
         self.kwargs.update({
@@ -319,6 +322,105 @@ class StreamAnalyticsClientTest(ScenarioTest):
 
         self.cmd("stream-analytics input delete -n {input_name} -g {rg} --job-name {job_name} --yes")
 
+        # Managed Identity (Msi) requires API version 2021-10-01-preview
+        self.kwargs["input_name"] = "input-msi"
+        msi_props = {
+            "type": "Reference",
+            "datasource": {
+                "type": "Microsoft.Sql/Server/Database",
+                "properties": {
+                    "server": "sql-server",
+                    "database": "sql-db",
+                    "fullSnapshotQuery": "SELECT * from a",
+                    "refreshType": "Static",
+                    "refreshRate": "00:00:00",
+                    "authenticationMode": "Msi"
+                }
+            }
+        }
+        self.kwargs["properties"] = json.dumps(msi_props)
+        self.cmd(
+            "stream-analytics input create -n {input_name} -g {rg} \
+            --job-name {job_name} \
+            --properties '{properties}'",
+            checks=[
+                self.check("name", "{input_name}"),
+                self.check("type", "Microsoft.StreamAnalytics/streamingjobs/inputs"),
+                self.check("properties.datasource.authenticationMode", "Msi")
+            ]
+        )
+        self.cmd(
+            "stream-analytics input show -n {input_name} -g {rg} --job-name {job_name}",
+            checks=[
+                self.check("name", "{input_name}"),
+                self.check("properties.datasource.authenticationMode", "Msi")
+            ]
+        )
+
+        self.cmd("stream-analytics input delete -n {input_name} -g {rg} --job-name {job_name} --yes")
+
+    @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_")
+    def test_input_sql_create_policy_violation(self):
+        # a SQL reference input using ConnectionString auth must be denied by the
+        # managed-identity-only policy (only reproduces on the upgraded API version).
+        self.kwargs.update({
+            "job_name": "job",
+            "input_name": "input",
+            "locale": "en-US"
+        })
+
+        policy_param = {
+            "effect": {
+                "value": "Deny"
+            }
+        }
+        self.kwargs["policy_param"] = json.dumps(policy_param)
+        # scope the assignment to this test's resource group so it can't leak into other tests
+        self.kwargs["scope"] = self.cmd("group show -n {rg}").get_output_in_json()["id"]
+        self.cmd(
+            "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
+            --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --scope {scope} \
+            --params '{policy_param}'"
+        )
+        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi --scope {scope}")
+
+        # create a streaming job
+        self.cmd(
+            "stream-analytics job create -n {job_name} -g {rg} \
+            --data-locale {locale} \
+            --output-error-policy Drop --out-of-order-policy Drop \
+            --order-max-delay 0 --arrival-max-delay 5"
+        )
+
+        props = {
+            "type": "Reference",
+            "datasource": {
+                "type": "Microsoft.Sql/Server/Database",
+                "properties": {
+                    "server": "sql-server",
+                    "database": "sql-db",
+                    "user": "sql-user",
+                    "password": "Password123!",
+                    "fullSnapshotQuery": "SELECT * from a",
+                    "refreshType": "Static",
+                    "refreshRate": "00:00:00",
+                    "authenticationMode": "ConnectionString"
+                }
+            }
+        }
+        self.kwargs["properties"] = json.dumps(props)
+
+        # Make sure it raises an exception error and the error is correct
+        from azure.core.exceptions import HttpResponseError
+        with self.assertRaises(HttpResponseError) as cm:
+            self.cmd(
+                "stream-analytics input create -n {input_name} -g {rg} \
+                --job-name {job_name} \
+                --properties '{properties}'"
+            )
+
+        self.assertIn("RequestDisallowedByPolicy", str(cm.exception))
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
@@ -452,11 +554,15 @@ class StreamAnalyticsClientTest(ScenarioTest):
             }
         }
         self.kwargs["policy_param"] = json.dumps(policy_param)
+        # scope the assignment to this test's resource group so it can't leak into other tests
+        self.kwargs["scope"] = self.cmd("group show -n {rg}").get_output_in_json()["id"]
         self.cmd(
             "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
             --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --scope {scope} \
             --params '{policy_param}'"
         )
+        self.addCleanup(self.cmd, "policy assignment delete --name deny-asa-mi --scope {scope}")
 
         # create a streaming job
         self.cmd(
