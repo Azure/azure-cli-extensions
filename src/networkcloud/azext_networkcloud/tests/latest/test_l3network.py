@@ -12,6 +12,11 @@ L3Network tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -65,9 +70,41 @@ def step_create(test, checks=None):
 
 def step_show(test, checks=None):
     """L3Network show operation"""
-    if checks is None:
-        checks = []
-    test.cmd("az networkcloud l3network show --name {name} --resource-group {rg}")
+    if checks is not None:
+        test.cmd(
+            "az networkcloud l3network show --name {name} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud l3network show --name {name} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "L3Network show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
+    )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("vlan") == get_value(
+        test, "vlan"
+    ), properties_key_mismatch_message("vlan")
+
+    assert properties.get("ipAllocationType") == get_value(
+        test, "ipAllocationType"
+    ), properties_key_mismatch_message("ipAllocationType")
+
+    assert properties.get("ipv4ConnectedPrefix") == get_value(
+        test, "ipv4prefix"
+    ), properties_key_mismatch_message("ipv4ConnectedPrefix")
+
+    assert properties.get("ipv6ConnectedPrefix") == get_value(
+        test, "ipv6prefix"
+    ), properties_key_mismatch_message("ipv6ConnectedPrefix")
+
+    assert properties.get("l3IsolationDomainId") == get_value(
+        test, "l3_isolation_domain_id"
+    ), properties_key_mismatch_message("l3IsolationDomainId")
 
 
 def step_delete(test, checks=None):

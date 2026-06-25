@@ -17,6 +17,11 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -228,9 +233,49 @@ def step_create_UA_SA_managedidentity(test, checks=None):
 
 def step_show(test, checks=None):
     """VirtualMachine show operation"""
-    if checks is None:
-        checks = []
-    test.cmd("az networkcloud virtualmachine show --name {name} --resource-group {rg}")
+    if checks is not None:
+        test.cmd(
+            "az networkcloud virtualmachine show --name {name} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud virtualmachine show --name {name} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Virtualmachine show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
+    )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("adminUsername") == get_value(
+        test, "adminUserName"
+    ), properties_key_mismatch_message("adminUsername")
+
+    assert properties.get("bootMethod") == get_value(
+        test, "bootMethod"
+    ), properties_key_mismatch_message("bootMethod")
+
+    assert properties.get("cpuCores") == get_value(
+        test, "cpuCores"
+    ), properties_key_mismatch_message("cpuCores")
+
+    assert properties.get("memorySizeGB") == get_value(
+        test, "memorySize"
+    ), properties_key_mismatch_message("memorySizeGB")
+
+    assert properties.get("networkAttachments") == get_value(
+        test, "networkAttachments"
+    ), properties_key_mismatch_message("networkAttachments")
+
+    assert properties.get("placementHints") == get_value(
+        test, "placementHints"
+    ), properties_key_mismatch_message("placementHints")
+
+    assert properties.get("vmDeviceModel") == get_value(
+        test, "vmDeviceModel"
+    ), properties_key_mismatch_message("vmDeviceModel")
 
 
 def step_reimage(test, checks=None):

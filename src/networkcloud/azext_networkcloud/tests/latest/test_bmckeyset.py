@@ -12,6 +12,11 @@ BMCKeySet tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -63,11 +68,37 @@ def step_create(test, checks=None):
 
 def step_show(test, checks=None):
     """BMCKeySet show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
+    if checks is not None:
+        test.cmd(
+            "az networkcloud cluster bmckeyset show --name {name} --cluster-name {clusterName} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud cluster bmckeyset show --name {name} --cluster-name {clusterName} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Bmckeyset show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("azureGroupId") == get_value(
+        test, "azureGroupId"
+    ), properties_key_mismatch_message("azureGroupId")
+
+    assert properties.get("expiration") == get_value(
+        test, "expiration"
+    ), properties_key_mismatch_message("expiration")
+
+    assert properties.get("privilegeLevel") == get_value(
+        test, "privilegeLevel"
+    ), properties_key_mismatch_message("privilegeLevel")
+
+    assert properties.get("userList") == get_value(
+        test, "userList"
+    ), properties_key_mismatch_message("userList")
 
 
 def step_delete(test, checks=None):

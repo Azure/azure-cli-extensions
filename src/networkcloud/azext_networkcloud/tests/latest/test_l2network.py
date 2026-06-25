@@ -12,6 +12,11 @@ L2Network tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -64,9 +69,29 @@ def step_create(test, checks=None):
 
 def step_show(test, checks=None):
     """L2Network show operation"""
-    if checks is None:
-        checks = []
-    test.cmd("az networkcloud l2network show --name {name} --resource-group {rg}")
+    if checks is not None:
+        test.cmd(
+            "az networkcloud l2network show --name {name} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud l2network show --name {name} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "L2Network show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
+    )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("interfaceName") == get_value(
+        test, "interfaceName"
+    ), properties_key_mismatch_message("interfaceName")
+
+    assert properties.get("l2IsolationDomainId") == get_value(
+        test, "l2_isolation_domain_id"
+    ), properties_key_mismatch_message("l2IsolationDomainId")
 
 
 def step_delete(test, checks=None):

@@ -15,6 +15,11 @@ Kubernetescluster agentpool tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value, show_properties
 
 
 def setup_scenario1(test):
@@ -130,12 +135,44 @@ def step_update_scenario2(test, checks=None):
 
 def step_show(test, checks=None):
     """Kubernetescluster agentpool show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
+    if checks is not None:
+        test.cmd(
+            "az networkcloud kubernetescluster agentpool show --name {name} "
+            "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud kubernetescluster agentpool show --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Kubernetesclusteragentpool show"
+
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    # properties = result.get("properties")
+    show_properties(result)
+
+    assert result.get("administratorConfiguration", {}).get(
+        "adminUsername"
+    ) == get_value(test, "adminUsername"), properties_key_mismatch_message(
+        "adminUsername"
+    )
+
+    assert str(result.get("count")) == get_value(
+        test, "count"
+    ), properties_key_mismatch_message("count")
+
+    assert result.get("mode") == get_value(
+        test, "mode"
+    ), properties_key_mismatch_message("mode")
+
+    assert result.get("vmSkuName") == get_value(
+        test, "vmSkuName"
+    ), properties_key_mismatch_message("vmSkuName")
 
 
 def step_list(test, checks=None):

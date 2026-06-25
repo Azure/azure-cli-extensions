@@ -13,6 +13,11 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -112,12 +117,30 @@ def step_update(test, checks=None):
 
 def step_show(test, checks=None):
     """Volume show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud volume show --resource-group {resourceGroup} " "--name {name}",
-        checks=checks,
+    if checks is not None:
+        test.cmd(
+            "az networkcloud volume show --resource-group {resourceGroup} "
+            "--name {name}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud volume show --resource-group {resourceGroup} " "--name {name}"
+    ).get_output_in_json()
+    context = "Volumes show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("size") == get_value(
+        test, "size"
+    ), properties_key_mismatch_message("size")
+
+    assert properties.get("storageApplianceId") == get_value(
+        test, "storageApplianceId"
+    ), properties_key_mismatch_message("storageApplianceId")
 
 
 @AllowLargeResponse

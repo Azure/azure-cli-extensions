@@ -16,6 +16,11 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -288,12 +293,38 @@ def step_delete(test, checks=None):
 
 def step_show(test, checks=None):
     """ClusterManager show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}",
-        checks=checks,
+    if checks is not None:
+        test.cmd(
+            "az networkcloud clustermanager show --name {name} "
+            "--resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}"
+    ).get_output_in_json()
+    context = "Clustermanager show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("analyticsWorkspaceId") == get_value(
+        test, "analyticsWorkspaceId"
+    ), properties_key_mismatch_message("analyticsWorkspaceId")
+
+    assert properties.get("fabricControllerId") == get_value(
+        test, "fabricControllerId"
+    ), properties_key_mismatch_message("fabricControllerId")
+
+    assert properties.get("vmSize") == get_value(
+        test, "vmSize"
+    ), properties_key_mismatch_message("vmSize")
+
+    assert properties.get("availabilityZones") == get_value(
+        test, "availabilityZones"
+    ), properties_key_mismatch_message("availabilityZones")
 
 
 def step_list_resource_group(test, checks=None):

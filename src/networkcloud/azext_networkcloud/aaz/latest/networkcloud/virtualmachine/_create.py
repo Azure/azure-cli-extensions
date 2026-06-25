@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-07-01"],
         ]
     }
 
@@ -153,6 +153,9 @@ class Create(AAZCommand):
             options=["--ndc", "--network-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init network data.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.placement_hints = AAZListArg(
             options=["--ph", "--placement-hints"],
@@ -179,6 +182,9 @@ class Create(AAZCommand):
             options=["--udc", "--user-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init user data.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.vm_device_model = AAZStrArg(
             options=["--vm-device-model"],
@@ -495,7 +501,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-07-01",
                     required=True,
                 ),
             }

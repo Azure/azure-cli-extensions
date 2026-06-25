@@ -12,6 +12,11 @@ MetricsConfiguration tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -57,11 +62,29 @@ def step_create(test, checks=None):
 
 def step_show(test, checks=None):
     """MetricsConfiguration show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
+    if checks is not None:
+        test.cmd(
+            "az networkcloud cluster metricsconfiguration show --cluster-name {clusterName} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud cluster metricsconfiguration show --cluster-name {clusterName} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Metricsconfiguration show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    properties = result.get("properties")
+    assert properties.get("collectionInterval") == get_value(
+        test, "collectionInterval"
+    ), properties_key_mismatch_message("collectionInterval")
+
+    assert properties.get("enabledMetrics") == get_value(
+        test, "enabledMetrics"
+    ), properties_key_mismatch_message("enabledMetrics")
 
 
 def step_delete(test, checks=None):
