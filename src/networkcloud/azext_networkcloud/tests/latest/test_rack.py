@@ -63,6 +63,7 @@ def step_show(test, checks=None):
         context, "name", result
     )
     properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
     assert properties is not None, missing_field_message(context, "properties", result)
     assert properties.get("rackLocation") == get_value(
         test, "rackLocation"
