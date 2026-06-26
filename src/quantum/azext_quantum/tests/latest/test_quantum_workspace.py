@@ -319,3 +319,18 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         workspace_location = None
         _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
         assert providers_selected[0] == {"provider_id": "foo", "sku": "foo_credits_for_all_plan", "offer_id": "foo_offer", "publisher_id": "foo0123456789"}
+
+    def test_workspace_kind(self):
+        from ...vendored_sdks.azure_mgmt_quantum.models import WorkspaceResourceProperties, WorkspaceKind
+
+        # No kind set: field must be absent from the serialized body (not null)
+        assert "workspaceKind" not in WorkspaceResourceProperties().serialize()
+
+        # V1 and V2 serialize to their expected wire values
+        assert WorkspaceResourceProperties(workspace_kind=WorkspaceKind.V1).serialize().get("workspaceKind") == "V1"
+        assert WorkspaceResourceProperties(workspace_kind=WorkspaceKind.V2).serialize().get("workspaceKind") == "V2"
+
+        # workspace_kind can be assigned after construction (skip_role_assignment path)
+        props = WorkspaceResourceProperties()
+        props.workspace_kind = WorkspaceKind.V2
+        assert props.serialize().get("workspaceKind") == "V2"

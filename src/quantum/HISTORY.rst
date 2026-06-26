@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b17
++++++++++++++++
+* Added ``--workspace-kind`` parameter to ``az quantum workspace create`` to support creating V2 workspaces.
+
 1.0.0b16
 +++++++++++++++
 * Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.

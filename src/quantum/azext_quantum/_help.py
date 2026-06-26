@@ -260,6 +260,10 @@ helps['quantum workspace create'] = """
                 -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" --skip-autoadd -a MyStorageAccountName\n
             To display a list of available providers and their SKUs, use the following command:
                 az quantum offerings list -l MyLocation -o table
+      - name: Create a new Azure Quantum V2 workspace.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+                -a MyStorageAccountName --workspace-kind V2
 """
 
 helps['quantum workspace delete'] = """
