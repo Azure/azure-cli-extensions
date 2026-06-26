@@ -26,7 +26,7 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            _ensure_location_allowed, CONTAINER_APPS_RP,
                                                            validate_container_app_name,
                                                            safe_set, safe_get, _ensure_identity_resource_id)
-from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
+from ._clients import ManagedEnvironmentPreviewClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
 from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
@@ -162,7 +162,7 @@ class SessionPoolPreviewDecorator(BaseResource):
 
     # pylint: disable=no-self-use
     def get_environment_client(self):
-        return ManagedEnvironmentClient
+        return ManagedEnvironmentPreviewClient
 
     def set_up_probes(self):
         probes_def = load_yaml_file(self.get_argument_probe_yaml())
