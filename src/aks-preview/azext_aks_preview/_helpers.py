@@ -97,6 +97,37 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
         os.remove(temp_path)
 
 
+def uses_kubelogin_devicecode(kubeconfig: str) -> bool:
+    try:
+        config = yaml.safe_load(kubeconfig)
+
+        # Check if users section exists and has at least one user
+        if not config or not config.get('users') or len(config['users']) == 0:
+            return False
+
+        first_user = config['users'][0]
+        user_info = first_user.get('user', {})
+        exec_info = user_info.get('exec', {})
+
+        # Check if command is kubelogin
+        command = exec_info.get('command', '')
+        if 'kubelogin' not in command:
+            return False
+
+        # Check if args contains --login and devicecode
+        args = exec_info.get('args', [])
+        # Join args into a string for easier pattern matching
+        args_str = ' '.join(args)
+        # Check for '--login devicecode' or '-l devicecode'
+        if '--login devicecode' in args_str or '-l devicecode' in args_str:
+            return True
+        return False
+    except (yaml.YAMLError, KeyError, TypeError, AttributeError) as e:
+        # If there's any error parsing the kubeconfig, assume it doesn't require kubelogin
+        logger.debug("Error parsing kubeconfig: %s", str(e))
+        return False
+
+
 def _merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
     existing = _load_kubernetes_configuration(existing_file)
     addition = _load_kubernetes_configuration(addition_file)
@@ -358,6 +389,27 @@ def check_is_azure_cli_core_editable_installed():
     return False
 
 
+def get_monitoring_addon_key(addon_profiles, monitoring_addon_name):
+    """Return the canonical key for the monitoring addon, normalizing non-standard casing.
+
+    The API response may return the monitoring addon key in any casing (e.g.
+    "omsagent", "omsAgent", "oMSaGent").  This helper performs a
+    case-insensitive lookup and, when a non-standard key is found, re-keys
+    addon_profiles in-place so that subsequent code always uses the canonical
+    monitoring_addon_name (lowercase) form.
+    """
+    if addon_profiles is None:
+        return monitoring_addon_name
+    if monitoring_addon_name in addon_profiles:
+        return monitoring_addon_name
+    target_lower = monitoring_addon_name.lower()
+    for key in list(addon_profiles):
+        if key.lower() == target_lower:
+            addon_profiles[monitoring_addon_name] = addon_profiles.pop(key)
+            return monitoring_addon_name
+    return monitoring_addon_name
+
+
 def check_is_monitoring_addon_enabled(addons, instance):
     is_monitoring_addon_enabled = False
     is_monitoring_addon = False
@@ -370,10 +422,11 @@ def check_is_monitoring_addon_enabled(addons, instance):
                     is_monitoring_addon = True
                     break
         addon_profiles = instance.addon_profiles or {}
+        monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         is_monitoring_addon_enabled = (
             is_monitoring_addon
-            and CONST_MONITORING_ADDON_NAME in addon_profiles
-            and addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+            and monitoring_addon_key in addon_profiles
+            and addon_profiles[monitoring_addon_key].enabled
         )
     except Exception as ex:  # pylint: disable=broad-except
         logger.debug("failed to check monitoring addon enabled: %s", ex)
@@ -448,3 +501,23 @@ def get_extension_in_allow_list(result):
     if _check_if_extension_type_is_in_allow_list(result.extension_type.lower()):
         return result
     return None
+
+
+def process_dns_overrides(overrides_dict, target_dict, build_override_func):
+    """Helper function to safely process DNS overrides with null checks.
+
+    Processes DNS override dictionaries from LocalDNS configuration,
+    filtering out null values and applying the build function to valid entries.
+
+    :param overrides_dict: Dictionary containing DNS overrides (can be None)
+    :param target_dict: Target dictionary to populate with processed overrides
+    :param build_override_func: Function to build override objects from dict values
+    """
+    if not isinstance(overrides_dict, dict):
+        raise InvalidArgumentValueError(
+            f"Expected a dictionary for DNS overrides, but got {type(overrides_dict).__name__}: {overrides_dict}"
+        )
+    if overrides_dict is not None:
+        for key, value in overrides_dict.items():
+            if value is not None:
+                target_dict[key] = build_override_func(value)

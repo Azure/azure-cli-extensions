@@ -20,6 +20,8 @@ from azext_aosm.definition_folder.builder.json_builder import (
     JSONDefinitionElementBuilder,
 )
 
+from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
+
 
 class DefinitionFolderBuilder:
     """Builds and writes out a definition folder for an NFD or NSD."""
@@ -45,7 +47,7 @@ class DefinitionFolderBuilder:
             element.write()
         index_json = []
         for element in self.elements:
-            if not isinstance(element, JSONDefinitionElementBuilder):
+            if not isinstance(element, JSONDefinitionElementBuilder) and not isinstance(element, LocalFileBuilder):
                 index_json.append(
                     {
                         "name": element.path.name,

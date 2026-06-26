@@ -11,8 +11,8 @@ from typing import TYPE_CHECKING
 from azure.cli.core.commands import CliCommandType
 
 from azext_connectedk8s._client_factory import (
-    cf_connected_cluster_prev_2024_07_01,
-    cf_connectedk8s_prev_2024_07_01,
+    cf_connected_cluster_prev_2025_08_01,
+    cf_connectedk8s_prev_2025_08_01,
 )
 
 from ._format import connectedk8s_list_table_format, connectedk8s_show_table_format
@@ -27,12 +27,12 @@ def load_command_table(self: Connectedk8sCommandsLoader, _: list[str] | None) ->
             "azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations#"
             "ConnectedClusterOperations.{}"
         ),
-        client_factory=cf_connectedk8s_prev_2024_07_01,
+        client_factory=cf_connectedk8s_prev_2025_08_01,
     )
     with self.command_group(
         "connectedk8s",
         connectedk8s_sdk,
-        client_factory=cf_connected_cluster_prev_2024_07_01,
+        client_factory=cf_connected_cluster_prev_2025_08_01,
     ) as g:
         g.custom_command("connect", "create_connectedk8s", supports_no_wait=True)
         g.custom_command("update", "update_connected_cluster")

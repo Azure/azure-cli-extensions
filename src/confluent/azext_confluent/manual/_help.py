@@ -78,3 +78,121 @@ helps['confluent offer-detail show'] = """
         text: |-
                az confluent offer-detail show
 """
+
+helps['confluent agreement default create'] = """
+    type: command
+    short-summary: "Create Confluent Marketplace agreement in the subscription."
+    examples:
+      - name: Create agreement
+        text: |-
+               az confluent agreement default create --accepted true
+"""
+
+helps['confluent organization environment create'] = """
+    type: command
+    short-summary: "Create confluent environment."
+    examples:
+      - name: Create environment
+        text: |-
+               az confluent organization environment create --organization-name myOrganization \
+--resource-group myResourceGroup --name env-abc123 --kind Standard
+"""
+
+helps['confluent organization environment update'] = """
+    type: command
+    short-summary: "Update confluent environment."
+    examples:
+      - name: Update environment
+        text: |-
+               az confluent organization environment update --organization-name myOrganization \
+--resource-group myResourceGroup --name env-abc123 --stream-governance-config package=ESSENTIALS
+"""
+
+helps['confluent organization environment cluster create'] = """
+    type: command
+    short-summary: "Create confluent clusters."
+    examples:
+      - name: Create cluster
+        text: |-
+               az confluent organization environment cluster create --organization-name myOrganization \
+--resource-group myResourceGroup --environment-id env-abc123 --name lkc-abc123 --kind Kafka
+"""
+
+helps['confluent organization environment cluster update'] = """
+    type: command
+    short-summary: "Update confluent clusters."
+    examples:
+      - name: Update cluster
+        text: |-
+               az confluent organization environment cluster update --organization-name myOrganization \
+--resource-group myResourceGroup --environment-id env-abc123 --name lkc-abc123 \
+--spec availability=SINGLE_ZONE cloud=Azure
+"""
+
+helps['confluent organization environment cluster connector create'] = """
+    type: command
+    short-summary: "Create confluent connector."
+    examples:
+      - name: Create connector
+        text: |-
+               az confluent organization environment cluster connector create --organization-name myOrganization \
+--resource-group myResourceGroup --environment-id env-abc123 --cluster-id lkc-abc123 --name my-connector \
+--connector-basic-info connector-type=SINK connector-class=AZUREBLOBSINK
+"""
+
+helps['confluent organization environment cluster connector update'] = """
+    type: command
+    short-summary: "Update confluent connector."
+    examples:
+      - name: Update connector
+        text: |-
+               az confluent organization environment cluster connector update --organization-name myOrganization \
+--resource-group myResourceGroup --environment-id env-abc123 --cluster-id lkc-abc123 --name my-connector \
+--connector-basic-info connector-state=PAUSED
+"""
+
+helps['confluent organization environment cluster topic create'] = """
+    type: command
+    short-summary: "Create confluent topic."
+    examples:
+      - name: Create topic
+        text: |-
+               az confluent organization environment cluster topic create --organization-name myOrganization \
+--resource-group myResourceGroup --environment-id env-abc123 --cluster-id lkc-abc123 --name my-topic \
+--partitions-count 6
+"""
+
+helps['confluent organization environment cluster topic update'] = """
+    type: command
+    short-summary: "Update confluent topic."
+    examples:
+      - name: Update topic
+        text: |-
+               az confluent organization environment cluster topic update --organization-name myOrganization \
+--resource-group myResourceGroup --environment-id env-abc123 --cluster-id lkc-abc123 --name my-topic \
+--input-configs '[{name:retention.ms,value:604800000}]'
+"""
+
+helps['confluent validation orgvalidate'] = """
+    type: command
+    short-summary: "Organization Validate proxy resource."
+    examples:
+      - name: Validate organization
+        text: |-
+               az confluent validation orgvalidate --organization-name myOrganization \
+--resource-group myResourceGroup \
+--offer-detail id="confluent-cloud-azure-prod" plan-id="confluent-cloud-azure-payg-prod" plan-name="Confluent Cloud - Pay as you Go" publisher-id="confluentinc" term-unit="P1M" \
+--user-detail email-address="user@example.com"
+"""
+
+helps['confluent validation orgvalidate-v2'] = """
+    type: command
+    short-summary: "Validate Confluent organization resource."
+    examples:
+      - name: Validate organization (v2)
+        text: |-
+               az confluent validation orgvalidate-v2 --organization-name myOrganization \
+--resource-group myResourceGroup \
+--offer-detail id="confluent-cloud-azure-prod" plan-id="confluent-cloud-azure-payg-prod" plan-name="Confluent Cloud - Pay as you Go" publisher-id="confluentinc" term-unit="P1M" \
+--user-detail email-address="user@example.com"
+"""

@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -36,7 +36,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric delete --resource-name {deleteNFName} --resource-group {deleteNFRGName}"
+        "az networkfabric fabric delete --resource-name {name} --resource-group {resourceGroup}"
     )
 
 
@@ -47,13 +47,11 @@ class GA_NFDelteScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "deleteNFRGName": CONFIG.get(
-                    "NETWORK_FABRIC", "delete_nf_resource_group"
-                ),
-                "deleteNFName": CONFIG.get("NETWORK_FABRIC", "delete_nf_name"),
+                "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
             }
         )
 
-    def test_GA_nf_Delete_scenario1(self):
+    def test_GA_nf_delete_scenario1(self):
         """test scenario for NF CRUD operations"""
         call_scenario1(self)

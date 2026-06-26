@@ -17,23 +17,23 @@ interactions:
       ParameterSetName:
       - --resource-group --workspace-name --location
       User-Agent:
-      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22635-SP0)
+      - AZURECLI/2.77.0 (MSI) azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace?api-version=2024-01-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace?api-version=2025-08-02
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace","name":"test_workspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"eastus","systemData":{"createdBy":"kalbhatia@microsoft.com","createdByType":"User","createdAt":"2024-02-20T19:51:26.9864987Z","lastModifiedBy":"kalbhatia@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-20T19:51:26.9864987Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace","name":"test_workspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-12T04:48:30.9571007Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-12T18:43:53.0142779Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '537'
+      - '523'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Feb 2024 19:51:27 GMT
+      - Fri, 12 Sep 2025 18:43:53 GMT
       etag:
-      - '"46001bed-0000-0100-0000-65d502bf0000"'
+      - '"6c00cd9e-0000-0100-0000-68c469e90000"'
       expires:
       - '-1'
       pragma:
@@ -44,12 +44,18 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-envoy-upstream-service-time:
+      - '61'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=42f4bb21-fc6c-4605-89c8-7092ecdecb50/eastus2/7bf84f7d-42c4-4c14-91b4-292dbd857773
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: ACA5EEC56ECF41B7A5FDFE7A527B0680 Ref B: CO6AA3150217035 Ref C: 2024-02-20T19:51:26Z'
+      - 'Ref A: 6AD557AFFDB242DA8015A5F40F33E488 Ref B: BL2AA2011005060 Ref C: 2025-09-12T18:43:52Z'
     status:
       code: 200
       message: OK
@@ -67,23 +73,23 @@ interactions:
       ParameterSetName:
       - --resource-group --workspace-name
       User-Agent:
-      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22635-SP0)
+      - AZURECLI/2.77.0 (MSI) azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace?api-version=2024-01-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace?api-version=2025-08-02
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace","name":"test_workspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"eastus","systemData":{"createdBy":"kalbhatia@microsoft.com","createdByType":"User","createdAt":"2024-02-20T19:51:26.9864987Z","lastModifiedBy":"kalbhatia@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-20T19:51:26.9864987Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace","name":"test_workspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-12T04:48:30.9571007Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-12T18:43:53.0142779Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '537'
+      - '523'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Feb 2024 19:51:28 GMT
+      - Fri, 12 Sep 2025 18:43:53 GMT
       etag:
-      - '"46001bed-0000-0100-0000-65d502bf0000"'
+      - '"6c00cd9e-0000-0100-0000-68c469e90000"'
       expires:
       - '-1'
       pragma:
@@ -96,8 +102,10 @@ interactions:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: DC219DBDC7BE4B9982F7A07E20095630 Ref B: CO6AA3150217023 Ref C: 2024-02-20T19:51:28Z'
+      - 'Ref A: AAB0A32585D644D0B35958746F5F6EEA Ref B: BL2AA2011001034 Ref C: 2025-09-12T18:43:54Z'
     status:
       code: 200
       message: OK
@@ -115,22 +123,40 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22635-SP0)
+      - AZURECLI/2.77.0 (MSI) azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces?api-version=2024-01-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces?api-version=2025-08-02
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/default","name":"default","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
-        US","systemData":{"createdBy":"davchow@ntdev.microsoft.com","createdByType":"User","createdAt":"2023-05-27T00:03:14.290269Z","lastModifiedBy":"mlucadamo@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-17T01:18:04.8053563Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace","name":"test_workspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"eastus","systemData":{"createdBy":"kalbhatia@microsoft.com","createdByType":"User","createdAt":"2024-02-20T19:51:26.9864987Z","lastModifiedBy":"kalbhatia@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-20T19:51:26.9864987Z"},"properties":{"provisioningState":"Succeeded"}}]}'
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2023-05-16T17:30:30.3783022Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-12T18:10:34.6559775Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/Dona_Velma","name":"Dona_Velma","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-24T19:20:24.3834581Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:20:24.3834581Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/mytoul-workspace","name":"mytoul-workspace","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-24T19:24:47.4120129Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:24:47.4120129Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/xiaocWS","name":"xiaocWS","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"xiaoc@ntdev.microsoft.com","createdByType":"User","createdAt":"2025-04-24T19:25:05.784108Z","lastModifiedBy":"xiaoc@ntdev.microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:25:05.784108Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/Sethbe_test","name":"Sethbe_test","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"sethbe@ntdev.microsoft.com","createdByType":"User","createdAt":"2025-04-24T19:25:36.6454909Z","lastModifiedBy":"sethbe@ntdev.microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:25:36.6454909Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/AmirWorkspace","name":"AmirWorkspace","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-24T19:32:00.168428Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:32:00.168428Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/matthewR_01","name":"matthewR_01","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-24T19:34:25.8137129Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:34:25.8137129Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/rschaedler","name":"rschaedler","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-24T19:42:59.2151198Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:42:59.2151198Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/del","name":"del","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-06T00:07:13.3139994Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T00:07:13.3139994Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/delete-create","name":"delete-create","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-06T00:42:37.8988228Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-06T00:42:37.8988228Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/kaltest","name":"kaltest","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-19T19:28:23.8982546Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-19T19:29:06.7305584Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/kaltst","name":"kaltst","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-19T19:30:52.8597066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-19T19:30:52.8597066Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/testuat2","name":"testuat2","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-19T19:47:59.3791146Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-19T19:47:59.3791146Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/testuat3","name":"testuat3","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-19T19:48:19.9775493Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-19T19:48:19.9775493Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/kalpeshtest","name":"kalpeshtest","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-05-20T22:23:20.3280578Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-05-20T22:24:22.5757114Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/custwork1","name":"custwork1","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-06-11T19:27:28.7015662Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-06-11T19:27:28.7015662Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/ryanian-uat-validation","name":"ryanian-uat-validation","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-24T19:24:31.9933638Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-24T19:24:31.9933638Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/testworkspace","name":"testworkspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"East
+        US","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-11T06:36:24.4632703Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-11T19:06:15.3875595Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/test_workspace","name":"test_workspace","type":"microsoft.iotfirmwaredefense/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-12T04:48:30.9571007Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-12T18:43:53.0142779Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/SanjayNFISTPreviewTestWE","name":"SanjayNFISTPreviewTestWE","type":"microsoft.iotfirmwaredefense/workspaces","sku":{"name":"A0","tier":"Free","capacity":0},"location":"West
+        Europe","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-04-24T19:23:56.1167194Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-24T19:23:56.1167194Z"},"properties":{"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1077'
+      - '10904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Feb 2024 19:51:28 GMT
+      - Fri, 12 Sep 2025 18:43:54 GMT
       expires:
       - '-1'
       pragma:
@@ -142,10 +168,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 7783284a-30c9-474e-b243-4e1a56421651
-      - 73cd26e5-6d90-4fd5-a15c-b82b483c7ad4
+      - ea03f7dd-b785-481e-b30c-df753ce1eb35
+      - c206e089-6d92-4332-acb9-c04747c5741a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 415A27203053408E9F60A6B52316986A Ref B: CO6AA3150219037 Ref C: 2024-02-20T19:51:28Z'
+      - 'Ref A: D3427258EE4D45F5AB8EB3CFE8FE1A1C Ref B: BL2AA2011002054 Ref C: 2025-09-12T18:43:54Z'
     status:
       code: 200
       message: OK

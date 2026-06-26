@@ -22,9 +22,9 @@ class Cve(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/cves", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}/cves", "2025-08-02"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Cve(AAZCommand):
             options=["--firmware-id"],
             help="The id of the firmware.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -133,7 +136,7 @@ class Cve(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -170,7 +173,7 @@ class Cve(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -183,9 +186,7 @@ class Cve(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -195,39 +196,52 @@ class Cve(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.component = AAZObjectType(
-                nullable=True,
+            properties.component = AAZObjectType()
+            properties.component_id = AAZStrType(
+                serialized_name="componentId",
+            )
+            properties.component_name = AAZStrType(
+                serialized_name="componentName",
+            )
+            properties.component_version = AAZStrType(
+                serialized_name="componentVersion",
             )
             properties.cve_id = AAZStrType(
                 serialized_name="cveId",
-                nullable=True,
+            )
+            properties.cve_name = AAZStrType(
+                serialized_name="cveName",
             )
             properties.cvss_score = AAZStrType(
                 serialized_name="cvssScore",
-                nullable=True,
+            )
+            properties.cvss_scores = AAZListType(
+                serialized_name="cvssScores",
             )
             properties.cvss_v2_score = AAZStrType(
                 serialized_name="cvssV2Score",
-                nullable=True,
             )
             properties.cvss_v3_score = AAZStrType(
                 serialized_name="cvssV3Score",
-                nullable=True,
             )
             properties.cvss_version = AAZStrType(
                 serialized_name="cvssVersion",
-                nullable=True,
             )
-            properties.description = AAZStrType(
-                nullable=True,
+            properties.description = AAZStrType()
+            properties.effective_cvss_score = AAZFloatType(
+                serialized_name="effectiveCvssScore",
+            )
+            properties.effective_cvss_version = AAZIntType(
+                serialized_name="effectiveCvssVersion",
             )
             properties.links = AAZListType(
                 flags={"read_only": True},
             )
-            properties.name = AAZStrType()
-            properties.severity = AAZStrType(
-                nullable=True,
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
             )
+            properties.severity = AAZStrType()
 
             component = cls._schema_on_200.value.Element.properties.component
             component.component_id = AAZStrType(
@@ -236,16 +250,21 @@ class Cve(AAZCommand):
             component.name = AAZStrType()
             component.version = AAZStrType()
 
+            cvss_scores = cls._schema_on_200.value.Element.properties.cvss_scores
+            cvss_scores.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.cvss_scores.Element
+            _element.score = AAZFloatType()
+            _element.version = AAZIntType(
+                flags={"required": True},
+            )
+
             links = cls._schema_on_200.value.Element.properties.links
             links.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.links.Element
-            _element.href = AAZStrType(
-                nullable=True,
-            )
-            _element.label = AAZStrType(
-                nullable=True,
-            )
+            _element.href = AAZStrType()
+            _element.label = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud racksku list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List rack SKUs in the provided subscription.
@@ -22,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/rackskus", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/rackskus", "2026-05-01-preview"],
         ]
     }
 
@@ -103,7 +104,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -139,7 +140,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -169,6 +172,10 @@ class List(AAZCommand):
             )
             properties.controller_machines = AAZListType(
                 serialized_name="controllerMachines",
+                flags={"read_only": True},
+            )
+            properties.deployment_type = AAZStrType(
+                serialized_name="deploymentType",
                 flags={"read_only": True},
             )
             properties.description = AAZStrType(

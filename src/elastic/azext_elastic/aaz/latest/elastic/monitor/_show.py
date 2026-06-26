@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get detailed properties of a specific Elastic monitor resource, helping you manage observability and performance.
 
-    :example: Show monitor
-        az elastic monitor show -n name -g rg
+    :example: Monitors_Get
+        az elastic monitor show --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2025-06-01"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -160,6 +160,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -195,6 +196,9 @@ class Show(AAZCommand):
             properties.generate_api_key = AAZBoolType(
                 serialized_name="generateApiKey",
             )
+            properties.hosting_type = AAZStrType(
+                serialized_name="hostingType",
+            )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
                 flags={"read_only": True},
@@ -208,6 +212,9 @@ class Show(AAZCommand):
             )
             properties.plan_details = AAZObjectType(
                 serialized_name="planDetails",
+            )
+            properties.project_details = AAZObjectType(
+                serialized_name="projectDetails",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -292,6 +299,14 @@ class Show(AAZCommand):
             )
             plan_details.term_id = AAZStrType(
                 serialized_name="termID",
+            )
+
+            project_details = cls._schema_on_200.properties.project_details
+            project_details.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+            )
+            project_details.project_type = AAZStrType(
+                serialized_name="projectType",
             )
 
             sku = cls._schema_on_200.sku

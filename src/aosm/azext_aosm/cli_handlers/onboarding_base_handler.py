@@ -54,8 +54,8 @@ class OnboardingBaseCLIHandler(ABC):
                 self.config = self._get_input_config(config_dict)
             except TypeError as e:
                 raise InvalidArgumentValueError(
-                    "The input file provided contains an incorrect input.\n"
-                    f"Please fix the problem parameter:\n{e}") from e
+                    "The config file provided contains an error.\n"
+                    f"The problem parameter is given in the message below:\n{e}") from e
             # Validate config before getting processor list,
             # in case error with input artifacts i.e helm package
             self.config.validate()
@@ -291,11 +291,11 @@ class OnboardingBaseCLIHandler(ABC):
                 # If the value is a string, serialize it directly.
                 if field_info == fields(dataclass)[-1]:
                     jsonc_string.append(
-                        f'{indent}"{field_info.name}": {json.dumps(field_value,indent=4)}'
+                        f'{indent}"{field_info.name}": {json.dumps(field_value, indent=4)}'
                     )
                 else:
                     jsonc_string.append(
-                        f'{indent}"{field_info.name}": {json.dumps(field_value,indent=4)},'
+                        f'{indent}"{field_info.name}": {json.dumps(field_value, indent=4)},'
                     )
         return "\n".join(jsonc_string)
 
@@ -304,9 +304,8 @@ class OnboardingBaseCLIHandler(ABC):
         # Serialize the top-level dataclass instance and wrap it in curly braces to form a valid JSONC string.
         jsonc_str = "{\n" + self._serialize(self.config) + "\n}"
         output_path.write_text(jsonc_str)
-
-        print(f"Empty configuration has been written to {output_path.name}")
-        logger.info("Empty  configuration has been written to %s", output_path.name)
+        # This is a warning log so that it's always printed to console (info is only printed if --verbose flag is set)
+        logger.warning("Empty configuration has been written to %s", output_path.name)
 
     @staticmethod
     def _check_for_overwrite(output_path: Path):

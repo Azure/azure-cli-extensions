@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-10-01"],
         ]
     }
 
@@ -41,7 +41,6 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -120,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -213,6 +212,9 @@ class Wait(AAZWaitCommand):
             )
 
             elasticity_profile = cls._schema_on_200.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -220,6 +222,9 @@ class Wait(AAZWaitCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            dynamic_sizing = cls._schema_on_200.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             zones = cls._schema_on_200.properties.zones
             zones.Element = AAZStrType()

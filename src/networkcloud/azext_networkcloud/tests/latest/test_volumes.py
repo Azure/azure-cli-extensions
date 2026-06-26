@@ -25,10 +25,10 @@ def cleanup_scenario1(test):
     pass
 
 
-def call_scenario1(test):
+def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
+    step_create_scenario1(test, checks=[])
     step_update(test, checks=[])
     step_show(test, checks=[])
     step_list_by_resource_group(test)
@@ -37,7 +37,33 @@ def call_scenario1(test):
     cleanup_scenario1(test)
 
 
-def step_create(test, checks=None):
+def call_scenario1b(test):
+    """# Testcase: scenario1"""
+    setup_scenario1(test)
+    step_create_scenario2(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def setup_scenario2(test):
+    """Env setup_scenario2"""
+    pass
+
+
+def cleanup_scenario2(test):
+    """Env cleanup_scenario2"""
+    pass
+
+
+def call_scenario2(test):
+    """# Testcase: scenario2 - Volume with storage appliance"""
+    setup_scenario2(test)
+    step_create_with_storage_appliance(test, checks=[])
+    step_show(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario2(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Volume create operation"""
     if checks is None:
         checks = []
@@ -46,6 +72,31 @@ def step_create(test, checks=None):
         "--name {name} --location {location} "
         '--extended-location name={extendedLocation} type="CustomLocation" '
         "--size {size} --tags {tags}"
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Volume create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud volume create --resource-group {resourceGroup} "
+        "--volume-name {name} --location {location} "
+        '--extended-location name={extendedLocation} type="CustomLocation" '
+        "--size-mib {size} --tags {tags}"
+    )
+
+
+def step_create_with_storage_appliance(test, checks=None):
+    """Volume create operation with storage appliance ID"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud volume create --resource-group {resourceGroup} "
+        "--name {name} --location {location} "
+        '--extended-location name={extendedLocation} type="CustomLocation" '
+        "--size {size} --tags {tags} "
+        "--storage-appliance-id {storageApplianceId}"
     )
 
 
@@ -111,9 +162,17 @@ class VolumeScenarioTest(ScenarioTest):
                 "tags": CONFIG.get("VOLUME", "tags"),
                 "tagsUpdate": CONFIG.get("VOLUME", "tags_update"),
                 "size": CONFIG.get("VOLUME", "size"),
+                "storageApplianceId": CONFIG.get("VOLUME", "storage_appliance_id"),
             }
         )
 
-    def test_volume_scenario1(self):
+    def test_volume_scenario1a(self):
         """test scenario for volume CRUD operations"""
-        call_scenario1(self)
+        call_scenario1a(self)
+
+    def test_volume_scenario1b(self):
+        """test scenario for volume create operations"""
+        call_scenario1b(self)
+
+    def test_volume_scenario2(self):
+        """test scenario for volume CRUD operations with storage appliance"""

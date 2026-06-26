@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class CreateAndAssociateIpFilter(AAZCommand):
     """Create and associate an IP filter with your Elastic monitor resource to control and manage network traffic.
 
-    :example: Create and associate ip filter
-        az elastic monitor create-and-associate-ip-filter --monitor-name name -g rg --name name --ips  192.168.131.0, 192.168.132.6/22
+    :example: createAndAssociateIPFilter_Create
+        az elastic monitor create-and-associate-ip-filter --resource-group myResourceGroup --monitor-name myMonitor --ips 192.168.131.0, 192.168.132.6/22
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createandassociateipfilter", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createandassociateipfilter", "2025-06-01"],
         ]
     }
 
@@ -32,8 +32,7 @@ class CreateAndAssociateIpFilter(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -151,7 +150,7 @@ class CreateAndAssociateIpFilter(AAZCommand):
                     "name", self.ctx.args.name,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

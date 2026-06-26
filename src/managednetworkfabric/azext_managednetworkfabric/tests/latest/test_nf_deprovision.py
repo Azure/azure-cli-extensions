@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_deprovision(test)
     cleanup_scenario1(test)
@@ -36,7 +36,7 @@ def step_deprovision(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric deprovision --resource-name {deprovisionNFName} --resource-group {deprovisionNFRGName}"
+        "az networkfabric fabric deprovision --resource-name {name} --resource-group {resourceGroup}"
     )
 
 
@@ -47,12 +47,8 @@ class GA_NFDeProvisionScenarioTest1(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
-                "deprovisionNFRGName": CONFIG.get(
-                    "NETWORK_FABRIC_PROVISION", "deprovision_nf_resource_group"
-                ),
-                "deprovisionNFName": CONFIG.get(
-                    "NETWORK_FABRIC_PROVISION", "deprovision_nf_name"
-                ),
+                "name": CONFIG.get("NETWORK_FABRIC", "name"),
+                "resourceGroup": CONFIG.get("NETWORK_FABRIC", "resource_group"),
             }
         )
 

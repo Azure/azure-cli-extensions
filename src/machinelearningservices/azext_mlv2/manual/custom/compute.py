@@ -274,12 +274,14 @@ def ml_compute_connect_ssh(cmd, resource_group_name, workspace_name, name, priva
         # create proxy endpoint for CI based on endpoint for jupyter
         # TODO: Improve with a call to get proxyendpoint from CI, requires API
         jupyter = [f["endpoint_uri"] for f in compute.services if f["display_name"] == "Jupyter"][0]
-        proxyEndpoint = jupyter.replace(name, f"{name}-22").replace("https://", "wss://").replace("/tree/", "")
+        proxyEndpoint = jupyter.replace("https://", "wss://").replace("/tree/", "")
 
         services_dict = {
             "ssh": ServiceInstance(type="SSH", status="Running", properties={"ProxyEndpoint": proxyEndpoint})
         }
-        path_has_space, ssh_command = get_ssh_command(services_dict, 0, private_key_file_path)
+        path_has_space, ssh_command = get_ssh_command(
+            services_dict, 0, private_key_file_path, connector_args=["--is-compute"]
+        )
         print(f"ssh_command: {ssh_command}")
         if path_has_space:
             module_logger.error(ssh_connector_file_path_space_message())

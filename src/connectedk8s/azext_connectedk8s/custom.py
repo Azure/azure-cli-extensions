@@ -65,12 +65,14 @@ from azext_connectedk8s._client_factory import (
 )
 from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
 
-from .vendored_sdks.preview_2024_07_01.models import (
+from .vendored_sdks.preview_2025_08_01.models import (
     ArcAgentProfile,
     ArcAgentryConfigurations,
     ConnectedCluster,
     ConnectedClusterIdentity,
     ConnectedClusterPatch,
+    ConnectedClusterPatchProperties,
+    ConnectedClusterProperties,
     Gateway,
     OidcIssuerProfile,
     SecurityProfile,
@@ -86,7 +88,7 @@ if TYPE_CHECKING:
     from kubernetes.config.kube_config import ConfigNode
     from requests.models import Response
 
-    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations import (
+    from azext_connectedk8s.vendored_sdks.preview_2025_08_01.operations import (
         ConnectedClusterOperations,
     )
 
@@ -241,7 +243,7 @@ def create_connectedk8s(
 
     gateway = None
     if gateway_resource_id != "":
-        gateway = Gateway(enabled=True, resource_id=gateway_resource_id)
+        gateway = Gateway(enabled=True)
 
     arc_agent_profile = None
     if disable_auto_upgrade:
@@ -302,6 +304,7 @@ def create_connectedk8s(
     try:
         kubectl_client_location = install_kubectl_client()
         helm_client_location = install_helm_client(cmd)
+        logger.debug("Using helm binary: %s", helm_client_location)
     except Exception as e:
         raise CLIInternalError(
             f"An exception has occured while trying to perform kubectl or helm install: {e}"
@@ -674,6 +677,23 @@ def create_connectedk8s(
 
             # Perform helm upgrade if gateway
             if gateway is not None:
+                # If gateway is enabled, then associate the gateway with the connected cluster
+                print(
+                    f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+                )
+                try:
+                    utils.update_gateway_cluster_link(
+                        cmd,
+                        subscription_id,
+                        resource_group_name,
+                        cluster_name,
+                        gateway_resource_id,
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "Error occurred while associating gateway with connected cluster: %s\n",
+                        e,
+                    )
                 # Update arc agent configuration to include protected parameters in dp call
                 arc_agentry_configurations = generate_arc_agent_configuration(
                     configuration_settings,
@@ -860,7 +880,7 @@ def create_connectedk8s(
         azure_hybrid_benefit,
         oidc_profile,
         security_profile,
-        gateway,
+        None,
         arc_agentry_configurations,
         arc_agent_profile,
     )
@@ -872,13 +892,86 @@ def create_connectedk8s(
     )
     dp_request_payload = put_cc_poller.result()
     put_cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(put_cc_poller)
-    print(
-        f"Step: {utils.get_utctimestring()}: Azure resource provisioning has finished."
-    )
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(
         cmd, cl_oid, subscription_id
+    )
+
+    # Associate gateway with connected cluster if enabled
+    if gateway is not None:
+        print(
+            f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+        )
+
+        try:
+            # Create the gateway-cluster association
+            utils.update_gateway_cluster_link(
+                cmd,
+                subscription_id,
+                resource_group_name,
+                cluster_name,
+                gateway_resource_id,
+            )
+            logger.info("Gateway-cluster link updated successfully")
+
+        except Exception as e:
+            error_msg = f"Failed to create gateway-cluster association: {e!s}"
+            logger.error(error_msg)
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+                summary="Failed to associate gateway with connected cluster",
+            )
+            raise ValidationError(
+                "Failed to associate gateway with connected cluster. "
+                "Please ensure that the gateway resource is valid and accessible, then try again."
+            ) from e
+
+        try:
+            # Retrieve current connected cluster configuration
+            print(
+                f"Step: {utils.get_utctimestring()}: Updating Connected Cluster resource with Gateway configuration"
+            )
+            connected_cluster = client.get(resource_group_name, cluster_name)
+
+            # Generate updated payload with gateway configuration
+            cc = generate_reput_request_payload(
+                connected_cluster,
+                oidc_profile,
+                security_profile,
+                gateway,
+                arc_agentry_configurations,
+                arc_agent_profile,
+            )
+
+            # Update the connected cluster resource
+            reput_cc_poller = create_cc_resource(
+                client, resource_group_name, cluster_name, cc, False
+            )
+            dp_request_payload = reput_cc_poller.result()
+            put_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_poller)
+
+            logger.info(
+                "Connected cluster resource updated successfully with gateway configuration"
+            )
+
+        except Exception as e:
+            error_msg = f"Failed to update connected cluster resource with gateway configuration: {e!s}"
+            logger.error(error_msg)
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Gateway_Cluster_Resource_Update_Failed_Fault_Type,
+                summary="Failed to update connected cluster resource with gateway configuration",
+            )
+            raise CLIInternalError(
+                "Failed to update the connected cluster resource with gateway configuration. "
+                "The gateway association may have been created, but the cluster resource update failed. "
+                "Please check the resource status and try again."
+            ) from e
+
+    print(
+        f"Step: {utils.get_utctimestring()}: Azure resource provisioning has finished."
     )
 
     # Update arc agent configuration to include protected parameters in dp call
@@ -1159,6 +1252,134 @@ def check_kube_connection() -> str:
     assert False
 
 
+def _resolve_helm_pull_target(
+    mcr_url: str,
+    helm_mcr_repo: str,
+    helm_version: str,
+    operating_system: str,
+    arch: str,
+) -> str:
+    """Return the ORAS pull target for the helm binary.
+
+    Tries the arch-specific tag first (e.g. ``helm-v3.20.1-linux-arm64``).
+    If that tag does not exist, falls back to the manifest list tag
+    (``helm-v3.20.1``) and resolves the correct entry by matching the
+    ``org.opencontainers.image.title`` annotation on each child manifest.
+
+    Uses the OCI Distribution v2 HTTP API directly so that the logic is
+    independent of the ``oras`` library version installed.
+
+    :param mcr_url: MCR hostname (e.g. ``mcr.microsoft.com``)
+    :param helm_mcr_repo: repository path within MCR (e.g. ``azurearck8s/helm``)
+    :param helm_version: helm version string including the leading ``v`` (e.g. ``v3.20.1``)
+    :param operating_system: lower-case OS name: ``linux``, ``darwin``, or ``windows``
+    :param arch: CPU architecture: ``amd64`` or ``arm64``
+    :returns: full ORAS pull target string (tag-based or digest-based)
+    """
+    import requests as http_client  # pylint: disable=import-outside-toplevel
+
+    arch_specific_tag = f"helm-{helm_version}-{operating_system}-{arch}"
+    arch_specific_target = f"{mcr_url}/{helm_mcr_repo}:{arch_specific_tag}"
+    base_api = f"https://{mcr_url}/v2/{helm_mcr_repo}/manifests"
+
+    # OCI media types required by MCR (HEAD/GET return 404 without Accept).
+    oci_accept = (
+        "application/vnd.oci.image.manifest.v1+json, "
+        "application/vnd.oci.image.index.v1+json"
+    )
+
+    # Check whether the arch-specific tag exists.
+    try:
+        response = http_client.head(
+            f"{base_api}/{arch_specific_tag}",
+            headers={"Accept": oci_accept},
+            timeout=30,
+        )
+        if response.status_code == 200:
+            return arch_specific_target
+        logger.debug(
+            "Arch-specific tag %s returned HTTP %d; trying manifest list.",
+            arch_specific_tag,
+            response.status_code,
+        )
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug(
+            "Arch-specific tag check failed (%s); trying manifest list.",
+            e,
+        )
+
+    # Fall back to the manifest list tag and match via annotation title.
+    # Annotations live on each child manifest, not on the index entries,
+    # so we must fetch every child manifest to find the right one.
+    manifest_list_tag = f"helm-{helm_version}"
+    expected_title_prefix = f"helm-{helm_version}-{operating_system}-{arch}"
+    try:
+        response = http_client.get(
+            f"{base_api}/{manifest_list_tag}",
+            headers={"Accept": oci_accept},
+            timeout=30,
+        )
+        if response.status_code != 200:
+            raise CLIInternalError(
+                f"Could not resolve helm binary for {operating_system}/{arch}. "
+                f"Arch-specific tag '{arch_specific_tag}' check failed and "
+                f"manifest list '{manifest_list_tag}' returned HTTP {response.status_code}."
+            )
+
+        index = response.json()
+        for entry in index.get("manifests", []):
+            # Check platform fields if present (future-proof).
+            plat = entry.get("platform", {})
+            if plat.get("os") == operating_system and plat.get("architecture") == arch:
+                digest = entry["digest"]
+                logger.debug(
+                    "Resolved %s/%s via platform field to digest %s.",
+                    operating_system,
+                    arch,
+                    digest,
+                )
+                return f"{mcr_url}/{helm_mcr_repo}@{digest}"
+
+        # Annotations are on child manifests; fetch each one to match.
+        for entry in index.get("manifests", []):
+            digest = entry.get("digest", "")
+            try:
+                child_resp = http_client.get(
+                    f"{base_api}/{digest}",
+                    headers={"Accept": oci_accept},
+                    timeout=30,
+                )
+                if child_resp.status_code != 200:
+                    continue
+                child = child_resp.json()
+                title = child.get("annotations", {}).get(
+                    "org.opencontainers.image.title", ""
+                )
+                if title.startswith(expected_title_prefix):
+                    logger.debug(
+                        "Resolved %s/%s via child annotation title '%s' to digest %s.",
+                        operating_system,
+                        arch,
+                        title,
+                        digest,
+                    )
+                    return f"{mcr_url}/{helm_mcr_repo}@{digest}"
+            except Exception:  # pylint: disable=broad-except
+                continue
+
+        raise CLIInternalError(
+            f"Could not resolve helm binary for {operating_system}/{arch}. "
+            f"No matching entry found in manifest list '{manifest_list_tag}'."
+        )
+    except CLIInternalError:
+        raise
+    except Exception as e:  # pylint: disable=broad-except
+        raise CLIInternalError(
+            f"Could not resolve helm binary for {operating_system}/{arch}. "
+            f"Manifest list resolution failed: {e}"
+        ) from e
+
+
 def install_helm_client(cmd: CLICommand) -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Helm client if it does not exist"
@@ -1171,6 +1392,7 @@ def install_helm_client(cmd: CLICommand) -> str:
     # Fetch system related info
     operating_system = platform.system().lower()
     machine_type = platform.machine()
+    arch = "arm64" if machine_type.lower() in ("aarch64", "arm64") else "amd64"
 
     # Send machine telemetry
     telemetry.add_extension_event(
@@ -1179,20 +1401,18 @@ def install_helm_client(cmd: CLICommand) -> str:
     # Set helm binary download & install locations
     if operating_system == "windows":
         download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
-        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.zip"
         install_location_string = (
-            f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
+            f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-{arch}\\helm.exe"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
         download_location_string = f".azure/helm/{consts.HELM_VERSION}"
         download_file_name = (
-            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+            f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.tar.gz"
         )
         install_location_string = (
-            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
+            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-{arch}/helm"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         telemetry.set_exception(
             exception="Unsupported OS for installing helm client",
@@ -1204,15 +1424,15 @@ def install_helm_client(cmd: CLICommand) -> str:
         )
 
     download_location = os.path.expanduser(os.path.join("~", download_location_string))
-    download_dir = os.path.dirname(download_location)
     install_location = os.path.expanduser(os.path.join("~", install_location_string))
 
     # Download compressed Helm binary if not already present
     if not os.path.isfile(install_location):
-        # Creating the helm folder if it doesnt exist
-        if not os.path.exists(download_dir):
+        # The archive is downloaded to ~/.azure/helm/<version>/<archive-file>.
+        # Ensure the <version> directory exists first to avoid file-not-found errors.
+        if not os.path.exists(download_location):
             try:
-                os.makedirs(download_dir)
+                os.makedirs(download_location)
             except Exception as e:
                 telemetry.set_exception(
                     exception=e,
@@ -1226,15 +1446,23 @@ def install_helm_client(cmd: CLICommand) -> str:
             "Downloading helm client for first time. This can take few minutes..."
         )
 
-        mcr_url = utils.get_mcr_path(cmd)
-
-        client = oras.client.OrasClient(hostname=mcr_url)
         retry_count = 3
         retry_delay = 5
+        # Helm binaries are downloaded from MCR artifacts for all architectures.
+        mcr_url = utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
+
+        client = oras.client.OrasClient(hostname=mcr_url)
+        pull_target = _resolve_helm_pull_target(
+            mcr_url,
+            consts.HELM_MCR_URL,
+            consts.HELM_VERSION,
+            operating_system,
+            arch,
+        )
         for i in range(retry_count):
             try:
                 client.pull(
-                    target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifactTag}",
+                    target=pull_target,
                     outdir=download_location,
                 )
                 break
@@ -1579,13 +1807,17 @@ def generate_request_payload(
     if tags is None:
         tags = {}
 
+    properties = ConnectedClusterProperties(
+        agent_public_key_certificate=public_key,
+        distribution=kubernetes_distro,
+        infrastructure=kubernetes_infra,
+    )
+
     cc = ConnectedCluster(
         location=location,
         identity=identity,
-        agent_public_key_certificate=public_key,
+        properties=properties,
         tags=tags,
-        distribution=kubernetes_distro,
-        infrastructure=kubernetes_infra,
     )
 
     if (
@@ -1607,11 +1839,8 @@ def generate_request_payload(
         if private_link_scope_resource_id:
             kwargs["private_link_scope_resource_id"] = private_link_scope_resource_id
 
-        cc = ConnectedCluster(
-            location=location,
-            identity=identity,
+        properties = ConnectedClusterProperties(
             agent_public_key_certificate=public_key,
-            tags=tags,
             distribution=kubernetes_distro,
             infrastructure=kubernetes_infra,
             azure_hybrid_benefit=azure_hybrid_benefit,
@@ -1622,6 +1851,13 @@ def generate_request_payload(
             oidc_issuer_profile=oidc_profile,
             security_profile=security_profile,
             **kwargs,
+        )
+
+        cc = ConnectedCluster(
+            location=location,
+            identity=identity,
+            properties=properties,
+            tags=tags,
         )
 
     return cc
@@ -1660,13 +1896,16 @@ def generate_patch_payload(
     distribution_version: str | None,
     azure_hybrid_benefit: str | None,
 ) -> ConnectedClusterPatch:
-    cc = ConnectedClusterPatch(
-        tags=tags,
+    properties = ConnectedClusterPatchProperties(
         distribution=distribution,
         distribution_version=distribution_version,
         azure_hybrid_benefit=azure_hybrid_benefit,
     )
-    return cc
+
+    return ConnectedClusterPatch(
+        tags=tags,
+        properties=properties,
+    )
 
 
 def get_kubeconfig_node_dict(kube_config: str | None = None) -> ConfigNode:
@@ -1941,7 +2180,7 @@ def create_cc_resource(
     try:
         poller: LROPoller[ConnectedCluster] = sdk_no_wait(
             no_wait,
-            client.begin_create,
+            client.begin_create_or_replace,
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             connected_cluster=cc,
@@ -2214,6 +2453,11 @@ def update_connected_cluster(
 
     # Fetch Connected Cluster for agent version
     connected_cluster = client.get(resource_group_name, cluster_name)
+    if connected_cluster.id is None:
+        raise CLIInternalError(
+            "Connected cluster resource 'id' is None. Cannot extract subscription id."
+        )
+    subscription_id = connected_cluster.id.split("/")[2]
 
     kubernetes_properties = {
         "Context.Default.AzureCLI.KubernetesVersion": kubernetes_version
@@ -2243,9 +2487,29 @@ def update_connected_cluster(
     # If gateway is enabled
     gateway = None
     if gateway_resource_id != "":
-        gateway = Gateway(enabled=True, resource_id=gateway_resource_id)
+        gateway = Gateway(enabled=True)
+        print(
+            f"Step: {utils.get_utctimestring()}: Associating gateway with Connected Cluster"
+        )
+        utils.update_gateway_cluster_link(
+            cmd,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            gateway_resource_id,
+        )
     if disable_gateway:
         gateway = Gateway(enabled=False)
+        print(
+            f"Step: {utils.get_utctimestring()}: Disassociating gateway from Connected Cluster"
+        )
+        utils.update_gateway_cluster_link(
+            cmd,
+            subscription_id,
+            resource_group_name,
+            cluster_name,
+            None,
+        )
 
     # Set arc agent profile when auto-upgrade is set
     arc_agent_profile = None
@@ -2355,7 +2619,7 @@ def update_connected_cluster(
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
-        agent_version = connected_cluster.agent_version  # type: ignore[unreachable]
+        agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
 
     check_operation_support("update (properties)", agent_version)
@@ -2847,8 +3111,6 @@ def enable_features(
     features: list[str],
     kube_config: str | None = None,
     kube_context: str | None = None,
-    azrbac_client_id: str | None = None,
-    azrbac_client_secret: str | None = None,
     azrbac_skip_authz_check: str | None = None,
     skip_ssl_verification: bool = False,
     cl_oid: str | None = None,
@@ -2864,6 +3126,10 @@ def enable_features(
     enable_cluster_connect, enable_azure_rbac, enable_cl = (
         utils.check_features_to_update(features)
     )
+
+    # Initialize these variables to ensure they are always defined, preventing UnboundLocalError if only a subset of features is enabled.
+    final_enable_cl = False
+    custom_locations_oid = None
 
     # Check if cluster is private link enabled
     connected_cluster = client.get(resource_group_name, cluster_name)
@@ -2986,7 +3252,7 @@ def enable_features(
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
-        agent_version = connected_cluster.agent_version  # type: ignore[unreachable]
+        agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
 
     check_operation_support("enable-features", agent_version)
@@ -3024,8 +3290,9 @@ def enable_features(
         #  apps for authN/authZ.
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.authnMode=arc"])
         logger.warning(
-            "Please use the kubelogin version v0.0.32 or higher which has support for generating PoP token(s). "
-            "This is needed by guard running in 'arc' authN mode."
+            "[Azure RBAC] For secure authentication, ensure you have the latest kubelogin installed which supports PoP tokens. "
+            "This is required for Azure RBAC. Download or upgrade at: https://github.com/Azure/kubelogin/releases. "
+            "If you encounter authentication errors, please verify your kubelogin version and refer to the documentation: https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/azure-rbac"
         )
         cmd_helm_upgrade.extend(
             [
@@ -3237,7 +3504,7 @@ def get_chart_and_disable_features(
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
-        agent_version = connected_cluster.agent_version  # type: ignore[unreachable]
+        agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
 
     check_operation_support("disable-features", agent_version)

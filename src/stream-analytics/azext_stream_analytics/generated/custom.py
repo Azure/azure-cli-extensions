@@ -12,6 +12,8 @@
 
 from azure.cli.core.util import sdk_no_wait
 
+from ._input_helpers import input_properties_to_args
+
 
 def stream_analytics_job_list(client,
                               expand=None,
@@ -239,103 +241,143 @@ def stream_analytics_job_stop(client,
                        job_name=job_name)
 
 
-def stream_analytics_input_list(client,
+# region stream-analytics input
+def stream_analytics_input_list(cmd,
                                 resource_group_name,
                                 job_name,
                                 select=None):
-    return client.list_by_streaming_job(select=select,
-                                        resource_group_name=resource_group_name,
-                                        job_name=job_name)
+    from ..aaz.latest.stream_analytics.input import List
+
+    return List(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "select": select
+    })
 
 
-def stream_analytics_input_show(client,
+def stream_analytics_input_show(cmd,
                                 resource_group_name,
                                 job_name,
                                 input_name):
-    return client.get(resource_group_name=resource_group_name,
-                      job_name=job_name,
-                      input_name=input_name)
+    from ..aaz.latest.stream_analytics.input import Show
+
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "input_name": input_name
+    })
 
 
-def stream_analytics_input_create(client,
+def stream_analytics_input_create(cmd,
                                   resource_group_name,
                                   job_name,
                                   input_name,
                                   if_match=None,
                                   if_none_match=None,
                                   properties=None):
-    input = {}
-    if properties is not None:
-        input['properties'] = properties
-    return client.create_or_replace(if_match=if_match,
-                                    if_none_match=if_none_match,
-                                    resource_group_name=resource_group_name,
-                                    job_name=job_name,
-                                    input_name=input_name,
-                                    input=input)
+    from ..aaz.latest.stream_analytics.input import Create
+
+    args = {
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "input_name": input_name,
+        "if_match": if_match,
+        "if_none_match": if_none_match
+    }
+    args.update(input_properties_to_args(properties))
+    return Create(cli_ctx=cmd.cli_ctx)(command_args=args)
 
 
-def stream_analytics_input_update(client,
+def stream_analytics_input_update(cmd,
                                   resource_group_name,
                                   job_name,
                                   input_name,
                                   if_match=None,
                                   properties=None):
-    input = {}
-    if properties is not None:
-        input['properties'] = properties
-    return client.update(if_match=if_match,
-                         resource_group_name=resource_group_name,
-                         job_name=job_name,
-                         input_name=input_name,
-                         input=input)
+    from ..aaz.latest.stream_analytics.input import Update as Patch
+
+    args = {
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "input_name": input_name
+    }
+    if if_match is not None:
+        args["if_match"] = if_match
+    args.update(input_properties_to_args(properties))
+    return Patch(cli_ctx=cmd.cli_ctx)(command_args=args)
 
 
-def stream_analytics_input_delete(client,
+def stream_analytics_input_delete(cmd,
                                   resource_group_name,
                                   job_name,
                                   input_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         job_name=job_name,
-                         input_name=input_name)
+    from ..aaz.latest.stream_analytics.input import Delete
+
+    return Delete(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "input_name": input_name
+    })
 
 
-def stream_analytics_input_test(client,
+def stream_analytics_input_test(cmd,
                                 resource_group_name,
                                 job_name,
                                 input_name,
                                 properties=None,
                                 no_wait=False):
-    input = {}
-    if properties is not None:
-        input['properties'] = properties
-    return sdk_no_wait(no_wait,
-                       client.begin_test,
-                       resource_group_name=resource_group_name,
-                       job_name=job_name,
-                       input_name=input_name,
-                       input=input)
+    from ..aaz.latest.stream_analytics.input import Test
+
+    args = {
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "input_name": input_name,
+        "no_wait": no_wait
+    }
+    args.update(input_properties_to_args(properties))
+    return Test(cli_ctx=cmd.cli_ctx)(command_args=args)
+# endregion
 
 
-def stream_analytics_output_list(client,
+# region stream-analytics output
+def _stream_analytics_output_flatten_inner_properties(data):
+    if data.get('datasource', {}):
+        data['datasource'].update(data['datasource'].pop('properties', {}))
+    if data.get('serialization', {}):
+        data['serialization'].update(data['serialization'].pop('properties', {}))
+    return data
+
+
+def stream_analytics_output_list(cmd,
                                  resource_group_name,
                                  job_name,
                                  select=None):
-    return client.list_by_streaming_job(select=select,
-                                        resource_group_name=resource_group_name,
-                                        job_name=job_name)
+    from ..aaz.latest.stream_analytics.output import List
+
+    result = List(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "select": select
+    })
+    result = [_stream_analytics_output_flatten_inner_properties(item) for item in result]
+    return result
 
 
-def stream_analytics_output_show(client,
+def stream_analytics_output_show(cmd,
                                  resource_group_name,
                                  job_name,
                                  output_name):
-    return client.get(resource_group_name=resource_group_name,
-                      job_name=job_name,
-                      output_name=output_name)
+    from ..aaz.latest.stream_analytics.output import Show
+
+    result = Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "output_name": output_name
+    })
+    return _stream_analytics_output_flatten_inner_properties(result)
 
 
-def stream_analytics_output_create(client,
+def stream_analytics_output_create(cmd,
                                    resource_group_name,
                                    job_name,
                                    output_name,
@@ -345,24 +387,23 @@ def stream_analytics_output_create(client,
                                    time_window=None,
                                    size_window=None,
                                    serialization=None):
-    output = {}
-    if datasource is not None:
-        output['datasource'] = datasource
-    if time_window is not None:
-        output['time_window'] = time_window
-    if size_window is not None:
-        output['size_window'] = size_window
-    if serialization is not None:
-        output['serialization'] = serialization
-    return client.create_or_replace(if_match=if_match,
-                                    if_none_match=if_none_match,
-                                    resource_group_name=resource_group_name,
-                                    job_name=job_name,
-                                    output_name=output_name,
-                                    output=output)
+    from ..aaz.latest.stream_analytics.output import Create
+
+    result = Create(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "output_name": output_name,
+        "if_match": if_match,
+        "if_none_match": if_none_match,
+        "datasource": datasource,
+        "time_window": time_window,
+        "size_window": size_window,
+        "serialization": serialization
+    })
+    return _stream_analytics_output_flatten_inner_properties(result)
 
 
-def stream_analytics_output_update(client,
+def stream_analytics_output_update(cmd,
                                    resource_group_name,
                                    job_name,
                                    output_name,
@@ -371,32 +412,41 @@ def stream_analytics_output_update(client,
                                    time_window=None,
                                    size_window=None,
                                    serialization=None):
-    output = {}
+    from ..aaz.latest.stream_analytics.output import Update as Patch
+
+    args = {
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "output_name": output_name
+    }
+    if if_match is not None:
+        args["if_match"] = if_match
     if datasource is not None:
-        output['datasource'] = datasource
+        args["datasource"] = datasource
     if time_window is not None:
-        output['time_window'] = time_window
+        args["time_window"] = time_window
     if size_window is not None:
-        output['size_window'] = size_window
+        args["size_window"] = size_window
     if serialization is not None:
-        output['serialization'] = serialization
-    return client.update(if_match=if_match,
-                         resource_group_name=resource_group_name,
-                         job_name=job_name,
-                         output_name=output_name,
-                         output=output)
+        args["serialization"] = serialization
+
+    result = Patch(cli_ctx=cmd.cli_ctx)(command_args=args)
+    return _stream_analytics_output_flatten_inner_properties(result)
 
 
-def stream_analytics_output_delete(client,
+def stream_analytics_output_delete(cmd,
                                    resource_group_name,
                                    job_name,
                                    output_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         job_name=job_name,
-                         output_name=output_name)
+    from ..aaz.latest.stream_analytics.output import Delete
+    return Delete(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "output_name": output_name
+    })
 
 
-def stream_analytics_output_test(client,
+def stream_analytics_output_test(cmd,
                                  resource_group_name,
                                  job_name,
                                  output_name,
@@ -405,21 +455,20 @@ def stream_analytics_output_test(client,
                                  size_window=None,
                                  serialization=None,
                                  no_wait=False):
-    output = {}
-    if datasource is not None:
-        output['datasource'] = datasource
-    if time_window is not None:
-        output['time_window'] = time_window
-    if size_window is not None:
-        output['size_window'] = size_window
-    if serialization is not None:
-        output['serialization'] = serialization
-    return sdk_no_wait(no_wait,
-                       client.begin_test,
-                       resource_group_name=resource_group_name,
-                       job_name=job_name,
-                       output_name=output_name,
-                       output=output)
+    from ..aaz.latest.stream_analytics.output import Test
+
+    return Test(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "job_name": job_name,
+        "output_name": output_name,
+        "datasource": datasource,
+        "time_window": time_window,
+        "size_window": size_window,
+        "serialization": serialization,
+        "no_wait": no_wait
+    })
+
+# endregion
 
 
 def stream_analytics_transformation_show(client,

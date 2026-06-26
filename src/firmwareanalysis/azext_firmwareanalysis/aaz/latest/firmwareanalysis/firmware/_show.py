@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}/firmwares/{}", "2025-08-02"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="The id of the firmware.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -133,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -172,9 +175,7 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -190,7 +191,6 @@ class Show(AAZCommand):
             )
             properties.file_size = AAZIntType(
                 serialized_name="fileSize",
-                nullable=True,
             )
             properties.model = AAZStrType()
             properties.provisioning_state = AAZStrType(

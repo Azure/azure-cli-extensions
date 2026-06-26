@@ -1,0 +1,115 @@
+oracle-database autonomous-database change-disaster-recovery-configuration:
+  parameters:
+    is_replicate_automatic_backups:
+      rule_exclusions:
+        - option_length_too_long
+    time_snapshot_standby_enabled_till:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database autonomous-database create:
+  parameters:
+    clone_from_backup_timestamp:
+      rule_exclusions:
+        - option_length_too_long
+    cross_region_disaster_recovery:
+      rule_exclusions:
+        - option_length_too_long
+    scheduled_operations_list:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database autonomous-database update:
+  parameters:
+    clone_from_backup_timestamp:
+      rule_exclusions:
+        - option_length_too_long
+    cross_region_disaster_recovery:
+      rule_exclusions:
+        - option_length_too_long
+    scheduled_operations_list:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database cloud-exadata-infrastructure add-storage-capacity:
+  parameters:
+    cloudexadatainfrastructurename:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database cloud-exadata-infrastructure configure-exascale:
+  parameters:
+    cloudexadatainfrastructurename:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database cloud-exadata-infrastructure database-server show:
+  parameters:
+    cloudexadatainfrastructurename:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database cloud-vm-cluster create:
+  parameters:
+    exascale_db_storage_vault_id:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database cloud-vm-cluster update:
+  parameters:
+    file_system_configuration_details:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database db-system create:
+  parameters:
+    initial_data_storage_size_in_gb:
+      rule_exclusions:
+        - option_length_too_long
+    storage_volume_performance_mode:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database db-system-db-version list:
+  parameters:
+    is_database_software_image_supported:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database exadb-vm-cluster create:
+  parameters:
+    data_collection_options:
+      rule_exclusions:
+        - option_length_too_long
+    exascale_db_storage_vault_id:
+      rule_exclusions:
+        - option_length_too_long
+    scan_listener_port_tcp_ssl:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database exascale-db-storage-vault create:
+  parameters:
+    additional_flash_cache_in_percent:
+      rule_exclusions:
+        - option_length_too_long
+    exadata_infrastructure_id:
+      rule_exclusions:
+        - option_length_too_long
+    high_capacity_database_storage_input:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database network-anchor create:
+  parameters:
+    dns_listening_endpoint_allowed_cidrs:
+      rule_exclusions:
+        - option_length_too_long
+    is_oracle_dns_forwarding_endpoint_enabled:
+      rule_exclusions:
+        - option_length_too_long
+    is_oracle_dns_listening_endpoint_enabled:
+      rule_exclusions:
+        - option_length_too_long
+    is_oracle_to_azure_dns_zone_sync_enabled:
+      rule_exclusions:
+        - option_length_too_long
+oracle-database network-anchor update:
+  parameters:
+    is_oracle_dns_forwarding_endpoint_enabled:
+      rule_exclusions:
+        - option_length_too_long
+    is_oracle_dns_listening_endpoint_enabled:
+      rule_exclusions:
+        - option_length_too_long
+    is_oracle_to_azure_dns_zone_sync_enabled:
+      rule_exclusions:
+        - option_length_too_long

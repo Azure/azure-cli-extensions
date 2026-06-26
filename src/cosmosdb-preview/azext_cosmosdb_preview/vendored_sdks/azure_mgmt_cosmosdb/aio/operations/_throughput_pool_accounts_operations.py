@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, AsyncIterable, Callable, Dict, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -31,7 +31,8 @@ from ...operations._throughput_pool_accounts_operations import build_list_reques
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class ThroughputPoolAccountsOperations:
@@ -56,7 +57,7 @@ class ThroughputPoolAccountsOperations:
     @distributed_trace
     def list(
         self, resource_group_name: str, throughput_pool_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.ThroughputPoolAccountResource"]:
+    ) -> AsyncItemPaged["_models.ThroughputPoolAccountResource"]:
         """Lists all the Azure Cosmos DB accounts available under the subscription.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -132,7 +133,10 @@ class ThroughputPoolAccountsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response

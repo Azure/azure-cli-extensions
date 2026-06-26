@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
+
+    :example: Remove system managed identity from a cluster manager
+        az networkcloud clustermanager identity remove --cluster-manager-name "clusterManagerName" --resource-group "resourceGroupName" --subscription "subscriptionName" --system-assigned
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-02-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-05-01-preview", "identity"],
         ]
     }
 
@@ -171,7 +174,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -270,7 +273,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -355,6 +358,7 @@ class _RemoveHelper:
             _schema.etag = cls._schema_cluster_manager_read.etag
             _schema.id = cls._schema_cluster_manager_read.id
             _schema.identity = cls._schema_cluster_manager_read.identity
+            _schema.kind = cls._schema_cluster_manager_read.kind
             _schema.location = cls._schema_cluster_manager_read.location
             _schema.name = cls._schema_cluster_manager_read.name
             _schema.properties = cls._schema_cluster_manager_read.properties
@@ -373,6 +377,7 @@ class _RemoveHelper:
             flags={"read_only": True},
         )
         cluster_manager_read.identity = AAZIdentityObjectType()
+        cluster_manager_read.kind = AAZStrType()
         cluster_manager_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -456,6 +461,10 @@ class _RemoveHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.relay_configuration = AAZObjectType(
+            serialized_name="relayConfiguration",
+            flags={"read_only": True},
+        )
         properties.vm_size = AAZStrType(
             serialized_name="vmSize",
         )
@@ -488,6 +497,11 @@ class _RemoveHelper:
             flags={"required": True},
         )
 
+        relay_configuration = _schema_cluster_manager_read.properties.relay_configuration
+        relay_configuration.relay_namespace_id = AAZStrType(
+            serialized_name="relayNamespaceId",
+        )
+
         system_data = _schema_cluster_manager_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
@@ -514,6 +528,7 @@ class _RemoveHelper:
         _schema.etag = cls._schema_cluster_manager_read.etag
         _schema.id = cls._schema_cluster_manager_read.id
         _schema.identity = cls._schema_cluster_manager_read.identity
+        _schema.kind = cls._schema_cluster_manager_read.kind
         _schema.location = cls._schema_cluster_manager_read.location
         _schema.name = cls._schema_cluster_manager_read.name
         _schema.properties = cls._schema_cluster_manager_read.properties

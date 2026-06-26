@@ -29,7 +29,7 @@ The image in `fragment_config.json` must be updated from `<your-image>` to the i
 
 After completion, this will create the following files to be used in the confcom signing process:
 
-- `intermediate/private/ec_p384_private.pem`
+- `intermediateCA/private/ec_p384_private.pem`
 - `intermediateCA/certs/www.contoso.com.chain.cert.pem`
 
 Note that for consecutive runs, the script will not completely overwrite the existing key and cert files. It is recommended to either delete the existing files or modify the path to create the new files elsewhere.

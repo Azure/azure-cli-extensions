@@ -14,35 +14,57 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_create(test, checks=[])
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
     step_show(test, checks=[])
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_update_scenario1(test, checks=[])
     step_update_admin_state_Enable(test, checks=[])
     step_update_admin_state_Disable(test, checks=[])
     step_delete(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """Testcase: scenario2"""
+    setup_scenario(test)
+    step_create_scenario2(test, checks=[])
+    step_update_scenario2(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Network Tap create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap create --resource-group {rg} --location {location} --resource-name {name} --npb-id {npbId} --polling-type {pollingType} --destinations {destinations}",
+        "az networkfabric tap create --resource-group {rg} --location {location} --resource-name {name} --npb-id {npbId} --polling-type {pollingType} "
+        " --destinations {destinations} --annotation {annotation} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Network Tap create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric tap create --resource-group {rg} --location {location} --resource-name {name} --network-packet-broker-id {npbId} "
+        " --polling-type {pollingType} --destinations {destinations} --annotation {annotation}"
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -68,12 +90,25 @@ def step_list_subscription(test, checks=None):
     test.cmd("az networkfabric tap list")
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """Network Tap Rule update operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap update --resource-name {deleteName} --resource-group {rg} --destinations {updatedDestinations} --polling-type {updatedPollingType}"
+        "az networkfabric tap update --resource-name {name} --resource-group {rg} --destinations {updatedDestinations} --polling-type {updatedPollingType} --annotation {annotation}"
+        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """Network Tap Rule update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric tap update --resource-name {name} --resource-group {rg} --destinations {updatedDestinations} --polling-type {updatedPollingType} --annotation {annotation}"
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        checks=checks,
     )
 
 
@@ -91,7 +126,7 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable}"
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable} --resource-ids {resourceIds}"
     )
 
 
@@ -110,6 +145,7 @@ class GA_TapScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("NETWORK_TAP", "name"),
+                "annotation": CONFIG.get("NETWORK_TAP", "annotation"),
                 "rg": CONFIG.get("NETWORK_TAP", "resource_group"),
                 "location": CONFIG.get("NETWORK_TAP", "location"),
                 "npbId": CONFIG.get("NETWORK_TAP", "network_packet_broker_id"),
@@ -121,6 +157,13 @@ class GA_TapScenarioTest1(ScenarioTest):
                     "NETWORK_TAP", "updated_destinations"
                 ),
                 "updatedPollingType": CONFIG.get("NETWORK_TAP", "updated_polling_type"),
+                "resourceIds": CONFIG.get("NETWORK_TAP", "resource_ids"),
+                "userAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "user_assigned_identity"
+                ),
+                "systemAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "system_assigned_identity"
+                ),
             }
         )
 

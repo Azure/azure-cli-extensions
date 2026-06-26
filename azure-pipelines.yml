@@ -57,9 +57,9 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.13'
+    displayName: 'Use Python 3.14'
     inputs:
-      versionSpec: 3.13
+      versionSpec: '3.14'
   - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
@@ -73,13 +73,18 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.13'
+    displayName: 'Use Python 3.14'
     inputs:
-      versionSpec: 3.13
+      versionSpec: '3.14'
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel==0.30.0 requests packaging setuptools
+      # test_index.py imports scripts/ci/util.py, which reads wheel metadata via azdev's
+      # pkginfo-based metadata module (decoupled from wheel==0.30.0), so azdev must be
+      # installed here. Install from the merged azure-cli-dev-tools source until azdev
+      # 0.2.11b1 is published to PyPI, then switch this to: pip install --upgrade "azdev==0.2.11b1"
+      pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@49390f30c6a822620d2fbdf88889c4445d22666f#egg=azdev"
+      pip install requests packaging setuptools
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
@@ -90,8 +95,6 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   strategy:
     matrix:
-      Python39:
-        python.version: '3.9'
       Python310:
         python.version: '3.10'
       Python311:
@@ -100,14 +103,14 @@ jobs:
         python.version: '3.12'
       Python313:
         python.version: '3.13'
+      Python314:
+        python.version: '3.14'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python $(python.version)'
       inputs:
         versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
     - bash: |
         #!/usr/bin/env bash
         set -ev
@@ -135,9 +138,9 @@ jobs:
     name: ${{ variables.ubuntu_pool }}
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.13'
+      displayName: 'Use Python 3.14'
       inputs:
-        versionSpec: 3.13
+        versionSpec: '3.14'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -152,8 +155,8 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: AzdevLinterModifiedExtensions
-  displayName: "azdev linter on Modified Extensions"
+- job: CheckExternalUrls
+  displayName: "Check External Source URLs"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
     name: ${{ variables.ubuntu_pool }}
@@ -162,6 +165,24 @@ jobs:
       displayName: 'Use Python 3.13'
       inputs:
         versionSpec: 3.13
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        # External URL exclusions are maintained in scripts/ci/external_url_exclusions.json.
+        git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
+        python scripts/ci/validate_external_source_urls.py --src=HEAD --tgt=origin/$(System.PullRequest.TargetBranch)
+      displayName: 'Validate External Source URLs'
+
+- job: AzdevLinterModifiedExtensions
+  displayName: "azdev linter on Modified Extensions"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  pool:
+    name: ${{ variables.ubuntu_pool }}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.14'
+      inputs:
+        versionSpec: '3.14'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -186,7 +207,7 @@ jobs:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.11
+        versionSpec: '3.11'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -217,7 +238,7 @@ jobs:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.11
+        versionSpec: '3.11'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -244,9 +265,9 @@ jobs:
 #    name: ${{ variables.ubuntu_pool }}
 #  steps:
 #  - task: UsePythonVersion@0
-#    displayName: 'Use Python 3.13'
+#    displayName: 'Use Python 3.14'
 #    inputs:
-#      versionSpec: 3.13
+#      versionSpec: '3.14'
 #  - bash: pip install wheel==0.30.0
 #    displayName: 'Install wheel==0.30.0'
 #  - task: Bash@3
@@ -263,6 +284,6 @@ jobs:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.x'
     inputs:
-      versionSpec: 3.x
+      versionSpec: '3.x'
   - bash: |
       python scripts/ci/test_init.py -v

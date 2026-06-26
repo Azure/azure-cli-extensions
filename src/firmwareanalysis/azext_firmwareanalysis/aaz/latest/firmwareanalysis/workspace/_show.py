@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-10",
+        "version": "2025-08-02",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}", "2024-01-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.iotfirmwaredefense/workspaces/{}", "2025-08-02"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-10",
+                    "api-version", "2025-08-02",
                     required=True,
                 ),
             }
@@ -165,9 +165,8 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.sku = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -182,6 +181,15 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            sku = cls._schema_on_200.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

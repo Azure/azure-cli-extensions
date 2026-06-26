@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -65,6 +65,26 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -92,6 +112,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="ARM Resource ID of the Network Fabric.",
             required=True,
+            nullable=True,
         )
         _args_schema.statements = AAZListArg(
             options=["--statements"],
@@ -211,26 +232,6 @@ class Create(AAZCommand):
 
         ip_extended_community_ids = cls._args_schema.statements.Element.condition.ip_extended_community_ids
         ip_extended_community_ids.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_ip_community_id_list_create = None
@@ -356,7 +357,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -390,7 +391,7 @@ class Create(AAZCommand):
                 properties.set_prop("addressFamilyType", AAZStrType, ".address_family_type")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("defaultAction", AAZStrType, ".default_action")
-                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("statements", AAZListType, ".statements", typ_kwargs={"flags": {"required": True}})
 
             statements = _builder.get(".properties.statements")
@@ -506,6 +507,7 @@ class Create(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

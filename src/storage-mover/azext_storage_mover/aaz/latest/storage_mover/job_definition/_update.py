@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Job Definition resource, which contains configuration for a single unit of managed data transfer.
-
-    :example: job-definition update
-        az storage-mover job-definition update -g {rg} -n {job_definition} --project-name {project_name} --storage-mover-name {mover_name} --copy-mode Mirror --agent-name {agent_name} --description JobDefinitionDescription2
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2025-12-01"],
         ]
     }
 
@@ -66,6 +63,9 @@ class Update(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -77,17 +77,130 @@ class Update(AAZCommand):
             help="Name of the Agent to assign for new Job Runs of this Job Definition.",
             nullable=True,
         )
+        _args_schema.connections = AAZListArg(
+            options=["--connections"],
+            arg_group="Properties",
+            help="List of connections associated to this job",
+            nullable=True,
+        )
         _args_schema.copy_mode = AAZStrArg(
             options=["--copy-mode"],
             arg_group="Properties",
             help="Strategy to use for copy.",
             enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
+        _args_schema.data_integrity_validation = AAZStrArg(
+            options=["--data-integrity-validation", "--data-validation"],
+            arg_group="Properties",
+            help="The checksum validation mode for the job definition.",
+            nullable=True,
+            enum={"None": "None", "SaveFileMD5": "SaveFileMD5", "SaveVerifyFileMD5": "SaveVerifyFileMD5"},
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the Job Definition.",
+            help="A description for the Job Definition. OnPremToCloud is for migrating data from on-premises to cloud. CloudToCloud is for migrating data between cloud to cloud.",
             nullable=True,
+        )
+        _args_schema.job_type = AAZStrArg(
+            options=["--job-type"],
+            arg_group="Properties",
+            help="The type of the Job.",
+            nullable=True,
+            enum={"CloudToCloud": "CloudToCloud", "OnPremToCloud": "OnPremToCloud"},
+        )
+        _args_schema.preserve_permissions = AAZBoolArg(
+            options=["--preserve-permissions"],
+            arg_group="Properties",
+            help="Boolean to preserve permissions or not.",
+            nullable=True,
+        )
+        _args_schema.schedule = AAZObjectArg(
+            options=["--schedule"],
+            arg_group="Properties",
+            help="Schedule information for the Job Definition.",
+            nullable=True,
+        )
+
+        connections = cls._args_schema.connections
+        connections.Element = AAZResourceIdArg(
+            nullable=True,
+        )
+
+        schedule = cls._args_schema.schedule
+        schedule.cron_expression = AAZStrArg(
+            options=["cron-expression"],
+            help="Optional CRON expression for advanced scheduling",
+            nullable=True,
+        )
+        schedule.days_of_month = AAZListArg(
+            options=["days-of-month"],
+            help="Days of the month for monthly schedules",
+            nullable=True,
+        )
+        schedule.days_of_week = AAZListArg(
+            options=["days-of-week"],
+            help="Days of the week for weekly schedules",
+            nullable=True,
+        )
+        schedule.end_date = AAZDateTimeArg(
+            options=["end-date"],
+            help="End time of the schedule (in UTC)",
+            nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        schedule.execution_time = AAZObjectArg(
+            options=["execution-time"],
+            help="Time of day to execute (hours and minutes)",
+            nullable=True,
+        )
+        schedule.frequency = AAZStrArg(
+            options=["frequency"],
+            help="Type of schedule — Monthly, Weekly, or Daily",
+            nullable=True,
+            enum={"Daily": "Daily", "Monthly": "Monthly", "None": "None", "Onetime": "Onetime", "Weekly": "Weekly"},
+        )
+        schedule.is_active = AAZBoolArg(
+            options=["is-active"],
+            help="Whether the schedule is currently active",
+            nullable=True,
+        )
+        schedule.start_date = AAZDateTimeArg(
+            options=["start-date"],
+            help="Specific one-time execution date and time",
+            nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+
+        days_of_month = cls._args_schema.schedule.days_of_month
+        days_of_month.Element = AAZIntArg(
+            nullable=True,
+        )
+
+        days_of_week = cls._args_schema.schedule.days_of_week
+        days_of_week.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        execution_time = cls._args_schema.schedule.execution_time
+        execution_time.hour = AAZIntArg(
+            options=["hour"],
+            help="The hour element of the time. Allowed values range from 0 (start of the selected day) to 24 (end of the selected day). Hour value 24 cannot be combined with any other minute value but 0.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=24,
+                minimum=0,
+            ),
+        )
+        execution_time.minute = AAZIntArg(
+            options=["minute"],
+            help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
+            nullable=True,
+            enum={"0": 0, "30": 30},
         )
         return cls._args_schema
 
@@ -177,7 +290,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -268,7 +381,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -331,8 +444,41 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("agentName", AAZStrType, ".agent_name")
+                properties.set_prop("connections", AAZListType, ".connections")
                 properties.set_prop("copyMode", AAZStrType, ".copy_mode", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("dataIntegrityValidation", AAZStrType, ".data_integrity_validation")
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("jobType", AAZStrType, ".job_type")
+                properties.set_prop("preservePermissions", AAZBoolType, ".preserve_permissions")
+                properties.set_prop("schedule", AAZObjectType, ".schedule")
+
+            connections = _builder.get(".properties.connections")
+            if connections is not None:
+                connections.set_elements(AAZStrType, ".")
+
+            schedule = _builder.get(".properties.schedule")
+            if schedule is not None:
+                schedule.set_prop("cronExpression", AAZStrType, ".cron_expression")
+                schedule.set_prop("daysOfMonth", AAZListType, ".days_of_month")
+                schedule.set_prop("daysOfWeek", AAZListType, ".days_of_week")
+                schedule.set_prop("endDate", AAZStrType, ".end_date")
+                schedule.set_prop("executionTime", AAZObjectType, ".execution_time")
+                schedule.set_prop("frequency", AAZStrType, ".frequency")
+                schedule.set_prop("isActive", AAZBoolType, ".is_active")
+                schedule.set_prop("startDate", AAZStrType, ".start_date")
+
+            days_of_month = _builder.get(".properties.schedule.daysOfMonth")
+            if days_of_month is not None:
+                days_of_month.set_elements(AAZIntType, ".")
+
+            days_of_week = _builder.get(".properties.schedule.daysOfWeek")
+            if days_of_week is not None:
+                days_of_week.set_elements(AAZStrType, ".")
+
+            execution_time = _builder.get(".properties.schedule.executionTime")
+            if execution_time is not None:
+                execution_time.set_prop("hour", AAZIntType, ".hour")
+                execution_time.set_prop("minute", AAZIntType, ".minute")
 
             return _instance_value
 
@@ -388,11 +534,18 @@ class _UpdateHelper:
             serialized_name="agentResourceId",
             flags={"read_only": True},
         )
+        properties.connections = AAZListType()
         properties.copy_mode = AAZStrType(
             serialized_name="copyMode",
             flags={"required": True},
         )
+        properties.data_integrity_validation = AAZStrType(
+            serialized_name="dataIntegrityValidation",
+        )
         properties.description = AAZStrType()
+        properties.job_type = AAZStrType(
+            serialized_name="jobType",
+        )
         properties.latest_job_run_name = AAZStrType(
             serialized_name="latestJobRunName",
             flags={"read_only": True},
@@ -405,10 +558,14 @@ class _UpdateHelper:
             serialized_name="latestJobRunStatus",
             flags={"read_only": True},
         )
+        properties.preserve_permissions = AAZBoolType(
+            serialized_name="preservePermissions",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.schedule = AAZObjectType()
         properties.source_name = AAZStrType(
             serialized_name="sourceName",
             flags={"required": True},
@@ -420,6 +577,9 @@ class _UpdateHelper:
         properties.source_subpath = AAZStrType(
             serialized_name="sourceSubpath",
         )
+        properties.source_target_map = AAZObjectType(
+            serialized_name="sourceTargetMap",
+        )
         properties.target_name = AAZStrType(
             serialized_name="targetName",
             flags={"required": True},
@@ -430,6 +590,88 @@ class _UpdateHelper:
         )
         properties.target_subpath = AAZStrType(
             serialized_name="targetSubpath",
+        )
+
+        connections = _schema_job_definition_read.properties.connections
+        connections.Element = AAZStrType()
+
+        schedule = _schema_job_definition_read.properties.schedule
+        schedule.cron_expression = AAZStrType(
+            serialized_name="cronExpression",
+        )
+        schedule.days_of_month = AAZListType(
+            serialized_name="daysOfMonth",
+        )
+        schedule.days_of_week = AAZListType(
+            serialized_name="daysOfWeek",
+        )
+        schedule.end_date = AAZStrType(
+            serialized_name="endDate",
+        )
+        schedule.execution_time = AAZObjectType(
+            serialized_name="executionTime",
+        )
+        schedule.frequency = AAZStrType()
+        schedule.is_active = AAZBoolType(
+            serialized_name="isActive",
+        )
+        schedule.start_date = AAZStrType(
+            serialized_name="startDate",
+        )
+
+        days_of_month = _schema_job_definition_read.properties.schedule.days_of_month
+        days_of_month.Element = AAZIntType()
+
+        days_of_week = _schema_job_definition_read.properties.schedule.days_of_week
+        days_of_week.Element = AAZStrType()
+
+        execution_time = _schema_job_definition_read.properties.schedule.execution_time
+        execution_time.hour = AAZIntType()
+        execution_time.minute = AAZIntType()
+
+        source_target_map = _schema_job_definition_read.properties.source_target_map
+        source_target_map.value = AAZListType(
+            flags={"read_only": True},
+        )
+
+        value = _schema_job_definition_read.properties.source_target_map.value
+        value.Element = AAZObjectType()
+
+        _element = _schema_job_definition_read.properties.source_target_map.value.Element
+        _element.source_endpoint = AAZObjectType(
+            serialized_name="sourceEndpoint",
+            flags={"required": True},
+        )
+        _element.target_endpoint = AAZObjectType(
+            serialized_name="targetEndpoint",
+            flags={"required": True},
+        )
+
+        source_endpoint = _schema_job_definition_read.properties.source_target_map.value.Element.source_endpoint
+        source_endpoint.properties = AAZObjectType()
+
+        properties = _schema_job_definition_read.properties.source_target_map.value.Element.source_endpoint.properties
+        properties.aws_s3_bucket_id = AAZStrType(
+            serialized_name="awsS3BucketId",
+        )
+        properties.name = AAZStrType()
+        properties.source_endpoint_resource_id = AAZStrType(
+            serialized_name="sourceEndpointResourceId",
+        )
+
+        target_endpoint = _schema_job_definition_read.properties.source_target_map.value.Element.target_endpoint
+        target_endpoint.properties = AAZObjectType()
+
+        properties = _schema_job_definition_read.properties.source_target_map.value.Element.target_endpoint.properties
+        properties.azure_storage_account_resource_id = AAZStrType(
+            serialized_name="azureStorageAccountResourceId",
+        )
+        properties.azure_storage_blob_container_name = AAZStrType(
+            serialized_name="azureStorageBlobContainerName",
+        )
+        properties.name = AAZStrType()
+        properties.target_endpoint_resource_id = AAZStrType(
+            serialized_name="targetEndpointResourceId",
         )
 
         system_data = _schema_job_definition_read.system_data

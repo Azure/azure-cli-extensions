@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2025-09-01"],
         ]
     }
 
@@ -134,7 +134,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -173,9 +173,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -187,9 +185,11 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.autonomous_database_ocid = AAZStrType(
                 serialized_name="autonomousDatabaseOcid",
+                flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(
                 serialized_name="backupType",
+                flags={"read_only": True},
             )
             properties.database_size_in_tbs = AAZFloatType(
                 serialized_name="databaseSizeInTbs",
@@ -216,8 +216,11 @@ class Wait(AAZWaitCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},

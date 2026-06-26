@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2025-12-01"],
         ]
     }
 
@@ -48,6 +48,9 @@ class Wait(AAZWaitCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

@@ -53,11 +53,11 @@ helps['fleet show'] = """
 
 helps['fleet list'] = """
     type: command
-    short-summary: Lists all fleets within a resource group.
+    short-summary: Lists all fleets.
     examples:
-        - name: List all fleets with a specific subscription.
+        - name: List all fleets within your current subscription.
           text: az fleet list
-        - name: List all fleets that exist within a specific subscription and resource group.
+        - name: List all fleets that exist within your current subscription and the chosen resource group.
           text: az fleet list -g MyResourceGroup
 """
 
@@ -71,8 +71,11 @@ helps['fleet delete'] = """
 
 helps['fleet get-credentials'] = """
     type: command
-    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster.
+    short-summary: For hubful fleets, gets the kubeconfig for the fleet's hub cluster. For fleet members, gets kubeconfig from the member's managed cluster.
     parameters:
+    - name: --member -m
+      type: string
+      short-summary: Specify the fleet member name to get credentials from its associated managed cluster.
     - name: --overwrite-existing
       type: bool
       short-summary: Overwrite any existing cluster entry with the same name.
@@ -84,6 +87,8 @@ helps['fleet get-credentials'] = """
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName
         - name: Get a fleet's hub cluster kubeconfig, and save it to a specific file.
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
+        - name: Get kubeconfig from a specific fleet member's managed cluster.
+          text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName --member MyFleetMember
 """
 
 helps['fleet reconcile'] = """
@@ -140,6 +145,8 @@ helps['fleet member list'] = """
     examples:
         - name: List all members for a given fleet.
           text: az fleet member list -g MyFleetResourceGroup -f MyFleetName
+        - name: List members filtered by a cluster mesh profile.
+          text: az fleet member list -g MyFleetResourceGroup -f MyFleetName --cluster-mesh-profile MyClusterMeshProfile
 """
 
 helps['fleet member show'] = """
@@ -203,38 +210,99 @@ helps['fleet updaterun create'] = """
                 A stages array is composed of one or more stages, each containing one or more groups.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
-                {
-                    "stages": [
+                Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
+                Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
+                Group maxConcurrency: applies within a single group, and is additionally constrained by the stage limit (effective max is min(group cluster count, stage maxConcurrency)). Minimum is 1.
+                Value formats:
+                  Fixed count (e.g., 3)
+                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group). Percentages are rounded down, with a minimum of 1 enforced.
+                  Examples: 3, 25%, 100%
+
+                Example stages JSON, with optional properties maxConcurrency and before/after gates:
+               {
+                  "stages": [
+                    {
+                      "name": "stage1",
+                      "maxConcurrency": "7%",
+                      "beforeGates": [
                         {
-                            "name": "stage1",
-                            "groups": [
-                                {
-                                    "name": "group-a1"
-                                },
-                                {
-                                    "name": "group-a2"
-                                },
-                                {
-                                    "name": "group-a3"
-                                }
-                            ],
-                            "afterStageWaitInSeconds": 3600
+                          "displayName": "stage before gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "afterGates": [
+                        {
+                          "displayName": "stage after gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "name": "group-a1",
+                          "maxConcurrency": "100%",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
                         {
-                            "name": "stage2",
-                            "groups": [
-                                {
-                                    "name": "group-b1"
-                                },
-                                {
-                                    "name": "group-b2"
-                                },
-                                {
-                                    "name": "group-b3"
-                                }
-                            ]
+                          "name": "group-a2",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
-                    ]
+                        {
+                          "name": "group-a3",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
+                        }
+                      ],
+                      "afterStageWaitInSeconds": 3600
+                    },
+                    {
+                      "name": "stage2",
+                      "groups": [
+                        {
+                          "name": "group-b1"
+                        },
+                        {
+                          "name": "group-b2"
+                        },
+                        {
+                          "name": "group-b3"
+                        }
+                      ]
+                    }
+                  ]
                 }
 """
 
@@ -433,4 +501,164 @@ helps['fleet gate approve'] = """
     examples:
         - name: Approves a gate.
           text: az fleet gate approve -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
+"""
+
+helps['fleet namespace'] = """
+    type: group
+    short-summary: Commands to manage fleet managed namespaces.
+"""
+
+helps['fleet namespace create'] = """
+    type: command
+    short-summary: Creates a fleet managed namespace.
+    examples:
+        - name: Create a basic fleet managed namespace.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+        - name: Create a fleet managed namespace with tags.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production key=value
+        - name: Create a fleet managed namespace with resource limits and policies.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations key=value --labels key=value --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy AllowAll --egress-policy DenyAll --delete-policy Keep --adoption-policy Never
+        - name: Create a fleet managed namespace on specific member clusters.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
+"""
+
+helps['fleet namespace update'] = """
+    type: command
+    short-summary: Updates a fleet managed namespace.
+    examples:
+        - name: Updates a fleet managed namespace.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+        - name: Update tags for a fleet managed namespace.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production
+"""
+
+helps['fleet namespace list'] = """
+    type: command
+    short-summary: Lists a fleet's managed namespaces.
+    examples:
+        - name: List all managed namespaces for a given fleet.
+          text: az fleet namespace list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet namespace show'] = """
+    type: command
+    short-summary: Gets a fleet managed namespace.
+    examples:
+        - name: Show the details of a specific managed namespace.
+          text: az fleet namespace show -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+"""
+
+helps['fleet namespace delete'] = """
+    type: command
+    short-summary: Deletes a fleet managed namespace.
+    examples:
+        - name: Delete a specific managed namespace.
+          text: az fleet namespace delete -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+"""
+
+helps['fleet namespace wait'] = """
+    type: command
+    short-summary: Wait for a fleet managed namespace to reach a desired state.
+    long-summary: If an operation on a fleet managed namespace was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
+helps['fleet namespace get-credentials'] = """
+    type: command
+    short-summary: Get kubeconfig for a fleet namespace, with the namespace context pre-configured.
+    parameters:
+    - name: --member -m
+      type: string
+      short-summary: Specify the fleet member name to get credentials from its associated managed cluster.
+    - name: --context
+      type: string
+      short-summary: If specified, overwrite the default context name.
+    - name: --overwrite-existing
+      type: bool
+      short-summary: Overwrite any existing cluster entry with the same name.
+    - name: --file
+      type: string
+      short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
+    examples:
+        - name: Get kubeconfig for a fleet namespace from the hub cluster.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
+        - name: Get kubeconfig for a fleet namespace from a specific fleet member.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member MyFleetMember
+        - name: Save kubeconfig to a specific file.
+          text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --file ~/my-namespace-config
+"""
+
+helps['fleet clustermeshprofile'] = """
+    type: group
+    short-summary: Commands to manage cluster mesh profiles.
+"""
+
+helps['fleet clustermeshprofile create'] = """
+    type: command
+    short-summary: Create or update a cluster mesh profile.
+    parameters:
+        - name: --member-selector --selector -s
+          type: string
+          short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
+    examples:
+        - name: Create a cluster mesh profile with a label selector.
+          text: az fleet clustermeshprofile create -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector "env=production"
+        - name: Create a cluster mesh profile without a selector (no members selected initially).
+          text: az fleet clustermeshprofile create -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile show'] = """
+    type: command
+    short-summary: Get a cluster mesh profile.
+    examples:
+        - name: Show the details of a cluster mesh profile.
+          text: az fleet clustermeshprofile show -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile list'] = """
+    type: command
+    short-summary: List all cluster mesh profiles for a fleet.
+    examples:
+        - name: List all cluster mesh profiles for a given fleet.
+          text: az fleet clustermeshprofile list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet clustermeshprofile delete'] = """
+    type: command
+    short-summary: Delete a cluster mesh profile. Members must be disconnected from the profile before it can be deleted.
+    examples:
+        - name: Delete a specific cluster mesh profile.
+          text: az fleet clustermeshprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile apply'] = """
+    type: command
+    short-summary: Apply the cluster mesh profile to selected fleet members.
+    examples:
+        - name: Apply a cluster mesh profile.
+          text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+        - name: Preview what changes would be made without actually applying.
+          text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --what-if --output table
+"""
+
+helps['fleet clustermeshprofile list-members'] = """
+    type: command
+    short-summary: List fleet members for a cluster mesh profile.
+    long-summary: |
+        Without --selector, lists members currently applied to the mesh profile.
+        With --selector, lists members that would match the profile's label selector (i.e. candidates for the next apply).
+    examples:
+        - name: List members currently applied to the mesh.
+          text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+        - name: List members that would match the profile's selector.
+          text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector
+"""
+
+helps['fleet clustermeshprofile wait'] = """
+    type: command
+    short-summary: Wait for a cluster mesh profile to reach a desired state.
+    examples:
+        - name: Wait for the cluster mesh profile to reach Connected state after apply.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "properties.status.state=='Connected'"
+        - name: Wait for the cluster mesh profile to be created.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
 """

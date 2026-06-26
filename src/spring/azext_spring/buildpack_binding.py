@@ -11,7 +11,7 @@ from .custom import try_create_application_insights
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
+from .vendored_sdks.applicationinsights import ApplicationInsightsManagementClient
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 

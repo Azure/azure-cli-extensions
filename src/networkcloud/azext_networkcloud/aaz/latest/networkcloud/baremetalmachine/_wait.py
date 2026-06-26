@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -189,6 +189,10 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.action_states = AAZListType(
+                serialized_name="actionStates",
+                flags={"read_only": True},
+            )
             properties.associated_resource_ids = AAZListType(
                 serialized_name="associatedResourceIds",
                 flags={"read_only": True},
@@ -201,6 +205,14 @@ class Wait(AAZWaitCommand):
                 serialized_name="bmcCredentials",
                 flags={"required": True},
             )
+            properties.bmc_ipv4_address = AAZStrType(
+                serialized_name="bmcIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.bmc_ipv6_address = AAZStrType(
+                serialized_name="bmcIpv6Address",
+                flags={"read_only": True},
+            )
             properties.bmc_mac_address = AAZStrType(
                 serialized_name="bmcMacAddress",
                 flags={"required": True},
@@ -208,6 +220,10 @@ class Wait(AAZWaitCommand):
             properties.boot_mac_address = AAZStrType(
                 serialized_name="bootMacAddress",
                 flags={"required": True},
+            )
+            properties.ca_certificate = AAZObjectType(
+                serialized_name="caCertificate",
+                flags={"read_only": True},
             )
             properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
@@ -264,6 +280,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="machineSkuId",
                 flags={"required": True},
             )
+            properties.monitoring_configuration_status = AAZObjectType(
+                serialized_name="monitoringConfigurationStatus",
+                flags={"read_only": True},
+            )
             properties.oam_ipv4_address = AAZStrType(
                 serialized_name="oamIpv4Address",
                 flags={"read_only": True},
@@ -317,6 +337,60 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
+            action_states = cls._schema_on_200.properties.action_states
+            action_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element
+            _element.action_type = AAZStrType(
+                serialized_name="actionType",
+                flags={"read_only": True},
+            )
+            _element.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_states = AAZListType(
+                serialized_name="stepStates",
+                flags={"read_only": True},
+            )
+
+            step_states = cls._schema_on_200.properties.action_states.Element.step_states
+            step_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element.step_states.Element
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_name = AAZStrType(
+                serialized_name="stepName",
+                flags={"read_only": True},
+            )
+
             associated_resource_ids = cls._schema_on_200.properties.associated_resource_ids
             associated_resource_ids.Element = AAZStrType()
 
@@ -326,6 +400,14 @@ class Wait(AAZWaitCommand):
             )
             bmc_credentials.username = AAZStrType(
                 flags={"required": True},
+            )
+
+            ca_certificate = cls._schema_on_200.properties.ca_certificate
+            ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
             )
 
             hardware_inventory = cls._schema_on_200.properties.hardware_inventory
@@ -409,13 +491,41 @@ class Wait(AAZWaitCommand):
             machine_roles = cls._schema_on_200.properties.machine_roles
             machine_roles.Element = AAZStrType()
 
+            monitoring_configuration_status = cls._schema_on_200.properties.monitoring_configuration_status
+            monitoring_configuration_status.log_level = AAZStrType(
+                serialized_name="logLevel",
+            )
+            monitoring_configuration_status.metrics_level = AAZStrType(
+                serialized_name="metricsLevel",
+            )
+
             runtime_protection_status = cls._schema_on_200.properties.runtime_protection_status
+            runtime_protection_status.agent_health_status = AAZStrType(
+                serialized_name="agentHealthStatus",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.agent_health_status_issues = AAZListType(
+                serialized_name="agentHealthStatusIssues",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.agent_license_status = AAZStrType(
+                serialized_name="agentLicenseStatus",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.definition_update_mode = AAZStrType(
+                serialized_name="definitionUpdateMode",
+                flags={"read_only": True},
+            )
             runtime_protection_status.definitions_last_updated = AAZStrType(
                 serialized_name="definitionsLastUpdated",
                 flags={"read_only": True},
             )
             runtime_protection_status.definitions_version = AAZStrType(
                 serialized_name="definitionsVersion",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.enforcement_level = AAZStrType(
+                serialized_name="enforcementLevel",
                 flags={"read_only": True},
             )
             runtime_protection_status.scan_completed_time = AAZStrType(
@@ -430,6 +540,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="scanStartedTime",
                 flags={"read_only": True},
             )
+
+            agent_health_status_issues = cls._schema_on_200.properties.runtime_protection_status.agent_health_status_issues
+            agent_health_status_issues.Element = AAZStrType()
 
             secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
             secret_rotation_status.Element = AAZObjectType()
@@ -459,6 +572,10 @@ class Wait(AAZWaitCommand):
             secret_archive_reference = cls._schema_on_200.properties.secret_rotation_status.Element.secret_archive_reference
             secret_archive_reference.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
                 flags={"read_only": True},
             )
             secret_archive_reference.secret_name = AAZStrType(

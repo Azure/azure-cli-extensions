@@ -152,3 +152,19 @@ Release History
 * `az grafana folder list`: support nested folders
 * `az grafana folder show`: support nested folders
 * `az grafana backup`: include corresponding nested folders when individual folders are specified
+
+2.8.1
+++++++
+* `az grafana create`: block creation for resources of Essential SKU tier
+
+3.0.0
+++++++
+* `az grafana notification-channel`: remove deprecated command group due to Grafana legacy alerting deprecation
+* `az grafana api-key`: remove deprecated command group; use `az grafana service-account` instead
+* `az grafana backup`: GA
+* `az grafana restore`: GA
+* `az grafana mpe`: rename to `az grafana managed-private-endpoint`
+* `az grafana list-available-plugin`: rename to `az grafana plugin list`
+* `az grafana integrations`: rename to `az grafana integration`
+* `az grafana integration monitor`: drop `--monitor-resource-group-name` option; use `--monitor-rg-name` instead
+* `az grafana data-source`: drop lookup by numeric ID and switch to UID-based endpoints due to deprecated Grafana API

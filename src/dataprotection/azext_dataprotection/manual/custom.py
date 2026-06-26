@@ -13,6 +13,7 @@
 # pylint: disable=too-many-nested-blocks
 # pylint: disable=no-else-continue
 # pylint: disable=no-else-raise
+import json
 import time
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -91,11 +92,15 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                                                            vaulted_backup_containers=None,
                                                            include_all_containers=None,
                                                            storage_account_name=None, storage_account_resource_group=None,
-                                                           backup_hook_references=None):
+                                                           backup_hook_references=None,
+                                                           auto_protection=None,
+                                                           auto_protection_exclusion_prefixes=None):
     if datasource_type == "AzureKubernetesService":
-        if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group]):
+        if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group,
+                auto_protection is not None, auto_protection_exclusion_prefixes is not None]):
             raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers, --include-all-containers, '
-                                            '--storage-account-name, --storage-account-resource-group for given datasource type.')
+                                            '--storage-account-name, --storage-account-resource-group, '
+                                            '--auto-protection, --exclusion-prefixes for given datasource type.')
         if snapshot_volumes is None:
             snapshot_volumes = True
         if include_cluster_scope_resources is None:
@@ -111,16 +116,24 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             "include_cluster_scope_resources": include_cluster_scope_resources,
             "backup_hook_references": backup_hook_references
         }
-    if datasource_type == "AzureBlob":
+    if datasource_type == "AzureBlob" or datasource_type == "AzureDataLakeStorage":
         if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
                 label_selectors, snapshot_volumes, include_cluster_scope_resources, backup_hook_references]):
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
                                             ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
                                             ' --backup-hook-references for given datasource type.')
-        return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
+        if auto_protection_exclusion_prefixes and not auto_protection:
+            raise InvalidArgumentValueError('--exclusion-prefixes requires --auto-protection to be enabled.')
+        if auto_protection:
+            if any([vaulted_backup_containers, include_all_containers is not None]):
+                raise InvalidArgumentValueError('--auto-protection cannot be used with --container-list or --include-all-containers.')
+            if any([storage_account_name, storage_account_resource_group]):
+                raise InvalidArgumentValueError('--storage-account-name and --storage-account-resource-group are not applicable with --auto-protection.')
+            return helper.get_blob_autoprotection_config(datasource_type, auto_protection_exclusion_prefixes)
+        return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group, datasource_type)
 
     raise InvalidArgumentValueError('Given datasource type is not supported currently. '
-                                    'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
+                                    'This command only supports "AzureBlob", "AzureDataLakeStorage" or "AzureKubernetesService" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -133,7 +146,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
 
     datasourceset_info = None
-    if manifest["isProxyResource"]:
+    if manifest["isProxyResource"] or manifest["enableDataSourceSetInfo"]:
         datasourceset_info = helper.get_datasourceset_info(datasource_type, datasource_id, datasource_location)
 
     policy_parameters = None
@@ -159,7 +172,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                                                 Use command az dataprotection backup-instance initialize-backupconfig \
                                                 for creating the backup-configuration")
         if backup_configuration:
-            if datasource_type == "AzureBlob":
+            if datasource_type == "AzureBlob" or datasource_type == "AzureDataLakeStorage":
                 for key in ['excluded_resource_types', 'included_resource_types', 'excluded_namespaces', 'included_namespaces',
                             'label_selectors', 'snapshot_volumes', 'include_cluster_scope_resources']:
                     if key in backup_configuration:
@@ -246,7 +259,7 @@ def dataprotection_backup_instance_validate_for_update(cmd, resource_group_name,
 
 
 def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
-                                          vaulted_blob_container_list=None, no_wait=False,
+                                          vaulted_blob_container_list=None, aks_backup_configuration=None, no_wait=False,
                                           use_system_assigned_identity=None, user_assigned_identity_arm_url=None):
     from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
     backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
@@ -266,10 +279,36 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
             identity_details = helper.get_identity_details(use_system_assigned_identity, user_assigned_identity_arm_url)
             backup_instance["properties"]["identityDetails"] = identity_details
 
-    # Policy changes - updating the vaulted blob container list for vaulted blob backups
-    if vaulted_blob_container_list is not None:
-        backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
-            [vaulted_blob_container_list,]
+    # Policy changes
+    # - Updating the vaulted blob container list for vaulted blob backups
+    # - Updating the backup datasource parameters for AKS backups
+    datasource_type = backup_instance["properties"]["dataSourceInfo"]["datasourceType"]
+
+    # If user provided any of the datasource parameter update inputs, handle according to datasource type
+    if vaulted_blob_container_list is not None or aks_backup_configuration is not None:
+        if datasource_type == "Microsoft.ContainerService/managedClusters":
+            # AKS scenario (only --aks-backup-configuration is valid)
+            if vaulted_blob_container_list is not None:
+                raise InvalidArgumentValueError(f'Invalid argument --vaulted-blob-container-list for AKS datasource type: {datasource_type}. Use --aks-backup-configuration instead.')
+            elif aks_backup_configuration is not None:
+                # Allow passing JSON string or already-parsed object for AKS backup configuration
+                if isinstance(aks_backup_configuration, str):
+                    try:
+                        aks_backup_configuration = json.loads(aks_backup_configuration)
+                    except json.JSONDecodeError:
+                        raise InvalidArgumentValueError("Provided --aks-backup-configuration is not valid JSON.")
+                    except Exception:
+                        raise InvalidArgumentValueError("Provided --aks-backup-configuration is not valid.")
+                backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [aks_backup_configuration]
+        elif datasource_type == "Microsoft.Storage/storageAccounts/blobServices":
+            # Blob scenario (only --vaulted-blob-container-list is valid)
+            if aks_backup_configuration is not None:
+                raise InvalidArgumentValueError(f'Invalid argument --aks-backup-configuration for Blob datasource type: {datasource_type}. Use --vaulted-blob-container-list instead.')
+            elif vaulted_blob_container_list is not None:
+                backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = [vaulted_blob_container_list]
+        else:
+            raise InvalidArgumentValueError(f"Setting backup datasource parameters is not supported for datasource type: {datasource_type}.\n "
+                                            "Supported datasource types are Microsoft.ContainerService/managedClusters (AKS) and Microsoft.Storage/storageAccounts/blobServices (Blob).")
 
     backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
 
@@ -511,7 +550,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
     elif operation == "Restore":
         if datasource_type not in ("AzureKubernetesService", "AzureDatabaseForMySQL",
-                                   "AzureDatabaseForPostgreSQLFlexibleServer"):
+                                   "AzureDatabaseForPostgreSQLFlexibleServer", "AzureCosmosDB"):
             raise InvalidArgumentValueError("Set permissions for restore is currently not supported for given DataSourceType")
 
         for role_object in manifest['backupVaultRestorePermissions']:
@@ -666,6 +705,17 @@ def dataprotection_backup_policy_create_lifecycle(source_datastore, retention_du
 
 
 def dataprotection_backup_policy_retention_set_in_policy(policy, name, lifecycles):
+    datasource_type = helper.get_client_datasource_type(policy["datasourceTypes"][0])
+    manifest = helper.load_manifest(datasource_type)
+
+    default_retention_mapping = manifest.get("policySettings", {}).get("defaultRetentionRuleNames") or {}
+    mapped_default_names = []
+    if default_retention_mapping:
+        mapped_default_names = helper.validate_retention_rule_matches_mapped_store(
+            name, default_retention_mapping, lifecycles, datasource_type)
+        helper.validate_exclusive_source_store_assignment(
+            name, manifest, default_retention_mapping, lifecycles, datasource_type)
+
     retention_policy_index = -1
     for index in range(0, len(policy["policyRules"])):
         if policy["policyRules"][index]["objectType"] == "AzureRetentionRule" and policy["policyRules"][index]["name"] == name:
@@ -673,17 +723,15 @@ def dataprotection_backup_policy_retention_set_in_policy(policy, name, lifecycle
             break
 
     if retention_policy_index == -1:
-        datasource_type = helper.get_client_datasource_type(policy["datasourceTypes"][0])
-        manifest = helper.load_manifest(datasource_type)
         if manifest["policySettings"]["disableAddRetentionRule"]:
             raise InvalidArgumentValueError("Adding New Retention Rule is not supported for " + datasource_type + " datasource type")
 
-        if name not in manifest["policySettings"]["supportedRetentionTags"]:
+        if name not in manifest["policySettings"]["supportedRetentionTags"] and name not in mapped_default_names:
             raise InvalidArgumentValueError("Selected Retention Rule " + name + " is not applicable for Datasource Type " + datasource_type)
 
         new_retention_rule = {
             "objectType": "AzureRetentionRule",
-            "isDefault": name == "Default",
+            "isDefault": name == "Default" or name in mapped_default_names,
             "name": name,
             "lifecycles": lifecycles
         }
@@ -1102,7 +1150,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     datasource_id = helper.validate_and_set_datasource_id_in_restore_request(cmd, target_resource_id, backup_instance_id)
     restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
 
-    if manifest["isProxyResource"]:
+    if manifest["isProxyResource"] or manifest["enableDataSourceSetInfo"]:
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
 
     # UAMI for a restore request object
@@ -1122,3 +1170,56 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                                                                                                    vaulted_blob_prefix_pattern)
 
     return restore_request
+
+
+def dataprotection_enable_backup(cmd, datasource_type, datasource_id,
+                                 backup_strategy=None,
+                                 backup_configuration_file=None,
+                                 yes=False):
+    """Enable backup for a datasource using a single command.
+
+    This command orchestrates all the steps required to enable backup:
+    - Creates backup infrastructure (resource group, storage account, vault)
+    - Installs required extensions
+    - Configures backup instance with specified strategy
+    """
+    from azext_dataprotection.manual.enums import get_backup_strategies_for_datasource
+
+    # Supported datasource types
+    supported_datasource_types = ["AzureKubernetesService"]
+
+    # Validate datasource type is supported
+    if datasource_type not in supported_datasource_types:
+        raise InvalidArgumentValueError(
+            f"Unsupported datasource type: {datasource_type}. "
+            f"Supported types: {', '.join(supported_datasource_types)}"
+        )
+
+    # Get valid strategies for this datasource type
+    valid_strategies = get_backup_strategies_for_datasource(datasource_type)
+
+    # Set default strategy based on datasource type
+    if backup_strategy is None:
+        if datasource_type == "AzureKubernetesService":
+            backup_strategy = 'Week'
+        # Add defaults for other datasource types here as they are supported
+
+    # Validate strategy for datasource type
+    if backup_strategy not in valid_strategies:
+        raise InvalidArgumentValueError(
+            f"Invalid backup-strategy '{backup_strategy}' for {datasource_type}. "
+            f"Allowed values: {', '.join(valid_strategies)}"
+        )
+
+    config = backup_configuration_file if backup_configuration_file is not None else {}
+
+    # Route to datasource-specific handler
+    if datasource_type == "AzureKubernetesService":
+        if "Microsoft.ContainerService/managedClusters".lower() not in datasource_id.lower():
+            raise InvalidArgumentValueError(
+                "datasource-id must be an AKS cluster resource ID for AzureKubernetesService datasource type"
+            )
+
+        from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
+        dataprotection_enable_backup_helper(
+            cmd, datasource_id, backup_strategy, config, yes=yes)

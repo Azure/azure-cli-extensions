@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 class Create(AAZCommand):
-    """Creates an Endpoint resource, which represents a data transfer source or destination.
+    """Create an Endpoint resource, which represents a data transfer source or destination.
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-12-01"],
         ]
     }
 
@@ -50,15 +50,44 @@ class Create(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.storage_blob_container = AAZObjectArg(
-            options=["--storage-blob-container"],
+        _args_schema.azure_multi_cloud_connector = AAZObjectArg(
+            options=["--azure-multi-cloud-connector"],
             arg_group="Properties",
-            help="Storage Blob Container Object",
+        )
+        _args_schema.azure_storage_blob_container = AAZObjectArg(
+            options=["--azure-storage-blob-container"],
+            arg_group="Properties",
+        )
+        _args_schema.azure_storage_nfs_file_share = AAZObjectArg(
+            options=["--azure-storage-nfs-file-share"],
+            arg_group="Properties",
         )
         _args_schema.azure_storage_smb_file_share = AAZObjectArg(
             options=["--azure-storage-smb-file-share"],
@@ -66,6 +95,10 @@ class Create(AAZCommand):
         )
         _args_schema.nfs_mount = AAZObjectArg(
             options=["--nfs-mount"],
+            arg_group="Properties",
+        )
+        _args_schema.s3_with_hmac = AAZObjectArg(
+            options=["--s3-with-hmac"],
             arg_group="Properties",
         )
         _args_schema.smb_mount = AAZObjectArg(
@@ -77,16 +110,46 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="A description for the Endpoint.",
         )
+        _args_schema.endpoint_kind = AAZStrArg(
+            options=["--endpoint-kind"],
+            arg_group="Properties",
+            help="The Endpoint resource kind source or target.",
+            enum={"Source": "Source", "Target": "Target"},
+        )
 
-        storage_blob_container = cls._args_schema.storage_blob_container
-        storage_blob_container.blob_container_name = AAZStrArg(
+        azure_multi_cloud_connector = cls._args_schema.azure_multi_cloud_connector
+        azure_multi_cloud_connector.aws_s3_bucket_id = AAZResourceIdArg(
+            options=["aws-s3-bucket-id"],
+            help="The AWS S3 bucket ARM resource Id.",
+            required=True,
+        )
+        azure_multi_cloud_connector.multi_cloud_connector_id = AAZResourceIdArg(
+            options=["multi-cloud-connector-id"],
+            help="The Azure Resource ID of the MultiCloud Connector resource.",
+            required=True,
+        )
+
+        azure_storage_blob_container = cls._args_schema.azure_storage_blob_container
+        azure_storage_blob_container.blob_container_name = AAZStrArg(
             options=["blob-container-name"],
             help="The name of the Storage blob container that is the target destination.",
             required=True,
         )
-        storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
+        azure_storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
+            required=True,
+        )
+
+        azure_storage_nfs_file_share = cls._args_schema.azure_storage_nfs_file_share
+        azure_storage_nfs_file_share.file_share_name = AAZStrArg(
+            options=["file-share-name"],
+            help="The name of the Azure Storage NFS file share.",
+            required=True,
+        )
+        azure_storage_nfs_file_share.storage_account_resource_id = AAZResourceIdArg(
+            options=["storage-account-resource-id"],
+            help="The Azure Resource ID of the storage account.",
             required=True,
         )
 
@@ -117,6 +180,35 @@ class Create(AAZCommand):
             options=["nfs-version"],
             help="The NFS protocol version.",
             enum={"NFSauto": "NFSauto", "NFSv3": "NFSv3", "NFSv4": "NFSv4"},
+        )
+
+        s3_with_hmac = cls._args_schema.s3_with_hmac
+        s3_with_hmac.credentials = AAZObjectArg(
+            options=["credentials"],
+            help="The Azure Key Vault credentials which stores the access key and secret key. Use empty string to clean-up existing value.",
+        )
+        s3_with_hmac.other_source_type_description = AAZStrArg(
+            options=["other-source-type-description"],
+            help="The description for other source type of S3WithHmac endpoint.",
+        )
+        s3_with_hmac.source_type = AAZStrArg(
+            options=["source-type"],
+            help="The source type of S3WithHmac endpoint.",
+            enum={"ALIBABA": "ALIBABA", "DELL_EMC": "DELL_EMC", "GCS": "GCS", "IBM": "IBM", "MINIO": "MINIO", "OTHER": "OTHER"},
+        )
+        s3_with_hmac.source_uri = AAZStrArg(
+            options=["source-uri"],
+            help="The  URI which points to the source.",
+        )
+
+        credentials = cls._args_schema.s3_with_hmac.credentials
+        credentials.access_key_uri = AAZStrArg(
+            options=["access-key-uri"],
+            help="The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.",
+        )
+        credentials.secret_key_uri = AAZStrArg(
+            options=["secret-key-uri"],
+            help="The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.",
         )
 
         smb_mount = cls._args_schema.smb_mount
@@ -215,7 +307,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -240,24 +332,51 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".storage_blob_container", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("endpointKind", AAZStrType, ".endpoint_kind")
+                properties.set_const("endpointType", "AzureMultiCloudConnector", AAZStrType, ".azure_multi_cloud_connector", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".azure_storage_blob_container", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "AzureStorageNfsFileShare", AAZStrType, ".azure_storage_nfs_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "AzureStorageSmbFileShare", AAZStrType, ".azure_storage_smb_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("endpointType", "S3WithHMAC", AAZStrType, ".s3_with_hmac", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "SmbMount", AAZStrType, ".smb_mount", typ_kwargs={"flags": {"required": True}})
+                properties.discriminate_by("endpointType", "AzureMultiCloudConnector")
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
+                properties.discriminate_by("endpointType", "AzureStorageNfsFileShare")
                 properties.discriminate_by("endpointType", "AzureStorageSmbFileShare")
                 properties.discriminate_by("endpointType", "NfsMount")
+                properties.discriminate_by("endpointType", "S3WithHMAC")
                 properties.discriminate_by("endpointType", "SmbMount")
+
+            disc_azure_multi_cloud_connector = _builder.get(".properties{endpointType:AzureMultiCloudConnector}")
+            if disc_azure_multi_cloud_connector is not None:
+                disc_azure_multi_cloud_connector.set_prop("awsS3BucketId", AAZStrType, ".azure_multi_cloud_connector.aws_s3_bucket_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_multi_cloud_connector.set_prop("multiCloudConnectorId", AAZStrType, ".azure_multi_cloud_connector.multi_cloud_connector_id", typ_kwargs={"flags": {"required": True}})
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
-                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".azure_storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_azure_storage_nfs_file_share = _builder.get(".properties{endpointType:AzureStorageNfsFileShare}")
+            if disc_azure_storage_nfs_file_share is not None:
+                disc_azure_storage_nfs_file_share.set_prop("fileShareName", AAZStrType, ".azure_storage_nfs_file_share.file_share_name", typ_kwargs={"flags": {"required": True}})
+                disc_azure_storage_nfs_file_share.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_nfs_file_share.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_azure_storage_smb_file_share = _builder.get(".properties{endpointType:AzureStorageSmbFileShare}")
             if disc_azure_storage_smb_file_share is not None:
@@ -269,6 +388,19 @@ class Create(AAZCommand):
                 disc_nfs_mount.set_prop("export", AAZStrType, ".nfs_mount.export", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("host", AAZStrType, ".nfs_mount.host", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("nfsVersion", AAZStrType, ".nfs_mount.nfs_version")
+
+            disc_s3_with_hmac = _builder.get(".properties{endpointType:S3WithHMAC}")
+            if disc_s3_with_hmac is not None:
+                disc_s3_with_hmac.set_prop("credentials", AAZObjectType, ".s3_with_hmac.credentials")
+                disc_s3_with_hmac.set_prop("otherSourceTypeDescription", AAZStrType, ".s3_with_hmac.other_source_type_description")
+                disc_s3_with_hmac.set_prop("sourceType", AAZStrType, ".s3_with_hmac.source_type")
+                disc_s3_with_hmac.set_prop("sourceUri", AAZStrType, ".s3_with_hmac.source_uri")
+
+            credentials = _builder.get(".properties{endpointType:S3WithHMAC}.credentials")
+            if credentials is not None:
+                credentials.set_prop("accessKeyUri", AAZStrType, ".access_key_uri")
+                credentials.set_prop("secretKeyUri", AAZStrType, ".secret_key_uri")
+                credentials.set_const("type", "AzureKeyVaultS3WithHMAC", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
 
             disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
             if disc_smb_mount is not None:
@@ -305,6 +437,7 @@ class Create(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -319,8 +452,41 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+                nullable=True,
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
+            properties.endpoint_kind = AAZStrType(
+                serialized_name="endpointKind",
+            )
             properties.endpoint_type = AAZStrType(
                 serialized_name="endpointType",
                 flags={"required": True},
@@ -330,12 +496,32 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            disc_azure_multi_cloud_connector = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureMultiCloudConnector")
+            disc_azure_multi_cloud_connector.aws_s3_bucket_id = AAZStrType(
+                serialized_name="awsS3BucketId",
+                flags={"required": True},
+            )
+            disc_azure_multi_cloud_connector.multi_cloud_connector_id = AAZStrType(
+                serialized_name="multiCloudConnectorId",
+                flags={"required": True},
+            )
+
             disc_azure_storage_blob_container = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
             disc_azure_storage_blob_container.blob_container_name = AAZStrType(
                 serialized_name="blobContainerName",
                 flags={"required": True},
             )
             disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+                serialized_name="storageAccountResourceId",
+                flags={"required": True},
+            )
+
+            disc_azure_storage_nfs_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageNfsFileShare")
+            disc_azure_storage_nfs_file_share.file_share_name = AAZStrType(
+                serialized_name="fileShareName",
+                flags={"required": True},
+            )
+            disc_azure_storage_nfs_file_share.storage_account_resource_id = AAZStrType(
                 serialized_name="storageAccountResourceId",
                 flags={"required": True},
             )
@@ -359,6 +545,29 @@ class Create(AAZCommand):
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
+            )
+
+            disc_s3_with_hmac = cls._schema_on_200.properties.discriminate_by("endpoint_type", "S3WithHMAC")
+            disc_s3_with_hmac.credentials = AAZObjectType()
+            disc_s3_with_hmac.other_source_type_description = AAZStrType(
+                serialized_name="otherSourceTypeDescription",
+            )
+            disc_s3_with_hmac.source_type = AAZStrType(
+                serialized_name="sourceType",
+            )
+            disc_s3_with_hmac.source_uri = AAZStrType(
+                serialized_name="sourceUri",
+            )
+
+            credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "S3WithHMAC").credentials
+            credentials.access_key_uri = AAZStrType(
+                serialized_name="accessKeyUri",
+            )
+            credentials.secret_key_uri = AAZStrType(
+                serialized_name="secretKeyUri",
+            )
+            credentials.type = AAZStrType(
+                flags={"required": True},
             )
 
             disc_smb_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount")

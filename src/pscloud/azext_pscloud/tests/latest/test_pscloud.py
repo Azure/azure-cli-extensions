@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class PscloudScenario(ScenarioTest):
@@ -21,17 +22,18 @@ class PscloudScenario(ScenarioTest):
     def test_pscloud_storagepool_create(self):
         """Test pscloud pool create command"""
         # Create storagepool command with proper JSON quoting for vnet-injection
-        create_storagepool_cmd = """az pscloud pool create --resource-group aaa --storage-pool-name cliTestSPCUS --location "Central US" --availability-zone "1" --vnet-injection '{{"subnet-id":"/subscriptions/3490e0a3-59fd-4ed4-baed-873d4e401b99/resourceGroups/pure-cli-testing-vnet/providers/Microsoft.Network/virtualNetworks/pure-cli-vnet/subnets/delg-subnet","vnet-id":"/subscriptions/3490e0a3-59fd-4ed4-baed-873d4e401b99/resourceGroups/pure-cli-testing-vnet/providers/Microsoft.Network/virtualNetworks/pure-cli-vnet"}}' --provisioned-bandwidth 992 --reservation-id "/subscriptions/3490e0a3-59fd-4ed4-baed-873d4e401b99/resourceGroups/aaa/providers/PureStorage.Block/reservations/cliTestReservationCUS" --system-assigned --debug"""
+        create_storagepool_cmd = """az pscloud pool create --resource-group abc --storage-pool-name dhritijindal --location "Central US" -z "1" --subnet-name "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/Microsoft.Network/virtualNetworks/cli-pure-vnet/subnets/delgSubnet" --vnet-name "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/Microsoft.Network/virtualNetworks/cli-pure-vnet" --provisioned-bandwidth 992 --reservation-id "/subscriptions/834be33e-67e6-45ed-a454-c25a34cdec1f/resourceGroups/abc/providers/PureStorage.Block/reservations/cli-test-reserv" --debug"""
 
         # Execute the create command
         self.cmd(create_storagepool_cmd)
 
+    @AllowLargeResponse()
     def test_pscloud_storagepool_get(self):
         """Test pool show, list commands with basic field checks"""
 
         # 1. Test storagepool show
         self.cmd(
-            "az pscloud pool show --resource-group 06June2025 --storage-pool-name mochauhan-bug255",
+            "az pscloud pool show --resource-group abc --storage-pool-name dhritijindal",
             checks=[
                 self.exists('id'),
                 self.exists('name'),
@@ -52,7 +54,7 @@ class PscloudScenario(ScenarioTest):
     def test_pscloud_storagepool_postAction(self):
         # 3. Test storagepool get-health-status
         self.cmd(
-            "az pscloud pool get-health-status --resource-group aaa --storage-pool-name cliTestSPCUS",
+            "az pscloud pool get-health-status --resource-group abc -n dhritijindal",
             checks=[
                 self.exists('health'),
                 self.exists('health.bandwidthUsage'),
@@ -61,7 +63,7 @@ class PscloudScenario(ScenarioTest):
             ]
         )    
         self.cmd(
-            "az pscloud pool get-avs-status --resource-group aaa --storage-pool-name cliTestSPCUS",
+            "az pscloud pool get-avs-status --resource-group abc -n dhritijindal",
             checks=[
                 self.exists('currentConnectionStatus')
             ]
@@ -71,12 +73,12 @@ class PscloudScenario(ScenarioTest):
         """Test pscloud pool update command"""
         # Test updating provisioned bandwidth
         self.cmd(
-            "az pscloud pool update --resource-group aaa --name cliTestSPCUS --provisioned-bandwidth 1094"
+            "az pscloud pool update --resource-group abc --name dhritijindal --provisioned-bandwidth 1094"
         )
     def test_pscloud_storagepool_delete(self):
         """Test pscloud pool delete command"""
         # Test deleting a storage pool
         self.cmd(
-            "az pscloud pool delete --resource-group aaa --storage-pool-name cliTestSPCUS --yes"
+            "az pscloud pool delete --resource-group abc --storage-pool-name dhritijindal123 --yes"
         )    
     pass

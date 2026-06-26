@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "storage-mover agent list",
 )
 class List(AAZCommand):
-    """Lists all Agents in a Storage Mover.
-
-    :example: agent list
-        az storage-mover agent list -g {rg} --storage-mover-name {mover_name}
+    """List all Agents in a Storage Mover.
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents", "2025-12-01"],
         ]
     }
 
@@ -52,6 +49,9 @@ class List(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -121,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -156,7 +156,6 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
@@ -312,7 +311,7 @@ class _ListHelper:
         time_read.hour = AAZIntType(
             flags={"required": True},
         )
-        time_read.minute = AAZIntType()
+        time_read.minute = AAZFloatType()
 
         _schema.hour = cls._schema_time_read.hour
         _schema.minute = cls._schema_time_read.minute

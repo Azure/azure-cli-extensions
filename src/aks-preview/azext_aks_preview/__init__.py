@@ -9,13 +9,19 @@ from azure.cli.core.profiles import register_resource_type
 
 # pylint: disable=unused-import
 import azext_aks_preview._help
-from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW, CUSTOM_MGMT_AKS_PIS_PREVIEW
 
 
 def register_aks_preview_resource_type():
     register_resource_type(
         "latest",
         CUSTOM_MGMT_AKS_PREVIEW,
+        None,
+    )
+
+    register_resource_type(
+        "latest",
+        CUSTOM_MGMT_AKS_PIS_PREVIEW,
         None,
     )
 
@@ -35,6 +41,21 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         super().load_command_table(args)
+
+        # Load AAZ-generated commands from the preview API
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
+
+        # Load custom command implementations (will override AAZ commands)
         from azext_aks_preview.commands import load_command_table
         load_command_table(self, args)
         return self.command_table

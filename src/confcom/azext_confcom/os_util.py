@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-from typing import List
+from typing import List, Union
 import yaml
 import yaml.scanner
 import binascii
@@ -12,10 +12,13 @@ import shutil
 import json
 import os
 import stat
+from knack.log import get_logger
 from tarfile import TarFile
 from azext_confcom.errors import (
     eprint,
 )
+
+logger = get_logger(__name__)
 
 
 def bytes_to_base64(data: bytes) -> str:
@@ -36,7 +39,14 @@ def base64_to_str(data: str) -> str:
     return data_str
 
 
-def load_json_from_str(data: str) -> dict:
+def clean_up_temp_folder(temp_file_path: str) -> None:
+    # clean up the folder that the fragment was downloaded to
+    folder_name = os.path.dirname(temp_file_path)
+    logger.info("cleaning up folder with fragment: %s", folder_name)
+    shutil.rmtree(folder_name)
+
+
+def load_json_from_str(data: str | bytes | bytearray) -> dict:
     if data:
         try:
             return json.loads(data)
@@ -149,56 +159,13 @@ def load_tar_mapping_from_config_file(path: str) -> dict:
     return output_dict
 
 
-def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, tar_location: str):
-    tar_dir = os.path.dirname(tar_location)
-    # grab all files in the folder and only take the one that's named with hex values and a json extension
-    members = tar.getmembers()
-
-    info_file = None
-    # if there's more than one image in the tarball, we need to do some more logic
-    if len(members) > 0:
-        # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
-        # the manifest.json should have a list of all the image tags
-        # and what json files they map to to get env vars, startup cmd, etc.
-        tar.extract("manifest.json", path=tar_dir)
-        manifest_path = os.path.join(tar_dir, "manifest.json")
-        manifest = load_json_from_file(manifest_path)
-        # if we match a RepoTag to the image, stop searching
-        for image in manifest:
-            if image_name in image.get("RepoTags"):
-                info_file = [
-                    item for item in members if item.name == image.get("Config")
-                ][0]
-                break
-        # remove the extracted manifest file to clean up
-        force_delete_silently(manifest_path)
-    else:
-        eprint(f"Tarball at {tar_location} contains no images")
-
-    if not info_file:
-        return None
-    tar.extract(info_file.name, path=tar_dir)
-
-    # get the path of the json file and read it in
-    image_info_file_path = os.path.join(tar_dir, info_file.name)
-    image_info_raw = load_json_from_file(image_info_file_path)
-    # delete the extracted json file to clean up
-    force_delete_silently(image_info_file_path)
-    image_info = image_info_raw.get("config")
-    # importing the constant from config.py gives a circular dependency error
-    image_info["Architecture"] = image_info_raw.get("architecture")
-
-    shutil.rmtree("blobs", ignore_errors=True)
-    return image_info
-
-
 def get_oci_image_name(image_name: str) -> str:
     if "/" not in image_name:
         return f"docker.io/library/{image_name}"
     return image_name
 
 
-def read_file_from_tar(tar: TarFile, filename: str) -> str:
+def read_file_from_tar(tar: TarFile, filename: str) -> bytes:
     try:
         return tar.extractfile(filename).read()
     except KeyError:
@@ -237,67 +204,72 @@ def map_image_from_tar_oci_layout_v1(image_name: str, tar: TarFile, tar_location
             image_info_raw = load_json_from_str(image_info_raw_bytes)
             image_info = image_info_raw.get("config")
             image_info["Architecture"] = image_info_raw.get("architecture")
+            image_info["Os"] = image_info_raw.get("os")
             return image_info
     eprint(f"Image '{image_name}' is not found in '{tar_location}'")
 
 
-def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
-    tar_dir = os.path.dirname(tar_location)
-    info_file = None
-    info_file_name = "manifest.json"
+def map_image_from_tar(image_name: str, tar: TarFile, _tar_location: str):
+    # Inspect the manifest file and see if any of the RepoTags match the
+    # image_name we're searching for.  For each manifest in the JSON, it should
+    # also have a Config field for what json files they map to to get env vars,
+    # startup cmd, etc.
+    #
+    # NOTE: read manifest.json directly (not via read_file_from_tar) so that a
+    # missing manifest.json raises KeyError. The caller relies on that to fall
+    # back to the OCI layout v1 reader.
+    manifest_bytes = tar.extractfile("manifest.json").read()
+    manifest = load_json_from_str(manifest_bytes)
 
-    # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
-    # the manifest.json should have a list of all the image tags
-    # and what json files they map to to get env vars, startup cmd, etc.
-    tar.extract(info_file_name, path=tar_dir)
-    manifest_path = os.path.join(tar_dir, info_file_name)
-    manifest = load_json_from_file(manifest_path)
-    try:
-        # if we match a RepoTag to the image, stop searching
-        for image in manifest:
-            if image_name in image.get("RepoTags"):
-                info_file = image.get("Config")
-                break
-    finally:
-        # remove the extracted manifest file to clean up
-        force_delete_silently(manifest_path)
+    info_file = None
+    # if we match a RepoTag to the image, stop searching
+    for image in manifest:
+        if image_name in image.get("RepoTags"):
+            info_file = image.get("Config")
+            break
 
     if not info_file:
         return None
-    tar.extract(info_file, path=tar_dir)
 
-    # get the path of the json file and read it in
-    image_info_file_path = os.path.join(tar_dir, info_file)
-    image_info_raw = load_json_from_file(image_info_file_path)
-    # delete the extracted json file to clean up
-    force_delete_silently(image_info_file_path)
+    # Read config file directly from the tar stream (without extracting
+    # anything) so that malicious paths in the manifest cannot cause any actual
+    # writes.
+    image_info_raw_bytes = read_file_from_tar(tar, info_file)
+    image_info_raw = load_json_from_str(image_info_raw_bytes)
     image_info = image_info_raw.get("config")
     # importing the constant from config.py gives a circular dependency error
     image_info["Architecture"] = image_info_raw.get("architecture")
+    image_info["Os"] = image_info_raw.get("os")
 
     return image_info
 
 
 # sometimes image tarfiles have readonly members. this will try to change their permissions and delete them
-def force_delete_silently(filename: str) -> None:
-    try:
-        os.chmod(filename, stat.S_IWRITE)
-    except FileNotFoundError:
-        pass
-    except PermissionError:
-        eprint(f"Permission denied to edit file: {filename}")
-    except OSError as e:
-        eprint(f"Error editing file: {filename}, {e}")
-    delete_silently(filename)
+def force_delete_silently(filename: Union[str, list[str]]) -> None:
+    if isinstance(filename, str):
+        filename = [filename]
+    for f in filename:
+        try:
+            os.chmod(f, stat.S_IWRITE)
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            eprint(f"Permission denied to edit file: {f}")
+        except OSError as e:
+            eprint(f"Error editing file: {f}, {e}")
+        delete_silently(f)
 
 
 # helper function to delete a file that may or may not exist
-def delete_silently(filename: str) -> None:
-    try:
-        os.remove(filename)
-    except FileNotFoundError:
-        pass
-    except PermissionError:
-        eprint(f"Permission denied to delete file: {filename}")
-    except OSError as e:
-        eprint(f"Error deleting file: {filename}, {e}")
+def delete_silently(filename: Union[str, list[str]]) -> None:
+    if isinstance(filename, str):
+        filename = [filename]
+    for f in filename:
+        try:
+            os.remove(f)
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            eprint(f"Permission denied to delete file: {f}")
+        except OSError as e:
+            eprint(f"Error deleting file: {f}, {e}")

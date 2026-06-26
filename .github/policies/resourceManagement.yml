@@ -614,9 +614,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - lasuredd-msft
-            - fzkhan
-            - pkuma-msft
+            - ohnkoh-msft
+            - joschung
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -655,6 +654,17 @@ configuration:
             mentionees:
             - muazmian
             - us6193
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: Blob Storage SFTP
+        then:
+        - mentionUsers:
+            mentionees:
+            - greeshma-microsoft
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1454,7 +1464,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - rgreenMSFT
+            - amarjeetkr
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1571,6 +1581,21 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Device Registry
+        then:
+        - mentionUsers:
+            mentionees:
+            - c-ryan-k
+            - digimaun
+            - rohankhandelwal
+            - mryanlo
+            - atastrophic
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: DevOps
         then:
         - mentionUsers:
@@ -1588,7 +1613,6 @@ configuration:
         - mentionUsers:
             mentionees:
             - anishtrakru
-            - derekbekoe
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1599,7 +1623,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - sourabhguha
+            - YingXue
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1653,6 +1677,17 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Fabric
+        then:
+        - mentionUsers:
+            mentionees:
+            - xinzhizou
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: fleet
         then:
         - mentionUsers:
@@ -1668,9 +1703,9 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - AnatoliB
-            - Francisco-Gamino
-            - shreyabatra4
+            - kamperiadis
+            - amamounelsayed
+            - khkh-ms
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1682,7 +1717,6 @@ configuration:
         - mentionUsers:
             mentionees:
             - dkershaw10
-            - baywet
             - SteveMutungi254
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -1765,20 +1799,8 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - iluican
-            - jlian
-            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
-            assignMentionees: False
-      - if:
-        - hasLabel:
-            label: Service Attention
-        - hasLabel:
-            label: IotDPS
-        then:
-        - mentionUsers:
-            mentionees:
-            - iluican
-            - jlian
+            - digimaun
+            - Azure/azure-iot-cli-triage
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -1976,6 +1998,9 @@ configuration:
             mentionees:
             - ambhatna
             - deepthiprasad
+            - akning-ms
+            - junsu-msft
+            - coffeemug
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2280,6 +2305,8 @@ configuration:
         - mentionUsers:
             mentionees:
             - AzmonLogA
+            - raronen
+            - MeirMen
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2316,6 +2343,9 @@ configuration:
             mentionees:
             - ambhatna
             - deepthiprasad
+            - akning-ms
+            - junsu-msft
+            - coffeemug
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2329,17 +2359,9 @@ configuration:
             - daeunyim
             - rajsell
             - deepthiprasad
-            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
-            assignMentionees: False
-      - if:
-        - hasLabel:
-            label: Service Attention
-        - hasLabel:
-            label: Neon Postgre
-        then:
-        - mentionUsers:
-            mentionees:
-            - alluri02
+            - akning-ms
+            - junsu-msft
+            - coffeemug
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2395,9 +2417,9 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - t-bzhan
-            - gxue
-            - TracyYaoYao
+            - jingnanxu
+            - luxue
+            - arashz
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2725,8 +2747,11 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - shariq-mcs
-            - MSFTeegarden
+            - abhijitch_microsoft
+            - yuvalm_microsoft
+            - nikitagarg_microsoft
+            - sanar_microsoft
+            - cawa_microsoft
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2839,10 +2864,10 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - bleroy
-            - tjacobhi
-            - markheff
-            - miwelsh
+            - kuanlu95
+            - efrainretana
+            - mattgotteiner
+            - Draconicida
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2865,6 +2890,7 @@ configuration:
         - mentionUsers:
             mentionees:
             - nazang
+            - mooshc
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -3073,6 +3099,20 @@ configuration:
             - sshankMSFT
             - golddove
             - S-J-M
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
+            label: StorageDiscovery
+        then:
+        - mentionUsers:
+            mentionees:
+            - shanefujs
+            - apurv2304
+            - skallurk
+            - vdziunms
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -3325,12 +3365,9 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: yanzhudd
       - assignTo:
           users:
-          - zhoxing-ms
           - yanzhudd
       - addLabel:
           label: Auto-Assign
@@ -3354,12 +3391,9 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: yanzhudd
       - assignTo:
           users:
-          - zhoxing-ms
           - yanzhudd
       - addLabel:
           label: Auto-Assign
@@ -3475,15 +3509,7 @@ configuration:
       - addLabel:
           label: VM SSH
       - requestReview:
-          reviewer: jiasli
-      - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - jiasli
-          - zhoxing-ms
       description: '[ssh] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3522,14 +3548,9 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: jsntcy
       - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - zhoxing-ms
       - requestReview:
           reviewer: yanzhudd
       description: '[connectedk8s] Auto assign labels and reviewers based on PR title/description.'
@@ -3570,14 +3591,9 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: wangzelin007
       - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[spring-cloud] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3596,9 +3612,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Monitor
-      - assignTo:
-          users:
-          - AllyW
       - addLabel:
           label: Azure CLI Team
       - addLabel:
@@ -3621,16 +3634,9 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: kairu-ms
-      - requestReview:
           reviewer: necusjz
       - requestReview:
           reviewer: yonzhan
-      - requestReview:
-          reviewer: AllyW
-      - assignTo:
-          users:
-          - AllyW
       description: '[monitor] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -3645,8 +3651,6 @@ configuration:
           reviewer: yonzhan
       - requestReview:
           reviewer: jsntcy
-      - requestReview:
-          reviewer: kairu-ms
       - addLabel:
           label: Auto-Assign
       - requestReview:
@@ -3714,14 +3718,9 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: yanzhudd
       - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: IoT/CLI
       description: '[iot] Auto assign labels and reviewers based on PR title/description.'
@@ -3744,9 +3743,6 @@ configuration:
           label: Azure Data Explorer
       - addLabel:
           label: Service Attention
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[kusto] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
@@ -3765,14 +3761,9 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: evelyn-ys
-      - requestReview:
           reviewer: jsntcy
       - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3789,12 +3780,6 @@ configuration:
       then:
       - addLabel:
           label: Storage
-      - assignTo:
-          users:
-          - evelyn-ys
-      - assignTo:
-          users:
-          - calvinhzy
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -3817,14 +3802,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: evelyn-ys
-      - requestReview:
-          reviewer: calvinhzy
-      - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: Storage
       description: '[Storage] Auto assign labels and reviewers based on PR title/description.'
@@ -3840,12 +3818,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: evelyn-ys
-      - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: KeyVault
       description: '[keyvault] Auto assign labels and reviewers based on PR title/description.'
@@ -3866,9 +3839,6 @@ configuration:
           label: KeyVault
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: Azure CLI Team
       - addLabel:
@@ -3911,14 +3881,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: evelyn-ys
-      - requestReview:
-          reviewer: calvinhzy
-      - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[cosmosdb] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3955,12 +3918,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: jiasli
-      - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - jiasli
       - addLabel:
           label: Account
       description: '[account] Auto assign labels and reviewers based on PR title/description.'
@@ -3981,9 +3939,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Account
-      - assignTo:
-          users:
-          - jiasli
       - addLabel:
           label: Azure CLI Team
       - addLabel:
@@ -4003,12 +3958,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @evelyn-ys,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[ datashare ]  Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4045,12 +3997,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @evelyn-ys,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[ cosmosdb-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4087,12 +4036,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ aks-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4108,12 +4054,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ connectedk8s ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4129,12 +4072,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ appservice-kube ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4150,12 +4090,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ account ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4171,12 +4108,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ vmware ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4213,12 +4147,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @AllyW,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - AllyW
       description: '[ confidentialledger ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4234,12 +4165,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ hack ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4255,12 +4183,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @AllyW,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - AllyW
       description: '[ alertsmanagement ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4276,12 +4201,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ vm-repair ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4297,12 +4219,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ image-copy ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4339,12 +4258,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @evelyn-ys,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[ rdbms-connect ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4360,12 +4276,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ azurestackhci ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4405,10 +4318,6 @@ configuration:
           label: Logic App
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - ReaNAiveD
-          - zhoxing-ms
       description: '[Logic] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -4426,14 +4335,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Logic App
-      - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
-          reviewer: ReaNAiveD
-      - assignTo:
-          users:
-          - zhoxing-ms
-          - ReaNAiveD
       description: '[logic] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -4449,12 +4350,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ databricks ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4491,12 +4389,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ k8s-configuration ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4512,12 +4407,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @evelyn-ys,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[ storage-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4533,12 +4425,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ enterprise-edge ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4554,12 +4443,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ k8s-extension ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4575,12 +4461,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ communication ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4596,12 +4479,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ connectedvmware ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4638,12 +4518,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ init ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4680,12 +4557,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @AllyW,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - AllyW
       description: '[ azure-firewall ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4701,12 +4575,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ acrtransfer ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4743,12 +4614,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @jiasli,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - jiasli
       description: '[ ssh ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4764,12 +4632,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ image-gallery ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4827,12 +4692,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @AllyW,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - AllyW
       description: '[ logz ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4848,12 +4710,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ kusto ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4869,12 +4728,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ connectedmachine ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4890,12 +4746,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ functionapp ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4911,12 +4764,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @calvinhzy,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - calvinhzy
       description: '[ diskpool ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4932,12 +4782,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[ spring-cloud ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4954,12 +4801,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: AllyW
-      - requestReview:
           reviewer: yonzhan
-      - assignTo:
-          users:
-          - AllyW
       description: '[arcdata] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -4975,8 +4817,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
@@ -5004,9 +4844,6 @@ configuration:
           label: Code Gen
       - assignTo:
           users:
-          - AllyW
-      - assignTo:
-          users:
           - necusjz
       description: '[codegen] auto assign labels and users based on issue description.'
     - if:
@@ -5024,13 +4861,10 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: AllyW
-      - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
           - necusjz
-          - AllyW
       - requestReview:
           reviewer: yonzhan
       - addLabel:
@@ -5050,8 +4884,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: AllyW
       - requestReview:
           reviewer: necusjz
       - assignTo:
@@ -5079,9 +4911,6 @@ configuration:
       then:
       - addLabel:
           label: Compute
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -5103,15 +4932,10 @@ configuration:
       then:
       - requestReview:
           reviewer: yonzhan
-      - requestReview:
-          reviewer: zhoxing-ms
       - addLabel:
           label: Auto-Assign
       - requestReview:
           reviewer: yanzhudd
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Compute
       description: '[Compute] Auto assign labels and reviewers based on PR title/description.'
@@ -5159,15 +4983,10 @@ configuration:
       then:
       - requestReview:
           reviewer: yonzhan
-      - requestReview:
-          reviewer: zhoxing-ms
       - addLabel:
           label: Auto-Assign
       - requestReview:
           reviewer: yanzhudd
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: App Services
       - requestReview:
@@ -5214,13 +5033,6 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: evelyn-ys
-      - requestReview:
-          reviewer: calvinhzy
-      - assignTo:
-          users:
-          - evelyn-ys
-      - requestReview:
           reviewer: yonzhan
       description: '[datamigration] Auto assign labels and reviewers based on PR title/description.'
     - if:
@@ -5242,9 +5054,6 @@ configuration:
           label: extension/grafana
       - addLabel:
           label: Service Attention
-      - assignTo:
-          users:
-          - AllyW
       description: '[grafana] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5264,13 +5073,8 @@ configuration:
           label: Auto-Assign
       - requestReview:
           reviewer: wangzelin007
-      - assignTo:
-          users:
-          - AllyW
       - addLabel:
           label: extension/grafana
-      - requestReview:
-          reviewer: AllyW
       - requestReview:
           reviewer: jsntcy
       description: '[grafana] Auto assign labels and reviewers based on PR title/description.'
@@ -5312,13 +5116,8 @@ configuration:
           label: Auto-Assign
       - requestReview:
           reviewer: wangzelin007
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Functions
-      - requestReview:
-          reviewer: zhoxing-ms
       description: '[functionapp] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5336,15 +5135,8 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: Event Grid
-      - requestReview:
-          reviewer: calvinhzy
-      - requestReview:
-          reviewer: evelyn-ys
       description: '[eventgrid] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5392,8 +5184,6 @@ configuration:
           label: Desktop Virtualization
       - requestReview:
           reviewer: jsntcy
-      - requestReview:
-          reviewer: AllyW
       description: '[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5435,13 +5225,8 @@ configuration:
           reviewer: wangzelin007
       - requestReview:
           reviewer: yanzhudd
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: ContainerApp
-      - requestReview:
-          reviewer: zhoxing-ms
       - requestReview:
           reviewer: jsntcy
       - requestReview:
@@ -5509,15 +5294,8 @@ configuration:
           label: Auto-Assign
       - requestReview:
           reviewer: wangzelin007
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Alerts Management
-      - requestReview:
-          reviewer: kairu-ms
-      - requestReview:
-          reviewer: zhoxing-ms
       description: '[Alerts Management] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5555,15 +5333,8 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: evelyn-ys
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: Data Protection
-      - requestReview:
-          reviewer: calvinhzy
       description: '[dataprotection] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5604,13 +5375,7 @@ configuration:
       - requestReview:
           reviewer: yonzhan
       - requestReview:
-          reviewer: jiasli
-      - requestReview:
-          reviewer: kairu-ms
-      - requestReview:
           reviewer: jsntcy
-      - requestReview:
-          reviewer: bebound
       - requestReview:
           reviewer: Pan-Qi
       - assignTo:
@@ -5716,15 +5481,8 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: evelyn-ys
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: Redis Enterprise
-      - requestReview:
-          reviewer: calvinhzy
       description: '[redis enterprise] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5762,11 +5520,6 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: zhoxing-ms
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Kubernetes Configuration
       - requestReview:
@@ -5817,11 +5570,6 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: zhoxing-ms
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Compute - Images
       - requestReview:
@@ -5883,17 +5631,8 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: evelyn-ys
-      - assignTo:
-          users:
-          - evelyn-ys
       - addLabel:
           label: SQL
-      - requestReview:
-          reviewer: calvinhzy
-      - requestReview:
-          reviewer: jiasli
       description: '[sql] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5934,9 +5673,6 @@ configuration:
           label: Attestation
       - addLabel:
           label: Service Attention
-      - assignTo:
-          users:
-          - ReaNAiveD
       description: '[attestation] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5964,11 +5700,6 @@ configuration:
           reviewer: yonzhan
       - requestReview:
           reviewer: jsntcy
-      - requestReview:
-          reviewer: ReaNAiveD
-      - assignTo:
-          users:
-          - ReaNAiveD
       description: '[Attestation] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5987,12 +5718,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: bavneetsingh16
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[k8s-extension] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6011,12 +5737,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: bavneetsingh16
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[k8s-configuration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6064,8 +5785,6 @@ configuration:
           label: Stream Analytics
       - requestReview:
           reviewer: necusjz
-      - requestReview:
-          reviewer: AllyW
       description: '[stream-analytics] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6083,11 +5802,6 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: zhoxing-ms
-      - assignTo:
-          users:
-          - zhoxing-ms
       - requestReview:
           reviewer: wangzelin007
       description: '[connectedmachine] Auto assign labels and reviewers based on PR title/description.'
@@ -6169,18 +5883,13 @@ configuration:
             pattern: '[Release] Update index.json for extension [ subscription ]'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: zhoxing-ms
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Subscription
       - addReply:
           reply: >-
-            Hi @zhoxing-ms,
+            Hi,
 
             Please review the pull request.
       description: '[ subscription ] Notify to review Update index.json PR'
@@ -6196,15 +5905,10 @@ configuration:
             pattern: '\b(az account)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: zhoxing-ms
       - addLabel:
           label: Auto-Assign
       - requestReview:
           reviewer: wangzelin007
-      - assignTo:
-          users:
-          - zhoxing-ms
       - addLabel:
           label: Subscription
       description: '[subscription] Auto assign labels and reviewers based on PR title/description.'
@@ -6225,9 +5929,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Subscription
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[subscription] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
@@ -6281,13 +5982,8 @@ configuration:
             pattern: Triggered by CLI Extension Regression Test Pipeline
             isRegex: False
       then:
-      - requestReview:
-          reviewer: evelyn-ys
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - evelyn-ys
       description: '[Regression-Test] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6305,14 +6001,9 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: yanzhudd
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[Spring] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6328,13 +6019,8 @@ configuration:
       then:
       - requestReview:
           reviewer: jsntcy
-      - requestReview:
-          reviewer: AllyW
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - AllyW
       description: '[Fleet] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6349,16 +6035,11 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: zhoxing-ms
-      - requestReview:
           reviewer: yanzhudd
       - requestReview:
           reviewer: qwuae1
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - zhoxing-ms
       description: '[vm-repair] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6423,9 +6104,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Internet Analyzer
-      - assignTo:
-          users:
-          - AllyW
       description: '[Internet Analyzer] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6453,11 +6131,8 @@ configuration:
           reviewer: yonzhan
       - requestReview:
           reviewer: necusjz
-      - requestReview:
-          reviewer: AllyW
       - assignTo:
           users:
-          - AllyW
           - necusjz
       description: '[Internet Analyzer] Auto assign labels and reviewers based on PR title/description.'
     - if:
@@ -6473,16 +6148,11 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: AllyW
-      - requestReview:
           reviewer: jsntcy
       - requestReview:
           reviewer: necusjz
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - AllyW
       description: '[load] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6517,14 +6187,9 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: AllyW
-      - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - AllyW
       description: '[devcenter] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6538,13 +6203,8 @@ configuration:
             pattern: '\b([Aa]rc ?[Aa]ppliance)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: AllyW
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - AllyW
       description: '[Arc Appliance] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6581,14 +6241,9 @@ configuration:
             isRegex: True
       then:
       - requestReview:
-          reviewer: AllyW
-      - requestReview:
           reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - AllyW
       description: '[Connected Vmware] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6692,9 +6347,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Storagesync
-      - assignTo:
-          users:
-          - calvinhzy
       description: '[Storagesync] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -6722,11 +6374,6 @@ configuration:
           reviewer: yonzhan
       - requestReview:
           reviewer: jsntcy
-      - requestReview:
-          reviewer: calvinhzy
-      - assignTo:
-          users:
-          - calvinhzy
       description: '[Storagesync] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6753,7 +6400,6 @@ configuration:
           label: Network - Network Watcher
       - assignTo:
           users:
-          - AllyW
           - necusjz
       description: '[Network Watcher] auto assign labels and users based on issue description.'
     - if:
@@ -6783,12 +6429,9 @@ configuration:
       - requestReview:
           reviewer: jsntcy
       - requestReview:
-          reviewer: AllyW
-      - requestReview:
           reviewer: necusjz
       - assignTo:
           users:
-          - AllyW
           - necusjz
       description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
     - if:
@@ -6846,8 +6489,6 @@ configuration:
           reviewer: jsntcy
       - requestReview:
           reviewer: necusjz
-      - requestReview:
-          reviewer: AllyW
       - assignTo:
           users:
           - necusjz
@@ -6868,11 +6509,6 @@ configuration:
           label: Auto-Assign
       - requestReview:
           reviewer: yonzhan
-      - requestReview:
-          reviewer: ReaNAiveD
-      - assignTo:
-          users:
-          - ReaNAiveD
       description: '[k8s-runtime] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues

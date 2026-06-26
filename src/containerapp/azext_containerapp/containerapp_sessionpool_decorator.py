@@ -28,6 +28,7 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            safe_set, safe_get, _ensure_identity_resource_id)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
+from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -156,9 +157,42 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_user_assigned(self):
         return self.get_param("mi_user_assigned")
 
+    def get_argument_probe_yaml(self):
+        return self.get_param("probe_yaml")
+
     # pylint: disable=no-self-use
     def get_environment_client(self):
         return ManagedEnvironmentClient
+
+    def set_up_probes(self):
+        probes_def = load_yaml_file(self.get_argument_probe_yaml())
+        if not isinstance(probes_def, dict) or 'probes' not in probes_def:
+            raise ValidationError("The probe YAML file must be a dictionary containing a 'probes' key.")
+
+        probes_list = probes_def.get('probes')
+        if probes_list is None:
+            return []
+        if not isinstance(probes_list, list):
+            raise ValidationError("The 'probes' key in the probe YAML file must be a list of probes.")
+
+        return probes_list
+
+    def check_container_related_arguments(self):
+        container_related_args = {
+            '--args': self.get_argument_args(),
+            '--command': self.get_argument_startup_command(),
+            '--container-name': self.get_argument_container_name(),
+            '--cpu': self.get_argument_cpu(),
+            '--env-vars': self.get_argument_env_vars(),
+            '--image or -i': self.get_argument_image(),
+            '--memory': self.get_argument_memory(),
+            '--probe-yaml': self.get_argument_probe_yaml(),
+            '--target-port': self.get_argument_target_port(),
+        }
+
+        for arg_name, arg_value in container_related_args.items():
+            if arg_value is not None:
+                raise ValidationError(f"'{arg_name}' can not be set when container type is not 'CustomContainer'.")
 
 
 class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
@@ -339,6 +373,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_args() is not None:
             container_def["args"] = self.get_argument_args()
         container_def["resources"] = self.set_up_resource()
+        if self.get_argument_probe_yaml() is not None:
+            container_def["probes"] = self.set_up_probes()
         return container_def
 
     def set_up_secrets(self):
@@ -474,6 +510,10 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 self.get_argument_lifecycle_type() is None and \
                 current_lifecycle_type.lower() != LifecycleType.Timed.name.lower():
             raise ValidationError(f"--cooldown-period is not supported for the current --lifecycle-type '{current_lifecycle_type}'.")
+
+        # Validate container related arguments
+        if safe_get(self.existing_pool_def, "properties", "containerType").lower() != ContainerType.CustomContainer.name.lower():
+            self.check_container_related_arguments()
 
     def update(self):
         try:
@@ -623,6 +663,8 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 container_def["resources"]["cpu"] = self.get_argument_cpu()
             if self.get_argument_memory() is not None:
                 container_def["resources"]["memory"] = self.get_argument_memory()
+        if self.get_argument_probe_yaml() is not None:
+            container_def["probes"] = self.set_up_probes()
         return container_def
 
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
@@ -677,7 +719,8 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 self.get_argument_memory() is not None or
                 self.get_argument_env_vars() is not None or
                 self.get_argument_args() is not None or
-                self.get_argument_startup_command() is not None)
+                self.get_argument_startup_command() is not None or
+                self.get_argument_probe_yaml() is not None)
 
     def has_registry_change(self):
         return (self.get_argument_registry_server() is not None or

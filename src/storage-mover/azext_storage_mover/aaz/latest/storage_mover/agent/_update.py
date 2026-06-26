@@ -16,24 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an Agent resource, which references a hybrid compute machine that can run jobs.
-
-    :example: agent update
-        az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} --description 123
-
-    :example: add upload-limit-schedule
-        az storage-mover agent update -g test-storagemover-rg2 -n agent2 --storage-mover-name teststoragemover2 --upload-limit-schedule "{weekly-recurrences:[{days:[Monday,Wednesday],start-time:{hour:10,minute:0},end-time:{hour:12,minute:30},limit-in-mbps:20}]}"
-
-    :example: add another weekly-recurrence to existing upload-limit-schedule list
-        az storage-mover agent update -g test-storagemover-rg2 -n agent2 --storage-mover-name teststoragemover2 --upload-limit-schedule weekly-recurrences[1]="{days:[Tuesday,Thursday],start-time:{hour:10,minute:0},end-time:{hour:12,minute:30},limit-in-mbps:20}"
-
-    :example: clear upload-limit-schedule
-        az storage-mover agent update -g test-storagemover-rg2 -n agent2 --storage-mover-name teststoragemover2 --upload-limit-schedule null
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2025-12-01"],
         ]
     }
 
@@ -69,6 +57,9 @@ class Update(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -114,7 +105,6 @@ class Update(AAZCommand):
             help="The WAN-link upload bandwidth (maximum data transfer rate) in megabits per second. Value of 0 indicates no throughput is allowed and any running migration job is effectively paused for the duration of this recurrence. Only data plane operations are governed by this limit. Control plane operations ensure seamless functionality. The agent may exceed this limit with control messages, if necessary.",
             fmt=AAZIntArgFormat(
                 maximum=2147483647,
-                minimum=0,
             ),
         )
         _element.start_time = AAZObjectArg(
@@ -150,7 +140,7 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        time_update.minute = AAZIntArg(
+        time_update.minute = AAZFloatArg(
             options=["minute"],
             help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
             nullable=True,
@@ -242,7 +232,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -329,7 +319,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -432,7 +422,7 @@ class _UpdateHelper:
         if _builder is None:
             return
         _builder.set_prop("hour", AAZIntType, ".hour", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("minute", AAZIntType, ".minute")
+        _builder.set_prop("minute", AAZFloatType, ".minute")
 
     _schema_agent_read = None
 
@@ -595,7 +585,7 @@ class _UpdateHelper:
         time_read.hour = AAZIntType(
             flags={"required": True},
         )
-        time_read.minute = AAZIntType()
+        time_read.minute = AAZFloatType()
 
         _schema.hour = cls._schema_time_read.hour
         _schema.minute = cls._schema_time_read.minute

@@ -20,13 +20,13 @@ param saManifestName string
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing =  {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' existing =  {
   name: publisherName
 }
 
 // The artifact store is the resource in which all the artifacts (except VHD images) required to deploy the NF are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: acrArtifactStoreName
 }
@@ -34,13 +34,13 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
 {%- if sa_artifacts %}
 // The storage account is the resource in which the VHD images are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
 {%- endif %}
 
-resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
+resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2024-04-15' = {
   parent: acrArtifactStore
   name: acrManifestName
   location: location
@@ -58,7 +58,7 @@ resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/
 }
 
 {%- if sa_artifacts %}
-resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-09-01' = {
+resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2024-04-15' = {
   parent: saArtifactStore
   name: saManifestName
   location: location

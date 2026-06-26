@@ -4,21 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
-import re
-import json
 import copy
+import json
+import re
 import tarfile
-from typing import Any, Tuple, Dict, List
 from hashlib import sha256
+from typing import Any, Dict, List, Tuple
+
 import deepdiff
-import yaml
 import docker
+import yaml
+from azext_confcom import config, os_util
+from azext_confcom.errors import eprint
 from knack.log import get_logger
-from azext_confcom.errors import (
-    eprint,
-)
-from azext_confcom import os_util
-from azext_confcom import config
 
 logger = get_logger(__name__)
 
@@ -26,6 +24,8 @@ logger = get_logger(__name__)
 # make this global so it can be used in multiple functions
 PARAMETER_AND_VARIABLE_REGEX = r"\[(?:parameters|variables)\(\s*'([^\.\/]+?)'\s*\)\]"
 WHOLE_PARAMETER_AND_VARIABLE = r"(\s*\[\s*(parameters|variables))(\(\s*'([^\.\/]+?)'\s*\)\])"
+SVN_PATTERN = r'svn\s*:=\s*"(\d+)"'
+NAMESPACE_PATTERN = r'package\s+([a-zA-Z_][a-zA-Z0-9_]*)'
 
 
 class DockerClient:
@@ -107,11 +107,6 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             with tarfile.open(tar_location) as tar_file:
                 # get all the info out of the tarfile
                 try:
-                    logger.info("using backwards compatibility tar file")
-                    image_info = os_util.map_image_from_tar_backwards_compatibility(
-                        image_name, tar_file, tar_location
-                    )
-                except IndexError:
                     logger.info("using docker formatted tar file")
                     image_info = os_util.map_image_from_tar(
                         image_name, tar_file, tar_location
@@ -130,7 +125,10 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         try:
             client = DockerClient().get_client()
             raw_image = client.images.get(image_name)
-            image_info = raw_image.attrs.get("Config")
+            image_info = {
+                "platform": "/".join([raw_image.attrs.get("Os"), raw_image.attrs.get("Architecture")]),
+                **raw_image.attrs.get("Config")
+            }
             message_queue.append(
                 f"Using local version of {image_name}. It may differ from the remote image"
             )
@@ -149,8 +147,18 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             # pull image to local daemon (if not in local
             # daemon)
             if not raw_image:
-                raw_image = client.images.pull(image_name)
-                image_info = raw_image.attrs.get("Config")
+                for platform in ["linux/amd64", "windows/amd64"]:
+                    try:
+                        raw_image = client.images.pull(image_name, platform=platform)
+                        break
+                    except (docker.errors.ImageNotFound, docker.errors.NotFound):
+                        continue
+                if raw_image is None:
+                    raise docker.errors.ImageNotFound(image_name)
+                image_info = {
+                    "platform": "/".join([raw_image.attrs.get("Os"), raw_image.attrs.get("Architecture")]),
+                    **raw_image.attrs.get("Config")
+                }
         except (docker.errors.ImageNotFound, docker.errors.NotFound):
             progress.close()
             eprint(
@@ -558,7 +566,7 @@ def process_fragment_imports(rego_imports) -> None:
             eprint(
                 f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
                 + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN}"] '
-                + "can only be an integer value."
+                + "can only be a string with an integer value."
             )
 
         includes = case_insensitive_dict_get(
@@ -572,6 +580,40 @@ def process_fragment_imports(rego_imports) -> None:
             )
 
     return rego_imports
+
+
+def process_standalone_fragments(standalone_fragments: List[str]) -> Tuple[List[str], List[str]]:
+    fragment_contents = []
+    feeds = []
+
+    for fragment in standalone_fragments:
+        feed = case_insensitive_dict_get(
+            fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED
+        )
+        if not isinstance(feed, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED}"] '
+                + "can only be a string value."
+            )
+
+        filename = case_insensitive_dict_get(
+            fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FILE
+        )
+        if not isinstance(filename, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                + f'["{config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FILE}"] '
+                + "can only be a string value."
+            )
+
+        with open(filename, "r", encoding="utf-8") as file:
+            text = file.read()
+
+        fragment_contents.append(text)
+        feeds.append(feed)
+
+    return fragment_contents, feeds
 
 
 def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str, str]]:
@@ -1013,6 +1055,24 @@ def extract_containers_from_text(text, start) -> str:
     return ending[:count]
 
 
+def extract_standalone_fragments(
+    container_group_properties,
+) -> List[str]:
+    # extract the existing cce policy if that's what was being asked
+    confidential_compute_properties = case_insensitive_dict_get(
+        container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
+    )
+
+    if confidential_compute_properties is None:
+        return []
+
+    # in the ARM template, this is a list of references (strings) to OCI registries
+    standalone_fragments = case_insensitive_dict_get(
+        confidential_compute_properties, config.ACI_FIELD_TEMPLATE_STANDALONE_REGO_FRAGMENTS
+    ) or []
+    return standalone_fragments
+
+
 def extract_confidential_properties(
     container_group_properties,
 ) -> Tuple[List[Dict], List[Dict]]:
@@ -1066,12 +1126,57 @@ def extract_containers_and_fragments_from_text(text: str) -> Tuple[List[Dict], L
             Loader=yaml.FullLoader,
         )
     except yaml.YAMLError as e:
-        eprint(f"Error parsing rego file: {e}")
+        logger.warning("Error parsing rego file: %s", e)
         # reading the rego file failed, so we'll just return the default outputs
         containers = []
         fragments = []
 
     return (containers, fragments)
+
+
+def extract_svn_from_text(text: str) -> int:
+    """Extract SVN value from text using regex pattern matching.
+
+    Args:
+        text: The input text containing the SVN definition
+
+    Returns:
+        int: The SVN value
+    """
+    # Pattern matches: svn := "123" or svn := "1"
+    match = re.search(SVN_PATTERN, text)
+
+    if not match:
+        eprint("SVN value not found in the input text.")
+
+    try:
+        return int(match.group(1))
+    except (AttributeError, ValueError, IndexError):
+        eprint("Unable to extract valid SVN value from the text.")
+
+
+def extract_namespace_from_text(text: str) -> str:
+    """Extract namespace value from text by finding text after 'package' keyword.
+
+    Args:
+        text: The input text containing the namespace definition
+
+    Returns:
+        str: The namespace value
+    """
+    # Find the package declaration line
+    lines = text.split('\n')
+    for line in lines:
+        stripped_line = line.strip()
+        beginning = 'package '
+        if stripped_line.startswith(beginning):
+            # Extract everything after 'package ' (first whitespace)
+            namespace = stripped_line[len(beginning):].strip()
+            if namespace:
+                return namespace
+
+    eprint("Namespace value not found in the input text.")
+    return None
 
 
 # making these lambda print functions looks cleaner than having "json.dumps" 6 times

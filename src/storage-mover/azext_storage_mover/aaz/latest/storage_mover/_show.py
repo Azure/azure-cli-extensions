@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "storage-mover show",
 )
 class Show(AAZCommand):
-    """Gets a Storage Mover resource.
-
-    :example: storage-mover show
-        az storage-mover show -g {rg} -n {mover_name}
+    """Get a Storage Mover resource.
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2025-12-01"],
         ]
     }
 
@@ -52,6 +49,9 @@ class Show(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -120,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

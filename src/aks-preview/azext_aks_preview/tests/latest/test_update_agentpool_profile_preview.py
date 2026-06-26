@@ -121,15 +121,23 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_agentpool_profile_default = Mock(return_value=agentpool)
 
         # Mock all the update methods to return the agentpool unchanged
-        decorator.update_custom_ca_trust = Mock(return_value=agentpool)
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
+        decorator.update_vm_size = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
+        decorator.update_upgrade_strategy = Mock(return_value=agentpool)
+        decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
+        decorator.update_gpu_profile = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
+        decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -141,15 +149,23 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_agentpool_profile_default.assert_called_once_with(None)
 
         # Verify that all update methods were called
-        decorator.update_custom_ca_trust.assert_called_once_with(agentpool)
         decorator.update_network_profile.assert_called_once_with(agentpool)
         decorator.update_artifact_streaming.assert_called_once_with(agentpool)
+        decorator.update_managed_gpu.assert_called_once_with(agentpool)
         decorator.update_secure_boot.assert_called_once_with(agentpool)
         decorator.update_vtpm.assert_called_once_with(agentpool)
         decorator.update_os_sku.assert_called_once_with(agentpool)
         decorator.update_fips_image.assert_called_once_with(agentpool)
         decorator.update_ssh_access.assert_called_once_with(agentpool)
+        decorator.update_vm_size.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
+        decorator.update_auto_scaler_properties_vms.assert_called_once_with(agentpool)
+        decorator.update_upgrade_strategy.assert_called_once_with(agentpool)
+        decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
+        decorator.update_gpu_profile.assert_called_once_with(agentpool)
+        decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
+        decorator.update_crg.assert_called_once_with(agentpool)
+        decorator.update_prepared_image_specification.assert_called_once_with(agentpool)
 
     def test_update_agentpool_profile_preview_with_agentpools_parameter(self):
         """Test update_agentpool_profile_preview with agentpools parameter."""
@@ -179,15 +195,23 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_agentpool_profile_default = Mock(return_value=agentpool)
 
         # Mock all the update methods to return the agentpool unchanged
-        decorator.update_custom_ca_trust = Mock(return_value=agentpool)
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
+        decorator.update_vm_size = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
+        decorator.update_upgrade_strategy = Mock(return_value=agentpool)
+        decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
+        decorator.update_gpu_profile = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
+        decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)
@@ -221,22 +245,28 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             mode=CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
             vm_size="Standard_D2s_v3",
             count=5,
-            enable_custom_ca_trust=True,
         )
 
         # Mock the update_agentpool_profile_default method
         decorator.update_agentpool_profile_default = Mock(return_value=agentpool)
 
         # Mock all the update methods (they should not be called for ManagedSystem mode)
-        decorator.update_custom_ca_trust = Mock()
         decorator.update_network_profile = Mock()
         decorator.update_artifact_streaming = Mock()
+        decorator.update_managed_gpu = Mock()
         decorator.update_secure_boot = Mock()
         decorator.update_vtpm = Mock()
         decorator.update_os_sku = Mock()
         decorator.update_fips_image = Mock()
         decorator.update_ssh_access = Mock()
         decorator.update_localdns_profile = Mock()
+        decorator.update_auto_scaler_properties_vms = Mock()
+        decorator.update_upgrade_strategy = Mock()
+        decorator.update_blue_green_upgrade_settings = Mock()
+        decorator.update_gpu_profile = Mock()
+        decorator.update_gpu_mig_strategy = Mock()
+        decorator.update_crg = Mock()
+        decorator.update_prepared_image_specification = Mock()
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -254,15 +284,22 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_agentpool_profile_default.assert_called_once_with(None)
 
         # Verify that none of the update methods were called for ManagedSystem mode
-        decorator.update_custom_ca_trust.assert_not_called()
         decorator.update_network_profile.assert_not_called()
         decorator.update_artifact_streaming.assert_not_called()
+        decorator.update_managed_gpu.assert_not_called()
         decorator.update_secure_boot.assert_not_called()
         decorator.update_vtpm.assert_not_called()
         decorator.update_os_sku.assert_not_called()
         decorator.update_fips_image.assert_not_called()
         decorator.update_ssh_access.assert_not_called()
         decorator.update_localdns_profile.assert_not_called()
+        decorator.update_auto_scaler_properties_vms.assert_not_called()
+        decorator.update_upgrade_strategy.assert_not_called()
+        decorator.update_blue_green_upgrade_settings.assert_not_called()
+        decorator.update_gpu_profile.assert_not_called()
+        decorator.update_gpu_mig_strategy.assert_not_called()
+        decorator.update_crg.assert_not_called()
+        decorator.update_prepared_image_specification.assert_not_called()
 
     def test_update_agentpool_profile_preview_managed_system_mode_with_agentpools(self):
         """Test update_agentpool_profile_preview with ManagedSystem mode and agentpools parameter."""
@@ -309,7 +346,6 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "resource_group_name": "test_rg",
             "cluster_name": "test_cluster",
             "nodepool_name": "test_nodepool",
-            "enable_custom_ca_trust": True,
         }
 
         decorator = AKSPreviewAgentPoolUpdateDecorator(
@@ -330,15 +366,23 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_agentpool_profile_default = Mock(return_value=agentpool)
 
         # Mock all the update methods to return the agentpool unchanged
-        decorator.update_custom_ca_trust = Mock(return_value=agentpool)
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
+        decorator.update_vm_size = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
+        decorator.update_upgrade_strategy = Mock(return_value=agentpool)
+        decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
+        decorator.update_gpu_profile = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
+        decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -348,15 +392,23 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         self.assertEqual(result.mode, CONST_NODEPOOL_MODE_SYSTEM)
 
         # Verify that all update methods were called for System mode
-        decorator.update_custom_ca_trust.assert_called_once_with(agentpool)
         decorator.update_network_profile.assert_called_once_with(agentpool)
         decorator.update_artifact_streaming.assert_called_once_with(agentpool)
+        decorator.update_managed_gpu.assert_called_once_with(agentpool)
         decorator.update_secure_boot.assert_called_once_with(agentpool)
         decorator.update_vtpm.assert_called_once_with(agentpool)
         decorator.update_os_sku.assert_called_once_with(agentpool)
         decorator.update_fips_image.assert_called_once_with(agentpool)
         decorator.update_ssh_access.assert_called_once_with(agentpool)
+        decorator.update_vm_size.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
+        decorator.update_auto_scaler_properties_vms.assert_called_once_with(agentpool)
+        decorator.update_upgrade_strategy.assert_called_once_with(agentpool)
+        decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
+        decorator.update_gpu_profile.assert_called_once_with(agentpool)
+        decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
+        decorator.update_crg.assert_called_once_with(agentpool)
+        decorator.update_prepared_image_specification.assert_called_once_with(agentpool)
 
     def test_update_agentpool_profile_preview_execution_order(self):
         """Test that update methods are called in the correct order."""
@@ -391,30 +443,46 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                 return pool
             return Mock(side_effect=mock_method)
 
-        decorator.update_custom_ca_trust = create_mock_update_method("update_custom_ca_trust")
         decorator.update_network_profile = create_mock_update_method("update_network_profile")
         decorator.update_artifact_streaming = create_mock_update_method("update_artifact_streaming")
+        decorator.update_managed_gpu = create_mock_update_method("update_managed_gpu")
         decorator.update_secure_boot = create_mock_update_method("update_secure_boot")
         decorator.update_vtpm = create_mock_update_method("update_vtpm")
         decorator.update_os_sku = create_mock_update_method("update_os_sku")
         decorator.update_fips_image = create_mock_update_method("update_fips_image")
         decorator.update_ssh_access = create_mock_update_method("update_ssh_access")
+        decorator.update_vm_size = create_mock_update_method("update_vm_size")
         decorator.update_localdns_profile = create_mock_update_method("update_localdns_profile")
+        decorator.update_auto_scaler_properties_vms = create_mock_update_method("update_auto_scaler_properties_vms")
+        decorator.update_upgrade_strategy = create_mock_update_method("update_upgrade_strategy")
+        decorator.update_blue_green_upgrade_settings = create_mock_update_method("update_blue_green_upgrade_settings")
+        decorator.update_gpu_profile = create_mock_update_method("update_gpu_profile")
+        decorator.update_gpu_mig_strategy = create_mock_update_method("update_gpu_mig_strategy")
+        decorator.update_crg = create_mock_update_method("update_crg")
+        decorator.update_prepared_image_specification = create_mock_update_method("update_prepared_image_specification")
 
         # Act
         decorator.update_agentpool_profile_preview()
 
         # Assert
         expected_order = [
-            "update_custom_ca_trust",
             "update_network_profile",
             "update_artifact_streaming",
+            "update_managed_gpu",
             "update_secure_boot",
             "update_vtpm",
             "update_os_sku",
             "update_fips_image",
             "update_ssh_access",
-            "update_localdns_profile"
+            "update_vm_size",
+            "update_localdns_profile",
+            "update_auto_scaler_properties_vms",
+            "update_upgrade_strategy",
+            "update_blue_green_upgrade_settings",
+            "update_gpu_profile",
+            "update_gpu_mig_strategy",
+            "update_crg",
+            "update_prepared_image_specification",
         ]
         self.assertEqual(call_order, expected_order)
 
@@ -451,15 +519,23 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                 return pool
             return Mock(side_effect=track_and_return)
 
-        decorator.update_custom_ca_trust = create_tracking_mock("update_custom_ca_trust")
         decorator.update_network_profile = create_tracking_mock("update_network_profile")
         decorator.update_artifact_streaming = create_tracking_mock("update_artifact_streaming")
+        decorator.update_managed_gpu = create_tracking_mock("update_managed_gpu")
         decorator.update_secure_boot = create_tracking_mock("update_secure_boot")
         decorator.update_vtpm = create_tracking_mock("update_vtpm")
         decorator.update_os_sku = create_tracking_mock("update_os_sku")
         decorator.update_fips_image = create_tracking_mock("update_fips_image")
         decorator.update_ssh_access = create_tracking_mock("update_ssh_access")
+        decorator.update_vm_size = create_tracking_mock("update_vm_size")
         decorator.update_localdns_profile = create_tracking_mock("update_localdns_profile")
+        decorator.update_auto_scaler_properties_vms = create_tracking_mock("update_auto_scaler_properties_vms")
+        decorator.update_upgrade_strategy = create_tracking_mock("update_upgrade_strategy")
+        decorator.update_blue_green_upgrade_settings = create_tracking_mock("update_blue_green_upgrade_settings")        
+        decorator.update_gpu_profile = create_tracking_mock("update_gpu_profile")
+        decorator.update_gpu_mig_strategy = create_tracking_mock("update_gpu_mig_strategy")
+        decorator.update_crg = create_tracking_mock("update_crg")
+        decorator.update_prepared_image_specification = create_tracking_mock("update_prepared_image_specification")
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -519,9 +595,11 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
 
                 # Mock all update methods
                 update_methods = [
-                    'update_custom_ca_trust', 'update_network_profile', 'update_artifact_streaming',
+                    'update_network_profile', 'update_artifact_streaming', 'update_managed_gpu',
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
-                    'update_ssh_access', 'update_localdns_profile'
+                    'update_ssh_access', 'update_vm_size', 'update_localdns_profile', 'update_auto_scaler_properties_vms', 
+                    'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile',
+                    'update_gpu_mig_strategy', 'update_crg', 'update_prepared_image_specification'
                 ]
 
                 for method_name in update_methods:
@@ -582,15 +660,23 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         decorator.update_agentpool_profile_default = Mock(return_value=agentpool)
 
         # Mock all the update methods
-        decorator.update_custom_ca_trust = Mock(return_value=agentpool)
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
+        decorator.update_vm_size = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
+        decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
+        decorator.update_upgrade_strategy = Mock(return_value=agentpool)
+        decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
+        decorator.update_gpu_profile = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
+        decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)

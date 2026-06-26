@@ -13,19 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover delete",
-    confirmation="WARNING: Deleting a storage mover will cascade delete all contained resources. This will stop all ongoing migrations and break all trust relationships with registered agents.\nAre you sure you want to delete this storage mover and all its contained resources?",
+    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes a Storage Mover resource.
-
-    :example: storage-mover delete
-        az storage-mover delete -g {rg} -n {mover_name}
+    """Delete a Storage Mover resource.
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2025-12-01"],
         ]
     }
 
@@ -54,6 +51,9 @@ class Delete(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -143,7 +143,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

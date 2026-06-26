@@ -16,6 +16,7 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_fleet._validators import (
     validate_member_cluster_id,
+    validate_member_cluster_names,
     validate_kubernetes_version,
     validate_apiserver_subnet_id,
     validate_agent_subnet_id,
@@ -24,7 +25,8 @@ from azext_fleet._validators import (
     validate_vm_size,
     validate_targets,
     validate_update_strategy_id,
-    validate_labels
+    validate_labels,
+    validate_enable_vnet_integration
 )
 
 labels_type = CLIArgumentType(
@@ -43,8 +45,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'], help='Prefix for host names that are created. If not specified, generate a host name using the managed cluster and resource group names.')
         c.argument('enable_private_cluster', action='store_true', help='Whether to create the Fleet hub as a private cluster or not.')
-        c.argument('enable_vnet_integration', action='store_true', is_preview=True, help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled.')
+        c.argument('enable_vnet_integration', validator=validate_enable_vnet_integration, action='store_true', help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, help='The subnet to be used when apiserver vnet integration is enabled.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, help='The ID of the subnet which the Fleet hub node will join on startup.')
         c.argument('enable_managed_identity', action='store_true', help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource by specifying the user assigned identity\'s resource Id.')
@@ -59,9 +61,11 @@ def load_arguments(self, _):
                    help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
 
     with self.argument_context('fleet get-credentials') as c:
+        c.argument('member_name', options_list=['--member', '-m'], help='Specify the fleet member name to get credentials from its associated managed cluster.')
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+        c.ignore('skip_kubelogin_conversion')  # Internal parameter, not exposed to users
 
     with self.argument_context('fleet member') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')
@@ -85,6 +89,10 @@ def load_arguments(self, _):
             options_list=['--member-labels', '--labels'],
             help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
         )
+
+    with self.argument_context('fleet member list') as c:
+        c.argument('cluster_mesh_profile', options_list=['--cluster-mesh-profile'],
+                   help='Filter members by cluster mesh profile name.')
 
     with self.argument_context('fleet updaterun') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the update run.')
@@ -172,3 +180,55 @@ def load_arguments(self, _):
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('gate_name', options_list=['--gate-name', '--gate', '-n'], help='Name of the gate.')
+
+    with self.argument_context('fleet namespace') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Name of the managed namespace.')
+
+    with self.argument_context('fleet namespace create') as c:
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='The name of the Kubernetes namespace to be created on member clusters.')
+        c.argument('tags', tags_type)
+        c.argument('labels', labels_type, help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('annotations', labels_type, help='Space-separated annotations in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('cpu_requests', help='CPU requests for the namespace. Example: 1000m')
+        c.argument('cpu_limits', help='CPU limits for the namespace. Example: 1000m')
+        c.argument('memory_requests', help='Memory requests for the namespace. Example: 500Mi')
+        c.argument('memory_limits', help='Memory limits for the namespace. Example: 500Mi')
+        c.argument('ingress_policy', help='Ingress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('egress_policy', help='Egress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
+        c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
+        c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+
+    with self.argument_context('fleet namespace update') as c:
+        c.argument('tags', tags_type)
+
+    with self.argument_context('fleet namespace get-credentials') as c:
+        c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
+        c.argument('member_name', options_list=['--member', '-m'], help='Specify the fleet member name to get credentials from its associated managed cluster.')
+        c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
+        c.argument('overwrite_existing', help='Overwrite any existing cluster entry with the same name.')
+        c.argument('path', options_list=['--file'], type=file_type, completer=FilesCompleter(),
+                   default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+
+    with self.argument_context('fleet clustermeshprofile') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Specify name for the cluster mesh profile.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
+
+    with self.argument_context('fleet clustermeshprofile wait') as c:
+        c.argument('cluster_mesh_profile_name', options_list=['--cluster-mesh-profile-name', '--name', '-n'],
+                   help='Specify name for the cluster mesh profile.')
+
+    with self.argument_context('fleet clustermeshprofile create') as c:
+        c.argument('member_selector', options_list=['--member-selector', '--selector', '-s'],
+                   help='Kubernetes-style label selector for selecting Fleet members, e.g. "env=production".')
+
+    with self.argument_context('fleet clustermeshprofile apply') as c:
+        c.argument('what_if', action='store_true', options_list=['--what-if'],
+                   help='Show what changes would be made by the apply operation without actually performing it.')
+
+    with self.argument_context('fleet clustermeshprofile list-members') as c:
+        c.argument('selector', action='store_true', options_list=['--selector'],
+                   help='Filter by the profile\'s label selector (members that would match after apply) '
+                        'instead of currently applied members.')

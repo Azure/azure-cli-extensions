@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaps/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaps/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -61,6 +61,37 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -68,7 +99,6 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
-            nullable=True,
         )
         _args_schema.destinations = AAZListArg(
             options=["--destinations"],
@@ -83,11 +113,6 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Pull": "Pull", "Push": "Push"},
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
 
         destinations = cls._args_schema.destinations
         destinations.Element = AAZObjectArg()
@@ -96,10 +121,12 @@ class Update(AAZCommand):
         _element.destination_id = AAZResourceIdArg(
             options=["destination-id"],
             help="The destination Id. ARM Resource ID of either NNI or Internal Networks.",
+            nullable=True,
         )
         _element.destination_tap_rule_id = AAZResourceIdArg(
             options=["destination-tap-rule-id"],
             help="ARM Resource ID of destination Tap Rule that contains match configurations.",
+            nullable=True,
         )
         _element.destination_type = AAZStrArg(
             options=["destination-type"],
@@ -130,10 +157,9 @@ class Update(AAZCommand):
         )
 
         neighbor_group_ids = cls._args_schema.destinations.Element.isolation_domain_properties.neighbor_group_ids
-        neighbor_group_ids.Element = AAZResourceIdArg()
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        neighbor_group_ids.Element = AAZResourceIdArg(
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -217,7 +243,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -242,12 +268,22 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("destinations", AAZListType, ".destinations", typ_kwargs={"nullable": True})
                 properties.set_prop("pollingType", AAZStrType, ".polling_type", typ_kwargs={"nullable": True})
 
@@ -257,8 +293,8 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.destinations[]")
             if _elements is not None:
-                _elements.set_prop("destinationId", AAZStrType, ".destination_id")
-                _elements.set_prop("destinationTapRuleId", AAZStrType, ".destination_tap_rule_id")
+                _elements.set_prop("destinationId", AAZStrType, ".destination_id", typ_kwargs={"nullable": True})
+                _elements.set_prop("destinationTapRuleId", AAZStrType, ".destination_tap_rule_id", typ_kwargs={"nullable": True})
                 _elements.set_prop("destinationType", AAZStrType, ".destination_type")
                 _elements.set_prop("isolationDomainProperties", AAZObjectType, ".isolation_domain_properties")
                 _elements.set_prop("name", AAZStrType, ".name")
@@ -270,7 +306,7 @@ class Update(AAZCommand):
 
             neighbor_group_ids = _builder.get(".properties.destinations[].isolationDomainProperties.neighborGroupIds")
             if neighbor_group_ids is not None:
-                neighbor_group_ids.set_elements(AAZStrType, ".")
+                neighbor_group_ids.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -299,6 +335,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -314,6 +351,37 @@ class Update(AAZCommand):
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -334,9 +402,14 @@ class Update(AAZCommand):
                 serialized_name="lastOperation",
                 flags={"read_only": True},
             )
+            properties.network_fabric_ids = AAZListType(
+                serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
             properties.network_packet_broker_id = AAZStrType(
                 serialized_name="networkPacketBrokerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.polling_type = AAZStrType(
                 serialized_name="pollingType",
@@ -347,6 +420,7 @@ class Update(AAZCommand):
             )
             properties.source_tap_rule_id = AAZStrType(
                 serialized_name="sourceTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 
@@ -357,9 +431,11 @@ class Update(AAZCommand):
             _element.destination_id = AAZStrType(
                 serialized_name="destinationId",
                 flags={"required": True},
+                nullable=True,
             )
             _element.destination_tap_rule_id = AAZStrType(
                 serialized_name="destinationTapRuleId",
+                nullable=True,
             )
             _element.destination_type = AAZStrType(
                 serialized_name="destinationType",
@@ -379,11 +455,18 @@ class Update(AAZCommand):
             )
 
             neighbor_group_ids = cls._schema_on_200.properties.destinations.Element.isolation_domain_properties.neighbor_group_ids
-            neighbor_group_ids.Element = AAZStrType()
+            neighbor_group_ids.Element = AAZStrType(
+                nullable=True,
+            )
 
             last_operation = cls._schema_on_200.properties.last_operation
             last_operation.details = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            network_fabric_ids = cls._schema_on_200.properties.network_fabric_ids
+            network_fabric_ids.Element = AAZStrType(
+                nullable=True,
             )
 
             system_data = cls._schema_on_200.system_data

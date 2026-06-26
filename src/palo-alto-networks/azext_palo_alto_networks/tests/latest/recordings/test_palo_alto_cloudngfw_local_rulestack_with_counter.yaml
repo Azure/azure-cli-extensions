@@ -15,41 +15,45 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --priority
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/getCounters?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-DO-NOT-DELETE-lrs/localRules/1000000/getCounters?api-version=2025-10-08
   response:
     body:
-      string: '{"priority":"1000000","ruleStackName":"fw0718-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule","hitCount":0,"timestamp":"2023-07-28T02:49:24.038509+00:00"}'
+      string: '{"priority":"1000000","ruleStackName":"fw0718-DO-NOT-DELETE-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule","hitCount":0,"timestamp":"2025-10-23T09:53:49.369074+00:00","requestTimestamp":"2025-10-22T12:47:35.552648+00:00","lastUpdatedTimestamp":"2025-10-22T12:47:50.557462+00:00"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '175'
+      - '301'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:49:24 GMT
+      - Thu, 23 Oct 2025 09:53:48 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 802be47b-3fe6-41d1-9b32-877e1c468f26
+      - f3482154-be57-4651-b504-a6d6904f53ff
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/0b8caa89-ba50-4f35-bb2a-d30ae38ff37f
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 15AFE63A93DF44C2B662A1DB62AC55CA Ref B: PNQ231110909029 Ref C: 2025-10-23T09:53:48Z'
     status:
       code: 200
       message: OK
@@ -69,9 +73,9 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --priority
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/refreshCounters?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-DO-NOT-DELETE-lrs/localRules/1000000/refreshCounters?api-version=2025-10-08
   response:
     body:
       string: ''
@@ -81,23 +85,31 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:49:36 GMT
+      - Thu, 23 Oct 2025 09:53:51 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - fef25fc4-3623-45e6-b744-18e61839f1f9
+      - 1be671c0-29ea-4481-b4b3-d436f80f1d2b
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/westus/a15276fb-a1bc-4449-bd4f-c37b7d6b8c1a
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 02FA6B729C684C6EABE62DDC139D984D Ref B: PNQ231110909042 Ref C: 2025-10-23T09:53:49Z'
     status:
       code: 204
       message: No Content
@@ -117,41 +129,45 @@ interactions:
       ParameterSetName:
       - -g --local-rulestack-name --priority
       User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/resetCounters?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clients-test-rg-DO-NOT-DELETE/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-DO-NOT-DELETE-lrs/localRules/1000000/resetCounters?api-version=2025-10-08
   response:
     body:
-      string: '{"priority":"1000000","ruleStackName":"fw0718-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule"}'
+      string: '{"priority":"1000000","ruleStackName":"fw0718-DO-NOT-DELETE-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '115'
+      - '129'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 28 Jul 2023 02:49:53 GMT
+      - Thu, 23 Oct 2025 09:53:52 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c4bae129-d11b-4888-8dcf-64f61bfa4e45
+      - 2bb0e2e0-f0a1-4ae2-ba1d-af2e7b16a549
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=182c644e-b9cf-4c15-b42c-07d1afd8c10b/eastus/0fac39a0-c20c-4e29-a3aa-4122c8753431
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 5A1B60A915664B108032EC360FBD2C2F Ref B: PNQ231110906036 Ref C: 2025-10-23T09:53:51Z'
     status:
       code: 200
       message: OK

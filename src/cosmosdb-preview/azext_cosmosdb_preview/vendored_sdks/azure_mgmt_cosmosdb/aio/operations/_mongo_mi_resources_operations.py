@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -47,7 +47,8 @@ from ...operations._mongo_mi_resources_operations import (
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class MongoMIResourcesOperations:
@@ -121,7 +122,10 @@ class MongoMIResourcesOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("MongoMIRoleDefinitionResource", pipeline_response.http_response)
@@ -192,7 +196,10 @@ class MongoMIResourcesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -395,7 +402,10 @@ class MongoMIResourcesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -473,7 +483,7 @@ class MongoMIResourcesOperations:
     @distributed_trace
     def list_mongo_mi_role_definitions(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.MongoMIRoleDefinitionResource"]:
+    ) -> AsyncItemPaged["_models.MongoMIRoleDefinitionResource"]:
         """Retrieves the list of all Azure Cosmos DB MongoMI Role Definitions.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -549,7 +559,10 @@ class MongoMIResourcesOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -608,7 +621,10 @@ class MongoMIResourcesOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("MongoMIRoleAssignmentResource", pipeline_response.http_response)
@@ -679,7 +695,10 @@ class MongoMIResourcesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -882,7 +901,10 @@ class MongoMIResourcesOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -960,7 +982,7 @@ class MongoMIResourcesOperations:
     @distributed_trace
     def list_mongo_mi_role_assignments(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.MongoMIRoleAssignmentResource"]:
+    ) -> AsyncItemPaged["_models.MongoMIRoleAssignmentResource"]:
         """Retrieves the list of all Azure Cosmos DB MongoMI Role Assignments.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1036,7 +1058,10 @@ class MongoMIResourcesOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response

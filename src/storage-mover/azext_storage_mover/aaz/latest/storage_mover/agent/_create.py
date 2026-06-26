@@ -11,14 +11,20 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "storage-mover agent create",
+)
 class Create(AAZCommand):
-    """Creates an Agent resource, which references a hybrid compute machine that can run jobs.
+    """Create an Agent resource, which references a hybrid compute machine that can run jobs.
+
+    :example: agent create
+        az storage-mover agent create -g {rg} --storage-mover-name {mover_name} -n {agent_name} --arc-resource-id {arc_resource_id} --arc-vm-uuid {arc_vm_uuid} --description AgentDesc
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2025-12-01"],
         ]
     }
 
@@ -50,6 +56,9 @@ class Create(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -105,7 +114,6 @@ class Create(AAZCommand):
             required=True,
             fmt=AAZIntArgFormat(
                 maximum=2147483647,
-                minimum=0,
             ),
         )
         _element.start_time = AAZObjectArg(
@@ -142,10 +150,10 @@ class Create(AAZCommand):
                 minimum=0,
             ),
         )
-        time_create.minute = AAZIntArg(
+        time_create.minute = AAZFloatArg(
             options=["minute"],
             help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
-            default=0,
+            default=0.0,
             enum={"0": 0, "30": 30},
         )
 
@@ -221,7 +229,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -430,7 +438,7 @@ class _CreateHelper:
         if _builder is None:
             return
         _builder.set_prop("hour", AAZIntType, ".hour", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("minute", AAZIntType, ".minute")
+        _builder.set_prop("minute", AAZFloatType, ".minute")
 
     _schema_time_read = None
 
@@ -447,7 +455,7 @@ class _CreateHelper:
         time_read.hour = AAZIntType(
             flags={"required": True},
         )
-        time_read.minute = AAZIntType()
+        time_read.minute = AAZFloatType()
 
         _schema.hour = cls._schema_time_read.hour
         _schema.minute = cls._schema_time_read.minute

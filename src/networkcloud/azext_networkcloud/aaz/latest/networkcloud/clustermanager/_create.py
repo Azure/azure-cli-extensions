@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster manager or update properties of the cluster manager if it exists.
@@ -25,12 +26,15 @@ class Create(AAZCommand):
 
     :example: Create or update cluster manager with user assigned identity
         az networkcloud clustermanager create --name "clusterManagerName" --location "location" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --fabric-controller-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/fabricControllerName" --managed-resource-group-configuration name="my-managed-rg" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName" --mi-user-assigned "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI"
+
+    :example: Create or update cluster manager with the provided VM SKU and availability zones
+        az networkcloud clustermanager create --name "clusterManagerName" --location "location" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --fabric-controller-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/fabricControllerName" --managed-resource-group-configuration name="my-managed-rg" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName" --vm-size Standard_D8s_v3 --availability-zones "[2,3]"
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -78,6 +82,15 @@ class Create(AAZCommand):
             options=["--identity"],
             arg_group="ClusterManagerParameters",
             help="The identity of the cluster manager.",
+        )
+        _args_schema.kind = AAZStrArg(
+            options=["--kind"],
+            arg_group="ClusterManagerParameters",
+            help="The kind of the cluster manager.",
+            enum={"AzureLocal": "AzureLocal", "Nexus": "Nexus"},
+            fmt=AAZStrArgFormat(
+                pattern="^[-\\w\\._,\\(\\\\\\)]+$",
+            ),
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterManagerParameters",
@@ -135,6 +148,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The resource ID of the Log Analytics workspace that is used for the logs collection.",
         )
+        _args_schema.availability_zones = AAZListArg(
+            options=["--availability-zones"],
+            arg_group="Properties",
+            help="The Azure availability zones within the region that will be used to support the cluster manager resource.",
+        )
         _args_schema.fabric_controller_id = AAZResourceIdArg(
             options=["--fabric-controller-id"],
             arg_group="Properties",
@@ -146,6 +164,14 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
+        _args_schema.vm_size = AAZStrArg(
+            options=["--vm-size"],
+            arg_group="Properties",
+            help="The size of the Azure virtual machines to use for hosting the cluster manager resource.",
+        )
+
+        availability_zones = cls._args_schema.availability_zones
+        availability_zones.Element = AAZStrArg()
 
         managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
         managed_resource_group_configuration.location = AAZStrArg(
@@ -242,7 +268,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -274,6 +300,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
+            _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -296,8 +323,14 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id")
+                properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 properties.set_prop("fabricControllerId", AAZStrType, ".fabric_controller_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
+                properties.set_prop("vmSize", AAZStrType, ".vm_size")
+
+            availability_zones = _builder.get(".properties.availabilityZones")
+            if availability_zones is not None:
+                availability_zones.set_elements(AAZStrType, ".")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
@@ -335,6 +368,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.identity = AAZIdentityObjectType()
+            _schema_on_200_201.kind = AAZStrType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -418,6 +452,10 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.relay_configuration = AAZObjectType(
+                serialized_name="relayConfiguration",
+                flags={"read_only": True},
+            )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",
             )
@@ -448,6 +486,11 @@ class Create(AAZCommand):
             )
             manager_extended_location.type = AAZStrType(
                 flags={"required": True},
+            )
+
+            relay_configuration = cls._schema_on_200_201.properties.relay_configuration
+            relay_configuration.relay_namespace_id = AAZStrType(
+                serialized_name="relayNamespaceId",
             )
 
             system_data = cls._schema_on_200_201.system_data

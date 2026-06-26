@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-country",
 )
 class ListCountry(AAZCommand):
-    """List of countries for Rulestack
+    """List of countries for Palo Alto Networks local rulestack.
 
     :example: List of countries for Rulestack
         az palo-alto cloudngfw local-rulestack list-country -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listcountries", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listcountries", "2025-10-08"],
         ]
     }
 
@@ -134,7 +134,7 @@ class ListCountry(AAZCommand):
                     "top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

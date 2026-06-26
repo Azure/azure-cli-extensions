@@ -5,36 +5,62 @@
 # pylint: disable=line-too-long, no-else-return, useless-return, broad-except, no-else-raise
 
 import json
+import time
 import os
 import requests
 
-from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.azclierror import CLIError, AzureResponseError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp._clients import (
     poll_status,
     poll_results,
+    _extract_delay,
     AuthClient,
     GitHubActionClient,
     ContainerAppClient,
     ContainerAppsJobClient,
     DaprComponentClient,
     ManagedEnvironmentClient,
-    StorageClient)
+    StorageClient,
+    PollingAnimation)
 
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2025-02-02-preview"
+PREVIEW_API_VERSION = "2025-10-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
+POLLING_TIMEOUT_FOR_SESSION_POOL = 7200  # 2 hours for timeout
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
 POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between requests
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
 SESSION_RESOURCE = "https://dynamicsessions.io"
 MAINTENANCE_CONFIG_DEFAULT_NAME = "default"
+
+
+def poll_results_with_timeout(cmd, request_url, polling_timeout_in_sec=POLLING_TIMEOUT):  # pylint: disable=inconsistent-return-statements
+    if not request_url:
+        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_LOCATION}'")
+
+    start = time.time()
+    end = time.time() + polling_timeout_in_sec
+    animation = PollingAnimation()
+
+    animation.tick()
+    r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+    while r.status_code in [202] and start < end:
+        time.sleep(_extract_delay(r))
+        animation.tick()
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        start = time.time()
+
+    animation.flush()
+    if r.text:
+        return json.loads(r.text)
 
 
 class GitHubActionPreviewClient(GitHubActionClient):
@@ -235,9 +261,10 @@ class ContainerAppsResiliencyPreviewClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find the app resiliency policy")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the app resiliency policy update operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 
@@ -301,6 +328,161 @@ class ContainerAppsResiliencyPreviewClient():
             policy_list.append(policy)
 
         return policy_list
+
+
+class ContainerAppFunctionsPreviewClient():
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list_functions_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/functions?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            revision_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving functions for revision '{revision_name}' of container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def get_function_by_revision(cls, cmd, resource_group_name, container_app_name, revision_name, function_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/functions/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            revision_name,
+            function_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving function '{function_name}' for revision '{revision_name}' of container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def list_functions(cls, cmd, resource_group_name, container_app_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/functions?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving functions for container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def get_function(cls, cmd, resource_group_name, container_app_name, function_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/functions/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            function_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if not r:
+            raise CLIError(f"Error retrieving function '{function_name}' for container app '{container_app_name}'.")
+        return r.json()
+
+    @classmethod
+    def show_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, function_name=None, revision_name=None, replica_name=None, container_name=None):
+        from ._utils import execute_function_admin_command
+
+        command_fmt = ""
+        if key_type != "functionKey":
+            command_fmt = "/bin/azure-functions-admin keys show --key-type {} --key-name {}"
+            command = command_fmt.format(key_type, key_name)
+        else:
+            command_fmt = "/bin/azure-functions-admin keys show --key-type {} --key-name {} --function-name {}"
+            command = command_fmt.format(key_type, key_name, function_name)
+
+        r = execute_function_admin_command(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
+        )
+        if not r:
+            raise CLIError(f"Error retrieving function key '{key_name}' of type '{key_type}'.")
+        return r
+
+    @classmethod
+    def list_function_keys(cls, cmd, resource_group_name, name, key_type, function_name=None, revision_name=None, replica_name=None, container_name=None):
+        from ._utils import execute_function_admin_command
+
+        command_fmt = ""
+        if key_type != "functionKey":
+            command_fmt = "/bin/azure-functions-admin keys list --key-type {}"
+            command = command_fmt.format(key_type)
+        else:
+            command_fmt = "/bin/azure-functions-admin keys list --key-type {} --function-name {}"
+            command = command_fmt.format(key_type, function_name)
+
+        r = execute_function_admin_command(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
+        )
+        if not r:
+            raise CLIError(f"Error retrieving function keys of type '{key_type}'.")
+        return r
+
+    @classmethod
+    def set_function_keys(cls, cmd, resource_group_name, name, key_type, key_name, key_value, function_name=None, revision_name=None, replica_name=None, container_name=None):
+        """Set/Update function keys based on key type"""
+        from ._utils import execute_function_admin_command
+
+        command_fmt = ""
+        if key_type != "functionKey":
+            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {}"
+            command = command_fmt.format(key_type, key_name)
+        else:
+            command_fmt = "/bin/azure-functions-admin keys set --key-type {} --key-name {} --function-name {}"
+            command = command_fmt.format(key_type, key_name, function_name)
+
+        if key_value is not None:
+            command += " --key-value {}".format(key_value)
+
+        r = execute_function_admin_command(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            name=name,
+            command=command,
+            revision_name=revision_name,
+            replica_name=replica_name,
+            container_name=container_name
+        )
+        if not r:
+            raise CLIError(f"Error setting function key '{key_name}' of type '{key_type}'.")
+        return r
 
 
 class DaprComponentResiliencyPreviewClient():
@@ -433,9 +615,10 @@ class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find a container app")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the managed environment update operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 
@@ -593,9 +776,10 @@ class ConnectedEnvironmentClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find a connected environment")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the connected environment update operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 
@@ -1162,9 +1346,10 @@ class JavaComponentPreviewClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find the Java component")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the Java component update operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 
@@ -1275,11 +1460,12 @@ class SessionPoolPreviewClient():
             return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            response = poll_results(cmd, operation_url)
+            response = poll_results_with_timeout(cmd, operation_url, POLLING_TIMEOUT_FOR_SESSION_POOL)
             if response is None:
-                raise ResourceNotFoundError("Could not find the Session Pool")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the session pool update operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 
@@ -1513,6 +1699,23 @@ class SessionCodeInterpreterPreviewClient():
             return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
 
 
+class SessionCustomContainerPreviewClient():
+    # pylint: disable=too-few-public-methods
+    session_dp_api_version = "2025-02-02-preview"  # may be different from ACA CP
+
+    @classmethod
+    def stop_session(cls, cmd, identifier, session_pool_endpoint):
+        url_fmt = "{}/.management/stopSession?identifier={}&api-version={}"
+        request_url = url_fmt.format(
+            session_pool_endpoint,
+            identifier,
+            cls.session_dp_api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, resource=SESSION_RESOURCE)
+
+        return r.text
+
+
 class DotNetComponentPreviewClient():
     api_version = PREVIEW_API_VERSION
 
@@ -1561,9 +1764,10 @@ class DotNetComponentPreviewClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find the DotNet component")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the .NET component update operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 
@@ -1673,9 +1877,10 @@ class MaintenanceConfigPreviewClient():
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
-                raise ResourceNotFoundError("Could not find the maintenance config")
-            else:
-                return response
+                logger.debug("poll_results returned empty body. operation_url=%s", operation_url)
+                raise CLIError("Timed out waiting for the maintenance configuration operation to complete. Please try again or use --no-wait.")
+
+            return response
 
         return r.json()
 

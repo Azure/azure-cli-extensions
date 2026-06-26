@@ -72,6 +72,7 @@ ACI_FIELD_TEMPLATE_MOUNTS_PATH = "mountPath"
 ACI_FIELD_TEMPLATE_MOUNTS_READONLY = "readOnly"
 ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES = "confidentialComputeProperties"
 ACI_FIELD_TEMPLATE_CCE_POLICY = "ccePolicy"
+ACI_FIELD_TEMPLATE_STANDALONE_REGO_FRAGMENTS = "standaloneFragments"
 ACI_FIELD_CONTAINERS_PRIVILEGED = "privileged"
 ACI_FIELD_CONTAINERS_CAPABILITIES = "capabilities"
 ACI_FIELD_CONTAINERS_CAPABILITIES_ADD = "add"
@@ -126,6 +127,7 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_NAME = "name"
 POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE = "pattern"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED = "required"
 POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS = "layers"
+POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM = "mounted_cim"
 POLICY_FIELD_CONTAINERS_ELEMENTS_WORKINGDIR = "working_dir"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS = "mounts"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_SOURCE = "source"
@@ -169,6 +171,7 @@ VN2 = "vn2"
 ACI = "aci"
 KATA = "kata"
 
+REGO_SVN_START = "svn := "
 
 CONFIG_FILE = "./data/internal_config.json"
 
@@ -177,6 +180,7 @@ CONFIG_FILE_PATH = f"{script_directory}/{CONFIG_FILE}"
 
 _config = load_json_from_file(CONFIG_FILE_PATH)
 DEFAULT_WORKING_DIR = _config["containerd"]["defaultWorkingDir"]
+DEFAULT_WORKING_DIR_WINDOWS = "C:\\"
 
 MOUNT_SOURCE_TABLE = {}
 for entry in _config["mount"]["source_table"]:
@@ -209,6 +213,7 @@ DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
+DEBUG_MODE_SETTINGS_WINDOWS = _config["debugModeWindows"]
 # reserved fragment names for existing pieces of Rego
 RESERVED_FRAGMENT_NAMES = _config["reserved_fragment_namespaces"]
 # fragment artifact type
@@ -225,6 +230,7 @@ REGO_IMPORT_FILE_STRUCTURE = """
 }
 """
 CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
+CUSTOMER_REGO_POLICY_WINDOWS = load_str_from_file(f"{script_directory}/data/customer_rego_policy_windows.txt")
 CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"

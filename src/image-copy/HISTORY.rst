@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.4
+++++++
+* Mask the value of the `--sas-token` parameter when displaying it in the terminal
+
 1.0.3
 ++++++
 * Fix the issue for sasTokenParsing, removing python related warnings from the sasToken(cmd_output was unfiltered)

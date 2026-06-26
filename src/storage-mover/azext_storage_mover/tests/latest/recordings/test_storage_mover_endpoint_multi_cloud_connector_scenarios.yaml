@@ -1,0 +1,527 @@
+interactions:
+- request:
+    body: '{"location": "westcentralus", "properties": {"description": "MoverDesc"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"westcentralus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:10.7462963Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:10.7462963Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '558'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:11 GMT
+      etag:
+      - '"0000da46-0000-0600-0000-6a0c33f70000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f1a9c817-a7e5-44c4-8963-1ae0de9818c8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/centralindia/fe99bba6-9530-47c1-a857-1a3759a8c5fe
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: 3DF09C6398D24E10BE05489FB607BBD0 Ref B: SIN221080711047 Ref C: 2026-05-19T09:57:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointMultiCloudConnectorDesc", "endpointKind":
+      "Source", "endpointType": "AzureMultiCloudConnector", "awsS3BucketId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
+      "multiCloudConnectorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '505'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --storage-mover-name --multi-cloud-connector-id --aws-s3-bucket-id
+        --endpoint-kind --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003","name":"test-ep-mcc000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:12.8500227Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:12.8500227Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket","endpointType":"AzureMultiCloudConnector","endpointKind":"Source","description":"endpointMultiCloudConnectorDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1020'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:12 GMT
+      etag:
+      - '"0000fc42-0000-0600-0000-6a0c33f80000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f0996373-5661-4e9a-b2ce-fd9b6c353c93
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/29408b08-5fe6-4d5e-97af-c9047114780d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F851B89EB0D94D909F5AA92CC1337628 Ref B: SIN221080711033 Ref C: 2026-05-19T09:57:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003","name":"test-ep-mcc000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:12.8500227Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:12.8500227Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket","endpointType":"AzureMultiCloudConnector","endpointKind":"Source","description":"endpointMultiCloudConnectorDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1020'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:14 GMT
+      etag:
+      - '"0000fc42-0000-0600-0000-6a0c33f80000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 155edd5f-d874-4196-8bb8-636b7a903d26
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/centralindia/98814141-cd11-4f22-9fa6-032ca8f54eb5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D98FE13DCB8A4D5FBD9107282C51B47D Ref B: PNQ231110909052 Ref C: 2026-05-19T09:57:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003","name":"test-ep-mcc000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:12.8500227Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:12.8500227Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket","endpointType":"AzureMultiCloudConnector","endpointKind":"Source","description":"endpointMultiCloudConnectorDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1020'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:14 GMT
+      etag:
+      - '"0000fc42-0000-0600-0000-6a0c33f80000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c5c4b2ba-5864-4509-bf7e-0c94e2d9cee4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/a16f0b43-37d6-4f9b-bed6-d9f060805ec9
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A865C3F1F5AA462CAB4BBBAA71A454AD Ref B: SIN221080715021 Ref C: 2026-05-19T09:57:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointMultiCloudConnectorDescUpdate",
+      "endpointKind": "Source", "endpointType": "AzureMultiCloudConnector", "awsS3BucketId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
+      "multiCloudConnectorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '511'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mcc000003","name":"test-ep-mcc000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:12.8500227Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:16.271752Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket","endpointType":"AzureMultiCloudConnector","endpointKind":"Source","description":"endpointMultiCloudConnectorDescUpdate","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1025'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:15 GMT
+      etag:
+      - '"00001b43-0000-0600-0000-6a0c33fc0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5e9d7644-eafa-47f5-b9b1-4e75aa84036a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/fe46d908-5ad1-4f3e-9ff4-7cf703668932
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5A56DAC2F739455882FD689EB5A98071 Ref B: SIN221080711033 Ref C: 2026-05-19T09:57:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointMccNoKind", "endpointType": "AzureMultiCloudConnector",
+      "awsS3BucketId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
+      "multiCloudConnectorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '465'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --storage-mover-name --multi-cloud-connector-id --aws-s3-bucket-id
+        --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mccnk000004?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mccnk000004","name":"test-ep-mccnk000004","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:17.2718738Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:17.2718738Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket","endpointType":"AzureMultiCloudConnector","endpointKind":"Source","description":"endpointMccNoKind","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1010'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:16 GMT
+      etag:
+      - '"00002643-0000-0600-0000-6a0c33fd0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8b270aac-9d64-43f7-9fc9-0f1aea16c57d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/94773f39-db40-44ed-b853-582436942e8e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11998'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '798'
+      x-msedge-ref:
+      - 'Ref A: 8A66C47877234ACEA04D628F34DFD652 Ref B: SIN221080711033 Ref C: 2026-05-19T09:57:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mccnk000004?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mccnk000004","name":"test-ep-mccnk000004","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T09:57:17.2718738Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T09:57:17.2718738Z"},"properties":{"multiCloudConnectorId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector","awsS3BucketId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket","endpointType":"AzureMultiCloudConnector","endpointKind":"Source","description":"endpointMccNoKind","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1010'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 09:57:17 GMT
+      etag:
+      - '"00002643-0000-0600-0000-6a0c33fd0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e127b37c-b53d-468e-baff-b8fb9cf50ca9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/c6c914b3-f376-4a0d-82dd-7f90dab01db9
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A190D93EBB1A4ADC884D9ADDFF554EBF Ref B: SIN221080719035 Ref C: 2026-05-19T09:57:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --storage-mover-name -n -y
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-mccnk000004?api-version=2025-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 19 May 2026 09:57:18 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2b1d9af0-3b3d-4c4b-9ed7-ca6c7241ec28
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/7cafc8c8-f232-4184-bb98-1150aaded8f0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: D09A0CC937694B4B872FB9F5467DCABB Ref B: PNQ231110907042 Ref C: 2026-05-19T09:57:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "mccTargetShouldFail", "endpointKind": "Target",
+      "endpointType": "AzureMultiCloudConnector", "awsS3BucketId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
+      "multiCloudConnectorId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-multi-cloud-connector
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '493'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --storage-mover-name --multi-cloud-connector-id --aws-s3-bucket-id
+        --endpoint-kind --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/mcc-tgt000005?api-version=2025-12-01
+  response:
+    body:
+      string: '{"error":{"code":"InvalidRequestPropertyValue","message":"The endpoint
+        kind Target is not supported for the endpoint type AzureMultiCloudConnector."}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '150'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 May 2026 09:57:19 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/29a17903-f481-4f66-a9c5-d9001fff6ef2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 0D4D13FFFC154FD8B6CB5CDB39502AC6 Ref B: SIN221080712023 Ref C: 2026-05-19T09:57:20Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

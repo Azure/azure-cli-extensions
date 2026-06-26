@@ -1,0 +1,34 @@
+{
+    "issuer": {
+        "url": "https://token.actions.githubusercontent.com",
+        "audiences": ["https://github.com/myorg"]
+    },
+    "claimMappings": {
+        "username": {
+            "expression": "claims.sub"
+        },
+        "groups": {
+            "expression": "claims.aud"
+        }
+    },
+    "claimValidationRules": [
+        {
+            "expression": "claims.iss == 'https://token.actions.githubusercontent.com'",
+            "message": "issuer must be GitHub Actions"
+        },
+        {
+            "expression": "claims.exp - claims.nbf <= 86400",
+            "message": "total token lifetime must not exceed 24 hours"
+        }
+    ],
+    "userValidationRules": [
+        {
+            "expression": "!user.username.startsWith('system:')",
+            "message": "username cannot used reserved system: prefix"
+        },
+        {
+            "expression": "user.groups.all(group, !group.startsWith('system:'))",
+            "message": "groups cannot used reserved system: prefix"
+        }
+    ]
+}

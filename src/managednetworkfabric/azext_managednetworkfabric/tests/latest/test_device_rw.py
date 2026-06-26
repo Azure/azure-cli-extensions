@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_rw(test, checks=[])
     cleanup_scenario1(test)
@@ -38,7 +38,7 @@ def step_rw(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device run-rw --resource-name {name} --resource-group {rg} --rw-command {command}"
+        "az networkfabric device run-rw --resource-name {name} --resource-group {rg} --rw-command {command} --command-url {commandUrl}"
     )
 
 
@@ -52,10 +52,11 @@ class GA_DeviceRwScenarioTest1(ScenarioTest):
                 "name": CONFIG.get("NETWORK_DEVICE", "rw_device_name"),
                 "rg": CONFIG.get("NETWORK_DEVICE", "rw_device_rg"),
                 "command": CONFIG.get("NETWORK_DEVICE", "rw_command"),
+                "commandUrl": CONFIG.get("NETWORK_DEVICE", "rw_command_url"),
             }
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Rw_scenario1(self):
+    def test_GA_device_rw_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)

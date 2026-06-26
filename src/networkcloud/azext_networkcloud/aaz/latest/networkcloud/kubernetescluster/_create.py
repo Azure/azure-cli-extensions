@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster or update the properties of the existing one.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -116,6 +117,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The extended location type, for example, CustomLocation.",
             required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
 
         tags = cls._args_schema.tags
@@ -130,13 +132,13 @@ class Create(AAZCommand):
             help="The Azure Active Directory Integration properties.",
         )
         _args_schema.control_plane_node_configuration = AAZObjectArg(
-            options=["--control-plane-node-configuration"],
+            options=["--cp-node-config", "--control-plane-node-configuration"],
             arg_group="Properties",
             help="The defining characteristics of the control plane for this Kubernetes Cluster.",
             required=True,
         )
         _args_schema.initial_agent_pool_configurations = AAZListArg(
-            options=["--initial-agent-pool-configurations"],
+            options=["--initial-ap-config", "--initial-agent-pool-configurations"],
             arg_group="Properties",
             help="The agent pools that are created with this Kubernetes cluster for running critical system services and workloads. This data in this field is only used during creation, and the field will be empty following the creation of the Kubernetes Cluster. After creation, the management of agent pools is done using the agentPools sub-resource.",
             required=True,
@@ -511,12 +513,15 @@ class Create(AAZCommand):
                 pattern="^[a-z0-9]([a-z0-9.-]{0,61}[a-z0-9]){0,1}$",
             ),
         )
-        _element.password = AAZStrArg(
+        _element.password = AAZPasswordArg(
             options=["password"],
             help="The authentication password for routers enforcing TCP MD5 authenticated sessions.",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]{0,80}$",
                 max_length=80,
+            ),
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
             ),
         )
         _element.peer_address = AAZStrArg(
@@ -855,7 +860,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

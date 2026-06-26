@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules/{}", "2025-06-11"],
         ]
     }
 
@@ -51,6 +51,11 @@ class Update(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -65,6 +70,24 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.agent_rules = AAZObjectArg(
+            options=["--agent-rules"],
+            arg_group="Properties",
+            help="Set of rules for managing agents for the Monitor resource.",
+            nullable=True,
+        )
+        _args_schema.automuting = AAZBoolArg(
+            options=["--automuting"],
+            arg_group="Properties",
+            help="Configuration to enable/disable auto-muting flag",
+            nullable=True,
+        )
+        _args_schema.custom_metrics = AAZBoolArg(
+            options=["--custom-metrics"],
+            arg_group="Properties",
+            help="Configuration to enable/disable custom metrics. If enabled, custom metrics from app insights will be sent.",
+            nullable=True,
+        )
         _args_schema.log_rules = AAZObjectArg(
             options=["--log-rules"],
             arg_group="Properties",
@@ -77,6 +100,24 @@ class Update(AAZCommand):
             help="Set of rules for sending metrics for the Monitor resource.",
             nullable=True,
         )
+
+        agent_rules = cls._args_schema.agent_rules
+        agent_rules.enable_agent_monitoring = AAZBoolArg(
+            options=["enable-agent-monitoring"],
+            help="Flag specifying if agent monitoring should be enabled for the Monitor resource.",
+            nullable=True,
+        )
+        agent_rules.filtering_tags = AAZListArg(
+            options=["filtering-tags"],
+            help="List of filtering tags to be used for capturing metrics. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
+            nullable=True,
+        )
+
+        filtering_tags = cls._args_schema.agent_rules.filtering_tags
+        filtering_tags.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_filtering_tag_update(filtering_tags.Element)
 
         log_rules = cls._args_schema.log_rules
         log_rules.filtering_tags = AAZListArg(
@@ -238,7 +279,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -325,7 +366,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -387,8 +428,20 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("agentRules", AAZObjectType, ".agent_rules")
+                properties.set_prop("automuting", AAZBoolType, ".automuting")
+                properties.set_prop("customMetrics", AAZBoolType, ".custom_metrics")
                 properties.set_prop("logRules", AAZObjectType, ".log_rules")
                 properties.set_prop("metricRules", AAZObjectType, ".metric_rules")
+
+            agent_rules = _builder.get(".properties.agentRules")
+            if agent_rules is not None:
+                agent_rules.set_prop("enableAgentMonitoring", AAZBoolType, ".enable_agent_monitoring")
+                agent_rules.set_prop("filteringTags", AAZListType, ".filtering_tags")
+
+            filtering_tags = _builder.get(".properties.agentRules.filteringTags")
+            if filtering_tags is not None:
+                _UpdateHelper._build_schema_filtering_tag_update(filtering_tags.set_elements(AAZObjectType, "."))
 
             log_rules = _builder.get(".properties.logRules")
             if log_rules is not None:
@@ -483,6 +536,13 @@ class _UpdateHelper:
         )
 
         properties = _schema_monitoring_tag_rules_read.properties
+        properties.agent_rules = AAZObjectType(
+            serialized_name="agentRules",
+        )
+        properties.automuting = AAZBoolType()
+        properties.custom_metrics = AAZBoolType(
+            serialized_name="customMetrics",
+        )
         properties.log_rules = AAZObjectType(
             serialized_name="logRules",
         )
@@ -493,6 +553,18 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+
+        agent_rules = _schema_monitoring_tag_rules_read.properties.agent_rules
+        agent_rules.enable_agent_monitoring = AAZBoolType(
+            serialized_name="enableAgentMonitoring",
+        )
+        agent_rules.filtering_tags = AAZListType(
+            serialized_name="filteringTags",
+        )
+
+        filtering_tags = _schema_monitoring_tag_rules_read.properties.agent_rules.filtering_tags
+        filtering_tags.Element = AAZObjectType()
+        cls._build_schema_filtering_tag_read(filtering_tags.Element)
 
         log_rules = _schema_monitoring_tag_rules_read.properties.log_rules
         log_rules.filtering_tags = AAZListType(

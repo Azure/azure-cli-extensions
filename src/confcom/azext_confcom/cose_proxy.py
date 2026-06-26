@@ -3,28 +3,44 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
+import hashlib
 import os
-import stat
 import platform
+import stat
+import subprocess
 from typing import List
+
 import requests
-from knack.log import get_logger
-from azext_confcom.errors import eprint
 from azext_confcom.config import (
-    REGO_CONTAINER_START,
-    REGO_FRAGMENT_START,
-    POLICY_FIELD_CONTAINERS,
+    ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES, POLICY_FIELD_CONTAINERS,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED,
+    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN,
-    ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES,
-)
+    REGO_CONTAINER_START, REGO_FRAGMENT_START)
+from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir
+from knack.log import get_logger
+
 
 logger = get_logger(__name__)
 host_os = platform.system()
 machine = platform.machine()
+
+
+_binaries_dir = get_binaries_dir()
+_cosesign1_binaries = {
+    "Linux": {
+        "path": _binaries_dir / "sign1util",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util",
+        "sha256": "526b54aeb6293fc160e8fa1f81be6857300aba9641d45955f402f8b082a4d4a5",
+    },
+    "Windows": {
+        "path": _binaries_dir / "sign1util.exe",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util.exe",
+        "sha256": "f33cccf2b1bb8c3a495c730984b47d0f0715678981dbfe712248a2452dd53303",
+    },
+}
 
 
 def call_cose_sign_tool(args: List[str], error_message: str, check=False):
@@ -40,33 +56,15 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def download_binaries():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        bin_folder = os.path.join(dir_path, "bin")
-        if not os.path.exists(bin_folder):
-            os.makedirs(bin_folder)
+        for binary_info in _cosesign1_binaries.values():
+            cosesign1_fetch_resp = requests.get(binary_info["url"], verify=True)
+            cosesign1_fetch_resp.raise_for_status()
 
-        # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/cosesign1go/releases")
-        r.raise_for_status()
-        needed_assets = ["sign1util", "sign1util.exe"]
+            assert hashlib.sha256(cosesign1_fetch_resp.content).hexdigest() == binary_info["sha256"]
 
-        # these should be newest to oldest
-        for release in r.json():
-            # search for both windows and linux binaries
-            needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
-            if len(needed_asset_info) == len(needed_assets):
-                for asset in needed_asset_info:
-                    # get the download url for the dmverity-vhd file
-                    exe_url = asset["browser_download_url"]
-                    # download the file
-                    r = requests.get(exe_url)
-                    r.raise_for_status()
-                    # save the file to the bin folder
-                    with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
-                        f.write(r.content)
-                # stop iterating through releases
-                break
+            with open(binary_info["path"], "wb") as f:
+                f.write(cosesign1_fetch_resp.content)
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
@@ -154,6 +152,12 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         item = call_cose_sign_tool(arg_list_chain, "Error getting information from signed fragment file")
 
         stdout = item.stdout.decode("utf-8")
+        # if we don't have a minimum svn, use the one from the fragment
+        fragment_svn = None
+        if minimum_svn == -1:
+            fragment_svn = stdout.split('svn := "')[1].split('"')[0]
+            if not fragment_svn:
+                eprint("Must have either a minimum SVN or fragment SVN defined")
         # extract issuer, feed, and payload from the fragment
         issuer = stdout.split("iss: ")[1].split("\n")[0]
         feed = stdout.split("feed: ")[1].split("\n")[0]
@@ -170,7 +174,8 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         import_statement = {
             POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISSUER: issuer,
             POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED: feed,
-            POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN: minimum_svn,
+            POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN:
+                minimum_svn if minimum_svn != -1 else fragment_svn,
             ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES: includes,
         }
 

@@ -141,7 +141,7 @@ class Create(AAZCommand):
         )
         explicit_proxy.pac_file = AAZStrArg(
             options=["pac-file"],
-            help="SAS URL for PAC file.",
+            help="URL for PAC file.",
         )
         explicit_proxy.pac_file_port = AAZIntArg(
             options=["pac-file-port"],
@@ -191,7 +191,7 @@ class Create(AAZCommand):
             help="IDPS mode.",
             is_preview=True,
             nullable=True,
-            enum={"Basic": "Basic", "Standard": "Standard", "Advanced": "Advanced"},
+            enum={"Off": "Off", "Emerging": "Emerging", "Core": "Core", "Extended": "Extended"},
         )
 
         # define Arg Group "Parameters"

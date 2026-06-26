@@ -14,30 +14,48 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_create(test, checks=[])
-    cleanup_scenario1(test)
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_create_scenario2(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Network Monitor create operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkfabric networkmonitor create --resource-group {rg} --location {location} --network-monitor-name {name}"
-        " --bmp-configuration {bmpConfiguration}",
+        " --bmp-configuration {bmpConfiguration} --annotation {annotation}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Network Monitor create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric networkmonitor create --resource-group {rg} --location {location} --resource-name {name}"
+        " --bmp-configuration {bmpConfiguration} --annotation {annotation}",
         checks=checks,
     )
 
@@ -50,6 +68,7 @@ class GA_NetworkMonitorCreateScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("NETWORK_MONITOR", "name"),
+                "annotation": CONFIG.get("NETWORK_MONITOR", "annotation"),
                 "rg": CONFIG.get("NETWORK_MONITOR", "resource_group"),
                 "location": CONFIG.get("NETWORK_MONITOR", "location"),
                 "bmpConfiguration": CONFIG.get("NETWORK_MONITOR", "bmp_configuration"),

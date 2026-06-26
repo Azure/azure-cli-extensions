@@ -11,7 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(curr_dir, 'data', filename)
+    return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
 
 
 class FleetHublessScenarioTest(ScenarioTest):
@@ -57,7 +57,13 @@ class FleetHublessScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'stages_file': _get_test_data_file('stages.json'),
             'kubernetes_version': '1.33.0',
-            'target_kubernetes_version': '1.30'
+            'target_kubernetes_version': '1.30',
+            'updaterun_stage_max_concurrency': 7,
+            'updaterun_group1_max_concurrency': 1,
+            'updaterun_group2_max_concurrency': 1,
+            'strategy_stage_max_concurrency': '7',
+            'strategy_group1_max_concurrency': '100%',
+            'strategy_group2_max_concurrency': '50%'
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
@@ -108,7 +114,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
-        self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
+        self.cmd(
+            'aks wait -g {rg} -n {member_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
 
         self.cmd('fleet member reconcile -g {rg} -f {fleet_name} -n {member_name}', checks=[
             self.check('name', '{member_name}'),
@@ -141,7 +151,10 @@ class FleetHublessScenarioTest(ScenarioTest):
         ]).get_output_in_json()
 
         self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
-            self.check('name', '{updateStrategy_name}')
+            self.check('name', '{updateStrategy_name}'),
+            self.check('strategy.stages[0].maxConcurrency', '{strategy_stage_max_concurrency}'),
+            self.check('strategy.stages[0].groups[0].maxConcurrency', '{strategy_group1_max_concurrency}'),
+            self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}')
         ])
 
         self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
@@ -162,7 +175,10 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         self.cmd('fleet updaterun show -g {rg} -n {updaterun} -f {fleet_name}', checks=[
-            self.check('name', '{updaterun}')
+            self.check('name', '{updaterun}'),
+            self.check('status.stages[0].maxConcurrency', '{updaterun_stage_max_concurrency}'),
+            self.check('status.stages[0].groups[0].maxConcurrency', '{updaterun_group1_max_concurrency}'),
+            self.check('status.stages[0].groups[1].maxConcurrency', '{updaterun_group2_max_concurrency}')
         ])
 
         self.cmd('fleet updaterun list -g {rg} -f {fleet_name}', checks=[

@@ -69,13 +69,6 @@ def _load_legacy_identity_arguments(self):
 
 
 def _load_sms_arguments(self):
-    with self.argument_context('communication sms send-sms') as c:
-        c.argument('sender', options_list=['--sender', '-s'],
-                   type=str, help='The sender of the SMS')
-        c.argument('recipients', options_list=['--recipient', '-r'],
-                   nargs='+', help='The recipient(s) of the SMS')
-        c.argument('message', options_list=['--message', '-m'],
-                   type=str, help='The message in the SMS')
     with self.argument_context('communication sms send') as c:
         c.argument('sender', options_list=['--sender'],
                    type=str, help='The sender of the SMS')
@@ -83,6 +76,22 @@ def _load_sms_arguments(self):
                    nargs='+', help='The recipient(s) of the SMS')
         c.argument('message', options_list=['--message'],
                    type=str, help='The message in the SMS')
+        c.argument('delivery_report', options_list=['--deliveryReport'],
+                   action='store_true', help='Enable delivery report for the SMS')
+        c.argument('tag', options_list=['--tag'],
+                   type=str, help='Custom tag for the SMS message')
+
+    with self.argument_context('communication sms send-sms') as c:
+        c.argument('sender', options_list=['--sender', '-s'],
+                   type=str, help='The sender of the SMS')
+        c.argument('recipients', options_list=['--recipient', '-r'],
+                   nargs='+', help='The recipient(s) of the SMS')
+        c.argument('message', options_list=['--message', '-m'],
+                   type=str, help='The message in the SMS')
+        c.argument('delivery_report', options_list=['--deliveryReport'],
+                   action='store_true', help='Enable delivery report for the SMS')
+        c.argument('tag', options_list=['--tag'],
+                   type=str, help='Custom tag for the SMS message')
 
 
 def _load_phonenumber_arguments(self):

@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "storage-mover job-definition show",
 )
 class Show(AAZCommand):
-    """Gets a Job Definition resource.
-
-    :example: job-definition show
-        az storage-mover job-definition show -g {rg} -n {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
+    """Get a Job Definition resource.
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2025-12-01"],
         ]
     }
 
@@ -64,6 +61,9 @@ class Show(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -140,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -198,11 +198,18 @@ class Show(AAZCommand):
                 serialized_name="agentResourceId",
                 flags={"read_only": True},
             )
+            properties.connections = AAZListType()
             properties.copy_mode = AAZStrType(
                 serialized_name="copyMode",
                 flags={"required": True},
             )
+            properties.data_integrity_validation = AAZStrType(
+                serialized_name="dataIntegrityValidation",
+            )
             properties.description = AAZStrType()
+            properties.job_type = AAZStrType(
+                serialized_name="jobType",
+            )
             properties.latest_job_run_name = AAZStrType(
                 serialized_name="latestJobRunName",
                 flags={"read_only": True},
@@ -215,10 +222,14 @@ class Show(AAZCommand):
                 serialized_name="latestJobRunStatus",
                 flags={"read_only": True},
             )
+            properties.preserve_permissions = AAZBoolType(
+                serialized_name="preservePermissions",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.schedule = AAZObjectType()
             properties.source_name = AAZStrType(
                 serialized_name="sourceName",
                 flags={"required": True},
@@ -230,6 +241,9 @@ class Show(AAZCommand):
             properties.source_subpath = AAZStrType(
                 serialized_name="sourceSubpath",
             )
+            properties.source_target_map = AAZObjectType(
+                serialized_name="sourceTargetMap",
+            )
             properties.target_name = AAZStrType(
                 serialized_name="targetName",
                 flags={"required": True},
@@ -240,6 +254,88 @@ class Show(AAZCommand):
             )
             properties.target_subpath = AAZStrType(
                 serialized_name="targetSubpath",
+            )
+
+            connections = cls._schema_on_200.properties.connections
+            connections.Element = AAZStrType()
+
+            schedule = cls._schema_on_200.properties.schedule
+            schedule.cron_expression = AAZStrType(
+                serialized_name="cronExpression",
+            )
+            schedule.days_of_month = AAZListType(
+                serialized_name="daysOfMonth",
+            )
+            schedule.days_of_week = AAZListType(
+                serialized_name="daysOfWeek",
+            )
+            schedule.end_date = AAZStrType(
+                serialized_name="endDate",
+            )
+            schedule.execution_time = AAZObjectType(
+                serialized_name="executionTime",
+            )
+            schedule.frequency = AAZStrType()
+            schedule.is_active = AAZBoolType(
+                serialized_name="isActive",
+            )
+            schedule.start_date = AAZStrType(
+                serialized_name="startDate",
+            )
+
+            days_of_month = cls._schema_on_200.properties.schedule.days_of_month
+            days_of_month.Element = AAZIntType()
+
+            days_of_week = cls._schema_on_200.properties.schedule.days_of_week
+            days_of_week.Element = AAZStrType()
+
+            execution_time = cls._schema_on_200.properties.schedule.execution_time
+            execution_time.hour = AAZIntType()
+            execution_time.minute = AAZIntType()
+
+            source_target_map = cls._schema_on_200.properties.source_target_map
+            source_target_map.value = AAZListType(
+                flags={"read_only": True},
+            )
+
+            value = cls._schema_on_200.properties.source_target_map.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.source_target_map.value.Element
+            _element.source_endpoint = AAZObjectType(
+                serialized_name="sourceEndpoint",
+                flags={"required": True},
+            )
+            _element.target_endpoint = AAZObjectType(
+                serialized_name="targetEndpoint",
+                flags={"required": True},
+            )
+
+            source_endpoint = cls._schema_on_200.properties.source_target_map.value.Element.source_endpoint
+            source_endpoint.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.source_target_map.value.Element.source_endpoint.properties
+            properties.aws_s3_bucket_id = AAZStrType(
+                serialized_name="awsS3BucketId",
+            )
+            properties.name = AAZStrType()
+            properties.source_endpoint_resource_id = AAZStrType(
+                serialized_name="sourceEndpointResourceId",
+            )
+
+            target_endpoint = cls._schema_on_200.properties.source_target_map.value.Element.target_endpoint
+            target_endpoint.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.source_target_map.value.Element.target_endpoint.properties
+            properties.azure_storage_account_resource_id = AAZStrType(
+                serialized_name="azureStorageAccountResourceId",
+            )
+            properties.azure_storage_blob_container_name = AAZStrType(
+                serialized_name="azureStorageBlobContainerName",
+            )
+            properties.name = AAZStrType()
+            properties.target_endpoint_resource_id = AAZStrType(
+                serialized_name="targetEndpointResourceId",
             )
 
             system_data = cls._schema_on_200.system_data

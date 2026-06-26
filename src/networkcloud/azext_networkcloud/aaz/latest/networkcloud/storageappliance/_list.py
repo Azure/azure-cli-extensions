@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List storage appliances in the provided resource group or subscription.
@@ -25,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-02-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/storageappliances", "2025-02-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances", "2025-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/storageappliances", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances", "2026-05-01-preview"],
         ]
     }
 
@@ -50,6 +51,14 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.skip_token = AAZStrArg(
+            options=["--skip-token"],
+            help="The opaque token that the server returns to indicate where to continue listing resources from. This is used for paging through large result sets.",
+        )
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -115,7 +124,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -151,7 +166,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -198,6 +215,10 @@ class List(AAZCommand):
                 serialized_name="administratorCredentials",
                 flags={"required": True},
             )
+            properties.ca_certificate = AAZObjectType(
+                serialized_name="caCertificate",
+                flags={"read_only": True},
+            )
             properties.capacity = AAZIntType(
                 flags={"read_only": True},
             )
@@ -217,6 +238,10 @@ class List(AAZCommand):
                 serialized_name="detailedStatusMessage",
                 flags={"read_only": True},
             )
+            properties.expansion_shelves = AAZListType(
+                serialized_name="expansionShelves",
+                flags={"read_only": True},
+            )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
                 flags={"read_only": True},
@@ -225,6 +250,10 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.model = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.monitoring_configuration_status = AAZObjectType(
+                serialized_name="monitoringConfigurationStatus",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -271,6 +300,29 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
+            ca_certificate = cls._schema_on_200.value.Element.properties.ca_certificate
+            ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            expansion_shelves = cls._schema_on_200.value.Element.properties.expansion_shelves
+            expansion_shelves.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.expansion_shelves.Element
+            _element.model = AAZStrType()
+            _element.version = AAZStrType()
+
+            monitoring_configuration_status = cls._schema_on_200.value.Element.properties.monitoring_configuration_status
+            monitoring_configuration_status.log_level = AAZStrType(
+                serialized_name="logLevel",
+            )
+            monitoring_configuration_status.metrics_level = AAZStrType(
+                serialized_name="metricsLevel",
+            )
+
             secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
             secret_rotation_status.Element = AAZObjectType()
 
@@ -299,6 +351,10 @@ class List(AAZCommand):
             secret_archive_reference = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element.secret_archive_reference
             secret_archive_reference.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
                 flags={"read_only": True},
             )
             secret_archive_reference.secret_name = AAZStrType(
@@ -379,7 +435,13 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-02-01",
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -415,7 +477,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -462,6 +526,10 @@ class List(AAZCommand):
                 serialized_name="administratorCredentials",
                 flags={"required": True},
             )
+            properties.ca_certificate = AAZObjectType(
+                serialized_name="caCertificate",
+                flags={"read_only": True},
+            )
             properties.capacity = AAZIntType(
                 flags={"read_only": True},
             )
@@ -481,6 +549,10 @@ class List(AAZCommand):
                 serialized_name="detailedStatusMessage",
                 flags={"read_only": True},
             )
+            properties.expansion_shelves = AAZListType(
+                serialized_name="expansionShelves",
+                flags={"read_only": True},
+            )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
                 flags={"read_only": True},
@@ -489,6 +561,10 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.model = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.monitoring_configuration_status = AAZObjectType(
+                serialized_name="monitoringConfigurationStatus",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -535,6 +611,29 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
+            ca_certificate = cls._schema_on_200.value.Element.properties.ca_certificate
+            ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            expansion_shelves = cls._schema_on_200.value.Element.properties.expansion_shelves
+            expansion_shelves.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.expansion_shelves.Element
+            _element.model = AAZStrType()
+            _element.version = AAZStrType()
+
+            monitoring_configuration_status = cls._schema_on_200.value.Element.properties.monitoring_configuration_status
+            monitoring_configuration_status.log_level = AAZStrType(
+                serialized_name="logLevel",
+            )
+            monitoring_configuration_status.metrics_level = AAZStrType(
+                serialized_name="metricsLevel",
+            )
+
             secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
             secret_rotation_status.Element = AAZObjectType()
 
@@ -563,6 +662,10 @@ class List(AAZCommand):
             secret_archive_reference = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element.secret_archive_reference
             secret_archive_reference.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
                 flags={"read_only": True},
             )
             secret_archive_reference.secret_name = AAZStrType(
