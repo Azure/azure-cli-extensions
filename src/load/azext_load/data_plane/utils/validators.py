@@ -43,7 +43,19 @@ def _validate_id(namespace, id_name, arg_name=None):
 
 
 def validate_test_id(namespace):
-    """Validates test-id"""
+    """Validates test-id. If test-id is not provided, tries to read it from the load test config file."""
+    if getattr(namespace, "test_id", None) is None:
+        load_test_config_file = getattr(namespace, "load_test_config_file", None)
+        if load_test_config_file and os.path.isfile(load_test_config_file):
+            try:
+                with open(load_test_config_file, "r", encoding="UTF-8") as f:
+                    data = yaml.safe_load(f) or {}
+                from .constants import LoadTestConfigKeys
+                test_id_from_yaml = data.get(LoadTestConfigKeys.TEST_ID)
+                if test_id_from_yaml is not None:
+                    namespace.test_id = str(test_id_from_yaml)
+            except Exception:  # pylint: disable=broad-except
+                pass
     _validate_id(namespace, "test_id", "test-id")
 
 
