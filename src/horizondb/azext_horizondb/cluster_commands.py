@@ -42,12 +42,13 @@ def load_command_table(self, _):
         g.custom_command('delete', 'horizondb_cluster_delete')
         g.custom_command('list', 'horizondb_cluster_list')
         g.show_command('show', 'get')
+        g.wait_command('wait')
 
     with self.command_group('horizondb private-endpoint-connection',
                             horizondb_private_endpoint_connections_sdk,
                             custom_command_type=private_endpoint_commands,
                             client_factory=cf_horizondb_private_endpoint_connections) as g:
-        g.command('list', 'list')
+        g.custom_command('list', 'horizondb_private_endpoint_connection_list')
         g.show_command('show', 'get', validator=validate_private_endpoint_connection_id)
         g.command('delete', 'begin_delete', validator=validate_private_endpoint_connection_id)
         g.custom_command('approve', 'horizondb_approve_private_endpoint_connection',
@@ -59,5 +60,5 @@ def load_command_table(self, _):
                             horizondb_private_link_resources_sdk,
                             custom_command_type=private_endpoint_commands,
                             client_factory=cf_horizondb_private_link_resources) as g:
-        g.command('list', 'list')
+        g.custom_command('list', 'horizondb_private_link_resource_list')
         g.custom_show_command('show', 'horizondb_private_link_resource_get')

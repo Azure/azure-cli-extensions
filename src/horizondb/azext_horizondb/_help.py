@@ -66,6 +66,15 @@ examples:
 """
 
 
+helps['horizondb wait'] = """
+type: command
+short-summary: Wait until a HorizonDB cluster satisfies a condition.
+examples:
+  - name: Wait until a HorizonDB cluster update completes.
+    text: az horizondb wait --resource-group exampleresourcegroup --name examplecluster --updated
+"""
+
+
 helps['horizondb private-endpoint-connection'] = """
 type: group
 short-summary: Manage HorizonDB private endpoint connections.

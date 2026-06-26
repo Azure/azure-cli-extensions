@@ -5,7 +5,7 @@
 
 import unittest
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from azure.cli.core import get_default_cli
 from knack.util import CLIError
@@ -38,6 +38,22 @@ class HorizonDBPrivateEndpointCommandTests(unittest.TestCase):
 
             resource_group_arg = loader.argument_registry.arguments[command]['resource_group_name']
             self.assertFalse(resource_group_arg.settings['required'], command)
+
+    def test_child_list_commands_do_not_register_generic_ids_arguments(self):
+        commands = [
+            'horizondb private-endpoint-connection list',
+            'horizondb private-link-resource list',
+        ]
+
+        for command in commands:
+            cli = get_default_cli()
+            cli.invocation = SimpleNamespace(data={'command_string': command})
+            loader = HorizonDBCommandsLoader(cli_ctx=cli)
+            loader.load_command_table(None)
+            loader.load_arguments(None)
+
+            cluster_name_arg = loader.argument_registry.arguments[command]['cluster_name']
+            self.assertIsNone(cluster_name_arg.settings.get('id_part'), command)
 
     def test_update_request_is_cluster_scoped_put(self):
         request = build_horizon_db_private_endpoint_connections_update_request(
@@ -131,26 +147,17 @@ class HorizonDBPrivateEndpointCommandTests(unittest.TestCase):
             validate_private_endpoint_connection_id(None, namespace)
 
     def test_approve_private_endpoint_connection_uses_cluster_scoped_update(self):
-        get_client = Mock()
         update_client = Mock()
         update_client.begin_update.return_value = 'poller'
-        cmd = SimpleNamespace(cli_ctx=object())
 
-        with patch('azext_horizondb._client_factory.cf_horizondb_private_endpoint_connections',
-                   return_value=get_client):
-            result = horizondb_approve_private_endpoint_connection(
-                cmd,
-                update_client,
-                resource_group_name='rg1',
-                cluster_name='cluster1',
-                private_endpoint_connection_name='pec1',
-                description='Approved')
-
-        self.assertEqual('poller', result)
-        get_client.get.assert_called_once_with(
+        result = horizondb_approve_private_endpoint_connection(
+            update_client,
             resource_group_name='rg1',
             cluster_name='cluster1',
-            private_endpoint_connection_name='pec1')
+            private_endpoint_connection_name='pec1',
+            description='Approved')
+
+        self.assertEqual('poller', result)
         update_client.begin_update.assert_called_once()
         kwargs = update_client.begin_update.call_args.kwargs
         self.assertEqual('rg1', kwargs['resource_group_name'])
