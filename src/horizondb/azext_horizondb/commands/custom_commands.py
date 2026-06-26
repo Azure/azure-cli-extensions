@@ -8,8 +8,22 @@
 from knack.log import get_logger
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 
 logger = get_logger(__name__)
+
+
+def _resolve_source_cluster(client, resource_group_name, source_cluster):
+    if is_valid_resource_id(source_cluster):
+        source_cluster_id_parts = parse_resource_id(source_cluster)
+        source_resource_group = source_cluster_id_parts.get("resource_group")
+        source_cluster_name = source_cluster_id_parts.get("name")
+        if not source_resource_group or not source_cluster_name:
+            raise ArgumentUsageError(
+                "Invalid source cluster resource ID. Ensure it contains both resource group and cluster name."
+            )
+        return client.get(resource_group_name=source_resource_group, cluster_name=source_cluster_name)
+    return client.get(resource_group_name=resource_group_name, cluster_name=source_cluster)
 
 
 def horizondb_cluster_create(client, resource_group_name, cluster_name, location,
@@ -32,6 +46,28 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
 
     resource = HorizonDbCluster(
         location=location,
+        tags=tags,
+        properties=properties,
+    )
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       resource=resource)
+
+
+def horizondb_cluster_restore(client, resource_group_name, cluster_name, source_cluster,
+                              tags=None, no_wait=False):
+    from azext_horizondb.vendored_sdks.models import HorizonDbCluster, HorizonDbClusterProperties
+
+    source_cluster_resource = _resolve_source_cluster(client, resource_group_name, source_cluster)
+    properties = HorizonDbClusterProperties(
+        create_mode="PointInTimeRestore",
+        source_cluster_resource_id=source_cluster_resource.id,
+    )
+
+    resource = HorizonDbCluster(
+        location=source_cluster_resource.location,
         tags=tags,
         properties=properties,
     )

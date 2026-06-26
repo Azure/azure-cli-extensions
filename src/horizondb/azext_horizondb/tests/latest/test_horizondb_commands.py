@@ -72,6 +72,20 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
 
         self.assertEqual(show_result['properties']['vCores'], v_cores_update)
 
+        if self.is_live:
+            restored_cluster_name = self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH)
+
+            # Restore cluster
+            restore_result = self.cmd('horizondb restore -g {} -n {} --source-cluster {}'.format(
+                resource_group, restored_cluster_name, cluster_name)).get_output_in_json()
+
+            self.assertEqual(restore_result['name'], restored_cluster_name)
+            self.assertEqual(restore_result['properties']['sourceClusterResourceId'].lower(), create_result['id'].lower())
+
+            # Delete restored cluster
+            self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, restored_cluster_name),
+                     checks=NoneCheck())
+
         # Delete cluster
         self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, cluster_name),
                  checks=NoneCheck())

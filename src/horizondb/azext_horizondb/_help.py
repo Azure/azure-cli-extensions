@@ -35,6 +35,17 @@ examples:
 """
 
 
+helps['horizondb restore'] = """
+type: command
+short-summary: Restore an Azure HorizonDB cluster from a source cluster.
+examples:
+  - name: Restore a HorizonDB cluster from a source cluster in the same resource group.
+    text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster sourcecluster
+  - name: Restore a HorizonDB cluster from a source cluster using resource ID.
+    text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/examplerg/providers/Microsoft.HorizonDB/clusters/sourcecluster
+"""
+
+
 helps['horizondb delete'] = """
 type: command
 short-summary: Delete an Azure HorizonDB cluster.

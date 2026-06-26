@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b3
++++++++
+* Add support for restoring HorizonDB clusters through `az horizondb restore`.
+
 1.0.0b2
 +++++++
 * Add support for updating HorizonDB clusters through `az horizondb update`.

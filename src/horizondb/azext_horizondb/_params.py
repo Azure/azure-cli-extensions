@@ -64,6 +64,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             arg_type=get_enum_type(['Strict', 'BestEffort']),
             help='Defines how replicas are placed across availability zones.')
 
+        source_cluster_arg_type = CLIArgumentType(
+            options_list=['--source-cluster'],
+            help='Name or resource ID of the source HorizonDB cluster to restore from.')
+
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('cluster_name', arg_type=cluster_name_arg_type)
@@ -77,6 +81,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('replica_count', arg_type=replica_count_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)
             c.argument('zone_placement_policy', arg_type=zone_placement_policy_arg_type)
+
+        with self.argument_context('horizondb restore') as c:
+            c.argument('tags', tags_type)
+            c.argument('source_cluster', arg_type=source_cluster_arg_type)
 
         with self.argument_context('horizondb update') as c:
             c.argument('tags', tags_type)
