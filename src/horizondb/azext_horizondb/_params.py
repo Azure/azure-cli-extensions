@@ -46,8 +46,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         administrator_login_password_arg_type = CLIArgumentType(
             options_list=['--administrator-login-password', '-p'],
-            help='The administrator login password.',
-            required=True)
+            help='The administrator login password.')
 
         version_arg_type = CLIArgumentType(
             options_list=['--version', '-v'],
@@ -81,7 +80,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False)
             c.argument('tags', tags_type)
             c.argument('administrator_login', arg_type=administrator_login_arg_type)
-            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
+            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type, required=True)
             c.argument('version', arg_type=version_arg_type)
             c.argument('replica_count', arg_type=replica_count_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)
