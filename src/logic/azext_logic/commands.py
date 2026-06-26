@@ -25,8 +25,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table['logic integration-account map update'] = MapUpdate(loader=self)
 
     with self.command_group('logic workflow'):
-        from azext_logic.custom import WorkflowCreate, WorkflowUpdate, WorkflowList
+        from azext_logic.custom import WorkflowCreate, WorkflowShow, WorkflowUpdate, WorkflowList
         self.command_table['logic workflow create'] = WorkflowCreate(loader=self)
+        self.command_table['logic workflow show'] = WorkflowShow(loader=self)
         self.command_table['logic workflow update'] = WorkflowUpdate(loader=self)
         self.command_table['logic workflow list'] = WorkflowList(loader=self)
 
