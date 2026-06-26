@@ -24,3 +24,11 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("connectedmachine license-profile"):
         from .custom import ProfileDelete
         self.command_table["connectedmachine license-profile delete"] = ProfileDelete(loader=self)
+
+    with self.command_group("connectedmachine run-command"):
+        from .custom import RunCommandCreate
+        self.command_table["connectedmachine run-command create"] = RunCommandCreate(loader=self)
+
+    with self.command_group("connectedmachine run-command"):
+        from .custom import RunCommandUpdate
+        self.command_table["connectedmachine run-command update"] = RunCommandUpdate(loader=self)
