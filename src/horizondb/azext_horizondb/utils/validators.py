@@ -16,8 +16,7 @@ def check_resource_group(resource_group_name):
         return False
 
     # replace single and double quotes with empty string
-    resource_group_name = resource_group_name.replace("'", '')
-    resource_group_name = resource_group_name.replace('"', '')
+    resource_group_name = resource_group_name.replace("'", '').replace('"', '').strip()
 
     # check if rg is empty after removing quotes
     if not resource_group_name:
