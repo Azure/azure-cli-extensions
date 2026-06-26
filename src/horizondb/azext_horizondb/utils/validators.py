@@ -67,5 +67,7 @@ def validate_resource_group(resource_group_name):
 
 # Argument Validators
 def validate_replica_count(ns):
+    if ns.replica_count is None:
+        return
     if ns.replica_count < 1 or ns.replica_count > 16:
-        raise ValueError('Replica count must be between 1 and 16, inclusive.')
+        raise CLIError('Replica count must be between 1 and 16, inclusive.')

@@ -23,7 +23,7 @@ HORIZONDB_VERSION_DEFAULT = 17
 
 def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name=None, location=None,
                              administrator_login=None, administrator_login_password=None,
-                             tags=None, version=HORIZONDB_VERSION_DEFAULT,
+                             tags=None, version=None,
                              replica_count=None, v_cores=None,
                              zone_placement_policy=None,
                              no_wait=False):
@@ -35,6 +35,9 @@ def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name
     # Generate missing parameters
     resource_group_name, cluster_name, location = generate_missing_cluster_parameters(cmd, resource_group_name, cluster_name,
                                                                                       location)
+    
+    if version is None:
+        version = HORIZONDB_VERSION_DEFAULT
 
     if v_cores is not None:
         cluster_capability = (temp_cluster_capabilities.get("value") or [{}])[0]
