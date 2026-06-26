@@ -115,7 +115,6 @@ class Update(AAZCommand):
         ssh_public_key.key_data = AAZStrArg(
             options=["key-data"],
             help="The public ssh key of the user.",
-            required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -249,7 +248,7 @@ class Update(AAZCommand):
 
             ssh_public_key = _builder.get(".properties.sshPublicKey")
             if ssh_public_key is not None:
-                ssh_public_key.set_prop("keyData", AAZStrType, ".key_data", typ_kwargs={"flags": {"required": True}})
+                ssh_public_key.set_prop("keyData", AAZStrType, ".key_data")
 
             tags = _builder.get(".tags")
             if tags is not None:

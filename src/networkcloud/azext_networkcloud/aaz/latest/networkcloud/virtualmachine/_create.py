@@ -153,9 +153,6 @@ class Create(AAZCommand):
             options=["--ndc", "--network-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init network data.",
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
         )
         _args_schema.placement_hints = AAZListArg(
             options=["--ph", "--placement-hints"],
@@ -182,9 +179,6 @@ class Create(AAZCommand):
             options=["--udc", "--user-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init user data.",
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
         )
         _args_schema.vm_device_model = AAZStrArg(
             options=["--vm-device-model"],

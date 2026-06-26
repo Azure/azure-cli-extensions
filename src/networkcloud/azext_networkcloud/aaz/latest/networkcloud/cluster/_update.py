@@ -156,7 +156,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The rack definition that is intended to reflect only a single rack in a single rack cluster, or an aggregator rack in a multi-rack cluster.",
         )
-        cls._build_args_rack_definition_update(_args_schema.aggregator_or_single_rack_definition)
+        cls._build_args_rack_definition_patch_update(_args_schema.aggregator_or_single_rack_definition)
         _args_schema.analytics_output_settings = AAZObjectArg(
             options=["--ao-settings", "--analytics-output-settings"],
             arg_group="Properties",
@@ -235,12 +235,10 @@ class Update(AAZCommand):
         cluster_service_principal.application_id = AAZStrArg(
             options=["application-id"],
             help="The application ID, also known as client ID, of the service principal.",
-            required=True,
         )
         cluster_service_principal.password = AAZPasswordArg(
             options=["password"],
             help="The password of the service principal.",
-            required=True,
             blank=AAZPromptPasswordInput(
                 msg="Password:",
             ),
@@ -248,12 +246,10 @@ class Update(AAZCommand):
         cluster_service_principal.principal_id = AAZStrArg(
             options=["principal-id"],
             help="The principal ID, also known as the object ID, of the service principal.",
-            required=True,
         )
         cluster_service_principal.tenant_id = AAZStrArg(
             options=["tenant-id"],
             help="The tenant ID, also known as the directory ID, of the tenant in which the service principal is created.",
-            required=True,
         )
 
         command_output_settings = cls._args_schema.command_output_settings
@@ -302,19 +298,16 @@ class Update(AAZCommand):
         compute_deployment_threshold.grouping = AAZStrArg(
             options=["grouping"],
             help="Selection of how the type evaluation is applied to the cluster calculation.",
-            required=True,
             enum={"PerCluster": "PerCluster", "PerRack": "PerRack"},
         )
         compute_deployment_threshold.type = AAZStrArg(
             options=["type"],
             help="Selection of how the threshold should be evaluated.",
-            required=True,
             enum={"CountSuccess": "CountSuccess", "PercentSuccess": "PercentSuccess"},
         )
         compute_deployment_threshold.value = AAZIntArg(
             options=["value"],
             help="The numeric threshold value.",
-            required=True,
             fmt=AAZIntArgFormat(
                 minimum=0,
             ),
@@ -322,7 +315,7 @@ class Update(AAZCommand):
 
         compute_rack_definitions = cls._args_schema.compute_rack_definitions
         compute_rack_definitions.Element = AAZObjectArg()
-        cls._build_args_rack_definition_update(compute_rack_definitions.Element)
+        cls._build_args_rack_definition_patch_update(compute_rack_definitions.Element)
 
         runtime_protection = cls._args_schema.runtime_protection
         runtime_protection.definition_update_mode = AAZStrArg(
@@ -364,19 +357,16 @@ class Update(AAZCommand):
         update_strategy.strategy_type = AAZStrArg(
             options=["strategy-type"],
             help="The mode of operation for runtime protection.",
-            required=True,
             enum={"PauseAfterRack": "PauseAfterRack", "Rack": "Rack"},
         )
         update_strategy.threshold_type = AAZStrArg(
             options=["threshold-type"],
             help="Selection of how the threshold should be evaluated.",
-            required=True,
             enum={"CountSuccess": "CountSuccess", "PercentSuccess": "PercentSuccess"},
         )
         update_strategy.threshold_value = AAZIntArg(
             options=["threshold-value"],
             help="The numeric threshold value.",
-            required=True,
             fmt=AAZIntArgFormat(
                 minimum=0,
             ),
@@ -399,111 +389,104 @@ class Update(AAZCommand):
         )
         return cls._args_schema
 
-    _args_administrative_credentials_update = None
+    _args_administrative_credentials_patch_update = None
 
     @classmethod
-    def _build_args_administrative_credentials_update(cls, _schema):
-        if cls._args_administrative_credentials_update is not None:
-            _schema.password = cls._args_administrative_credentials_update.password
-            _schema.username = cls._args_administrative_credentials_update.username
+    def _build_args_administrative_credentials_patch_update(cls, _schema):
+        if cls._args_administrative_credentials_patch_update is not None:
+            _schema.password = cls._args_administrative_credentials_patch_update.password
+            _schema.username = cls._args_administrative_credentials_patch_update.username
             return
 
-        cls._args_administrative_credentials_update = AAZObjectArg()
+        cls._args_administrative_credentials_patch_update = AAZObjectArg()
 
-        administrative_credentials_update = cls._args_administrative_credentials_update
-        administrative_credentials_update.password = AAZPasswordArg(
+        administrative_credentials_patch_update = cls._args_administrative_credentials_patch_update
+        administrative_credentials_patch_update.password = AAZPasswordArg(
             options=["password"],
             help="The password of the administrator of the device used during initialization.",
-            required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
-        administrative_credentials_update.username = AAZStrArg(
+        administrative_credentials_patch_update.username = AAZStrArg(
             options=["username"],
             help="The username of the administrator of the device used during initialization.",
-            required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        _schema.password = cls._args_administrative_credentials_update.password
-        _schema.username = cls._args_administrative_credentials_update.username
+        _schema.password = cls._args_administrative_credentials_patch_update.password
+        _schema.username = cls._args_administrative_credentials_patch_update.username
 
-    _args_rack_definition_update = None
+    _args_rack_definition_patch_update = None
 
     @classmethod
-    def _build_args_rack_definition_update(cls, _schema):
-        if cls._args_rack_definition_update is not None:
-            _schema.availability_zone = cls._args_rack_definition_update.availability_zone
-            _schema.bare_metal_machine_configuration_data = cls._args_rack_definition_update.bare_metal_machine_configuration_data
-            _schema.network_rack_id = cls._args_rack_definition_update.network_rack_id
-            _schema.rack_location = cls._args_rack_definition_update.rack_location
-            _schema.rack_serial_number = cls._args_rack_definition_update.rack_serial_number
-            _schema.rack_sku_id = cls._args_rack_definition_update.rack_sku_id
-            _schema.storage_appliance_configuration_data = cls._args_rack_definition_update.storage_appliance_configuration_data
+    def _build_args_rack_definition_patch_update(cls, _schema):
+        if cls._args_rack_definition_patch_update is not None:
+            _schema.availability_zone = cls._args_rack_definition_patch_update.availability_zone
+            _schema.bare_metal_machine_configuration_data = cls._args_rack_definition_patch_update.bare_metal_machine_configuration_data
+            _schema.network_rack_id = cls._args_rack_definition_patch_update.network_rack_id
+            _schema.rack_location = cls._args_rack_definition_patch_update.rack_location
+            _schema.rack_serial_number = cls._args_rack_definition_patch_update.rack_serial_number
+            _schema.rack_sku_id = cls._args_rack_definition_patch_update.rack_sku_id
+            _schema.storage_appliance_configuration_data = cls._args_rack_definition_patch_update.storage_appliance_configuration_data
             return
 
-        cls._args_rack_definition_update = AAZObjectArg()
+        cls._args_rack_definition_patch_update = AAZObjectArg()
 
-        rack_definition_update = cls._args_rack_definition_update
-        rack_definition_update.availability_zone = AAZStrArg(
+        rack_definition_patch_update = cls._args_rack_definition_patch_update
+        rack_definition_patch_update.availability_zone = AAZStrArg(
             options=["availability-zone"],
-            help="The zone name used for this rack when created.",
+            help="The zone name used for this rack when created. Availability zones are used for workload placement.",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]{1,10}$",
             ),
         )
-        rack_definition_update.bare_metal_machine_configuration_data = AAZListArg(
+        rack_definition_patch_update.bare_metal_machine_configuration_data = AAZListArg(
             options=["bare-metal-machine-configuration-data"],
             help="The unordered list of bare metal machine configuration.",
         )
-        rack_definition_update.network_rack_id = AAZResourceIdArg(
+        rack_definition_patch_update.network_rack_id = AAZResourceIdArg(
             options=["network-rack-id"],
             help="The resource ID of the network rack that matches this rack definition.",
-            required=True,
         )
-        rack_definition_update.rack_location = AAZStrArg(
+        rack_definition_patch_update.rack_location = AAZStrArg(
             options=["rack-location"],
             help="The free-form description of the rack's location.",
             fmt=AAZStrArgFormat(
                 max_length=256,
             ),
         )
-        rack_definition_update.rack_serial_number = AAZStrArg(
+        rack_definition_patch_update.rack_serial_number = AAZStrArg(
             options=["rack-serial-number"],
             help="The unique identifier for the rack within Network Cloud cluster. An alternate unique alphanumeric value other than a serial number may be provided if desired.",
-            required=True,
             fmt=AAZStrArgFormat(
                 max_length=64,
                 min_length=1,
             ),
         )
-        rack_definition_update.rack_sku_id = AAZResourceIdArg(
+        rack_definition_patch_update.rack_sku_id = AAZResourceIdArg(
             options=["rack-sku-id"],
             help="The resource ID of the sku for the rack being added.",
-            required=True,
         )
-        rack_definition_update.storage_appliance_configuration_data = AAZListArg(
+        rack_definition_patch_update.storage_appliance_configuration_data = AAZListArg(
             options=["storage-appliance-configuration-data"],
             help="The list of storage appliance configuration data for this rack.",
         )
 
-        bare_metal_machine_configuration_data = cls._args_rack_definition_update.bare_metal_machine_configuration_data
+        bare_metal_machine_configuration_data = cls._args_rack_definition_patch_update.bare_metal_machine_configuration_data
         bare_metal_machine_configuration_data.Element = AAZObjectArg()
 
-        _element = cls._args_rack_definition_update.bare_metal_machine_configuration_data.Element
+        _element = cls._args_rack_definition_patch_update.bare_metal_machine_configuration_data.Element
         _element.bmc_credentials = AAZObjectArg(
             options=["bmc-credentials"],
             help="The credentials of the baseboard management controller on this bare metal machine. The password field is expected to be an Azure Key Vault key URL. Until the cluster is converted to utilize managed identity by setting the secret archive settings, the actual password value should be provided instead.",
-            required=True,
         )
-        cls._build_args_administrative_credentials_update(_element.bmc_credentials)
+        cls._build_args_administrative_credentials_patch_update(_element.bmc_credentials)
         _element.bmc_mac_address = AAZStrArg(
             options=["bmc-mac-address"],
             help="The MAC address of the BMC for this machine.",
-            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$",
             ),
@@ -511,7 +494,6 @@ class Update(AAZCommand):
         _element.boot_mac_address = AAZStrArg(
             options=["boot-mac-address"],
             help="The MAC address associated with the PXE NIC card.",
-            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$",
             ),
@@ -533,7 +515,6 @@ class Update(AAZCommand):
         _element.rack_slot = AAZIntArg(
             options=["rack-slot"],
             help="The slot the physical machine is in the rack based on the BOM configuration.",
-            required=True,
             fmt=AAZIntArgFormat(
                 maximum=256,
                 minimum=1,
@@ -542,26 +523,23 @@ class Update(AAZCommand):
         _element.serial_number = AAZStrArg(
             options=["serial-number"],
             help="The serial number of the machine. Hardware suppliers may use an alternate value. For example, service tag.",
-            required=True,
             fmt=AAZStrArgFormat(
                 max_length=64,
             ),
         )
 
-        storage_appliance_configuration_data = cls._args_rack_definition_update.storage_appliance_configuration_data
+        storage_appliance_configuration_data = cls._args_rack_definition_patch_update.storage_appliance_configuration_data
         storage_appliance_configuration_data.Element = AAZObjectArg()
 
-        _element = cls._args_rack_definition_update.storage_appliance_configuration_data.Element
+        _element = cls._args_rack_definition_patch_update.storage_appliance_configuration_data.Element
         _element.admin_credentials = AAZObjectArg(
             options=["admin-credentials"],
-            help="The credentials of the administrative interface on this storage appliance.",
-            required=True,
+            help="The credentials of the administrative interface on this storage appliance. The password field is expected to be an Azure Key Vault key URL. Until the cluster is converted to utilize managed identity by setting the secret archive settings, the actual password value should be provided instead.",
         )
-        cls._build_args_administrative_credentials_update(_element.admin_credentials)
+        cls._build_args_administrative_credentials_patch_update(_element.admin_credentials)
         _element.rack_slot = AAZIntArg(
             options=["rack-slot"],
             help="The slot that storage appliance is in the rack based on the BOM configuration.",
-            required=True,
             fmt=AAZIntArgFormat(
                 maximum=256,
                 minimum=1,
@@ -570,7 +548,6 @@ class Update(AAZCommand):
         _element.serial_number = AAZStrArg(
             options=["serial-number"],
             help="The serial number of the appliance.",
-            required=True,
         )
         _element.storage_appliance_name = AAZStrArg(
             options=["storage-appliance-name"],
@@ -580,13 +557,13 @@ class Update(AAZCommand):
             ),
         )
 
-        _schema.availability_zone = cls._args_rack_definition_update.availability_zone
-        _schema.bare_metal_machine_configuration_data = cls._args_rack_definition_update.bare_metal_machine_configuration_data
-        _schema.network_rack_id = cls._args_rack_definition_update.network_rack_id
-        _schema.rack_location = cls._args_rack_definition_update.rack_location
-        _schema.rack_serial_number = cls._args_rack_definition_update.rack_serial_number
-        _schema.rack_sku_id = cls._args_rack_definition_update.rack_sku_id
-        _schema.storage_appliance_configuration_data = cls._args_rack_definition_update.storage_appliance_configuration_data
+        _schema.availability_zone = cls._args_rack_definition_patch_update.availability_zone
+        _schema.bare_metal_machine_configuration_data = cls._args_rack_definition_patch_update.bare_metal_machine_configuration_data
+        _schema.network_rack_id = cls._args_rack_definition_patch_update.network_rack_id
+        _schema.rack_location = cls._args_rack_definition_patch_update.rack_location
+        _schema.rack_serial_number = cls._args_rack_definition_patch_update.rack_serial_number
+        _schema.rack_sku_id = cls._args_rack_definition_patch_update.rack_sku_id
+        _schema.storage_appliance_configuration_data = cls._args_rack_definition_patch_update.storage_appliance_configuration_data
 
     def _execute_operations(self):
         self.pre_operations()
@@ -721,7 +698,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                _UpdateHelper._build_schema_rack_definition_update(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition"))
+                _UpdateHelper._build_schema_rack_definition_patch_update(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition"))
                 properties.set_prop("analyticsOutputSettings", AAZObjectType, ".analytics_output_settings", typ_kwargs={"nullable": True})
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
                 properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal", typ_kwargs={"nullable": True})
@@ -745,10 +722,10 @@ class Update(AAZCommand):
 
             cluster_service_principal = _builder.get(".properties.clusterServicePrincipal")
             if cluster_service_principal is not None:
-                cluster_service_principal.set_prop("applicationId", AAZStrType, ".application_id", typ_kwargs={"flags": {"required": True}})
+                cluster_service_principal.set_prop("applicationId", AAZStrType, ".application_id")
                 cluster_service_principal.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
-                cluster_service_principal.set_prop("principalId", AAZStrType, ".principal_id", typ_kwargs={"flags": {"required": True}})
-                cluster_service_principal.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+                cluster_service_principal.set_prop("principalId", AAZStrType, ".principal_id")
+                cluster_service_principal.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             command_output_settings = _builder.get(".properties.commandOutputSettings")
             if command_output_settings is not None:
@@ -778,13 +755,13 @@ class Update(AAZCommand):
 
             compute_deployment_threshold = _builder.get(".properties.computeDeploymentThreshold")
             if compute_deployment_threshold is not None:
-                compute_deployment_threshold.set_prop("grouping", AAZStrType, ".grouping", typ_kwargs={"flags": {"required": True}})
-                compute_deployment_threshold.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                compute_deployment_threshold.set_prop("value", AAZIntType, ".value", typ_kwargs={"flags": {"required": True}})
+                compute_deployment_threshold.set_prop("grouping", AAZStrType, ".grouping")
+                compute_deployment_threshold.set_prop("type", AAZStrType, ".type")
+                compute_deployment_threshold.set_prop("value", AAZIntType, ".value")
 
             compute_rack_definitions = _builder.get(".properties.computeRackDefinitions")
             if compute_rack_definitions is not None:
-                _UpdateHelper._build_schema_rack_definition_update(compute_rack_definitions.set_elements(AAZObjectType, "."))
+                _UpdateHelper._build_schema_rack_definition_patch_update(compute_rack_definitions.set_elements(AAZObjectType, "."))
 
             runtime_protection_configuration = _builder.get(".properties.runtimeProtectionConfiguration")
             if runtime_protection_configuration is not None:
@@ -804,9 +781,9 @@ class Update(AAZCommand):
             update_strategy = _builder.get(".properties.updateStrategy")
             if update_strategy is not None:
                 update_strategy.set_prop("maxUnavailable", AAZIntType, ".max_unavailable")
-                update_strategy.set_prop("strategyType", AAZStrType, ".strategy_type", typ_kwargs={"flags": {"required": True}})
-                update_strategy.set_prop("thresholdType", AAZStrType, ".threshold_type", typ_kwargs={"flags": {"required": True}})
-                update_strategy.set_prop("thresholdValue", AAZIntType, ".threshold_value", typ_kwargs={"flags": {"required": True}})
+                update_strategy.set_prop("strategyType", AAZStrType, ".strategy_type")
+                update_strategy.set_prop("thresholdType", AAZStrType, ".threshold_type")
+                update_strategy.set_prop("thresholdValue", AAZIntType, ".threshold_value")
                 update_strategy.set_prop("waitTimeMinutes", AAZIntType, ".wait_time_minutes")
 
             vulnerability_scanning_settings = _builder.get(".properties.vulnerabilityScanningSettings")
@@ -1296,22 +1273,22 @@ class _UpdateHelper:
     """Helper class for Update"""
 
     @classmethod
-    def _build_schema_administrative_credentials_update(cls, _builder):
+    def _build_schema_administrative_credentials_patch_update(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
-        _builder.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("username", AAZStrType, ".username")
 
     @classmethod
-    def _build_schema_rack_definition_update(cls, _builder):
+    def _build_schema_rack_definition_patch_update(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("availabilityZone", AAZStrType, ".availability_zone")
         _builder.set_prop("bareMetalMachineConfigurationData", AAZListType, ".bare_metal_machine_configuration_data")
-        _builder.set_prop("networkRackId", AAZStrType, ".network_rack_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("networkRackId", AAZStrType, ".network_rack_id")
         _builder.set_prop("rackLocation", AAZStrType, ".rack_location")
-        _builder.set_prop("rackSerialNumber", AAZStrType, ".rack_serial_number", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("rackSkuId", AAZStrType, ".rack_sku_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("rackSerialNumber", AAZStrType, ".rack_serial_number")
+        _builder.set_prop("rackSkuId", AAZStrType, ".rack_sku_id")
         _builder.set_prop("storageApplianceConfigurationData", AAZListType, ".storage_appliance_configuration_data")
 
         bare_metal_machine_configuration_data = _builder.get(".bareMetalMachineConfigurationData")
@@ -1320,13 +1297,13 @@ class _UpdateHelper:
 
         _elements = _builder.get(".bareMetalMachineConfigurationData[]")
         if _elements is not None:
-            cls._build_schema_administrative_credentials_update(_elements.set_prop("bmcCredentials", AAZObjectType, ".bmc_credentials", typ_kwargs={"flags": {"required": True}}))
-            _elements.set_prop("bmcMacAddress", AAZStrType, ".bmc_mac_address", typ_kwargs={"flags": {"required": True}})
-            _elements.set_prop("bootMacAddress", AAZStrType, ".boot_mac_address", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_administrative_credentials_patch_update(_elements.set_prop("bmcCredentials", AAZObjectType, ".bmc_credentials"))
+            _elements.set_prop("bmcMacAddress", AAZStrType, ".bmc_mac_address")
+            _elements.set_prop("bootMacAddress", AAZStrType, ".boot_mac_address")
             _elements.set_prop("machineDetails", AAZStrType, ".machine_details")
             _elements.set_prop("machineName", AAZStrType, ".machine_name")
-            _elements.set_prop("rackSlot", AAZIntType, ".rack_slot", typ_kwargs={"flags": {"required": True}})
-            _elements.set_prop("serialNumber", AAZStrType, ".serial_number", typ_kwargs={"flags": {"required": True}})
+            _elements.set_prop("rackSlot", AAZIntType, ".rack_slot")
+            _elements.set_prop("serialNumber", AAZStrType, ".serial_number")
 
         storage_appliance_configuration_data = _builder.get(".storageApplianceConfigurationData")
         if storage_appliance_configuration_data is not None:
@@ -1334,9 +1311,9 @@ class _UpdateHelper:
 
         _elements = _builder.get(".storageApplianceConfigurationData[]")
         if _elements is not None:
-            cls._build_schema_administrative_credentials_update(_elements.set_prop("adminCredentials", AAZObjectType, ".admin_credentials", typ_kwargs={"flags": {"required": True}}))
-            _elements.set_prop("rackSlot", AAZIntType, ".rack_slot", typ_kwargs={"flags": {"required": True}})
-            _elements.set_prop("serialNumber", AAZStrType, ".serial_number", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_administrative_credentials_patch_update(_elements.set_prop("adminCredentials", AAZObjectType, ".admin_credentials"))
+            _elements.set_prop("rackSlot", AAZIntType, ".rack_slot")
+            _elements.set_prop("serialNumber", AAZStrType, ".serial_number")
             _elements.set_prop("storageApplianceName", AAZStrType, ".storage_appliance_name")
 
     _schema_administrative_credentials_read = None
