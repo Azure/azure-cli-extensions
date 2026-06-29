@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long, too-many-locals
 
 from knack.log import get_logger
-from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 
@@ -56,14 +56,27 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
                        resource=resource)
 
 
+def _parse_restore_time(restore_time):
+    if restore_time is None:
+        return None
+    from dateutil import parser
+    try:
+        return parser.parse(restore_time)
+    except (ValueError, OverflowError):
+        raise InvalidArgumentValueError(
+            "The restore time value has an incorrect date format. "
+            "Please use ISO8601 format, e.g., 2024-04-26T02:10:00+00:00.")
+
+
 def horizondb_cluster_restore(client, resource_group_name, cluster_name, source_cluster,
-                              tags=None, no_wait=False):
+                              restore_time=None, tags=None, no_wait=False):
     from azext_horizondb.vendored_sdks.models import HorizonDbCluster, HorizonDbClusterProperties
 
     source_cluster_resource = _resolve_source_cluster(client, resource_group_name, source_cluster)
     properties = HorizonDbClusterProperties(
         create_mode="PointInTimeRestore",
         source_cluster_resource_id=source_cluster_resource.id,
+        point_in_time_utc=_parse_restore_time(restore_time),
     )
 
     resource = HorizonDbCluster(

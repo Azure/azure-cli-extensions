@@ -43,6 +43,8 @@ examples:
     text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster sourcecluster
   - name: Restore a HorizonDB cluster from a source cluster using resource ID.
     text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/examplerg/providers/Microsoft.HorizonDB/clusters/sourcecluster
+  - name: Restore a HorizonDB cluster to a specific point in time.
+    text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster sourcecluster --restore-time "2024-04-26T02:10:00+00:00"
 """
 
 
