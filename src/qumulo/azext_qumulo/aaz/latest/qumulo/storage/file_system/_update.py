@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a FileSystemResource
+
+    :example: Update tags for a Qumulo file system.
+        az qumulo storage file-system update -g <resource-group> -n <file-system-name> --tags "{updatedBy:scenario}"
     """
 
     _aaz_info = {

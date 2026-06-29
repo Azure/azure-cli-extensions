@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
+
+    :example: Assign a system managed identity to a Qumulo file system.
+        az qumulo storage file-system identity assign -g <resource-group> -n <file-system-name> --system-assigned
     """
 
     _aaz_info = {
