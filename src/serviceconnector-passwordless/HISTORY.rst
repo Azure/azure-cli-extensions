@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.3.7
+++++++
+* Update internal argument for `az postgres flexible-server db show` command from `--database-name` to `--name`.
+
 3.3.6
 ++++++
 * Some improvements.
