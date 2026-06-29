@@ -35,7 +35,7 @@ def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name
     # Generate missing parameters
     resource_group_name, cluster_name, location = generate_missing_cluster_parameters(cmd, resource_group_name, cluster_name,
                                                                                       location)
-    
+
     if version is None:
         version = HORIZONDB_VERSION_DEFAULT
 
