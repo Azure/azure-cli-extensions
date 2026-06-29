@@ -17,5 +17,6 @@ az extension add --name horizondb
 *Commands:*
 
 - `az horizondb create`: Create a new Azure HorizonDB cluster.
+- `az horizondb restore`: Restore a HorizonDB cluster from a source cluster.
 - `az horizondb delete`: Delete an Azure HorizonDB cluster.
 - `az horizondb show`: Show details of an Azure HorizonDB cluster.

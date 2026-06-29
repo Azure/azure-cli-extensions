@@ -23,6 +23,7 @@ def load_command_table(self, _):
                             custom_command_type=custom_commands,
                             client_factory=cf_horizondb_clusters) as g:
         g.custom_command('create', 'horizondb_cluster_create', table_transformer=table_transform_output)
+        g.custom_command('restore', 'horizondb_cluster_restore', supports_no_wait=True)
         g.custom_command('update', 'horizondb_cluster_update', supports_no_wait=True)
         g.custom_command('delete', 'horizondb_cluster_delete')
         g.custom_command('list', 'horizondb_cluster_list')
