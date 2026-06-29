@@ -83,6 +83,16 @@ def load_arguments(self, _):
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
 
+    with self.argument_context('ssh cert-create') as c:
+        c.argument('vault_name', options_list=['--vault-name', '-v'],
+                   help='Name of the Azure Key Vault that holds the private CA signing key (ssh-ca).',
+                   required=True)
+        c.argument('resource_id', options_list=['--resource-id', '-r'],
+                   help='Fully qualified ARM resource ID of the ProvisionedMachine. '
+                        'Used to determine the user\'s RBAC role (Reader/Contributor/Admin) '
+                        'via PIM-based JIT access.',
+                   required=True)
+
     with self.argument_context('ssh arc') as c:
         c.argument('vm_name', options_list=['--vm-name', '--name', '-n'], help='The name of the Arc Server')
         c.argument('public_key_file', options_list=['--public-key-file', '-p'], help='The RSA public key file path')
