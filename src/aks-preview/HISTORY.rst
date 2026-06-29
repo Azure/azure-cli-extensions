@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Fix `TypeError: 'NoneType' object is not iterable` crash when creating AKS Automatic clusters with `--enable-hosted-system` (HoBO). The `agent_pool_profiles` field may be None for hosted system pool clusters.
 
 21.0.0b7
 ++++++++
