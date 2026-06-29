@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.2.1
+++++++
+Updated `--distro` help text and examples to list all currently supported distros and document custom URN support
+
 2.2.0
 ++++++
 Adding `--tags` parameter to `vm repair create` and `vm repair repair-and-restore` commands to allow users to tag the repair VM for organizational requirements

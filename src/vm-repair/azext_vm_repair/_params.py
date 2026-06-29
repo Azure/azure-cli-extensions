@@ -32,7 +32,7 @@ def load_arguments(self, _):
         c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password. The \'--unlock-encrypted-vm\' parameter must be used to use this parameter.')
         c.argument('enable_nested', help='enable nested hyperv.')
         c.argument('associate_public_ip', help='Option to create a repair vm with a public ip. If this parameter is not used, only a private ip will be made.')
-        c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
+        c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|rhel9|rhel10|ubuntu20|ubuntu22|ubuntu24|centos6|centos7|centos8|oracle7|oracle8|oracle9|oracle10|sles12|sles15). A custom URN can also be provided in the format Publisher:Offer:Sku:Version.')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
         c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
