@@ -49,7 +49,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         version_arg_type = CLIArgumentType(
             options_list=['--version', '-v'],
-            help='The version of the HorizonDb cluster.')
+            help='Specifies the PostgreSQL major version.')
 
         replica_count_arg_type = CLIArgumentType(
             options_list=['--replica-count'],

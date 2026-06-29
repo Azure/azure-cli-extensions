@@ -76,7 +76,7 @@ helps['horizondb parameter-group create'] = """
 type: command
 short-summary: Create a new Azure HorizonDB parameter group.
 examples:
-  - name: Create a HorizonDB parameter group with custom parameter values. Parameters you do not specify inherit the PostgreSQL defaults.
+  - name: Create a HorizonDB parameter group with custom parameter values. Unspecified parameters inherit the default PostgreSQL values.
     text: az horizondb parameter-group create --name examplegroup --resource-group exampleresourcegroup --location centralus --pg-version 17 --parameters max_connections=200 shared_buffers=2048 work_mem=8192
   - name: Create a HorizonDB parameter group that applies parameters immediately.
     text: az horizondb parameter-group create --name examplegroup --resource-group exampleresourcegroup --location centralus --pg-version 17 --parameters maintenance_work_mem=262144 --apply-immediately true --description "Tuned for faster maintenance"

@@ -25,6 +25,9 @@ def load_command_table(self, _):
 
     custom_commands = CliCommandType(
         operations_tmpl='azext_horizondb.commands.custom_commands#{}')
+
+    parameter_group_commands = CliCommandType(
+        operations_tmpl='azext_horizondb.commands.parameter_group_commands#{}')
     with self.command_group('horizondb', horizondb_clusters_sdk,
                             custom_command_type=custom_commands,
                             client_factory=cf_horizondb_clusters) as g:
@@ -35,7 +38,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
 
     with self.command_group('horizondb parameter-group', horizondb_parameter_groups_sdk,
-                            custom_command_type=custom_commands,
+                            custom_command_type=parameter_group_commands,
                             client_factory=cf_horizondb_parameter_groups) as g:
         g.custom_command('create', 'horizondb_parameter_group_create', supports_no_wait=True)
         g.custom_command('delete', 'horizondb_parameter_group_delete', supports_no_wait=True)
