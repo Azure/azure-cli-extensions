@@ -1,0 +1,72 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1/namespaces/test/activedirectoryconnectors/arcadcauto
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","metadata":{"creationTimestamp":"2022-09-23T19:35:09Z","generation":1,"labels":{"management.azure.com/resourceProvider":"Microsoft.AzureArcData"},"managedFields":[{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:activeDirectory":{".":{},"f:domainControllers":{".":{},"f:primaryDomainController":{".":{},"f:hostname":{}},"f:secondaryDomainControllers":{}},"f:domainServiceAccountSecret":{},"f:netbiosDomainName":{},"f:ouDistinguishedName":{},"f:realm":{},"f:serviceAccountProvisioning":{}},"f:dns":{".":{},"f:domainName":{},"f:nameserverIPAddresses":{},"f:preferK8sDnsForPtrLookups":{},"f:replicas":{}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T19:35:09Z"},{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{".":{},"f:lastUpdateTime":{},"f:observedGeneration":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T19:35:09Z"}],"name":"arcadcauto","namespace":"test","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v5","controller":true,"kind":"DataController","name":"datacontroller-ravpate-4881c1a57","uid":"edd415e9-6395-417c-b169-996b47e4de3d"}],"resourceVersion":"1299752","uid":"f59a9af6-8977-4a67-acba-7f386e0e950e"},"spec":{"activeDirectory":{"domainControllers":{"primaryDomainController":{"hostname":"dc1.contoso.local"},"secondaryDomainControllers":[{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"},{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"}]},"domainServiceAccountSecret":"arcadc-domain-service-account-secret","netbiosDomainName":"CONTOSO","ouDistinguishedName":"OU=arcou,DC=contoso,DC=local","realm":"CONTOSO.LOCAL","serviceAccountProvisioning":"automatic"},"dns":{"domainName":"contoso.local","nameserverIPAddresses":["11.11.111.111","22.22.222.222"],"preferK8sDnsForPtrLookups":false,"replicas":2}},"status":{"lastUpdateTime":"2022-09-23T19:35:09.404509Z","observedGeneration":1,"state":"Creating"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 19:35:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "arcdata.microsoft.com/v1", "kind": "ActiveDirectoryConnector",
+      "spec": {"activeDirectory": {"domainControllers": {"primaryDomainController":
+      {"hostname": "newdc.contoso.local"}, "secondaryDomainControllers": [{"hostname":
+      "dc2.contoso.local"}, {"hostname": "dc3.contoso.local"}, {"hostname": "dc2.contoso.local"},
+      {"hostname": "dc3.contoso.local"}, {"hostname": "dc2.contoso.local"}, {"hostname":
+      "dc3.contoso.local"}, {"hostname": "dc2.contoso.local"}, {"hostname": "dc3.contoso.local"}]}}},
+      "metadata": {"name": "arcadcauto", "namespace": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1/namespaces/test/activedirectoryconnectors/arcadcauto
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","metadata":{"creationTimestamp":"2022-09-23T19:35:09Z","generation":2,"labels":{"management.azure.com/resourceProvider":"Microsoft.AzureArcData"},"managedFields":[{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:activeDirectory":{".":{},"f:domainControllers":{".":{},"f:primaryDomainController":{".":{},"f:hostname":{}},"f:secondaryDomainControllers":{}},"f:domainServiceAccountSecret":{},"f:netbiosDomainName":{},"f:ouDistinguishedName":{},"f:realm":{},"f:serviceAccountProvisioning":{}},"f:dns":{".":{},"f:domainName":{},"f:nameserverIPAddresses":{},"f:preferK8sDnsForPtrLookups":{},"f:replicas":{}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T19:35:09Z"},{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{".":{},"f:lastUpdateTime":{},"f:observedGeneration":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T19:35:09Z"}],"name":"arcadcauto","namespace":"test","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v5","controller":true,"kind":"DataController","name":"datacontroller-ravpate-4881c1a57","uid":"edd415e9-6395-417c-b169-996b47e4de3d"}],"resourceVersion":"1299754","uid":"f59a9af6-8977-4a67-acba-7f386e0e950e"},"spec":{"activeDirectory":{"domainControllers":{"primaryDomainController":{"hostname":"newdc.contoso.local"},"secondaryDomainControllers":[{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"},{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"},{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"},{"hostname":"dc2.contoso.local"},{"hostname":"dc3.contoso.local"}]},"domainServiceAccountSecret":"arcadc-domain-service-account-secret","netbiosDomainName":"CONTOSO","ouDistinguishedName":"OU=arcou,DC=contoso,DC=local","realm":"CONTOSO.LOCAL","serviceAccountProvisioning":"automatic"},"dns":{"domainName":"contoso.local","nameserverIPAddresses":["11.11.111.111","22.22.222.222"],"preferK8sDnsForPtrLookups":false,"replicas":2}},"status":{"lastUpdateTime":"2022-09-23T19:35:09.404509Z","observedGeneration":1,"state":"Creating"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 19:35:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+version: 1

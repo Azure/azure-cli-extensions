@@ -1,0 +1,17 @@
+[flake8]
+max-line-length = 81
+max-complexity = 10
+ignore =
+    E722,  # bare except, bad practice, to be removed in the future
+    F401,  # imported but unused, too many violations, to be removed in the future
+    F811,  # redefinition of unused, to be removed in the future
+    C901,  # code flow is too complex, too many violations, to be removed in the future
+    W504,  # line break after binary operator effect on readability is subjective
+    W503   # line break before binary operator
+exclude = 
+    build
+    tools
+    scripts
+    doc
+    build_scripts
+	*/test/*

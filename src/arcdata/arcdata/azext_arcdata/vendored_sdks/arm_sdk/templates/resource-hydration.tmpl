@@ -1,0 +1,19 @@
+{
+  "type": "Microsoft.ExtendedLocation/customLocations/resourceSyncRules",
+  "apiVersion": "[parameters('resourceSyncApiVersion')]",
+  "name": "[concat(parameters('resourceName_3'), '/', parameters('resourceSyncRuleName'))]",
+  "location": "[parameters('location_3')]",
+  "properties": {
+    "targetResourceGroup": "[parameters('resourceSyncTargetResourceGroup')]",
+    "priority": "[parameters('resourceSyncRulePriority')]",
+    "selector": {
+      "matchLabels": "[parameters('resourceSyncMatchLabels')]"
+    }
+  }
+  {%- if resource.dependsOn %}
+  ,
+  "dependsOn": [
+    "[parameters('{{resource.dependsOn}}')]"
+  ]
+  {% endif %}
+}

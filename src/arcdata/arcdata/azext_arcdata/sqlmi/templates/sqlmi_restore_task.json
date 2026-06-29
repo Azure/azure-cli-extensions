@@ -1,0 +1,18 @@
+{
+  "apiVersion": "tasks.sql.arcdata.microsoft.com/v1",
+  "kind": "SqlManagedInstanceRestoreTask",
+  "metadata": {
+    "name": "sql01-restore-to-sql01test"
+  },
+  "spec": {
+    "source": {
+      "name": "sql01",
+      "database": "db01"
+    },
+    "restorePoint": "2021-01-01T02:00:00Z",
+    "destination": {
+      "name": "sql01test",
+      "database": "db01"
+    }
+  }
+}

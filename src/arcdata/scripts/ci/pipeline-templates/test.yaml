@@ -1,0 +1,53 @@
+# This Yaml Document has been converted by ESAI Yaml Pipeline Conversion Tool.
+# Please make sure to check all the converted content, it is your team's responsibility to make sure that the pipeline is still valid and functions as expected.
+stages:
+
+
+- stage: UnitTests
+  jobs:
+  - job: UnitTestsOnWindows
+    displayName: 'Windows'
+    pool:
+      type: windows
+    variables:
+    - name: ob_outputDirectory
+      value: '$(Build.ArtifactStagingDirectory)/ONEBRANCH_ARTIFACT'
+    steps:
+    - task: PipAuthenticate@1
+      displayName: Authenticate to Artifacts (pip)
+      inputs:
+        artifactFeeds: 'Tina/Tina_PublicPackages'
+    - task: CmdLine@2
+      displayName: 'Run unit-tests'
+      inputs:
+        script: scripts\ci\unit-tests\pipeline-windows.cmd
+        workingDirectory: $(Build.SourcesCliDirectory)
+      env:
+        BUILD_STAGINGDIRECTORY: $(Build.ArtifactStagingDirectory)
+        TOX_ENV: py312
+        PAT_TOKEN: $(System.AccessToken) 
+  - job: UnitTestsOnLinux
+    displayName: 'Linux'
+    dependsOn: UnitTestsOnWindows
+    condition: succeeded()
+    pool:
+      type: linux
+    variables:
+    - name: ob_outputDirectory
+      value: '$(Build.ArtifactStagingDirectory)/ONEBRANCH_ARTIFACT'
+    - name: ob_sdl_codeql_compiled_enabled
+      value: false
+    steps:
+    - task: PipAuthenticate@1
+      displayName: Authenticate to Artifacts (pip)
+      inputs:
+        artifactFeeds: 'Tina/Tina_PublicPackages'
+    - task: CmdLine@2
+      displayName: 'Run unit-tests'
+      inputs:
+        script: scripts/ci/unit-tests/pipeline-linux.sh
+        workingDirectory: $(Build.SourcesCliDirectory)
+      env:
+        BUILD_STAGINGDIRECTORY: $(Build.ArtifactStagingDirectory)
+        TOX_ENV: py312
+        PAT_TOKEN: $(System.AccessToken)  
