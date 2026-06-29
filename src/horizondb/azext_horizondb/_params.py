@@ -40,16 +40,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
                 name='cluster_name',
                 actions=[LocalContextAction.SET, LocalContextAction.GET],
                 scopes=['horizondb']))
-        cluster_name_no_id_arg_type = CLIArgumentType(
-            metavar='NAME',
-            options_list=['--name', '-n'],
-            id_part=None,
-            help="Name of the cluster. The name can contain only lowercase letters, numbers, and the hyphen (-) character. Minimum 3 characters and maximum 63 characters.",
-            local_context_attribute=LocalContextAttribute(
-                name='cluster_name',
-                actions=[LocalContextAction.SET, LocalContextAction.GET],
-                scopes=['horizondb']))
-
         administrator_login_arg_type = CLIArgumentType(
             options_list=['--administrator-login', '-u'],
             help='The administrator login name for the cluster.',

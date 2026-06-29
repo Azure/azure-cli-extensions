@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 from azure.cli.core import get_default_cli
+from azure.cli.testsdk import ScenarioTest
 from knack.util import CLIError
 
 from azext_horizondb import HorizonDBCommandsLoader
@@ -17,6 +18,58 @@ from azext_horizondb.utils.validators import validate_private_endpoint_connectio
 from azext_horizondb.vendored_sdks.operations._operations import (
     build_horizon_db_private_endpoint_connections_delete_request,
     build_horizon_db_private_endpoint_connections_update_request)
+
+
+class HorizonDBPrivateEndpointScenarioTest(ScenarioTest):
+
+    def test_horizondb_private_endpoint_command_scenario(self):
+        resource_group = 'clitest.rg000001'
+        cluster_name = 'horizondbclitest-000002'
+        group_name = 'DefaultPool'
+        connection_name = 'test-connection'
+        pec_id = (
+            '/subscriptions/00000000-0000-0000-0000-000000000000'
+            '/resourceGroups/{}/providers/Microsoft.HorizonDb/clusters/{}'
+            '/privateEndpointConnections/{}').format(resource_group, cluster_name, connection_name)
+
+        self.cmd('horizondb private-link-resource list -g {} --cluster-name {}'.format(
+            resource_group, cluster_name), checks=[
+                self.check('length(@)', 1),
+                self.check('[0].properties.groupId', group_name),
+                self.check('[0].properties.requiredMembers', ['rw', 'ro'])
+            ])
+        self.cmd('horizondb private-link-resource show -g {} --cluster-name {} --group-name {}'.format(
+            resource_group, cluster_name, group_name), checks=[
+                self.check('properties.groupId', group_name),
+                self.check('properties.requiredZoneNames[0]', 'privatelink.horizondb.azure.com')
+            ])
+
+        self.cmd('horizondb private-endpoint-connection list -g {} --cluster-name {}'.format(
+            resource_group, cluster_name), checks=[
+                self.check('length(@)', 1),
+                self.check('[0].id', pec_id),
+                self.check('[0].properties.privateLinkServiceConnectionState.status', 'Pending')
+            ])
+        self.cmd('horizondb private-endpoint-connection show -g {} --cluster-name {} --name {}'.format(
+            resource_group, cluster_name, connection_name), checks=[
+                self.check('id', pec_id),
+                self.check('properties.privateLinkServiceConnectionState.status', 'Pending')
+            ])
+        self.cmd('horizondb private-endpoint-connection show --id {}'.format(pec_id), checks=[
+            self.check('id', pec_id),
+            self.check('properties.privateLinkServiceConnectionState.status', 'Pending')
+        ])
+
+        self.cmd('horizondb private-endpoint-connection approve -g {} --cluster-name {} --name {} '
+                 '--description "Approved"'.format(resource_group, cluster_name, connection_name), checks=[
+                     self.check('properties.privateLinkServiceConnectionState.status', 'Approved'),
+                     self.check('properties.privateLinkServiceConnectionState.description', 'Approved')
+                 ])
+        self.cmd('horizondb private-endpoint-connection reject --id {} --description "Rejected"'.format(pec_id), checks=[
+            self.check('properties.privateLinkServiceConnectionState.status', 'Rejected'),
+            self.check('properties.privateLinkServiceConnectionState.description', 'Rejected')
+        ])
+        self.cmd('horizondb private-endpoint-connection delete --id {}'.format(pec_id))
 
 
 class HorizonDBPrivateEndpointCommandTests(unittest.TestCase):
@@ -37,7 +90,11 @@ class HorizonDBPrivateEndpointCommandTests(unittest.TestCase):
             loader.load_arguments(None)
 
             resource_group_arg = loader.argument_registry.arguments[command]['resource_group_name']
+            cluster_name_arg = loader.argument_registry.arguments[command]['cluster_name']
+            connection_name_arg = loader.argument_registry.arguments[command]['private_endpoint_connection_name']
             self.assertFalse(resource_group_arg.settings['required'], command)
+            self.assertEqual(['--cluster-name', '-c'], cluster_name_arg.settings['options_list'])
+            self.assertEqual(['--name', '-n'], connection_name_arg.settings['options_list'])
 
     def test_child_list_commands_do_not_register_generic_ids_arguments(self):
         commands = [

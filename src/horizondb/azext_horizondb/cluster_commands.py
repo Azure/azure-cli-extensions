@@ -47,7 +47,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'horizondb_cluster_delete')
         g.custom_command('list', 'horizondb_cluster_list')
         g.show_command('show', 'get')
-        g.wait_command('wait')
 
     with self.command_group('horizondb firewall-rule', firewall_rule_custom,
                             custom_command_type=firewall_rule_custom,
