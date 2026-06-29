@@ -4,7 +4,23 @@
 # --------------------------------------------------------------------------------------------
 
 
+import json
+
 from .scenario_mixin import add_tags
+
+
+def _json_arg(value):
+    if value is None:
+        return 'null'
+    return "'{}'".format(json.dumps(value, separators=(',', ':')))
+
+
+def _to_bool(value):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return None
+    return str(value).lower() == 'true'
 
 
 def _add_paramter_if_needed(command, paramter_name, parameter_value):
@@ -14,8 +30,78 @@ def _add_paramter_if_needed(command, paramter_name, parameter_value):
     return command
 
 
+def _escape_format_placeholders(command, format_placeholders=None):
+    format_placeholders = format_placeholders or {}
+
+    def _find_escaped_placeholder_end(start):
+        depth = 0
+        index = start
+        while index + 1 < len(command):
+            token = command[index:index + 2]
+            if token == '{{':
+                depth += 1
+                index += 2
+                continue
+            if token == '}}':
+                depth -= 1
+                index += 2
+                if depth == 0:
+                    return index
+                continue
+            index += 1
+        return None
+
+    def _find_format_placeholder_end(start):
+        index = start + 1
+        while index < len(command):
+            current = command[index]
+            if current == '{':
+                return None
+            if current == '}':
+                field = command[start + 1:index]
+                field_name = field.split('!', 1)[0].split(':', 1)[0].split('.', 1)[0].split('[', 1)[0]
+                if field_name in format_placeholders:
+                    return index + 1
+                return None
+            index += 1
+        return None
+
+    escaped = []
+    index = 0
+    while index < len(command):
+        current = command[index]
+        next_char = command[index + 1] if index + 1 < len(command) else None
+        if current == '{' and next_char == '{':
+            end = _find_escaped_placeholder_end(index)
+            if end is not None:
+                escaped.append(command[index:end])
+                index = end
+            else:
+                escaped.append('{{')
+                index += 1
+        elif current == '{':
+            end = _find_format_placeholder_end(index)
+            if end is not None:
+                escaped.append(command[index:end])
+                index = end
+            else:
+                escaped.append('{{')
+                index += 1
+        elif current == '}':
+            escaped.append('}}')
+            index += 1
+        else:
+            escaped.append(current)
+            index += 1
+    return ''.join(escaped)
+
+
 # pylint: disable=too-many-public-methods
 class CdnAfdScenarioMixin:
+    def cmd(self, command, checks=None, expect_failure=False):
+        return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
+                           expect_failure=expect_failure)
+
     def afd_profile_create_cmd(self, resource_group_name, profile_name, tags=None, checks=None, options=None,
                                sku="Standard_AzureFrontDoor", expect_failure=False):
         command = f'afd profile create -g {resource_group_name} --profile-name {profile_name} --sku {sku}'
@@ -151,7 +237,7 @@ class CdnAfdScenarioMixin:
     def afd_rule_add_condition_cmd(self, resource_group_name, rule_set_name, rule_name, profile_name, checks=None,
                                    options=None):
         command = f'afd rule condition add -g {resource_group_name} --rule-set-name {rule_set_name} ' \
-                  f'--profile-name {profile_name} --rule-name {rule_name}'
+              f'--profile-name {profile_name} --rule-name {rule_name}'
         if options:
             command = command + ' ' + options
         return self.cmd(command, checks)
@@ -159,7 +245,7 @@ class CdnAfdScenarioMixin:
     def afd_rule_add_action_cmd(self, resource_group_name, rule_set_name, rule_name, profile_name, checks=None,
                                 options=None):
         command = f'afd rule action add -g {resource_group_name} --rule-set-name {rule_set_name} ' \
-                  f'--profile-name {profile_name} --rule-name {rule_name}'
+              f'--profile-name {profile_name} --rule-name {rule_name}'
         if options:
             command = command + ' ' + options
         return self.cmd(command, checks)
@@ -174,16 +260,20 @@ class CdnAfdScenarioMixin:
 
     def afd_rule_remove_condition_cmd(self, resource_group_name, rule_set_name, rule_name, profile_name, index,
                                       checks=None, options=None):
+        existing = self.afd_rule_show_cmd(resource_group_name, rule_set_name, rule_name, profile_name).get_output_in_json()
+        condition_name = existing['conditions'][index]['name']
         command = f'afd rule condition remove -g {resource_group_name} --rule-set-name {rule_set_name} ' \
-                  f'--profile-name {profile_name} --rule-name {rule_name} --index {index}'
+                  f'--profile-name {profile_name} --rule-name {rule_name} --condition-name {condition_name} --yes'
         if options:
             command = command + ' ' + options
         return self.cmd(command, checks)
 
     def afd_rule_remove_action_cmd(self, resource_group_name, rule_set_name, rule_name, profile_name, index,
                                    checks=None, options=None):
+        existing = self.afd_rule_show_cmd(resource_group_name, rule_set_name, rule_name, profile_name).get_output_in_json()
+        action_name = existing['actions'][index]['name']
         command = f'afd rule action remove -g {resource_group_name} --rule-set-name {rule_set_name} ' \
-                  f'--profile-name {profile_name} --rule-name {rule_name} --index {index}'
+                  f'--profile-name {profile_name} --rule-name {rule_name} --action-name {action_name} --yes'
         if options:
             command = command + ' ' + options
         return self.cmd(command, checks)
@@ -199,11 +289,16 @@ class CdnAfdScenarioMixin:
 
     def afd_secret_create_cmd(self, resource_group_name, profile_name, secret_name, secret_source,
                               use_latest_version, secret_version, checks=None):
-        cmd = f'afd secret create -g {resource_group_name} --profile-name {profile_name} ' \
-              f'--secret-name {secret_name} --secret-source {secret_source} --use-latest-version {use_latest_version}'
-
+        parameters = {
+            'customer-certificate': {
+                'secret-source': {'id': secret_source},
+                'use-latest-version': _to_bool(use_latest_version)
+            }
+        }
         if secret_version:
-            cmd += f' --secret-version={secret_version}'
+            parameters['customer-certificate']['secret-version'] = secret_version
+        cmd = f'afd secret create -g {resource_group_name} --profile-name {profile_name} ' \
+              f'--secret-name {secret_name} --parameters {_json_arg(parameters)}'
 
         return self.cmd(cmd, checks)
 
@@ -211,15 +306,15 @@ class CdnAfdScenarioMixin:
                               use_latest_version=None, secret_version=None, checks=None):
         cmd = f'afd secret update -g {resource_group_name} --profile-name {profile_name} ' \
               f'--secret-name {secret_name}'
-
-        if secret_version:
-            cmd += f' --secret-version={secret_version}'
-
-        if use_latest_version:
-            cmd += f' --use-latest-version {use_latest_version}'
-
+        customer_certificate = {}
         if secret_source:
-            cmd += f' --secret-source {secret_source}'
+            customer_certificate['secret-source'] = {'id': secret_source}
+        if secret_version:
+            customer_certificate['secret-version'] = secret_version
+        if use_latest_version is not None:
+            customer_certificate['use-latest-version'] = _to_bool(use_latest_version)
+        if customer_certificate:
+            cmd += f" --parameters {_json_arg({'customer-certificate': customer_certificate})}"
 
         return self.cmd(cmd, checks)
 
@@ -280,23 +375,45 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks)
 
     def afd_security_policy_create_cmd(self, resource_group_name, profile_name, security_policy_name, domains,
-                                       waf_policy, checks=None):
+                                       waf_policy, checks=None, is_profile_level=None, routes=None):
+        association = {
+            'domains': [{'id': domain} for domain in domains],
+            'patterns-to-match': ['/*']
+        }
+        if routes is not None:
+            association['routes'] = [{'id': route} for route in routes]
+        web_application_firewall = {
+            'waf-policy': {'id': waf_policy},
+            'associations': [association]
+        }
+        if is_profile_level is not None:
+            web_application_firewall['is-profile-level'] = is_profile_level
         cmd = f'afd security-policy create -g {resource_group_name} --profile-name {profile_name} ' \
-              f'--security-policy-name {security_policy_name} --waf-policy {waf_policy}'
-        if domains:
-            cmd += " --domains " + " ".join(domains)
+              f'--security-policy-name {security_policy_name} ' \
+              f'--web-application-firewall {_json_arg(web_application_firewall)}'
 
         return self.cmd(cmd, checks)
 
     def afd_security_policy_update_cmd(self, resource_group_name, profile_name, security_policy_name, domains=None,
-                                       waf_policy=None, checks=None):
+                                       waf_policy=None, checks=None, is_profile_level=None, routes=None):
         cmd = f'afd security-policy update -g {resource_group_name} --profile-name {profile_name} ' \
               f'--security-policy-name {security_policy_name}'
-        if domains:
-            cmd += " --domains " + " ".join(domains)
-
+        web_application_firewall = {}
+        if domains is not None or routes is not None:
+            association = {
+                'patterns-to-match': ['/*']
+            }
+            if domains is not None:
+                association['domains'] = [{'id': domain} for domain in domains]
+            if routes is not None:
+                association['routes'] = [{'id': route} for route in routes]
+            web_application_firewall['associations'] = [association]
         if waf_policy:
-            cmd += f" --waf-policy {waf_policy}"
+            web_application_firewall['waf-policy'] = {'id': waf_policy}
+        if is_profile_level is not None:
+            web_application_firewall['is-profile-level'] = is_profile_level
+        if web_application_firewall:
+            cmd += f' --web-application-firewall {_json_arg(web_application_firewall)}'
 
         return self.cmd(cmd, checks)
 

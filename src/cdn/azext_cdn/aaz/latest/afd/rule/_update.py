@@ -17,8 +17,11 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new delivery rule within the specified rule set.
 
-    :example: Rules_Update
+    :example: Rules_Create
         az afd rule update --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{name:ModifyResponseHeader,parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT}}]" --conditions "[{name:RequestMethod,parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters}}]" --order 1
+
+    :example: Rules_Create_AfdUrlSigningAction
+        az afd rule update --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{name:ModifyResponseHeader,parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT}}]" --conditions "[{name:RequestMethod,parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters}}]" --order 1 --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{name:AfdUrlSigning,parameters:{algorithm:SHA256,keyGroupReference:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.Cdn/profiles/profile1/keygroups/kg1},parameterNameOverride:[{paramIndicator:Expires,paramName:Expiration-Date},{paramIndicator:Signature,paramName:Sig-Hash}],typeName:DeliveryRuleAfdUrlSigningActionParameters}}]" --conditions "[{name:RequestMethod,parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters}}]" --order 1
     """
 
     _aaz_info = {

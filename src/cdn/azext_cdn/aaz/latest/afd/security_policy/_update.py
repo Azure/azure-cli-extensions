@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new security policy within the specified profile.
 
-    :example: Update the specified security policy's domain list.
-        az afd security-policy update -g group --security-policy-name sp1 --profile-name profile --domains /subscriptions/sub1/resourcegroups/rg1/providers/Microsoft.Cdn/profiles/profile1/customDomains/customDomain1
+    :example: SecurityPolicies_Create
+        az afd security-policy update --resource-group RG --profile-name profile1 --security-policy-name securityPolicy1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -82,11 +82,17 @@ class Update(AAZCommand):
             help="Waf associations",
             nullable=True,
         )
-        web_application_firewall.waf_policy = AAZStrArg(
-            options=["waf-policy"],
-            help="The ID of Front Door WAF policy.",
+        web_application_firewall.is_profile_level = AAZBoolArg(
+            options=["is-profile-level"],
+            help="Indicates if this is a profile-level WAF policy.",
             nullable=True,
         )
+        web_application_firewall.waf_policy = AAZObjectArg(
+            options=["waf-policy"],
+            help="Resource ID.",
+            nullable=True,
+        )
+        cls._build_args_resource_reference_update(web_application_firewall.waf_policy)
 
         associations = cls._args_schema.web_application_firewall.associations
         associations.Element = AAZObjectArg(
@@ -102,6 +108,11 @@ class Update(AAZCommand):
         _element.patterns_to_match = AAZListArg(
             options=["patterns-to-match"],
             help="List of paths",
+            nullable=True,
+        )
+        _element.routes = AAZListArg(
+            options=["routes"],
+            help="List of routes.",
             nullable=True,
         )
 
@@ -121,7 +132,34 @@ class Update(AAZCommand):
         patterns_to_match.Element = AAZStrArg(
             nullable=True,
         )
+
+        routes = cls._args_schema.web_application_firewall.associations.Element.routes
+        routes.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_resource_reference_update(routes.Element)
         return cls._args_schema
+
+    _args_resource_reference_update = None
+
+    @classmethod
+    def _build_args_resource_reference_update(cls, _schema):
+        if cls._args_resource_reference_update is not None:
+            _schema.id = cls._args_resource_reference_update.id
+            return
+
+        cls._args_resource_reference_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        resource_reference_update = cls._args_resource_reference_update
+        resource_reference_update.id = AAZStrArg(
+            options=["id"],
+            help="Resource ID.",
+            nullable=True,
+        )
+
+        _schema.id = cls._args_resource_reference_update.id
 
     def _execute_operations(self):
         self.pre_operations()
@@ -205,7 +243,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -308,7 +346,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -380,7 +418,8 @@ class Update(AAZCommand):
             disc_web_application_firewall = _builder.get(".properties.parameters{type:WebApplicationFirewall}")
             if disc_web_application_firewall is not None:
                 disc_web_application_firewall.set_prop("associations", AAZListType, ".web_application_firewall.associations")
-                disc_web_application_firewall.set_prop("wafPolicy", AAZObjectType)
+                disc_web_application_firewall.set_prop("isProfileLevel", AAZBoolType, ".web_application_firewall.is_profile_level")
+                _UpdateHelper._build_schema_resource_reference_update(disc_web_application_firewall.set_prop("wafPolicy", AAZObjectType, ".web_application_firewall.waf_policy"))
 
             associations = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations")
             if associations is not None:
@@ -390,6 +429,7 @@ class Update(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("domains", AAZListType, ".domains")
                 _elements.set_prop("patternsToMatch", AAZListType, ".patterns_to_match")
+                _elements.set_prop("routes", AAZListType, ".routes")
 
             domains = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[].domains")
             if domains is not None:
@@ -403,9 +443,9 @@ class Update(AAZCommand):
             if patterns_to_match is not None:
                 patterns_to_match.set_elements(AAZStrType, ".")
 
-            waf_policy = _builder.get(".properties.parameters{type:WebApplicationFirewall}.wafPolicy")
-            if waf_policy is not None:
-                waf_policy.set_prop("id", AAZStrType, ".web_application_firewall.waf_policy")
+            routes = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[].routes")
+            if routes is not None:
+                _UpdateHelper._build_schema_resource_reference_update(routes.set_elements(AAZObjectType, "."))
 
             return _instance_value
 
@@ -420,6 +460,27 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    @classmethod
+    def _build_schema_resource_reference_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id")
+
+    _schema_resource_reference_read = None
+
+    @classmethod
+    def _build_schema_resource_reference_read(cls, _schema):
+        if cls._schema_resource_reference_read is not None:
+            _schema.id = cls._schema_resource_reference_read.id
+            return
+
+        cls._schema_resource_reference_read = _schema_resource_reference_read = AAZObjectType()
+
+        resource_reference_read = _schema_resource_reference_read
+        resource_reference_read.id = AAZStrType()
+
+        _schema.id = cls._schema_resource_reference_read.id
 
     _schema_security_policy_read = None
 
@@ -475,9 +536,13 @@ class _UpdateHelper:
 
         disc_web_application_firewall = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall")
         disc_web_application_firewall.associations = AAZListType()
+        disc_web_application_firewall.is_profile_level = AAZBoolType(
+            serialized_name="isProfileLevel",
+        )
         disc_web_application_firewall.waf_policy = AAZObjectType(
             serialized_name="wafPolicy",
         )
+        cls._build_schema_resource_reference_read(disc_web_application_firewall.waf_policy)
 
         associations = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations
         associations.Element = AAZObjectType()
@@ -487,6 +552,7 @@ class _UpdateHelper:
         _element.patterns_to_match = AAZListType(
             serialized_name="patternsToMatch",
         )
+        _element.routes = AAZListType()
 
         domains = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.domains
         domains.Element = AAZObjectType()
@@ -501,8 +567,9 @@ class _UpdateHelper:
         patterns_to_match = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.patterns_to_match
         patterns_to_match.Element = AAZStrType()
 
-        waf_policy = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").waf_policy
-        waf_policy.id = AAZStrType()
+        routes = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.routes
+        routes.Element = AAZObjectType()
+        cls._build_schema_resource_reference_read(routes.Element)
 
         system_data = _schema_security_policy_read.system_data
         system_data.created_at = AAZStrType(

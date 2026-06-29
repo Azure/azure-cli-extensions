@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class RegenerateValidationToken(AAZCommand):
     """Updates the domain validation token.
 
-    :example: Regenerate the domain validation token.
-        az afd custom-domain regenerate-validation-token -g MyResourceGroup --profile-name MyProfle --custom-domain-name MyCustomDomain
+    :example: AFDCustomDomains_Delete
+        az afd custom-domain regenerate-validation-token --resource-group RG --profile-name profile1 --custom-domain-name domain1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}/refreshvalidationtoken", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}/refreshvalidationtoken", "2025-09-01-preview"],
         ]
     }
 
@@ -148,7 +148,7 @@ class RegenerateValidationToken(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

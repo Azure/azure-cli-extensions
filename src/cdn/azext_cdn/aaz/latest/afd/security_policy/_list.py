@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List security policies associated with the profile
+
+    :example: SecurityPolicies_ListByProfile
+        az afd security-policy list --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies", "2026-04-01-preview"],
         ]
     }
 
@@ -123,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -160,7 +163,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -206,9 +209,13 @@ class List(AAZCommand):
 
             disc_web_application_firewall = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "WebApplicationFirewall")
             disc_web_application_firewall.associations = AAZListType()
+            disc_web_application_firewall.is_profile_level = AAZBoolType(
+                serialized_name="isProfileLevel",
+            )
             disc_web_application_firewall.waf_policy = AAZObjectType(
                 serialized_name="wafPolicy",
             )
+            _ListHelper._build_schema_resource_reference_read(disc_web_application_firewall.waf_policy)
 
             associations = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations
             associations.Element = AAZObjectType()
@@ -218,6 +225,7 @@ class List(AAZCommand):
             _element.patterns_to_match = AAZListType(
                 serialized_name="patternsToMatch",
             )
+            _element.routes = AAZListType()
 
             domains = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.domains
             domains.Element = AAZObjectType()
@@ -232,8 +240,9 @@ class List(AAZCommand):
             patterns_to_match = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.patterns_to_match
             patterns_to_match.Element = AAZStrType()
 
-            waf_policy = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "WebApplicationFirewall").waf_policy
-            waf_policy.id = AAZStrType()
+            routes = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.routes
+            routes.Element = AAZObjectType()
+            _ListHelper._build_schema_resource_reference_read(routes.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -260,6 +269,21 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_resource_reference_read = None
+
+    @classmethod
+    def _build_schema_resource_reference_read(cls, _schema):
+        if cls._schema_resource_reference_read is not None:
+            _schema.id = cls._schema_resource_reference_read.id
+            return
+
+        cls._schema_resource_reference_read = _schema_resource_reference_read = AAZObjectType()
+
+        resource_reference_read = _schema_resource_reference_read
+        resource_reference_read.id = AAZStrType()
+
+        _schema.id = cls._schema_resource_reference_read.id
 
 
 __all__ = ["List"]

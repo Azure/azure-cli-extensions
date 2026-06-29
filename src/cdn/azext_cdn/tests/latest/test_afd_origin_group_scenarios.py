@@ -29,8 +29,9 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_origin_group_create_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
-                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt " +
-                                         "--sample-size 4 --successful-samples-required 3 --additional-latency-in-milliseconds 50 --enable-health-probe true",
+                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
+                                         "--sample-size 4 --successful-samples-required 3 "
+                                         "--additional-latency-in-milliseconds 50",
                                          checks=checks)
 
         update_checks = [JMESPathCheck('name', origin_group_name),
@@ -42,7 +43,7 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--probe-request-type GET --probe-protocol Https'
+        options = "--probe-request-type GET --probe-protocol Https"
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
@@ -58,7 +59,7 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', None),
                          JMESPathCheck('healthProbeSettings.probeRequestType', None),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--enable-health-probe false'
+        options = '--health-probe-settings null'
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
@@ -71,7 +72,7 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt '
+        options = "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt"
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
@@ -99,8 +100,9 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_origin_group_create_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
-                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt " +
-                                         "--sample-size 4 --successful-samples-required 3 --additional-latency-in-milliseconds 50 --enable-health-probe true",
+                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
+                                         "--sample-size 4 --successful-samples-required 3 "
+                                         "--additional-latency-in-milliseconds 50",
                                          checks=checks)
         list_checks = [JMESPathCheck('length(@)', 1),
                        JMESPathCheck('@[0].name', origin_group_name)]
@@ -115,7 +117,7 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--probe-request-type GET --probe-protocol Https --enable-health-probe true'
+        options = "--probe-request-type GET --probe-protocol Https"
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
@@ -131,7 +133,7 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--sample-size 5 --additional-latency-in-milliseconds 30 --enable-health-probe true'
+        options = '--sample-size 5 --additional-latency-in-milliseconds 30'
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
@@ -147,7 +149,7 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "HEAD"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = '--sample-size 4 --additional-latency-in-milliseconds 30 --probe-request-type HEAD --enable-health-probe true'
+        options = "--sample-size 4 --additional-latency-in-milliseconds 30 --probe-request-type HEAD"
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,

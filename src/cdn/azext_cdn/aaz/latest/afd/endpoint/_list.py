@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List existing AzureFrontDoor endpoints.
 
-    :example: List all the endpoints within the specified profile.
-        az afd endpoint list -g group --profile-name profile
+    :example: AFDEndpoints_ListByProfile
+        az afd endpoint list --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints", "2025-09-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -163,7 +163,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -201,6 +201,9 @@ class List(AAZCommand):
             )
             properties.enabled_state = AAZStrType(
                 serialized_name="enabledState",
+            )
+            properties.enforce_mtls = AAZStrType(
+                serialized_name="enforceMtls",
             )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
