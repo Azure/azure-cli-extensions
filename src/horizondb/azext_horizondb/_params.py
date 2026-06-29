@@ -80,6 +80,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
                  'The default value is set to current time. During preview, the restore time must be at least '
                  '5 minutes before the current time.')
 
+        parameter_group_arg_type = CLIArgumentType(
+            options_list=['--parameter-group'],
+            help='The resource ID of the parameter group.')
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('cluster_name', arg_type=cluster_name_arg_type)
@@ -103,6 +106,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('tags', tags_type)
             c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)
+            c.argument('parameter_group', arg_type=parameter_group_arg_type)
 
         with self.argument_context('horizondb delete') as c:
             c.argument('yes', arg_type=yes_arg_type)

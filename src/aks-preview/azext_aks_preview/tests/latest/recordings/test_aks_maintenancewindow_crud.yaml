@@ -1,0 +1,493 @@
+interactions:
+- request:
+    body: '{"location": "centraluseuap", "tags": {"env": "test"}, "properties": {"schedule":
+      {"weekly": {"intervalWeeks": 1, "dayOfWeek": "Saturday"}}, "startTime": "02:00",
+      "durationHours": 8, "utcOffset": "+00:00"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '206'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --schedule-type --day-of-week --interval-weeks
+        --start-time --duration --utc-offset --tags --no-wait
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002\",\n
+        \"name\": \"cliakmw000002\",\n \"type\": \"Microsoft.ContainerService/maintenanceWindows\",\n
+        \"location\": \"centraluseuap\",\n \"tags\": {\n  \"env\": \"test\"\n },\n
+        \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"schedule\":
+        {\n   \"weekly\": {\n    \"intervalWeeks\": 1,\n    \"dayOfWeek\": \"Saturday\"\n
+        \  }\n  },\n  \"startDate\": \"2026-06-18\",\n  \"startTime\": \"02:00\",\n
+        \ \"durationHours\": 8,\n  \"utcOffset\": \"+00:00\"\n },\n \"systemData\":
+        {\n  \"createdBy\": \"test@example.com\",\n  \"createdByType\": \"User\",\n
+        \ \"createdAt\": \"2026-06-18T20:50:00.7356263Z\",\n  \"lastModifiedBy\":
+        \"test@example.com\",\n  \"lastModifiedByType\": \"User\",\n  \"lastModifiedAt\":
+        \"2026-06-18T20:50:00.7356263Z\"\n }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/80a02ab1-b57c-4108-bb53-53a8b57bf723?api-version=2025-03-01&t=639174126008606312&c=MIIH9TCCBt2gAwIBAgIRANzm2W2xofTH2ZfvO2e8eYEwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA1MjExOTMwMzRaFw0yNjA4MTcwMTMwMzRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0e20b8h5kdH6EpEAJTY86C66pyG1aiiVSvtRLWEa_BGbi-wCQlTaPSIsc7XoMqj5oV8P8nwK1Li1NXmrKvBevr0AlmfimlTCa4tgaZ4swe_5ouPUHsIQsEnGObUesbkIiPC733Z3FbFOgzyg-x8wopkKUVloRmYPU-u99GRtWexoGBy6PIs5QlfOomy8noM-XRIS0ZIXtJEk4eOFknbqomO6VjBj-k00w7lvyL82gHUVolnl2bb8mofQp67i29cqGOp5g6Y63dsWonlE3YZz0P1BQ1y7Z7z2CedXdUoH9Uk6aFDWkiA43V0l-ar4FgCslpQFaiFnQJ7-j4zQVwq4-QIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUzWA0VQjYppHRzq3QpYcMl4qN7DkwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY2L2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82Ni9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY2L2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjYvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEARTWOLkbHTykhQdB9281OuoXIpPdMFYdC40bXQXcL76NqNo_UFoyHQCqxOt2v-W98aAxTM1o6JltJNOdnE5PgxpIDVprIopigg3pAXXiLdQzAVGeRu4dSfK-dFssgZeDPmsx413l1te2QvWDUeWGEv6NAQ8zhhI52Rk1Y-_nM15wr63d2PfyNlI4sgiNH3iE8o_cvanqMcEwTzrBTWfRNz5CmdxoOp90-5fN1w7DrtHBjNCaeV9teGKjTy7NQpb-pNiAmsoqYY0Tzs_x8OjcVgy3_5HK8w9jQ5wG4c2Hzy_dY7n5H8ltZ4vGFGDSi45w-xzI7B9w3LLUS9pQr6uzkXQ&s=foV2xazrel9ATz3j-ofGrXVSoNbM90B5h7EaGp4oN0MucC2EDLGWrXXp93gkMiPYFVRmXnG-JLmoXDEhVgkEfxvV_vOMY0n14wjhXJtnK53SfzpGdK0YQlMnpDfo_MgtTfd3ZwIYcGI6KEo2l_9OPxtbKXAzI7N_GJUWCB0-VWFnCZujch4qo3T__irue86LFwRHpMR2z-pOWYMAfhwGI9hu5sC_QjP_zEsCj9k0CDcm5cDBMCexzxy1F1sgXpLa-MLByTkP-BIN8srIYCq60isdDEZ3HXleuFQ8-rHYfo52HzL1qtVhAXSRHkmYIQg8PAXJ_85qBSSeWqp4bL34Sg&h=FEZCo3SBRPtiOC3Am9H3JJSyXF2yplfVt_RwiYaE7GU
+      cache-control:
+      - no-cache
+      content-length:
+      - '810'
+      content-type:
+      - application/json
+      date:
+      - Thu, 18 Jun 2026 20:50:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B5F005EABE8C45C3965B65E7A0ADD61C Ref B: BY1AA1072319060 Ref C: 2026-06-18T20:50:00Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -o
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002\",\n
+        \"name\": \"cliakmw000002\",\n \"type\": \"Microsoft.ContainerService/maintenanceWindows\",\n
+        \"location\": \"centraluseuap\",\n \"tags\": {\n  \"env\": \"test\"\n },\n
+        \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"schedule\":
+        {\n   \"weekly\": {\n    \"intervalWeeks\": 1,\n    \"dayOfWeek\": \"Saturday\"\n
+        \  }\n  },\n  \"startDate\": \"2026-06-18\",\n  \"startTime\": \"02:00\",\n
+        \ \"durationHours\": 8,\n  \"utcOffset\": \"+00:00\"\n },\n \"systemData\":
+        {\n  \"createdBy\": \"test@example.com\",\n  \"createdByType\": \"User\",\n
+        \ \"createdAt\": \"2026-06-18T20:50:00.7356263Z\",\n  \"lastModifiedBy\":
+        \"test@example.com\",\n  \"lastModifiedByType\": \"User\",\n  \"lastModifiedAt\":
+        \"2026-06-18T20:50:00.7356263Z\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '810'
+      content-type:
+      - application/json
+      date:
+      - Thu, 18 Jun 2026 20:50:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 7CBE1C31C997496D912F532F58D3934F Ref B: BY1AA1072317052 Ref C: 2026-06-18T20:50:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --duration --no-wait
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002\",\n
+        \"name\": \"cliakmw000002\",\n \"type\": \"Microsoft.ContainerService/maintenanceWindows\",\n
+        \"location\": \"centraluseuap\",\n \"tags\": {\n  \"env\": \"test\"\n },\n
+        \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"schedule\":
+        {\n   \"weekly\": {\n    \"intervalWeeks\": 1,\n    \"dayOfWeek\": \"Saturday\"\n
+        \  }\n  },\n  \"startDate\": \"2026-06-18\",\n  \"startTime\": \"02:00\",\n
+        \ \"durationHours\": 8,\n  \"utcOffset\": \"+00:00\"\n },\n \"systemData\":
+        {\n  \"createdBy\": \"test@example.com\",\n  \"createdByType\": \"User\",\n
+        \ \"createdAt\": \"2026-06-18T20:50:00.7356263Z\",\n  \"lastModifiedBy\":
+        \"test@example.com\",\n  \"lastModifiedByType\": \"User\",\n  \"lastModifiedAt\":
+        \"2026-06-18T20:50:00.7356263Z\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '810'
+      content-type:
+      - application/json
+      date:
+      - Thu, 18 Jun 2026 20:50:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 13E655FDA36B4E5A8625E3FDB4B96E59 Ref B: SJC211051205011 Ref C: 2026-06-18T20:50:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centraluseuap", "tags": {"env": "test"}, "properties": {"schedule":
+      {"weekly": {"intervalWeeks": 1, "dayOfWeek": "Saturday"}}, "startDate": "2026-06-18",
+      "startTime": "02:00", "durationHours": 6, "utcOffset": "+00:00"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '233'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --duration --no-wait
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002\",\n
+        \"name\": \"cliakmw000002\",\n \"type\": \"Microsoft.ContainerService/maintenanceWindows\",\n
+        \"location\": \"centraluseuap\",\n \"tags\": {\n  \"env\": \"test\"\n },\n
+        \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"schedule\":
+        {\n   \"weekly\": {\n    \"intervalWeeks\": 1,\n    \"dayOfWeek\": \"Saturday\"\n
+        \  }\n  },\n  \"startDate\": \"2026-06-18\",\n  \"startTime\": \"02:00\",\n
+        \ \"durationHours\": 6,\n  \"utcOffset\": \"+00:00\"\n },\n \"systemData\":
+        {\n  \"createdBy\": \"test@example.com\",\n  \"createdByType\": \"User\",\n
+        \ \"createdAt\": \"2026-06-18T20:50:00.7356263Z\",\n  \"lastModifiedBy\":
+        \"test@example.com\",\n  \"lastModifiedByType\": \"User\",\n  \"lastModifiedAt\":
+        \"2026-06-18T20:50:02.471977Z\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '809'
+      content-type:
+      - application/json
+      date:
+      - Thu, 18 Jun 2026 20:50:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DBD6221434144DF49BC3C6D89D2E70AB Ref B: BY1AA1072318036 Ref C: 2026-06-18T20:50:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -o
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002\",\n
+        \"name\": \"cliakmw000002\",\n \"type\": \"Microsoft.ContainerService/maintenanceWindows\",\n
+        \"location\": \"centraluseuap\",\n \"tags\": {\n  \"env\": \"test\"\n },\n
+        \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"schedule\":
+        {\n   \"weekly\": {\n    \"intervalWeeks\": 1,\n    \"dayOfWeek\": \"Saturday\"\n
+        \  }\n  },\n  \"startDate\": \"2026-06-18\",\n  \"startTime\": \"02:00\",\n
+        \ \"durationHours\": 6,\n  \"utcOffset\": \"+00:00\"\n },\n \"systemData\":
+        {\n  \"createdBy\": \"test@example.com\",\n  \"createdByType\": \"User\",\n
+        \ \"createdAt\": \"2026-06-18T20:50:00.7356263Z\",\n  \"lastModifiedBy\":
+        \"test@example.com\",\n  \"lastModifiedByType\": \"User\",\n  \"lastModifiedAt\":
+        \"2026-06-18T20:50:02.471977Z\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '809'
+      content-type:
+      - application/json
+      date:
+      - Thu, 18 Jun 2026 20:50:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5E69187D3B404965B7C6872671439053 Ref B: SJC211051201017 Ref C: 2026-06-18T20:50:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group -o
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows?api-version=2026-04-02-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002","name":"cliakmw000002","type":"Microsoft.ContainerService/maintenanceWindows","location":"centraluseuap","tags":{"env":"test"},"properties":{"provisioningState":"Succeeded","schedule":{"weekly":{"intervalWeeks":1,"dayOfWeek":"Saturday"}},"startDate":"2026-06-18","startTime":"02:00","durationHours":6,"utcOffset":"+00:00"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-18T20:50:00.7356263Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-18T20:50:02.471977Z"}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows?api-version=2026-04-02-preview&%24skiptoken=5ZDLasMwFET%2fRdCsIstR5TQYQjEhdJOUkgfZeHOtXLvCsSSuZKc05N9rsss3dDnDcBjOjVn8iRtj28DyG1utPw%2b7YnPcr4%2fFF8vZd4w%2b5EJotJHg0gfswScdWGiwG7sEfnvCRLtOhL4KmoyPxtkgaqyyapalfJ7WyJVSM17h2ytf6FRCJlWdZSAIg%2btJ4we53gehLyZiiK5W3TBgBCs8ucGckYLYGk0uuDomK2cjGIu0RxqMRtGNKaIFq%2fFk7Nldw%2fuLVKE1%2fuBatMtMLibgDR9GzvhtKVM556niqeSecDB4nTyN2X3KgLqiaQgbiHh%2bYEYZxW7Lpg9fW6AWaaxu5bOykuXlv5RWsju7%2fwE%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2026 20:50:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 30143840-77b0-40fb-9adf-759923114aab
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5C4FB27E556A4BB68AB83C1C5B359E3A Ref B: BY1AA1072320040 Ref C: 2026-06-18T20:50:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group -o
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows?api-version=2026-04-02-preview&$skiptoken=5ZDLasMwFET/RdCsIstR5TQYQjEhdJOUkgfZeHOtXLvCsSSuZKc05N9rsss3dDnDcBjOjVn8iRtj28DyG1utPw%2B7YnPcr4/FF8vZd4w%2B5EJotJHg0gfswScdWGiwG7sEfnvCRLtOhL4KmoyPxtkgaqyyapalfJ7WyJVSM17h2ytf6FRCJlWdZSAIg%2BtJ4we53gehLyZiiK5W3TBgBCs8ucGckYLYGk0uuDomK2cjGIu0RxqMRtGNKaIFq/Fk7Nldw/uLVKE1/uBatMtMLibgDR9GzvhtKVM556niqeSecDB4nTyN2X3KgLqiaQgbiHh%2BYEYZxW7Lpg9fW6AWaaxu5bOykuXlv5RWsju7/wE%3D
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2026 20:50:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - b4af2c91-1e50-49b3-ae13-3796ed2c8665
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: FED3905378BC4311B5B8D7A1B09C58BA Ref B: BY1AA1072316025 Ref C: 2026-06-18T20:50:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --yes --no-wait
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/82912e5a-a7cb-457f-bb39-ca1a44b7c13f?api-version=2025-03-01&t=639174126042974702&c=MIIH9TCCBt2gAwIBAgIRANzm2W2xofTH2ZfvO2e8eYEwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA1MjExOTMwMzRaFw0yNjA4MTcwMTMwMzRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0e20b8h5kdH6EpEAJTY86C66pyG1aiiVSvtRLWEa_BGbi-wCQlTaPSIsc7XoMqj5oV8P8nwK1Li1NXmrKvBevr0AlmfimlTCa4tgaZ4swe_5ouPUHsIQsEnGObUesbkIiPC733Z3FbFOgzyg-x8wopkKUVloRmYPU-u99GRtWexoGBy6PIs5QlfOomy8noM-XRIS0ZIXtJEk4eOFknbqomO6VjBj-k00w7lvyL82gHUVolnl2bb8mofQp67i29cqGOp5g6Y63dsWonlE3YZz0P1BQ1y7Z7z2CedXdUoH9Uk6aFDWkiA43V0l-ar4FgCslpQFaiFnQJ7-j4zQVwq4-QIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUzWA0VQjYppHRzq3QpYcMl4qN7DkwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY2L2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82Ni9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY2L2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjYvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEARTWOLkbHTykhQdB9281OuoXIpPdMFYdC40bXQXcL76NqNo_UFoyHQCqxOt2v-W98aAxTM1o6JltJNOdnE5PgxpIDVprIopigg3pAXXiLdQzAVGeRu4dSfK-dFssgZeDPmsx413l1te2QvWDUeWGEv6NAQ8zhhI52Rk1Y-_nM15wr63d2PfyNlI4sgiNH3iE8o_cvanqMcEwTzrBTWfRNz5CmdxoOp90-5fN1w7DrtHBjNCaeV9teGKjTy7NQpb-pNiAmsoqYY0Tzs_x8OjcVgy3_5HK8w9jQ5wG4c2Hzy_dY7n5H8ltZ4vGFGDSi45w-xzI7B9w3LLUS9pQr6uzkXQ&s=NmVzqNU95oOoUqCQ8MD1Xd2a4BYRupyU0IRa81U2VjYJvrYnoaFpPUNgG3orb2dfW-mZuBl6aFnyg3xcu81UDZyHjTno6nhR5QuMdQ4286avZzfcgyQSbl7B7Qw30ZQm92ZoKlGIGBfoewN9AbcZgIxathVFzEIojyiXDMjLENhwdBkqApgfRnCdOHCD0nchl7pJxsXEvvnK-lbyxSA1HyA8UjvYdfiCCe2rs7b9ANJh6opuLCeYDaljog_juZ8rOYDKDXT6wYFREBCuflU0C6dJwVhxjGSrjdycljO3FySN3qLpDTpIwMm4nMbfW_jpOPwImIJSCcFhOhvZQ-XEnA&h=HyPxuHwKKM4viw5xgjM2GBH1f9-6YVY_xbwtfeu9TVg
+      cache-control:
+      - no-cache
+      date:
+      - Thu, 18 Jun 2026 20:50:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 837CF1C9038546008BBBB2A595B2EFA5 Ref B: BY1AA1072320062 Ref C: 2026-06-18T20:50:03Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks maintenancewindow show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -o
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.13.13 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/maintenanceWindows/cliakmw000002?api-version=2026-04-02-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/maintenanceWindows/cliakmw000002''
+        under resource group ''clitest000001'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '244'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Jun 2026 20:50:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: BB0BB3C03B13488FB04CB0D06C8B8723 Ref B: BY1AA1072317036 Ref C: 2026-06-18T20:50:04Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1

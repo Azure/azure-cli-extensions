@@ -94,9 +94,11 @@ def horizondb_cluster_restore(client, resource_group_name, cluster_name, source_
 def horizondb_cluster_update(client, resource_group_name, cluster_name,
                              administrator_login_password=None, tags=None,
                              v_cores=None,
+                             parameter_group=None,
                              no_wait=False):
     from azext_horizondb.vendored_sdks.models import (
         HorizonDbClusterForPatchUpdate,
+        HorizonDbClusterParameterGroupConnectionProperties,
         HorizonDbClusterPropertiesForPatchUpdate,
     )
 
@@ -105,6 +107,8 @@ def horizondb_cluster_update(client, resource_group_name, cluster_name,
         cluster_properties["administrator_login_password"] = administrator_login_password
     if v_cores is not None:
         cluster_properties["v_cores"] = v_cores
+    if parameter_group is not None:
+        cluster_properties["parameter_group"] = HorizonDbClusterParameterGroupConnectionProperties(id=parameter_group)
 
     patch_properties = {}
     if tags is not None:
