@@ -66,15 +66,6 @@ examples:
 """
 
 
-helps['horizondb wait'] = """
-type: command
-short-summary: Wait until a HorizonDB cluster satisfies a condition.
-examples:
-  - name: Wait until a HorizonDB cluster update completes.
-    text: az horizondb wait --resource-group exampleresourcegroup --name examplecluster --updated
-"""
-
-
 helps['horizondb private-endpoint-connection'] = """
 type: group
 short-summary: Manage HorizonDB private endpoint connections.
@@ -86,7 +77,7 @@ type: command
 short-summary: List private endpoint connections for a HorizonDB cluster.
 examples:
   - name: List private endpoint connections for a HorizonDB cluster.
-    text: az horizondb private-endpoint-connection list --resource-group exampleresourcegroup --name examplecluster
+    text: az horizondb private-endpoint-connection list --resource-group exampleresourcegroup --cluster-name examplecluster
 """
 
 
@@ -95,7 +86,7 @@ type: command
 short-summary: Show details of a HorizonDB private endpoint connection.
 examples:
   - name: Show a private endpoint connection by cluster and connection name.
-    text: az horizondb private-endpoint-connection show --resource-group exampleresourcegroup --name examplecluster --connection-name exampleconnection
+    text: az horizondb private-endpoint-connection show --resource-group exampleresourcegroup --cluster-name examplecluster --name exampleconnection
   - name: Show a private endpoint connection by resource ID.
     text: az horizondb private-endpoint-connection show --id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.HorizonDb/clusters/{clusterName}/privateEndpointConnections/{connectionName}
 """
@@ -106,7 +97,7 @@ type: command
 short-summary: Approve a HorizonDB private endpoint connection.
 examples:
   - name: Approve a private endpoint connection by cluster and connection name.
-    text: az horizondb private-endpoint-connection approve --resource-group exampleresourcegroup --name examplecluster --connection-name exampleconnection --description "Approved"
+    text: az horizondb private-endpoint-connection approve --resource-group exampleresourcegroup --cluster-name examplecluster --name exampleconnection --description "Approved"
   - name: Approve a private endpoint connection by resource ID.
     text: az horizondb private-endpoint-connection approve --id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.HorizonDb/clusters/{clusterName}/privateEndpointConnections/{connectionName} --description "Approved"
 """
@@ -117,7 +108,7 @@ type: command
 short-summary: Reject a HorizonDB private endpoint connection.
 examples:
   - name: Reject a private endpoint connection by cluster and connection name.
-    text: az horizondb private-endpoint-connection reject --resource-group exampleresourcegroup --name examplecluster --connection-name exampleconnection --description "Rejected"
+    text: az horizondb private-endpoint-connection reject --resource-group exampleresourcegroup --cluster-name examplecluster --name exampleconnection --description "Rejected"
   - name: Reject a private endpoint connection by resource ID.
     text: az horizondb private-endpoint-connection reject --id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.HorizonDb/clusters/{clusterName}/privateEndpointConnections/{connectionName} --description "Rejected"
 """
@@ -128,7 +119,7 @@ type: command
 short-summary: Delete a HorizonDB private endpoint connection.
 examples:
   - name: Delete a private endpoint connection by cluster and connection name.
-    text: az horizondb private-endpoint-connection delete --resource-group exampleresourcegroup --name examplecluster --connection-name exampleconnection
+    text: az horizondb private-endpoint-connection delete --resource-group exampleresourcegroup --cluster-name examplecluster --name exampleconnection
   - name: Delete a private endpoint connection by resource ID.
     text: az horizondb private-endpoint-connection delete --id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.HorizonDb/clusters/{clusterName}/privateEndpointConnections/{connectionName}
 """
@@ -145,7 +136,7 @@ type: command
 short-summary: List private link resources for a HorizonDB cluster.
 examples:
   - name: List private link resources for a HorizonDB cluster.
-    text: az horizondb private-link-resource list --resource-group exampleresourcegroup --name examplecluster
+    text: az horizondb private-link-resource list --resource-group exampleresourcegroup --cluster-name examplecluster
 """
 
 
@@ -154,5 +145,5 @@ type: command
 short-summary: Show details of a HorizonDB private link resource.
 examples:
   - name: Show a private link resource by group name.
-    text: az horizondb private-link-resource show --resource-group exampleresourcegroup --name examplecluster --group-name DefaultPool
+    text: az horizondb private-link-resource show --resource-group exampleresourcegroup --cluster-name examplecluster --group-name DefaultPool
 """
