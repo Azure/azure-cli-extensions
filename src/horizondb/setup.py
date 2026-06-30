@@ -14,7 +14,7 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = '1.0.0b3'
+VERSION = '1.0.0b4'
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
