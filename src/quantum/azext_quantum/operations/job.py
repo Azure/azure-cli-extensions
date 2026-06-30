@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
 
-def list(cmd, resource_group_name, workspace_name, location=None, job_type=None, item_type=None, provider_id=None,
+def list(cmd, resource_group_name, workspace_name, job_type=None, item_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
          skip=None, top=None, orderby=None, order=None):
     """
@@ -141,7 +141,7 @@ def _construct_orderby_expression(orderby, order):
     return orderby_expression
 
 
-def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+def get(cmd, job_id, resource_group_name=None, workspace_name=None):
     """
     Get the job's status and details.
     """
@@ -173,7 +173,7 @@ def _convert_numeric_params(job_params):
                     pass
 
 
-def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location=None,
+def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format,
            job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
            job_output_format=None, entry_point=None):
     """
@@ -280,13 +280,6 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
     except (IOError, OSError) as e:
         raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
-    # Upload the input file to the workspace's storage account
-    if storage is None:
-        from .workspace import get as ws_get
-        ws = ws_get(cmd, resource_group_name, workspace_name)
-        if ws.properties.storage_account is None:
-            raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
-        storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     blob_name = "inputData"
 
@@ -361,7 +354,7 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
     return client.create(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
-def output(cmd, job_id, resource_group_name, workspace_name, location=None):
+def output(cmd, job_id, resource_group_name, workspace_name):
     """
     Get the results of running a job.
     """
@@ -378,7 +371,7 @@ def output(cmd, job_id, resource_group_name, workspace_name, location=None):
     return _get_job_output(job)
 
 
-def wait(cmd, job_id, resource_group_name, workspace_name, location=None, max_poll_wait_secs=5):
+def wait(cmd, job_id, resource_group_name, workspace_name, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes running.
     """
@@ -407,7 +400,7 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location=None, max_po
     return job.as_dict()
 
 
-def job_show(cmd, job_id, resource_group_name, workspace_name, location=None):
+def job_show(cmd, job_id, resource_group_name, workspace_name):
     """
     Get the job's status and details.
     """
@@ -417,13 +410,13 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location=None):
     return job.as_dict()
 
 
-def run(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location=None,
+def run(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format,
         job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
         job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
-    job = submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location,
+    job = submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format,
                  job_name, shots, storage, job_params, target_capability,
                  job_output_format, entry_point)
     logger.warning("Job id: %s", job["id"])
@@ -435,7 +428,7 @@ def run(cmd, resource_group_name, workspace_name, target_id, job_input_file, job
     return output(cmd, job["id"], resource_group_name, workspace_name)
 
 
-def cancel(cmd, job_id, resource_group_name, workspace_name, location=None):
+def cancel(cmd, job_id, resource_group_name, workspace_name):
     """
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """

@@ -44,14 +44,6 @@ az grafana data-source create \
     --definition ~/data-source-sql.json
 ```
 
-#### configure a notification channel 
-*Examples:*
-```
-az grafana notification-channel create \
-    -n MyGrafanaInstance \
-    --definition ~/notification-channel-teams.json
-```
-
 #### Create a dashboard
 *Examples:*
 ```

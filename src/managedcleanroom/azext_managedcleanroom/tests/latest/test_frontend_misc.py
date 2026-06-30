@@ -17,8 +17,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_consent_check,
     frontend_collaboration_consent_set,
     frontend_collaboration_audit_list,
-    frontend_collaboration_attestation_cgs,
-    frontend_collaboration_attestation_cleanroom
+    frontend_collaboration_analytics_secret_set
 )
 
 
@@ -59,7 +58,7 @@ class TestFrontendMisc(unittest.TestCase):
         self.assertEqual(result[0]["invitationId"], "invite-1")
         self.assertEqual(result[1]["invitationId"], "invite-2")
         mock_client.collaboration.invitations_get.assert_called_once_with(
-            "test-collab-123")
+            "test-collab-123", pending_only=False)
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_show_invitation(self, mock_get_client):
@@ -120,7 +119,7 @@ class TestFrontendMisc(unittest.TestCase):
         """Test checking consent status"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.check_consent_document_id_get.return_value = {
+        mock_client.collaboration.consent_document_id_get.return_value = {
             "documentId": "doc-123",
             "consentGiven": True,
             "consentedAt": "2024-01-01T00:00:00Z"
@@ -137,7 +136,7 @@ class TestFrontendMisc(unittest.TestCase):
         # Verify
         self.assertEqual(result["documentId"], "doc-123")
         self.assertTrue(result["consentGiven"])
-        mock_client.collaboration.check_consent_document_id_get.assert_called_once_with(
+        mock_client.collaboration.consent_document_id_get.assert_called_once_with(
             "test-collab-123", "doc-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -145,7 +144,7 @@ class TestFrontendMisc(unittest.TestCase):
         """Test setting consent action"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.set_consent_document_id_consent_action_post.return_value = {
+        mock_client.collaboration.consent_document_id_put.return_value = {
             "documentId": "doc-123", "action": "enable", "updatedAt": "2024-01-01T00:00:00Z"}
         mock_get_client.return_value = mock_client
 
@@ -159,8 +158,8 @@ class TestFrontendMisc(unittest.TestCase):
 
         # Verify
         self.assertEqual(result["action"], "enable")
-        mock_client.collaboration.set_consent_document_id_consent_action_post.assert_called_once_with(
-            "test-collab-123", "doc-123", "enable")
+        mock_client.collaboration.consent_document_id_put.assert_called_once_with(
+            "test-collab-123", "doc-123", body={"consentAction": "enable"})
 
     # Audit Test
 
@@ -196,57 +195,97 @@ class TestFrontendMisc(unittest.TestCase):
         self.assertEqual(result[0]["logId"], "test-log-123")
         self.assertEqual(result[1]["logId"], "log-456")
         mock_client.collaboration.analytics_auditevents_get.assert_called_once_with(
-            "test-collab-123")
+            "test-collab-123", scope=None, from_seqno=None, to_seqno=None)
 
-    # Attestation Tests
+    # Analytics Secret Tests
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_get_attestation_cgs(self, mock_get_client):
-        """Test getting CGS attestation"""
-        # Mock the client and its method chain
+    def test_analytics_secret_set(self, mock_get_client):
+        """Test setting analytics secret"""
+        # Mock the client
         mock_client = Mock()
-        mock_client.collaboration.attestationreport_cgs_get.return_value = {
-            "attestationType": "cgs",
-            "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
-            "issuedAt": "2024-01-01T00:00:00Z"
+        mock_client.collaboration.analytics_secrets_secret_name_put.return_value = {
+            "secretName": "test-secret",
+            "status": "set",
+            "updatedAt": "2024-01-01T00:00:00Z"
         }
         mock_get_client.return_value = mock_client
 
         # Execute
-        result = frontend_collaboration_attestation_cgs(
+        result = frontend_collaboration_analytics_secret_set(
             cmd=Mock(),
-            collaboration_id="test-collab-123"
+            collaboration_id="test-collab-123",
+            secret_name="test-secret",
+            secret_value="secret-value-123"
         )
 
         # Verify
-        self.assertEqual(result["attestationType"], "cgs")
-        self.assertIn("token", result)
-        mock_client.collaboration.attestationreport_cgs_get.assert_called_once_with(
-            "test-collab-123")
+        self.assertEqual(result["secretName"], "test-secret")
+        self.assertEqual(result["status"], "set")
+        mock_client.collaboration.analytics_secrets_secret_name_put.assert_called_once_with(
+            "test-collab-123", "test-secret", body={"secretValue": "secret-value-123"})
+
+    # Invitation Filter Tests
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_get_attestation_cleanroom(self, mock_get_client):
-        """Test getting cleanroom attestation"""
-        # Mock the client and its method chain
+    def test_list_invitations_with_pending_only_filter(self, mock_get_client):
+        """Test listing invitations with pending_only filter"""
+        # Mock the client
         mock_client = Mock()
-        mock_client.collaboration.attestationreport_cleanroom_get.return_value = {
-            "attestationType": "cleanroom",
-            "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
-            "issuedAt": "2024-01-01T00:00:00Z",
-            "cleanroomId": "cleanroom-123"}
+        mock_client.collaboration.invitations_get.return_value = [
+            {
+                "invitationId": "invite-1",
+                "collaborationId": "test-collab-123",
+                "inviteeEmail": "user1@example.com",
+                "status": "pending"
+            }
+        ]
         mock_get_client.return_value = mock_client
 
         # Execute
-        result = frontend_collaboration_attestation_cleanroom(
+        result = frontend_collaboration_invitation_list(
             cmd=Mock(),
-            collaboration_id="test-collab-123"
+            collaboration_id="test-collab-123",
+            pending_only=True
         )
 
         # Verify
-        self.assertEqual(result["attestationType"], "cleanroom")
-        self.assertIn("cleanroomId", result)
-        mock_client.collaboration.attestationreport_cleanroom_get.assert_called_once_with(
-            "test-collab-123")
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["status"], "pending")
+        mock_client.collaboration.invitations_get.assert_called_once_with(
+            "test-collab-123", pending_only=True)
+
+    # Audit Filter Tests
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_list_audit_with_filters(self, mock_get_client):
+        """Test listing audit logs with filters"""
+        # Mock the client
+        mock_client = Mock()
+        mock_client.collaboration.analytics_auditevents_get.return_value = [
+            {
+                "logId": "test-log-123",
+                "timestamp": "2024-01-01T00:00:00Z",
+                "action": "query_executed",
+                "userId": "user-123"
+            }
+        ]
+        mock_get_client.return_value = mock_client
+
+        # Execute
+        result = frontend_collaboration_audit_list(
+            cmd=Mock(),
+            collaboration_id="test-collab-123",
+            scope="analytics",
+            from_seqno=100,
+            to_seqno=200
+        )
+
+        # Verify
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["action"], "query_executed")
+        mock_client.collaboration.analytics_auditevents_get.assert_called_once_with(
+            "test-collab-123", scope="analytics", from_seqno=100, to_seqno=200)
 
 
 if __name__ == '__main__':

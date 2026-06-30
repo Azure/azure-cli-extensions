@@ -295,6 +295,12 @@ class RegistryDiscoveryReplacer(RecordingProcessor):
         u = urlparse(request.uri)
         self.__should_process_next_response = bool(self.REGISTRY_DISCOVERY_ENDPOINT_RE.match(u.path))
 
+        if self.__should_process_next_response and u.query:
+            # Strip query parameters from discovery requests to ensure consistent matching
+            # across SDK versions (some add ?api-version=v1.0, others don't)
+            u = u._replace(query="")
+            request.uri = u.geturl()
+
         return request
 
     def process_response(self, response):
@@ -313,6 +319,28 @@ class RegistryDiscoveryReplacer(RecordingProcessor):
         return response
 
 
+class RegistryDiscoveryQueryStripper(RecordingProcessor):
+    """Strips query parameters from registry discovery URLs during replay matching.
+
+    SDK versions may add query parameters (e.g. ?api-version=v1.0) to discovery
+    requests that weren't present when the cassette was recorded. This processor
+    strips them so VCR's query matcher can find the recorded response.
+
+    Unlike RegistryDiscoveryReplacer, this class does NOT override process_response,
+    so it is safe to use in replay_processors without causing bytes/str issues
+    during cassette load.
+    """
+
+    REGISTRY_DISCOVERY_ENDPOINT_RE = re.compile("^/registrymanagement/v1.0/registries/[^/]+/discovery$")
+
+    def process_request(self, request):
+        u = urlparse(request.uri)
+        if self.REGISTRY_DISCOVERY_ENDPOINT_RE.match(u.path) and u.query:
+            u = u._replace(query="")
+            request.uri = u.geturl()
+        return request
+
+
 class HostNormalizer(RecordingProcessor):
     def process_request(self, request):
         try:
@@ -325,6 +353,91 @@ class HostNormalizer(RecordingProcessor):
             return request
         except Exception:
             return request
+
+
+class DeploymentTemplateUrlRewriter(RecordingProcessor):
+    """Rewrites deployment-template request URLs to match the existing cassettes.
+
+    azure-ai-ml 1.34.0 introduced two changes to deployment-template requests
+    that the recorded cassettes don't account for:
+
+    1. ``DeploymentTemplateOperations._get_registry_endpoint`` now falls back
+       to a hard-coded ``https://eastus.api.azureml.ms`` host when registry
+       discovery is unusable during playback, whereas the asset cassettes
+       were recorded against the registry's actual region
+       (``eastus2.api.azureml.ms``).
+    2. The new TSP REST client always emits a ``/deploymenttemplates/``
+       segment before the template name. The recordings are inconsistent:
+       read/list calls already include the segment, but ``create_or_update``
+       (POST/PUT) recordings were captured against an older client shape
+       that omits it.
+
+    To replay both shapes the processor:
+
+    * rewrites the host of any genericasset request that targets
+      ``/registries/{registry}/deploymenttemplates`` from
+      ``*.api.azureml.ms`` to ``eastus2.api.azureml.ms``;
+    * strips the ``deploymenttemplates/`` segment for write methods
+      (POST/PUT/PATCH/DELETE) so the path matches the legacy recorded
+      shape, while leaving it in place for GET (read/list);
+    * applies the same rewrite to any ``Location`` /
+      ``Azure-AsyncOperation`` headers on the response so follow-up GETs
+      issued by the LRO poller still find a recorded interaction.
+    """
+
+    _GENERICASSET_PATH_PREFIX_RE = re.compile(
+        r"^(?P<prefix>/genericasset/v[\d.]+/subscriptions/[^/]+/resourceGroups/[^/]+"
+        r"/providers/Microsoft\.MachineLearningServices/registries/[^/]+/)"
+        r"deploymenttemplates(?P<rest>/.*)?$"
+    )
+    _STRIP_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
+    _RECORDED_HOST = "eastus2.api.azureml.ms"
+
+    def _rewrite_uri(self, uri, method):
+        try:
+            u = urlparse(uri)
+            m = self._GENERICASSET_PATH_PREFIX_RE.match(u.path)
+            if not m:
+                return uri
+            prefix = m.group("prefix")
+            rest = m.group("rest") or ""
+            method_upper = (method or "GET").upper()
+            if method_upper in self._STRIP_METHODS and rest:
+                new_path = prefix + rest.lstrip("/")
+            else:
+                new_path = u.path
+            new_netloc = u.netloc
+            if u.netloc.endswith(".api.azureml.ms"):
+                port_suffix = ""
+                if ":" in u.netloc:
+                    port_suffix = ":" + u.netloc.split(":", 1)[1]
+                new_netloc = self._RECORDED_HOST + port_suffix
+            if new_netloc == u.netloc and new_path == u.path:
+                return uri
+            return u._replace(netloc=new_netloc, path=new_path).geturl()
+        except Exception:
+            return uri
+
+    def process_request(self, request):
+        request.uri = self._rewrite_uri(request.uri, getattr(request, "method", None))
+        return request
+
+    def process_response(self, response):
+        try:
+            headers = response.get("headers") or {}
+            for header_name in (
+                "location",
+                "Location",
+                "azure-asyncoperation",
+                "Azure-AsyncOperation",
+            ):
+                values = headers.get(header_name)
+                if not values:
+                    continue
+                headers[header_name] = [self._rewrite_uri(v, "GET") for v in values]
+        except Exception:
+            pass
+        return response
 
 
 class AzureBlobJobLogReplacer(RecordingProcessor):

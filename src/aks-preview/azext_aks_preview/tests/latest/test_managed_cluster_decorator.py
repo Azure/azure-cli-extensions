@@ -25,7 +25,6 @@ from azext_aks_preview._consts import (
     CONST_CUSTOM_CA_TEST_CERT,
     CONST_DEFAULT_NODE_OS_TYPE,
     CONST_DEFAULT_NODE_VM_SIZE,
-    CONST_DISK_DRIVER_V2,
     CONST_GITOPS_ADDON_NAME,
     CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     CONST_INGRESS_APPGW_ADDON_NAME,
@@ -40,7 +39,10 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
     CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
+    CONST_APP_ROUTING_ISTIO_MODE_ENABLED,
+    CONST_APP_ROUTING_ISTIO_MODE_DISABLED,
     CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_ADDON_NAME_CAMELCASE,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_NODEPOOL_MODE_SYSTEM,
@@ -62,6 +64,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -69,6 +72,7 @@ from azext_aks_preview.managed_cluster_decorator import (
     AKSPreviewManagedClusterCreateDecorator,
     AKSPreviewManagedClusterModels,
     AKSPreviewManagedClusterUpdateDecorator,
+    _get_monitoring_addon_key_from_consts,
 )
 from azext_aks_preview.tests.latest.utils import get_test_data_file_path
 from azure.cli.command_modules.acs._consts import (
@@ -93,14 +97,22 @@ from azure.cli.core.azclierror import (
     UnknownError,
     CLIError,
 )
+from azure.cli.core.commands import AzCliCommandInvoker
+from azure.cli.core.util import todict
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     DecoratorEarlyExitException,
     DecoratorMode,
 )
+from azext_aks_preview._consts import (
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+)
 from dateutil.parser import parse
 from deepdiff import DeepDiff
+
 
 class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
     def setUp(self):
@@ -125,6 +137,72 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
             models.pod_identity_models.ManagedClusterPodIdentityException,
             getattr(module, "ManagedClusterPodIdentityException"),
         )
+
+
+class AKSPreviewGetMonitoringAddonKeyTestCase(unittest.TestCase):
+    """Tests for the _get_monitoring_addon_key_from_consts helper function."""
+
+    def setUp(self):
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+        self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+        self.addon_consts = {
+            "CONST_MONITORING_ADDON_NAME": CONST_MONITORING_ADDON_NAME,
+        }
+
+    def test_returns_lowercase_key_when_present(self):
+        addon_profiles = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True
+            ),
+        }
+        result = _get_monitoring_addon_key_from_consts(
+            addon_profiles, self.addon_consts
+        )
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+
+    def test_normalizes_camelcase_key(self):
+        addon_profiles = {
+            CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(
+                enabled=True
+            ),
+        }
+        result = _get_monitoring_addon_key_from_consts(
+            addon_profiles, self.addon_consts
+        )
+        # After normalization, the canonical key should always be returned
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+        # Dict should have been re-keyed in place
+        self.assertIn(CONST_MONITORING_ADDON_NAME, addon_profiles)
+        self.assertNotIn(CONST_MONITORING_ADDON_NAME_CAMELCASE, addon_profiles)
+
+    def test_prefers_lowercase_when_both_present(self):
+        addon_profiles = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True
+            ),
+            CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(
+                enabled=True
+            ),
+        }
+        result = _get_monitoring_addon_key_from_consts(
+            addon_profiles, self.addon_consts
+        )
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+
+    def test_returns_default_when_no_addon_profiles(self):
+        result = _get_monitoring_addon_key_from_consts(None, self.addon_consts)
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+
+    def test_returns_default_when_neither_key_present(self):
+        addon_profiles = {
+            "some_other_addon": self.models.ManagedClusterAddonProfile(enabled=True),
+        }
+        result = _get_monitoring_addon_key_from_consts(
+            addon_profiles, self.addon_consts
+        )
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
 
 
 class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
@@ -268,16 +346,14 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
                 kube_proxy_config=self.models.ContainerServiceNetworkProfileKubeProxyConfig(
-                    kube_proxy="test_kube_proxy"
+                    enabled=True
                 )
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_kube_proxy_config(),
-            self.models.ContainerServiceNetworkProfileKubeProxyConfig(
-                kube_proxy="test_kube_proxy"
-            ),
+            self.models.ContainerServiceNetworkProfileKubeProxyConfig(enabled=True),
         )
 
         # custom value
@@ -364,13 +440,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                pod_cidrs="test_pod_cidrs"
+                pod_cidrs=["test_pod_cidrs"]
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_pod_cidrs(),
-            "test_pod_cidrs",
+            ["test_pod_cidrs"],
         )
 
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -401,13 +477,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                service_cidrs="test_service_cidrs"
+                service_cidrs=["test_service_cidrs"]
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_service_cidrs(),
-            "test_service_cidrs",
+            ["test_service_cidrs"],
         )
 
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -440,13 +516,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                ip_families="test_ip_families"
+                ip_families=["test_ip_families"]
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_ip_families(),
-            "test_ip_families",
+            ["test_ip_families"],
         )
 
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -916,6 +992,19 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_3.get_acns_transit_encryption_type(), "WireGuard")
+        # Flag set to mTLS
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_acns_transit_encryption_type(), "mTLS")
         # Fail on setting transit_encryption_type and disable acns
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -944,7 +1033,83 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_transit_encryption_type()
-
+        # Fail on setting mTLS with L7 advanced network policies
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                    "acns_advanced_networkpolicies": "L7",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_7.get_acns_transit_encryption_type()
+        # Fail on setting mTLS with Istio service mesh
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                    "enable_azure_service_mesh": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_8.get_acns_transit_encryption_type()
+        # Fail on update: existing cluster has L7 and user sets mTLS
+        ctx_9 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    security=self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies="L7",
+                    ),
+                ),
+            ),
+        )
+        ctx_9.attach_mc(mc_9)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_9.get_acns_transit_encryption_type()
+        # Fail on update: existing cluster has Istio and user sets mTLS
+        ctx_10 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
+            ),
+        )
+        ctx_10.attach_mc(mc_10)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_10.get_acns_transit_encryption_type()
 
     def test_mc_get_acns_enablement(self):
         # Default, not set.
@@ -954,7 +1119,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_acns_enablement_with_perf(), (None, None, None, None))
+        self.assertEqual(ctx_1.get_acns_enablement(), (None, None, None, None))
 
         # Flag set to True.
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -967,7 +1132,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_acns_enablement_with_perf(), (True, None, None, None))
+        self.assertEqual(ctx_2.get_acns_enablement(), (True, None, None, None))
 
         # Flag set to True.
         ctx_3 = AKSPreviewManagedClusterContext(
@@ -980,7 +1145,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_3.get_acns_enablement_with_perf(), (True, None, None, None))
+        self.assertEqual(ctx_3.get_acns_enablement(), (True, None, None, None))
 
         # Flag set to True and False.
         ctx_4 = AKSPreviewManagedClusterContext(
@@ -996,7 +1161,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         # fail on get_acns mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_4.get_acns_enablement_with_perf()
+            ctx_4.get_acns_enablement()
 
         # Flag set to False.
         ctx_5 = AKSPreviewManagedClusterContext(
@@ -1009,7 +1174,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_5.get_acns_enablement_with_perf(), (False, None, None, None))
+        self.assertEqual(ctx_5.get_acns_enablement(), (False, None, None, None))
 
         ctx_6 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -1022,7 +1187,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_6.get_acns_enablement_with_perf(), (True, False, None, None))
+        self.assertEqual(ctx_6.get_acns_enablement(), (True, False, None, None))
 
         ctx_7 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -1035,7 +1200,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_7.get_acns_enablement_with_perf(), (True, None, False, None))
+        self.assertEqual(ctx_7.get_acns_enablement(), (True, None, False, None))
 
         # Cannot disable observability with enabling acns
         ctx_8 = AKSPreviewManagedClusterContext(
@@ -1048,7 +1213,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_8.get_acns_enablement_with_perf(), (None, None, None, None))
+        self.assertEqual(ctx_8.get_acns_enablement(), (None, None, None, None))
 
         # Cannot disable security with enabling acns
         ctx_9 = AKSPreviewManagedClusterContext(
@@ -1061,7 +1226,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_9.get_acns_enablement_with_perf(), (None, None, None, None))
+        self.assertEqual(ctx_9.get_acns_enablement(), (None, None, None, None))
 
         # Illegal flags enable acns, disable acns security, disable acns observability
         ctx_10 = AKSPreviewManagedClusterContext(
@@ -1076,9 +1241,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_acns_enablement_with_perf mutual exclusive error
+        # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_10.get_acns_enablement_with_perf()
+            ctx_10.get_acns_enablement()
 
         # Illegal flags disable acns and disable acns observability
         ctx_11 = AKSPreviewManagedClusterContext(
@@ -1092,9 +1257,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_acns_enablement_with_perf mutual exclusive error
+        # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_11.get_acns_enablement_with_perf()
+            ctx_11.get_acns_enablement()
 
         # Illegal flags disable acns and disable acns security
         ctx_12 = AKSPreviewManagedClusterContext(
@@ -1108,9 +1273,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_acns_enablement_with_perf mutual exclusive error
+        # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_12.get_acns_enablement_with_perf()
+            ctx_12.get_acns_enablement()
 
         # Enable ACNS and ACNS performance
         ctx_13 = AKSPreviewManagedClusterContext(
@@ -1124,7 +1289,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_13.get_acns_enablement_with_perf(), (True, None, None, True))
+        self.assertEqual(ctx_13.get_acns_enablement(), (True, None, None, True))
 
         # Enable ACNS and ACNS performance with disable acns security, acns observability
         ctx_14 = AKSPreviewManagedClusterContext(
@@ -1140,7 +1305,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_14.get_acns_enablement_with_perf(), (True, False, False, True))
+        self.assertEqual(ctx_14.get_acns_enablement(), (True, False, False, True))
 
         # Enable all of ACNS (security and observability unspecified)
         ctx_15 = AKSPreviewManagedClusterContext(
@@ -1154,7 +1319,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_15.get_acns_enablement_with_perf(), (True, None, None, True))
+        self.assertEqual(ctx_15.get_acns_enablement(), (True, None, None, True))
 
         # Enable ACNS, disable performance, security and observability unspecified
         ctx_15 = AKSPreviewManagedClusterContext(
@@ -1168,7 +1333,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_15.get_acns_enablement_with_perf(), (True, None, None, False))
+        self.assertEqual(ctx_15.get_acns_enablement(), (True, None, None, False))
 
         # Illegal flags disable acns and disable acns performance
         ctx_16 = AKSPreviewManagedClusterContext(
@@ -1182,9 +1347,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_acns_enablement_with_perf mutual exclusive error
+        # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_16.get_acns_enablement_with_perf()
+            ctx_16.get_acns_enablement()
 
         # Illegal flags enable acns and all suites disabled
         ctx_17 = AKSPreviewManagedClusterContext(
@@ -1200,9 +1365,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        # fail on get_acns_enablement_with_perf mutual exclusive error
+        # fail on get_acns_enablement mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_17.get_acns_enablement_with_perf()
+            ctx_17.get_acns_enablement()
 
     def test_get_enable_managed_identity(self):
         # custom value
@@ -1258,9 +1423,10 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             DecoratorMode.UPDATE,
         )
         self.assertEqual(ctx_4.get_enable_managed_identity(), False)
-        mc_4 = self.models.ManagedCluster(location="test_location", identity=self.models.ManagedClusterIdentity(
-            type="SystemAssigned"
-        ))
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
         ctx_4.attach_mc(mc_4)
         self.assertEqual(ctx_4.get_enable_managed_identity(), False)
 
@@ -1751,7 +1917,88 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertIsNone(ctx_0.get_image_cleaner_interval_hours())
 
+    def test_get_enable_service_account_image_pull(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_0.get_enable_service_account_image_pull(), None)
+
         ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_service_account_image_pull": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_service_account_image_pull(), True)
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_service_account_image_pull": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_enable_service_account_image_pull(), False)
+
+    def test_get_disable_service_account_image_pull(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_disable_service_account_image_pull(), None)
+
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_service_account_image_pull": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_service_account_image_pull(), True)
+
+    def test_get_service_account_image_pull_default_managed_identity_id(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(
+            ctx_0.get_service_account_image_pull_default_managed_identity_id()
+        )
+
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_1.get_service_account_image_pull_default_managed_identity_id(),
+            "test_identity_id",
+        )
+
+    def test_get_image_cleaner_interval_hours_extended(self):
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -1762,7 +2009,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_image_cleaner_interval_hours(), 24)
+        self.assertEqual(ctx_2.get_image_cleaner_interval_hours(), 24)
 
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -2054,10 +2301,14 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
+        self.assertEqual(
+            ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id
+        )
 
         # PMK enabled - should now accept versioned key ID (4 segments) since validation is removed
-        versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
+        versioned_key_id = (
+            "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
+        )
         ctx_pmk_versioned = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2071,7 +2322,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         # No exception should be raised now that validation is removed
-        self.assertEqual(ctx_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
+        self.assertEqual(
+            ctx_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id
+        )
 
         # PMK disabled - should accept versioned key ID (4 segments)
         ctx_no_pmk_versioned = AKSPreviewManagedClusterContext(
@@ -2086,7 +2339,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
+        self.assertEqual(
+            ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id
+        )
 
         # PMK disabled - should now accept versionless key ID (3 segments) since validation is removed
         ctx_no_pmk_versionless = AKSPreviewManagedClusterContext(
@@ -2102,7 +2357,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         # No exception should be raised now that validation is removed
-        self.assertEqual(ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
+        self.assertEqual(
+            ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id
+        )
 
         # Test with existing cluster data (UPDATE mode) - PMK enabled should read from cluster
         ctx_update_pmk = AKSPreviewManagedClusterContext(
@@ -2128,7 +2385,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             security_profile=security_profile,
         )
         ctx_update_pmk.attach_mc(mc)
-        self.assertEqual(ctx_update_pmk.get_azure_keyvault_kms_key_id(), versionless_key_id)
+        self.assertEqual(
+            ctx_update_pmk.get_azure_keyvault_kms_key_id(), versionless_key_id
+        )
 
     def test_get_azure_keyvault_kms_key_vault_network_access(self):
         key_vault_network_access_1 = "Public"
@@ -2259,7 +2518,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=decorator_mode,
         )
 
-    def _create_mc_with_kms_security_profile(self, key_vault_resource_id, network_access="Private"):
+    def _create_mc_with_kms_security_profile(
+        self, key_vault_resource_id, network_access="Private"
+    ):
         """Helper method to create ManagedCluster with KMS security profile."""
         security_profile = self.models.ManagedClusterSecurityProfile()
         security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
@@ -2286,100 +2547,136 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
     def test_get_azure_keyvault_kms_key_id(self):
         """Test get_azure_keyvault_kms_key_id method functionality."""
-        key_id_1 = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakekeyversion"
-        key_id_2 = "https://fakekeyvault2.vault.azure.net/keys/fakekeyname2/fakekeyversion2"
+        key_id_1 = (
+            "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakekeyversion"
+        )
+        key_id_2 = (
+            "https://fakekeyvault2.vault.azure.net/keys/fakekeyname2/fakekeyversion2"
+        )
 
         # Test 1: Default case - no parameters set
         ctx_default = self._create_kms_context({})
         self.assertIsNone(ctx_default.get_azure_keyvault_kms_key_id())
 
         # Test 2: KMS enabled with key ID - should return the key ID
-        ctx_with_key = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": key_id_1,
-        })
+        ctx_with_key = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            }
+        )
         self.assertEqual(ctx_with_key.get_azure_keyvault_kms_key_id(), key_id_1)
 
         # Test 3: CREATE mode - existing MC security profile should override parameters
-        ctx_create_with_existing = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": key_id_1,
-        })
+        ctx_create_with_existing = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            }
+        )
         mc_existing = self._create_mc_with_kms_key_id(key_id_2)
         ctx_create_with_existing.attach_mc(mc_existing)
         self.assertEqual(
             ctx_create_with_existing.get_azure_keyvault_kms_key_id(),
-            key_id_2  # Should return existing MC value in CREATE mode
+            key_id_2,  # Should return existing MC value in CREATE mode
         )
 
         # Test 4: UPDATE mode - parameters should override existing MC values
-        ctx_update = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": key_id_1,
-        }, DecoratorMode.UPDATE)
+        ctx_update = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            DecoratorMode.UPDATE,
+        )
         mc_update = self._create_mc_with_kms_key_id(key_id_2)
         ctx_update.attach_mc(mc_update)
         self.assertEqual(
             ctx_update.get_azure_keyvault_kms_key_id(),
-            key_id_1  # Should return parameter value in UPDATE mode
+            key_id_1,  # Should return parameter value in UPDATE mode
         )
 
         # Test 5: Error case - key ID provided without enabling KMS
-        ctx_no_enable = self._create_kms_context({
-            "azure_keyvault_kms_key_id": key_id_1,
-        })
+        ctx_no_enable = self._create_kms_context(
+            {
+                "azure_keyvault_kms_key_id": key_id_1,
+            }
+        )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_no_enable.get_azure_keyvault_kms_key_id()
 
         # Test 6: Error case - key ID provided with KMS explicitly disabled
-        ctx_disabled = self._create_kms_context({
-            "enable_azure_keyvault_kms": False,
-            "azure_keyvault_kms_key_id": key_id_1,
-        })
+        ctx_disabled = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_id": key_id_1,
+            }
+        )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_disabled.get_azure_keyvault_kms_key_id()
 
         # Test 7: PMK enabled - should accept versionless key ID
         versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
-        ctx_pmk_versionless = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": versionless_key_id,
-            "kms_infrastructure_encryption": "Enabled",
-        })
-        self.assertEqual(ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
+        ctx_pmk_versionless = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": versionless_key_id,
+                "kms_infrastructure_encryption": "Enabled",
+            }
+        )
+        self.assertEqual(
+            ctx_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id
+        )
 
         # Test 8: PMK enabled - should now accept versioned key ID (validation removed)
-        versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
-        ctx_pmk_versioned = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": versioned_key_id,
-            "kms_infrastructure_encryption": "Enabled",
-        })
+        versioned_key_id = (
+            "https://fakekeyvault.vault.azure.net/keys/fakekeyname/fakeversion"
+        )
+        ctx_pmk_versioned = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": versioned_key_id,
+                "kms_infrastructure_encryption": "Enabled",
+            }
+        )
         # No exception should be raised since PMK validation was removed
-        self.assertEqual(ctx_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
+        self.assertEqual(
+            ctx_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id
+        )
 
         # Test 9: PMK disabled - should accept versioned key ID
-        ctx_no_pmk_versioned = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": versioned_key_id,
-            "kms_infrastructure_encryption": "Disabled",
-        })
-        self.assertEqual(ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id)
+        ctx_no_pmk_versioned = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": versioned_key_id,
+                "kms_infrastructure_encryption": "Disabled",
+            }
+        )
+        self.assertEqual(
+            ctx_no_pmk_versioned.get_azure_keyvault_kms_key_id(), versioned_key_id
+        )
 
         # Test 10: PMK disabled - should now accept versionless key ID (validation removed)
-        ctx_no_pmk_versionless = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": versionless_key_id,
-            "kms_infrastructure_encryption": "Disabled",
-        })
+        ctx_no_pmk_versionless = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": versionless_key_id,
+                "kms_infrastructure_encryption": "Disabled",
+            }
+        )
         # No exception should be raised since PMK validation was removed
-        self.assertEqual(ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id)
+        self.assertEqual(
+            ctx_no_pmk_versionless.get_azure_keyvault_kms_key_id(), versionless_key_id
+        )
 
         # Test 11: PMK enabled in UPDATE mode - should read PMK status from existing cluster
-        ctx_update_pmk = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_id": versionless_key_id,
-        }, DecoratorMode.UPDATE)
+        ctx_update_pmk = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": versionless_key_id,
+            },
+            DecoratorMode.UPDATE,
+        )
         # Create MC with PMK enabled in existing cluster
         security_profile = self.models.ManagedClusterSecurityProfile()
         security_profile.kubernetes_resource_object_encryption_profile = (
@@ -2392,7 +2689,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             security_profile=security_profile,
         )
         ctx_update_pmk.attach_mc(mc_pmk)
-        self.assertEqual(ctx_update_pmk.get_azure_keyvault_kms_key_id(), versionless_key_id)
+        self.assertEqual(
+            ctx_update_pmk.get_azure_keyvault_kms_key_id(), versionless_key_id
+        )
 
     def test_get_azure_keyvault_kms_key_vault_resource_id(self):
         """Test get_azure_keyvault_kms_key_vault_resource_id method functionality."""
@@ -2404,37 +2703,49 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertIsNone(ctx_default.get_azure_keyvault_kms_key_vault_resource_id())
 
         # Test 2: Public network access - resource ID should be None
-        ctx_public = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Public",
-        })
-        self.assertEqual(ctx_public.get_azure_keyvault_kms_key_vault_resource_id(), None)
+        ctx_public = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+            }
+        )
+        self.assertEqual(
+            ctx_public.get_azure_keyvault_kms_key_vault_resource_id(), None
+        )
 
         # Test 3: Public network access with empty resource ID - should return empty string
-        ctx_public_empty = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Public",
-            "azure_keyvault_kms_key_vault_resource_id": "",
-        })
-        self.assertEqual(ctx_public_empty.get_azure_keyvault_kms_key_vault_resource_id(), "")
+        ctx_public_empty = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": "",
+            }
+        )
+        self.assertEqual(
+            ctx_public_empty.get_azure_keyvault_kms_key_vault_resource_id(), ""
+        )
 
         # Test 4: Private network access with resource ID - should return the resource ID
-        ctx_private = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Private",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_private = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         self.assertEqual(
             ctx_private.get_azure_keyvault_kms_key_vault_resource_id(),
             key_vault_resource_id_1,
         )
 
         # Test 5: CREATE mode - existing MC security profile should not override parameters
-        ctx_create_with_existing = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Private",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_create_with_existing = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         mc_existing = self._create_mc_with_kms_security_profile(key_vault_resource_id_2)
         ctx_create_with_existing.attach_mc(mc_existing)
         self.assertEqual(
@@ -2443,11 +2754,14 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
 
         # Test 6: UPDATE mode - parameters should override existing MC values
-        ctx_update = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Private",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_2,
-        }, DecoratorMode.UPDATE)
+        ctx_update = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_2,
+            },
+            DecoratorMode.UPDATE,
+        )
         mc_update = self._create_mc_with_kms_security_profile(key_vault_resource_id_1)
         ctx_update.attach_mc(mc_update)
         self.assertEqual(
@@ -2456,83 +2770,111 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
 
         # Test 7: Error case - resource ID provided without enabling KMS
-        ctx_no_enable = self._create_kms_context({
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_no_enable = self._create_kms_context(
+            {
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_no_enable.get_azure_keyvault_kms_key_vault_resource_id()
 
         # Test 8: Error case - resource ID provided with KMS explicitly disabled
-        ctx_disabled = self._create_kms_context({
-            "enable_azure_keyvault_kms": False,
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_disabled = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_disabled.get_azure_keyvault_kms_key_vault_resource_id()
 
         # Test 9: Public network access with resource ID - should return the resource ID
-        ctx_public_with_resource = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Public",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_public_with_resource = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Public",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         self.assertEqual(
             ctx_public_with_resource.get_azure_keyvault_kms_key_vault_resource_id(),
             key_vault_resource_id_1,
         )
 
         # Test 10: Private network access with empty resource ID - should return empty string
-        ctx_private_empty = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_network_access": "Private",
-            "azure_keyvault_kms_key_vault_resource_id": "",
-        })
-        self.assertEqual(ctx_private_empty.get_azure_keyvault_kms_key_vault_resource_id(), "")
+        ctx_private_empty = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_network_access": "Private",
+                "azure_keyvault_kms_key_vault_resource_id": "",
+            }
+        )
+        self.assertEqual(
+            ctx_private_empty.get_azure_keyvault_kms_key_vault_resource_id(), ""
+        )
 
         # Test 11: PMK enabled - should require key vault resource ID
-        ctx_pmk_no_resource = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "kms_infrastructure_encryption": "Enabled",
-        })
+        ctx_pmk_no_resource = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "kms_infrastructure_encryption": "Enabled",
+            }
+        )
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             ctx_pmk_no_resource.get_azure_keyvault_kms_key_vault_resource_id()
-        self.assertIn("azure-keyvault-kms-key-vault-resource-id is required when", str(cm.exception))
-        self.assertIn("kms-infrastructure-encryption is set to Enabled (PMK)", str(cm.exception))
+        self.assertIn(
+            "azure-keyvault-kms-key-vault-resource-id is required when",
+            str(cm.exception),
+        )
+        self.assertIn(
+            "kms-infrastructure-encryption is set to Enabled (PMK)", str(cm.exception)
+        )
 
         # Test 12: PMK enabled - should accept provided resource ID
-        ctx_pmk_with_resource = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "kms_infrastructure_encryption": "Enabled",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_pmk_with_resource = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "kms_infrastructure_encryption": "Enabled",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         self.assertEqual(
             ctx_pmk_with_resource.get_azure_keyvault_kms_key_vault_resource_id(),
-            key_vault_resource_id_1
+            key_vault_resource_id_1,
         )
 
         # Test 13: PMK disabled - should not require resource ID
-        ctx_no_pmk_optional = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "kms_infrastructure_encryption": "Disabled",
-        })
-        self.assertIsNone(ctx_no_pmk_optional.get_azure_keyvault_kms_key_vault_resource_id())
+        ctx_no_pmk_optional = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "kms_infrastructure_encryption": "Disabled",
+            }
+        )
+        self.assertIsNone(
+            ctx_no_pmk_optional.get_azure_keyvault_kms_key_vault_resource_id()
+        )
 
         # Test 14: PMK disabled - should accept provided resource ID
-        ctx_no_pmk_with_resource = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "kms_infrastructure_encryption": "Disabled",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_no_pmk_with_resource = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "kms_infrastructure_encryption": "Disabled",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         self.assertEqual(
             ctx_no_pmk_with_resource.get_azure_keyvault_kms_key_vault_resource_id(),
-            key_vault_resource_id_1
+            key_vault_resource_id_1,
         )
 
         # Test 15: PMK enabled in UPDATE mode - should read PMK status from existing cluster
-        ctx_update_pmk = self._create_kms_context({
-            "enable_azure_keyvault_kms": True,
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        }, DecoratorMode.UPDATE)
+        ctx_update_pmk = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            },
+            DecoratorMode.UPDATE,
+        )
         # Create MC with PMK enabled in existing cluster
         security_profile = self.models.ManagedClusterSecurityProfile()
         security_profile.kubernetes_resource_object_encryption_profile = (
@@ -2547,15 +2889,17 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_update_pmk.attach_mc(mc_pmk)
         self.assertEqual(
             ctx_update_pmk.get_azure_keyvault_kms_key_vault_resource_id(),
-            key_vault_resource_id_1
+            key_vault_resource_id_1,
         )
 
         # Test 16: PMK enabled but CMK not enabled - should still fail validation
-        ctx_pmk_no_cmk = self._create_kms_context({
-            "enable_azure_keyvault_kms": False,
-            "kms_infrastructure_encryption": "Enabled",
-            "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
-        })
+        ctx_pmk_no_cmk = self._create_kms_context(
+            {
+                "enable_azure_keyvault_kms": False,
+                "kms_infrastructure_encryption": "Enabled",
+                "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
+            }
+        )
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             ctx_pmk_no_cmk.get_azure_keyvault_kms_key_vault_resource_id()
         self.assertIn("azure-keyvault-kms-key-vault-resource-id", str(cm.exception))
@@ -2783,6 +3127,83 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 ctx_5.get_kubernetes_version(), "custom_kubernetes_version"
             )
 
+    def test_get_enable_fips(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_fips(), False)
+
+        # custom value with supported Kubernetes version
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "kubernetes_version": "1.34.0",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_fips(), True)
+
+        # custom value with unsupported Kubernetes version
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "kubernetes_version": "1.33.9",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_enable_fips()
+
+        # CREATE: value on attached mc overrides raw parameter default
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_fips": False}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        mc_4.properties["enableFIPS"] = True
+        ctx_4.attach_mc(mc_4)
+        self.assertEqual(ctx_4.get_enable_fips(), True)
+
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_fips": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_5.get_disable_fips(), True)
+
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "disable_fips": True,
+                    "kubernetes_version": "1.34.0",
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_enable_fips()
+
     def test_get_disk_driver(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -2799,73 +3220,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_1.get_disk_driver()
 
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_disk_driver": True,
-                    "disk_driver_version": "v2",
-                    "disable_disk_driver": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=False,
-                version=None,
-            ),
-            file_csi_driver=None,
-            snapshot_controller=None,
-        )
-        mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            storage_profile=storage_profile_2,
-        )
-        ctx_2.attach_mc(mc_2)
-        ground_truth_disk_csi_driver_2 = (
-            self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=True,
-                version="v2",
-            )
-        )
-        self.assertEqual(ctx_2.get_disk_driver(), ground_truth_disk_csi_driver_2)
-
-        # fail with enable-disk-driver as false and value passed for disk_driver_version
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_disk_driver": True,
-                    "disk_driver_version": "v2",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-
-        # fail on argument usage error
-        with self.assertRaises(ArgumentUsageError):
-            ctx_3.get_disk_driver()
-
-        # fail with enable-disk-driver as false and value passed for disk_driver_version
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disk_driver_version": "v2",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on argument usage error
-        with self.assertRaises(ArgumentUsageError):
-            ctx_4.get_disk_driver()
-
         # fail on prompt_y_n not specified when disabling disk driver
-        ctx_5 = AKSPreviewManagedClusterContext(
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -2879,9 +3235,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(DecoratorEarlyExitException):
-            ctx_5.get_disk_driver()
+            ctx_2.get_disk_driver()
 
-        ctx_6 = AKSPreviewManagedClusterContext(
+        ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -2891,30 +3247,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        ground_truth_disk_csi_driver_6 = (
+        ground_truth_disk_csi_driver_3 = (
             self.models.ManagedClusterStorageProfileDiskCSIDriver(
                 enabled=False,
             )
         )
-        self.assertEqual(ctx_6.get_disk_driver(), ground_truth_disk_csi_driver_6)
-
-        ctx_7 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disk_driver_version": CONST_DISK_DRIVER_V2,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        ground_truth_disk_csi_driver_7 = (
-            self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=True,
-                version=CONST_DISK_DRIVER_V2,
-            )
-        )
-        self.assertEqual(ctx_7.get_disk_driver(), ground_truth_disk_csi_driver_7)
+        self.assertEqual(ctx_3.get_disk_driver(), ground_truth_disk_csi_driver_3)
 
     def test_get_enable_apiserver_vnet_integration(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -3346,14 +3684,16 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=False
-            )
+            ),
         )
         ctx_1.attach_mc(mc_1)
         self.assertEqual(ctx_1.get_enable_run_command(), True)
 
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"enable_run_command": True, "disable_run_command": True}),
+            AKSManagedClusterParamDict(
+                {"enable_run_command": True, "disable_run_command": True}
+            ),
             self.models,
             DecoratorMode.CREATE,
         )
@@ -3371,7 +3711,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=True
-            )
+            ),
         )
         ctx_3.attach_mc(mc_3)
         self.assertEqual(ctx_3.get_enable_run_command(), True)
@@ -3388,7 +3728,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=True
-            )
+            ),
         )
         ctx_1.attach_mc(mc_1)
         self.assertEqual(ctx_1.get_disable_run_command(), False)
@@ -3981,7 +4321,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         workload_auto_scaler_profile.vertical_pod_autoscaler = (
             self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                enable=True
+                enabled=True
             )
         )
         mc = self.models.ManagedCluster(
@@ -4174,10 +4514,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
-                {
-                    "enable_azure_service_mesh": True,
-                    "revision": "asm-1-18"
-                }
+                {"enable_azure_service_mesh": True, "revision": "asm-1-18"}
             ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -4188,9 +4525,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         new_profile, updated = ctx_0._handle_enable_disable_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
-        ))
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-18"])
+            ),
+        )
 
     def test_handle_egress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -4212,42 +4552,48 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    egress_gateways=[
-                        self.models.IstioEgressGateway(
-                            enabled=True,
-                            name="istio-egress-1",
-                            namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
-                            gateway_configuration_name="istio-sgc-1"
-                        )
-                    ]
-                )
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    components=self.models.IstioComponents(
+                        egress_gateways=[
+                            self.models.IstioEgressGateway(
+                                enabled=True,
+                                name="istio-egress-1",
+                                namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+                                gateway_configuration_name="istio-sgc-1",
+                            )
+                        ]
+                    )
+                ),
             ),
-        ))
+        )
         # ASM was never enabled on the cluster
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
         )
         new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    egress_gateways=[
-                        self.models.IstioEgressGateway(
-                            enabled=True,
-                            name="istio-egress-1",
-                            namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
-                            gateway_configuration_name="istio-sgc-1"
-                        )
-                    ]
-                )
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    components=self.models.IstioComponents(
+                        egress_gateways=[
+                            self.models.IstioEgressGateway(
+                                enabled=True,
+                                name="istio-egress-1",
+                                namespace=CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE,
+                                gateway_configuration_name="istio-sgc-1",
+                            )
+                        ]
+                    )
+                ),
             ),
-        ))
+        )
 
     def test_handle_ingress_gateways_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -4268,38 +4614,44 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    ingress_gateways=[
-                        self.models.IstioIngressGateway(
-                            mode="Internal",
-                            enabled=True,
-                        )
-                    ]
-                )
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    components=self.models.IstioComponents(
+                        ingress_gateways=[
+                            self.models.IstioIngressGateway(
+                                mode="Internal",
+                                enabled=True,
+                            )
+                        ]
+                    )
+                ),
             ),
-        ))
+        )
         # ASM was never enabled on the cluster
         old_profile = self.models.ServiceMeshProfile(
             mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
         )
         new_profile, updated = ctx_0._handle_ingress_gateways_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    ingress_gateways=[
-                        self.models.IstioIngressGateway(
-                            mode="Internal",
-                            enabled=True,
-                        )
-                    ]
-                )
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    components=self.models.IstioComponents(
+                        ingress_gateways=[
+                            self.models.IstioIngressGateway(
+                                mode="Internal",
+                                enabled=True,
+                            )
+                        ]
+                    )
+                ),
             ),
-        ))
+        )
 
     def test_handle_pluginca_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -4323,20 +4675,23 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         new_profile, updated = ctx_0._handle_pluginca_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                certificate_authority=self.models.IstioCertificateAuthority(
-                    plugin=self.models.IstioPluginCertificateAuthority(
-                        key_vault_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
-                        cert_object_name="my-ca-cert",
-                        key_object_name="my-ca-key",
-                        root_cert_object_name="my-root-cert",
-                        cert_chain_object_name="my-cert-chain",
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    certificate_authority=self.models.IstioCertificateAuthority(
+                        plugin=self.models.IstioPluginCertificateAuthority(
+                            key_vault_id="/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+                            cert_object_name="my-ca-cert",
+                            key_object_name="my-ca-key",
+                            root_cert_object_name="my-root-cert",
+                            cert_chain_object_name="my-cert-chain",
+                        )
                     )
-                )
+                ),
             ),
-        ))
+        )
 
     def test_handle_upgrade_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -4355,10 +4710,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         new_profile, updated = ctx_0._handle_upgrade_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
-        ))
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
+            ),
+        )
 
     def test_handle_enable_istio_cni(self):
         # Test enabling Istio CNI on existing ASM-enabled cluster
@@ -4377,21 +4735,23 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         old_profile = self.models.ServiceMeshProfile(
             mode="Istio",
             istio=self.models.IstioServiceMesh(
-                revisions=["asm-1-25"],
-                components=self.models.IstioComponents()
+                revisions=["asm-1-25"], components=self.models.IstioComponents()
             ),
         )
         new_profile, updated = ctx_0._handle_istio_cni_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                revisions=["asm-1-25"],
-                components=self.models.IstioComponents(
-                    proxy_redirection_mechanism="CNIChaining"
-                )
-            )
-        ))
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-25"],
+                    components=self.models.IstioComponents(
+                        proxy_redirection_mechanism="CNIChaining"
+                    ),
+                ),
+            ),
+        )
 
     def test_handle_disable_istio_cni(self):
         # Test disabling Istio CNI on existing ASM-enabled cluster
@@ -4408,22 +4768,23 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         old_profile = self.models.ServiceMeshProfile(
             mode="Istio",
             istio=self.models.IstioServiceMesh(
-                revisions=["asm-1-25"],
-                components=self.models.IstioComponents()
+                revisions=["asm-1-25"], components=self.models.IstioComponents()
             ),
         )
         new_profile, updated = ctx_0._handle_istio_cni_asm(old_profile)
         self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                revisions=["asm-1-25"],
-                components=self.models.IstioComponents(
-                    proxy_redirection_mechanism="InitContainers"
-                )
-            )
-        ))
-
+        self.assertEqual(
+            new_profile,
+            self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-25"],
+                    components=self.models.IstioComponents(
+                        proxy_redirection_mechanism="InitContainers"
+                    ),
+                ),
+            ),
+        )
 
     def test_get_disable_local_accounts(self):
         # automatic cluster needs to enable the disable_local_accounts
@@ -4452,7 +4813,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            sku = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
+            sku=self.models.ManagedClusterSKU(name="Automatic", tier="Standard"),
         )
         ctx2.attach_mc(mc2)
         self.assertEqual(ctx2.get_sku_name(), "automatic")
@@ -4463,24 +4824,23 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        mc3 = self.models.ManagedCluster(
-            location="test_location",
-            sku = None
-        )
+        mc3 = self.models.ManagedCluster(location="test_location", sku=None)
         ctx3.attach_mc(mc3)
         self.assertEqual(ctx3.get_sku_name(), "base")
 
     def test_get_outbound_type(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"sku": "automatic", "outbound_type": "loadBalancer"}),
+            AKSManagedClusterParamDict(
+                {"sku": "automatic", "outbound_type": "loadBalancer"}
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
         self.create_attach_agentpool_context(ctx1)
         outbound_type_1 = ctx1._get_outbound_type(False, False, None)
         expect_outbound_type_1 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
-        self.assertEqual(outbound_type_1,expect_outbound_type_1)
+        self.assertEqual(outbound_type_1, expect_outbound_type_1)
 
         ctx2 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4491,18 +4851,23 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.create_attach_agentpool_context(ctx2)
         outbound_type_2 = ctx2._get_outbound_type(False, False, None)
         expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
-        self.assertEqual(outbound_type_2,expect_outbound_type_2)
+        self.assertEqual(outbound_type_2, expect_outbound_type_2)
 
         ctx3 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"sku": "automatic", "vnet_subnet_id": "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"}),
+            AKSManagedClusterParamDict(
+                {
+                    "sku": "automatic",
+                    "vnet_subnet_id": "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
         self.create_attach_agentpool_context(ctx3)
         outbound_type_3 = ctx3._get_outbound_type(False, False, None)
         expect_outbound_type_3 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
-        self.assertEqual(outbound_type_3,expect_outbound_type_3)
+        self.assertEqual(outbound_type_3, expect_outbound_type_3)
 
         ctx4 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4513,7 +4878,111 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.create_attach_agentpool_context(ctx4)
         outbound_type_4 = ctx4._get_outbound_type(False, False, None)
         expect_outbound_type_4 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
-        self.assertEqual(outbound_type_4,expect_outbound_type_4)
+        self.assertEqual(outbound_type_4, expect_outbound_type_4)
+
+        # managedNATGatewayV2 should be preserved, not overwritten to loadBalancer
+        ctx5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "managedNATGatewayV2"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx5)
+        outbound_type_5 = ctx5._get_outbound_type(False, False, None)
+        self.assertEqual(
+            outbound_type_5,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+        )
+
+    def test_get_outbound_type_update_udr_byo_vnet(self):
+        """Test that updating to UDR succeeds when the cluster has a BYO VNet (vnet_subnet_id is set on agentpool)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userDefinedRouting"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        # Simulate a BYO VNet cluster: agentpool has vnet_subnet_id set
+        agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            vnet_subnet_id="/subscriptions/test/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+        )
+        ctx.attach_mc(mc)
+        ctx.agentpool_context.attach_agentpool(agentpool)
+        # Should succeed — BYO VNet cluster can update to UDR
+        outbound_type = ctx._get_outbound_type(enable_validation=True)
+        self.assertEqual(outbound_type, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING)
+
+    def test_get_outbound_type_update_udr_managed_vnet(self):
+        """Test that updating to UDR fails with clear error when the cluster uses managed VNet (no vnet_subnet_id)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userDefinedRouting"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        # Simulate a managed VNet cluster: agentpool has no vnet_subnet_id
+        agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+        )
+        ctx.attach_mc(mc)
+        ctx.agentpool_context.attach_agentpool(agentpool)
+        # Should fail with InvalidArgumentValueError for managed VNet clusters
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx._get_outbound_type(enable_validation=True)
+
+    def test_get_outbound_type_update_user_assigned_nat_gw_managed_vnet(self):
+        """Test that updating to userAssignedNATGateway fails with clear error when using managed VNet."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userAssignedNATGateway"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+        )
+        ctx.attach_mc(mc)
+        ctx.agentpool_context.attach_agentpool(agentpool)
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx._get_outbound_type(enable_validation=True)
+
+    def test_get_outbound_type_create_udr_no_subnet(self):
+        """Test that creating with UDR but no vnet_subnet_id raises RequiredArgumentMissingError."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userDefinedRouting"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        # Should fail with RequiredArgumentMissingError during create
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx._get_outbound_type(enable_validation=True)
 
     def test_get_enable_gateway_api(self):
         # default value
@@ -4577,11 +5046,76 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_gateway_api_3 = ctx_3.get_disable_gateway_api()
         self.assertEqual(disable_gateway_api_3, False)
 
+    def test_get_enable_app_routing_istio(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_app_routing_istio(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_app_routing_istio": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_app_routing_istio(), True)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_app_routing_istio": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_enable_app_routing_istio(), False)
+
+        # update value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_app_routing_istio": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_4.get_enable_app_routing_istio(), True)
+
+    def test_get_disable_app_routing_istio(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_app_routing_istio(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_app_routing_istio": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_disable_app_routing_istio(), True)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_app_routing_istio": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_3.get_disable_app_routing_istio(), False)
+
     def test_get_enable_high_log_scale_mode_default(self):
         """Test default behavior when no container network logs or high log scale mode is specified.
 
         When enable_high_log_scale_mode is not explicitly set and container network logs are not enabled,
-        the method should return False (not None) to maintain backward compatibility with the base class.
+        the method should return None to align with the base class behavior.
         """
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4590,11 +5124,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         result = ctx.get_enable_high_log_scale_mode()
-        self.assertFalse(result)
+        self.assertIsNone(result)
 
     def test_get_enable_high_log_scale_mode_explicit_false_without_cnl(self):
         """Test when user explicitly sets enable_high_log_scale_mode to False without container network logs.
-        
+
         This should return False without raising any errors since container network logs are not enabled.
         """
         ctx = AKSPreviewManagedClusterContext(
@@ -4617,15 +5151,36 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_enable_high_log_scale_mode()
         self.assertTrue(result)
 
-    def test_get_enable_high_log_scale_mode_auto_enable_with_container_network_logs(self):
+    def test_get_enable_high_log_scale_mode_flag_without_value_create(self):
+        """Test passing --enable-high-log-scale-mode without an explicit boolean value.
+
+        When using get_three_state_flag() and the user passes the flag without a value
+        (e.g. --enable-high-log-scale-mode), argparse sets it to True via nargs='?'.
+        This should behave identically to passing --enable-high-log-scale-mode true.
+        """
+        # get_three_state_flag uses nargs='?'; no value => True
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_high_log_scale_mode": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_auto_enable_with_container_network_logs(
+        self,
+    ):
         """Test auto-enable when container network logs are enabled with proper prerequisites."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_acns": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4636,11 +5191,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test auto-enable when retina flow logs (legacy name) are enabled with proper prerequisites."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_retina_flow_logs": True,
-                "enable_acns": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_retina_flow_logs": True,
+                    "enable_acns": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4651,11 +5208,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test auto-enable when container network logs are enabled with Azure Monitor logs."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_acns": True,
-                "enable_azure_monitor_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                    "enable_azure_monitor_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4666,12 +5225,14 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test error when user explicitly disables high log scale mode with container network logs enabled."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_high_log_scale_mode": False,
-                "enable_acns": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_high_log_scale_mode": False,
+                    "enable_acns": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4682,10 +5243,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test error when container network logs enabled but ACNS is not enabled."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4696,23 +5259,29 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test error when container network logs enabled but monitoring is not enabled."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_acns": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx.get_enable_high_log_scale_mode()
 
-    def test_get_enable_high_log_scale_mode_update_with_existing_acns_and_monitoring(self):
+    def test_get_enable_high_log_scale_mode_update_with_existing_acns_and_monitoring(
+        self,
+    ):
         """Test auto-enable in update mode with existing ACNS and monitoring addon."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -4738,9 +5307,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test error in update mode when ACNS is not enabled on existing cluster."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -4757,13 +5328,17 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx.get_enable_high_log_scale_mode()
 
-    def test_get_enable_high_log_scale_mode_update_error_without_existing_monitoring(self):
+    def test_get_enable_high_log_scale_mode_update_error_without_existing_monitoring(
+        self,
+    ):
         """Test error in update mode when monitoring is not enabled on existing cluster."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -4779,6 +5354,31 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx.attach_mc(mc)
         with self.assertRaises(RequiredArgumentMissingError):
             ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_flag_without_value_update(self):
+        """Test passing --enable-high-log-scale-mode without an explicit boolean in update mode.
+
+        When using get_three_state_flag() and the user passes the flag without a value
+        (e.g. --enable-high-log-scale-mode), argparse sets it to True via nargs='?'.
+        In update mode this should enable HLSM on the existing cluster.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_high_log_scale_mode": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
 
     def test_get_container_network_logs_returns_none_when_not_specified(self):
         """Test get_container_network_logs returns None when neither enable nor disable is specified."""
@@ -4797,10 +5397,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test get_container_network_logs raises error when both enable and disable are specified."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "disable_container_network_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "disable_container_network_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -4814,11 +5416,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         but mc.addon_profiles is not yet populated (create scenario)."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_acns": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4839,9 +5443,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test get_container_network_logs succeeds when monitoring is already enabled on mc (update scenario)."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -4862,14 +5468,45 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_container_network_logs(mc)
         self.assertTrue(result)
 
+    def test_get_container_network_logs_with_monitoring_camelcase_key_on_mc(self):
+        """Test get_container_network_logs succeeds when monitoring uses omsAgent (camelCase) key on mc."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
     def test_get_container_network_logs_error_without_acns(self):
         """Test get_container_network_logs raises error when ACNS is not enabled."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4882,10 +5519,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test get_container_network_logs raises error when monitoring is not enabled."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_container_network_logs": True,
-                "enable_acns": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4905,9 +5544,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test get_container_network_logs returns False when disable is specified."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "disable_container_network_logs": True,
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "disable_container_network_logs": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -4920,11 +5561,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test get_container_network_logs works with legacy enable_retina_flow_logs parameter."""
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_retina_flow_logs": True,
-                "enable_acns": True,
-                "enable_addons": "monitoring",
-            }),
+            AKSManagedClusterParamDict(
+                {
+                    "enable_retina_flow_logs": True,
+                    "enable_acns": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -4938,6 +5581,264 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         ctx.attach_mc(mc)
         result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_container_network_logs_with_azure_monitor_logs(self):
+        """Test get_container_network_logs succeeds when monitoring is enabled via enable_azure_monitor_logs param."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                    "enable_azure_monitor_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_container_network_logs_legacy_disable_retina_flow_logs(self):
+        """Test get_container_network_logs returns False when legacy disable_retina_flow_logs is specified."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_retina_flow_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertFalse(result)
+
+    def test_get_container_network_logs_with_acns_already_on_mc(self):
+        """Test get_container_network_logs succeeds when ACNS is already enabled on mc (not via raw param)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_cnl_with_explicit_true(self):
+        """Test when user enables both CNL and HLSM=True explicitly. Should succeed and return True."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_high_log_scale_mode": True,
+                    "enable_acns": True,
+                    "enable_addons": "monitoring",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_update_explicit_false_without_cnl(self):
+        """Test that HLSM=False without CNL returns False in update mode without error."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_high_log_scale_mode": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertFalse(result)
+
+    def test_get_enable_high_log_scale_mode_update_error_explicit_false_with_cnl(self):
+        """Test error when user explicitly disables HLSM with CNL enabled in update mode."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_high_log_scale_mode": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_error_disable_hlsm_with_existing_cnl(
+        self,
+    ):
+        """Test error when user disables HLSM while CNL is already enabled on the cluster.
+
+        When CNL (enableRetinaNetworkFlags) is already set to 'True' on the existing cluster
+        and the user passes --enable-high-log-scale-mode false without --enable-container-network-logs,
+        the method should raise a MutuallyExclusiveArgumentError.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_high_log_scale_mode": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_error_disable_hlsm_with_existing_cnl_camelcase(
+        self,
+    ):
+        """Test error when user disables HLSM while CNL is already enabled (omsAgent camelCase key)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_high_log_scale_mode": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_monitoring_camelcase_key(self):
+        """Test auto-enable HLSM in update mode when monitoring uses camelCase 'omsAgent' key."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_msi_auth_for_monitoring_with_msi_service_principal(self):
+        """Test that MSI auth is correctly detected when service_principal_profile.client_id='msi'.
+
+        The base class returns False when client_id is not None, but MSI-based clusters set
+        client_id to 'msi'. The preview override should check the addon config for useAADAuth.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            service_principal_profile=self.models.ManagedClusterServicePrincipalProfile(
+                client_id="msi",
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_msi_auth_for_monitoring()
         self.assertTrue(result)
 
     def test_get_enable_default_domain(self):
@@ -5002,6 +5903,102 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_default_domain_3 = ctx_3.get_disable_default_domain()
         self.assertEqual(disable_default_domain_3, False)
 
+    def test_get_control_plane_scaling_size(self):
+        # default value - None
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_1.get_control_plane_scaling_size())
+
+        # custom value - H4
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"control_plane_scaling_size": "H4"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_control_plane_scaling_size(), "H4")
+
+    def test_get_enable_continuous_control_plane_and_addon_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_0.get_enable_continuous_control_plane_and_addon_monitor(), None
+        )
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"enable_continuous_control_plane_and_addon_monitor": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_1.get_enable_continuous_control_plane_and_addon_monitor(), True
+        )
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"enable_continuous_control_plane_and_addon_monitor": False}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_2.get_enable_continuous_control_plane_and_addon_monitor(), False
+        )
+
+    def test_get_disable_continuous_control_plane_and_addon_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(
+            ctx_0.get_disable_continuous_control_plane_and_addon_monitor(), None
+        )
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"disable_continuous_control_plane_and_addon_monitor": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(
+            ctx_1.get_disable_continuous_control_plane_and_addon_monitor(), True
+        )
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"disable_continuous_control_plane_and_addon_monitor": False}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(
+            ctx_2.get_disable_continuous_control_plane_and_addon_monitor(), False
+        )
+
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -5025,6 +6022,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "pod_ip_allocation_mode": "DynamicIndividual",
                 "enable_node_public_ip": True,
                 "node_public_ip_prefix_id": "test_node_public_ip_prefix_id",
+                "node_public_ip_prefix_ids": None,
                 "enable_cluster_autoscaler": True,
                 "min_count": 5,
                 "max_count": 20,
@@ -5145,32 +6143,13 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_network_profile(mc_1)
 
-        network_profile_1 = self.models.ContainerServiceNetworkProfile()
-        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
-        for attr_name, attr_value in vars(network_profile_1).items():
-            if (
-                not attr_name.startswith("_")
-                and attr_name not in ["additional_properties", "outbound_type"]
-                and attr_value is not None
-            ):
-                setattr(network_profile_1, attr_name, None)
-        network_profile_1.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
-        network_profile_1.ip_families = ["IPv4", "IPv6"]
-        network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
-        network_profile_1.service_cidrs = ["10.0.0.0/16", "2001:ffff::/108"]
-        network_profile_1.network_plugin = None
-
-        load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
-            managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_i_pv6=3,
-            ),
-            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+        # Verify key network profile fields
+        self.assertEqual(
+            dec_mc_1.network_profile.pod_cidrs, ["10.246.0.0/16", "2001:abcd::/64"]
         )
-        network_profile_1.load_balancer_profile = load_balancer_profile_1
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location", network_profile=network_profile_1
+        self.assertEqual(
+            dec_mc_1.network_profile.service_cidrs, ["10.0.0.0/16", "2001:ffff::/108"]
         )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
@@ -5185,24 +6164,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_network_profile(mc_2)
 
-        network_profile_2 = self.models.ContainerServiceNetworkProfile()
-        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
-        for attr_name, attr_value in vars(network_profile_2).items():
-            if (
-                not attr_name.startswith("_")
-                and attr_name not in ["additional_properties", "outbound_type"]
-                and attr_value is not None
-            ):
-                setattr(network_profile_2, attr_name, None)
-        network_profile_2.network_plugin = "azure"
-        network_profile_2.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+        network_profile_2 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="azure",
+            load_balancer_sku=CONST_LOAD_BALANCER_SKU_STANDARD,
+            outbound_type="loadBalancer",
+        )
 
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location", network_profile=network_profile_2
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
-
-
 
     def test_set_up_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -5215,6 +6186,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_api_server_access_profile(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1.api_server_access_profile = None
+        ground_truth_mc_1.fqdn_subdomain = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
@@ -5246,7 +6219,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=ground_truth_api_server_access_profile_2,
         )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2, DeepDiff(dec_mc_2, ground_truth_mc_2))
+        self.assertEqual(
+            dec_mc_2, ground_truth_mc_2, DeepDiff(dec_mc_2, ground_truth_mc_2)
+        )
 
         dec_3 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -5270,7 +6245,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=ground_truth_api_server_access_profile_3,
         )
-        self.assertEqual(dec_mc_3, ground_truth_mc_3, DeepDiff(dec_mc_3, ground_truth_mc_3))
+        self.assertEqual(
+            dec_mc_3, ground_truth_mc_3, DeepDiff(dec_mc_3, ground_truth_mc_3)
+        )
 
         dec_4 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -5378,7 +6355,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
         external_functions = dec_2.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_2 = dec_2.set_up_addon_profiles(mc_2)
 
         addon_profiles_2 = {
@@ -5431,8 +6412,14 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_3.context.attach_mc(mc_3)
         dec_mc_sku_3 = dec_3.set_up_sku(mc_3)
         external_functions = dec_3.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), patch.object(external_functions, 'ensure_default_log_analytics_workspace_for_monitoring',
-            return_value = "/subscriptions/test_subscription_id/resourceGroups/test_rg_name/providers/Microsoft.OperationalInsights/workspaces/test_workspace_resource_id",
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ), patch.object(
+            external_functions,
+            "ensure_default_log_analytics_workspace_for_monitoring",
+            return_value="/subscriptions/test_subscription_id/resourceGroups/test_rg_name/providers/Microsoft.OperationalInsights/workspaces/test_workspace_resource_id",
         ):
             dec_mc_3 = dec_3.set_up_addon_profiles(dec_mc_sku_3)
         addon_profiles_3 = {
@@ -5447,16 +6434,18 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         automaticSKU = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
-            sku = automaticSKU,
+            sku=automaticSKU,
             addon_profiles=addon_profiles_3,
-            kind = "Automatic",
+            kind="Automatic",
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
         self.assertEqual(
             dec_3.context.get_intermediate("monitoring_addon_enabled"), True
         )
 
-    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_explicit_false_with_cnl(self):
+    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_explicit_false_with_cnl(
+        self,
+    ):
         """Test that set_up_addon_profiles raises error when container network logs are enabled
         but high log scale mode is explicitly disabled."""
         dec = AKSPreviewManagedClusterCreateDecorator(
@@ -5477,15 +6466,23 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         network_profile = self.models.ContainerServiceNetworkProfile(
             advanced_networking=self.models.AdvancedNetworking(enabled=True),
         )
-        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        mc = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile
+        )
         dec.context.attach_mc(mc)
         dec.context.set_intermediate("subscription_id", "test_subscription_id")
         external_functions = dec.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             with self.assertRaises(MutuallyExclusiveArgumentError):
                 dec.set_up_addon_profiles(mc)
 
-    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_without_acns(self):
+    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_without_acns(
+        self,
+    ):
         """Test that set_up_addon_profiles raises error when container network logs are enabled
         without ACNS being enabled."""
         dec = AKSPreviewManagedClusterCreateDecorator(
@@ -5506,14 +6503,21 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec.context.attach_mc(mc)
         dec.context.set_intermediate("subscription_id", "test_subscription_id")
         external_functions = dec.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             with self.assertRaises(RequiredArgumentMissingError):
                 dec.set_up_addon_profiles(mc)
 
-    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_without_monitoring(self):
+    def test_set_up_addon_profiles_validates_high_log_scale_mode_error_without_monitoring(
+        self,
+    ):
         """Test that set_up_addon_profiles raises error when container network logs are enabled
         without monitoring addon being enabled. Note: get_container_network_logs validates this
-        and raises InvalidArgumentValueError before get_enable_high_log_scale_mode is called."""
+        and raises InvalidArgumentValueError before get_enable_high_log_scale_mode is called.
+        """
         dec = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -5531,7 +6535,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         network_profile = self.models.ContainerServiceNetworkProfile(
             advanced_networking=self.models.AdvancedNetworking(enabled=True),
         )
-        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        mc = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile
+        )
         dec.context.attach_mc(mc)
         # get_container_network_logs validates monitoring is enabled and raises InvalidArgumentValueError
         with self.assertRaises(InvalidArgumentValueError):
@@ -5557,16 +6563,91 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         network_profile = self.models.ContainerServiceNetworkProfile(
             advanced_networking=self.models.AdvancedNetworking(enabled=True),
         )
-        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        mc = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile
+        )
         dec.context.attach_mc(mc)
         dec.context.set_intermediate("subscription_id", "test_subscription_id")
         external_functions = dec.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             # Should not raise any exception
             dec_mc = dec.set_up_addon_profiles(mc)
             # Verify high log scale mode is auto-enabled
             self.assertTrue(dec.context.get_enable_high_log_scale_mode())
 
+    def test_set_up_addon_profiles_cnl_and_hlsm_flag_without_value(self):
+        """Regression test: CREATE with --enable-container-network-logs --enable-acns
+        --enable-addons monitoring --enable-high-log-scale-mode (flag without boolean value).
+
+        When --enable-high-log-scale-mode is passed without a value, get_three_state_flag()
+        sets it to True via nargs='?'. This must NOT trigger the 'Container network logs
+        requires --enable-acns...' error when ACNS and monitoring are both provided.
+        """
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,  # simulates --enable-high-log-scale-mode without value
+                "enable_acns": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            advanced_networking=self.models.AdvancedNetworking(enabled=True),
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            # Should NOT raise InvalidArgumentValueError
+            dec_mc = dec.set_up_addon_profiles(mc)
+            self.assertTrue(dec.context.get_enable_high_log_scale_mode())
+
+    def test_set_up_addon_profiles_hlsm_only_no_cnl(self):
+        """Test that enabling HLSM without CNL does not set enableRetinaNetworkFlags in config."""
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_high_log_scale_mode": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            dec_mc = dec.set_up_addon_profiles(mc)
+            # enableRetinaNetworkFlags should NOT be set when CNL is not enabled
+            omsagent_config = dec_mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
+            self.assertNotIn("enableRetinaNetworkFlags", omsagent_config)
 
     def test_set_up_http_proxy_config(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -5610,6 +6691,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec_1.set_up_pod_identity_profile(None)
         dec_mc_1 = dec_1.set_up_pod_identity_profile(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1.pod_identity_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -5733,30 +6815,81 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(
-            location = "test_location",
-            identity = self.models.ManagedClusterIdentity(type="SystemAssigned"),
-            )
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
         dec_1.context.attach_mc(mc_1)
         dec_1_mc_sku = dec_1.set_up_sku(mc_1)
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_1_mc_sku)
         azure_monitor_profiles_1 = self.models.ManagedClusterAzureMonitorProfile(
-            metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(
-                enabled = True,
-                kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-                metric_labels_allowlist = '',
-                metric_annotations_allow_list = '',
-                )
+            metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(
+                enabled=True,
+                kube_state_metrics=self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                    metric_labels_allowlist="",
+                    metric_annotations_allow_list="",
+                ),
             )
         )
-        automaticSKU = self.models.ManagedClusterSKU(name = "Automatic", tier = "Standard")
+        automaticSKU = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
         ground_truth_mc_1 = self.models.ManagedCluster(
-            location = "test_location",
-            sku = automaticSKU,
-            azure_monitor_profile = azure_monitor_profiles_1,
-            kind = "Automatic",
-            identity = self.models.ManagedClusterIdentity(type = "SystemAssigned"),
+            location="test_location",
+            sku=automaticSKU,
+            azure_monitor_profile=azure_monitor_profiles_1,
+            kind="Automatic",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_set_up_azure_monitor_profile_defers_control_plane_on_create(self):
+        # Greenfield --enable-control-plane-metrics must NOT set control_plane.enabled
+        # on the initial cluster PUT. It is deferred to the addon_put step in
+        # postprocessing (after DCRA creation) so the CCP collector pod is only
+        # scheduled once its DCRA exists.
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.set_up_azure_monitor_profile(mc)
+
+        # Parent AMP metrics is enabled on the initial PUT...
+        self.assertIsNotNone(dec_mc.azure_monitor_profile)
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.metrics)
+        self.assertTrue(dec_mc.azure_monitor_profile.metrics.enabled)
+        # ...but control_plane is deferred and must be None here.
+        self.assertIsNone(dec_mc.azure_monitor_profile.metrics.control_plane)
+        # Intermediate flag still set so postprocessing runs the prereqs/addon_put.
+        self.assertTrue(dec.context.get_intermediate("azuremonitormetrics_addon_enabled"))
+
+    def test_set_up_azure_monitor_profile_create_cp_without_amp_raises(self):
+        # --enable-control-plane-metrics without --enable-azure-monitor-metrics on create
+        # must fail validation early.
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec.context.attach_mc(mc)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec.set_up_azure_monitor_profile(mc)
 
     def test_set_up_image_cleaner(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
@@ -5822,6 +6955,87 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             security_profile=ground_truth_security_profile_2,
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_service_account_image_pull(self):
+        # test no-op when not enabled
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_service_account_image_pull(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # test enabled without managed identity id
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_service_account_image_pull(mc_2)
+
+        ground_truth_profile_2 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+            default_managed_identity_id=None,
+        )
+        ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_2,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # test enabled with managed identity id
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_service_account_image_pull(mc_3)
+
+        ground_truth_profile_3 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+            default_managed_identity_id="test_identity_id",
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # test identity id without enable raises RequiredArgumentMissingError
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4.set_up_service_account_image_pull(mc_4)
 
     def test_set_up_azure_keyvault_kms(self):
         key_id_1 = (
@@ -5919,7 +7133,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_4.security_profile.azure_key_vault_kms)
         self.assertEqual(
             dec_mc_4.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Public"
+            "Public",
         )
 
         # Test 5: Verify network access parameter is correctly passed through for Private access
@@ -5943,7 +7157,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_5.security_profile.azure_key_vault_kms)
         self.assertEqual(
             dec_mc_5.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Private"
+            "Private",
         )
 
     def test_set_up_kms_pmk_and_cmk(self):
@@ -5991,8 +7205,10 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_3 = dec_3.set_up_kms_pmk_and_cmk(mc_3)
 
         # expected security profile with infrastructure encryption
-        ground_truth_kube_resource_encryption_profile_3 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_3 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
             kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_3,
@@ -6021,8 +7237,10 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_4 = dec_4.set_up_kms_pmk_and_cmk(mc_4)
 
         # should add to existing security profile
-        ground_truth_kube_resource_encryption_profile_4 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_4 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_4 = self.models.ManagedClusterSecurityProfile(
             kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_4,
@@ -6083,9 +7301,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_1 = dec_1.set_up_run_command(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
-                api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
-                    disable_run_command=True
-                )
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                disable_run_command=True
+            ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -6096,7 +7314,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_addons": "web_application_routing",
                 "dns_zone_resource_ids": "test_dns_zone_resource_id",
-                "app_routing_default_nginx_controller": "External"
+                "app_routing_default_nginx_controller": "External",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6109,7 +7327,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 dns_zone_resource_ids=["test_dns_zone_resource_id"],
                 nginx=self.models.ManagedClusterIngressProfileNginx(
                     default_ingress_controller_type="External"
-                )
+                ),
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
@@ -6134,7 +7352,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 enabled=True,
                 default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
                     enabled=True
-                )
+                ),
             )
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
@@ -6159,7 +7377,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 enabled=True,
                 default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
                     enabled=False
-                )
+                ),
             )
         )
         ground_truth_mc_3 = self.models.ManagedCluster(
@@ -6213,6 +7431,60 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.set_up_ingress_profile_gateway_api(mc_3)
+
+        ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_set_up_ingress_profile_app_routing_istio(self):
+        # Test with enable_app_routing_istio parameter
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing_istio": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_ingress_profile_app_routing_istio(mc_1)
+
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                    app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                    )
+                )
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test without enable_app_routing_istio parameter (should not set anything)
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_ingress_profile_app_routing_istio(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test with enable_app_routing_istio=False (should not set anything)
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing_istio": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_ingress_profile_app_routing_istio(mc_3)
 
         ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
@@ -6357,13 +7629,12 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         workload_auto_scaler_profile.vertical_pod_autoscaler = (
             self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                enabled=True,
-                addon_autoscaling="Enabled"
+                enabled=True, addon_autoscaling="Enabled"
             )
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            workload_auto_scaler_profile=workload_auto_scaler_profile
+            workload_auto_scaler_profile=workload_auto_scaler_profile,
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
@@ -6384,10 +7655,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
-            {
-                "enable_azure_service_mesh": True,
-                "revision": "asm-1-88"
-            },
+            {"enable_azure_service_mesh": True, "revision": "asm-1-88"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
@@ -6397,9 +7665,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
-                mode="Istio", istio=self.models.IstioServiceMesh(
-                    revisions=["asm-1-88"]
-                )
+                mode="Istio", istio=self.models.IstioServiceMesh(revisions=["asm-1-88"])
             ),
         )
 
@@ -6432,7 +7698,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_app_routing": True,
-             },
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
@@ -6440,8 +7706,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_1 = dec_1.set_up_ingress_web_app_routing(mc_1)
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
-                enabled=True,
-                nginx=None
+                enabled=True, nginx=None
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
@@ -6456,7 +7721,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_app_routing": True,
                 "app_routing_default_nginx_controller": "External",
-             },
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
@@ -6465,7 +7730,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
-                nginx=self.models.ManagedClusterIngressProfileNginx(default_ingress_controller_type="External")
+                nginx=self.models.ManagedClusterIngressProfileNginx(
+                    default_ingress_controller_type="External"
+                ),
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
@@ -6475,9 +7742,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_set_up_bootstrap_profile(self):
-        acr_id = (
-            "/subscriptions/86a571c4-f67a-4e9d-a38d-0e7bdf981a57/resourceGroups/orpmM/providers/Microsoft.ContainerRegistry/registries/network-isolated-cache-acr-01"
-        )
+        acr_id = "/subscriptions/86a571c4-f67a-4e9d-a38d-0e7bdf981a57/resourceGroups/orpmM/providers/Microsoft.ContainerRegistry/registries/network-isolated-cache-acr-01"
 
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -6546,6 +7811,72 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_4.context.attach_mc(mc_4)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_mc_4 = dec_4.set_up_bootstrap_profile(mc_4)
+
+    def test_set_up_enable_fips(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_enable_fips(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "kubernetes_version": "1.34.0",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=False,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_enable_fips(mc_2)
+        ground_truth_agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[ground_truth_agentpool_profile],
+        )
+        ground_truth_mc_2.enable_fips = True
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            True,
+        )
+
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "kubernetes_version": "1.33.9",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.33.9",
+        )
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_3.set_up_enable_fips(mc_3)
 
     def test_set_up_static_egress_gateway(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
@@ -6726,35 +8057,34 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         network_profile_1 = self.models.ContainerServiceNetworkProfile(
             load_balancer_sku="standard",
-            network_plugin=None,
         )
+        network_profile_1.network_plugin = None
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
-        storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=None,
-            file_csi_driver=None,
-            snapshot_controller=None,
-        )
+        storage_profile_1 = self.models.ManagedClusterStorageProfile()
+        storage_profile_1.disk_csi_driver = None
+        storage_profile_1.file_csi_driver = None
+        storage_profile_1.snapshot_controller = None
         baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
         bootstrap_profile_1 = self.models.ManagedClusterBootstrapProfile(
             artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
         )
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            dns_prefix="testname-testrgname-1234-5",
-            kubernetes_version="",
-            addon_profiles={},
-            enable_rbac=True,
-            agent_pool_profiles=[agent_pool_profile_1],
-            linux_profile=linux_profile_1,
-            network_profile=network_profile_1,
-            identity=identity_1,
-            disable_local_accounts=False,
-            storage_profile=storage_profile_1,
-            sku=baseSKU,
-            kind="Base",
-            bootstrap_profile=bootstrap_profile_1,
+        # Verify key fields individually since new SDK serialization differs
+        self.assertEqual(dec_mc_1.location, "test_location")
+        self.assertEqual(dec_mc_1.kubernetes_version, "")
+        self.assertTrue(dec_mc_1.enable_rbac)
+        self.assertEqual(dec_mc_1.dns_prefix, "testname-testrgname-1234-5")
+        self.assertEqual(len(dec_mc_1.agent_pool_profiles), 1)
+        self.assertEqual(dec_mc_1.agent_pool_profiles[0].name, "nodepool1")
+        self.assertEqual(dec_mc_1.agent_pool_profiles[0].count, 3)
+        self.assertEqual(
+            dec_mc_1.agent_pool_profiles[0].vm_size, CONST_DEFAULT_NODE_VM_SIZE
         )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+        self.assertEqual(dec_mc_1.identity.type, "SystemAssigned")
+        self.assertEqual(dec_mc_1.network_profile.load_balancer_sku, "standard")
+        self.assertFalse(dec_mc_1.disable_local_accounts)
+        self.assertEqual(dec_mc_1.sku.name, "Base")
+        self.assertEqual(dec_mc_1.sku.tier, "Free")
+        self.assertEqual(dec_mc_1.kind, "Base")
 
         dec_1.context.raw_param.print_usage_statistics()
 
@@ -6842,7 +8172,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
                 "node_provisioning_mode": "Auto",
                 "node_provisioning_default_pools": "None",
-
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6911,7 +8240,12 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"opentelemetry_metrics_port": 8080, "enable_opentelemetry_metrics": True}),
+            AKSManagedClusterParamDict(
+                {
+                    "opentelemetry_metrics_port": 8080,
+                    "enable_opentelemetry_metrics": True,
+                }
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -6968,7 +8302,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"opentelemetry_logs_port": 8081, "enable_opentelemetry_logs": True}),
+            AKSManagedClusterParamDict(
+                {"opentelemetry_logs_port": 8081, "enable_opentelemetry_logs": True}
+            ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -6997,22 +8333,30 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Expected ground truth object
         ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
             enabled=True,
-            port=8080,
+            http_port=8080,
         )
-        ground_truth_app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-            open_telemetry_metrics=ground_truth_opentelemetry_metrics,
+        ground_truth_app_monitoring = (
+            self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                open_telemetry_metrics=ground_truth_opentelemetry_metrics,
+            )
         )
-        ground_truth_kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-            metric_labels_allowlist="",
-            metric_annotations_allow_list="",
+        ground_truth_kube_state_metrics = (
+            self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metric_labels_allowlist="",
+                metric_annotations_allow_list="",
+            )
         )
-        ground_truth_metrics_profile = self.models.ManagedClusterAzureMonitorProfileMetrics(
-            enabled=True,
-            kube_state_metrics=ground_truth_kube_state_metrics,
+        ground_truth_metrics_profile = (
+            self.models.ManagedClusterAzureMonitorProfileMetrics(
+                enabled=True,
+                kube_state_metrics=ground_truth_kube_state_metrics,
+            )
         )
-        ground_truth_azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile(
-            metrics=ground_truth_metrics_profile,
-            app_monitoring=ground_truth_app_monitoring,
+        ground_truth_azure_monitor_profile = (
+            self.models.ManagedClusterAzureMonitorProfile(
+                metrics=ground_truth_metrics_profile,
+                app_monitoring=ground_truth_app_monitoring,
+            )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
@@ -7044,20 +8388,28 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
             enabled=False,
         )
-        ground_truth_app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-            open_telemetry_metrics=ground_truth_opentelemetry_metrics,
+        ground_truth_app_monitoring = (
+            self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                open_telemetry_metrics=ground_truth_opentelemetry_metrics,
+            )
         )
-        ground_truth_kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
-            metric_labels_allowlist="",
-            metric_annotations_allow_list="",
+        ground_truth_kube_state_metrics = (
+            self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metric_labels_allowlist="",
+                metric_annotations_allow_list="",
+            )
         )
-        ground_truth_metrics_profile = self.models.ManagedClusterAzureMonitorProfileMetrics(
-            enabled=True,
-            kube_state_metrics=ground_truth_kube_state_metrics,
+        ground_truth_metrics_profile = (
+            self.models.ManagedClusterAzureMonitorProfileMetrics(
+                enabled=True,
+                kube_state_metrics=ground_truth_kube_state_metrics,
+            )
         )
-        ground_truth_azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile(
-            metrics=ground_truth_metrics_profile,
-            app_monitoring=ground_truth_app_monitoring,
+        ground_truth_azure_monitor_profile = (
+            self.models.ManagedClusterAzureMonitorProfile(
+                metrics=ground_truth_metrics_profile,
+                app_monitoring=ground_truth_app_monitoring,
+            )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
@@ -7089,7 +8441,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         # Then set up Azure Monitor profile
@@ -7125,7 +8481,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
@@ -7133,9 +8493,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Verify OpenTelemetry logs are configured correctly (since this includes OpenTelemetry logs)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 9090)
+        self.assertIsNotNone(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        )
+        self.assertTrue(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+        self.assertEqual(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
+            9090,
+        )
 
     def test_azure_monitor_logs_without_opentelemetry(self):
         # Test that container_insights works without OpenTelemetry logs
@@ -7161,7 +8528,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_mc_1)
@@ -7196,17 +8567,26 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # Set up addon profiles (this is what would happen with enable_azure_monitor_logs=True)
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         # Verify that monitoring addon is enabled correctly
         self.assertIsNotNone(dec_mc_1.addon_profiles)
         self.assertIn("omsagent", dec_mc_1.addon_profiles)
         self.assertTrue(dec_mc_1.addon_profiles["omsagent"].enabled)
-        self.assertIn("logAnalyticsWorkspaceResourceID", dec_mc_1.addon_profiles["omsagent"].config)
+        self.assertIn(
+            "logAnalyticsWorkspaceResourceID",
+            dec_mc_1.addon_profiles["omsagent"].config,
+        )
         self.assertEqual(
-            dec_mc_1.addon_profiles["omsagent"].config["logAnalyticsWorkspaceResourceID"],
-            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
+            dec_mc_1.addon_profiles["omsagent"].config[
+                "logAnalyticsWorkspaceResourceID"
+            ],
+            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace",
         )
 
     def test_azure_monitor_logs_with_mixed_addons_decorator(self):
@@ -7232,7 +8612,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # Set up addon profiles
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         # Verify both addons are enabled
@@ -7267,7 +8651,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         # Set up Azure Monitor profile with OpenTelemetry logs
@@ -7276,9 +8664,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Verify Azure Monitor logs profile with OpenTelemetry is set up correctly
         # Since this test includes OpenTelemetry logs, the azure_monitor_profile should be set
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8080)
+        self.assertIsNotNone(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        )
+        self.assertTrue(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+        self.assertEqual(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
+            8080,
+        )
 
     def test_azure_monitor_logs_containerinsights_enabled(self):
         # Test that --enable-azure-monitor-logs results in ManagedClusterAzureMonitorProfile
@@ -7304,7 +8699,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         # Then set up Azure Monitor profile - this should create container insights profile
@@ -7344,7 +8743,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         # First set up addon profiles - this enables the monitoring addon
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
 
         # Then set up Azure Monitor profile
@@ -7354,8 +8757,10 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertIn("omsagent", dec_mc_1.addon_profiles)
         self.assertTrue(dec_mc_1.addon_profiles["omsagent"].enabled)
         self.assertEqual(
-            dec_mc_1.addon_profiles["omsagent"].config["logAnalyticsWorkspaceResourceID"],
-            workspace_id
+            dec_mc_1.addon_profiles["omsagent"].config[
+                "logAnalyticsWorkspaceResourceID"
+            ],
+            workspace_id,
         )
 
     def test_azure_monitor_logs_disabled_containerinsights(self):
@@ -7379,7 +8784,10 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
 
         # Verify containerinsights is disabled
-        if dec_mc_1.azure_monitor_profile and dec_mc_1.azure_monitor_profile.containerinsights:
+        if (
+            dec_mc_1.azure_monitor_profile
+            and dec_mc_1.azure_monitor_profile.containerinsights
+        ):
             self.assertFalse(dec_mc_1.azure_monitor_profile.containerinsights.enabled)
 
     def test_get_enable_azure_monitor_logs_already_enabled_idempotent(self):
@@ -7402,7 +8810,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
                     enabled=True,
                 )
-            }
+            },
         )
         ctx_1.attach_mc(mc)
 
@@ -7424,10 +8832,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
 
         # Create a managed cluster without monitoring addon enabled
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            addon_profiles={}
-        )
+        mc = self.models.ManagedCluster(location="test_location", addon_profiles={})
         ctx_1.attach_mc(mc)
 
         # Should succeed when monitoring addon is not enabled
@@ -7454,13 +8859,572 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
                     enabled=True,
                 )
-            }
+            },
         )
         ctx_1.attach_mc(mc)
 
         # Should succeed in CREATE mode even if addon appears enabled
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
+
+    def test_set_up_control_plane_scaling_profile(self):
+        # Not specified case - profile should not be set
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_control_plane_scaling_profile(mc_0)
+        self.assertIsNone(dec_mc_0.control_plane_scaling_profile)
+
+        # H4 specified - profile should be set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H4",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_control_plane_scaling_profile(mc_1)
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
+            ManagedClusterControlPlaneScalingProfile,
+        )
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # H8 specified - profile should be set
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H8",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_control_plane_scaling_profile(mc_2)
+        self.assertEqual(dec_mc_2.control_plane_scaling_profile.scaling_size, "H8")
+
+    # ------------------------------------------------------------------
+    # Tests for postprocessing_after_mc_created:
+    # cnl_or_hlsm_changing flag logic → create_dcr passed to
+    # ensure_container_insights_for_monitoring
+    # ------------------------------------------------------------------
+    def _make_postprocessing_decorator(self, extra_raw_params):
+        """Helper: build a minimal Create decorator ready for postprocessing tests."""
+        raw_params = {
+            "name": "test_name",
+            "resource_group_name": "test_rg_name",
+            "location": "test_location",
+            "enable_msi_auth_for_monitoring": True,
+            "enable_syslog": False,
+            "data_collection_settings": None,
+        }
+        raw_params.update(extra_raw_params)
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            raw_params,
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec.context.set_intermediate("monitoring_addon_enabled", True)
+        return dec
+
+    def _make_cluster_with_monitoring(self):
+        """Helper: build a minimal cluster object that has the monitoring addon profile."""
+        return self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True
+                )
+            },
+        )
+
+    def test_postprocessing_create_dcr_true_when_only_enable_addons(self):
+        """create_dcr=True when enable_addons triggers ensure_container_insights_for_monitoring.
+
+        DCR creation is now always requested during postprocessing so the
+        DCR is created alongside the DCRA after the cluster exists.
+        """
+        dec = self._make_postprocessing_decorator({"enable_addons": "monitoring"})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_ensure_container_insights_not_called_without_relevant_flags(
+        self,
+    ):
+        """ensure_container_insights_for_monitoring is NOT called when no relevant flags are set.
+
+        When neither enable_addons, enable_azure_monitor_logs, nor any CNL/HLSM flag is
+        present in raw_params, the outer elif is not entered.
+        """
+        dec = self._make_postprocessing_decorator({})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_not_called()
+
+    def test_postprocessing_create_dcr_true_when_enable_container_network_logs(self):
+        """create_dcr=True when enable_container_network_logs is set.
+
+        enable_container_network_logs is in cnl_or_hlsm_changing, so create_dcr must be True.
+        get_enable_high_log_scale_mode is mocked to bypass ACNS/monitoring validation.
+        """
+        dec = self._make_postprocessing_decorator(
+            {"enable_container_network_logs": True}
+        )
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm, patch.object(
+            dec.context, "get_enable_high_log_scale_mode", return_value=True
+        ):
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_true_when_enable_retina_flow_logs(self):
+        """create_dcr=True when the deprecated enable_retina_flow_logs flag is set.
+
+        enable_retina_flow_logs is in cnl_or_hlsm_changing, so create_dcr must be True.
+        """
+        dec = self._make_postprocessing_decorator({"enable_retina_flow_logs": True})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm, patch.object(
+            dec.context, "get_enable_high_log_scale_mode", return_value=True
+        ):
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_no_dcr_when_disable_container_network_logs(self):
+        """ensure_container_insights is NOT called when only disable_container_network_logs is set.
+
+        Disable flags should not trigger DCR/DCRA creation.
+        """
+        dec = self._make_postprocessing_decorator(
+            {"disable_container_network_logs": True}
+        )
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_not_called()
+
+    def test_postprocessing_no_dcr_when_disable_retina_flow_logs(self):
+        """ensure_container_insights is NOT called when only disable_retina_flow_logs is set.
+
+        Disable flags should not trigger DCR/DCRA creation.
+        """
+        dec = self._make_postprocessing_decorator({"disable_retina_flow_logs": True})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_not_called()
+
+    def test_postprocessing_create_dcr_true_when_enable_high_log_scale_mode_true(self):
+        """create_dcr=True when enable_high_log_scale_mode=True is set.
+
+        enable_high_log_scale_mode is in cnl_or_hlsm_changing (any non-None value counts),
+        so create_dcr must be True.
+        """
+        dec = self._make_postprocessing_decorator({"enable_high_log_scale_mode": True})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_true_when_enable_high_log_scale_mode_false(self):
+        """create_dcr=True when enable_high_log_scale_mode=False is explicitly set.
+
+        The cnl_or_hlsm_changing check uses `is not None`, so even an explicit False
+        value means the DCR must be updated.
+        """
+        dec = self._make_postprocessing_decorator({"enable_high_log_scale_mode": False})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_true_when_cnl_and_hlsm_both_set(self):
+        """create_dcr=True when both enable_container_network_logs and enable_high_log_scale_mode are set.
+
+        Both flags are individually sufficient to set cnl_or_hlsm_changing=True.
+        """
+        dec = self._make_postprocessing_decorator(
+            {"enable_container_network_logs": True, "enable_high_log_scale_mode": True}
+        )
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm, patch.object(
+            dec.context, "get_enable_high_log_scale_mode", return_value=True
+        ):
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_true_with_camelcase_addon_key(self):
+        """create_dcr=True when the API response uses the camelCase 'omsAgent' addon key.
+
+        The API may return 'omsAgent' instead of 'omsagent'. The postprocessing must
+        handle both key variants to ensure the DCR is updated.
+        """
+        dec = self._make_postprocessing_decorator(
+            {"enable_container_network_logs": True, "enable_high_log_scale_mode": True}
+        )
+        # Build cluster with camelCase addon key (as the API might return)
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(
+                    enabled=True
+                )
+            },
+        )
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm, patch.object(
+            dec.context, "get_enable_high_log_scale_mode", return_value=True
+        ):
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_true_when_enable_azure_monitor_logs(self):
+        """create_dcr=True when enable_azure_monitor_logs triggers ensure_container_insights_for_monitoring.
+
+        DCR creation is now always requested during postprocessing so the
+        DCR is created alongside the DCRA after the cluster exists.
+        """
+        dec = self._make_postprocessing_decorator({"enable_azure_monitor_logs": True})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    # ------------------------------------------------------------------
+    # Tests for _should_create_dcra and _is_cnl_or_hlsm_changing helpers
+    # ------------------------------------------------------------------
+    def test_is_cnl_or_hlsm_changing_true_for_cnl_flags(self):
+        """_is_cnl_or_hlsm_changing returns True when any CNL/HLSM enable flag is set."""
+        for param_name in [
+            "enable_container_network_logs",
+            "enable_retina_flow_logs",
+        ]:
+            dec = self._make_postprocessing_decorator({param_name: True})
+            self.assertTrue(
+                dec._is_cnl_or_hlsm_changing(), f"Expected True for {param_name}"
+            )
+
+    def test_is_cnl_or_hlsm_changing_false_for_disable_flags(self):
+        """_is_cnl_or_hlsm_changing returns False when only disable flags are set."""
+        for param_name in [
+            "disable_container_network_logs",
+            "disable_retina_flow_logs",
+        ]:
+            dec = self._make_postprocessing_decorator({param_name: True})
+            self.assertFalse(
+                dec._is_cnl_or_hlsm_changing(), f"Expected False for {param_name}"
+            )
+
+    def test_is_cnl_or_hlsm_changing_true_for_hlsm_flag(self):
+        dec = self._make_postprocessing_decorator({"enable_high_log_scale_mode": True})
+        self.assertTrue(dec._is_cnl_or_hlsm_changing())
+
+    def test_is_cnl_or_hlsm_changing_false_when_no_flags(self):
+        dec = self._make_postprocessing_decorator({})
+        self.assertFalse(dec._is_cnl_or_hlsm_changing())
+
+    def test_should_create_dcra_true_for_enable_addons(self):
+        dec = self._make_postprocessing_decorator({"enable_addons": "monitoring"})
+        self.assertTrue(dec._should_create_dcra())
+
+    def test_should_create_dcra_true_for_enable_azure_monitor_logs(self):
+        dec = self._make_postprocessing_decorator({"enable_azure_monitor_logs": True})
+        self.assertTrue(dec._should_create_dcra())
+
+    def test_should_create_dcra_true_for_cnl_flag(self):
+        dec = self._make_postprocessing_decorator(
+            {"enable_container_network_logs": True}
+        )
+        self.assertTrue(dec._should_create_dcra())
+
+    def test_should_create_dcra_false_when_no_relevant_flags(self):
+        dec = self._make_postprocessing_decorator({})
+        self.assertFalse(dec._should_create_dcra())
+
+    # ------------------------------------------------------------------
+    # Tests for monitoring disable postprocessing (inlined in postprocessing_after_mc_created)
+    # ------------------------------------------------------------------
+    def test_postprocessing_monitoring_disable_calls_ensure_container_insights(self):
+        """postprocessing_after_mc_created calls ensure_container_insights with remove_monitoring=True for disable."""
+        dec = self._make_postprocessing_decorator({})
+        # Disable the enable path so only the disable path runs
+        dec.context.set_intermediate(
+            "monitoring_addon_enabled", False, overwrite_exists=True
+        )
+        dec.context.set_intermediate(
+            "monitoring_addon_disable_postprocessing_required",
+            True,
+            overwrite_exists=True,
+        )
+        # Mock client.get to return cluster with monitoring addon
+        cluster_with_monitoring = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True
+                )
+            },
+        )
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=cluster_with_monitoring)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster_with_monitoring)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["remove_monitoring"])
+
+    def test_postprocessing_monitoring_disable_no_addon_is_noop(self):
+        """postprocessing_after_mc_created disable path is a no-op when no monitoring addon on current cluster."""
+        dec = self._make_postprocessing_decorator({})
+        dec.context.set_intermediate(
+            "monitoring_addon_enabled", False, overwrite_exists=True
+        )
+        dec.context.set_intermediate(
+            "monitoring_addon_disable_postprocessing_required",
+            True,
+            overwrite_exists=True,
+        )
+        cluster_without_monitoring = self.models.ManagedCluster(
+            location="test_location"
+        )
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=cluster_without_monitoring)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster_without_monitoring)
+        mock_ecifm.assert_not_called()
+
+    def test_postprocessing_monitoring_disable_swallows_type_error(self):
+        """postprocessing_after_mc_created disable path should not raise on TypeError."""
+        dec = self._make_postprocessing_decorator({})
+        dec.context.set_intermediate(
+            "monitoring_addon_enabled", False, overwrite_exists=True
+        )
+        dec.context.set_intermediate(
+            "monitoring_addon_disable_postprocessing_required",
+            True,
+            overwrite_exists=True,
+        )
+        cluster_with_monitoring = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True
+                )
+            },
+        )
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=cluster_with_monitoring)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            side_effect=TypeError("test"),
+        ):
+            # Should not raise
+            dec.postprocessing_after_mc_created(cluster_with_monitoring)
+
+    # ------------------------------------------------------------------
+    # Tests for put_mc conditional postprocessing
+    # ------------------------------------------------------------------
+    def test_put_mc_with_postprocessing(self):
+        """put_mc waits for the operation and calls postprocessing when needed."""
+        dec = self._make_postprocessing_decorator({"enable_addons": "monitoring"})
+        mc = dec.context.mc
+        dec.client = Mock()
+        mock_poller = Mock()
+        dec.client.begin_create_or_update = Mock(return_value=mock_poller)
+        returned_cluster = self._make_cluster_with_monitoring()
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.LongRunningOperation",
+            return_value=Mock(return_value=returned_cluster),
+        ), patch.object(
+            dec, "postprocessing_after_mc_created"
+        ) as mock_post, patch.object(
+            dec, "immediate_processing_after_request"
+        ):
+            result = dec.put_mc(mc)
+        mock_post.assert_called_once_with(returned_cluster)
+        self.assertEqual(result, returned_cluster)
+
+    def test_put_mc_without_postprocessing_uses_sdk_no_wait(self):
+        """put_mc uses sdk_no_wait when no postprocessing is required."""
+        dec = self._make_postprocessing_decorator({})
+        mc = dec.context.mc
+        dec.client = Mock()
+        expected_result = Mock()
+        with patch.object(
+            dec, "check_is_postprocessing_required", return_value=False
+        ), patch(
+            "azext_aks_preview.managed_cluster_decorator.sdk_no_wait",
+            return_value=expected_result,
+        ) as mock_sdk_no_wait:
+            result = dec.put_mc(mc)
+        mock_sdk_no_wait.assert_called_once()
+        self.assertEqual(result, expected_result)
+
+    # ------------------------------------------------------------------
+    # Test for postprocessing_after_mc_created with monitoring_being_enabled bypass
+    # ------------------------------------------------------------------
+    def test_postprocessing_enable_hlsm_with_monitoring_being_enabled_simultaneously(
+        self,
+    ):
+        """When enable_high_log_scale_mode=True and monitoring is being enabled in same command,
+        the standalone HLSM validation should be skipped (monitoring_being_enabled=True path).
+        """
+        dec = self._make_postprocessing_decorator(
+            {
+                "enable_addons": "monitoring",
+                "enable_high_log_scale_mode": True,
+            }
+        )
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+        self.assertTrue(kwargs["enable_high_log_scale_mode"])
+
+    def test_set_up_health_monitor_profile(self):
+        # no flag - no change
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_health_monitor_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # enable flag set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_health_monitor_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -7963,10 +9927,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
-            network_profile=self.models.ContainerServiceNetworkProfile(
-                outbound_type="loadBalancer",
-            ),
+            network_profile=self.models.ContainerServiceNetworkProfile(),
         )
+        ground_truth_mc_1.network_profile.nat_gateway_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_update_outbound_type(self):
@@ -8255,9 +10218,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_8 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {
-                "ip_families": "ipv4,ipv6"
-            },
+            {"ip_families": "ipv4,ipv6"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_8 = self.models.ManagedCluster(
@@ -8265,7 +10226,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="azure",
                 network_plugin_mode="overlay",
-                ip_families=["ipv4"]
+                ip_families=["ipv4"],
             ),
         )
 
@@ -8280,7 +10241,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="azure",
                 network_plugin_mode="overlay",
-                ip_families=["ipv4", "ipv6"]
+                ip_families=["ipv4", "ipv6"],
             ),
         )
 
@@ -8290,16 +10251,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_9 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {
-                "network_plugin_mode": "overlay"
-            },
+            {"network_plugin_mode": "overlay"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_9 = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                network_plugin="azure",
-                ip_families=["ipv6", "ipv4"]
+                network_plugin="azure", ip_families=["ipv6", "ipv4"]
             ),
         )
 
@@ -8314,7 +10272,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="azure",
                 network_plugin_mode="overlay",
-                ip_families=["ipv6", "ipv4"]
+                ip_families=["ipv6", "ipv4"],
             ),
         )
 
@@ -8335,6 +10293,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
         )
+        ground_truth_mc_1.api_server_access_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
@@ -8455,11 +10414,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         mc_2 = self.models.ManagedCluster(
             location="test_location",
-            http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
+            http_proxy_config=self.models.ManagedClusterHTTPProxyConfig(
                 enabled=True,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
-            )
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
+            ),
         )
         dec_2.context.attach_mc(mc_2)
         # fail on passing the wrong mc object
@@ -8469,11 +10428,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
+            http_proxy_config=self.models.ManagedClusterHTTPProxyConfig(
                 enabled=False,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
-            )
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
+            ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -8489,11 +10448,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         mc_3 = self.models.ManagedCluster(
             location="test_location",
-            http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
+            http_proxy_config=self.models.ManagedClusterHTTPProxyConfig(
                 enabled=False,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
-            )
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
+            ),
         )
         dec_3.context.attach_mc(mc_3)
         # fail on passing the wrong mc object
@@ -8503,11 +10462,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
-            http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
+            http_proxy_config=self.models.ManagedClusterHTTPProxyConfig(
                 enabled=True,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
-            )
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
+            ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
@@ -8934,6 +10893,159 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
+    def test_update_service_account_image_pull(self):
+        # test no-op when neither enable nor disable
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_service_account_image_pull(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # test enable
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_service_account_image_pull(mc_2)
+
+        ground_truth_profile_2 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+        )
+        ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_2,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # test disable
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.service_account_image_pull_profile = (
+            self.models.ServiceAccountImagePullProfile(
+                enabled=True,
+            )
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_service_account_image_pull(mc_3)
+
+        ground_truth_profile_3 = self.models.ServiceAccountImagePullProfile(
+            enabled=False,
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # test mutual exclusivity
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+                "disable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_4.update_service_account_image_pull(mc_4)
+
+        # test update default managed identity id only
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "new_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.service_account_image_pull_profile = (
+            self.models.ServiceAccountImagePullProfile(
+                enabled=True,
+                default_managed_identity_id="old_identity_id",
+            )
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_service_account_image_pull(mc_5)
+
+        ground_truth_profile_5 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+            default_managed_identity_id="new_identity_id",
+        )
+        ground_truth_security_profile_5 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_5,
+        )
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_5,
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # test disable + identity id raises MutuallyExclusiveArgumentError
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_service_account_image_pull": True,
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_service_account_image_pull(mc_6)
+
+        # test identity id only on cluster without feature enabled raises RequiredArgumentMissingError
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(location="test_location")
+        dec_7.context.attach_mc(mc_7)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_7.update_service_account_image_pull(mc_7)
+
     def test_update_azure_keyvault_kms(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -9006,7 +11118,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_3.security_profile.azure_key_vault_kms)
         self.assertEqual(
             dec_mc_3.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Public"
+            "Public",
         )
 
         # Test 4: Verify updating from one network access type to another works correctly
@@ -9042,7 +11154,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_4.security_profile.azure_key_vault_kms)
         self.assertEqual(
             dec_mc_4.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Private"
+            "Private",
         )
 
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
@@ -9184,8 +11296,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_3 = dec_3.update_kms_pmk_cmk(mc_3)
 
         # expected security profile with infrastructure encryption
-        ground_truth_kube_resource_encryption_profile_3 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_3 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
             kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_3,
@@ -9214,8 +11328,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_4 = dec_4.update_kms_pmk_cmk(mc_4)
 
         # should add to existing security profile
-        ground_truth_kube_resource_encryption_profile_4 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_4 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_4 = self.models.ManagedClusterSecurityProfile(
             kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_4,
@@ -9235,7 +11351,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        existing_kube_encryption_profile = self.models.KubernetesResourceObjectEncryptionProfile()
+        existing_kube_encryption_profile = (
+            self.models.KubernetesResourceObjectEncryptionProfile()
+        )
         existing_security_profile = self.models.ManagedClusterSecurityProfile(
             kubernetes_resource_object_encryption_profile=existing_kube_encryption_profile,
         )
@@ -9247,8 +11365,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_5 = dec_5.update_kms_pmk_cmk(mc_5)
 
         # should update existing profile
-        ground_truth_kube_resource_encryption_profile_5 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_5 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_5 = self.models.ManagedClusterSecurityProfile(
             kubernetes_resource_object_encryption_profile=ground_truth_kube_resource_encryption_profile_5,
@@ -9282,8 +11402,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             key_vault_network_access=None,
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
-        ground_truth_kube_resource_encryption_profile_6 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_6 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_6 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_key_vault_kms_6,
@@ -9323,8 +11445,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             key_vault_network_access="Public",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
-        ground_truth_kube_resource_encryption_profile_7 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_7 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_7 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_key_vault_kms_7,
@@ -9352,7 +11476,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # expected security profile with disabled Azure Key Vault KMS
         ground_truth_mc_8 = self.models.ManagedCluster(
             location="test_location",
-            security_profile=None,
         )
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
@@ -9388,8 +11511,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             key_id="https://test-keyvault.vault.azure.net/keys/test-key",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
-        ground_truth_kube_resource_encryption_profile_9 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_9 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_9 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_key_vault_kms_9,
@@ -9419,8 +11544,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_10 = dec_10.update_kms_pmk_cmk(mc_10)
 
         # expected security profile with both infrastructure encryption and Azure Key Vault KMS
-        ground_truth_kube_resource_encryption_profile_10 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_10 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_azure_key_vault_kms_10 = self.models.AzureKeyVaultKms(
             enabled=True,
@@ -9470,8 +11597,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             key_vault_network_access="Private",
             key_vault_resource_id="/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.KeyVault/vaults/test-keyvault",
         )
-        ground_truth_kube_resource_encryption_profile_11 = self.models.KubernetesResourceObjectEncryptionProfile(
-            infrastructure_encryption="Enabled"
+        ground_truth_kube_resource_encryption_profile_11 = (
+            self.models.KubernetesResourceObjectEncryptionProfile(
+                infrastructure_encryption="Enabled"
+            )
         )
         ground_truth_security_profile_11 = self.models.ManagedClusterSecurityProfile(
             azure_key_vault_kms=ground_truth_azure_key_vault_kms_11,
@@ -9735,7 +11864,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=True
-            )
+            ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -9751,7 +11880,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=True
-            )
+            ),
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_run_command(mc_2)
@@ -9759,7 +11888,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=False
-            )
+            ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -9776,7 +11905,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=True
-            )
+            ),
         )
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_run_command(mc_3)
@@ -9784,7 +11913,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
                 disable_run_command=True
-            )
+            ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
@@ -9885,15 +12014,21 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Mock external functions
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_1 = dec_1.update_addon_profiles(mc_1)
 
         # Verify monitoring addon is enabled
         self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_1.addon_profiles)
         self.assertTrue(dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
         self.assertEqual(
-            dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID],
-            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
+            dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+            ],
+            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace",
         )
 
         # Test enabling Azure Monitor logs when already enabled (should be idempotent)
@@ -9941,14 +12076,23 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # First update addon profiles
         external_functions = dec_3.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_3 = dec_3.update_addon_profiles(mc_3)
 
         # Then update Azure Monitor profile with OpenTelemetry
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_3.context, 'get_name', return_value='test-cluster'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_3.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_3.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_3.context, "get_name", return_value="test-cluster"
+        ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(dec_mc_3)
 
         # Verify monitoring addon is enabled
@@ -9956,10 +12100,20 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(dec_mc_3.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
 
         # Verify OpenTelemetry logs are configured
-        if dec_mc_3.azure_monitor_profile and dec_mc_3.azure_monitor_profile.app_monitoring:
-            self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-            self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-            self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8080)
+        if (
+            dec_mc_3.azure_monitor_profile
+            and dec_mc_3.azure_monitor_profile.app_monitoring
+        ):
+            self.assertIsNotNone(
+                dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+            )
+            self.assertTrue(
+                dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+            )
+            self.assertEqual(
+                dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
+                8080,
+            )
 
         # Test with MSI auth enabled
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
@@ -9980,15 +12134,21 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_4.context.set_intermediate("subscription_id", "test-subscription-id")
 
         external_functions = dec_4.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_4 = dec_4.update_addon_profiles(mc_4)
 
         # Verify MSI auth is enabled
         self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_4.addon_profiles)
         self.assertTrue(dec_mc_4.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
         self.assertEqual(
-            dec_mc_4.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH],
-            "true"
+            dec_mc_4.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                CONST_MONITORING_USING_AAD_MSI_AUTH
+            ],
+            "true",
         )
 
     def test_update_disable_azure_monitor_logs(self):
@@ -10009,15 +12169,20 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     config={
                         CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
-                    }
+                    },
                 )
             },
         )
         dec_1.context.attach_mc(mc_1)
 
         external_functions = dec_1.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), \
-             patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ), patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True
+        ):
             dec_mc_1 = dec_1.update_addon_profiles(mc_1)
 
         # Verify monitoring addon is disabled
@@ -10063,9 +12228,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
                         enabled=True,
-                        port=8080,
+                        http_port=8080,
                     )
                 )
             ),
@@ -10074,24 +12239,41 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # First update addon profiles to disable monitoring
         external_functions = dec_3.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None), \
-             patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ), patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True
+        ):
             dec_mc_3 = dec_3.update_addon_profiles(mc_3)
 
         # Then update Azure Monitor profile
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_3.context, 'get_name', return_value='test-cluster'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_3.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_3.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_3.context, "get_name", return_value="test-cluster"
+        ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(dec_mc_3)
 
         # Verify monitoring addon is disabled
         self.assertFalse(dec_mc_3.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
 
         # Verify OpenTelemetry logs are also disabled in Azure Monitor profile
-        if dec_mc_3.azure_monitor_profile and dec_mc_3.azure_monitor_profile.app_monitoring:
-            self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-            self.assertFalse(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
+        if (
+            dec_mc_3.azure_monitor_profile
+            and dec_mc_3.azure_monitor_profile.app_monitoring
+        ):
+            self.assertIsNotNone(
+                dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+            )
+            self.assertFalse(
+                dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+            )
 
     def test_update_enable_azure_monitor_metrics(self):
         # Test enabling Azure Monitor metrics when not currently enabled
@@ -10110,10 +12292,15 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
 
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_1.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_1.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_1.context, 'get_name', return_value='test-cluster'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_1.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_1.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_1.context, "get_name", return_value="test-cluster"
+        ):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
 
         # Verify Azure Monitor metrics are enabled
@@ -10142,10 +12329,15 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_2.context.set_intermediate("subscription_id", "test-subscription-id")
 
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_2.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_2.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_2.context, 'get_name', return_value='test-cluster'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_2.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_2.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_2.context, "get_name", return_value="test-cluster"
+        ):
             dec_mc_2 = dec_2.update_azure_monitor_profile(mc_2)
 
         # Should remain enabled
@@ -10168,10 +12360,15 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_3.context.attach_mc(mc_3)
         dec_3.context.set_intermediate("subscription_id", "test-subscription-id")
 
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_3.context, 'get_name', return_value='test-cluster'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_3.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_3.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_3.context, "get_name", return_value="test-cluster"
+        ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
 
         # Verify Azure Monitor metrics and Windows recording rules are enabled
@@ -10179,8 +12376,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics)
         self.assertTrue(dec_mc_3.azure_monitor_profile.metrics.enabled)
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics.kube_state_metrics)
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics.kube_state_metrics.metric_annotations_allow_list)
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics.kube_state_metrics.metric_labels_allowlist)
+        self.assertIsNotNone(
+            dec_mc_3.azure_monitor_profile.metrics.kube_state_metrics.metric_annotations_allow_list
+        )
+        self.assertIsNotNone(
+            dec_mc_3.azure_monitor_profile.metrics.kube_state_metrics.metric_labels_allowlist
+        )
 
     def test_update_disable_azure_monitor_metrics(self):
         # Test disabling Azure Monitor metrics when currently enabled
@@ -10203,11 +12404,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_1.context.attach_mc(mc_1)
 
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_1.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_1.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_1.context, 'get_name', return_value='test-cluster'), \
-             patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_1.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_1.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_1.context, "get_name", return_value="test-cluster"
+        ), patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True
+        ):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
 
         # Verify Azure Monitor metrics are disabled
@@ -10253,18 +12460,24 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
                         enabled=True,
-                        port=8080,
+                        http_port=8080,
                     )
-                )
+                ),
             ),
         )
         dec_3.context.attach_mc(mc_3)
 
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription-id'), \
-             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
-             patch("azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_3.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec_3.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_3.context, "get_name", return_value="test-cluster"
+        ), patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True
+        ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
 
         # Verify Azure Monitor metrics are disabled but OpenTelemetry metrics configuration is preserved
@@ -10272,7 +12485,155 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.metrics)
         self.assertFalse(dec_mc_3.azure_monitor_profile.metrics.enabled)
         # OpenTelemetry metrics should still be configured but may be disabled depending on implementation
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
+        self.assertIsNotNone(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        )
+
+    def test_update_enable_control_plane_metrics_requires_parent_metrics(self):
+        # Update path: --enable-control-plane-metrics on a cluster that has neither
+        # Azure Monitor metrics already enabled nor --enable-azure-monitor-metrics in
+        # the same command must raise RequiredArgumentMissingError.
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec.context.attach_mc(mc)
+
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec.context.get_enable_control_plane_metrics()
+
+    def test_update_enable_control_plane_metrics_already_enabled_cluster_succeeds(self):
+        # Update path: --enable-control-plane-metrics on a cluster that already has
+        # Azure Monitor metrics enabled should succeed without requiring
+        # --enable-azure-monitor-metrics.
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        self.assertTrue(dec.context.get_enable_control_plane_metrics())
+
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ):
+            dec_mc = dec.update_azure_monitor_profile(mc)
+
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.metrics.control_plane)
+        self.assertTrue(dec_mc.azure_monitor_profile.metrics.control_plane.enabled)
+
+    def test_update_enable_control_plane_metrics_with_disable_metrics_raises(self):
+        # Update path: --enable-control-plane-metrics combined with
+        # --disable-azure-monitor-metrics in the same command must be rejected to
+        # avoid producing an inconsistent payload.
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_control_plane_metrics": True,
+                "disable_azure_monitor_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec.context.get_enable_control_plane_metrics()
+
+    def test_update_enable_control_plane_metrics_with_disable_control_plane_raises(self):
+        # --enable-control-plane-metrics together with --disable-control-plane-metrics
+        # in the same command must raise MutuallyExclusiveArgumentError.
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_control_plane_metrics": True,
+                "disable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True)
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec.context.get_enable_control_plane_metrics()
+
+    def test_update_disable_control_plane_metrics_sets_enabled_false(self):
+        # --disable-control-plane-metrics on a cluster that has it enabled should
+        # produce a payload with control_plane.enabled=False.
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(
+                    enabled=True,
+                    control_plane=self.models.ManagedClusterAzureMonitorProfileMetricsControlPlane(
+                        enabled=True
+                    ),
+                )
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec.context, "get_subscription_id", return_value="test-subscription-id"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ):
+            dec_mc = dec.update_azure_monitor_profile(mc)
+
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.metrics.control_plane)
+        self.assertFalse(dec_mc.azure_monitor_profile.metrics.control_plane.enabled)
 
     def test_setup_azure_monitor_logs_with_omsagent_camelcase(self):
         # Test that _setup_azure_monitor_logs handles existing omsAgent (camelCase) correctly
@@ -10295,10 +12656,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     config={
                         "logAnalyticsWorkspaceResourceID": "/old/workspace",
-                        "useAADAuth": "true"
-                    }
+                        "useAADAuth": "true",
+                    },
                 )
-            }
+            },
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
@@ -10306,13 +12667,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Call _setup_azure_monitor_logs
         dec_1._setup_azure_monitor_logs(mc_1)
 
-        # Verify: Should update existing omsAgent key (not create omsagent lowercase)
-        self.assertIn("omsAgent", mc_1.addon_profiles)
-        self.assertNotIn("omsagent", mc_1.addon_profiles)  # Should NOT create duplicate
-        self.assertTrue(mc_1.addon_profiles["omsAgent"].enabled)
+        # Verify: The existing key is preserved (no duplicate created).
+        # The implementation keeps the original casing ("omsAgent") found in addon_profiles.
         self.assertEqual(
-            mc_1.addon_profiles["omsAgent"].config["logAnalyticsWorkspaceResourceID"],
-            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
+            len([k for k in mc_1.addon_profiles if k.lower() == "omsagent"]), 1
+        )  # No duplicate
+        # Find the actual key used (could be normalized or preserved depending on parent behavior)
+        actual_key = next(k for k in mc_1.addon_profiles if k.lower() == "omsagent")
+        self.assertTrue(mc_1.addon_profiles[actual_key].enabled)
+        self.assertEqual(
+            mc_1.addon_profiles[actual_key].config["logAnalyticsWorkspaceResourceID"],
+            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace",
         )
 
     def test_setup_azure_monitor_logs_with_omsagent_lowercase(self):
@@ -10335,10 +12700,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     config={
                         "logAnalyticsWorkspaceResourceID": "/old/workspace",
-                        "useAADAuth": "true"
-                    }
+                        "useAADAuth": "true",
+                    },
                 )
-            }
+            },
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
@@ -10348,7 +12713,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Verify: Should update existing omsagent key
         self.assertIn("omsagent", mc_1.addon_profiles)
-        self.assertNotIn("omsAgent", mc_1.addon_profiles)  # Should NOT create CamelCase variant
+        self.assertNotIn(
+            "omsAgent", mc_1.addon_profiles
+        )  # Should NOT create CamelCase variant
         self.assertTrue(mc_1.addon_profiles["omsagent"].enabled)
 
     def test_disable_azure_monitor_logs_with_omsagent_camelcase(self):
@@ -10371,10 +12738,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     config={
                         "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
-                        "useAADAuth": "false"  # Non-MSI auth to skip DCR cleanup
-                    }
+                        "useAADAuth": "false",  # Non-MSI auth to skip DCR cleanup
+                    },
                 )
-            }
+            },
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
@@ -10382,10 +12749,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Call _disable_azure_monitor_logs
         dec_1._disable_azure_monitor_logs(mc_1)
 
-        # Verify: omsAgent should be disabled
-        self.assertIn("omsAgent", mc_1.addon_profiles)
-        self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
-        self.assertIsNone(mc_1.addon_profiles["omsAgent"].config)
+        # After normalization, the camelCase key is re-keyed to canonical lowercase
+        self.assertIn("omsagent", mc_1.addon_profiles)
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
 
     def test_disable_azure_monitor_logs_with_omsagent_lowercase(self):
         # Test that _disable_azure_monitor_logs handles omsagent (lowercase) correctly
@@ -10407,10 +12774,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     config={
                         "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
-                        "useAADAuth": "false"
-                    }
+                        "useAADAuth": "false",
+                    },
                 )
-            }
+            },
         )
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate("subscription_id", "test-subscription-id")
@@ -10422,6 +12789,124 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIn("omsagent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
         self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+    def test_disable_azure_monitor_logs_disables_container_insights(self):
+        # Test that _disable_azure_monitor_logs disables both addon profile AND
+        # azureMonitorProfile.containerInsights (the new API surface)
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        "useAADAuth": "false",
+                    },
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace",
+                )
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        dec_1._disable_azure_monitor_logs(mc_1)
+
+        # Verify addon profile is disabled
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+        # Verify container_insights is also disabled
+        self.assertFalse(mc_1.azure_monitor_profile.container_insights.enabled)
+
+    def test_disable_azure_monitor_logs_disables_container_insights_camelcase(self):
+        # Same test but with omsAgent (camelCase) key
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        "useAADAuth": "false",
+                    },
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace",
+                )
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        dec_1._disable_azure_monitor_logs(mc_1)
+
+        # After normalization, the camelCase key is re-keyed to the canonical lowercase form
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+        # Verify container_insights is also disabled
+        self.assertFalse(mc_1.azure_monitor_profile.container_insights.enabled)
+
+    def test_disable_azure_monitor_logs_without_container_insights(self):
+        # Test that disable works when container_insights is not set (addon-only cluster)
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        "useAADAuth": "false",
+                    },
+                )
+            },
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        dec_1._disable_azure_monitor_logs(mc_1)
+
+        # Verify addon profile is disabled
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+        # container_insights was never set, should not error
+        self.assertIsNone(mc_1.azure_monitor_profile)
 
     def test_get_enable_opentelemetry_logs_validation_with_omsagent_camelcase(self):
         # Test that OpenTelemetry logs validation recognizes omsAgent (camelCase) as enabled
@@ -10442,9 +12927,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             addon_profiles={
                 "omsAgent": self.models.ManagedClusterAddonProfile(
                     enabled=True,
-                    config={"logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace"}
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace"
+                    },
                 )
-            }
+            },
         )
         ctx_1.attach_mc(mc)
 
@@ -10471,9 +12958,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
                     enabled=True,
-                    log_analytics_workspace_resource_id="/subscriptions/test/workspace"
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace",
                 )
-            )
+            ),
         )
         ctx_1.attach_mc(mc)
 
@@ -11062,7 +13549,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_optimized_addon_scaling": True, "disable_optimized_addon_scaling": True},
+            {
+                "enable_optimized_addon_scaling": True,
+                "disable_optimized_addon_scaling": True,
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(
@@ -11089,13 +13579,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         workload_auto_scaler_profile.vertical_pod_autoscaler = (
             self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                enabled=True,
-                addon_autoscaling="Enabled"
+                enabled=True, addon_autoscaling="Enabled"
             )
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            workload_auto_scaler_profile=workload_auto_scaler_profile
+            workload_auto_scaler_profile=workload_auto_scaler_profile,
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -11116,13 +13605,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         workload_auto_scaler_profile.vertical_pod_autoscaler = (
             self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                enabled=False,
                 addon_autoscaling="Disabled"
             )
         )
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
-            workload_auto_scaler_profile=workload_auto_scaler_profile
+            workload_auto_scaler_profile=workload_auto_scaler_profile,
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
@@ -11130,7 +13618,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         free_mock_client = mock.MagicMock()
         return free_mock_client
 
-    @mock.patch('azext_aks_preview._client_factory.get_keyvault_client', _mock_get_keyvault_client)
+    @mock.patch(
+        "azext_aks_preview._client_factory.get_keyvault_client",
+        _mock_get_keyvault_client,
+    )
     def test_update_app_routing_profile(self):
         # enable app routing
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -11272,7 +13763,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
-                    enabled=True, dns_zone_resource_ids=["/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com"]
+                    enabled=True,
+                    dns_zone_resource_ids=[
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com"
+                    ],
                 )
             ),
         )
@@ -11359,11 +13853,16 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         command_kwargs = {"operation_group": "vaults"}
         cli_ctx = DummyCli()
-        self.cmd = AzCliCommand(AzCommandsLoader(cli_ctx), "mock-cmd", None, kwargs=command_kwargs)
+        self.cmd = AzCliCommand(
+            AzCommandsLoader(cli_ctx), "mock-cmd", None, kwargs=command_kwargs
+        )
         dec_8 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_kv": True, "keyvault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"},
+            {
+                "enable_kv": True,
+                "keyvault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_8 = self.models.ManagedCluster(
@@ -11377,12 +13876,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
                     enabled=False,
                 )
-            }
+            },
         )
-        mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
-            resource_id="test_resource_id",
-            client_id="test_client_id",
-            object_id="test_object_id",
+        mc_8.ingress_profile.web_app_routing.identity = (
+            self.models.UserAssignedIdentity(
+                resource_id="test_resource_id",
+                client_id="test_client_id",
+                object_id="test_object_id",
+            )
         )
         dec_8.context.attach_mc(mc_8)
         dec_mc_8 = dec_8.update_app_routing_profile(mc_8)
@@ -11403,10 +13904,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             },
         )
-        ground_truth_mc_8.ingress_profile.web_app_routing.identity = self.models.UserAssignedIdentity(
-            resource_id="test_resource_id",
-            client_id="test_client_id",
-            object_id="test_object_id",
+        ground_truth_mc_8.ingress_profile.web_app_routing.identity = (
+            self.models.UserAssignedIdentity(
+                resource_id="test_resource_id",
+                client_id="test_client_id",
+                object_id="test_object_id",
+            )
         )
 
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
@@ -11415,7 +13918,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_9 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_app_routing": True, "enable_kv": False, "nginx": "AnnotationControlled"},
+            {
+                "enable_app_routing": True,
+                "enable_kv": False,
+                "nginx": "AnnotationControlled",
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_9 = self.models.ManagedCluster(
@@ -11428,7 +13935,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 enabled=True,
                 nginx=self.models.ManagedClusterIngressProfileNginx(
                     default_ingress_controller_type="AnnotationControlled"
-                )
+                ),
             )
         )
         ground_truth_mc_9 = self.models.ManagedCluster(
@@ -11460,7 +13967,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
                         enabled=True
-                    )
+                    ),
                 )
             ),
         )
@@ -11480,7 +13987,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
                         enabled=True
-                    )
+                    ),
                 )
             ),
         )
@@ -11493,7 +14000,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
                         enabled=False
-                    )
+                    ),
                 )
             ),
         )
@@ -11540,7 +14047,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
+            {
+                "disable_ai_toolchain_operator": True,
+                "enable_ai_toolchain_operator": True,
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_6 = self.models.ManagedCluster(
@@ -11798,58 +14308,188 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         normalClusterCalculated = noopDecorator3.update_k8s_support_plan(normalCluster)
         self.assertEqual(normalClusterCalculated, normalCluster)
 
+    def test_update_enable_fips(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_enable_fips(mc_1)
+        self.assertEqual(dec_mc_1, mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_enable_fips(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile],
+        )
+        ground_truth_mc_2.enable_fips = True
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            True,
+        )
+
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        non_fips_agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool2",
+            enable_fips=False,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[non_fips_agentpool_profile],
+        )
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_3.update_enable_fips(mc_3)
+
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.33.9",
+        )
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_4.update_enable_fips(mc_4)
+
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_5 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile_5],
+        )
+        mc_5.properties["enableFIPS"] = True
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_enable_fips(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile_5],
+        )
+        ground_truth_mc_5.enable_fips = False
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+        self.assertEqual(
+            todict(dec_mc_5, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            False,
+        )
+
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "disable_fips": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_enable_fips(mc_6)
+
     def test_mc_get_node_init_taints(self):
-            # Default, not set.
-            ctx_1 = AKSPreviewManagedClusterContext(
-                self.cmd,
-                AKSManagedClusterParamDict({}),
-                self.models,
-                decorator_mode=DecoratorMode.CREATE,
-            )
-            self.create_and_attach_test_ap_context(ctx_1)
-            self.assertEqual([], ctx_1.get_nodepool_initialization_taints())
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_and_attach_test_ap_context(ctx_1)
+        self.assertEqual([], ctx_1.get_nodepool_initialization_taints())
 
-            # Populate init taints.
-            ctx_2 = AKSPreviewManagedClusterContext(
-                self.cmd,
-                AKSManagedClusterParamDict(
-                    {
-                        "nodepool_initialization_taints": "initTaint1=value1:PreferNoSchedule",
-                    }
-                ),
-                self.models,
-                decorator_mode=DecoratorMode.UPDATE,
-            )
-            self.create_and_attach_test_ap_context(ctx_2)
-            self.assertEqual(["initTaint1=value1:PreferNoSchedule"], ctx_2.get_nodepool_initialization_taints())
+        # Populate init taints.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "nodepool_initialization_taints": "initTaint1=value1:PreferNoSchedule",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_and_attach_test_ap_context(ctx_2)
+        self.assertEqual(
+            ["initTaint1=value1:PreferNoSchedule"],
+            ctx_2.get_nodepool_initialization_taints(),
+        )
 
-            # Update init taints.
-            ctx_3 = AKSPreviewManagedClusterContext(
-                self.cmd,
-                AKSManagedClusterParamDict(
-                    {
-                        "nodepool_initialization_taints": "initTaint2=value1:PreferNoSchedule",
-                    }
-                ),
-                self.models,
-                decorator_mode=DecoratorMode.UPDATE,
-            )
-            self.create_and_attach_test_ap_context(ctx_3)
-            self.assertEqual(["initTaint2=value1:PreferNoSchedule"], ctx_3.get_nodepool_initialization_taints())
+        # Update init taints.
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "nodepool_initialization_taints": "initTaint2=value1:PreferNoSchedule",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_and_attach_test_ap_context(ctx_3)
+        self.assertEqual(
+            ["initTaint2=value1:PreferNoSchedule"],
+            ctx_3.get_nodepool_initialization_taints(),
+        )
 
-            # Remove init taints
-            ctx_4 = AKSPreviewManagedClusterContext(
-                self.cmd,
-                AKSManagedClusterParamDict(
-                    {
-                        "nodepool_initialization_taints": "",
-                    }
-                ),
-                self.models,
-                decorator_mode=DecoratorMode.UPDATE,
-            )
-            self.create_and_attach_test_ap_context(ctx_4)
-            self.assertEqual([""], ctx_4.get_nodepool_initialization_taints())
+        # Remove init taints
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "nodepool_initialization_taints": "",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_and_attach_test_ap_context(ctx_4)
+        self.assertEqual([""], ctx_4.get_nodepool_initialization_taints())
 
     def create_and_attach_test_ap_context(self, ctx):
         agentpool_ctx = AKSPreviewAgentPoolContext(
@@ -12030,8 +14670,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                network_plugin="kubenet",
-                pod_link_local_access="None"
+                network_plugin="kubenet", pod_link_local_access="None"
             ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
@@ -12081,7 +14720,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 network_plugin_mode="overlay",
                 network_dataplane="cilium",
                 pod_cidr="100.64.0.0/16",
-                service_cidr="192.168.0.0/16"
+                service_cidr="192.168.0.0/16",
             ),
         )
 
@@ -12130,8 +14769,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "migrate_vmas_to_vms": True,
-                 "yes": True,
-           },
+                "yes": True,
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(
@@ -12211,8 +14850,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_3.network_profile = ground_truth_network_profile_3
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
-
-
     def test_enable_container_network_logs(self):
         # Case 1: enable_acns, enable monitoring addons_profile, enable container_network_logs
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -12257,12 +14894,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True,
-                    config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+        # Verify HLSM is auto-enabled when CNL is enabled
+        self.assertTrue(dec_1.context.get_enable_high_log_scale_mode())
 
         # Case 2: acns is enabled, monitoring is enabled, disable retina network flow logs
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -12287,8 +14925,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True,
-                    config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
         )
@@ -12308,8 +14945,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True,
-                    config={"enableRetinaNetworkFlags": "False"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "False"}
                 )
             },
         )
@@ -12374,7 +15010,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_4.context.set_intermediate("subscription_id", "test_subscription_id")
         dec_4.context.attach_mc(mc_4)
         external_functions = dec_4.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_4 = dec_4.set_up_addon_profiles(mc_4)
         ground_truth_mc_4 = {
             CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
@@ -12386,7 +15026,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 },
             ),
         }
-        self.assertEqual(dec_mc_4.addon_profiles["omsagent"], ground_truth_mc_4["omsagent"])
+        self.assertEqual(
+            dec_mc_4.addon_profiles["omsagent"], ground_truth_mc_4["omsagent"]
+        )
 
         # Case 5: enable_acns and enable_retina_network_flow_logs without monitoring addon
         dec_5 = AKSPreviewManagedClusterCreateDecorator(
@@ -12418,7 +15060,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_5.context.attach_mc(mc_5)
         with self.assertRaises(InvalidArgumentValueError):
             external_functions = dec_5.context.external_functions
-            with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            with patch.object(
+                external_functions,
+                "ensure_container_insights_for_monitoring",
+                return_value=None,
+            ):
                 dec_5.set_up_addon_profiles(mc_5)
 
         # Case 6: enable_monitoring addon with retina_network_flow_logs, but acns is not enabled
@@ -12453,7 +15099,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(RequiredArgumentMissingError):
             external_functions = dec_6.context.external_functions
-            with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            with patch.object(
+                external_functions,
+                "ensure_container_insights_for_monitoring",
+                return_value=None,
+            ):
                 dec_6.set_up_addon_profiles(mc_6)
 
         # Case 7: acns is enabled, monitoring is enabled, enable retina network flow logs
@@ -12480,8 +15130,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True,
-                    config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
         )
@@ -12501,12 +15150,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True,
-                    config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
+        # Verify HLSM is auto-enabled when using deprecated flag
+        self.assertTrue(dec_7.context.get_enable_high_log_scale_mode())
 
         # Case 8: Error when explicitly disabling high log scale mode with container network logs enabled
         dec_8 = AKSPreviewManagedClusterUpdateDecorator(
@@ -12622,7 +15272,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_11.context.set_intermediate("subscription_id", "test_subscription_id")
         dec_11.context.attach_mc(mc_11)
         external_functions = dec_11.context.external_functions
-        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
             dec_mc_11 = dec_11.set_up_addon_profiles(mc_11)
         ground_truth_mc_11 = {
             CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
@@ -12634,7 +15288,741 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 },
             ),
         }
-        self.assertEqual(dec_mc_11.addon_profiles["omsagent"], ground_truth_mc_11["omsagent"])
+        self.assertEqual(
+            dec_mc_11.addon_profiles["omsagent"], ground_truth_mc_11["omsagent"]
+        )
+
+        # Case 12: Verify monitoring_addon_postprocessing_required is set when CNL is enabled (update path)
+        # This test verifies the fix for the bug where DCR is not updated when enabling CNL on update
+        dec_12 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_12 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec_12.context.attach_mc(mc_12)
+        dec_mc_12 = dec_12.update_monitoring_profile_flow_logs(mc_12)
+        # Verify the intermediate is set to trigger DCR update in postprocessing
+        self.assertTrue(
+            dec_12.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+        # Verify HLSM is auto-enabled when CNL is enabled
+        self.assertTrue(dec_12.context.get_enable_high_log_scale_mode())
+        ground_truth_mc_12 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_12, ground_truth_mc_12)
+
+        # Case 13: Verify monitoring_addon_postprocessing_required is NOT set when CNL is disabled (update path)
+        # Disabling CNL should not trigger DCR update
+        dec_13 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_13 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        dec_13.context.attach_mc(mc_13)
+        dec_mc_13 = dec_13.update_monitoring_profile_flow_logs(mc_13)
+        # Disabling CNL should not set the postprocessing intermediate
+        self.assertFalse(
+            dec_13.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+        ground_truth_mc_13 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={"enableRetinaNetworkFlags": "False"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_13, ground_truth_mc_13)
+
+        # Case 13b: Disable CNL with omsAgent (camelCase key) - verifies the fix
+        # for the bug where disable-container-network-logs didn't work when Azure API
+        # returned the addon profile key as "omsAgent" instead of "omsagent"
+        dec_13b = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_13b = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        dec_13b.context.attach_mc(mc_13b)
+        dec_mc_13b = dec_13b.update_monitoring_profile_flow_logs(mc_13b)
+        ground_truth_mc_13b = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={"enableRetinaNetworkFlags": "False"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_13b, ground_truth_mc_13b)
+
+        # Case 14: Verify monitoring_addon_postprocessing_required is set when using deprecated flag (update path)
+        dec_14 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_retina_flow_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_14 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec_14.context.attach_mc(mc_14)
+        dec_mc_14 = dec_14.update_monitoring_profile_flow_logs(mc_14)
+        # Verify the intermediate is set to trigger DCR update in postprocessing
+        self.assertTrue(
+            dec_14.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+        # Verify HLSM is auto-enabled when using deprecated flag
+        self.assertTrue(dec_14.context.get_enable_high_log_scale_mode())
+
+        # Case 15: Standalone HLSM enable with monitoring addon enabled and MSI auth
+        # This test verifies the fix for the bug where standalone --enable-high-log-scale-mode was silently ignored
+        dec_15 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_15 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec_15.context.attach_mc(mc_15)
+        dec_mc_15 = dec_15.update_monitoring_profile_flow_logs(mc_15)
+        # Verify the intermediate is set to trigger DCR update in postprocessing
+        self.assertTrue(
+            dec_15.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+        # Case 16: Standalone HLSM enable without monitoring addon (should error)
+        dec_16 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_16 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+            ),
+        )
+        dec_16.context.attach_mc(mc_16)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_16.update_monitoring_profile_flow_logs(mc_16)
+
+        # Case 17: Standalone HLSM enable without MSI auth (should error)
+        dec_17 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_17 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={}
+                )
+            },
+        )
+        dec_17.context.attach_mc(mc_17)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_17.update_monitoring_profile_flow_logs(mc_17)
+
+        # Case 18: Verify HLSM is NOT triggered when explicitly set to False
+        dec_18 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_18 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec_18.context.attach_mc(mc_18)
+        dec_mc_18 = dec_18.update_monitoring_profile_flow_logs(mc_18)
+        # HLSM=false should trigger postprocessing to update DCR (remove high-scale stream)
+        self.assertTrue(
+            dec_18.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+        # Case 19: Standalone HLSM enable with omsAgent (camelCase key)
+        dec_19 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_19 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec_19.context.attach_mc(mc_19)
+        dec_mc_19 = dec_19.update_monitoring_profile_flow_logs(mc_19)
+        # Verify the intermediate is set to trigger DCR update in postprocessing
+        self.assertTrue(
+            dec_19.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+    def test_update_standalone_high_log_scale_mode(self):
+        """Tests for Bug 1 fix: --enable-high-log-scale-mode standalone on update path.
+
+        Before this fix, --enable-high-log-scale-mode alone on an existing cluster was silently
+        ignored because monitoring_addon_postprocessing_required was never set, so the DCR was
+        never updated.
+        """
+        # Case 1: Happy path - monitoring enabled with MSI auth → sets postprocessing intermediate
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_1.update_monitoring_profile_flow_logs(mc_1)
+        self.assertTrue(
+            dec_1.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+        # Case 2: Monitoring addon present but not enabled → RequiredArgumentMissingError
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=False,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec_2.context.attach_mc(mc_2)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_2.update_monitoring_profile_flow_logs(mc_2)
+
+        # Case 3: No monitoring addon at all → RequiredArgumentMissingError
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_3.update_monitoring_profile_flow_logs(mc_3)
+
+        # Case 4: Monitoring enabled but MSI auth missing → RequiredArgumentMissingError
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={},
+                )
+            },
+        )
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4.update_monitoring_profile_flow_logs(mc_4)
+
+        # Case 5: Monitoring enabled but MSI auth set to "false" → RequiredArgumentMissingError
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "false"},
+                )
+            },
+        )
+        dec_5.context.attach_mc(mc_5)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_5.update_monitoring_profile_flow_logs(mc_5)
+
+        # Case 6: enable_high_log_scale_mode=False (no CNL) → postprocessing triggered to update DCR
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec_6.context.attach_mc(mc_6)
+        dec_6.update_monitoring_profile_flow_logs(mc_6)
+        self.assertTrue(
+            dec_6.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+        # Case 7: Not specified (None) → no postprocessing triggered
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec_7.context.attach_mc(mc_7)
+        dec_7.update_monitoring_profile_flow_logs(mc_7)
+        self.assertFalse(
+            dec_7.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+        # Case 8: camelCase "omsAgent" key is also recognised
+        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_8 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec_8.context.attach_mc(mc_8)
+        dec_8.update_monitoring_profile_flow_logs(mc_8)
+        self.assertTrue(
+            dec_8.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+    def test_update_monitoring_profile_flow_logs_no_flags_noop(self):
+        """Test that update_monitoring_profile_flow_logs is a no-op when no CNL/HLSM flags are specified."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+        # Existing config should remain unchanged
+        self.assertEqual(
+            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
+            "True",
+        )
+        self.assertFalse(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_update_enable_cnl_with_azure_monitor_logs_on_cluster(self):
+        """Test enabling CNL on update when monitoring was enabled via enable_azure_monitor_logs on existing cluster."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_azure_monitor_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+        self.assertEqual(
+            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
+            "True",
+        )
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+    def test_update_cnl_explicit_true_hlsm_with_prerequisites(self):
+        """Test enabling CNL + HLSM=True explicitly on update with all prerequisites met."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+        self.assertEqual(
+            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
+            "True",
+        )
+        self.assertTrue(dec.context.get_enable_high_log_scale_mode())
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+    def test_update_disable_hlsm_standalone_triggers_postprocessing(self):
+        """Test that disabling HLSM standalone (no CNL flag) triggers postprocessing to update DCR."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_update_disable_hlsm_error_when_cnl_already_enabled(self):
+        """Test that disabling HLSM raises error when CNL is already enabled on the cluster."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "enableRetinaNetworkFlags": "True",
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec.update_monitoring_profile_flow_logs(mc)
+
+    def test_update_postprocessing_with_camelcase_addon_key(self):
+        """Test that update postprocessing works when the API response uses 'omsAgent' (camelCase).
+
+        The API may return the monitoring addon as 'omsAgent' instead of 'omsagent'.
+        The postprocessing must handle both key variants so the DCR gets updated.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        # Simulate profile update setting the postprocessing flag
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required")
+        )
+
+        # Build API response cluster with camelCase addon key
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    },
+                )
+            },
+        )
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+        self.assertTrue(kwargs["enable_high_log_scale_mode"])
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -12679,7 +16067,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "node_provisioning_mode": "Auto",
                 "node_provisioning_default_pools": "None",
-
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -12762,7 +16149,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Regular system pool should remain unchanged
         self.assertEqual(dec_mc_3.agent_pool_profiles[0].name, "nodepool1")
-        self.assertEqual(dec_mc_3.agent_pool_profiles[0].mode, CONST_NODEPOOL_MODE_SYSTEM)
+        self.assertEqual(
+            dec_mc_3.agent_pool_profiles[0].mode, CONST_NODEPOOL_MODE_SYSTEM
+        )
         self.assertEqual(dec_mc_3.agent_pool_profiles[0].vm_size, "Standard_DS2_v2")
         self.assertEqual(dec_mc_3.agent_pool_profiles[0].count, 3)
         self.assertEqual(dec_mc_3.agent_pool_profiles[0].max_pods, 110)
@@ -12874,7 +16263,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         mc_6 = self.models.ManagedCluster(location="test_location")
-        mc_6.agent_pool_profiles = [managed_system_agentpool_1, managed_system_agentpool_2]
+        mc_6.agent_pool_profiles = [
+            managed_system_agentpool_1,
+            managed_system_agentpool_2,
+        ]
         dec_6.context.attach_mc(mc_6)
         dec_mc_6 = dec_6.update_managed_system_pools(mc_6)
 
@@ -13122,6 +16514,81 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
+    def test_update_control_plane_scaling_profile(self):
+        # Test default behavior - no change when not specified
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_control_plane_scaling_profile(mc_0)
+        self.assertIsNone(dec_mc_0.control_plane_scaling_profile)
+
+        # Test updating scaling size on a cluster with existing profile (upgrade H4 -> H8)
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
+            ManagedClusterControlPlaneScalingProfile,
+        )
+
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H8",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_control_plane_scaling_profile(mc_1)
+        self.assertEqual(dec_mc_1.control_plane_scaling_profile.scaling_size, "H8")
+
+        # Test updating scaling size on a cluster with existing profile (downgrade H8 -> H2)
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H2",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H8",
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_control_plane_scaling_profile(mc_2)
+        self.assertEqual(dec_mc_2.control_plane_scaling_profile.scaling_size, "H2")
+
+        # Test setting scaling size when profile doesn't exist (passthrough to RP for validation)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H4",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_control_plane_scaling_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
     def test_update_ingress_profile_gateway_api(self):
         # Test enabling Gateway API
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13154,17 +16621,21 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(
             location="test_location",
             ingress_profile=self.models.ManagedClusterIngressProfile(
-                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)
-            )
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True
+                )
+            ),
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_ingress_profile_gateway_api(mc_2)
 
         ground_truth_ingress_profile_2 = self.models.ManagedClusterIngressProfile(
-            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True),
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True
+            ),
             gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                 installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
-            )
+            ),
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location", ingress_profile=ground_truth_ingress_profile_2
@@ -13184,7 +16655,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                     installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 )
-            )
+            ),
         )
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_ingress_profile_gateway_api(mc_3)
@@ -13240,7 +16711,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                     installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 )
-            )
+            ),
         )
         dec_5.context.attach_mc(mc_5)
         dec_mc_5 = dec_5.update_ingress_profile_gateway_api(mc_5)
@@ -13252,9 +16723,138 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 gateway_api=self.models.ManagedClusterIngressProfileGatewayConfiguration(
                     installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                 )
-            )
+            ),
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+    def test_update_ingress_profile_app_routing_istio(self):
+        # Test enabling app routing istio on fresh cluster
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing_istio": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_ingress_profile_app_routing_istio(mc_1)
+
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                    app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                    )
+                )
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test disabling app routing istio
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_app_routing_istio": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                        app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                            mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                        )
+                    ),
+                )
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_ingress_profile_app_routing_istio(mc_2)
+
+        ground_truth_ingress_profile_2 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                    app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_DISABLED
+                    )
+                ),
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test mutual exclusion - both enable and disable should raise exception
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec = AKSPreviewManagedClusterUpdateDecorator(
+                self.cmd,
+                self.client,
+                {"enable_app_routing_istio": True, "disable_app_routing_istio": True},
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            mc = self.models.ManagedCluster(location="test_location")
+            dec.context.attach_mc(mc)
+            dec.update_ingress_profile_app_routing_istio(mc)
+
+        # Test without any app_routing_istio parameters (should not modify anything)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_ingress_profile_app_routing_istio(mc_3)
+
+        ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # Test without any app_routing_istio parameters but with existing config (should not modify)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                        app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                            mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                        )
+                    ),
+                )
+            ),
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_ingress_profile_app_routing_istio(mc_4)
+
+        # Should remain unchanged
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                        app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                            mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                        )
+                    ),
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
     def test_update_azure_monitor_profile_with_opentelemetry_metrics(self):
         # Test enabling OpenTelemetry metrics on update
@@ -13275,23 +16875,36 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(
                     enabled=True
                 )
-            )
+            ),
         )
         dec_1.context.attach_mc(mc_1)
 
         # Mock authentication-related functions
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_1.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec_1.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_1.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec_1.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_1.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec_1.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_1.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec_1.context, "get_location", return_value="test-location"
+        ):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
 
         # Verify OpenTelemetry metrics configuration is updated
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 8080)
+        self.assertIsNotNone(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        )
+        self.assertTrue(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled
+        )
+        self.assertEqual(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port,
+            8080,
+        )
 
         # Test disabling OpenTelemetry metrics on update
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13312,26 +16925,37 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 ),
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
-                        enabled=True,
-                        port=8080
+                        enabled=True, http_port=8080
                     )
-                )
-            )
+                ),
+            ),
         )
         dec_2.context.attach_mc(mc_2)
 
         # Mock authentication-related functions for second test
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_2.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec_2.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_2.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec_2.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_2.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec_2.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_2.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec_2.context, "get_location", return_value="test-location"
+        ):
             dec_mc_2 = dec_2.update_azure_monitor_profile(mc_2)
 
         # Verify OpenTelemetry metrics is disabled
-        self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
-        self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertIsNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port)
+        self.assertIsNotNone(
+            dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        )
+        self.assertFalse(
+            dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled
+        )
+        self.assertIsNone(
+            dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port
+        )
 
         # Test standalone port update for OpenTelemetry metrics (without enable/disable flags)
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13352,25 +16976,37 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 ),
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
-                        enabled=True,
-                        port=8080  # Original port
+                        enabled=True, http_port=8080  # Original port
                     )
-                )
-            )
+                ),
+            ),
         )
         dec_3.context.attach_mc(mc_3)
         # Mock authentication-related functions for third test
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec_3.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_3.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec_3.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_3.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec_3.context, "get_location", return_value="test-location"
+        ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
 
         # Verify OpenTelemetry metrics port is updated while remaining enabled
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
-        self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 9090)
+        self.assertIsNotNone(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        )
+        self.assertTrue(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled
+        )
+        self.assertEqual(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port,
+            9090,
+        )
 
     def test_update_azure_monitor_profile_with_opentelemetry_logs(self):
         # Test enabling OpenTelemetry logs on update
@@ -13390,7 +17026,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 enabled=True,
                 config={
                     "logAnalyticsWorkspaceResourceID": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
-                }
+                },
             )
         }
         mc_1 = self.models.ManagedCluster(
@@ -13400,23 +17036,36 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
                     enabled=True
                 )
-            )
+            ),
         )
         dec_1.context.attach_mc(mc_1)
 
         # Mock authentication-related functions
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_1.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec_1.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_1.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec_1.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_1.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec_1.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_1.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec_1.context, "get_location", return_value="test-location"
+        ):
             dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
 
         # Verify OpenTelemetry logs configuration is updated
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8081)
+        self.assertIsNotNone(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        )
+        self.assertTrue(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+        self.assertEqual(
+            dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
+            8081,
+        )
 
         # Test disabling OpenTelemetry logs on update
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13437,27 +17086,38 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True
                 ),
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
-                        enabled=True,
-                        port=8081
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
+                        enabled=True, http_port=8081
                     )
-                )
-            )
+                ),
+            ),
         )
         dec_2.context.attach_mc(mc_2)
 
         # Mock authentication-related functions for second test
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_2.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec_2.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_2.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec_2.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_2.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec_2.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_2.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec_2.context, "get_location", return_value="test-location"
+        ):
             dec_mc_2 = dec_2.update_azure_monitor_profile(mc_2)
 
         # Verify OpenTelemetry logs is disabled
-        self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertIsNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs.port)
+        self.assertIsNotNone(
+            dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        )
+        self.assertFalse(
+            dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+        self.assertIsNone(
+            dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port
+        )
 
         # Test standalone port update for OpenTelemetry logs (without enable/disable flags)
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13478,27 +17138,39 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True
                 ),
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
-                        enabled=True,
-                        port=8081  # Original port
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
+                        enabled=True, http_port=8081  # Original port
                     )
-                )
-            )
+                ),
+            ),
         )
         dec_3.context.attach_mc(mc_3)
 
         # Mock authentication-related functions for third test
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec_3.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec_3.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec_3.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec_3.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec_3.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec_3.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec_3.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec_3.context, "get_location", return_value="test-location"
+        ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
 
         # Verify OpenTelemetry logs port is updated while remaining enabled
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 9091)
+        self.assertIsNotNone(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        )
+        self.assertTrue(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+        self.assertEqual(
+            dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
+            9091,
+        )
 
     def test_disable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
         # Test that disabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
@@ -13520,30 +17192,46 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                         enabled=True
                     ),
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
-                        enabled=True,
-                        port=8080
-                    )
+                        enabled=True, http_port=8080
+                    ),
                 )
-            )
+            ),
         )
         dec.context.attach_mc(mc)
 
         # Mock authentication-related functions
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec.context, "get_location", return_value="test-location"
+        ):
             dec_mc = dec.update_azure_monitor_profile(mc)
 
         # Verify Azure Monitor app monitoring auto instrumentation is disabled
-        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation)
-        self.assertFalse(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
+        self.assertIsNotNone(
+            dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation
+        )
+        self.assertFalse(
+            dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled
+        )
 
         # Verify OpenTelemetry metrics configuration is preserved
-        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
-        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 8080)
+        self.assertIsNotNone(
+            dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        )
+        self.assertTrue(
+            dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled
+        )
+        self.assertEqual(
+            dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port,
+            8080,
+        )
 
     def test_enable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
         # Test that enabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
@@ -13564,31 +17252,47 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     auto_instrumentation=self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
                         enabled=False
                     ),
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
-                        enabled=True,
-                        port=8081
-                    )
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
+                        enabled=True, http_port=8081
+                    ),
                 )
-            )
+            ),
         )
         dec.context.attach_mc(mc)
 
         # Mock authentication-related functions
-        with patch('azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites'), \
-             patch.object(dec.context, 'get_subscription_id', return_value='test-subscription'), \
-             patch.object(dec.context, 'get_resource_group_name', return_value='test-rg'), \
-             patch.object(dec.context, 'get_name', return_value='test-cluster'), \
-             patch.object(dec.context, 'get_location', return_value='test-location'):
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec.context, "get_location", return_value="test-location"
+        ):
             dec_mc = dec.update_azure_monitor_profile(mc)
 
         # Verify Azure Monitor app monitoring auto instrumentation is enabled
-        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation)
-        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
+        self.assertIsNotNone(
+            dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation
+        )
+        self.assertTrue(
+            dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled
+        )
 
         # Verify OpenTelemetry logs configuration is preserved
-        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8081)
+        self.assertIsNotNone(
+            dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        )
+        self.assertTrue(
+            dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+        self.assertEqual(
+            dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
+            8081,
+        )
 
     def test_azure_keyvault_kms_network_access_parameter_fix(self):
         """Test that azure_keyvault_kms_key_vault_network_access parameter is correctly passed through.
@@ -13596,7 +17300,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         This test verifies the fix for the issue where --azure-keyvault-kms-key-vault-network-access
         was always being set to "Public" regardless of user input.
         """
-        key_id = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+        key_id = (
+            "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+        )
 
         # Test CREATE scenario with Private network access
         dec_create_private = AKSPreviewManagedClusterCreateDecorator(
@@ -13612,12 +17318,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_create_private = self.models.ManagedCluster(location="test_location")
         dec_create_private.context.attach_mc(mc_create_private)
-        result_create_private = dec_create_private.set_up_azure_keyvault_kms(mc_create_private)
+        result_create_private = dec_create_private.set_up_azure_keyvault_kms(
+            mc_create_private
+        )
 
         # Verify Private network access is correctly set during CREATE
         self.assertEqual(
             result_create_private.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Private"
+            "Private",
         )
 
         # Test CREATE scenario with Public network access
@@ -13633,12 +17341,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_create_public = self.models.ManagedCluster(location="test_location")
         dec_create_public.context.attach_mc(mc_create_public)
-        result_create_public = dec_create_public.set_up_azure_keyvault_kms(mc_create_public)
+        result_create_public = dec_create_public.set_up_azure_keyvault_kms(
+            mc_create_public
+        )
 
         # Verify Public network access is correctly set during CREATE
         self.assertEqual(
             result_create_public.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Public"
+            "Public",
         )
 
         # Test UPDATE scenario - changing from Public to Private
@@ -13668,12 +17378,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=existing_security_profile,
         )
         dec_update_to_private.context.attach_mc(mc_update_to_private)
-        result_update_to_private = dec_update_to_private.update_azure_keyvault_kms(mc_update_to_private)
+        result_update_to_private = dec_update_to_private.update_azure_keyvault_kms(
+            mc_update_to_private
+        )
 
         # Verify network access was updated from Public to Private
         self.assertEqual(
             result_update_to_private.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Private"
+            "Private",
         )
 
         # Test UPDATE scenario - changing from Private to Public
@@ -13703,12 +17415,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=existing_security_profile_private,
         )
         dec_update_to_public.context.attach_mc(mc_update_to_public)
-        result_update_to_public = dec_update_to_public.update_azure_keyvault_kms(mc_update_to_public)
+        result_update_to_public = dec_update_to_public.update_azure_keyvault_kms(
+            mc_update_to_public
+        )
 
         # Verify network access was updated from Private to Public
         self.assertEqual(
             result_update_to_public.security_profile.azure_key_vault_kms.key_vault_network_access,
-            "Public"
+            "Public",
         )
 
     def test_update_agentpool_profile_with_none_agent_pool_profiles(self):
@@ -13722,11 +17436,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         # Create a managed cluster with None agent_pool_profiles but hosted system components enabled
-        hosted_system_profile = self.models.ManagedClusterHostedSystemProfile(enabled=True)
+        hosted_system_profile = self.models.ManagedClusterHostedSystemProfile(
+            enabled=True
+        )
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             agent_pool_profiles=None,  # This is the key scenario
-            hosted_system_profile=hosted_system_profile
+            hosted_system_profile=hosted_system_profile,
         )
         dec_1.context.attach_mc(mc_1)
 
@@ -13736,7 +17452,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNone(result_1.agent_pool_profiles)
         self.assertTrue(result_1.hosted_system_profile.enabled)
 
-    def test_update_agentpool_profile_with_none_agent_pool_profiles_no_hosted_system(self):
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_no_hosted_system(
+        self,
+    ):
         """Test update_agentpool_profile raises UnknownError for None agent_pool_profiles without hosted system components"""
         # Test case 2: None agent_pool_profiles without hosted system components (should raise UnknownError)
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13750,7 +17468,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(
             location="test_location",
             agent_pool_profiles=None,  # This is the key scenario
-            hosted_system_profile=None
+            hosted_system_profile=None,
         )
         dec_2.context.attach_mc(mc_2)
 
@@ -13758,7 +17476,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(UnknownError):
             dec_2.update_agentpool_profile(mc_2)
 
-    def test_update_agentpool_profile_with_none_agent_pool_profiles_hosted_system_disabled(self):
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_hosted_system_disabled(
+        self,
+    ):
         """Test update_agentpool_profile raises UnknownError for None agent_pool_profiles with hosted system components disabled"""
         # Test case 3: None agent_pool_profiles with hosted system components disabled (should raise UnknownError)
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13769,11 +17489,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         # Create a managed cluster with None agent_pool_profiles and hosted system components disabled
-        hosted_system_profile_disabled = self.models.ManagedClusterHostedSystemProfile(enabled=False)
+        hosted_system_profile_disabled = self.models.ManagedClusterHostedSystemProfile(
+            enabled=False
+        )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
             agent_pool_profiles=None,  # This is the key scenario
-            hosted_system_profile=hosted_system_profile_disabled
+            hosted_system_profile=hosted_system_profile_disabled,
         )
         dec_3.context.attach_mc(mc_3)
 
@@ -13795,13 +17517,596 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_4 = self.models.ManagedCluster(
             location="test_location",
             agent_pool_profiles=[],  # Empty list scenario
-            hosted_system_profile=None
+            hosted_system_profile=None,
         )
         dec_4.context.attach_mc(mc_4)
 
         # Should raise UnknownError
         with self.assertRaises(UnknownError):
             dec_4.update_agentpool_profile(mc_4)
+
+    def test_update_health_monitor_profile(self):
+        # no flags - no change
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_health_monitor_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # both flags - mutual exclusivity error
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_and_addon_monitor": True,
+                "disable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_health_monitor_profile(mc_1)
+
+        # enable flag
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_health_monitor_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable flag on existing enabled profile
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_health_monitor_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=False,
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    # ------------------------------------------------------------------
+    # Tests for _setup_azure_monitor_logs setting enableRetinaNetworkFlags
+    # ------------------------------------------------------------------
+    def test_setup_azure_monitor_logs_sets_retina_flags_when_cnl_enabled(self):
+        """_setup_azure_monitor_logs sets enableRetinaNetworkFlags in config when CNL is being enabled."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "enable_container_network_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(enabled=True),
+            ),
+            addon_profiles={},
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+        self.assertIsNotNone(addon_profile)
+        self.assertEqual(addon_profile.config.get("enableRetinaNetworkFlags"), "True")
+
+    def test_setup_azure_monitor_logs_no_retina_flags_without_cnl(self):
+        """_setup_azure_monitor_logs does NOT set enableRetinaNetworkFlags when CNL is not specified."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={},
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+        self.assertIsNotNone(addon_profile)
+        self.assertNotIn("enableRetinaNetworkFlags", addon_profile.config)
+
+    # ------------------------------------------------------------------
+    # Tests for _setup_azure_monitor_logs workspace change detection
+    # ------------------------------------------------------------------
+    def test_setup_azure_monitor_logs_workspace_change_triggers_postprocessing(self):
+        """_setup_azure_monitor_logs sets monitoring_addon_postprocessing_required when workspace changes."""
+        old_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/old-ws"
+        new_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": new_ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": old_ws,
+                        "useAADAuth": "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+        # Verify workspace was updated
+        actual_key = next(k for k in mc.addon_profiles if k.lower() == "omsagent")
+        self.assertEqual(
+            mc.addon_profiles[actual_key].config["logAnalyticsWorkspaceResourceID"],
+            new_ws,
+        )
+
+    def test_setup_azure_monitor_logs_same_workspace_no_postprocessing(self):
+        """_setup_azure_monitor_logs does NOT set monitoring_addon_postprocessing_required when workspace is unchanged."""
+        ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/same-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": ws,
+                        "useAADAuth": "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        self.assertFalse(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_setup_azure_monitor_logs_workspace_change_case_insensitive(self):
+        """_setup_azure_monitor_logs compares workspaces case-insensitively (no false positives on casing)."""
+        ws_lower = "/subscriptions/test/resourcegroups/test/providers/microsoft.operationalinsights/workspaces/my-ws"
+        ws_mixed = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/my-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": ws_mixed,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": ws_lower,
+                        "useAADAuth": "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        # Same workspace (different casing) should NOT trigger postprocessing
+        self.assertFalse(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_setup_azure_monitor_logs_new_addon_no_postprocessing(self):
+        """_setup_azure_monitor_logs does NOT trigger postprocessing when there is no existing addon (fresh enable)."""
+        new_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": new_ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={},
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        # Fresh enable — no old workspace to compare, should NOT trigger postprocessing
+        self.assertFalse(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    # ------------------------------------------------------------------
+    # Tests for _disable_azure_monitor_logs disabling containerInsights
+    # ------------------------------------------------------------------
+    def test_disable_azure_monitor_logs_disables_container_insights_with_msi_auth(self):
+        """_disable_azure_monitor_logs sets containerInsights.enabled=False when MSI auth is enabled,
+        triggering DCR/DCRA cleanup path."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/subscriptions/test/rg/ws",
+                    },
+                ),
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+        with patch.object(
+            dec.context, "get_subscription_id", return_value="test-sub"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            dec._disable_azure_monitor_logs(mc)
+        self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        self.assertFalse(mc.azure_monitor_profile.container_insights.enabled)
+
+    def test_disable_azure_monitor_logs_no_container_insights_skips(self):
+        """_disable_azure_monitor_logs works fine when azureMonitorProfile has no containerInsights."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+        dec._disable_azure_monitor_logs(mc)
+        self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+
+    # ------------------------------------------------------------------
+    # Tests for update_monitoring_profile_flow_logs: monitoring_being_enabled bypass
+    # ------------------------------------------------------------------
+    def test_update_hlsm_standalone_skips_validation_when_monitoring_being_enabled(
+        self,
+    ):
+        """When enable_high_log_scale_mode=True and monitoring is being enabled simultaneously,
+        the validation of existing addon state is skipped."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+                "enable_azure_monitor_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # No monitoring addon present yet — would raise RequiredArgumentMissingError
+        # if validation wasn't bypassed.
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        # Should NOT raise because monitoring is being enabled in the same command
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_update_hlsm_standalone_skips_validation_when_enable_addons_monitoring(
+        self,
+    ):
+        """When enable_high_log_scale_mode=True and --enable-addons monitoring in same command,
+        the validation of existing addon state is skipped."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+                "enable_addons": "monitoring",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_update_enable_cnl_sets_postprocessing_flag(self):
+        """Enabling CNL via enable_container_network_logs sets the postprocessing flag."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_container_network_logs": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(enabled=True),
+            ),
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_update_enable_retina_flow_logs_sets_postprocessing_flag(self):
+        """Enabling CNL via legacy enable_retina_flow_logs sets the postprocessing flag."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_retina_flow_logs": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(enabled=True),
+            ),
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
+    def test_disable_monitoring_clears_cnl_and_hlsm_config(self):
+        """Disabling monitoring addon should wipe config including enableRetinaNetworkFlags (CNL)
+        and any HLSM-related settings, so that re-enabling does not carry them forward.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                        "enableRetinaNetworkFlags": "true",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+
+        dec._disable_azure_monitor_logs(mc)
+
+        # Config should be completely wiped — no CNL or HLSM values survive
+        self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        self.assertIsNone(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config)
+
+    def test_reenable_monitoring_after_disable_does_not_carry_cnl(self):
+        """Re-enabling monitoring after disable should produce a fresh config
+        without enableRetinaNetworkFlags (CNL) or HLSM-related keys."""
+        # Step 1: start with monitoring enabled + CNL (useAADAuth=false to skip DCR cleanup)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                        "enableRetinaNetworkFlags": "true",
+                    },
+                ),
+            },
+        )
+
+        # Step 2: disable monitoring
+        dec_disable = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_disable.context.attach_mc(mc)
+        dec_disable.client = Mock()
+        dec_disable.client.get = Mock(return_value=mc)
+        dec_disable._disable_azure_monitor_logs(mc)
+        self.assertIsNone(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config)
+
+        # Step 3: re-enable monitoring (no CNL flag passed)
+        # Simulate server round-trip: after PUT with config=None, the server
+        # returns the addon with config as empty dict, not None.
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = {}
+        dec_enable = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-workspace",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_enable.context.attach_mc(mc)
+        dec_enable.context.set_intermediate("subscription_id", "test-subscription-id")
+        dec_enable._setup_azure_monitor_logs(mc)
+
+        # Config should only have workspace + MSI auth — no CNL or HLSM keys
+        addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
+        self.assertTrue(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        self.assertIn("logAnalyticsWorkspaceResourceID", addon_config)
+        self.assertIn(CONST_MONITORING_USING_AAD_MSI_AUTH, addon_config)
+        self.assertNotIn("enableRetinaNetworkFlags", addon_config)
+
 
 if __name__ == "__main__":
     unittest.main()

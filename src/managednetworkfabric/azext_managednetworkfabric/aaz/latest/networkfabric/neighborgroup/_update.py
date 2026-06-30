@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/neighborgroups/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -60,6 +60,18 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Identity"
 
@@ -95,11 +107,6 @@ class Update(AAZCommand):
             help="An array of destination IPv4 Addresses or IPv6 Addresses.",
             nullable=True,
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
 
         destination = cls._args_schema.destination
         destination.ipv4_addresses = AAZListArg(
@@ -122,9 +129,6 @@ class Update(AAZCommand):
 
         ipv6_addresses = cls._args_schema.destination.ipv6_addresses
         ipv6_addresses.Element = AAZStrArg()
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -208,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -342,6 +346,10 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",

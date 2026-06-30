@@ -17,7 +17,7 @@ from ._configuration import AnalyticsFrontendAPIConfiguration
 from .operations import CollaborationOperations
 
 
-class AnalyticsFrontendAPI:  # pylint: disable=client-accepts-api-version-keyword
+class AnalyticsFrontendAPI:
     """Analytics Frontend API. Use following command to generate the typescript client - npx
     openapi-typescript ./openapi.yaml --output ./typescript.ts.
 
@@ -25,6 +25,9 @@ class AnalyticsFrontendAPI:  # pylint: disable=client-accepts-api-version-keywor
     :vartype collaboration: analytics_frontend_api.aio.operations.CollaborationOperations
     :keyword endpoint: Service URL. Required. Default value is "".
     :paramtype endpoint: str
+    :keyword api_version: Api Version. Default value is "2026-03-01-preview". Note that overriding
+     this default value may result in unsupported behavior.
+    :paramtype api_version: str
     """
 
     def __init__(  # pylint: disable=missing-client-constructor-parameter-credential

@@ -71,21 +71,26 @@ class Join(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "FullyManagedUpgradeProfile"
+        # define Arg Group "Connectivity"
 
         _args_schema = cls._args_schema
-        _args_schema.release_channel = AAZStrArg(
-            options=["--release-channel"],
-            arg_group="FullyManagedUpgradeProfile",
-            help="Release channel",
-            enum={"Rapid": "Rapid", "Stable": "Stable"},
-            enum_support_extension=True,
+        _args_schema.east_west_gateway = AAZStrArg(
+            options=["--east-west-gateway"],
+            arg_group="Connectivity",
+            help="East-West gateway visibility.",
+            default="Internal",
+            enum={"External": "External", "Internal": "Internal"},
+        )
+        _args_schema.private_connect_subnet = AAZResourceIdArg(
+            options=["--private-connect-subnet"],
+            arg_group="Connectivity",
+            help="Delegated Subnet to AppLink.",
         )
 
         # define Arg Group "Metadata"
 
         _args_schema = cls._args_schema
-        _args_schema.member_resource_id = AAZStrArg(
+        _args_schema.member_resource_id = AAZResourceIdArg(
             options=["--member-resource-id"],
             arg_group="Metadata",
             help="Managed cluster Resource ID",
@@ -100,13 +105,6 @@ class Join(AAZCommand):
             help="Cluster type",
             default="AKS",
             enum={"AKS": "AKS"},
-        )
-        _args_schema.upgrade_mode = AAZStrArg(
-            options=["--upgrade-mode"],
-            arg_group="Properties",
-            help="Upgrade mode",
-            default="SelfManaged",
-            enum={"FullyManaged": "FullyManaged", "SelfManaged": "SelfManaged"},
         )
 
         # define Arg Group "Resource"
@@ -130,19 +128,32 @@ class Join(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
-        # define Arg Group "SelfManagedUpgradeProfile"
+        # define Arg Group "Upgrade"
 
         _args_schema = cls._args_schema
+        _args_schema.release_channel = AAZStrArg(
+            options=["--release-channel"],
+            arg_group="Upgrade",
+            help="Release channel",
+            enum={"Rapid": "Rapid", "Stable": "Stable"},
+        )
+        _args_schema.upgrade_mode = AAZStrArg(
+            options=["--upgrade-mode"],
+            arg_group="Upgrade",
+            help="Upgrade mode.",
+            default="SelfManaged",
+            enum={"FullyManaged": "FullyManaged", "SelfManaged": "SelfManaged"},
+        )
         _args_schema.version = AAZStrArg(
             options=["--version"],
-            arg_group="SelfManagedUpgradeProfile",
-            help="Application Network version",
+            arg_group="Upgrade",
+            help="Istio version",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AppLinkMembersCreateOrReplace(ctx=self.ctx)()
+        yield self.AppLinkMembersCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -157,7 +168,7 @@ class Join(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AppLinkMembersCreateOrReplace(AAZHttpOperation):
+    class AppLinkMembersCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -257,20 +268,38 @@ class Join(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("clusterType", AAZStrType, ".cluster_type")
-                properties.set_prop("fullyManagedUpgradeProfile", AAZObjectType)
+                properties.set_prop("connectivityProfile", AAZObjectType)
                 properties.set_prop("metadata", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("mode", AAZStrType, ".upgrade_mode")
-                properties.set_prop("selfManagedUpgradeProfile", AAZObjectType)
+                properties.set_prop("upgradeProfile", AAZObjectType)
 
-            fully_managed_upgrade_profile = _builder.get(".properties.fullyManagedUpgradeProfile")
-            if fully_managed_upgrade_profile is not None:
-                fully_managed_upgrade_profile.set_prop("releaseChannel", AAZStrType, ".release_channel", typ_kwargs={"flags": {"required": True}})
+            connectivity_profile = _builder.get(".properties.connectivityProfile")
+            if connectivity_profile is not None:
+                connectivity_profile.set_prop("eastWestGateway", AAZObjectType)
+                connectivity_profile.set_prop("privateConnect", AAZObjectType)
+
+            east_west_gateway = _builder.get(".properties.connectivityProfile.eastWestGateway")
+            if east_west_gateway is not None:
+                east_west_gateway.set_prop("visibility", AAZStrType, ".east_west_gateway", typ_kwargs={"flags": {"required": True}})
+
+            private_connect = _builder.get(".properties.connectivityProfile.privateConnect")
+            if private_connect is not None:
+                private_connect.set_prop("subnetResourceId", AAZStrType, ".private_connect_subnet", typ_kwargs={"flags": {"required": True}})
 
             metadata = _builder.get(".properties.metadata")
             if metadata is not None:
                 metadata.set_prop("resourceId", AAZStrType, ".member_resource_id", typ_kwargs={"flags": {"required": True}})
 
-            self_managed_upgrade_profile = _builder.get(".properties.selfManagedUpgradeProfile")
+            upgrade_profile = _builder.get(".properties.upgradeProfile")
+            if upgrade_profile is not None:
+                upgrade_profile.set_prop("fullyManagedUpgradeProfile", AAZObjectType)
+                upgrade_profile.set_prop("mode", AAZStrType, ".upgrade_mode", typ_kwargs={"flags": {"required": True}})
+                upgrade_profile.set_prop("selfManagedUpgradeProfile", AAZObjectType)
+
+            fully_managed_upgrade_profile = _builder.get(".properties.upgradeProfile.fullyManagedUpgradeProfile")
+            if fully_managed_upgrade_profile is not None:
+                fully_managed_upgrade_profile.set_prop("releaseChannel", AAZStrType, ".release_channel", typ_kwargs={"flags": {"required": True}})
+
+            self_managed_upgrade_profile = _builder.get(".properties.upgradeProfile.selfManagedUpgradeProfile")
             if self_managed_upgrade_profile is not None:
                 self_managed_upgrade_profile.set_prop("version", AAZStrType, ".version", typ_kwargs={"flags": {"required": True}})
 
@@ -321,13 +350,12 @@ class Join(AAZCommand):
             properties.cluster_type = AAZStrType(
                 serialized_name="clusterType",
             )
-            properties.fully_managed_upgrade_profile = AAZObjectType(
-                serialized_name="fullyManagedUpgradeProfile",
+            properties.connectivity_profile = AAZObjectType(
+                serialized_name="connectivityProfile",
             )
             properties.metadata = AAZObjectType(
                 flags={"required": True},
             )
-            properties.mode = AAZStrType()
             properties.observability_profile = AAZObjectType(
                 serialized_name="observabilityProfile",
             )
@@ -335,13 +363,26 @@ class Join(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.self_managed_upgrade_profile = AAZObjectType(
-                serialized_name="selfManagedUpgradeProfile",
+            properties.upgrade_profile = AAZObjectType(
+                serialized_name="upgradeProfile",
             )
 
-            fully_managed_upgrade_profile = cls._schema_on_200_201.properties.fully_managed_upgrade_profile
-            fully_managed_upgrade_profile.release_channel = AAZStrType(
-                serialized_name="releaseChannel",
+            connectivity_profile = cls._schema_on_200_201.properties.connectivity_profile
+            connectivity_profile.east_west_gateway = AAZObjectType(
+                serialized_name="eastWestGateway",
+            )
+            connectivity_profile.private_connect = AAZObjectType(
+                serialized_name="privateConnect",
+            )
+
+            east_west_gateway = cls._schema_on_200_201.properties.connectivity_profile.east_west_gateway
+            east_west_gateway.visibility = AAZStrType(
+                flags={"required": True},
+            )
+
+            private_connect = cls._schema_on_200_201.properties.connectivity_profile.private_connect
+            private_connect.subnet_resource_id = AAZStrType(
+                serialized_name="subnetResourceId",
                 flags={"required": True},
             )
 
@@ -360,7 +401,24 @@ class Join(AAZCommand):
                 flags={"read_only": True},
             )
 
-            self_managed_upgrade_profile = cls._schema_on_200_201.properties.self_managed_upgrade_profile
+            upgrade_profile = cls._schema_on_200_201.properties.upgrade_profile
+            upgrade_profile.fully_managed_upgrade_profile = AAZObjectType(
+                serialized_name="fullyManagedUpgradeProfile",
+            )
+            upgrade_profile.mode = AAZStrType(
+                flags={"required": True},
+            )
+            upgrade_profile.self_managed_upgrade_profile = AAZObjectType(
+                serialized_name="selfManagedUpgradeProfile",
+            )
+
+            fully_managed_upgrade_profile = cls._schema_on_200_201.properties.upgrade_profile.fully_managed_upgrade_profile
+            fully_managed_upgrade_profile.release_channel = AAZStrType(
+                serialized_name="releaseChannel",
+                flags={"required": True},
+            )
+
+            self_managed_upgrade_profile = cls._schema_on_200_201.properties.upgrade_profile.self_managed_upgrade_profile
             self_managed_upgrade_profile.version = AAZStrType(
                 flags={"required": True},
             )

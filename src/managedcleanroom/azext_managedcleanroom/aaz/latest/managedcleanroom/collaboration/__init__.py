@@ -13,6 +13,7 @@ from ._add_collaborator import *
 from ._create import *
 from ._delete import *
 from ._enable_workload import *
+from ._get_readonly_kube_config import *
 from ._list import *
 from ._pause import *
 from ._recover import *

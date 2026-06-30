@@ -21,6 +21,7 @@ from ._format import (
     transform_data,
     transform_datastore,
     transform_deployment_list,
+    transform_deployment_template_list,
     transform_endpoint_list,
     transform_environment,
     transform_environment_list,
@@ -229,7 +230,8 @@ def load_command_table(self, _):
     with self.command_group("ml deployment-template", client_factory=cf_ml_cl, is_preview=True) as g:
         custom_tmpl = "azext_mlv2.manual.custom.deployment_template#{}"
         custom_deployment_template = CliCommandType(operations_tmpl=custom_tmpl)
-        g.custom_command("list", "ml_deployment_template_list", command_type=custom_deployment_template)
+        g.custom_command("list", "ml_deployment_template_list", command_type=custom_deployment_template,
+                         table_transformer=transform_deployment_template_list)
         g.custom_show_command("show", "ml_deployment_template_show")
         g.custom_command("create", "ml_deployment_template_create", supports_no_wait=True,
                          command_type=custom_deployment_template)

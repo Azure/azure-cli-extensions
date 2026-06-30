@@ -3,6 +3,28 @@
 Release History
 ===============
 
+2.1.0
++++++
+* Add command for generating container policy definitions from radius application templates
+* Add command to insert generated policy into radius application templates
+
+2.0.1
++++++
+* Fix accidental docker dependency even when using tar
+
+2.0.0
++++++
+* Fix path traversal when generating policies from untrusted image tar files
+
+2.0.0b2
++++++++
+* Fix default working directory for Windows containers being set to C:\\ if the image doesn't specify one.
+
+2.0.0b1
++++++++
+* Add Windows container support with CIM-based layer hashing
+* Support for mounted_cim field in security policies for Windows containers
+
 1.8.0
 +++++
 * Ensure that fragments are attached to the correct manifest for a multiarch image.

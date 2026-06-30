@@ -19,13 +19,13 @@ class Delete(AAZCommand):
     """Delete a StandbyContainerGroupPoolResource
 
     :example: StandbyContainerGroupPools_Delete
-        az standby-container-group-pool delete --resource-group rgstandbypool --name pool --subscription 00000000-0000-0000-0000-000000000009
+        az standby-container-group-pool delete --resource-group rgstandbypool --name pool
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-10-01"],
         ]
     }
 
@@ -47,7 +47,6 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -147,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }

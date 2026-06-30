@@ -3,6 +3,10 @@
 Release History
 ===============
 
+5.0.0b2
+++++++++
+* This preview version supports NetworkCloud 2026-05-01-preview APIs.
+
 5.0.0b1
 ++++++++
 * This preview version supports NetworkCloud 2026-01-01-preview APIs.

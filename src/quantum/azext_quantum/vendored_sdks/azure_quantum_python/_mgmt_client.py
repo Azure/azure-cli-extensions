@@ -182,7 +182,7 @@ class WorkspaceMgmtClient():
         if not all([connection_params.subscription_id, connection_params.resource_group, connection_params.workspace_name]):
             raise ValueError("Missing required connection parameters to load workspace details from ARM.")
         
-        api_version = connection_params.api_version or ConnectionConstants.DEFAULT_WORKSPACE_API_VERSION
+        api_version = connection_params.api_version or ConnectionConstants.DEFAULT_ARM_WORKSPACE_API_VERSION
         
         url = (
             f"/subscriptions/{connection_params.subscription_id}"
