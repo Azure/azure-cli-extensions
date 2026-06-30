@@ -10,17 +10,17 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Cosmosdb_previewPriorityBasedExecutionScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_priority_based_execution', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_priority_based_execution', location='westcentralus')
     def test_cosmosdb_sql_priority_based_execution(self):
         self.kwargs.update({
             'acc': self.create_random_name(prefix='pbe-', length=8),
-            'loc': 'westus',
+            'loc': 'westcentralus',
             'tar': '0=1200 1=1200',
             'src': '2'
         })
 
         # create priority based execution enabled account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-priority-based-execution')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --enable-priority-based-execution')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePriorityBasedExecution', True),
         ])
