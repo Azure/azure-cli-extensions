@@ -127,6 +127,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The date and time after which the users in this key set will be removed from the baseboard management controllers.",
             required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.privilege_level = AAZStrArg(
             options=["--privilege-level"],

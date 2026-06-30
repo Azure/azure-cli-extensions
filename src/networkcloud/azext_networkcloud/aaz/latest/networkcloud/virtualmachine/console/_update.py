@@ -104,6 +104,9 @@ class Update(AAZCommand):
             options=["--expiration"],
             arg_group="Properties",
             help="The date and time after which the key will be disallowed access.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.ssh_public_key = AAZObjectArg(
             options=["--ssh-public-key"],

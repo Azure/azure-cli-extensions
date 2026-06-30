@@ -25,12 +25,11 @@ class Assign(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
         self.SubresourceSelector(ctx=self.ctx, name="subresource")
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -63,18 +62,18 @@ class Assign(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "ClusterManagerParameters.identity"
+        # define Arg Group "ClusterManagerUpdateParameters.identity"
 
         _args_schema = cls._args_schema
         _args_schema.mi_system_assigned = AAZStrArg(
             options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="ClusterManagerParameters.identity",
+            arg_group="ClusterManagerUpdateParameters.identity",
             help="Set the system managed identity.",
             blank="True",
         )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
-            arg_group="ClusterManagerParameters.identity",
+            arg_group="ClusterManagerUpdateParameters.identity",
             help="Set the user managed identities.",
             blank=[],
         )
@@ -86,10 +85,10 @@ class Assign(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         self.ClusterManagersGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.selectors.subresource.required())
+        self.pre_instance_update(self.ctx.selectors.subresource.get())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.selectors.subresource.required())
-        yield self.ClusterManagersCreateOrUpdate(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.selectors.subresource.get())
+        self.ClusterManagersUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -109,7 +108,7 @@ class Assign(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
         return result
 
     class SubresourceSelector(AAZJsonSelector):
@@ -206,30 +205,14 @@ class Assign(AAZCommand):
 
             return cls._schema_on_200
 
-    class ClusterManagersCreateOrUpdate(AAZHttpOperation):
+    class ClusterManagersUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -242,7 +225,7 @@ class Assign(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -296,37 +279,33 @@ class Assign(AAZCommand):
 
         @property
         def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
+            identity = self.serialize_content(self.ctx.selectors.subresource.required())
+            return {"identity": identity}
 
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _AssignHelper._build_schema_cluster_manager_read(cls._schema_on_200_201)
+            cls._schema_on_200 = AAZObjectType()
+            _AssignHelper._build_schema_cluster_manager_read(cls._schema_on_200)
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.selectors.subresource.required())
+            self._update_instance(self.ctx.selectors.subresource.get())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(

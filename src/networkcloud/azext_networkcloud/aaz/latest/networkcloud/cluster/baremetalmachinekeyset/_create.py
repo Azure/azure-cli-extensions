@@ -130,6 +130,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The date and time after which the users in this key set will be removed from the bare metal machines.",
             required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.jump_hosts_allowed = AAZListArg(
             options=["--jump-hosts-allowed"],

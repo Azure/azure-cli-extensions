@@ -95,6 +95,9 @@ class Update(AAZCommand):
             options=["--expiration"],
             arg_group="Properties",
             help="The date and time after which the users in this key set will be removed from the baseboard management controllers.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.user_list = AAZListArg(
             options=["--user-list"],
