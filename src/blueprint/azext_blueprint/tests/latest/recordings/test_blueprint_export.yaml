@@ -21,7 +21,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint import
       Connection:
@@ -33,7 +33,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002?api-version=2018-11-01-preview
   response:
@@ -61,8 +61,8 @@ interactions:
         {\r\n          \"description\": \"Contains the resource template deployment
         and a role assignment.\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-10T03:32:35+00:00\",\r\n      \"lastModified\":
-        \"2023-08-10T03:32:35.0360195+00:00\"\r\n    },\r\n    \"description\": \"This
+        \     \"timeCreated\": \"2026-06-30T18:12:40+00:00\",\r\n      \"lastModified\":
+        \"2026-06-30T18:12:40.2403984+00:00\"\r\n    },\r\n    \"description\": \"This
         blueprint sets tag policy and role assignment on the subscription, creates
         a ResourceGroup, and deploys a resource template and role assignment to that
         ResourceGroup.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002\",\r\n
@@ -75,19 +75,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:35 GMT
+      - Tue, 30 Jun 2026 18:12:39 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus2/1f937540-e5f5-443a-a7a8-5831fcdf5cf0
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: BF1AE00071D340A290DA92AF07F13E4D Ref B: BL2AA2010205007 Ref C: 2026-06-30T18:12:39Z'
     status:
       code: 201
       message: Created
@@ -97,7 +103,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint import
       Connection:
@@ -105,7 +111,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts?api-version=2018-11-01-preview
   response:
@@ -119,21 +125,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:36 GMT
+      - Tue, 30 Jun 2026 18:12:40 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus2/768bdf6f-6809-4482-9242-e894996c2d5b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0FEA7B7E17F24663AB70D3227907F2E5 Ref B: BL2AA2030101021 Ref C: 2026-06-30T18:12:40Z'
     status:
       code: 200
       message: OK
@@ -147,7 +155,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint import
       Connection:
@@ -159,7 +167,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/policyStorageTags?api-version=2018-11-01-preview
   response:
@@ -180,19 +188,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:36 GMT
+      - Tue, 30 Jun 2026 18:12:42 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus2/22febb7e-07ed-4b77-9b84-86f96bcbe1a5
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 74425B70D3564CC99EDB2CCA79638FD2 Ref B: BL2AA2010204035 Ref C: 2026-06-30T18:12:41Z'
     status:
       code: 201
       message: Created
@@ -206,7 +220,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint import
       Connection:
@@ -218,7 +232,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/policyTags?api-version=2018-11-01-preview
   response:
@@ -239,19 +253,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:37 GMT
+      - Tue, 30 Jun 2026 18:12:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus2/ca6c7fc4-1349-4e0c-a17e-c9fabbb54585
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 88FC7059969D44C68FD51A0536A7D514 Ref B: BN1AA2051015033 Ref C: 2026-06-30T18:12:43Z'
     status:
       code: 201
       message: Created
@@ -263,7 +283,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint import
       Connection:
@@ -275,7 +295,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/roleContributor?api-version=2018-11-01-preview
   response:
@@ -292,19 +312,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:37 GMT
+      - Tue, 30 Jun 2026 18:12:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus/5702e2cc-3000-4649-b8ac-feaa01a58c12
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 1E1DB065B7CC4C68AE1B821AD46B9577 Ref B: BN1AA2051015051 Ref C: 2026-06-30T18:12:44Z'
     status:
       code: 201
       message: Created
@@ -316,7 +342,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint import
       Connection:
@@ -328,7 +354,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/roleOwner?api-version=2018-11-01-preview
   response:
@@ -346,19 +372,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:38 GMT
+      - Tue, 30 Jun 2026 18:12:45 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus/dc7c8e84-215a-4625-bd4e-f6091a915c5a
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 847F1CB6486E477DBAD16C5182F4ADA6 Ref B: BN1AA2051015009 Ref C: 2026-06-30T18:12:45Z'
     status:
       code: 201
       message: Created
@@ -368,7 +400,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint export
       Connection:
@@ -376,7 +408,7 @@ interactions:
       ParameterSetName:
       - --output-path --name --yes
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002?api-version=2018-11-01-preview
   response:
@@ -404,8 +436,8 @@ interactions:
         {\r\n          \"description\": \"Contains the resource template deployment
         and a role assignment.\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-10T03:32:35+00:00\",\r\n      \"lastModified\":
-        \"2023-08-10T03:32:35.0360195+00:00\"\r\n    },\r\n    \"description\": \"This
+        \     \"timeCreated\": \"2026-06-30T18:12:40+00:00\",\r\n      \"lastModified\":
+        \"2026-06-30T18:12:40.2403984+00:00\"\r\n    },\r\n    \"description\": \"This
         blueprint sets tag policy and role assignment on the subscription, creates
         a ResourceGroup, and deploys a resource template and role assignment to that
         ResourceGroup.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002\",\r\n
@@ -418,21 +450,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:38 GMT
+      - Tue, 30 Jun 2026 18:12:46 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus/61b996f0-e282-4b37-a7f7-c788a7b31be6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CA8A0DEDBE8F4C6CAF0A07EBDBF9F983 Ref B: BN1AA2051012033 Ref C: 2026-06-30T18:12:47Z'
     status:
       code: 200
       message: OK
@@ -442,7 +476,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint export
       Connection:
@@ -450,7 +484,7 @@ interactions:
       ParameterSetName:
       - --output-path --name --yes
       User-Agent:
-      - AZURECLI/2.51.0 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts?api-version=2018-11-01-preview
   response:
@@ -495,21 +529,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:39 GMT
+      - Tue, 30 Jun 2026 18:12:48 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus/fef69c5f-8e5c-4879-821a-ffe92615c6ed
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8EDA2483EA09452486816B5A9F2359FB Ref B: BN1AA2051012039 Ref C: 2026-06-30T18:12:48Z'
     status:
       code: 200
       message: OK
@@ -519,7 +555,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - blueprint delete
       Connection:
@@ -529,7 +565,7 @@ interactions:
       ParameterSetName:
       - --name -y
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002?api-version=2018-11-01-preview
   response:
@@ -557,8 +593,8 @@ interactions:
         {\r\n          \"description\": \"Contains the resource template deployment
         and a role assignment.\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-10T03:32:35+00:00\",\r\n      \"lastModified\":
-        \"2023-08-10T03:32:35.0360195+00:00\"\r\n    },\r\n    \"description\": \"This
+        \     \"timeCreated\": \"2026-06-30T18:12:40+00:00\",\r\n      \"lastModified\":
+        \"2026-06-30T18:12:40.2403984+00:00\"\r\n    },\r\n    \"description\": \"This
         blueprint sets tag policy and role assignment on the subscription, creates
         a ResourceGroup, and deploys a resource template and role assignment to that
         ResourceGroup.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002\",\r\n
@@ -571,23 +607,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 10 Aug 2023 03:32:41 GMT
+      - Tue, 30 Jun 2026 18:12:49 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=7a2bb2be-2235-4d75-b601-4578b2d1fcb5/eastus2/57b85d24-9126-423e-978e-f1d30de03fc4
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: D9502BF2CE6B46419D0CFC4235D8808A Ref B: BN1AA2051015039 Ref C: 2026-06-30T18:12:49Z'
     status:
       code: 200
       message: OK
