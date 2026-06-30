@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b4
++++++++
+* Update validation checks for commands. Add short form arguments for user convenience.
+
+1.0.0b3
++++++++
+* Add support for assigning a parameter group to HorizonDB clusters through `az horizondb update --parameter-group`.
+
 1.0.0b2
 +++++++
 * Add support for updating HorizonDB clusters through `az horizondb update`.

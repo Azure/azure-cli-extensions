@@ -111,6 +111,10 @@ from azext_aks_preview.bastion.bastion import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+    constructSchedule,
+)
+from azext_aks_preview.maintenancewindow import (
+    constructMaintenanceWindowResource,
 )
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
@@ -172,6 +176,7 @@ from azure.cli.core.commands.client_factory import (
 )
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
+    get_file_json,
     in_cloud_console,
     sdk_no_wait,
     send_raw_request,
@@ -943,6 +948,246 @@ def aks_maintenanceconfiguration_update(
     return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
+# ---------------------------------------------------------------------------
+# aks maintenancewindow (peer ARM resource, preview API only)
+# ---------------------------------------------------------------------------
+
+def aks_maintenancewindow_list(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name=None,
+):
+    if resource_group_name is None or resource_group_name == "":
+        return client.list_by_subscription()
+    return client.list(resource_group_name)
+
+
+def aks_maintenancewindow_show(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    maintenance_window_name,
+):
+    return client.get(resource_group_name, maintenance_window_name)
+
+
+# pylint: disable=unused-argument
+def aks_maintenancewindow_create(
+    cmd,
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    location=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None,
+    tags=None,
+    config_file=None,
+    no_wait=False,
+):
+    # Mirror aks_nodepool_snapshot_create: default --location to the
+    # resource group's location when the caller doesn't specify one.
+    if location is None:
+        location = get_rg_location(cmd.cli_ctx, resource_group_name)
+
+    # --config-file path (mirrors `aks maintenanceconfiguration add`): when
+    # supplied, the JSON body wholly defines the MaintenanceWindow resource;
+    # individual schedule flags are ignored. This is the only way to express
+    # fields the dedicated flags don't cover (e.g. notAllowedDates / blackout
+    # date ranges) until those get their own flags.
+    if config_file is not None:
+        body = get_file_json(config_file)
+        # Stamp location + tags from CLI args onto the parsed body so the
+        # caller doesn't need to repeat them in the JSON.
+        if isinstance(body, dict):
+            body.setdefault("location", location)
+            if tags is not None:
+                body["tags"] = tags
+        return sdk_no_wait(
+            no_wait,
+            client.begin_create_or_update,
+            resource_group_name,
+            maintenance_window_name,
+            body,
+        )
+
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    resource = constructMaintenanceWindowResource(cmd, raw_parameters)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        maintenance_window_name,
+        resource,
+    )
+
+
+# pylint: disable=unused-argument
+def aks_maintenancewindow_update(
+    cmd,
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None,
+    tags=None,
+    location=None,
+    config_file=None,
+    no_wait=False,
+):
+    """Read-modify-write update for the MaintenanceWindow peer resource.
+
+    Mirrors the CLI convention used by `az aks update`,
+    `az aks nodepool update`, and `az containerapp update`: fetch the
+    existing resource, apply user-supplied changes on top, then PUT.
+    Fields the caller didn't supply are preserved as-is. Tags follow the
+    `aks` family convention — when `--tags` is passed, the whole tags dict
+    is replaced (no additive merge); otherwise existing tags are kept.
+
+    `--config-file` (mirrors MTC's pattern): when supplied, the JSON file's
+    `properties` block replaces existing.properties wholesale (this is the
+    only path that can set/clear notAllowedDates today, until a dedicated
+    flag lands). location + tags from the existing resource are preserved
+    unless overridden by --tags or by `location`/`tags` keys in the JSON.
+
+    `--location` cannot be changed (TrackedResource semantics — ARM rejects
+    location changes with a 400); if supplied it must match the existing
+    location, otherwise it's silently ignored in favor of the existing one.
+    """
+    existing = client.get(resource_group_name, maintenance_window_name)
+    if existing.properties is None:
+        # Defensive — every MW the RP returns must have properties; if it
+        # doesn't, surface a clear local error rather than crashing on a
+        # None attribute access during the merge.
+        raise CLIError(
+            f'Existing MaintenanceWindow "{maintenance_window_name}" in resource group '
+            f'"{resource_group_name}" has no properties; refusing to merge.'
+        )
+
+    # --config-file path: JSON's `properties` (if present) replaces the
+    # whole properties block; remaining individual schedule args are
+    # ignored. Tags + location follow the same precedence rules as the
+    # non-config-file path below.
+    if config_file is not None:
+        body = get_file_json(config_file)
+        if not isinstance(body, dict):
+            raise CLIError(
+                f'--config-file must contain a JSON object (got: {type(body).__name__}).'
+            )
+        if "properties" in body:
+            # Re-marshal the dict into the typed model so the SDK can serialize
+            # it correctly on PUT. Cheapest path is to send the raw dict
+            # directly — the SDK accepts dict bodies for create_or_update.
+            existing_as_dict = existing.as_dict() if hasattr(existing, "as_dict") else dict(existing)
+            existing_as_dict["properties"] = body["properties"]
+            if tags is not None:
+                existing_as_dict["tags"] = tags
+            elif "tags" in body:
+                existing_as_dict["tags"] = body["tags"]
+            # location stays immutable
+            return sdk_no_wait(
+                no_wait,
+                client.begin_create_or_update,
+                resource_group_name,
+                maintenance_window_name,
+                existing_as_dict,
+            )
+
+    # Tags: caller-supplied replaces the whole dict, matching `aks update`
+    # semantics (managed_cluster_decorator.update_tags). Existing tags are
+    # preserved when --tags is omitted.
+    if tags is not None:
+        existing.tags = tags
+
+    # Schedule: if any schedule arg was supplied, the caller is changing the
+    # schedule shape end-to-end (you can't partially specify a Weekly+Daily
+    # mix; constructSchedule rejects cross-type args). Build a fresh
+    # Schedule from the user's args and replace existing.properties.schedule.
+    # Otherwise, leave the existing schedule untouched.
+    raw_parameters = locals()
+    schedule_arg_keys = (
+        "schedule_type",
+        "interval_days",
+        "interval_weeks",
+        "interval_months",
+        "day_of_week",
+        "day_of_month",
+        "week_index",
+    )
+    if any(raw_parameters.get(k) is not None for k in schedule_arg_keys):
+        # constructSchedule validates exclusivity (raises on cross-type args)
+        # and requires schedule_type to be one of the four known values.
+        existing.properties.schedule = constructSchedule(cmd, raw_parameters)
+
+    # Per-window scalars: assign only when the caller supplied a value.
+    # `is not None` so passing --start-date "" or --start-time "" still
+    # reaches the validator (which decides whether empty is valid).
+    if duration_hours is not None:
+        existing.properties.duration_hours = duration_hours
+    if utc_offset is not None:
+        existing.properties.utc_offset = utc_offset
+    if start_date is not None:
+        existing.properties.start_date = start_date
+    if start_time is not None:
+        existing.properties.start_time = start_time
+
+    # --location is ignored on update by ARM contract; surface a clear
+    # local warning if the caller asked for a mismatching location instead
+    # of letting ARM reject the PUT with an opaque 400.
+    if location is not None and location.lower() != (existing.location or "").lower():
+        logger.warning(
+            "--location cannot be changed on an existing MaintenanceWindow "
+            "(it is immutable post-create). Ignoring --location=%s; keeping "
+            "existing location %s.",
+            location, existing.location,
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        maintenance_window_name,
+        existing,
+    )
+
+
+def aks_maintenancewindow_delete(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    no_wait=False,
+):
+    # Confirmation is handled by the CLI core via `confirmation=True` on the
+    # command registration in commands.py (which auto-injects --yes/-y and
+    # respects AZURE_CORE_DISABLE_CONFIRM_PROMPT). No need for a hand-rolled
+    # prompt here — matches `aks delete` / `aks nodepool delete` shape.
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        maintenance_window_name,
+    )
+
+
 # pylint: disable=too-many-locals, unused-argument
 def aks_create(
     cmd,
@@ -1169,6 +1414,8 @@ def aks_create(
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     node_provisioning_default_pools=None,
+    # node disruption policy
+    node_disruption_policy=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -1193,6 +1440,10 @@ def aks_create(
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    # backup (delegates to the dataprotection extension)
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_file=None,
     # prepared image specification
     prepared_image_specification_id=None,
 ):
@@ -1455,6 +1706,10 @@ def aks_update(
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
+    # backup (delegates to the dataprotection extension)
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_file=None,
     # node disruption policy
     node_disruption_policy=None,
     # control plane scaling

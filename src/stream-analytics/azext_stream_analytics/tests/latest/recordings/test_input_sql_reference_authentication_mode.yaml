@@ -19,7 +19,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_input_sql_reference_authentication_mode","date":"2026-06-16T03:59:23Z","module":"stream-analytics"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_input_sql_reference_authentication_mode","date":"2026-06-22T04:23:47Z","module":"stream-analytics"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Jun 2026 03:59:27 GMT
+      - Mon, 22 Jun 2026 04:23:51 GMT
       expires:
       - '-1'
       pragma:
@@ -42,7 +42,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 2ED4ED14FD8240298867A2B1C0D0666E Ref B: SG2AA1070305062 Ref C: 2026-06-16T03:59:27Z'
+      - 'Ref A: 2AEDA48BBF954B3B9C9A43040D333E99 Ref B: SG2AA1040520040 Ref C: 2026-06-22T04:23:51Z'
     status:
       code: 200
       message: OK
@@ -75,11 +75,11 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job\",\r\n
         \ \"name\": \"job\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs\",\r\n
         \ \"location\": \"West US\",\r\n  \"properties\": {\r\n    \"sku\": {\r\n
-        \     \"name\": \"Standard\"\r\n    },\r\n    \"jobId\": \"7e092345-a60e-4ae5-b2af-c2f216571929\",\r\n
+        \     \"name\": \"Standard\"\r\n    },\r\n    \"jobId\": \"12736ea8-22c0-4e7c-b6ad-49dd2423cad5\",\r\n
         \   \"provisioningState\": \"Succeeded\",\r\n    \"jobState\": \"Created\",\r\n
         \   \"eventsOutOfOrderPolicy\": \"Drop\",\r\n    \"outputErrorPolicy\": \"Drop\",\r\n
         \   \"eventsOutOfOrderMaxDelayInSeconds\": 0,\r\n    \"eventsLateArrivalMaxDelayInSeconds\":
-        5,\r\n    \"dataLocale\": \"en-US\",\r\n    \"createdDate\": \"2026-06-16T03:59:29.49Z\",\r\n
+        5,\r\n    \"dataLocale\": \"en-US\",\r\n    \"createdDate\": \"2026-06-22T04:23:55.27Z\",\r\n
         \   \"compatibilityLevel\": \"1.0\",\r\n    \"jobStorageAccount\": null,\r\n
         \   \"contentStoragePolicy\": \"SystemAccount\",\r\n    \"inputs\": [],\r\n
         \   \"functions\": [],\r\n    \"outputs\": [],\r\n    \"jobType\": \"Cloud\",\r\n
@@ -92,9 +92,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Jun 2026 03:59:28 GMT
+      - Mon, 22 Jun 2026 04:23:54 GMT
       etag:
-      - 7f09da84-6d98-48f0-96c7-224629747f32
+      - ae6009e9-2474-4e6e-abae-03a7ad3c2bd7
       pragma:
       - no-cache
       strict-transport-security:
@@ -104,21 +104,22 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/14865872-dea3-4346-8cae-e74f823cf8ea
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/southeastasia/70590071-16bd-4928-be14-16863596ec94
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: A1FEE99D9A4344159C5EBC1BF0F4302A Ref B: SG2AA1070304054 Ref C: 2026-06-16T03:59:28Z'
+      - 'Ref A: 297EDD79912948A9BA12EEDC45F8B2A8 Ref B: SG2AA1040517034 Ref C: 2026-06-22T04:23:52Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"type": "Reference", "datasource": {"type": "Microsoft.Sql/Server/Database",
-      "properties": {"server": "sql-server", "database": "sql-db", "user": "sql-user",
-      "password": "Password123!", "refreshType": "Static", "refreshRate": "00:00:00",
-      "fullSnapshotQuery": "SELECT * from a", "authenticationMode": "ConnectionString"}}}}'
+    body: '{"name": "input", "properties": {"type": "Reference", "datasource": {"type":
+      "Microsoft.Sql/Server/Database", "properties": {"authenticationMode": "ConnectionString",
+      "database": "sql-db", "fullSnapshotQuery": "SELECT * from a", "password": "Password123!",
+      "refreshRate": "00:00:00", "refreshType": "Static", "server": "sql-server",
+      "user": "sql-user"}}}}'
     headers:
       Accept:
       - application/json
@@ -129,7 +130,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '338'
+      - '355'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -137,7 +138,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2021-10-01-preview
   response:
     body:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input\",\r\n
@@ -159,9 +160,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Jun 2026 03:59:31 GMT
+      - Mon, 22 Jun 2026 04:23:56 GMT
       etag:
-      - fb63878a-4076-47e5-9fc7-42c881e973a2
+      - ffd09a06-c50e-4721-a21a-f6e4deb6eaaa
       pragma:
       - no-cache
       strict-transport-security:
@@ -171,13 +172,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/southeastasia/74df7371-2807-4e09-bb7c-9e96c71c8e8f
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/00fd4320-795e-4cb7-9f5d-b8a9d8eabbc8
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 4B8C1F9E14BB410BAACBAA17FFBC9D90 Ref B: SG2AA1070302060 Ref C: 2026-06-16T03:59:30Z'
+      - 'Ref A: 95C84016661E4234B95B37BD25640932 Ref B: SG2AA1070303036 Ref C: 2026-06-22T04:23:56Z'
     status:
       code: 200
       message: OK
@@ -197,7 +198,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2021-10-01-preview
   response:
     body:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input\",\r\n
@@ -219,9 +220,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Jun 2026 03:59:32 GMT
+      - Mon, 22 Jun 2026 04:23:57 GMT
       etag:
-      - fb63878a-4076-47e5-9fc7-42c881e973a2
+      - ffd09a06-c50e-4721-a21a-f6e4deb6eaaa
       pragma:
       - no-cache
       strict-transport-security:
@@ -231,11 +232,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/99df1864-ca5b-4e1a-bc88-815f9ee02ad3
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/6b3818f4-d1a2-4cb4-a2c4-780b793d041e
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '1099'
       x-msedge-ref:
-      - 'Ref A: 63D60351FE5C4200990F2201486C2C40 Ref B: SG2AA1070305052 Ref C: 2026-06-16T03:59:32Z'
+      - 'Ref A: F0E9B3C6CB4F4BE1B902C1E91B1B8B10 Ref B: SG2AA1040517025 Ref C: 2026-06-22T04:23:58Z'
     status:
       code: 200
       message: OK
@@ -243,7 +244,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -257,7 +258,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2021-10-01-preview
   response:
     body:
       string: ''
@@ -269,7 +270,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Jun 2026 03:59:33 GMT
+      - Mon, 22 Jun 2026 04:23:59 GMT
       pragma:
       - no-cache
       strict-transport-security:
@@ -279,13 +280,186 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/8418c47b-8ac7-41c0-bbfe-c7331245581a
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/eff1c798-e85f-45b7-8cf1-2853cb22c674
       x-ms-ratelimit-remaining-subscription-deletes:
       - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '2999'
       x-msedge-ref:
-      - 'Ref A: 0D7161811F3B4D6FB9431FB6F5CA8AC7 Ref B: SG2AA1070302054 Ref C: 2026-06-16T03:59:33Z'
+      - 'Ref A: 7D0E8FAE8D6A40C792BDF96031C1B4ED Ref B: SG2AA1070302034 Ref C: 2026-06-22T04:23:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "input-msi", "properties": {"type": "Reference", "datasource":
+      {"type": "Microsoft.Sql/Server/Database", "properties": {"authenticationMode":
+      "Msi", "database": "sql-db", "fullSnapshotQuery": "SELECT * from a", "refreshRate":
+      "00:00:00", "refreshType": "Static", "server": "sql-server"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics input create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '298'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --job-name --properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input-msi?api-version=2021-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input-msi\",\r\n
+        \ \"name\": \"input-msi\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs/inputs\",\r\n
+        \ \"properties\": {\r\n    \"type\": \"Reference\",\r\n    \"datasource\":
+        {\r\n      \"type\": \"Microsoft.Sql/Server/Database\",\r\n      \"properties\":
+        {\r\n        \"fullSnapshotQuery\": \"SELECT * from a\",\r\n        \"refreshType\":
+        \"Static\",\r\n        \"refreshRate\": \"00:00:00\",\r\n        \"server\":
+        \"sql-server\",\r\n        \"database\": \"sql-db\",\r\n        \"user\":
+        null,\r\n        \"authenticationMode\": \"Msi\"\r\n      }\r\n    },\r\n
+        \   \"compression\": {\r\n      \"type\": \"None\"\r\n    },\r\n    \"schemaRegistry\":
+        null,\r\n    \"messagingCatalogConfiguration\": null\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '798'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 04:24:02 GMT
+      etag:
+      - f5a965d6-c74a-4452-8306-2c8a919b8153
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/southeastasia/99e79453-1930-4712-abd2-ec0244e03fc6
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 1795F74C385243789EC7031A9E5FD40F Ref B: SG2AA1070304054 Ref C: 2026-06-22T04:24:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics input show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --job-name
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input-msi?api-version=2021-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input-msi\",\r\n
+        \ \"name\": \"input-msi\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs/inputs\",\r\n
+        \ \"properties\": {\r\n    \"type\": \"Reference\",\r\n    \"datasource\":
+        {\r\n      \"type\": \"Microsoft.Sql/Server/Database\",\r\n      \"properties\":
+        {\r\n        \"fullSnapshotQuery\": \"SELECT * from a\",\r\n        \"refreshType\":
+        \"Static\",\r\n        \"refreshRate\": \"00:00:00\",\r\n        \"server\":
+        \"sql-server\",\r\n        \"database\": \"sql-db\",\r\n        \"user\":
+        null,\r\n        \"authenticationMode\": \"Msi\"\r\n      }\r\n    },\r\n
+        \   \"compression\": {\r\n      \"type\": \"None\"\r\n    },\r\n    \"schemaRegistry\":
+        null,\r\n    \"messagingCatalogConfiguration\": null\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '798'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 04:24:03 GMT
+      etag:
+      - f5a965d6-c74a-4452-8306-2c8a919b8153
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/6d46dcba-e4fd-43d8-8fab-2e9c523e5c83
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: 53387FB6D41547D189981645E0906191 Ref B: SG2AA1070305023 Ref C: 2026-06-22T04:24:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics input delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --job-name --yes
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input-msi?api-version=2021-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jun 2026 04:24:04 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/aa2ecc46-015e-49db-9740-a084c91c18c8
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: BEDBE1AC7ACC4E4FBAB11F657DF28539 Ref B: SG2AA1070304062 Ref C: 2026-06-22T04:24:04Z'
     status:
       code: 200
       message: OK
