@@ -5193,7 +5193,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
             )
 
         # Verify error message
-        self.assertIn("--protected-item-id parameter must be provided",
+        self.assertIn("--target-object-id parameter must be provided",
                      str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
@@ -5208,7 +5208,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         with self.assertRaises(CLIError) as context:
             start_local_server_migration(cmd=mock_cmd)
 
-        self.assertIn("--protected-item-id parameter must be provided", 
+        self.assertIn("--target-object-id parameter must be provided", 
                      str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
@@ -5225,7 +5225,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
                 cmd=mock_cmd
             )
 
-        self.assertIn("--protected-item-id parameter must be provided", 
+        self.assertIn("--target-object-id parameter must be provided", 
                      str(context.exception))
 
     @mock.patch('azext_migrate.helpers._utils.get_resource_by_id')
