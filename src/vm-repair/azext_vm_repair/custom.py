@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
+import shlex
 import timeit
 import traceback
 import requests
@@ -14,6 +15,7 @@ from knack.log import get_logger
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from azure.mgmt.core.tools import parse_resource_id
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
@@ -136,8 +138,26 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if sep:
             merged_tags[repair_key] = repair_value
 
+        # Validate tag keys and values before they are placed into the command string.
+        # Tag values can originate from the source VM (via --copy-tags) and are therefore
+        # untrusted. Reject characters that cannot be safely represented as a single shell
+        # argument (control characters and double quotes); every other character, including
+        # shell metacharacters such as & | < >, is preserved and passed through literally.
+        # See MSRC 115198 / VULN-185362.
+        for tag_key, tag_value in merged_tags.items():
+            for tag_field in (str(tag_key), str(tag_value)):
+                if any(unsafe_char in tag_field for unsafe_char in ('"', '\n', '\r', '\x00')):
+                    raise InvalidArgumentValueError(
+                        f'Tag keys and values must not contain double quotes or control characters. Offending tag: {tag_key}={tag_value}'
+                    )
+
         # Convert to CLI string for passing to az cli later.
-        tag_string = ' '.join(f'{k}={v}' for k, v in merged_tags.items())
+        # Each key=value token is quoted with shlex.quote so values containing spaces or
+        # shell metacharacters survive re-tokenization in _call_az_command as a single
+        # argument. Combined with the Windows cmd.exe quoting in _call_az_command, this
+        # prevents command injection through attacker-controlled source VM tags.
+        # See MSRC 115198 / VULN-185362.
+        tag_string = ' '.join(shlex.quote(f'{tag_key}={tag_value}') for tag_key, tag_value in merged_tags.items())
 
         # initializing the list of created resources.
         created_resources = []
