@@ -196,7 +196,8 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
 
 def _enum_to_value(value):
     # ARM deployment parameters must use plain string values, not enum objects.
-    return value.value if hasattr(value, 'value') else value
+    import enum
+    return value.value if isinstance(value, enum.Enum) else value
 
 
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
