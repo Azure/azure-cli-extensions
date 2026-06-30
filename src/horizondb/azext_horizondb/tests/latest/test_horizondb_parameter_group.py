@@ -74,18 +74,18 @@ class HorizonDBParameterGroupCrudScenarioTest(ScenarioTest):
 
         # Malformed --parameters value is rejected before any service call
         self.cmd('horizondb parameter-group create -g {} -n {} --location {} '
-                 '--pg-version {} --parameters max_connections'.format(
+                 '--version {} --parameters max_connections'.format(
                      resource_group, parameter_group_name, location, pg_version),
                  expect_failure=True)
 
         # --parameters is required; omitting it fails argument validation before any service call
         with self.assertRaises(SystemExit):
-            self.cmd('horizondb parameter-group create -g {} -n {} --location {} --pg-version {}'.format(
+            self.cmd('horizondb parameter-group create -g {} -n {} --location {} --version {}'.format(
                 resource_group, parameter_group_name, location, pg_version))
 
         # Create parameter group with custom parameters
         self.cmd('horizondb parameter-group create -g {} -n {} --location {} '
-                 '--pg-version {} --parameters max_connections=200 work_mem=8192 '
+                 '--version {} --parameters max_connections=200 work_mem=8192 '
                  '--apply-immediately true --tags env=test '
                  '--description "Initial description"'.format(
                      resource_group, parameter_group_name, location, pg_version),

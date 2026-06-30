@@ -89,11 +89,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             options_list=['--description'],
             help='Description of the parameter group.')
 
-        pg_version_arg_type = CLIArgumentType(
-            options_list=['--pg-version'],
-            type=int,
-            help='PostgreSQL major version for the parameter group.')
-
         apply_immediately_arg_type = CLIArgumentType(
             options_list=['--apply-immediately'],
             arg_type=get_three_state_flag(),
@@ -131,7 +126,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('tags', tags_type)
             c.argument('parameters', arg_type=parameters_arg_type)
             c.argument('description', arg_type=description_arg_type)
-            c.argument('pg_version', arg_type=pg_version_arg_type)
+            c.argument('pg_version', arg_type=version_arg_type, type=int)
             c.argument('apply_immediately', arg_type=apply_immediately_arg_type)
 
         with self.argument_context('horizondb parameter-group delete') as c:
