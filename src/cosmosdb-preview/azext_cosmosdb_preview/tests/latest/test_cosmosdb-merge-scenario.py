@@ -29,7 +29,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --enable-partition-merge true --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
@@ -59,7 +59,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --enable-partition-merge true --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
@@ -87,7 +87,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --enable-partition-merge true --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name} --throughput 30000')
@@ -117,7 +117,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-partition-merge true --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --enable-partition-merge true --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name} --throughput {throughput}')

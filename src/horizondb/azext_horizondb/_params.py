@@ -14,7 +14,9 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag,
     get_enum_type)
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
-from azext_horizondb._validators import validate_parameters
+from .utils.validators import (
+    validate_parameters,
+    validate_replica_count)
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
@@ -40,8 +42,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
                 scopes=['horizondb']))
 
         administrator_login_arg_type = CLIArgumentType(
-            options_list=['--administrator-login'],
-            help='The administrator login name for the cluster.')
+            options_list=['--administrator-login', '-u'],
+            help='The administrator login name for the cluster.',
+            required=True)
 
         administrator_login_password_arg_type = CLIArgumentType(
             options_list=['--administrator-login-password', '-p'],
@@ -52,9 +55,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='Specifies the PostgreSQL major version.')
 
         replica_count_arg_type = CLIArgumentType(
-            options_list=['--replica-count'],
+            options_list=['--replica-count', '-r'],
             type=int,
-            help='Number of replicas.')
+            validator=validate_replica_count,
+            help='Number of replicas. Must be between 1 and 16, inclusive.')
 
         v_cores_arg_type = CLIArgumentType(
             options_list=['--v-cores'],
@@ -62,7 +66,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='Number of vCores.')
 
         zone_placement_policy_arg_type = CLIArgumentType(
-            options_list=['--zone-placement-policy'],
+            options_list=['--zone-placement-policy', '-z'],
             arg_type=get_enum_type(['Strict', 'BestEffort']),
             help='Defines how replicas are placed across availability zones.')
 
@@ -102,7 +106,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False)
             c.argument('tags', tags_type)
             c.argument('administrator_login', arg_type=administrator_login_arg_type)
-            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
+            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type, required=True)
             c.argument('version', arg_type=version_arg_type)
             c.argument('replica_count', arg_type=replica_count_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)

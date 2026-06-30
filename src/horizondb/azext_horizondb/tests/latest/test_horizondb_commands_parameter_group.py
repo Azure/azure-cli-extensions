@@ -23,10 +23,10 @@ class HorizonDBParameterGroupScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(location=location)
-    def test_horizondb_parameter_group(self, resource_group):
-        self._test_horizondb_parameter_group(resource_group)
+    def test_horizondb_parameter_group_mgmt(self, resource_group):
+        self._test_horizondb_parameter_group_mgmt(resource_group)
 
-    def _test_horizondb_parameter_group(self, resource_group):
+    def _test_horizondb_parameter_group_mgmt(self, resource_group):
 
         location = self.location
         cluster_name = self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH)
