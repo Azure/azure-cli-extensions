@@ -194,6 +194,11 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
+def _enum_to_value(value):
+    # ARM deployment parameters must use plain string values, not enum objects.
+    return value.value if hasattr(value, 'value') else value
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False):
     """
@@ -244,9 +249,9 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if storage_account_list:
         for storage_account_info in storage_account_list:
             if storage_account_info.name == storage_account:
-                storage_account_sku = storage_account_info.sku.name
-                storage_account_sku_tier = storage_account_info.sku.tier
-                storage_account_kind = storage_account_info.kind
+                storage_account_sku = _enum_to_value(storage_account_info.sku.name)
+                storage_account_sku_tier = _enum_to_value(storage_account_info.sku.tier)
+                storage_account_kind = _enum_to_value(storage_account_info.kind)
                 storage_account_location = storage_account_info.location
                 # Preserve the existing account's setting to avoid breaking customers
                 # who rely on shared-key auth/connection strings for that account.
