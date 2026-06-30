@@ -5208,7 +5208,7 @@ class MigrateStartLocalServerMigrationTests(unittest.TestCase):
         with self.assertRaises(CLIError) as context:
             start_local_server_migration(cmd=mock_cmd)
 
-        self.assertIn("--target-object-id parameter must be provided", 
+        self.assertIn("--target-object-id parameter must be provided",
                      str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id')
