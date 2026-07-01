@@ -3526,4 +3526,252 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: '{"tags": {"DisableFabricIntegration": "true", "tagUpdate": "NewTag"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager identity update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shared-dev-mb2/providers/Microsoft.NetworkCloud/clusterManagers/test-patch?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/test-patch","name":"test-patch","type":"microsoft.networkcloud/clustermanagers","location":"uksouth","etag":"\"030018e0-0000-1100-0000-6879519a0000\"","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-17T19:22:27.5392545Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-17T19:41:02.2108083Z"},"identity":{"type":"None"},"properties":{"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.OperationalInsights/workspaces/cm-test-law","availabilityZones":["1","2","3"],"clusterVersions":[{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.4"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.6"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.7"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.1"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.3"},{"supportExpiryDate":"2025-06-30","targetClusterVersion":"4.6.0"}],"fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.Network/virtualNetworks/cm-vnet/subnets/fabric-controller-subnet","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cm-mrg-000002"},"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-cm-mrg-000002/providers/Microsoft.ExtendedLocation/customLocations/cli-test-cm-000001-cl","type":"CustomLocation"},"vmSize":"Standard_D4_v2"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - no-cache
+      content-length:
+      - '1841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Jul 2025 19:41:02 GMT
+      etag:
+      - '"ce006860-0000-1000-0000-687951ce0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250717T194102Z-166956f9c456544nhC1DB1n2cs0000000b2g00000000c67f
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=00030fb9-4ea2-48c4-a667-ffe266a7ed89/westus/119ecf7e-6cc3-44a2-b23b-45014c9319a8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 229327525B3440AC9842C5F50179FC88 Ref B: MWH011020808042 Ref C: 2025-07-17T19:41:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"DisableFabricIntegration": "true", "tagUpdate": "NewTag"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shared-dev-mb2/providers/Microsoft.NetworkCloud/clusterManagers/test-patch?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/test-patch","name":"test-patch","type":"microsoft.networkcloud/clustermanagers","location":"uksouth","etag":"\"030018e0-0000-1100-0000-6879519a0000\"","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-17T19:22:27.5392545Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-17T19:41:02.2108083Z"},"identity":{"type":"None"},"properties":{"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.OperationalInsights/workspaces/cm-test-law","availabilityZones":["1","2","3"],"clusterVersions":[{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.4"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.6"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.7"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.1"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.3"},{"supportExpiryDate":"2025-06-30","targetClusterVersion":"4.6.0"}],"fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.Network/virtualNetworks/cm-vnet/subnets/fabric-controller-subnet","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cm-mrg-000002"},"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-cm-mrg-000002/providers/Microsoft.ExtendedLocation/customLocations/cli-test-cm-000001-cl","type":"CustomLocation"},"vmSize":"Standard_D4_v2"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - no-cache
+      content-length:
+      - '1841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Jul 2025 19:41:02 GMT
+      etag:
+      - '"ce006860-0000-1000-0000-687951ce0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250717T194102Z-166956f9c456544nhC1DB1n2cs0000000b2g00000000c67f
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=00030fb9-4ea2-48c4-a667-ffe266a7ed89/westus/119ecf7e-6cc3-44a2-b23b-45014c9319a8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 229327525B3440AC9842C5F50179FC88 Ref B: MWH011020808042 Ref C: 2025-07-17T19:41:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"DisableFabricIntegration": "true", "tagUpdate": "NewTag"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shared-dev-mb2/providers/Microsoft.NetworkCloud/clusterManagers/test-patch?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/test-patch","name":"test-patch","type":"microsoft.networkcloud/clustermanagers","location":"uksouth","etag":"\"030018e0-0000-1100-0000-6879519a0000\"","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-17T19:22:27.5392545Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-17T19:41:02.2108083Z"},"identity":{"type":"None"},"properties":{"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.OperationalInsights/workspaces/cm-test-law","availabilityZones":["1","2","3"],"clusterVersions":[{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.4"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.6"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.7"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.1"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.3"},{"supportExpiryDate":"2025-06-30","targetClusterVersion":"4.6.0"}],"fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.Network/virtualNetworks/cm-vnet/subnets/fabric-controller-subnet","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cm-mrg-000002"},"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-cm-mrg-000002/providers/Microsoft.ExtendedLocation/customLocations/cli-test-cm-000001-cl","type":"CustomLocation"},"vmSize":"Standard_D4_v2"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - no-cache
+      content-length:
+      - '1841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Jul 2025 19:41:02 GMT
+      etag:
+      - '"ce006860-0000-1000-0000-687951ce0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250717T194102Z-166956f9c456544nhC1DB1n2cs0000000b2g00000000c67f
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=00030fb9-4ea2-48c4-a667-ffe266a7ed89/westus/119ecf7e-6cc3-44a2-b23b-45014c9319a8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 229327525B3440AC9842C5F50179FC88 Ref B: MWH011020808042 Ref C: 2025-07-17T19:41:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"DisableFabricIntegration": "true", "tagUpdate": "NewTag"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-manager-name --tags --resource-group --mi-system-assigned
+      User-Agent:
+      - AZURECLI/2.75.0 azsdk-python-core/1.35.0 Python/3.12.11 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/shared-dev-mb2/providers/Microsoft.NetworkCloud/clusterManagers/test-patch?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/test-patch","name":"test-patch","type":"microsoft.networkcloud/clustermanagers","location":"uksouth","etag":"\"030018e0-0000-1100-0000-6879519a0000\"","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-07-17T19:22:27.5392545Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-07-17T19:41:02.2108083Z"},"identity":{"type":"None"},"properties":{"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.OperationalInsights/workspaces/cm-test-law","availabilityZones":["1","2","3"],"clusterVersions":[{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.4"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.6"},{"supportExpiryDate":"2026-02-28","targetClusterVersion":"4.1.7"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.1"},{"supportExpiryDate":"2026-06-30","targetClusterVersion":"4.4.3"},{"supportExpiryDate":"2025-06-30","targetClusterVersion":"4.6.0"}],"fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mathfoster-cm-cli-testing/providers/Microsoft.Network/virtualNetworks/cm-vnet/subnets/fabric-controller-subnet","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"location":"uksouth","name":"cli-test-cm-mrg-000002"},"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-cm-mrg-000002/providers/Microsoft.ExtendedLocation/customLocations/cli-test-cm-000001-cl","type":"CustomLocation"},"vmSize":"Standard_D4_v2"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - no-cache
+      content-length:
+      - '1841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Jul 2025 19:41:02 GMT
+      etag:
+      - '"ce006860-0000-1000-0000-687951ce0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20250717T194102Z-166956f9c456544nhC1DB1n2cs0000000b2g00000000c67f
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=00030fb9-4ea2-48c4-a667-ffe266a7ed89/westus/119ecf7e-6cc3-44a2-b23b-45014c9319a8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 229327525B3440AC9842C5F50179FC88 Ref B: MWH011020808042 Ref C: 2025-07-17T19:41:01Z'
+    status:
+      code: 200
+      message: OK
 version: 1

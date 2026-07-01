@@ -161,7 +161,6 @@ class Update(AAZCommand):
             options=["--ao-settings", "--analytics-output-settings"],
             arg_group="Properties",
             help="The settings for the log analytics workspace used for output of logs from this cluster.",
-            nullable=True,
         )
         _args_schema.cluster_location = AAZStrArg(
             options=["--cluster-location"],
@@ -172,19 +171,16 @@ class Update(AAZCommand):
             options=["--cluster-sp", "--cluster-service-principal"],
             arg_group="Properties",
             help="Field Deprecated: Use managed identity to provide cluster privileges. The service principal to be used by the cluster during Arc Appliance installation.",
-            nullable=True,
         )
         _args_schema.command_output_settings = AAZObjectArg(
             options=["--co-settings", "--command-output-settings"],
             arg_group="Properties",
             help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
-            nullable=True,
         )
         _args_schema.compute_deployment_threshold = AAZObjectArg(
             options=["--compute-dt", "--compute-deployment-threshold"],
             arg_group="Properties",
             help="The validation threshold indicating the allowable failures of compute machines during environment validation and deployment.",
-            nullable=True,
         )
         _args_schema.compute_rack_definitions = AAZListArg(
             options=["--compute-rack-def", "--compute-rack-definitions"],
@@ -195,25 +191,21 @@ class Update(AAZCommand):
             options=["--runtime-protection"],
             arg_group="Properties",
             help="The settings for cluster runtime protection.",
-            nullable=True,
         )
         _args_schema.secret_archive_settings = AAZObjectArg(
             options=["--sa-settings", "--secret-archive-settings"],
             arg_group="Properties",
             help="The settings for the secret archive used to hold credentials for the cluster.",
-            nullable=True,
         )
         _args_schema.update_strategy = AAZObjectArg(
             options=["--update-strategy"],
             arg_group="Properties",
             help="The strategy for updating the cluster.",
-            nullable=True,
         )
         _args_schema.vulnerability_scanning_settings = AAZObjectArg(
             options=["--vs-settings", "--vulnerability-scanning-settings"],
             arg_group="Properties",
             help="The settings for how security vulnerability scanning is applied to the cluster.",
-            nullable=True,
         )
 
         analytics_output_settings = cls._args_schema.analytics_output_settings
@@ -699,16 +691,16 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 _UpdateHelper._build_schema_rack_definition_patch_update(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition"))
-                properties.set_prop("analyticsOutputSettings", AAZObjectType, ".analytics_output_settings", typ_kwargs={"nullable": True})
+                properties.set_prop("analyticsOutputSettings", AAZObjectType, ".analytics_output_settings")
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
-                properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal", typ_kwargs={"nullable": True})
-                properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings", typ_kwargs={"nullable": True})
-                properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold", typ_kwargs={"nullable": True})
+                properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal")
+                properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings")
+                properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold")
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
-                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection", typ_kwargs={"nullable": True})
-                properties.set_prop("secretArchiveSettings", AAZObjectType, ".secret_archive_settings", typ_kwargs={"nullable": True})
-                properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy", typ_kwargs={"nullable": True})
-                properties.set_prop("vulnerabilityScanningSettings", AAZObjectType, ".vulnerability_scanning_settings", typ_kwargs={"nullable": True})
+                properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
+                properties.set_prop("secretArchiveSettings", AAZObjectType, ".secret_archive_settings")
+                properties.set_prop("updateStrategy", AAZObjectType, ".update_strategy")
+                properties.set_prop("vulnerabilityScanningSettings", AAZObjectType, ".vulnerability_scanning_settings")
 
             analytics_output_settings = _builder.get(".properties.analyticsOutputSettings")
             if analytics_output_settings is not None:
