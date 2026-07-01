@@ -22,17 +22,16 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2025-02-19-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -62,7 +61,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionMetadataV2List(ctx=self.ctx)()
+        self.ExtensionMetadataList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,10 +74,9 @@ class List(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        return result
 
-    class ExtensionMetadataV2List(AAZHttpOperation):
+    class ExtensionMetadataList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +90,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.HybridCompute/locations/{location}/publishers/{publisher}/extensionTypes/{extensionType}/versions",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/locations/{location}/publishers/{publisher}/extensionTypes/{extensionType}/versions",
                 **self.url_parameters
             )
 
@@ -119,6 +117,10 @@ class List(AAZCommand):
                     "publisher", self.ctx.args.publisher,
                     required=True,
                 ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
             }
             return parameters
 
@@ -126,7 +128,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -159,9 +161,6 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
@@ -188,23 +187,8 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.architecture = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.extension_signature_uri = AAZStrType(
-                serialized_name="extensionSignatureUri",
-                flags={"read_only": True},
-            )
             properties.extension_type = AAZStrType(
                 serialized_name="extensionType",
-                flags={"read_only": True},
-            )
-            properties.extension_uris = AAZListType(
-                serialized_name="extensionUris",
-                flags={"read_only": True},
-            )
-            properties.operating_system = AAZStrType(
-                serialized_name="operatingSystem",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType(
@@ -213,12 +197,6 @@ class List(AAZCommand):
             properties.version = AAZStrType(
                 flags={"read_only": True},
             )
-
-            architecture = cls._schema_on_200.value.Element.properties.architecture
-            architecture.Element = AAZStrType()
-
-            extension_uris = cls._schema_on_200.value.Element.properties.extension_uris
-            extension_uris.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
