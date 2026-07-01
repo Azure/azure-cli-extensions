@@ -20,7 +20,6 @@ from azext_confcom.os_util import base64_to_str
 
 
 _DEFAULT_MOUNTS = config.DEFAULT_MOUNTS_USER
-_DEFAULT_MOUNTS_VN2 = config.DEFAULT_MOUNTS_USER_VIRTUAL_NODE
 
 _DEFAULT_USER = config.DEFAULT_USER
 
@@ -28,6 +27,16 @@ _INJECTED_CUSTOMER_ENV_RULES = (
     config.OPENGCS_ENV_RULES
     + config.FABRIC_ENV_RULES
     + config.MANAGED_IDENTITY_ENV_RULES
+    + config.ENABLE_RESTART_ENV_RULE
+)
+
+# Windows containers get every injected rule except OPENGCS: TERM=xterm comes
+# from the Linux GCS (opengcs) guest and has no Windows equivalent. FABRIC
+# (Service Fabric / ACI infra) and the restart marker apply regardless of guest
+# OS, and Windows managed identity additionally exposes IDENTITY_ENDPOINT.
+_INJECTED_CUSTOMER_ENV_RULES_WINDOWS = (
+    config.FABRIC_ENV_RULES
+    + config.MANAGED_IDENTITY_ENV_RULES_WINDOWS
     + config.ENABLE_RESTART_ENV_RULE
 )
 
@@ -812,23 +821,29 @@ class UserContainerImage(ContainerImage):
     ) -> "UserContainerImage":
         image = super().from_json(container_json)
         image.__class__ = UserContainerImage
+        platform = container_json.get("platform", "linux/amd64")
+        is_linux = platform.startswith("linux")
         # inject default mounts for user container
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (not is_vn2):
-            if container_json.get("platform", "linux/amd64").startswith("linux"):
+            if is_linux:
                 image.get_mounts().extend(_DEFAULT_MOUNTS)
 
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (is_vn2):
-            image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
+            image.get_mounts().extend(config.get_default_mounts_user_virtual_node(platform))
 
-        # Start with the customer environment rules
-        env_rules = (
-            copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
-            if container_json.get("platform", "linux/amd64").startswith("linux") else []
-        )
+        # Start with the customer environment rules. Windows gets the same rules
+        # except OPENGCS (TERM=xterm is a Linux-GCS-only value) and uses the
+        # Windows managed-identity set (which adds IDENTITY_ENDPOINT).
+        if is_linux:
+            env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
+        else:
+            env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES_WINDOWS)
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES
-            image.set_mounts(image.get_mounts() + copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE))
+            image.set_mounts(
+                image.get_mounts() + copy.deepcopy(config.get_default_mounts_virtual_node(platform))
+            )
 
         image.set_extra_environment_rules(env_rules)
         return image
