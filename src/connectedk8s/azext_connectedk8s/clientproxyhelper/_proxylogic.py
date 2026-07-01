@@ -34,10 +34,18 @@ def handle_post_at_to_csp(
     api_server_port: int,
     tenant_id: str,
     clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> int:
-    kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
+    kid = clientproxyutils.fetch_pop_publickey_kid(
+        api_server_port, clientproxy_process, correlation_id=correlation_id
+    )
     post_at_response, expiry = clientproxyutils.fetch_and_post_at_to_csp(
-        cmd, api_server_port, tenant_id, kid, clientproxy_process
+        cmd,
+        api_server_port,
+        tenant_id,
+        kid,
+        clientproxy_process,
+        correlation_id=correlation_id,
     )
 
     if post_at_response.status_code != 200:
@@ -52,11 +60,16 @@ def handle_post_at_to_csp(
                 summary="PoP public key has expired",
             )
             kid = clientproxyutils.fetch_pop_publickey_kid(
-                api_server_port, clientproxy_process
+                api_server_port, clientproxy_process, correlation_id=correlation_id
             )  # Fetch rotated public key
             # Retry posting AT with the new public key
             post_at_response, expiry = clientproxyutils.fetch_and_post_at_to_csp(
-                cmd, api_server_port, tenant_id, kid, clientproxy_process
+                cmd,
+                api_server_port,
+                tenant_id,
+                kid,
+                clientproxy_process,
+                correlation_id=correlation_id,
             )
         # If after second try we still dont get a 200, raise error
         if post_at_response.status_code != 200:
@@ -78,15 +91,27 @@ def get_cluster_user_credentials(
     resource_group_name: str,
     cluster_name: str,
     auth_method: str,
+    correlation_id: str | None = None,
 ) -> CredentialResults:
     list_prop = ListClusterUserCredentialProperties(
         authentication_method=auth_method, client_proxy=True
     )
 
+    # Stamp the session correlation id on the outbound ARM request so ARM
+    # honors and echoes it back, joining ARM-side logs to our localhost
+    # calls. azure-core operations pop ``headers`` from kwargs and merge
+    # them into the request (see vendored SDK ``_operations.py``).
+    sdk_kwargs: dict[str, Any] = {}
+    if correlation_id:
+        sdk_kwargs["headers"] = {
+            consts.Correlation_Request_Id_Header: correlation_id,
+        }
+
     result: CredentialResults = client.list_cluster_user_credential(
         resource_group_name,
         cluster_name,
         list_prop,
+        **sdk_kwargs,
     )
     return result
 
@@ -99,6 +124,7 @@ def post_register_to_proxy(
     resource_group_name: str,
     cluster_name: str,
     clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> Response:
     if token is not None:
         data["kubeconfigs"][0]["value"] = clientproxyutils.insert_token_in_kubeconfig(
@@ -120,5 +146,6 @@ def post_register_to_proxy(
         "Unable to post hybrid connection details to clientproxy",
         "Failed to pass hybrid connection details to proxy.",
         clientproxy_process,
+        correlation_id=correlation_id,
     )
     return response
