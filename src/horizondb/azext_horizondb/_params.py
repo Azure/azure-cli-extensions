@@ -13,6 +13,8 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type)
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
+from .utils.validators import (
+    validate_replica_count)
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
@@ -38,8 +40,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
                 scopes=['horizondb']))
 
         administrator_login_arg_type = CLIArgumentType(
-            options_list=['--administrator-login'],
-            help='The administrator login name for the cluster.')
+            options_list=['--administrator-login', '-u'],
+            help='The administrator login name for the cluster.',
+            required=True)
 
         administrator_login_password_arg_type = CLIArgumentType(
             options_list=['--administrator-login-password', '-p'],
@@ -50,9 +53,10 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='The version of the HorizonDb cluster.')
 
         replica_count_arg_type = CLIArgumentType(
-            options_list=['--replica-count'],
+            options_list=['--replica-count', '-r'],
             type=int,
-            help='Number of replicas.')
+            validator=validate_replica_count,
+            help='Number of replicas. Must be between 1 and 16, inclusive.')
 
         v_cores_arg_type = CLIArgumentType(
             options_list=['--v-cores'],
@@ -60,9 +64,13 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='Number of vCores.')
 
         zone_placement_policy_arg_type = CLIArgumentType(
-            options_list=['--zone-placement-policy'],
+            options_list=['--zone-placement-policy', '-z'],
             arg_type=get_enum_type(['Strict', 'BestEffort']),
             help='Defines how replicas are placed across availability zones.')
+
+        parameter_group_arg_type = CLIArgumentType(
+            options_list=['--parameter-group'],
+            help='The resource ID of the parameter group.')
 
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
@@ -72,11 +80,17 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False)
             c.argument('tags', tags_type)
             c.argument('administrator_login', arg_type=administrator_login_arg_type)
-            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
+            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type, required=True)
             c.argument('version', arg_type=version_arg_type)
             c.argument('replica_count', arg_type=replica_count_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)
             c.argument('zone_placement_policy', arg_type=zone_placement_policy_arg_type)
+
+        with self.argument_context('horizondb update') as c:
+            c.argument('tags', tags_type)
+            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
+            c.argument('v_cores', arg_type=v_cores_arg_type)
+            c.argument('parameter_group', arg_type=parameter_group_arg_type)
 
         with self.argument_context('horizondb delete') as c:
             c.argument('yes', arg_type=yes_arg_type)

@@ -526,3 +526,12 @@ aks machine add:
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long
+aks nodepool auto-scale:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks prepared-image-specification:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks prepared-image-specification version:
+  rule_exclusions:
+    - require_wait_command_if_no_wait

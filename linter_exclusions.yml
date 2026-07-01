@@ -1,3 +1,27 @@
+afd origin create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd origin update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd route create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd route update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd secret create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd secret update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd security-policy create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd security-policy update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
 account create:
   parameters:
     enrollment_account_name:
@@ -424,6 +448,14 @@ codespace plan create:
 confidentialledger managedccfs update:
   rule_exclusions:
   - missing_command_test_coverage
+cdn origin-group create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+  - unrecognized_help_parameter_rule
+cdn origin-group update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+  - unrecognized_help_parameter_rule
 confluent organization environment:
   rule_exclusions:
   - require_wait_command_if_no_wait
@@ -3620,9 +3652,29 @@ confcom containers from_image:
       rule_exclusions:
         - no_positional_parameters
 
+confcom containers from_radius:
+  parameters:
+    template:
+      rule_exclusions:
+        - no_positional_parameters
+
+confcom radius policy_insert:
+  parameters:
+    policy_file:
+      rule_exclusions:
+        - no_positional_parameters
+
 relationship dependency-of create:
   rule_exclusions:
     - missing_command_example
 relationship service-group-member create:
   rule_exclusions:
     - missing_command_example
+
+cosmosdb sql softdeleted-database list:
+  rule_exclusions:
+    - no_ids_for_list_commands
+
+cosmosdb sql softdeleted-container list:
+  rule_exclusions:
+    - no_ids_for_list_commands

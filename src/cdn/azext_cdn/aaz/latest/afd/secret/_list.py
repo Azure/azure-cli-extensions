@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List existing AzureFrontDoor secrets.
+
+    :example: Secrets_ListByProfile
+        az afd secret list --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets", "2025-09-01-preview"],
         ]
     }
 
@@ -123,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -160,7 +163,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
@@ -229,9 +232,7 @@ class List(AAZCommand):
             )
 
             subject_alternative_names = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "AzureFirstPartyManagedCertificate").subject_alternative_names
-            subject_alternative_names.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            subject_alternative_names.Element = AAZStrType()
 
             disc_customer_certificate = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "CustomerCertificate")
             disc_customer_certificate.certificate_authority = AAZStrType(
@@ -255,6 +256,7 @@ class List(AAZCommand):
             )
             disc_customer_certificate.subject_alternative_names = AAZListType(
                 serialized_name="subjectAlternativeNames",
+                flags={"read_only": True},
             )
             disc_customer_certificate.thumbprint = AAZStrType(
                 flags={"read_only": True},
@@ -264,9 +266,7 @@ class List(AAZCommand):
             )
 
             subject_alternative_names = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "CustomerCertificate").subject_alternative_names
-            subject_alternative_names.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            subject_alternative_names.Element = AAZStrType()
 
             disc_managed_certificate = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "ManagedCertificate")
             disc_managed_certificate.expiration_date = AAZStrType(
@@ -275,6 +275,21 @@ class List(AAZCommand):
             )
             disc_managed_certificate.subject = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            disc_mtls_certificate_chain = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "MtlsCertificateChain")
+            disc_mtls_certificate_chain.expiration_date = AAZStrType(
+                serialized_name="expirationDate",
+                flags={"read_only": True},
+            )
+            disc_mtls_certificate_chain.secret_source = AAZObjectType(
+                serialized_name="secretSource",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_resource_reference_read(disc_mtls_certificate_chain.secret_source)
+            disc_mtls_certificate_chain.secret_version = AAZStrType(
+                serialized_name="secretVersion",
+                flags={"required": True},
             )
 
             disc_url_signing_key = cls._schema_on_200.value.Element.properties.parameters.discriminate_by("type", "UrlSigningKey")

@@ -17,17 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new origin within the specified origin group.
 
-    :example: Create an regular origin
-        az afd origin create -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup --origin-name origin1 --origin-host-header example.contoso.com --priority 1 --weight 500 --enabled-state Enabled --http-port 80 --https-port 443 - name: Create a private link origin
-
-    :example: Create a private link origin
-        az afd origin create -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup --origin-name origin1 --origin-host-header example.contoso.com --priority 1 --weight 500 --enabled-state Enabled --http-port 80 --https-port 443 --private-link-resource /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group/providers/Microsoft.Storage/storageAccounts/plstest --private-link-location EastUS --private-link-request-message 'Please approve this request' --private-link-sub-resource-type table
+    :example: AFDOrigins_Create
+        az afd origin create --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --origin-name origin1 --enabled-state Enabled --host-name host1.blob.core.windows.net --http-port 80 --https-port 443 --origin-host-header host1.foo.com --origin-capacity-resource "{enabled:Enabled,origin-ingress-rate-threshold:10,origin-request-rate-threshold:1000,region:EastUs}"
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -78,7 +75,7 @@ class Create(AAZCommand):
         _args_schema.enabled_state = AAZStrArg(
             options=["--enabled-state"],
             arg_group="Properties",
-            help="Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool. When an origin is disabled, both routing and health probes to the origin are also disabled.",
+            help="Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.enforce_certificate_name_check = AAZBoolArg(
@@ -112,6 +109,11 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
+        _args_schema.origin_capacity_resource = AAZObjectArg(
+            options=["--origin-capacity-resource"],
+            arg_group="Properties",
+            help="Origin capacity settings for an origin",
+        )
         _args_schema.origin_host_header = AAZStrArg(
             options=["--origin-host-header"],
             arg_group="Properties",
@@ -139,6 +141,31 @@ class Create(AAZCommand):
                 maximum=1000,
                 minimum=1,
             ),
+        )
+
+        origin_capacity_resource = cls._args_schema.origin_capacity_resource
+        origin_capacity_resource.enabled = AAZStrArg(
+            options=["enabled"],
+            help="Whether to enable origin capacity for a specific origin",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        origin_capacity_resource.origin_ingress_rate_threshold = AAZIntArg(
+            options=["origin-ingress-rate-threshold"],
+            help="The ingress rate limit threshold for an origin per minute in bytes",
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        origin_capacity_resource.origin_request_rate_threshold = AAZIntArg(
+            options=["origin-request-rate-threshold"],
+            help="The request rate limit threshold for an origin per minute",
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        origin_capacity_resource.region = AAZStrArg(
+            options=["region"],
+            help="The nearest origin capacity pop region for an origin",
         )
 
         shared_private_link_resource = cls._args_schema.shared_private_link_resource
@@ -273,7 +300,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -304,13 +331,21 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("enabledState", AAZStrType, ".enabled_state")
                 properties.set_prop("enforceCertificateNameCheck", AAZBoolType, ".enforce_certificate_name_check")
-                properties.set_prop("hostName", AAZStrType, ".host_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("hostName", AAZStrType, ".host_name")
                 properties.set_prop("httpPort", AAZIntType, ".http_port")
                 properties.set_prop("httpsPort", AAZIntType, ".https_port")
+                properties.set_prop("originCapacityResource", AAZObjectType, ".origin_capacity_resource")
                 properties.set_prop("originHostHeader", AAZStrType, ".origin_host_header")
                 properties.set_prop("priority", AAZIntType, ".priority")
                 properties.set_prop("sharedPrivateLinkResource", AAZObjectType, ".shared_private_link_resource")
                 properties.set_prop("weight", AAZIntType, ".weight")
+
+            origin_capacity_resource = _builder.get(".properties.originCapacityResource")
+            if origin_capacity_resource is not None:
+                origin_capacity_resource.set_prop("enabled", AAZStrType, ".enabled")
+                origin_capacity_resource.set_prop("originIngressRateThreshold", AAZIntType, ".origin_ingress_rate_threshold")
+                origin_capacity_resource.set_prop("originRequestRateThreshold", AAZIntType, ".origin_request_rate_threshold")
+                origin_capacity_resource.set_prop("region", AAZStrType, ".region")
 
             shared_private_link_resource = _builder.get(".properties.sharedPrivateLinkResource")
             if shared_private_link_resource is not None:
@@ -401,13 +436,15 @@ class _CreateHelper:
         )
         properties.host_name = AAZStrType(
             serialized_name="hostName",
-            flags={"required": True},
         )
         properties.http_port = AAZIntType(
             serialized_name="httpPort",
         )
         properties.https_port = AAZIntType(
             serialized_name="httpsPort",
+        )
+        properties.origin_capacity_resource = AAZObjectType(
+            serialized_name="originCapacityResource",
         )
         properties.origin_group_name = AAZStrType(
             serialized_name="originGroupName",
@@ -425,6 +462,16 @@ class _CreateHelper:
             serialized_name="sharedPrivateLinkResource",
         )
         properties.weight = AAZIntType()
+
+        origin_capacity_resource = _schema_afd_origin_read.properties.origin_capacity_resource
+        origin_capacity_resource.enabled = AAZStrType()
+        origin_capacity_resource.origin_ingress_rate_threshold = AAZIntType(
+            serialized_name="originIngressRateThreshold",
+        )
+        origin_capacity_resource.origin_request_rate_threshold = AAZIntType(
+            serialized_name="originRequestRateThreshold",
+        )
+        origin_capacity_resource.region = AAZStrType()
 
         shared_private_link_resource = _schema_afd_origin_read.properties.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrType(

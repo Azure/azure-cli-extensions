@@ -78,7 +78,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # set
-        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace} -l {test_location} -o json', checks=[
+        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace} -o json', checks=[
             self.check("name", test_workspace)
         ])
 
@@ -107,12 +107,12 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
             ])
 
+            time.sleep(10)  # Wait for the workspace to be provisioned
+
             # set
-            self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
+            self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
                 self.check("name", test_workspace_temp)
             ])
-
-            time.sleep(10)  # Wait for the workspace to be created before fetching quotas
 
             # list quotas
             results = self.cmd('az quantum workspace quotas -o json').get_output_in_json()
@@ -204,7 +204,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # set
-        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
+        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
             self.check("name", test_workspace_temp)
         ])
 
