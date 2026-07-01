@@ -95,4 +95,26 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
         with self.argument_context('horizondb delete') as c:
             c.argument('yes', arg_type=yes_arg_type)
 
+        identity_arg_type = CLIArgumentType(
+            options_list=['--identity'],
+            nargs='+',
+            help='Space-separated resource IDs of user assigned managed identities.')
+
+        identity_single_arg_type = CLIArgumentType(
+            options_list=['--identity'],
+            help='Resource ID of the user assigned managed identity.')
+
+        with self.argument_context('horizondb identity assign') as c:
+            c.argument('identity', arg_type=identity_arg_type)
+
+        with self.argument_context('horizondb identity list') as c:
+            pass
+
+        with self.argument_context('horizondb identity remove') as c:
+            c.argument('identity', arg_type=identity_arg_type)
+            c.argument('yes', arg_type=yes_arg_type)
+
+        with self.argument_context('horizondb identity show') as c:
+            c.argument('identity', arg_type=identity_single_arg_type)
+
     _horizondb_params()

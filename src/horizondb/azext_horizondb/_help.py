@@ -64,3 +64,45 @@ examples:
   - name: List Azure HorizonDB clusters in a resource group.
     text: az horizondb list --resource-group exampleresourcegroup
 """
+
+
+helps['horizondb identity'] = """
+type: group
+short-summary: Manage user assigned managed identities for an Azure HorizonDB cluster.
+"""
+
+
+helps['horizondb identity assign'] = """
+type: command
+short-summary: Add user assigned managed identities to an Azure HorizonDB cluster.
+examples:
+  - name: Assign a user assigned managed identity to a HorizonDB cluster.
+    text: az horizondb identity assign --name examplecluster --resource-group exampleresourcegroup --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exampleresourcegroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleidentity
+"""
+
+
+helps['horizondb identity list'] = """
+type: command
+short-summary: List all user assigned managed identities from an Azure HorizonDB cluster.
+examples:
+  - name: List identities for a HorizonDB cluster.
+    text: az horizondb identity list --name examplecluster --resource-group exampleresourcegroup
+"""
+
+
+helps['horizondb identity remove'] = """
+type: command
+short-summary: Remove user assigned managed identities from an Azure HorizonDB cluster.
+examples:
+  - name: Remove a user assigned managed identity from a HorizonDB cluster.
+    text: az horizondb identity remove --name examplecluster --resource-group exampleresourcegroup --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exampleresourcegroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleidentity
+"""
+
+
+helps['horizondb identity show'] = """
+type: command
+short-summary: Get a user assigned managed identity from an Azure HorizonDB cluster.
+examples:
+  - name: Show a specific identity from a HorizonDB cluster.
+    text: az horizondb identity show --name examplecluster --resource-group exampleresourcegroup --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exampleresourcegroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleidentity
+"""

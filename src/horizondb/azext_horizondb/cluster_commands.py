@@ -27,3 +27,13 @@ def load_command_table(self, _):
         g.custom_command('delete', 'horizondb_cluster_delete')
         g.custom_command('list', 'horizondb_cluster_list')
         g.show_command('show', 'get')
+
+    identity_commands = CliCommandType(
+        operations_tmpl='azext_horizondb.commands.identity_commands#{}')
+    with self.command_group('horizondb identity', horizondb_clusters_sdk,
+                            custom_command_type=identity_commands,
+                            client_factory=cf_horizondb_clusters) as g:
+        g.custom_command('assign', 'horizondb_identity_assign', supports_no_wait=True)
+        g.custom_command('list', 'horizondb_identity_list')
+        g.custom_command('remove', 'horizondb_identity_remove', supports_no_wait=True)
+        g.custom_command('show', 'horizondb_identity_show')
