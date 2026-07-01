@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Entity

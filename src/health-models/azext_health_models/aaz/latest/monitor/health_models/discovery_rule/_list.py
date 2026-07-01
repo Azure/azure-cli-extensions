@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models discovery-rule list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List DiscoveryRule resources by HealthModel

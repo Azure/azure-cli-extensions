@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity add-data-annotation",
+    is_preview=True,
 )
 class AddDataAnnotation(AAZCommand):
     """Add a data annotation to an entity

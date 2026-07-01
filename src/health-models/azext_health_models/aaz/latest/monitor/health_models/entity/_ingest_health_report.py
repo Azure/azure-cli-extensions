@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity ingest-health-report",
+    is_preview=True,
 )
 class IngestHealthReport(AAZCommand):
     """Ingest a health report for a specific signal on an entity (the entity must already exist)
