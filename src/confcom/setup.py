@@ -71,6 +71,8 @@ setup(
             "azext_metadata.json",
             "bin/dmverity-vhd.exe",  # windows for ACI
             "bin/dmverity-vhd",  # linux for ACI
+            "bin/CimWriter.dll", # C-WCOW cimwriter.dll
+            "bin/CimWriter.LICENSE.pdf", # C-WCOW cimwriter.dll license
             "bin/genpolicy-windows.exe",  # windows for AKS
             "bin/genpolicy-linux",  # linux for AKS
             "bin/sign1util.exe",  # windows for cose tool
