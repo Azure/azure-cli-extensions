@@ -1164,7 +1164,7 @@ def load_policy_from_json(
             scenario.lower() == config.VN2 and
             case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED)
         ):
-            mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+            mounts += config.get_default_mounts_privileged_virtual_node(platform)
 
         labels = case_insensitive_dict_get(policy_input_json, config.VIRTUAL_NODE_YAML_LABELS) or []
         envs = []
@@ -1175,7 +1175,7 @@ def load_policy_from_json(
             case_insensitive_dict_get(labels, config.VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY)
         ):
             envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
-            mounts += config.DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE
+            mounts += config.get_default_mounts_workload_identity_virtual_node(platform)
 
         envs += process_env_vars_from_config(container_properties)
 
@@ -1370,7 +1370,7 @@ def load_policy_from_virtual_node_yaml_str(
 
             if use_workload_identity:
                 envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
-                mounts += config.DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE
+                mounts += config.get_default_mounts_workload_identity_virtual_node(platform)
 
             # there can be implicit volumes from volumeClaimTemplates
             # We need to add them to the list of volumes and note if they are readonly
@@ -1442,7 +1442,7 @@ def load_policy_from_virtual_node_yaml_str(
             ) or {}
 
             if case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED) is True:
-                mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+                mounts += config.get_default_mounts_privileged_virtual_node(platform)
 
             # security context
             security_context = pod_security_context.copy()
