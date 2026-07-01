@@ -79,10 +79,18 @@ def make_api_call_with_retries(
     summary: str,
     cli_error: str,
     clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> requests.Response:
+    headers = (
+        {consts.Correlation_Request_Id_Header: correlation_id}
+        if correlation_id
+        else None
+    )
     for i in range(consts.API_CALL_RETRIES):
         try:
-            response = requests.request(method, uri, json=data, verify=tls_verify)
+            response = requests.request(
+                method, uri, json=data, verify=tls_verify, headers=headers
+            )
             return response
         except Exception as e:
             time.sleep(5)
@@ -100,7 +108,9 @@ def make_api_call_with_retries(
 
 
 def fetch_pop_publickey_kid(
-    api_server_port: int, clientproxy_process: Popen[bytes]
+    api_server_port: int,
+    clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> str:
     poppublickey_uri = f"https://localhost:{api_server_port}/identity/poppublickey"
     # Needed to prevent skip tls warning from printing to the console
@@ -117,6 +127,7 @@ def fetch_pop_publickey_kid(
             "Failed to fetch public key info from clientproxy",
             "Failed to fetch public key info from client proxy",
             clientproxy_process,
+            correlation_id=correlation_id,
         )
 
     sys.stderr = original_stderr
@@ -132,6 +143,7 @@ def fetch_and_post_at_to_csp(
     tenant_id: str,
     kid: str,
     clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> tuple[requests.Response, int]:
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode("utf-8")).decode(
@@ -182,6 +194,7 @@ def fetch_and_post_at_to_csp(
             "Failed to post access token to client proxy",
             "Failed to post access token to client proxy",
             clientproxy_process,
+            correlation_id=correlation_id,
         )
 
     sys.stderr = original_stderr

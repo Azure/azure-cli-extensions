@@ -91,6 +91,7 @@ KAP_Certificate_Secret_Name = "kube-aad-proxy-certificate"
 USGovCloud_OriginalName = "AZUREUSGOVERNMENT"
 Dogfood_RMEndpoint = "https://api-dogfood.resources.windows-int.net/"
 Client_Request_Id_Header = "x-ms-client-request-id"
+Correlation_Request_Id_Header = "x-ms-correlation-request-id"
 Default_Onboarding_Source_Tracking_Guid = "77ade16b-0f55-403b-b7d2-739554a897f2"
 Custom_Access_Token_Env_Var_Sub_Id_Missing_Fault_Type = "Required environment variable SubscriptionId not set, for custom Azure access token"
 Custom_Access_Token_Env_Var_Tenant_Id_Missing_Fault_Type = (

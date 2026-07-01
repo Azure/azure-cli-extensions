@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.10.13
++++++++
+* Propagate ``x-ms-correlation-request-id`` end-to-end for ``az connectedk8s proxy``: mint one uuid per session, stamp it on the outbound ARM call (echoed back by ARM) and thread it into every localhost call to arcProxy so the entire session (ARM → arcProxy → Relay → ConnectedProxyAgent) shares one id in logs and Geneva.
+
 1.10.12
 +++++
 * Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.

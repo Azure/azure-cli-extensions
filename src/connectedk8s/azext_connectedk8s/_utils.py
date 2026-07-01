@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import time
+import uuid
 from subprocess import PIPE, Popen
 from typing import TYPE_CHECKING, Any
 
@@ -56,6 +57,20 @@ logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
+
+
+def ensure_correlation_id(cmd: CLICommand, log_prefix: str = "connectedk8s") -> str:
+    """Ensure ``x-ms-correlation-request-id`` is present for this command session."""
+    headers = cmd.cli_ctx.data.setdefault("headers", {})
+    existing = headers.get(consts.Correlation_Request_Id_Header)
+    if existing:
+        correlation_id = str(existing)
+    else:
+        correlation_id = str(uuid.uuid4())
+        headers[consts.Correlation_Request_Id_Header] = correlation_id
+    telemetry.set_debug_info(f"{log_prefix} correlation id is ", correlation_id)
+    logger.info("%s session correlationId: %s", log_prefix, correlation_id)
+    return correlation_id
 
 
 def get_mcr_path(active_directory_endpoint: str) -> str:
@@ -1598,8 +1613,6 @@ def user_confirmation(message: str, yes: bool = False) -> None:
 
 
 def is_guid(guid: str) -> bool:
-    import uuid
-
     try:
         uuid.UUID(guid)
         return True
