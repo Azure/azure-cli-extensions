@@ -12,8 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b11
++++++++++
+* `az aks create` and `az aks update`: Add `--opentelemetry-metrics-port-grpc` and `--opentelemetry-logs-traces-port-grpc` (preview) to configure the gRPC ports for OpenTelemetry metrics and logs/traces collection, in addition to the existing HTTP/protobuf ports.
+* `az aks create` and `az aks update`: Rename the OpenTelemetry parameters, keeping the previous names as deprecated aliases: `--opentelemetry-metrics-port` -> `--opentelemetry-metrics-port-http`, `--opentelemetry-logs-port` -> `--opentelemetry-logs-traces-port-http`, `--enable-opentelemetry-logs` -> `--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs` -> `--disable-opentelemetry-logs-traces`.
+
 21.0.0b10
-++++++++
++++++++++
 * `az aks create`: Add parameters `--system-node-subnet-id`, `--node-subnet-id` and `--enable-hosted-system` to support BYO VNet for Automatic Managed System Pool clusters.
 
 21.0.0b9

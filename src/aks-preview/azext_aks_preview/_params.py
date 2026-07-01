@@ -1175,7 +1175,12 @@ def load_arguments(self, _):
                    type=int,
                    help="HTTP/protobuf port for OpenTelemetry metrics collection"
                    )
-
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
+                   )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
                    action="store_true",
@@ -1211,7 +1216,12 @@ def load_arguments(self, _):
                    type=int,
                    help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
                    )
-
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
+                   )
         c.argument("disable_opentelemetry_logs",
                    options_list=["--disable-opentelemetry-logs-traces"],
                    is_preview=True,
@@ -1820,7 +1830,12 @@ def load_arguments(self, _):
                    type=int,
                    help="HTTP/protobuf port for OpenTelemetry metrics collection"
                    )
-
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
+                   )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
                    action="store_true",
@@ -1856,7 +1871,12 @@ def load_arguments(self, _):
                    type=int,
                    help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
                    )
-
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
+                   )
         c.argument("disable_opentelemetry_logs",
                    options_list=["--disable-opentelemetry-logs-traces"],
                    is_preview=True,

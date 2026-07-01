@@ -16802,7 +16802,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8080 '
+            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8080 --opentelemetry-metrics-port-grpc=8082 '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
         )
         self.cmd(create_cmd, checks=[
@@ -16826,6 +16826,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.grpcPort', 8082),
         ])
 
         # delete

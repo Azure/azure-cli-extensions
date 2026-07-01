@@ -1395,9 +1395,11 @@ def aks_create(
     # opentelemetry parameters
     enable_opentelemetry_metrics=False,
     opentelemetry_metrics_port=None,
+    opentelemetry_metrics_port_grpc=None,
     disable_opentelemetry_metrics=False,
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
+    opentelemetry_logs_traces_port_grpc=None,
     disable_opentelemetry_logs=False,
     # opentelemetry deprecated aliases (merged into the parameters above by the validator)
     opentelemetry_metrics_port_deprecated=None,
@@ -1643,9 +1645,11 @@ def aks_update(
     # opentelemetry parameters
     enable_opentelemetry_metrics=False,
     opentelemetry_metrics_port=None,
+    opentelemetry_metrics_port_grpc=None,
     disable_opentelemetry_metrics=False,
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
+    opentelemetry_logs_traces_port_grpc=None,
     disable_opentelemetry_logs=False,
     # opentelemetry deprecated aliases (merged into the parameters above by the validator)
     opentelemetry_metrics_port_deprecated=None,
