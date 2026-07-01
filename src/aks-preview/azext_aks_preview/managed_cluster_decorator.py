@@ -3012,19 +3012,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Validate that port is not negative
             if opentelemetry_metrics_port < 0:
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-metrics-port must be a non-negative integer."
+                    "--opentelemetry-metrics-port-http must be a non-negative integer."
                 )
             # Check if disabling Azure Monitor metrics - port specification is invalid
             if self.get_disable_azure_monitor_metrics():
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-metrics-port cannot be specified when --disable-azure-monitor-metrics is used."
+                    "--opentelemetry-metrics-port-http cannot be specified when --disable-azure-monitor-metrics is used."
                 )
 
             # For CREATE: --enable-opentelemetry-metrics must be explicitly specified
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not self.get_enable_opentelemetry_metrics():
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-metrics-port can only be specified when "
+                        "--opentelemetry-metrics-port-http can only be specified when "
                         "--enable-opentelemetry-metrics is also specified."
                     )
             # For UPDATE: allow if either explicitly enabling OR already enabled in cluster
@@ -3039,7 +3039,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
                 if not explicitly_enabling and not already_enabled:
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-metrics-port can only be specified when "
+                        "--opentelemetry-metrics-port-http can only be specified when "
                         "--enable-opentelemetry-metrics is also specified or "
                         "OpenTelemetry metrics are already enabled."
                     )
@@ -3061,8 +3061,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if enable_opentelemetry_logs and self._get_disable_opentelemetry_logs(
                     enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-opentelemetry-logs and "
-                    "--disable-opentelemetry-logs at the same time."
+                    "Cannot specify --enable-opentelemetry-logs-traces and "
+                    "--disable-opentelemetry-logs-traces at the same time."
                 )
 
             # For update operations, validate that Azure Monitor logs is enabled
@@ -3126,7 +3126,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if disable_opentelemetry_logs and self._get_enable_opentelemetry_logs(enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+                    "Cannot specify --enable-opentelemetry-logs-traces and "
+                    "--disable-opentelemetry-logs-traces at the same time."
                 )
         return disable_opentelemetry_logs if disable_opentelemetry_logs is not None else False
 
@@ -3149,20 +3150,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Validate that port is not negative
             if opentelemetry_logs_port < 0:
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-logs-port must be a non-negative integer."
+                    "--opentelemetry-logs-traces-port-http must be a non-negative integer."
                 )
             # Check if disabling Azure Monitor logs - port specification is invalid
             if self.get_disable_azure_monitor_logs():
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-logs-port cannot be specified when --disable-azure-monitor-logs is used."
+                    "--opentelemetry-logs-traces-port-http cannot be specified when --disable-azure-monitor-logs is used."
                 )
 
-            # For CREATE: --enable-opentelemetry-logs must be explicitly specified
+            # For CREATE: --enable-opentelemetry-logs-traces must be explicitly specified
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not self.get_enable_opentelemetry_logs():
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-logs-port can only be specified when "
-                        "--enable-opentelemetry-logs is also specified."
+                        "--opentelemetry-logs-traces-port-http can only be specified when "
+                        "--enable-opentelemetry-logs-traces is also specified."
                     )
             # For UPDATE: allow if either explicitly enabling OR already enabled in cluster
             elif self.decorator_mode == DecoratorMode.UPDATE:
@@ -3176,8 +3177,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
                 if not explicitly_enabling and not already_enabled:
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-logs-port can only be specified when "
-                        "--enable-opentelemetry-logs is also specified or "
+                        "--opentelemetry-logs-traces-port-http can only be specified when "
+                        "--enable-opentelemetry-logs-traces is also specified or "
                         "OpenTelemetry logs are already enabled."
                     )
 

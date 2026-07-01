@@ -1399,6 +1399,11 @@ def aks_create(
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
     disable_opentelemetry_logs=False,
+    # opentelemetry deprecated aliases (merged into the parameters above by the validator)
+    opentelemetry_metrics_port_deprecated=None,
+    enable_opentelemetry_logs_deprecated=False,
+    opentelemetry_logs_port_deprecated=None,
+    disable_opentelemetry_logs_deprecated=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -1642,6 +1647,11 @@ def aks_update(
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
     disable_opentelemetry_logs=False,
+    # opentelemetry deprecated aliases (merged into the parameters above by the validator)
+    opentelemetry_metrics_port_deprecated=None,
+    enable_opentelemetry_logs_deprecated=False,
+    opentelemetry_logs_port_deprecated=None,
+    disable_opentelemetry_logs_deprecated=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_optimized_addon_scaling=False,

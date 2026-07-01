@@ -630,21 +630,21 @@ helps['aks create'] = f"""
         - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
-        - name: --opentelemetry-metrics-port
+        - name: --opentelemetry-metrics-port-http
           type: int
-          short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
+          short-summary: HTTP/protobuf port for OpenTelemetry metrics collection (default port will be used if not specified)
         - name: --disable-opentelemetry-metrics
           type: bool
           short-summary: Disable OpenTelemetry metrics collection
-        - name: --enable-opentelemetry-logs
+        - name: --enable-opentelemetry-logs-traces
           type: bool
-          short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
-        - name: --opentelemetry-logs-port
+          short-summary: Enable OpenTelemetry logs and traces collection. Requires Azure Monitor logs to be enabled.
+        - name: --opentelemetry-logs-traces-port-http
           type: int
-          short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-logs
+          short-summary: HTTP/protobuf port for OpenTelemetry logs and traces collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-logs-traces
           type: bool
-          short-summary: Disable OpenTelemetry logs collection
+          short-summary: Disable OpenTelemetry logs and traces collection
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
@@ -844,14 +844,14 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring
         - name: Create a kubernetes cluster with OpenTelemetry metrics collection enabled
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --enable-azuremonitormetrics
-        - name: Create a kubernetes cluster with OpenTelemetry logs collection enabled
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --enable-addons monitoring
+        - name: Create a kubernetes cluster with OpenTelemetry logs and traces collection enabled
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --enable-addons monitoring
         - name: Create a kubernetes cluster with Azure Monitor logs enabled (shorthand)
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
         - name: Create a kubernetes cluster with OpenTelemetry metrics on custom port
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port 8888 --enable-azuremonitormetrics
-        - name: Create a kubernetes cluster with OpenTelemetry logs on custom port
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --opentelemetry-logs-port 4317 --enable-azure-monitor-logs
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --enable-azuremonitormetrics
+        - name: Create a kubernetes cluster with OpenTelemetry logs and traces on custom port
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http 4317 --enable-azure-monitor-logs
         - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
         - name: Create a kubernetes cluster with a VirtualMachines nodepool
@@ -1398,21 +1398,21 @@ helps['aks update'] = """
         - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
-        - name: --opentelemetry-metrics-port
+        - name: --opentelemetry-metrics-port-http
           type: int
-          short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
+          short-summary: HTTP/protobuf port for OpenTelemetry metrics collection (default port will be used if not specified)
         - name: --disable-opentelemetry-metrics
           type: bool
           short-summary: Disable OpenTelemetry metrics collection
-        - name: --enable-opentelemetry-logs
+        - name: --enable-opentelemetry-logs-traces
           type: bool
-          short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
-        - name: --opentelemetry-logs-port
+          short-summary: Enable OpenTelemetry logs and traces collection. Requires Azure Monitor logs to be enabled.
+        - name: --opentelemetry-logs-traces-port-http
           type: int
-          short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-logs
+          short-summary: HTTP/protobuf port for OpenTelemetry logs and traces collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-logs-traces
           type: bool
-          short-summary: Disable OpenTelemetry logs collection
+          short-summary: Disable OpenTelemetry logs and traces collection
         - name: --enable-private-cluster
           type: bool
           short-summary: Enable private cluster for apiserver vnet integration cluster.
@@ -1654,16 +1654,16 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-gateway-api
       - name: Enable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics
-      - name: Enable OpenTelemetry logs collection on an existing cluster
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs
+      - name: Enable OpenTelemetry logs and traces collection on an existing cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces
       - name: Configure OpenTelemetry metrics with custom port
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port 8888
-      - name: Configure OpenTelemetry logs with custom port
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --opentelemetry-logs-port 4317
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888
+      - name: Configure OpenTelemetry logs and traces with custom port
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http 4317
       - name: Disable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-metrics
-      - name: Disable OpenTelemetry logs collection on an existing cluster
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs
+      - name: Disable OpenTelemetry logs and traces collection on an existing cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs-traces
 """
 
 helps['aks kollect'] = """

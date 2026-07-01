@@ -2042,6 +2042,59 @@ class OpenTelemetryPortsNamespace:
         self.opentelemetry_logs_port = opentelemetry_logs_port
 
 
+class OpenTelemetryDeprecatedAliasNamespace:
+    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_metrics_port_deprecated=None,
+                 opentelemetry_logs_port=None, opentelemetry_logs_port_deprecated=None,
+                 enable_opentelemetry_logs=False, enable_opentelemetry_logs_deprecated=False,
+                 disable_opentelemetry_logs=False, disable_opentelemetry_logs_deprecated=False):
+        self.opentelemetry_metrics_port = opentelemetry_metrics_port
+        self.opentelemetry_metrics_port_deprecated = opentelemetry_metrics_port_deprecated
+        self.opentelemetry_logs_port = opentelemetry_logs_port
+        self.opentelemetry_logs_port_deprecated = opentelemetry_logs_port_deprecated
+        self.enable_opentelemetry_logs = enable_opentelemetry_logs
+        self.enable_opentelemetry_logs_deprecated = enable_opentelemetry_logs_deprecated
+        self.disable_opentelemetry_logs = disable_opentelemetry_logs
+        self.disable_opentelemetry_logs_deprecated = disable_opentelemetry_logs_deprecated
+
+
+class TestMergeOpenTelemetryDeprecatedAliases(unittest.TestCase):
+    def test_deprecated_port_merged_when_current_unset(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(opentelemetry_metrics_port_deprecated=8080)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertEqual(ns.opentelemetry_metrics_port, 8080)
+
+    def test_current_port_takes_precedence_over_deprecated(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(
+            opentelemetry_metrics_port=9000,
+            opentelemetry_metrics_port_deprecated=8080,
+        )
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertEqual(ns.opentelemetry_metrics_port, 9000)
+
+    def test_deprecated_logs_port_merged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(opentelemetry_logs_port_deprecated=4317)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertEqual(ns.opentelemetry_logs_port, 4317)
+
+    def test_deprecated_enable_flag_merged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(enable_opentelemetry_logs_deprecated=True)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertTrue(ns.enable_opentelemetry_logs)
+
+    def test_deprecated_disable_flag_merged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(disable_opentelemetry_logs_deprecated=True)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertTrue(ns.disable_opentelemetry_logs)
+
+    def test_no_deprecated_values_leaves_current_unchanged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace()
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertIsNone(ns.opentelemetry_metrics_port)
+        self.assertIsNone(ns.opentelemetry_logs_port)
+        self.assertFalse(ns.enable_opentelemetry_logs)
+        self.assertFalse(ns.disable_opentelemetry_logs)
+
+
 class TestValidateOpenTelemetryPorts(unittest.TestCase):
     def test_no_ports_specified(self):
         namespace = OpenTelemetryPortsNamespace()
@@ -2070,7 +2123,7 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
         )
         err = (
             "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "Please specify different ports for --opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
@@ -2220,7 +2273,7 @@ class TestValidateOpenTelemetryLogsDependencies(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_opentelemetry_logs_dependencies(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2258,7 +2311,7 @@ class TestValidateOpenTelemetryLogsDependenciesForUpdate(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2303,7 +2356,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
         )
         err = (
             "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "Please specify different ports for --opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
@@ -2353,7 +2406,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
         )
         err = (
             "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "Please specify different ports for --opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
@@ -2374,7 +2427,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
         self.assertEqual(str(cm.exception), err)
