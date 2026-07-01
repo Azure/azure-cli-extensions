@@ -6,6 +6,13 @@
 
 
 def load_command_table(self, _):
+    from azure.cli.command_modules.appservice.commands import ex_handler_factory
+    from azure.cli.command_modules.appservice._validators import validate_functionapp
+
+    with self.command_group('functionapp') as g:
+        g.custom_command('create', 'create_functionapp',
+                         exception_handler=ex_handler_factory(),
+                         validator=validate_functionapp)
 
     with self.command_group('functionapp devops-pipeline') as g:
         g.custom_command('create', 'create_devops_pipeline')
