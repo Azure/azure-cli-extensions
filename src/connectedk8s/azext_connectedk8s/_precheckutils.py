@@ -206,7 +206,7 @@ def executing_cluster_diagnostic_checks_job(
                         'cluster-diagnostic-checks -n azure-arc-release" and try onboarding again'
                     )
                     telemetry.set_exception(
-                        exception=error_kubectl_delete_helm.decode("ascii"),
+                        exception=Exception(error_kubectl_delete_helm.decode("ascii")),
                         fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed,
                         summary="Error while executing Cluster Diagnostic Checks Job",
                     )
@@ -309,7 +309,9 @@ def executing_cluster_diagnostic_checks_job(
         # If job is not scheduled then we will delete the helm release
         if is_job_scheduled is False:
             telemetry.set_exception(
-                exception="Couldn't schedule Cluster Diagnostic Checks Job in the cluster",
+                exception=Exception(
+                    "Couldn't schedule Cluster Diagnostic Checks Job in the cluster"
+                ),
                 fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
                 summary="Couldn't schedule Cluster Diagnostic Checks Job in the cluster",
             )
@@ -390,7 +392,9 @@ def executing_cluster_diagnostic_checks_job(
                     )
 
             telemetry.set_exception(
-                exception="Couldn't complete Cluster Diagnostic Checks Job after scheduling in the cluster",
+                exception=Exception(
+                    "Couldn't complete Cluster Diagnostic Checks Job after scheduling in the cluster"
+                ),
                 fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
                 summary="Couldn't complete Cluster Diagnostic Checks Job after scheduling in the cluster",
             )
@@ -467,7 +471,7 @@ def helm_install_release_cluster_diagnostic_checks(
             telemetry.set_user_fault()
 
         telemetry.set_exception(
-            exception=error,
+            exception=Exception(error),
             fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type,
             summary="Unable to install cluster diagnostic checks helm release",
         )
