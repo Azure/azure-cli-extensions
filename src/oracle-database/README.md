@@ -11,16 +11,48 @@ Provision and Manage Oracle Databases, Exadata, Resource Anchors, Network Anchor
 Create a Resource Anchor
 
 #### Create an Autonomous Database ####
-az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded
+az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --regular
+
+Use one create mode option per request. The database type is inferred from `--regular`, `--clone`, `--clone-from-backup-timestamp`, or `--cross-region-disaster-recovery`.
+
+#### Clone an Autonomous Database ####
+az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyCloneDB --display-name MyCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone clone-type=Full source=Database source-id=<source_autonomous_database_id>
+
+Use `source=Database` when cloning directly from an existing Autonomous Database. Put clone fields such as `clone-type`, `source`, and `source-id` inside `--clone`. If you pass `--store-auto-scaling`, use the same storage auto-scaling value as the source database.
+
+#### Clone an Autonomous Database from a backup timestamp ####
+az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyBackupCloneDB --display-name MyBackupCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 32 --license-model BringYourOwnLicense --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone-from-backup-timestamp clone-type=Full source=BackupFromTimestamp source-id=<source_autonomous_database_id> timestamp=2026-06-03T15:45:11.000Z use-latest-available-backup-time-stamp=false
+
+Use `source=BackupFromTimestamp` when cloning from a point-in-time backup. The timestamp uses RFC3339 UTC format. If the backup list only shows seconds, use `.000Z` for the millisecond value. Use `--database-edition` only with `--license-model BringYourOwnLicense`.
+
+#### Create an Autonomous Database cross-region disaster recovery peer ####
+az oracle-database autonomous-database create --resource-group MyResourceGroup --location germanywestcentral --autonomousdatabasename MyCrossRegionPeerDB --display-name MySourceDB --db-version 19c --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <destination_vnet_id> --subnet-id <destination_subnet_id> --cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id=<source_autonomous_database_id> source-location=eastus is-replicate-automatic-backups=true
+
+Use top-level `--location` for the destination region where the cross-region DR peer will be created. Use `source-location` for the existing source Autonomous Database region. The destination VNet and subnet must be in the destination region and must be supported for the mapped OCI region.
 
 #### Show an Autonomous Database ####
 az oracle-database autonomous-database show --name MyAutoDB --resource-group MyResourceGroup
+
+#### Show Autonomous Database connection strings ####
+az oracle-database autonomous-database show --name MyAutoDB --resource-group MyResourceGroup --query "properties.connectionStrings"
+
+Connection strings are available after the Autonomous Database finishes provisioning.
 
 #### List Autonomous Databases ####
 az oracle-database autonomous-database list --resource-group MyResourceGroup
 
 #### Delete an Autonomous Database ####
 az oracle-database autonomous-database delete --name MyAutoDB --resource-group MyResourceGroup --yes --no-wait
+
+#### Change Autonomous Database disaster recovery configuration ####
+az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --disaster-recovery-type Adg --is-replicate-automatic-backups false
+
+Use `--disaster-recovery-type Adg` to change a supported backup-based disaster recovery configuration to Autonomous Data Guard. Use `--disaster-recovery-type BackupBased` to change back to backup-based disaster recovery when that transition is supported for the database.
+
+#### Generate an Autonomous Database Wallet ####
+az oracle-database autonomous-database generate-wallet --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --password <wallet-password> --generate-type All --is-regional true --file wallet-MyAutoDB.zip
+
+Use the wallet when your client connection requires wallet-based authentication, including mTLS connections. The command saves a wallet zip file that includes the database network configuration files such as `tnsnames.ora`, `sqlnet.ora`, and `cwallet.sso`.
 
 #### Create an Exadb VM Cluster ####
 az oracle-database exadb-vm-cluster create --name MyVmCluster --resource-group MyResourceGroup --location eastus --zone 1 --exascale-db-storage-vault-id <vault_id> --display-name MyVmCluster --enabled-ecpu-count 16 --grid-image-ocid <ocid> --hostname myexahost --node-count 2 --shape Exadata.X9M --ssh-public-keys '<ssh_key>' --vnet-id <vnet_id> --subnet-id <subnet_id> --total-ecpu-count 32 --vm-file-system-storage total-size-in-gbs=1024
