@@ -19,7 +19,7 @@ class AddDataAnnotation(AAZCommand):
     """Add a data annotation to an entity
 
     :example: Entities_AddDataAnnotation
-        az monitor health-models entity add-data-annotation --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --annotation-details "{environment:production,deploymentId:deploy-2026-04-10-001,changedBy:release-pipeline}" --description Production deployment of v2.4.1
+        az monitor health-models entity add-data-annotation --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --annotation-details "{environment:production,deploymentId:deploy-2026-04-10-001,changedBy:release-pipeline}" --description "Production deployment of v2.4.1"
     """
 
     _aaz_info = {
