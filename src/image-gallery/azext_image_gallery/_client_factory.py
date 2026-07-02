@@ -14,10 +14,6 @@ def cf_galleries(cli_ctx, _):
     return _compute_client_factory(cli_ctx).galleries
 
 
-def cf_gallery_images(cli_ctx, _):
-    return _compute_client_factory(cli_ctx).gallery_images
-
-
 def cf_community_gallery(cli_ctx, *_):
     return _compute_client_factory(cli_ctx).community_galleries
 

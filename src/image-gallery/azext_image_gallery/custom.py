@@ -12,8 +12,6 @@ from knack.log import get_logger
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.azclierror import RequiredArgumentMissingError
-from azure.cli.core.util import sdk_no_wait
-from ._client_factory import _compute_client_factory
 logger = get_logger(__name__)
 
 
@@ -73,30 +71,41 @@ def _get_resource_group_location(cli_ctx, resource_group_name):
     return client.resource_groups.get(resource_group_name).location
 
 
-def create_image_gallery(cmd, resource_group_name, gallery_name, description=None,
-                         location=None, no_wait=False, tags=None, permissions=None, soft_delete=None,
-                         publisher_uri=None, publisher_contact=None, eula=None, public_name_prefix=None):
-    from .vendored_sdks.azure_mgmt_compute.models._models_py3 import Gallery
+def create_image_gallery(cmd, resource_group_name, gallery_name, description=None, location=None,
+                         no_wait=False, tags=None, permissions=None, soft_delete=None, publisher_uri=None,
+                         publisher_contact=None, eula=None, public_name_prefix=None):
+    from azure.cli.command_modules.vm.operations.sig import SigCreate
     location = location or _get_resource_group_location(cmd.cli_ctx, resource_group_name)
-    gallery = Gallery(description=description, location=location, tags=(tags or {}))
+    command_args = {
+        'resource_group': resource_group_name,
+        'gallery_name': gallery_name,
+        'location': location,
+        'tags': tags or {},
+        'no_wait': no_wait,
+    }
+
+    if description is not None:
+        command_args['description'] = description
+
     if soft_delete is not None:
-        gallery.soft_delete_policy = {'is_soft_delete_enabled': soft_delete}
-    client = _compute_client_factory(cmd.cli_ctx)
+        command_args['soft_delete'] = soft_delete
+
     if permissions:
-        from .vendored_sdks.azure_mgmt_compute.models._models_py3 import SharingProfile
-        gallery.sharing_profile = SharingProfile(permissions=permissions)
+        command_args['permissions'] = permissions
         if permissions == 'Community':
-            if publisher_uri is None or publisher_contact is None or eula is None or public_name_prefix is None:
+            if publisher_uri is None \
+                    or publisher_contact is None \
+                    or eula is None \
+                    or public_name_prefix is None:
                 raise RequiredArgumentMissingError('If you want to share to the community, '
                                                    'you need to fill in all the following parameters:'
                                                    ' --publisher-uri, --publisher-email, --eula, --public-name-prefix.')
 
-            from .vendored_sdks.azure_mgmt_compute.models._models_py3 import CommunityGalleryInfo
-            gallery.sharing_profile.community_gallery_info = CommunityGalleryInfo(publisher_uri=publisher_uri,
-                                                                                  publisher_contact=publisher_contact,
-                                                                                  eula=eula,
-                                                                                  public_name_prefix=public_name_prefix)
-    return sdk_no_wait(no_wait, client.galleries.begin_create_or_update, resource_group_name, gallery_name, gallery)
+            command_args['publisher_uri'] = publisher_uri
+            command_args['publisher_contact'] = publisher_contact
+            command_args['eula'] = eula
+            command_args['public_name_prefix'] = public_name_prefix
+    return SigCreate(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
 def sig_share_update(cmd, client, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
