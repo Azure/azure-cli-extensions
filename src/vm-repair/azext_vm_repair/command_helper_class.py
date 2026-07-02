@@ -10,9 +10,7 @@ import timeit
 import inspect
 from knack.log import get_logger
 
-from azure.cli.core.commands.client_factory import get_subscription_id
-
-from .telemetry import _track_command_telemetry, _track_run_command_telemetry, _track_command_telemetry_repair_and_restore
+from .telemetry import _track_command_telemetry, _track_run_command_telemetry, _track_command_telemetry_repair_and_restore, _generate_user_hash
 
 from .repair_utils import _get_function_param_dict
 
@@ -65,8 +63,17 @@ class command_helper:
         # Error stack trace
         self.error_stack_trace = ''
 
+        # Exception type for telemetry (e.g. 'SkuNotAvailableError')
+        self.exception_type = ''
+
         # Return dict
         self.return_dict = {}
+
+        # Extra telemetry context (VM properties, feature flags, etc.)
+        self.telemetry_context = {}
+
+        # Pseudonymous caller hash
+        self.telemetry_context['UserHash'] = _generate_user_hash(cmd)
 
         # Verbose flag for command
         self.is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
@@ -87,12 +94,17 @@ class command_helper:
             self.cmd.cli_ctx.get_progress_controller().end()
         # Track telemetry data
         elapsed_time = timeit.default_timer() - self.start_time
-        if self.command_name == VM_REPAIR_RUN_COMMAND:
-            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time)
-        if self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
-            _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx))
-        else:
-            _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict)
+        if self.exception_type:
+            self.telemetry_context['ExceptionType'] = self.exception_type
+        try:
+            if self.command_name == VM_REPAIR_RUN_COMMAND:
+                _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time, context=self.telemetry_context)
+            elif self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
+                _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, context=self.telemetry_context)
+            else:
+                _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, self.return_dict, context=self.telemetry_context)
+        except Exception:  # pylint: disable=broad-except
+            self.logger.debug('Failed to send telemetry for %s', self.command_name)
 
     def set_status_success(self):
         """ Set command status to success """
