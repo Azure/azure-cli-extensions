@@ -66,6 +66,7 @@ class Create(AAZCommand):
             options=["-p", "--admin-password"],
             arg_group="Administrator",
             help="The administrator password.",
+            required=True,
             blank=AAZPromptPasswordInput(
                 msg="Password:",
             ),
@@ -74,6 +75,7 @@ class Create(AAZCommand):
             options=["-u", "--admin-user"],
             arg_group="Administrator",
             help="The administrator user name.",
+            required=True,
         )
 
         # define Arg Group "AuthConfig"
@@ -97,6 +99,7 @@ class Create(AAZCommand):
             options=["--tier"],
             arg_group="Compute",
             help="The compute tier to assign to the cluster, where each tier maps to a virtual-core and memory size. Example values: 'M30', 'M40'.",
+            required=True,
         )
 
         # define Arg Group "DataApi"
@@ -116,6 +119,7 @@ class Create(AAZCommand):
             options=["--high-availability"],
             arg_group="HighAvailability",
             help="The target high availability mode requested for the cluster.",
+            required=True,
             enum={"Disabled": "Disabled", "SameZone": "SameZone", "ZoneRedundantPreferred": "ZoneRedundantPreferred"},
         )
 
@@ -222,6 +226,7 @@ class Create(AAZCommand):
             options=["--shard-count"],
             arg_group="Sharding",
             help="Number of shards to provision on the cluster.",
+            required=True,
         )
 
         # define Arg Group "Storage"
@@ -231,6 +236,7 @@ class Create(AAZCommand):
             options=["--storage-size"],
             arg_group="Storage",
             help="The size of the data disk assigned to each server.",
+            required=True,
         )
         _args_schema.storage_type = AAZStrArg(
             options=["--storage-type"],
