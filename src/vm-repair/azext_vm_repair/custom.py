@@ -146,7 +146,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # See MSRC 115198 / VULN-185362.
         for tag_key, tag_value in merged_tags.items():
             for tag_field in (str(tag_key), str(tag_value)):
-                if any(unsafe_char in tag_field for unsafe_char in ('"', '\n', '\r', '\x00')):
+                if '"' in tag_field or any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
                     raise InvalidArgumentValueError(
                         f'Tag keys and values must not contain double quotes or control characters. Offending tag: {tag_key}={tag_value}'
                     )
