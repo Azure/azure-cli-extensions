@@ -116,6 +116,62 @@ class OracleDatabaseAdbsCloneScenario(ScenarioTest):
                  '--autonomousdatabasename {} '
                  '--resource-group {} --yes --no-wait '.format(backup_clone_name, resource_group_name))
 
+    # @live_only()
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
+    def test_oracledatabase_adbs_create_clone_from_backup_timestamp_explicit(self, resource_group):
+        subscription_id = self.get_subscription_id()
+        resource_group_name = 'PowerShellTestRg'
+        source_database_name = 'DNDAdbsTets'
+        backup_clone_name = self.create_random_name(prefix='ADBSbkpclone', length=20)
+        clone_timestamp = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_CLONE_BACKUP_TIMESTAMP',
+            '2026-07-02T05:57:26.000Z'
+        )
+        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+        subnet_id = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_SUBNET_ID',
+            '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated'.format(
+                subscription_id, resource_group_name
+            )
+        )
+        vnet_id = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_VNET_ID',
+            '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet'.format(
+                subscription_id, resource_group_name
+            )
+        )
+        source_id = '/subscriptions/{}/resourceGroups/{}/providers/Oracle.Database/autonomousDatabases/{}'.format(
+            subscription_id, resource_group_name, source_database_name
+        )
+
+        self.cmd('az oracle-database autonomous-database show '
+                 '--name {} --resource-group {} '.format(source_database_name, resource_group_name))
+        self.cmd('az oracle-database autonomous-database create --location eastus '
+                 '--autonomousdatabasename {} '
+                 '--resource-group {} '
+                 '--subnet-id {} '
+                 '--display-name {} '
+                 '--compute-model ECPU --compute-count 2 '
+                 '--data-storage-size-in-gbs 32 --license-model BringYourOwnLicense '
+                 '--db-workload OLTP --admin-password {} '
+                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
+                 '--vnet-id {} '
+                 '--clone-from-backup-timestamp clone-type=Full source=BackupFromTimestamp source-id={} timestamp={} use-latest-available-backup-time-stamp=false '.format(
+                     backup_clone_name,
+                     resource_group_name,
+                     subnet_id,
+                     backup_clone_name,
+                     admin_password,
+                     vnet_id,
+                     source_id,
+                     clone_timestamp
+                 ))
+
+        self.cmd('az oracle-database autonomous-database delete '
+                 '--autonomousdatabasename {} '
+                 '--resource-group {} --yes --no-wait '.format(backup_clone_name, resource_group_name))
+
 
 if __name__ == '__main__':
     unittest.main()
