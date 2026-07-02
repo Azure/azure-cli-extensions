@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Add(AAZCommand):
     """Create Exception
+
+    :example: Add a managed rule exception to a WAF policy.
+        az network front-door waf-policy managed-rules exception add --resource-group rg1 --policy-name Policy1 --match-variable RequestUri --match-values /login.php --value-match-operator Equals --scopes [0].rule-set-type=Microsoft_DefaultRuleSet [0].rule-set-version=2.0
     """
 
     _aaz_info = {
