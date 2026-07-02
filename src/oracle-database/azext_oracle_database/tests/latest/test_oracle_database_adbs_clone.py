@@ -116,7 +116,7 @@ class OracleDatabaseAdbsCloneScenario(ScenarioTest):
                  '--autonomousdatabasename {} '
                  '--resource-group {} --yes --no-wait '.format(backup_clone_name, resource_group_name))
 
-    # @live_only()
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_create_clone_from_backup_timestamp_explicit(self, resource_group):
