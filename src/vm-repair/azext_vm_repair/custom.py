@@ -141,14 +141,18 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Validate tag keys and values before they are placed into the command string.
         # Tag values can originate from the source VM (via --copy-tags) and are therefore
         # untrusted. Reject characters that cannot be safely represented as a single shell
-        # argument (control characters and double quotes); every other character, including
-        # shell metacharacters such as & | < >, is preserved and passed through literally.
-        # See MSRC 115198 / VULN-185362.
+        # argument: double quotes and control characters (which break tokenization), plus
+        # '%' and '!' which cmd.exe expands as environment / delayed-expansion variables
+        # even inside double quotes. There is no reliable way to escape '%' on a 'cmd /c'
+        # command line -- a leading '^' survives as a literal caret and corrupts the value --
+        # so these characters are rejected here at the boundary. Every other character,
+        # including shell metacharacters such as & | < >, is preserved and passed through
+        # literally. See MSRC 115198 / VULN-185362.
         for tag_key, tag_value in merged_tags.items():
             for tag_field in (str(tag_key), str(tag_value)):
-                if '"' in tag_field or any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+                if any(ch in tag_field for ch in ('"', '%', '!')) or any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
                     raise InvalidArgumentValueError(
-                        f'Tag keys and values must not contain double quotes or control characters. Offending tag: {tag_key}={tag_value}'
+                        f'Tag keys and values must not contain double quotes, percent signs, exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
                     )
 
         # Convert to CLI string for passing to az cli later.
