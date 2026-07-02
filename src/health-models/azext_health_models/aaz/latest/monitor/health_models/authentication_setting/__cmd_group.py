@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "monitor health-models authentication-setting",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Authenticationsetting

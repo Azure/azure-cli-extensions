@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity get-history",
+    is_preview=True,
 )
 class GetHistory(AAZCommand):
     """Retrieve the health state transition history for an entity
