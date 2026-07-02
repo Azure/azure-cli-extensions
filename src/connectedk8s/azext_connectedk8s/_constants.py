@@ -148,6 +148,14 @@ Update_Agent_Failure = 'Error while updating agents. Please run "kubectl get pod
 Agent_State_Succeeded = "Succeeded"
 Agent_State_Failed = "Failed"
 Agent_State_Timeout = 15
+Agent_State_Timeout_Fault_Type = "agent-state-timeout-error"
+Provisioned_Cluster_Operation_Fault_Type = "provisioned-cluster-unsupported-operation"
+Update_No_Params_Fault_Type = "update-no-parameters-specified"
+Update_Proxy_Conflict_Fault_Type = "update-proxy-parameters-conflict"
+Connected_Cluster_Resource_Id_None_Fault_Type = (
+    "connected-cluster-resource-id-none-error"
+)
+Custom_Locations_Enable_Failed_Fault_Type = "custom-locations-enable-failed"
 Get_Credentials_Failed_Fault_Type = "failed-to-get-list-cluster-user-credentials"
 Failed_To_Merge_Credentials_Fault_Type = "failed-to-merge-credentials"
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
