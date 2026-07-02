@@ -108,6 +108,14 @@ def create_image_gallery(cmd, resource_group_name, gallery_name, description=Non
     return SigCreate(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
+def sig_community_gallery_show(cmd, location, public_gallery_name):
+    from azure.cli.command_modules.vm.aaz.latest.sig import ShowCommunity
+    return ShowCommunity(cli_ctx=cmd.cli_ctx)(command_args={
+        'location': location,
+        'public_gallery_name': public_gallery_name,
+    })
+
+
 def sig_share_update(cmd, client, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
                      op_type=None):
     from .vendored_sdks.azure_mgmt_compute.models._models_py3 import SharingProfileGroup, SharingUpdate, SharingProfileGroupTypes

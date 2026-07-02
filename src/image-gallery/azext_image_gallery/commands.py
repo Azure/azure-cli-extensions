@@ -8,15 +8,11 @@
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import (cf_community_gallery, cf_community_gallery_image, cf_community_gallery_image_version,
+from ._client_factory import (cf_community_gallery_image, cf_community_gallery_image_version,
                               cf_community_gallery_sharing_profile)
 
 
 def load_command_table(self, _):
-
-    community_gallery_sdk = CliCommandType(
-        operations_tmpl='azext_image_gallery.vendored_sdks.azure_mgmt_compute.operations._community_galleries_operations#CommunityGalleriesOperations.{}',
-        client_factory=cf_community_gallery)
 
     community_gallery_image_sdk = CliCommandType(
         operations_tmpl='azext_image_gallery.vendored_sdks.azure_mgmt_compute.operations._community_gallery_images_operations#CommunityGalleryImagesOperations.{}',
@@ -32,9 +28,7 @@ def load_command_table(self, _):
 
     with self.command_group('sig') as g:
         g.custom_command('create', 'create_image_gallery')
-
-    with self.command_group('sig', community_gallery_sdk, client_factory=cf_community_gallery) as g:
-        g.command('show-community', 'get', is_experimental=True)
+        g.custom_command('show-community', 'sig_community_gallery_show', is_experimental=True)
 
     with self.command_group('sig image-definition', community_gallery_image_sdk,
                             client_factory=cf_community_gallery_image) as g:
