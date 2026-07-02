@@ -7,6 +7,7 @@ Release History
 ++++++
 * Fixed autonomous database update discriminator databaseType
 * Save generated autonomous database wallets as zip files
+* Fixed autonomous database backup create and show result lookup for OCI-backed backups
 
 2.0.3
 ++++++

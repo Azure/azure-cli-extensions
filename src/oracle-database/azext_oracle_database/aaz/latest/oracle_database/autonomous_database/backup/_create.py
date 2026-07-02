@@ -96,8 +96,44 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        from azure.cli.core.azclierror import ResourceNotFoundError
+
+        target_backup_id = self.ctx.args.adbbackupid.to_serialized_data()
+        next_link = None
+        while True:
+            self.ctx.next_link = next_link
+            self.AutonomousDatabaseBackupsListByParent(ctx=self.ctx)()
+            backups = self.deserialize_output(self.ctx.vars.backup_list.value, client_flatten=True)
+            result = self._find_backup(backups, target_backup_id)
+            if result is not None:
+                return result
+
+            next_link = self.deserialize_output(self.ctx.vars.backup_list.next_link)
+            if not next_link:
+                break
+
+        raise ResourceNotFoundError(
+            "Backup '{}' was created, but it could not be found in the backup list.".format(target_backup_id)
+        )
+
+    @staticmethod
+    def _find_backup(backups, target_backup_id):
+        target = target_backup_id.lower()
+        for backup in backups:
+            backup_id = backup.get("id")
+            backup_name = backup.get("name")
+            properties = backup.get("properties") or {}
+            candidates = [
+                backup_id,
+                backup_id.rstrip("/").split("/")[-1] if backup_id else None,
+                backup_name,
+                backup.get("ocid"),
+                properties.get("ocid"),
+            ]
+            for candidate in candidates:
+                if candidate and candidate.lower() == target:
+                    return backup
+        return None
 
     class AutonomousDatabaseBackupsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -106,25 +142,43 @@ class Create(AAZCommand):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self._build_lro_polling_without_final_get(session)
             if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self._build_lro_polling_without_final_get(session)
 
             return self.on_error(session.http_response)
+
+        def _build_lro_polling_without_final_get(self, session):
+            from azure.cli.core.aaz._poller import AAZBasePolling, AAZNoPolling
+            from azure.core.polling.base_polling import LocationPolling, StatusCheckPolling
+            from azure.mgmt.core.polling.arm_polling import AzureAsyncOperationPolling
+
+            class AzureAsyncOperationNoFinalGetPolling(AzureAsyncOperationPolling):
+                def get_final_get_url(self, pipeline_response):
+                    return None
+
+            if self.ctx.args.no_wait == True:  # noqa: E712
+                polling = AAZNoPolling()
+            else:
+                polling = AAZBasePolling(
+                    lro_algorithms=[
+                        AzureAsyncOperationNoFinalGetPolling(),
+                        LocationPolling(),
+                        StatusCheckPolling(),
+                    ],
+                    path_format_arguments=self.url_parameters,
+                    http_response_error_callback=self.on_error,
+                )
+
+            polling.initialize(
+                self.client,
+                initial_response=session,
+                deserialization_callback=self.on_lro_completed,
+            )
+            return polling
+
+        def on_lro_completed(self, _):
+            return None
 
         @property
         def url(self):
@@ -318,6 +372,98 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200_201
+
+    class AutonomousDatabaseBackupsListByParent(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/autonomousDatabases/{autonomousdatabasename}/autonomousDatabaseBackups",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "autonomousdatabasename", self.ctx.args.autonomousdatabasename,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-09-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "backup_list",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            _schema_on_200.value.Element = Create.AutonomousDatabaseBackupsCreateOrUpdate._build_schema_on_200_201()
+
+            return cls._schema_on_200
 
 
 class _CreateHelper:
