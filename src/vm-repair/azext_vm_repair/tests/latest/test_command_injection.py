@@ -207,3 +207,4 @@ def test_no_command_injection_through_real_cmd(tmp_path):
     completed = subprocess.run(command_line, capture_output=True, text=True)
     assert not marker.exists(), 'command injection occurred: marker file was created'
     assert completed.stdout == payload
+    assert completed.returncode == 0
