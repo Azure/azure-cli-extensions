@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b5
++++++++
+* Add `az horizondb parameter-group` commands to create, delete, list, and show HorizonDB parameter groups.
+
 1.0.0b4
 +++++++
 * Update validation checks for commands. Add short form arguments for user convenience.

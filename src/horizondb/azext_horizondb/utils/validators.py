@@ -5,6 +5,7 @@
 
 from knack.prompting import NoTTYException, prompt_pass
 from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group, validate_tags)
 from typing import Any, Dict, Iterable, Optional
@@ -70,3 +71,19 @@ def validate_replica_count(ns):
         return
     if ns.replica_count < 1 or ns.replica_count > 16:
         raise CLIError('Replica count must be between 1 and 16, inclusive.')
+
+
+def validate_parameters(cmd, namespace):    # pylint: disable=unused-argument
+    if not namespace.parameters:
+        return
+
+    from azext_horizondb.vendored_sdks.models import ParameterProperties
+
+    parameter_list = []
+    for item in namespace.parameters:
+        if '=' not in item:
+            raise ArgumentUsageError("Parameter '{}' must be in the format name=value.".format(item))
+        name, value = item.split('=', 1)
+        parameter_list.append(ParameterProperties(name=name, value=value))
+
+    namespace.parameters = parameter_list

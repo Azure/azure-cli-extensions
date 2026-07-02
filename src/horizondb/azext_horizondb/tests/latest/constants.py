@@ -5,6 +5,8 @@
 
 # Constants
 CLUSTER_NAME_PREFIX = 'horizondbclitest-'
+PARAMETER_GROUP_NAME_PREFIX = 'horizondbpgclitest-'
 PASSWORD_PREFIX = 'passwordHorizon%'
 CLUSTER_NAME_MAX_LENGTH = 40
+PARAMETER_GROUP_NAME_MAX_LENGTH = 40
 DEFAULT_LOCATION = 'centralus'
