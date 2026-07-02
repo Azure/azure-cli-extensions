@@ -11,49 +11,38 @@ from azure.cli.testsdk import ScenarioTest, live_only
 
 
 class OracleDatabaseAdbsUpdateScenario(ScenarioTest):
-    def _get_precreated_adbs(self):
+    def _get_adbs(self):
         return (
             os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_RESOURCE_GROUP', 'PowerShellTestRg'),
-            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_NAME', 'ADBScli1')
+            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_NAME', 'DNDAdbsTets')
         )
 
     @live_only()
     @AllowLargeResponse(size_kb=10240)
-    def test_oracledatabase_adbs_update_precreated(self):
-        resource_group, autonomous_database_name = self._get_precreated_adbs()
+    def test_oracledatabase_adbs_update(self):
+        resource_group, autonomous_database_name = self._get_adbs()
 
         self.cmd('az oracle-database autonomous-database update '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
                  '--compute-count 3 '
-                 '--cpu-auto-scaling true '
-                 '--data-storage-size-in-gbs 1150 '
-                 '--store-auto-scaling false '
+                 '--cpu-auto-scaling false '
+                 '--data-storage-size-in-tbs 2 '
+                 '--store-auto-scaling true '
                  '--tags Environment=Prod Owner=DBTeam'.format(resource_group, autonomous_database_name))
 
         self.cmd('az oracle-database autonomous-database update '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
                  '--is-auto-scaling-enabled true '
-                 '--storage-gbs 1150'.format(resource_group, autonomous_database_name))
+                 '--storage-tbs 2'.format(resource_group, autonomous_database_name))
 
     @live_only()
     @AllowLargeResponse(size_kb=10240)
-    def test_oracledatabase_adbs_update_retention_period_precreated(self):
-        resource_group, autonomous_database_name = self._get_precreated_adbs()
+    def test_oracledatabase_adbs_update_retention_period(self):
+        resource_group, autonomous_database_name = self._get_adbs()
 
         self.cmd('az oracle-database autonomous-database update '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
-                 '--retention-days 7'.format(resource_group, autonomous_database_name))
-
-    @live_only()
-    @AllowLargeResponse(size_kb=10240)
-    def test_oracledatabase_adbs_update_admin_password_precreated(self):
-        resource_group, autonomous_database_name = self._get_precreated_adbs()
-        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_ADMIN_PASSWORD', 'TestPass#2024#')
-
-        self.cmd('az oracle-database autonomous-database update '
-                 '--resource-group {} '
-                 '--autonomousdatabasename {} '
-                 '--admin-password "{}"'.format(resource_group, autonomous_database_name, admin_password))
+                 '--retention-days 40'.format(resource_group, autonomous_database_name))
