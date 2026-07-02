@@ -18,7 +18,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SkuNotAvailableError)
 
-from azure.cli.core.azclierror import CLIError
+from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -90,6 +90,29 @@ def _quote_cmd_arg(arg):
     result += '\\' * (backslash_count * 2)
     result += '"'
     return result
+
+
+# Characters that cannot be safely carried through a Windows 'cmd /c' command line when
+# interpolated from an untrusted tag value (for example a source VM tag copied via
+# --copy-tags). Double quotes and ASCII control characters break argument tokenization,
+# and '%' / '!' are expanded by cmd.exe as environment / delayed-expansion variables even
+# inside double quotes -- '%' in particular cannot be reliably escaped on a 'cmd /c' line
+# (a leading '^' is preserved as a literal caret and corrupts the value). Such characters
+# are therefore rejected at the boundary rather than escaped. See MSRC 115198 / VULN-185362.
+def _validate_tags_for_command(merged_tags):
+    """
+    Reject tag keys and values that contain characters which are unsafe to interpolate
+    into the 'az' command string. Raises InvalidArgumentValueError on the first offending
+    key or value; returns None when every tag is safe.
+    """
+    for tag_key, tag_value in merged_tags.items():
+        for tag_field in (str(tag_key), str(tag_value)):
+            if any(unsafe_char in tag_field for unsafe_char in ('"', '%', '!')) or \
+                    any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+                raise InvalidArgumentValueError(
+                    f'Tag keys and values must not contain double quotes, percent signs, '
+                    f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
+                )
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):

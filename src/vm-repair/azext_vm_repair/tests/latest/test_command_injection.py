@@ -18,7 +18,9 @@ from unittest import mock
 
 import pytest
 
-from azext_vm_repair.repair_utils import _call_az_command, _quote_cmd_arg
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
+from azext_vm_repair.repair_utils import _call_az_command, _quote_cmd_arg, _validate_tags_for_command
 
 
 class _FakeProcess:
@@ -208,3 +210,87 @@ def test_no_command_injection_through_real_cmd(tmp_path):
     assert not marker.exists(), 'command injection occurred: marker file was created'
     assert completed.stdout == payload
     assert completed.returncode == 0
+
+
+# ---------------------------------------------------------------------------
+# Tag validation (_validate_tags_for_command)
+#
+# Tag keys/values reach the command string from an untrusted source (a source VM
+# tag copied via --copy-tags). Characters that cannot be safely carried through a
+# Windows 'cmd /c' line must be rejected at the boundary. '%' and '!' are especially
+# important: cmd.exe expands them as environment / delayed-expansion variables even
+# inside double quotes, and '%' cannot be reliably escaped. See MSRC 115198.
+# ---------------------------------------------------------------------------
+
+# Characters that must be rejected in either a tag key or a tag value.
+UNSAFE_TAG_CHARS = [
+    '"',        # breaks the shlex / cmd.exe quoting
+    '%',        # cmd.exe environment-variable expansion (e.g. %USERNAME%)
+    '!',        # cmd.exe delayed expansion when 'cmd /v:on' is enabled
+    '\n',       # control character
+    '\r',       # control character
+    '\x00',     # NUL
+    '\t',       # tab (C0 control)
+    '\x1b',     # ESC / terminal-control sequence introducer
+    '\x07',     # BEL
+    '\x7f',     # DEL
+]
+
+
+@pytest.mark.parametrize('bad_char', UNSAFE_TAG_CHARS)
+def test_validate_tags_rejects_unsafe_value(bad_char):
+    with pytest.raises(InvalidArgumentValueError):
+        _validate_tags_for_command({'env': 'ok{bad}'.format(bad=bad_char)})
+
+
+@pytest.mark.parametrize('bad_char', UNSAFE_TAG_CHARS)
+def test_validate_tags_rejects_unsafe_key(bad_char):
+    # A malicious character in the key must be rejected just like one in the value.
+    with pytest.raises(InvalidArgumentValueError):
+        _validate_tags_for_command({'key{bad}'.format(bad=bad_char): 'value'})
+
+
+def test_validate_tags_rejects_percent_expansion_payload():
+    # The concrete information-leak vector: %USERNAME% would be expanded by cmd.exe to the
+    # operator's local username even inside double quotes, so it must be rejected.
+    with pytest.raises(InvalidArgumentValueError):
+        _validate_tags_for_command({'owner': 'env=%USERNAME%'})
+
+
+# Shell metacharacters that are NOT expanded/interpreted once wrapped in double quotes by
+# _quote_cmd_arg. These must be preserved (passed through literally), not rejected.
+ALLOWED_TAG_VALUES = [
+    'plain',
+    'owner=R&D',
+    'a|b',
+    'a<b>c',
+    'path C:\\Users\\Public',
+    'a(b)c',
+    'a^b',
+    'ok&echo',
+    'semi;colon',
+    '$(whoami)',
+    '`whoami`',
+    'space separated value',
+]
+
+
+@pytest.mark.parametrize('good_value', ALLOWED_TAG_VALUES)
+def test_validate_tags_allows_safe_values(good_value):
+    # Must not raise: these characters survive as literal text through the two-stage
+    # shlex.quote + _quote_cmd_arg pipeline, so rejecting them would be an unnecessary
+    # regression in functionality.
+    _validate_tags_for_command({'tag': good_value})
+
+
+def test_validate_tags_empty_dict_is_allowed():
+    # No tags is trivially safe.
+    _validate_tags_for_command({})
+
+
+def test_validate_tags_error_message_names_offending_tag():
+    with pytest.raises(InvalidArgumentValueError) as exc_info:
+        _validate_tags_for_command({'owner': 'bad%value'})
+    message = str(exc_info.value)
+    assert 'owner' in message
+    assert 'bad%value' in message
