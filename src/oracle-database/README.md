@@ -11,12 +11,14 @@ Provision and Manage Oracle Databases, Exadata, Resource Anchors, Network Anchor
 Create a Resource Anchor
 
 #### Create an Autonomous Database ####
-az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded
+az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --regular
+
+Use one create mode option per request. The database type is inferred from `--regular`, `--clone`, `--clone-from-backup-timestamp`, or `--cross-region-disaster-recovery`.
 
 #### Clone an Autonomous Database ####
 az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyCloneDB --display-name MyCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone clone-type=Full source=Database source-id=<source_autonomous_database_id>
 
-Use `source=Database` when cloning directly from an existing Autonomous Database. If you pass `--store-auto-scaling`, use the same storage auto-scaling value as the source database.
+Use `source=Database` when cloning directly from an existing Autonomous Database. Put clone fields such as `clone-type`, `source`, and `source-id` inside `--clone`. If you pass `--store-auto-scaling`, use the same storage auto-scaling value as the source database.
 
 #### Clone an Autonomous Database from a backup timestamp ####
 az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyBackupCloneDB --display-name MyBackupCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 32 --license-model BringYourOwnLicense --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone-from-backup-timestamp clone-type=Full source=BackupFromTimestamp source-id=<source_autonomous_database_id> timestamp=2026-06-03T15:45:11.000Z use-latest-available-backup-time-stamp=false
