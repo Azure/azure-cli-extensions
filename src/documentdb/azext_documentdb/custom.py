@@ -102,6 +102,13 @@ class ResetPassword(_MongoClusterUpdate):
         az documentdb mongocluster reset-password -n MyCluster -g MyResourceGroup --password NewP@ssw0rd123!
     """
 
+    # Own schema caches so the deregister/rename below never mutate the shared
+    # schema of the base ``update`` command (which runs in the same session).
+    # ``_arguments_schema`` is the cache used by ``get_arguments_schema`` (the entry
+    # point the CLI parser uses); ``_args_schema`` is the internal build cache.
+    _arguments_schema = None
+    _args_schema = None
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -125,6 +132,11 @@ class ReplicaCreate(_MongoClusterCreate):
     :example: Create a replica of a cluster in another region.
         az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --source-cluster MySourceCluster --source-location eastus2
     """
+
+    # Own schema caches so deregistering the base ``create`` flags never mutates
+    # the shared schema of the ``create`` command (which runs in the same session).
+    _arguments_schema = None
+    _args_schema = None
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -192,6 +204,11 @@ class Restore(_MongoClusterCreate):
     :example: Restore a cluster to a point in time.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
     """
+
+    # Own schema caches so deregistering the base ``create`` flags never mutates
+    # the shared schema of the ``create`` command (which runs in the same session).
+    _arguments_schema = None
+    _args_schema = None
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
