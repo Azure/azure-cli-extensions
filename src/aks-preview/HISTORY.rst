@@ -11,10 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 21.0.0b8
 ++++++++
-* Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+* `az aks create`: Add `--enable-on-demand-monitor` to enable on-demand monitor for the cluster.
+* `az aks update`: Add `--enable-on-demand-monitor` and `--disable-on-demand-monitor` to manage on-demand monitor for the cluster.
 
 21.0.0b7
 ++++++++
