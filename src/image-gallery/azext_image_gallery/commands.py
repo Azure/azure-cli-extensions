@@ -37,7 +37,7 @@ def load_command_table(self, _):
 
     with self.command_group('sig image-version', community_gallery_image_version_sdk,
                             client_factory=cf_community_gallery_image_version) as g:
-        g.command('show-community', 'get', is_experimental=True)
+        g.custom_command('show-community', 'sig_community_image_version_show', is_experimental=True)
         g.custom_command('list-community', 'sig_community_image_version_list', is_experimental=True)
 
     with self.command_group('sig share', community_gallery_sharing_profile_sdk,

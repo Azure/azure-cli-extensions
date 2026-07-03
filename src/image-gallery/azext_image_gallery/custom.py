@@ -125,6 +125,17 @@ def sig_community_gallery_image_show(cmd, location, public_gallery_name, gallery
     })
 
 
+def sig_community_image_version_show(cmd, location, public_gallery_name, gallery_image_name,
+                                     gallery_image_version_name):
+    from azure.cli.command_modules.vm.aaz.latest.sig.image_version import ShowCommunity
+    return ShowCommunity(cli_ctx=cmd.cli_ctx)(command_args={
+        'location': location,
+        'public_gallery_name': public_gallery_name,
+        'gallery_image_definition': gallery_image_name,
+        'gallery_image_version_name': gallery_image_version_name,
+    })
+
+
 def sig_share_update(cmd, client, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
                      op_type=None):
     from .vendored_sdks.azure_mgmt_compute.models._models_py3 import SharingProfileGroup, SharingUpdate, SharingProfileGroupTypes
