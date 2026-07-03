@@ -46,8 +46,6 @@ def load_arguments(self, _):
     with self.argument_context('sig image-definition list-community') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
         c.argument('public_gallery_name', public_gallery_name_type)
-        c.argument('marker', arg_type=marker_type)
-        c.argument('show_next_marker', action='store_true', help='Show nextMarker in result when specified.')
 
     with self.argument_context('sig image-version show-community') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')

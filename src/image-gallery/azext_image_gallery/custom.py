@@ -15,9 +15,12 @@ from azure.cli.core.azclierror import RequiredArgumentMissingError
 logger = get_logger(__name__)
 
 
-def sig_community_image_definition_list(client, location, public_gallery_name, marker=None, show_next_marker=None):
-    generator = client.list(location=location, public_gallery_name=public_gallery_name)
-    return get_page_result(generator, marker, show_next_marker)
+def sig_community_image_definition_list(cmd, location, public_gallery_name):
+    from azure.cli.command_modules.vm.aaz.latest.sig.image_definition import ListCommunity
+    return ListCommunity(cli_ctx=cmd.cli_ctx)(command_args={
+        'location': location,
+        'public_gallery_name': public_gallery_name,
+    })
 
 
 def sig_community_image_version_list(client, location, public_gallery_name, gallery_image_name, marker=None,
