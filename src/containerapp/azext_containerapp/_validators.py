@@ -356,6 +356,29 @@ def validate_functionapp_kind(cmd, resource_group_name, container_app_name):
     )
 
 
+def validate_functionapp_ingress_enabled(cmd, resource_group_name, container_app_name):
+    # Listing/showing functions reads function metadata that the platform only populates
+    # while ingress is enabled, so the underlying API fails with a generic server error
+    # when ingress is disabled. Detect that case up front and surface an actionable message
+    # instead of the opaque error the service returns.
+    containerapp_def = validate_container_app_exists(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        container_app_name=container_app_name
+    )
+
+    ingress = safe_get(containerapp_def, "properties", "configuration", "ingress")
+
+    if not ingress:
+        logger.debug("Container app '%s' has ingress disabled - functions cannot be listed", container_app_name)
+        raise ValidationError(
+            f"Ingress must be enabled to view functions for the containerapp '{container_app_name}'. "
+            f"Enable ingress on the container app and try again."
+        )
+
+    logger.debug("Container app '%s' has ingress enabled", container_app_name)
+
+
 def validate_basic_arguments(resource_group_name, container_app_name, **kwargs):
     if not resource_group_name:
         logger.debug("Resource group name validation failed - empty or None")
