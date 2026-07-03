@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models relationship list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List Relationship resources by HealthModel

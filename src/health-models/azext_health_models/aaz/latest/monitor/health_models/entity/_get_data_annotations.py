@@ -13,8 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity get-data-annotations",
+    is_preview=True,
 )
-class GetDataAnnotation(AAZCommand):
+class GetDataAnnotations(AAZCommand):
     """Retrieve data annotations for an entity
 
     :example: Entities_GetDataAnnotations
@@ -259,8 +260,8 @@ class GetDataAnnotation(AAZCommand):
             return cls._schema_on_200
 
 
-class _GetDataAnnotationHelper:
-    """Helper class for GetDataAnnotation"""
+class _GetDataAnnotationsHelper:
+    """Helper class for GetDataAnnotations"""
 
 
-__all__ = ["GetDataAnnotation"]
+__all__ = ["GetDataAnnotations"]
