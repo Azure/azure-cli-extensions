@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0b3
+1.1.0
 +++++++++++++++
 * Migrate code from Azure SDK to AAZ based commands for compute operations.
 * Remove `--marker` and `--show-next-marker` from `sig image-definition list-community` and `sig image-version list-community`. AAZ has its own handling for pagination.
