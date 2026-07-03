@@ -49,3 +49,6 @@ def horizondb_parameter_group_list(client, resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()
+
+def horizondb_parameter_group_list_connections(client, resource_group_name, parameter_group_name):
+    return client.list_connections(resource_group_name=resource_group_name, parameter_group_name=parameter_group_name)
