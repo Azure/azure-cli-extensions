@@ -19,14 +19,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Provisioned Machine resource.
 
-    :example: Create an AzureLinux provisioned machine
-        az provisionedmachine create -g myResourceGroup -n myProvisionedMachine -l eastus --site-resource-id /subscriptions/.../sites/mySite --os-image AzureLinux --version 3.0 --ownership-voucher /path/to/voucher.pem --ssh-public-key "ssh-rsa AAAAB3..."
+    :example: Create an AzureLinux provisioned machine (auto-picks latest OS version)
+        az provisionedmachine create -g myResourceGroup -n myProvisionedMachine -l eastus --site-resource-id /subscriptions/.../sites/mySite --os-image-type AzureLinux --ownership-voucher /path/to/voucher.pem --ssh-public-key "ssh-rsa AAAAB3..."
+
+    :example: Create an HCI provisioned machine with specific version
+        az provisionedmachine create -g myResourceGroup -n myProvisionedMachine -l eastus --site-resource-id /subscriptions/.../sites/mySite --os-image-type HCI --os-image-version 12.2607.1003.50 --ownership-voucher /path/to/voucher.pem --key-vault-secret-id /subscriptions/.../secrets/mySecret
+
+    :example: Create a provisioned machine without OS installation
+        az provisionedmachine create -g myResourceGroup -n myProvisionedMachine -l eastus --site-resource-id /subscriptions/.../sites/mySite --ownership-voucher /path/to/voucher.pem
     """
 
     _aaz_info = {
-        "version": "2025-12-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}", "2025-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -89,16 +95,16 @@ class Create(AAZCommand):
         )
 
         # Define Arg Group "OS Configuration"
-        _args_schema.os_image = AAZStrArg(
-            options=["--os-image"],
+        _args_schema.os_image_type = AAZStrArg(
+            options=["--os-image-type"],
             arg_group="OS Configuration",
-            help="Name of the OS image for this provisioned machine. Allowed values: HCI, AzureLinux.",
+            help="Type of OS image for this provisioned machine. ⚡ CHANGED: Renamed from --os-image",
             enum={"HCI": "HCI", "AzureLinux": "AzureLinux"},
         )
-        _args_schema.version = AAZStrArg(
-            options=["-v", "--version"],
+        _args_schema.os_image_version = AAZStrArg(
+            options=["--os-image-version"],
             arg_group="OS Configuration",
-            help="Version string. Required for HCI (VSR version). Optional for AzureLinux (OS version).",
+            help="Version of the OS image. If not specified, the latest available version is automatically selected. ⚡ CHANGED: Renamed from --version -v",
         )
 
         # Define Arg Group "Authentication"
@@ -185,6 +191,8 @@ class Create(AAZCommand):
 
     # Store validation result as class variable
     _validation_result = None
+    # Store resolved version as class variable
+    _resolved_version = None
 
     def _validate_voucher_response(self):
         """Check the validation response and raise error if invalid."""
@@ -249,24 +257,19 @@ class Create(AAZCommand):
         has_kv_secret = has_value(args.key_vault_secret_id) and args.key_vault_secret_id.to_serialized_data()
         
 
-        # Validate OS image specific requirements (only if os_image is provided)
-        if has_value(args.os_image):
-            os_image = args.os_image.to_serialized_data()
+        # Validate OS image specific requirements (only if os_image_type is provided)
+        if has_value(args.os_image_type):
+            os_image_type = args.os_image_type.to_serialized_data()
             
-            if os_image == "AzureLinux":
-                # AzureLinux requires: os-image + ssh-public-key (version is optional)
+            if os_image_type == "AzureLinux":
+                # AzureLinux requires: os-image-type + ssh-public-key (version is optional - auto-resolved)
                 if not has_ssh_key:
                     raise RequiredArgumentMissingError(
                         "SSH public key (--ssh-public-key) is required when using AzureLinux OS image."
                     )
                 
-            elif os_image == "HCI":
-                # HCI requires: os-image + version + key-vault-secret-id
-                version = args.version.to_serialized_data() if has_value(args.version) else None
-                if not version:
-                    raise RequiredArgumentMissingError(
-                        "Version (--version) is required when using HCI OS image."
-                    )
+            elif os_image_type == "HCI":
+                # HCI requires: os-image-type + key-vault-secret-id (version is optional - auto-resolved)
                 if not has_kv_secret:
                     raise RequiredArgumentMissingError(
                         "Key Vault secret ID (--key-vault-secret-id) is required when using HCI OS image."
@@ -274,6 +277,15 @@ class Create(AAZCommand):
                 # Validate Key Vault secret ID format
                 kv_secret = args.key_vault_secret_id.to_serialized_data()
                 self._validate_key_vault_secret_id(kv_secret)
+
+            # Auto-resolve version if not provided
+            if not has_value(args.os_image_version) or not args.os_image_version.to_serialized_data():
+                location = args.location.to_serialized_data()
+                resolved_version = self._resolve_latest_version(os_image_type.lower(), location)
+                # Store resolved version for use in content property
+                Create._resolved_version = resolved_version
+            else:
+                Create._resolved_version = args.os_image_version.to_serialized_data()
 
 
 
@@ -320,6 +332,56 @@ class Create(AAZCommand):
             hostname = args.hostname.to_serialized_data()
             self._validate_hostname(hostname)
 
+
+    def _resolve_latest_version(self, os_image_type, location):
+        """Resolve the latest available OS image version by calling the os-image list API.
+
+        The API returns images sorted in descending order by version
+        (guaranteed by RP's GetNLatestRecipesAsync which uses
+        OrderByDescending(Version.Parse(FullSolutionVersion))).
+        So the first image is always the latest.
+        """
+        from azure.cli.core.util import send_raw_request
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            os_images_url = (
+                f"/subscriptions/{self.ctx.subscription_id}"
+                f"/providers/Microsoft.AzureStackHCI/locations/{location}/osImages"
+                f"?api-version=2026-05-01-preview&solution-type={os_image_type}"
+            )
+            response = send_raw_request(self.ctx.cli_ctx, "GET", os_images_url)
+            data = response.json()
+            images = data.get("value", [])
+
+            if not images:
+                raise ResourceNotFoundError(
+                    f"No OS images found for type '{os_image_type}' in location '{location}'. "
+                    f"Please specify --os-image-version explicitly."
+                )
+
+            # API returns images sorted descending by version — first item is the latest
+            latest_version = images[0].get("properties", {}).get("validatedSolutionRecipeVersion", "")
+
+            if not latest_version:
+                raise ResourceNotFoundError(
+                    f"Could not determine latest version for '{os_image_type}'. "
+                    f"Please specify --os-image-version explicitly."
+                )
+
+            logger.info("Auto-resolved latest %s version: %s", os_image_type, latest_version)
+            return latest_version
+
+        except ResourceNotFoundError:
+            raise
+        except Exception as e:
+            raise ResourceNotFoundError(
+                f"Error resolving latest OS image version: {str(e)}. "
+                f"Please specify --os-image-version explicitly."
+            )
 
     def _validate_resource_id(self, resource_id, param_name):
         """Validate Azure resource ID format."""
@@ -512,11 +574,11 @@ class Create(AAZCommand):
         args = self.ctx.args
         
         # Only assign roles when HCI OS image is specified
-        if not has_value(args.os_image):
+        if not has_value(args.os_image_type):
             return
         
-        os_image = args.os_image.to_serialized_data()
-        if os_image != "HCI":
+        os_image_type = args.os_image_type.to_serialized_data()
+        if os_image_type != "HCI":
             return
         
         # Get the principal ID by fetching the edge machine
@@ -676,7 +738,7 @@ class Create(AAZCommand):
                 f"/subscriptions/{self.ctx.subscription_id}"
                 f"/resourceGroups/{args.resource_group.to_serialized_data()}"
                 f"/providers/Microsoft.AzureStackHCI/edgeMachines/{args.edge_machine_name.to_serialized_data()}"
-                f"?api-version=2025-12-01-preview"
+                f"?api-version=2026-05-01-preview"
             )
             
             # Make GET request using ctx.cli_ctx
@@ -749,7 +811,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -852,7 +914,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -878,7 +940,7 @@ class Create(AAZCommand):
             location = args.location.to_serialized_data()
             edge_machine_name = args.edge_machine_name.to_serialized_data()
             site_resource_id = args.site_resource_id.to_serialized_data()
-            os_image = args.os_image.to_serialized_data() if has_value(args.os_image) else None
+            os_image_type = args.os_image_type.to_serialized_data() if has_value(args.os_image_type) else None
             
             # Build network adapter configuration
             # Auto-determine IP allocation method: Manual if ip_address, subnet_mask, and gateway are all provided
@@ -940,12 +1002,13 @@ class Create(AAZCommand):
                 "time": time_config
             }
 
-            # Build provisioning details based on OS image type (only if os_image is provided)
+            # Build provisioning details based on OS image type (only if os_image_type is provided)
             provisioning_details = None
-            if os_image == "HCI":
+            if os_image_type == "HCI":
                 provisioning_details = {
                     "osProfile": {
-                        "osType": "HCI"
+                        "osType": "HCI",
+                        "vsrVersion": Create._resolved_version
                     },
                     "userDetails": [
                         {
@@ -955,14 +1018,12 @@ class Create(AAZCommand):
                         }
                     ]
                 }
-                if has_value(args.version):
-                    provisioning_details["osProfile"]["vsrVersion"] = args.version.to_serialized_data()
-            elif os_image == "AzureLinux":
+            elif os_image_type == "AzureLinux":
                 provisioning_details = {
                     "osProfile": {
                         "osType": "AzureLinux",
                         "osName": "AzureLinux",
-                        "osVersion": "3.0",
+                        "osVersion": Create._resolved_version,
                         "osImageLocation": "https://aka.ms/aep/sff/azurelinux/2604a"
                     },
                     "userDetails": [
@@ -973,8 +1034,6 @@ class Create(AAZCommand):
                         }
                     ]
                 }
-                if has_value(args.version):
-                    provisioning_details["osProfile"]["osVersion"] = args.version.to_serialized_data()
 
             # Read and encode the ownership voucher file
             file_path = args.ownership_voucher.to_serialized_data()

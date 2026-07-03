@@ -8,7 +8,7 @@
 from azure.cli.core import AzCommandsLoader
 from azext_provisionedmachine._help import helps  # pylint: disable=unused-import
 
-__version__ = '1.0.0b1'
+__version__ = '1.0.0b4'
 
 
 class ProvisionedMachineCommandsLoader(AzCommandsLoader):
