@@ -3,8 +3,8 @@
 Release History
 ===============
 
-2.2.0
-+++++
+2.2.0a1
++++++++
 * Add cimwriter.dll and the related license to the extension package for building C-WCOW policies on WS2025
 * Add environment variables and fix mounts for C-WCOW on VN2
 
