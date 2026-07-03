@@ -104,6 +104,10 @@ def sig_community_image_version_show(cmd, location, public_gallery_name, gallery
 def sig_share_enable_community(cmd, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
                                no_wait=False, op_type=None):
     from azure.cli.command_modules.vm.operations.sig_share import SigShareEnableCommunity
+
+    if op_type != 'EnableCommunity' and subscription_ids is None and tenant_ids is None:
+        raise RequiredArgumentMissingError('At least one of subscription ids or tenant ids must be provided')
+
     command_args = {
         'resource_group': resource_group_name,
         'gallery_name': gallery_name,
