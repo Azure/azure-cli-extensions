@@ -136,18 +136,18 @@ def sig_community_image_version_show(cmd, location, public_gallery_name, gallery
     })
 
 
-def sig_share_update(cmd, client, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
-                     op_type=None):
-    from .vendored_sdks.azure_mgmt_compute.models._models_py3 import SharingProfileGroup, SharingUpdate, SharingProfileGroupTypes
-    if op_type != 'EnableCommunity':
-        if subscription_ids is None and tenant_ids is None:
-            raise RequiredArgumentMissingError('At least one of subscription ids or tenant ids must be provided')
-    groups = []
+def sig_share_enable_community(cmd, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
+                               no_wait=False, op_type=None):
+    from azure.cli.command_modules.vm.operations.sig_share import SigShareEnableCommunity
+    command_args = {
+        'resource_group': resource_group_name,
+        'gallery_name': gallery_name,
+        'no_wait': no_wait,
+    }
     if subscription_ids:
-        groups.append(SharingProfileGroup(type=SharingProfileGroupTypes.SUBSCRIPTIONS, ids=subscription_ids))
+        command_args['subscription_ids'] = subscription_ids
     if tenant_ids:
-        groups.append(SharingProfileGroup(type=SharingProfileGroupTypes.AAD_TENANTS, ids=tenant_ids))
-    sharing_update = SharingUpdate(operation_type=op_type, groups=groups)
-    return client.begin_update(resource_group_name=resource_group_name,
-                               gallery_name=gallery_name,
-                               sharing_update=sharing_update)
+        command_args['tenant_ids'] = tenant_ids
+    if op_type:
+        command_args['operation_type'] = op_type
+    return SigShareEnableCommunity(cli_ctx=cmd.cli_ctx)(command_args=command_args)

@@ -8,8 +8,7 @@
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import (cf_community_gallery_image, cf_community_gallery_image_version,
-                              cf_community_gallery_sharing_profile)
+from ._client_factory import cf_community_gallery_image, cf_community_gallery_image_version
 
 
 def load_command_table(self, _):
@@ -21,10 +20,6 @@ def load_command_table(self, _):
     community_gallery_image_version_sdk = CliCommandType(
         operations_tmpl='azext_image_gallery.vendored_sdks.azure_mgmt_compute.operations._community_gallery_image_versions_operations#CommunityGalleryImageVersionsOperations.{}',
         client_factory=cf_community_gallery_image_version)
-
-    community_gallery_sharing_profile_sdk = CliCommandType(
-        operations_tmpl='azext_image_gallery.vendored_sdks.azure_mgmt_compute.operations._gallery_sharing_profile_operations#GallerySharingProfileOperations.{}',
-        client_factory=cf_community_gallery_sharing_profile)
 
     with self.command_group('sig') as g:
         g.custom_command('create', 'create_image_gallery')
@@ -40,6 +35,5 @@ def load_command_table(self, _):
         g.custom_command('show-community', 'sig_community_image_version_show', is_experimental=True)
         g.custom_command('list-community', 'sig_community_image_version_list', is_experimental=True)
 
-    with self.command_group('sig share', community_gallery_sharing_profile_sdk,
-                            client_factory=cf_community_gallery_sharing_profile) as g:
-        g.custom_command('enable-community', 'sig_share_update', supports_no_wait=True)
+    with self.command_group('sig share') as g:
+        g.custom_command('enable-community', 'sig_share_enable_community', supports_no_wait=True)
