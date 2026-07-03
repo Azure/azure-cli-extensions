@@ -8,11 +8,9 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
-from knack.log import get_logger
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.azclierror import RequiredArgumentMissingError
-logger = get_logger(__name__)
 
 
 def sig_community_image_definition_list(cmd, location, public_gallery_name):
@@ -23,49 +21,13 @@ def sig_community_image_definition_list(cmd, location, public_gallery_name):
     })
 
 
-def sig_community_image_version_list(client, location, public_gallery_name, gallery_image_name, marker=None,
-                                     show_next_marker=None):
-    generator = client.list(location=location, public_gallery_name=public_gallery_name,
-                            gallery_image_name=gallery_image_name)
-    return get_page_result(generator, marker, show_next_marker)
-
-
-def get_page_result(generator, marker, show_next_marker=None):
-    pages = generator.by_page(continuation_token=marker)  # ContainerPropertiesPaged
-    result = list_generator(pages=pages)
-
-    if show_next_marker:
-        next_marker = {"nextMarker": pages.continuation_token}
-        result.append(next_marker)
-    else:
-        if pages.continuation_token:
-            logger.warning('Next Marker:')
-            logger.warning(pages.continuation_token)
-
-    return result
-
-
-# The REST service takes 50 items as a page by default
-def list_generator(pages, num_results=50):
-    result = []
-
-    # get first page items
-    page = list(next(pages))
-    result += page
-
-    while True:
-        if not pages.continuation_token:
-            break
-
-        # handle num results
-        if num_results is not None:
-            if num_results == len(result):
-                break
-
-        page = list(next(pages))
-        result += page
-
-    return result
+def sig_community_image_version_list(cmd, location, public_gallery_name, gallery_image_name):
+    from azure.cli.command_modules.vm.aaz.latest.sig.image_version import ListCommunity
+    return ListCommunity(cli_ctx=cmd.cli_ctx)(command_args={
+        'location': location,
+        'public_gallery_name': public_gallery_name,
+        'gallery_image_definition': gallery_image_name,
+    })
 
 
 def _get_resource_group_location(cli_ctx, resource_group_name):
