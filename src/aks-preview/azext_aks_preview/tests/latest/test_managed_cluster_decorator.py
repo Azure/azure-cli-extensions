@@ -5960,6 +5960,62 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ctx_2.get_enable_continuous_control_plane_and_addon_monitor(), False
         )
 
+    def test_get_enable_on_demand_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_0.get_enable_on_demand_monitor(), None)
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_on_demand_monitor": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_on_demand_monitor(), True)
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_on_demand_monitor": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_on_demand_monitor(), False)
+
+    def test_get_disable_on_demand_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_disable_on_demand_monitor(), None)
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_on_demand_monitor": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_on_demand_monitor(), True)
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_on_demand_monitor": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_disable_on_demand_monitor(), False)
+
     def test_get_disable_continuous_control_plane_and_addon_monitor(self):
         # default value
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -9425,6 +9481,26 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # enable on-demand flag set
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_on_demand_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_health_monitor_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_on_demand_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -17598,6 +17674,66 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # enable on-demand flag
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_on_demand_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_health_monitor_profile(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_on_demand_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # disable on-demand flag
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_on_demand_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_on_demand_monitor=True,
+            ),
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_health_monitor_profile(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_on_demand_monitor=False,
+            ),
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # both on-demand flags - mutual exclusivity error
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_on_demand_monitor": True,
+                "disable_on_demand_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_health_monitor_profile(mc_6)
 
     # ------------------------------------------------------------------
     # Tests for _setup_azure_monitor_logs setting enableRetinaNetworkFlags

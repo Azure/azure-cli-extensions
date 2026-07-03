@@ -328,10 +328,10 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--name "{rgName}" '
                  '-y')
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=4096)
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')
     def test_blueprint_import(self, resource_group):
-
+        # If this test fails, you may need to update the contributors and owners in the assignment_params.json file
         self.kwargs.update({
             'blueprintName': self.create_random_name(prefix='test-import-bp', length=24),
             'subscription': self.get_subscription_id(),
