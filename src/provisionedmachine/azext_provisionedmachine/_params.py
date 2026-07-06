@@ -10,4 +10,4 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass  # ssh-cert-create parameters are defined in aaz/latest/provisionedmachine/_ssh_cert_create.py
+    pass
