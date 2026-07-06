@@ -437,139 +437,208 @@ class TestCheckPimEligibility(unittest.TestCase):
 class TestResolveUserRole(unittest.TestCase):
     """Tests for resolve_user_role()."""
 
-    def _make_assignment(self, role_def_id):
-        assignment = mock.Mock()
-        assignment.role_definition_id = role_def_id
-        return assignment
+    def _make_pim_response(self, roles):
+        """Build a fake PIM roleAssignmentScheduleInstances response.
 
-    def _make_role_def(self, role_name):
-        role_def = mock.Mock()
-        role_def.role_name = role_name
-        return role_def
+        *roles* is a list of role display names, e.g.
+        ["Provisioned Machine Admin", "Provisioned Machine Reader"].
+        """
+        instances = []
+        for role_name in roles:
+            instances.append({
+                "properties": {
+                    "expandedProperties": {
+                        "roleDefinition": {
+                            "displayName": role_name,
+                        }
+                    }
+                }
+            })
+        return {"value": instances}
 
-    @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_resolves_admin(self, mock_client_factory, mock_oid):
+    def _make_cmd(self):
+        """Return a mock cmd object with cli_ctx properly configured."""
         cmd = mock.Mock()
+        cmd.cli_ctx = mock.Mock()
+        return cmd
+
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
+    def test_resolves_admin(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
+        cmd = self._make_cmd()
         mock_oid.return_value = "oid-123"
 
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
 
-        assignment = self._make_assignment("role-def-1")
-        auth_client.role_assignments.list_for_scope.return_value = [assignment]
-        auth_client.role_definitions.get_by_id.return_value = self._make_role_def(
-            "Provisioned Machine Admin"
-        )
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = self._make_pim_response(["Provisioned Machine Admin"])
+        mock_requests_get.return_value = mock_resp
 
         result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
         self.assertEqual(result, "Provisioned Machine Admin")
 
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_resolves_contributor(self, mock_client_factory, mock_oid):
-        cmd = mock.Mock()
+    def test_resolves_contributor(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
+        cmd = self._make_cmd()
         mock_oid.return_value = "oid-123"
 
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
 
-        assignment = self._make_assignment("role-def-1")
-        auth_client.role_assignments.list_for_scope.return_value = [assignment]
-        auth_client.role_definitions.get_by_id.return_value = self._make_role_def(
-            "Provisioned Machine Contributor"
-        )
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = self._make_pim_response(["Provisioned Machine Contributor"])
+        mock_requests_get.return_value = mock_resp
 
         result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
         self.assertEqual(result, "Provisioned Machine Contributor")
 
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_resolves_reader(self, mock_client_factory, mock_oid):
+    def test_resolves_reader(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
         """Reader role should now succeed — restriction is device-side."""
-        cmd = mock.Mock()
+        cmd = self._make_cmd()
         mock_oid.return_value = "oid-123"
 
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
 
-        assignment = self._make_assignment("role-def-1")
-        auth_client.role_assignments.list_for_scope.return_value = [assignment]
-        auth_client.role_definitions.get_by_id.return_value = self._make_role_def(
-            "Provisioned Machine Reader"
-        )
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = self._make_pim_response(["Provisioned Machine Reader"])
+        mock_requests_get.return_value = mock_resp
 
         result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
         self.assertEqual(result, "Provisioned Machine Reader")
 
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_picks_highest_privilege(self, mock_client_factory, mock_oid):
+    def test_picks_highest_privilege(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
         """When user has both Reader and Admin, Admin should win."""
-        cmd = mock.Mock()
+        cmd = self._make_cmd()
         mock_oid.return_value = "oid-123"
 
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
 
-        a1 = self._make_assignment("role-def-1")
-        a2 = self._make_assignment("role-def-2")
-        auth_client.role_assignments.list_for_scope.return_value = [a1, a2]
-        auth_client.role_definitions.get_by_id.side_effect = [
-            self._make_role_def("Provisioned Machine Reader"),
-            self._make_role_def("Provisioned Machine Admin"),
-        ]
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = self._make_pim_response([
+            "Provisioned Machine Reader",
+            "Provisioned Machine Admin",
+        ])
+        mock_requests_get.return_value = mock_resp
 
         result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
         self.assertEqual(result, "Provisioned Machine Admin")
 
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_no_assignments_raises(self, mock_client_factory, mock_oid):
-        cmd = mock.Mock()
+    def test_no_assignments_raises(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
+        cmd = self._make_cmd()
         mock_oid.return_value = "oid-123"
 
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
-        auth_client.role_assignments.list_for_scope.return_value = []
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
 
-        with self.assertRaises(azclierror.AuthenticationError) as ctx:
-            pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
-        self.assertIn("No role assignments", str(ctx.exception))
-
-    @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_unrecognized_role_raises(self, mock_client_factory, mock_oid):
-        """Assignments exist but none match Reader/Contributor/Admin."""
-        cmd = mock.Mock()
-        mock_oid.return_value = "oid-123"
-
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
-
-        assignment = self._make_assignment("role-def-1")
-        auth_client.role_assignments.list_for_scope.return_value = [assignment]
-        auth_client.role_definitions.get_by_id.return_value = self._make_role_def(
-            "Storage Blob Data Processor"
-        )
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"value": []}
+        mock_requests_get.return_value = mock_resp
 
         with self.assertRaises(azclierror.AuthenticationError) as ctx:
             pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
         self.assertIn("No Provisioned Machine Reader, Contributor, or Admin", str(ctx.exception))
 
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
-    @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
-    def test_query_failure_raises(self, mock_client_factory, mock_oid):
-        cmd = mock.Mock()
+    def test_unrecognized_role_raises(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
+        """Assignments exist but none match Reader/Contributor/Admin."""
+        cmd = self._make_cmd()
         mock_oid.return_value = "oid-123"
 
-        auth_client = mock.Mock()
-        mock_client_factory.return_value = auth_client
-        auth_client.role_assignments.list_for_scope.side_effect = Exception("network error")
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
 
-        with self.assertRaises(azclierror.CLIInternalError) as ctx:
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = self._make_pim_response(["Storage Blob Data Processor"])
+        mock_requests_get.return_value = mock_resp
+
+        with self.assertRaises(azclierror.AuthenticationError) as ctx:
             pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
-        self.assertIn("Failed to query role assignments", str(ctx.exception))
+        self.assertIn("No Provisioned Machine Reader, Contributor, or Admin", str(ctx.exception))
+
+    @mock.patch('time.sleep')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils.requests.get')
+    @mock.patch('azure.cli.core._profile.Profile')
+    @mock.patch('azext_provisionedmachine.provisioned_machine_utils._get_current_user_object_id')
+    def test_query_failure_raises(self, mock_oid, mock_profile_cls, mock_requests_get, mock_sleep):
+        cmd = self._make_cmd()
+        mock_oid.return_value = "oid-123"
+
+        mock_profile = mock.Mock()
+        mock_creds = mock.Mock()
+        mock_token = mock.Mock()
+        mock_token.token = "fake-token"
+        mock_creds.get_token.return_value = mock_token
+        mock_profile.get_login_credentials.return_value = (mock_creds, None, None)
+        mock_profile_cls.return_value = mock_profile
+
+        # All 3 retry attempts fail with HTTP 500
+        mock_resp = mock.Mock()
+        mock_resp.status_code = 500
+        mock_resp.json.return_value = {"value": []}
+        mock_requests_get.return_value = mock_resp
+
+        with self.assertRaises(azclierror.AuthenticationError) as ctx:
+            pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
+        self.assertIn("No Provisioned Machine Reader, Contributor, or Admin", str(ctx.exception))
 
 
 class TestGetCurrentUserObjectId(unittest.TestCase):
