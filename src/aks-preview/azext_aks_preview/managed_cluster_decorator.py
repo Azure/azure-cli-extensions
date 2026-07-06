@@ -4143,6 +4143,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("enable_continuous_control_plane_and_addon_monitor")
 
+    def get_enable_on_demand_monitor(self) -> bool:
+        """Obtain the value of enable_on_demand_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_on_demand_monitor")
+
+    def get_disable_on_demand_monitor(self) -> bool:
+        """Obtain the value of disable_on_demand_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_on_demand_monitor")
+
     def get_disable_continuous_control_plane_and_addon_monitor(self) -> bool:
         """Obtain the value of disable_continuous_control_plane_and_addon_monitor.
 
@@ -5307,12 +5321,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_continuous_control_plane_and_addon_monitor():
+        enable_continuous = self.context.get_enable_continuous_control_plane_and_addon_monitor()
+        enable_on_demand = self.context.get_enable_on_demand_monitor()
+
+        if enable_continuous or enable_on_demand:
             if mc.health_monitor_profile is None:
                 mc.health_monitor_profile = (
                     self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
                 )
-            mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = True
+            if enable_continuous:
+                mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = True
+            if enable_on_demand:
+                mc.health_monitor_profile.enable_on_demand_monitor = True
 
         return mc
 
@@ -8014,20 +8034,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         enable = self.context.get_enable_continuous_control_plane_and_addon_monitor()
         disable = self.context.get_disable_continuous_control_plane_and_addon_monitor()
+        enable_on_demand = self.context.get_enable_on_demand_monitor()
+        disable_on_demand = self.context.get_disable_on_demand_monitor()
 
-        if not enable and not disable:
+        if not enable and not disable and not enable_on_demand and not disable_on_demand:
             return mc
         if enable and disable:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-continuous-control-plane-and-addon-monitor and "
                 "--disable-continuous-control-plane-and-addon-monitor at the same time."
             )
+        if enable_on_demand and disable_on_demand:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-on-demand-monitor and "
+                "--disable-on-demand-monitor at the same time."
+            )
 
         if mc.health_monitor_profile is None:
             mc.health_monitor_profile = (
                 self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
             )
-        mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = bool(enable)
+        if enable or disable:
+            mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = bool(enable)
+        if enable_on_demand or disable_on_demand:
+            mc.health_monitor_profile.enable_on_demand_monitor = bool(enable_on_demand)
 
         return mc
 

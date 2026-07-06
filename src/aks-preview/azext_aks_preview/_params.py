@@ -1350,6 +1350,12 @@ def load_arguments(self, _):
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",
         )
+        c.argument(
+            "enable_on_demand_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable on-demand monitor for the cluster.",
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -2014,6 +2020,18 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="Enable continuous control plane and addon monitor for the cluster.",
+        )
+        c.argument(
+            "enable_on_demand_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable on-demand monitor for the cluster.",
+        )
+        c.argument(
+            "disable_on_demand_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Disable on-demand monitor for the cluster.",
         )
         c.argument(
             "disable_continuous_control_plane_and_addon_monitor",
