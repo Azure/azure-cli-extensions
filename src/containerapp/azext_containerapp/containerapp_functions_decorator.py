@@ -105,7 +105,7 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
             resource_group_name, name, revision_name = self.validate_common_arguments()
 
             # Validate that the Container App has kind 'functionapp'
-            validate_functionapp_kind(
+            containerapp_def = validate_functionapp_kind(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 container_app_name=name
@@ -114,10 +114,12 @@ class ContainerAppFunctionsListDecorator(ContainerAppFunctionsDecorator):
             # Functions can only be listed while ingress is enabled (the platform
             # populates the function metadata behind ingress). Fail fast with an
             # actionable message instead of the generic server error otherwise.
+            # Reuse the Container App fetched above to avoid an extra ARM GET.
             validate_functionapp_ingress_enabled(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
-                container_app_name=name
+                container_app_name=name,
+                containerapp_def=containerapp_def
             )
 
             if revision_name and revision_name is not None:
@@ -153,7 +155,7 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
             resource_group_name, name, revision_name, function_name = self.validate_show_arguments()
 
             # Validate that the Container App has kind 'functionapp'
-            validate_functionapp_kind(
+            containerapp_def = validate_functionapp_kind(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
                 container_app_name=name
@@ -162,10 +164,12 @@ class ContainerAppFunctionsShowDecorator(ContainerAppFunctionsDecorator):
             # Functions can only be retrieved while ingress is enabled (the platform
             # populates the function metadata behind ingress). Fail fast with an
             # actionable message instead of the generic server error otherwise.
+            # Reuse the Container App fetched above to avoid an extra ARM GET.
             validate_functionapp_ingress_enabled(
                 cmd=self.cmd,
                 resource_group_name=resource_group_name,
-                container_app_name=name
+                container_app_name=name,
+                containerapp_def=containerapp_def
             )
 
             if revision_name and revision_name is not None:
