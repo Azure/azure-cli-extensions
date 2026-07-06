@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
++++++++++++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations.
+
 1.0.0b2
 +++++++++++++++
 * Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
