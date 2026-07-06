@@ -12,7 +12,6 @@ from ._client_factory import cf_community_gallery, cf_community_gallery_image, c
 
 
 def load_command_table(self, _):
-
     community_gallery_sdk = CliCommandType(
         operations_tmpl='azext_image_gallery.vendored_sdks.azure_mgmt_compute.operations._community_galleries_operations#CommunityGalleriesOperations.{}',
         client_factory=cf_community_gallery)
