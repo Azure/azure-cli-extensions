@@ -9,3 +9,36 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['provisionedmachine'] = """
+    type: group
+    short-summary: Manage provisioned machine resources.
+"""
+
+helps['provisionedmachine ssh-cert-create'] = """
+    type: command
+    short-summary: Create a short-lived SSH certificate for authenticating to a provisioned machine.
+    long-summary: |
+        Generates an SSH certificate signed by the device's CA key stored in
+        Azure Key Vault. The certificate includes the caller's identity and
+        role, and is valid for the duration of the active access window.
+
+        Requires an active eligible role on the target device resource.
+        The caller's identity and role are resolved automatically.
+    parameters:
+        - name: --vault-name -v
+          short-summary: Name of the Azure Key Vault containing the SSH CA signing key.
+        - name: --resource-id -r
+          short-summary: Fully qualified ARM resource ID of the target device.
+        - name: --cert-path
+          short-summary: Custom output path for the certificate file. Defaults to a temporary directory.
+        - name: --private-key-path
+          short-summary: Custom output path for the private key file. Defaults to a temporary directory.
+    examples:
+        - name: Create a certificate using default output paths
+          text: |
+            az provisionedmachine ssh-cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice
+        - name: Create a certificate with custom output paths
+          text: |
+            az provisionedmachine ssh-cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice --private-key-path ~/.ssh/device_key --cert-path ~/.ssh/device_cert.pub
+"""
