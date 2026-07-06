@@ -12,6 +12,3 @@ from knack.log import get_logger
 
 
 logger = get_logger(__name__)
-
-# ssh-cert-create command is implemented as an AAZ command in:
-# aaz/latest/provisionedmachine/_ssh_cert_create.py
