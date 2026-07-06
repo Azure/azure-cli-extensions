@@ -89,7 +89,13 @@ jobs:
           for mod in ${changed_module_list[@]}
           do
             echo changed module: "${mod}"
-            azdev extension add "${mod}"
+            # Use legacy editable install (without --config-settings) so that egg-info is
+            # created in the source directory, which is required for azdev linter to locate
+            # the extension. azdev 0.2.12+ passes --config-settings editable_mode=compat to
+            # pip, causing setuptools to write only dist-info into site-packages; azdev's
+            # get_path_table() explicitly filters out site-packages, so the extension is not
+            # found and linting fails with "unrecognized modules".
+            pip install -e "src/${mod}" --no-build-isolation
             # ado linter task
             azdev linter "${mod}" --min-severity medium
           done
