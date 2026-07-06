@@ -12,6 +12,24 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b8
+++++++++
+* `az aks create`: Add `--enable-on-demand-monitor` to enable on-demand monitor for the cluster.
+* `az aks update`: Add `--enable-on-demand-monitor` and `--disable-on-demand-monitor` to manage on-demand monitor for the cluster.
+
+21.0.0b7
+++++++++
+* `az aks create`: Add `--node-disruption-policy` (preview) to set the node disruption policy at cluster creation time. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
+* `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+* `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
+* `az aks update`: Fix misleading error when updating outbound type to `userDefinedRouting` or `userAssignedNATGateway`. For managed VNet clusters (unsupported), a clear error message is now shown instead of asking for `--vnet-subnet-id`. For BYO VNet clusters, the update works correctly without requiring the user to re-specify the subnet.
+* Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+
+21.0.0b6
+++++++++
+* `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property `azureMonitorProfile.metrics.controlPlane.enabled` (replaces the AFEC-gated preview).
+
 21.0.0b5
 +++++++
 * `az aks prepared-image-specification`: Add new command.

@@ -14886,6 +14886,271 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # ------------------------------------------------------------------
+    # --enable-backup helpers + tests
+    # ------------------------------------------------------------------
+
+    def _setup_backup_test(self, resource_group, resource_group_location, aks_name):
+        """Common setup: install sibling extensions used by --enable-backup
+        orchestration (`dataprotection`, `k8s-extension`) and seed kwargs."""
+        self.test_resources_count = 0
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+        self.cmd("extension add --name dataprotection")
+        self.cmd("extension add --name k8s-extension")
+
+    def _validate_backup(self, resource_group, aks_name, resource_group_location):
+        """Validate k8s extension, vault, policy, backup instance.
+        Returns (vault_name, instance_name, policy_name) for cleanup.
+        """
+        vault_name = None
+        instance_name = None
+        policy_name = None
+
+        # 1. k8s extension
+        self.cmd(
+            "k8s-extension show --resource-group {resource_group} "
+            "--cluster-name {name} --cluster-type managedClusters "
+            "--name azure-aks-backup",
+            checks=[self.check("provisioningState", "Succeeded")],
+        )
+
+        sub_id = self.cmd("account show --query id -o tsv").output.strip()
+        cluster_id = (
+            f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+            f"/providers/Microsoft.ContainerService/managedClusters/"
+            f"{aks_name}"
+        )
+        backup_rg = f"AKSAzureBackup_{resource_group_location}"
+        self.kwargs["backup_rg"] = backup_rg
+
+        # 2. vault exists
+        vaults = self.cmd(
+            "dataprotection backup-vault list -g {backup_rg}"
+        ).get_output_in_json()
+        self.assertGreaterEqual(
+            len(vaults), 1,
+            f"Expected at least one backup vault in {backup_rg}"
+        )
+
+        # 3. find the vault hosting OUR backup instance + policy
+        backup_vault_name = None
+        backup_policy_count = 0
+        for vault in vaults:
+            v_name = vault["name"]
+            self.kwargs["vault_name"] = v_name
+            instances = self.cmd(
+                "dataprotection backup-instance list "
+                "-g {backup_rg} --vault-name {vault_name}"
+            ).get_output_in_json()
+            for inst in instances:
+                ds_id = (
+                    inst.get("properties", {})
+                    .get("dataSourceInfo", {})
+                    .get("resourceID", "")
+                )
+                if ds_id.lower() == cluster_id.lower():
+                    backup_vault_name = v_name
+                    instance_name = inst["name"]
+                    vault_name = v_name
+                    break
+            if backup_vault_name:
+                policies = self.cmd(
+                    "dataprotection backup-policy list "
+                    "-g {backup_rg} --vault-name {vault_name}"
+                ).get_output_in_json()
+                backup_policy_count = len(policies)
+                if policies:
+                    policy_id = (
+                        inst.get("properties", {})
+                        .get("policyInfo", {})
+                        .get("policyId", "")
+                    )
+                    for pol in policies:
+                        if pol["id"].lower() == policy_id.lower():
+                            policy_name = pol["name"]
+                            break
+                    if policy_name is None:
+                        policy_name = policies[0]["name"]
+                break
+        self.assertIsNotNone(
+            backup_vault_name,
+            f"No backup vault hosting a backup instance for "
+            f"cluster {aks_name} was found in {backup_rg}"
+        )
+        self.assertGreaterEqual(
+            backup_policy_count, 1,
+            f"Expected at least one backup policy on vault "
+            f"{backup_vault_name}"
+        )
+
+        # 4. poll until ProtectionConfigured
+        self.kwargs["vault_name"] = backup_vault_name
+        self.kwargs["instance_name"] = instance_name
+        final_status = None
+        for _ in range(8):
+            inst = self.cmd(
+                "dataprotection backup-instance show "
+                "-g {backup_rg} --vault-name {vault_name} "
+                "--backup-instance-name {instance_name}"
+            ).get_output_in_json()
+            final_status = (
+                inst.get("properties", {})
+                .get("protectionStatus", {})
+                .get("status")
+            )
+            if final_status == "ProtectionConfigured":
+                break
+            time.sleep(30)
+        self.assertEqual(
+            final_status, "ProtectionConfigured",
+            f"Backup instance {instance_name} did not reach "
+            f"ProtectionConfigured (last status: {final_status})"
+        )
+
+        return vault_name, instance_name, policy_name
+
+    def _cleanup_backup(self, vault_name):
+        """Best-effort cleanup of the shared regional backup vault: drain
+        all backup instances and policies, then delete the vault.  The
+        cluster + cluster RG are reaped by `AKSCustomResourceGroupPreparer`.
+        """
+        backup_rg = self.kwargs.get("backup_rg")
+        if not (vault_name and backup_rg):
+            return
+
+        # 1. Disable immutability + soft-delete on the vault so that BIs
+        #    with active recovery points can be force-deleted.
+        try:
+            self.cmd(
+                "dataprotection backup-vault update "
+                "-g {backup_rg} --vault-name {vault_name} "
+                "--set properties.securitySettings.immutabilitySettings.state=Disabled "
+                "properties.securitySettings.softDeleteSettings.state=Off"
+            )
+        except Exception:  # pylint: disable=broad-except
+            pass
+
+        # 2. Delete ALL backup instances on the vault.
+        try:
+            all_instances = self.cmd(
+                "dataprotection backup-instance list "
+                "-g {backup_rg} --vault-name {vault_name}"
+            ).get_output_in_json()
+            for bi in all_instances:
+                self.kwargs["_bi"] = bi["name"]
+                try:
+                    self.cmd(
+                        "dataprotection backup-instance delete "
+                        "-g {backup_rg} --vault-name {vault_name} "
+                        "--backup-instance-name {_bi} --yes"
+                    )
+                except Exception:  # pylint: disable=broad-except
+                    pass
+        except Exception:  # pylint: disable=broad-except
+            pass
+
+        # 3. Delete ALL backup policies on the vault.
+        try:
+            all_policies = self.cmd(
+                "dataprotection backup-policy list "
+                "-g {backup_rg} --vault-name {vault_name}"
+            ).get_output_in_json()
+            for pol in all_policies:
+                self.kwargs["_pol"] = pol["name"]
+                try:
+                    self.cmd(
+                        "dataprotection backup-policy delete "
+                        "-g {backup_rg} --vault-name {vault_name} "
+                        "--name {_pol} --yes"
+                    )
+                except Exception:  # pylint: disable=broad-except
+                    pass
+        except Exception:  # pylint: disable=broad-except
+            pass
+
+        # 4. Delete the vault (now empty).
+        try:
+            self.cmd(
+                "dataprotection backup-vault delete "
+                "-g {backup_rg} --vault-name {vault_name} --yes"
+            )
+        except Exception:  # pylint: disable=broad-except
+            pass
+
+    # ---- aks create --enable-backup ----
+
+    @live_only()
+    @AllowLargeResponse(999999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westcentralus"
+    )
+    def test_aks_create_with_enable_backup(self, resource_group, resource_group_location):
+        """aks create --enable-backup: full 8-step orchestration after
+        cluster LRO, then validate extension / vault / policy / BI."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        self._setup_backup_test(resource_group, resource_group_location, aks_name)
+        vault_name = None
+        try:
+            self.cmd(
+                "aks create --resource-group={resource_group} --name={name} "
+                "--location={location} --ssh-key-value={ssh_key_value} "
+                "--node-vm-size={node_vm_size} --node-count 3 "
+                "--enable-managed-identity "
+                "--enable-backup --backup-strategy Week "
+                "--yes --output=json",
+                checks=[self.check("provisioningState", "Succeeded")],
+            )
+            vault_name, _, _ = self._validate_backup(
+                resource_group, aks_name, resource_group_location
+            )
+        finally:
+            self._cleanup_backup(vault_name)
+
+    # ---- aks update --enable-backup ----
+
+    @live_only()
+    @AllowLargeResponse(999999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westcentralus"
+    )
+    def test_aks_update_with_enable_backup(self, resource_group, resource_group_location):
+        """aks update --enable-backup on a brownfield cluster: create the
+        cluster first without backup, then update with --enable-backup."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        self._setup_backup_test(resource_group, resource_group_location, aks_name)
+        vault_name = None
+        try:
+            # 1. Create a plain cluster (no backup).
+            self.cmd(
+                "aks create --resource-group={resource_group} --name={name} "
+                "--location={location} --ssh-key-value={ssh_key_value} "
+                "--node-vm-size={node_vm_size} --node-count 3 "
+                "--enable-managed-identity "
+                "--yes --output=json",
+                checks=[self.check("provisioningState", "Succeeded")],
+            )
+            # 2. Update: enable backup on the existing cluster.
+            self.cmd(
+                "aks update --resource-group={resource_group} --name={name} "
+                "--enable-backup --backup-strategy Week "
+                "--yes --output=json",
+                checks=[self.check("provisioningState", "Succeeded")],
+            )
+            vault_name, _, _ = self._validate_backup(
+                resource_group, aks_name, resource_group_location
+            )
+        finally:
+            self._cleanup_backup(vault_name)
+
     # live only due to downloading k8s-extension extension
     @live_only()
     @AllowLargeResponse(999999)
@@ -15688,6 +15953,211 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.is_empty(),
             ],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_with_control_plane_metrics(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # create: --enable-azure-monitor-metrics + --enable-control-plane-metrics
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics --output=json"
+        )
+        # NOTE: ``--enable-control-plane-metrics`` on create is intentionally deferred to a
+        # postprocessing PUT (after DCRA creation) to avoid scheduling the CCP pod before its
+        # DCRA exists. The create response may therefore reflect the pre-flip state; assert
+        # the final state via ``aks show`` after the cluster settles.
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.enabled", True),
+            ],
+        )
+
+        wait_cmd = (
+            "aks wait --resource-group={resource_group} --name={name} --created "
+            "--interval 60 --timeout 1800"
+        )
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Verify the deferred control-plane-metrics flip landed on the cluster.
+        self.cmd(
+            "aks show --resource-group={resource_group} --name={name} --output=json",
+            checks=[
+                self.check("azureMonitorProfile.metrics.enabled", True),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_with_control_plane_metrics(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # create: with azure monitor metrics but without control plane metrics
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-azure-monitor-metrics --output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.enabled", True),
+            ],
+        )
+
+        # wait for AMW background setup to complete before issuing update
+        wait_cmd = "aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800"
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # update: enable-control-plane-metrics on a cluster that already has AM metrics
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-control-plane-metrics"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", True),
+            ],
+        )
+
+        wait_cmd = "aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800"
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # update: disable-control-plane-metrics
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--disable-control-plane-metrics"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", False),
+            ],
+        )
+
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_control_plane_metrics_negative(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # negative: --enable-control-plane-metrics without --enable-azure-monitor-metrics on create
+        create_missing_parent = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-control-plane-metrics --output=json"
+        )
+        self.cmd(create_missing_parent, expect_failure=True)
+
+        # create a baseline cluster (no AM metrics) so we can exercise the update-time negatives
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.not_exists("azureMonitorProfile.metrics"),
+            ],
+        )
+
+        # negative: update --enable-control-plane-metrics on a cluster without AM metrics enabled
+        update_missing_parent = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-control-plane-metrics"
+        )
+        self.cmd(update_missing_parent, expect_failure=True)
+
+        # negative: --enable-control-plane-metrics with --disable-azure-monitor-metrics on update
+        update_conflicting = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics --disable-azure-monitor-metrics"
+        )
+        self.cmd(update_conflicting, expect_failure=True)
+
+        # negative: both --enable-control-plane-metrics and --disable-control-plane-metrics on update
+        update_both = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics --disable-control-plane-metrics"
+        )
+        self.cmd(update_both, expect_failure=True)
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     @AllowLargeResponse(8192)
@@ -23943,6 +24413,47 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_create_with_on_demand_monitor(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create with --enable-on-demand-monitor
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-on-demand-monitor "
+            "-o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "healthMonitorProfile.enableOnDemandMonitor",
+                    True,
+                ),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_update_with_continuous_control_plane_and_addon_monitor(
         self, resource_group, resource_group_location
     ):
@@ -23998,6 +24509,76 @@ spec:
                 self.check("provisioningState", "Succeeded"),
                 self.check(
                     "healthMonitorProfile.enableContinuousControlPlaneAndAddonMonitor",
+                    False,
+                ),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_with_on_demand_monitor(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create a cluster without the flag
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "-o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # update -- enable on-demand monitor
+        enable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-on-demand-monitor "
+            "-o json"
+        )
+        self.cmd(
+            enable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "healthMonitorProfile.enableOnDemandMonitor",
+                    True,
+                ),
+            ],
+        )
+
+        # update -- disable on-demand monitor
+        disable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-on-demand-monitor "
+            "-o json"
+        )
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "healthMonitorProfile.enableOnDemandMonitor",
                     False,
                 ),
             ],
@@ -24588,6 +25169,54 @@ spec:
                 self.check("provisioningState", "Succeeded"),
                 self.check("securityProfile.sshAccess", "Disabled"),
             ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_node_disruption_policy(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "network_plugin": "azure",
+                "network_plugin_mode": "overlay",
+            }
+        )
+
+        # create aks cluster with node disruption policy set to "Block"
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value} "
+            "--network-plugin={network_plugin} "
+            "--network-plugin-mode={network_plugin_mode} "
+            "--network-policy=none "
+            "--node-disruption-policy=Block "
+            "--node-count=3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPolicy", "none"),
+                self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
+            ],
+        )
+
+        # attempt to change network policy which should be blocked by node disruption policy
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --network-policy=azure",
+            expect_failure=True,
         )
 
         # delete

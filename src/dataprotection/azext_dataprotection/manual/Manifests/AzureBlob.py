@@ -27,30 +27,17 @@ manifest = '''
   "policySettings": {
     "supportedRetentionTags": [ "Weekly", "Monthly", "Yearly" ],
     "supportedDatastoreTypes": [ "OperationalStore", "VaultStore" ],
+    "defaultRetentionRuleNames": {
+      "OperationalStore": "Default_OperationalStore",
+      "VaultStore": "Default"
+    },
+    "exclusiveSourceDataStores": [ "OperationalStore" ],
     "disableAddRetentionRule": false,
     "disableCustomRetentionTag": false,
     "backupScheduleSupported": true,
     "supportedBackupFrequency": [ "Daily", "Weekly" ],
     "defaultPolicy": {
       "policyRules": [
-        {
-          "isDefault": true,
-          "lifecycles": [
-            {
-              "deleteAfter": {
-                "duration": "P30D",
-                "objectType": "AbsoluteDeleteOption"
-              },
-              "sourceDataStore": {
-                "dataStoreType": "OperationalStore",
-                "objectType": "DataStoreInfoBase"
-              },
-              "targetDataStoreCopySettings": []
-            }
-          ],
-          "name": "Default_OperationalStore",
-          "objectType": "AzureRetentionRule"
-        },
         {
           "isDefault": true,
           "lifecycles": [

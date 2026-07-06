@@ -62,6 +62,10 @@ def cf_maintenance_configurations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).maintenance_configurations
 
 
+def cf_maintenance_windows(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).maintenance_windows
+
+
 def cf_nodepool_snapshots(cli_ctx, *_):
     return get_container_service_client(cli_ctx).snapshots
 

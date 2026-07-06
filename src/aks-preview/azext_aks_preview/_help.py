@@ -606,6 +606,9 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-control-plane-metrics --enable-cp-metrics
+          type: bool
+          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (controlplane-apiserver and controlplane-etcd targets by default). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics).
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -840,6 +843,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
+        - name: Create a kubernetes cluster with Azure Backup enabled (default Week strategy). Requires the 'dataprotection' extension. Implicitly waits for cluster creation.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --generate-ssh-keys --enable-backup --yes
 
 """
 
@@ -1332,6 +1337,9 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-control-plane-metrics --enable-cp-metrics
+          type: bool
+          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (controlplane-apiserver and controlplane-etcd targets by default). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics).
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -1353,6 +1361,9 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --disable-control-plane-metrics --disable-cp-metrics
+          type: bool
+          short-summary: Disable collection of Azure Monitor managed Prometheus control plane metrics. Leaves Azure Monitor metrics enabled.
         - name: --enable-azure-monitor-app-monitoring
           type: bool
           short-summary: Enable Azure Monitor Application Monitoring
@@ -1604,6 +1615,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
       - name: Enable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+      - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
+      - name: Enable Azure Backup with a custom strategy using an existing vault and policy
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --backup-strategy Custom --backup-configuration @config.json --yes
       - name: Disable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-monitor-logs
       - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled
@@ -1968,6 +1983,187 @@ helps['aks maintenanceconfiguration update'] = """
                         ]
                     }
                 }
+"""
+
+helps['aks maintenancewindow'] = """
+    type: group
+    short-summary: Commands to manage MaintenanceWindow peer ARM resources.
+    long-summary: |
+        MaintenanceWindow is a resource-group-scoped ARM resource that defines
+        a reusable maintenance schedule. Users can link this resource to a
+        pre-existing maintenanceConfiguration via `maintenanceWindowId`, so
+        multiple managedCluster maintenance configurations share a single
+        MaintenanceWindow and the schedule lives in one place.
+
+        Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+        feature to be registered on the subscription. Auto-approval is enabled:
+        `az feature register --namespace Microsoft.ContainerService --name AKSSharedMaintenanceWindowPreview`
+"""
+
+helps['aks maintenancewindow show'] = """
+    type: command
+    short-summary: Show a MaintenanceWindow.
+"""
+
+helps['aks maintenancewindow list'] = """
+    type: command
+    short-summary: List MaintenanceWindows in a resource group, or across the subscription if --resource-group is omitted.
+"""
+
+helps['aks maintenancewindow delete'] = """
+    type: command
+    short-summary: Delete a MaintenanceWindow.
+"""
+
+helps['aks maintenancewindow create'] = """
+    type: command
+    short-summary: Create a MaintenanceWindow.
+    long-summary: |
+        Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+        feature to be registered on the subscription. Register once (auto-approved):
+        `az feature register --namespace Microsoft.ContainerService --name AKSSharedMaintenanceWindowPreview`
+    parameters:
+        - name: --location -l
+          type: string
+          short-summary: Location for the MaintenanceWindow. Defaults to the resource group's location when omitted.
+        - name: --schedule-type
+          type: string
+          short-summary: Recurrence type. One of Daily, Weekly, AbsoluteMonthly or RelativeMonthly.
+        - name: --start-date
+          type: string
+          short-summary: The date the maintenance window activates. e.g. 2026-06-01. If not specified, the window activates immediately.
+        - name: --start-time
+          type: string
+          short-summary: The start time of the maintenance window. Accepted values are from '00:00' to '23:59'. --utc-offset applies to this field.
+        - name: --duration
+          type: int
+          short-summary: The length of the maintenance window in hours. Range 4-24.
+        - name: --utc-offset
+          type: string
+          short-summary: The UTC offset in format +/-HH:mm. For example, '+05:30' for IST or '-07:00' for PST. Default is '+00:00'.
+        - name: --interval-days
+          type: int
+          short-summary: Number of days between occurrences. Daily schedule only.
+        - name: --interval-weeks
+          type: int
+          short-summary: Number of weeks between occurrences. Weekly schedule only.
+        - name: --interval-months
+          type: int
+          short-summary: Number of months between occurrences. AbsoluteMonthly or RelativeMonthly schedules only.
+        - name: --day-of-week
+          type: string
+          short-summary: Day of week the maintenance occurs. e.g. Monday. Weekly or RelativeMonthly schedules only.
+        - name: --day-of-month
+          type: int
+          short-summary: Day of month the maintenance occurs. e.g. 15. AbsoluteMonthly schedule only.
+        - name: --week-index
+          type: string
+          short-summary: Instance of the day-of-week the maintenance occurs (First, Second, Third, Fourth, Last). RelativeMonthly schedule only.
+        - name: --config-file
+          type: string
+          short-summary: Path to a JSON file describing the MaintenanceWindow body. Use when you need to set fields without dedicated flags (e.g. notAllowedDates / blackout date ranges).
+    examples:
+        - name: Create a weekly Saturday window (the canonical "production weekends" shape).
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n production-weekends -l eastus \\
+              --schedule-type Weekly --day-of-week Saturday --interval-weeks 1 \\
+              --start-time "02:00" --duration 8 --utc-offset=-07:00 \\
+              --tags environment=production
+        - name: Create a daily window every 2 days from a specific start date.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n nightly -l eastus \\
+              --schedule-type Daily --interval-days 2 \\
+              --start-date 2026-06-01 --start-time "00:00" --duration 6 --utc-offset=-08:00
+        - name: Create an absolute monthly window on the 15th.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n monthly-15 -l eastus \\
+              --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 \\
+              --start-time "09:30" --duration 6 --utc-offset=+05:30
+        - name: Create a relative monthly window on the last Friday.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n last-friday -l eastus \\
+              --schedule-type RelativeMonthly --day-of-week Friday --week-index Last --interval-months 1 \\
+              --start-time "01:00" --duration 4 --utc-offset=+00:00
+        - name: Create a weekly window with blackout dates via a config file.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n weekly-with-holidays -l eastus \\
+              --config-file ./mw-body.json
+              The contents of mw-body.json:
+              {
+                "properties": {
+                  "schedule": { "weekly": { "intervalWeeks": 1, "dayOfWeek": "Saturday" } },
+                  "startTime": "02:00",
+                  "durationHours": 8,
+                  "utcOffset": "-07:00",
+                  "notAllowedDates": [
+                    { "start": "2026-12-23", "end": "2027-01-05" },
+                    { "start": "2026-07-04", "end": "2026-07-05" }
+                  ]
+                }
+              }
+"""
+
+helps['aks maintenancewindow update'] = """
+    type: command
+    short-summary: Update a MaintenanceWindow.
+    long-summary: |
+        Read-modify-write semantics matching `az aks update` and
+        `az aks nodepool update`: the existing MW is fetched, your supplied
+        fields are merged onto it, and the resulting body is PUT back.
+        Fields you do not supply are preserved as-is (existing tags,
+        existing schedule scalars, existing blackout dates, etc.).
+
+        When you do supply a schedule arg (--schedule-type / --interval-* /
+        --day-of-week / --day-of-month / --week-index), the schedule shape
+        is re-built end-to-end from your args (you cannot partially mix
+        Daily + Weekly fields — pick one schedule type and supply its
+        required args).
+
+        --tags follows `aks update` convention: passing --tags replaces the
+        whole tags dictionary; omit --tags to keep the existing tags.
+
+        --location cannot be changed (TrackedResource semantics — ARM
+        rejects location changes on PUT). If supplied with a different
+        value than the existing location it is ignored with a warning.
+
+        --config-file: when supplied, the JSON file's `properties` block
+        replaces the existing `properties` wholesale. This is the only
+        way today to mutate notAllowedDates / blackout date ranges.
+        Individual schedule flags are ignored on this path; tags follow
+        the same `--tags` rule as without --config-file.
+    examples:
+        - name: Update only tags (existing schedule is preserved).
+          text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --tags environment=staging
+        - name: Update only the schedule's day-of-week (existing duration / start-time / tags preserved).
+          text: |
+            az aks maintenancewindow update -g rg-maintenance -n production-weekends \\
+              --schedule-type Weekly --day-of-week Sunday --interval-weeks 1
+        - name: Change duration only (existing schedule shape preserved).
+          text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --duration 6
+        - name: Replace blackout dates via a config file (preserves tags, location).
+          text: |
+            az aks maintenancewindow update -g rg-maintenance -n production-weekends --config-file ./mw-body.json
+              The contents of mw-body.json should include a complete properties block, e.g.:
+              {
+                "properties": {
+                  "schedule": { "weekly": { "intervalWeeks": 1, "dayOfWeek": "Saturday" } },
+                  "startTime": "02:00",
+                  "durationHours": 8,
+                  "utcOffset": "-07:00",
+                  "notAllowedDates": [ { "start": "2026-12-23", "end": "2027-01-05" } ]
+                }
+              }
+"""
+
+helps['aks maintenancewindow wait'] = """
+    type: command
+    short-summary: Wait for a MaintenanceWindow to reach a desired state.
+    long-summary: |
+        If an operation on a MaintenanceWindow was interrupted or was started
+        with `--no-wait`, use this command to wait for it to complete.
+    examples:
+        - name: Wait for a MaintenanceWindow to be created.
+          text: az aks maintenancewindow wait -g rg-maintenance -n production-weekends --created
 """
 
 helps['aks namespace'] = """
