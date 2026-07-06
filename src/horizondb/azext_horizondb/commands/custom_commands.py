@@ -69,39 +69,51 @@ def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name
         properties=properties,
     )
 
+    # Resolve --public-access up front (including client-IP detection / prompts for 'Enabled') so any
+    # failure happens before the cluster is provisioned. HorizonDB's publicNetworkAccess flag is
+    # service-computed (read-only), so public access is opened by creating a firewall rule.
+    firewall_range = _resolve_public_access_range_for_command(public_access, yes, is_update=False)
+
     result = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name=resource_group_name,
                          cluster_name=cluster_name,
                          resource=resource)
 
-    # When --public-access supplies an IP range, create a firewall rule once the cluster exists.
-    # HorizonDB's publicNetworkAccess flag is service-computed (read-only), so a firewall rule is
-    # the mechanism for opening public access.
-    if public_access is None:
+    if firewall_range is None:
         return result
 
     cluster = result.result() if hasattr(result, 'result') else result
-    _apply_public_access(cmd, resource_group_name, cluster_name, public_access, yes)
+    _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait)
     return cluster
 
 
-def _apply_public_access(cmd, resource_group_name, cluster_name, public_access, yes):
-    val = str(public_access).lower()
-    if val == 'disabled':
-        logger.warning("HorizonDB public network access is managed through firewall rules. To remove "
-                       "public access, delete rules with 'az horizondb firewall-rule delete' "
-                       "(list them with 'az horizondb firewall-rule list').")
-        return
+def _resolve_public_access_range_for_command(public_access, yes, is_update):
+    """Return an (start_ip, end_ip) tuple to open via a firewall rule, or None when no rule should be
+    created. Handles the read-only-flag reality: 'Disabled'/'None'/unset create no rule."""
+    if not public_access:
+        return None
+    if str(public_access).lower() == 'disabled':
+        if is_update:
+            logger.warning("HorizonDB public network access is managed through firewall rules. To "
+                           "remove public access, delete rules with 'az horizondb firewall-rule "
+                           "delete' (list them with 'az horizondb firewall-rule list').")
+        return None
 
     start_ip, end_ip = resolve_public_access_range(public_access, yes)
     if start_ip == -1 or end_ip == -1:
-        return
+        return None
+    return start_ip, end_ip
 
+
+def _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait):
     from .._client_factory import cf_horizondb_firewall_rules
     from .firewall_rule_commands import create_firewall_rule
+    start_ip, end_ip = firewall_range
     firewall_client = cf_horizondb_firewall_rules(cmd.cli_ctx, None)
-    create_firewall_rule(cmd, firewall_client, resource_group_name, cluster_name,
-                         start_ip_address=start_ip, end_ip_address=end_ip).result()
+    poller = create_firewall_rule(cmd, firewall_client, resource_group_name, cluster_name,
+                                  start_ip_address=start_ip, end_ip_address=end_ip)
+    if not no_wait:
+        poller.result()
 
 
 def horizondb_cluster_update(cmd, client, resource_group_name, cluster_name,
@@ -118,6 +130,9 @@ def horizondb_cluster_update(cmd, client, resource_group_name, cluster_name,
 
     validate_resource_group(resource_group_name)
 
+    # Resolve --public-access up front so prompts/failures happen before any patch or firewall PUT.
+    firewall_range = _resolve_public_access_range_for_command(public_access, yes, is_update=True)
+
     cluster_properties = {}
     if administrator_login_password is not None:
         cluster_properties["administrator_login_password"] = administrator_login_password
@@ -132,7 +147,7 @@ def horizondb_cluster_update(cmd, client, resource_group_name, cluster_name,
     if cluster_properties:
         patch_properties["properties"] = HorizonDbClusterPropertiesForPatchUpdate(**cluster_properties)
 
-    if not patch_properties and public_access is None:
+    if not patch_properties and not public_access:
         raise ArgumentUsageError("Specify at least one argument to update.")
 
     update_result = None
@@ -143,8 +158,8 @@ def horizondb_cluster_update(cmd, client, resource_group_name, cluster_name,
                                     cluster_name=cluster_name,
                                     properties=properties)
 
-    if public_access is not None:
-        _apply_public_access(cmd, resource_group_name, cluster_name, public_access, yes)
+    if firewall_range is not None:
+        _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait)
 
     if update_result is not None:
         return update_result

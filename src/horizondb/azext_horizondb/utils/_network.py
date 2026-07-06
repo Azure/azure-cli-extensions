@@ -42,7 +42,7 @@ def _get_user_confirmation(message, yes=False):
         return True
     try:
         return bool(prompt_y_n(message))
-    except NoTTYException:
+    except (NoTTYException, EOFError):
         raise CLIError('Unable to prompt for confirmation as no tty available. Use --yes.')
 
 

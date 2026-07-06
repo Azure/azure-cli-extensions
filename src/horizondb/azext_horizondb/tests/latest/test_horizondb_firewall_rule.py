@@ -22,12 +22,17 @@ from azext_horizondb.utils._network import (
     DEFAULT_POOL_NAME,
     parse_public_access_input,
     resolve_public_access_range,
+    _get_user_confirmation,
 )
 from azext_horizondb.commands.firewall_rule_commands import (
     _generate_firewall_rule_name,
     create_firewall_rule,
     horizondb_firewall_rule_create,
+    horizondb_firewall_rule_update,
     horizondb_firewall_rule_list,
+)
+from azext_horizondb.commands.custom_commands import (
+    _resolve_public_access_range_for_command,
 )
 
 
@@ -210,6 +215,70 @@ class HorizonDBFirewallRuleCommandTests(unittest.TestCase):
         horizondb_firewall_rule_list(cmd=None, client=client, resource_group_name='rg', cluster_name='c')
         _, kwargs = client.list.call_args
         self.assertEqual(kwargs['pool_name'], DEFAULT_POOL_NAME)
+
+    def test_update_merges_existing_values(self):
+        client = mock.MagicMock()
+        existing = mock.MagicMock()
+        existing.properties.start_ip_address = '10.0.0.1'
+        existing.properties.end_ip_address = '10.0.0.5'
+        existing.properties.description = 'old'
+        client.get.return_value = existing
+
+        horizondb_firewall_rule_update(cmd=None, client=client, resource_group_name='rg',
+                                       cluster_name='c', firewall_rule_name='r',
+                                       end_ip_address='10.0.0.9')
+
+        _, kwargs = client.begin_create_or_update.call_args
+        self.assertEqual(kwargs['pool_name'], DEFAULT_POOL_NAME)
+        self.assertEqual(kwargs['resource'].properties.start_ip_address, '10.0.0.1')
+        self.assertEqual(kwargs['resource'].properties.end_ip_address, '10.0.0.9')
+        self.assertEqual(kwargs['resource'].properties.description, 'old')
+
+    def test_update_inverted_merged_range_raises(self):
+        # Changing only the start IP such that the merged range inverts must fail client-side.
+        client = mock.MagicMock()
+        existing = mock.MagicMock()
+        existing.properties.start_ip_address = '10.0.0.1'
+        existing.properties.end_ip_address = '10.0.0.5'
+        existing.properties.description = None
+        client.get.return_value = existing
+
+        with self.assertRaises(ArgumentUsageError):
+            horizondb_firewall_rule_update(cmd=None, client=client, resource_group_name='rg',
+                                           cluster_name='c', firewall_rule_name='r',
+                                           start_ip_address='200.0.0.0')
+        client.begin_create_or_update.assert_not_called()
+
+
+class HorizonDBResolvePublicAccessForCommandTests(unittest.TestCase):
+
+    def test_unset_and_empty_return_none(self):
+        self.assertIsNone(_resolve_public_access_range_for_command(None, yes=True, is_update=False))
+        self.assertIsNone(_resolve_public_access_range_for_command('', yes=True, is_update=False))
+
+    def test_disabled_and_none_return_none(self):
+        self.assertIsNone(_resolve_public_access_range_for_command('Disabled', yes=True, is_update=True))
+        self.assertIsNone(_resolve_public_access_range_for_command('None', yes=True, is_update=False))
+
+    def test_all_returns_full_range(self):
+        self.assertEqual(_resolve_public_access_range_for_command('All', yes=True, is_update=False),
+                         ('0.0.0.0', '255.255.255.255'))
+
+    def test_single_ip_returns_pair(self):
+        self.assertEqual(_resolve_public_access_range_for_command('10.0.0.1', yes=True, is_update=False),
+                         ('10.0.0.1', '10.0.0.1'))
+
+
+class HorizonDBUserConfirmationTests(unittest.TestCase):
+
+    def test_yes_short_circuits(self):
+        self.assertTrue(_get_user_confirmation('proceed?', yes=True))
+
+    @mock.patch('azext_horizondb.utils._network.prompt_y_n')
+    def test_eoferror_becomes_clierror(self, mock_prompt):
+        mock_prompt.side_effect = EOFError()
+        with self.assertRaises(CLIError):
+            _get_user_confirmation('proceed?', yes=False)
 
 
 if __name__ == '__main__':

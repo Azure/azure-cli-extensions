@@ -102,10 +102,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             id_part=None,
             help='The name of the firewall rule.')
 
-        pool_name_arg_type = CLIArgumentType(
-            options_list=['--pool-name'],
-            help='The name of the pool the firewall rule targets. Defaults to the default pool.')
-
         start_ip_address_arg_type = CLIArgumentType(
             options_list=['--start-ip-address'],
             help='The start IP address of the firewall rule (IPv4). Must be dotted-quad format. Use '
@@ -151,7 +147,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('cluster_name', arg_type=firewall_cluster_name_arg_type)
             c.argument('firewall_rule_name', arg_type=firewall_rule_name_arg_type)
-            c.argument('pool_name', arg_type=pool_name_arg_type)
 
         with self.argument_context('horizondb firewall-rule create') as c:
             c.argument('start_ip_address', arg_type=start_ip_address_arg_type, validator=ip_address_validator)
