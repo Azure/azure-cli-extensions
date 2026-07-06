@@ -12,8 +12,8 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group('provisionedmachine'):
-        pass  # ssh-cert-create is registered via AAZ in aaz/latest/provisionedmachine/_ssh_cert_create.py
+    with self.command_group('provisionedmachine') as g:
+        pass
 
     # Attach table transformers to AAZ commands
     if 'provisionedmachine show-status' in self.command_table:
@@ -31,6 +31,7 @@ def transform_show_status_table_output(result):
 
     lifecycle_status = result.get("lifecycleStatus", {})
     if lifecycle_status:
+        # Print lifecycle summary above the table
         status = lifecycle_status.get("status", "")
         stage = lifecycle_status.get("stage", "")
         message = lifecycle_status.get("message", "")
@@ -43,6 +44,7 @@ def transform_show_status_table_output(result):
         if last_updated:
             sys.stderr.write(f"Last Updated: {last_updated}\n")
 
+        # Print recommended steps if present
         recommended_steps = lifecycle_status.get("recommendedSteps", [])
         if recommended_steps:
             sys.stderr.write("\nRecommended Steps:\n")
