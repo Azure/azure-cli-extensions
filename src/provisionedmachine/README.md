@@ -1,6 +1,6 @@
 # Provisioned Machine
 
-> **Preview** — This extension is currently in public preview (`1.0.0b4`).
+> **Preview** — This extension is currently in public preview (`1.0.0b5`).
 
 Manage Azure Stack HCI Edge Machines using the Azure CLI.
 
@@ -28,6 +28,7 @@ az extension update --name provisionedmachine
 | `az provisionedmachine install-os` | Install OS on a provisioned machine |
 | `az provisionedmachine reset-os` | Reset OS on a provisioned machine |
 | `az provisionedmachine os-image list` | List available OS images for provisioning |
+| `az provisionedmachine ssh-cert-create` | Create a short-lived SSH certificate for device authentication |
 
 ## Examples
 
@@ -112,4 +113,22 @@ az provisionedmachine reset-os -n myProvisionedMachine -g myResourceGroup
 ```bash
 az provisionedmachine delete -n myEdgeMachine -g myResourceGroup
 az provisionedmachine delete -n myEdgeMachine -g myResourceGroup --yes  # skip confirmation prompt
+```
+
+### Create an SSH certificate (default output paths)
+
+```bash
+az provisionedmachine ssh-cert-create \
+    --vault-name myKeyVault \
+    --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice
+```
+
+### Create an SSH certificate (custom output paths)
+
+```bash
+az provisionedmachine ssh-cert-create \
+    --vault-name myKeyVault \
+    --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice \
+    --private-key-path ~/.ssh/device_key \
+    --cert-path ~/.ssh/device_cert.pub
 ```

@@ -9,6 +9,7 @@ import json
 import tempfile
 import time
 import platform
+import oschmod
 
 from knack import log
 from azure.cli.core import azclierror

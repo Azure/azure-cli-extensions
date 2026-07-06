@@ -16,3 +16,4 @@ from ._list import *
 from ._reset_os import *
 from ._show import *
 from ._show_status import *
+from ._ssh_cert_create import *

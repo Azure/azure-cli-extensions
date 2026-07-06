@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 """
-Tests for the ``az provisionedmachine ssh-cert-create`` command (custom.ssh_cert_create).
+Tests for the ``az provisionedmachine ssh-cert-create`` command.
 
 All external dependencies (RBAC, Key Vault, key generation) are mocked.
 Tests verify the orchestration logic, input validation, PIM-derived expiry,
@@ -17,7 +17,7 @@ import unittest
 from unittest import mock
 
 from azure.cli.core import azclierror
-from azext_provisionedmachine import custom
+from azext_provisionedmachine.aaz.latest.provisionedmachine._ssh_cert_create import SshCertCreate
 
 
 # Convenience: a valid ARM resource ID used across tests.
@@ -30,10 +30,17 @@ _VALID_VAULT = "myKeyVault"
 
 
 def _make_cmd():
-    """Return a mock CLI cmd object."""
+    """Return a mock CLI cmd object that satisfies cmd.cli_ctx access."""
     cmd = mock.Mock()
     cmd.cli_ctx = mock.Mock()
     return cmd
+
+
+def _call_ssh_cert_create(cmd, vault_name, resource_id, cert_path=None, private_key_path=None):
+    """Call the AAZ command's internal method directly for testing."""
+    # _execute_ssh_cert_create uses 'self' as 'cmd' (accessing self.cli_ctx),
+    # so passing a mock cmd object as 'self' works correctly.
+    return SshCertCreate._execute_ssh_cert_create(cmd, vault_name, resource_id, cert_path, private_key_path)
 
 
 class TestSshCertCreateValidation(unittest.TestCase):
@@ -46,7 +53,7 @@ class TestSshCertCreateValidation(unittest.TestCase):
         cmd = _make_cmd()
 
         with self.assertRaises(azclierror.InvalidArgumentValueError):
-            custom.ssh_cert_create(cmd, _VALID_VAULT, "bad-id")
+            _call_ssh_cert_create(cmd, _VALID_VAULT, "bad-id")
 
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils.validate_resource_id')
     @mock.patch('azext_provisionedmachine.provisioned_machine_utils.validate_vault_name')
@@ -55,7 +62,7 @@ class TestSshCertCreateValidation(unittest.TestCase):
         cmd = _make_cmd()
 
         with self.assertRaises(azclierror.InvalidArgumentValueError):
-            custom.ssh_cert_create(cmd, "-bad-vault!", _VALID_RESOURCE_ID)
+            _call_ssh_cert_create(cmd, "-bad-vault!", _VALID_RESOURCE_ID)
 
 
 class TestSshCertCreateHappyPath(unittest.TestCase):
@@ -102,7 +109,7 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
         mock_keygen.return_value = (self.priv_path, self.pub_path)
         mock_sign.return_value = {"certificatePath": self.cert_path}
 
-        result = custom.ssh_cert_create(cmd, _VALID_VAULT, _VALID_RESOURCE_ID)
+        result = _call_ssh_cert_create(cmd, _VALID_VAULT, _VALID_RESOURCE_ID)
 
         self.assertIn("privateKeyPath", result)
         self.assertIn("certificatePath", result)
@@ -147,7 +154,7 @@ class TestSshCertCreateCleanupOnFailure(unittest.TestCase):
         mock_sign.side_effect = azclierror.CLIInternalError("KV failed")
 
         with self.assertRaises(azclierror.CLIInternalError):
-            custom.ssh_cert_create(cmd, _VALID_VAULT, _VALID_RESOURCE_ID)
+            _call_ssh_cert_create(cmd, _VALID_VAULT, _VALID_RESOURCE_ID)
 
         mock_cleanup.assert_called_once()
 
