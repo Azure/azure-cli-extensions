@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database change-disaster-recovery-configuration",
 )
 class ChangeDisasterRecoveryConfiguration(AAZCommand):
-    """Perform ChangeDisasterRecoveryConfiguration action on Autonomous Database
+    """Change the disaster recovery configuration of an Autonomous Database
 
-    :example: AutonomousDatabases_ChangeDisasterRecoveryConfiguration
-        az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group rg000 --autonomousdatabasename databasedb1 --disaster-recovery-type Adg --is-replicate-automatic-backups False
+    :example: Change a backup-based disaster recovery configuration to Autonomous Data Guard
+        az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --disaster-recovery-type Adg --is-replicate-automatic-backups false
     """
 
     _aaz_info = {

@@ -17,8 +17,22 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a AutonomousDatabase
 
+    Use one create mode option per request. The database type is inferred from --regular, --clone,
+    --clone-from-backup-timestamp, or --cross-region-disaster-recovery. Do not pass dataBaseType
+    directly. Clone and disaster recovery fields must be nested inside the matching create mode
+    option.
+
     :example: Create an Autonomous database
-        az oracle-database autonomous-database create --location <location> --autonomousdatabasename <name> --resource-group <resource_group> --subnet-id /<subnet_id> --display-name <display_name> --compute-model ECPU --compute-count <compute_count> --data-storage-size-in-gbs <storage_size> --license-model <BringYourOwnLicense/LicenseIncluded> --db-workload <OLTP> --admin-password <password> --db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <virtual network id> --regular
+        az oracle-database autonomous-database create --location <location> --autonomousdatabasename <name> --resource-group <resource_group> --subnet-id <subnet_id> --display-name <display_name> --compute-model ECPU --compute-count <compute_count> --data-storage-size-in-gbs <storage_size> --license-model <BringYourOwnLicense/LicenseIncluded> --db-workload OLTP --admin-password <password> --db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --regular
+
+    :example: Clone from an existing Autonomous Database
+        az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyCloneDB --display-name MyCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone clone-type=Full source=Database source-id=<source_autonomous_database_id>
+
+    :example: Clone from a backup timestamp
+        az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyBackupCloneDB --display-name MyBackupCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 32 --license-model BringYourOwnLicense --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone-from-backup-timestamp clone-type=Full source=BackupFromTimestamp source-id=<source_autonomous_database_id> timestamp=2026-06-03T15:45:11.000Z use-latest-available-backup-time-stamp=false
+
+    :example: Create a cross-region disaster recovery peer
+        az oracle-database autonomous-database create --resource-group MyResourceGroup --location germanywestcentral --autonomousdatabasename MyCrossRegionPeerDB --display-name MySourceDB --db-version 19c --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <destination_vnet_id> --subnet-id <destination_subnet_id> --cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id=<source_autonomous_database_id> source-location=eastus is-replicate-automatic-backups=true
     """
 
     _aaz_info = {
@@ -105,7 +119,7 @@ class Create(AAZCommand):
         _args_schema.backup_retention_period_in_days = AAZIntArg(
             options=["--retention-days", "--backup-retention-period-in-days"],
             arg_group="Properties",
-            help="Retention period, in days, for long-term backups",
+            help="Retention period, in days, for long-term backups.",
         )
         _args_schema.character_set = AAZStrArg(
             options=["--character-set"],
@@ -166,7 +180,7 @@ class Create(AAZCommand):
         _args_schema.database_edition = AAZStrArg(
             options=["--database-edition"],
             arg_group="Properties",
-            help="The Oracle Database Edition that applies to the Autonomous databases.",
+            help="The Oracle Database Edition that applies to the Autonomous databases. Use this only with --license-model BringYourOwnLicense.",
             enum={"EnterpriseEdition": "EnterpriseEdition", "StandardEdition": "StandardEdition"},
         )
         _args_schema.db_version = AAZStrArg(
@@ -201,7 +215,7 @@ class Create(AAZCommand):
         _args_schema.is_auto_scaling_for_storage_enabled = AAZBoolArg(
             options=["--store-auto-scaling", "--is-auto-scaling-for-storage-enabled"],
             arg_group="Properties",
-            help="Indicates if auto scaling is enabled for the Autonomous Database storage.",
+            help="Indicates if auto scaling is enabled for the Autonomous Database storage. For clones from an existing database, this value must match the source database storage auto-scaling setting.",
         )
         _args_schema.is_local_data_guard_enabled = AAZBoolArg(
             options=["--local-data-guard", "--is-local-data-guard-enabled"],
@@ -278,7 +292,8 @@ class Create(AAZCommand):
         )
         clone.source = AAZStrArg(
             options=["source"],
-            help="The source of the database.",
+            help="The source of the clone. Use Database when cloning directly from an existing Autonomous Database.",
+            required=True,
             enum={"BackupFromId": "BackupFromId", "BackupFromTimestamp": "BackupFromTimestamp", "CloneToRefreshable": "CloneToRefreshable", "CrossRegionDataguard": "CrossRegionDataguard", "CrossRegionDisasterRecovery": "CrossRegionDisasterRecovery", "Database": "Database", "None": "None"},
         )
         clone.source_id = AAZStrArg(
@@ -296,7 +311,7 @@ class Create(AAZCommand):
         )
         clone_from_backup_timestamp.source = AAZStrArg(
             options=["source"],
-            help="The source of the database.",
+            help="The source of the clone. Use BackupFromTimestamp when cloning from a point-in-time backup.",
             required=True,
             enum={"BackupFromTimestamp": "BackupFromTimestamp"},
         )
@@ -307,11 +322,11 @@ class Create(AAZCommand):
         )
         clone_from_backup_timestamp.timestamp = AAZDateTimeArg(
             options=["timestamp"],
-            help="The timestamp specified for the point-in-time clone of the source Autonomous Database. The timestamp must be in the past.",
+            help="The timestamp specified for the point-in-time clone of the source Autonomous Database. The timestamp must be in the past and use RFC3339 UTC format, for example 2026-06-03T15:45:11.000Z. If the backup list shows only seconds, use .000Z for milliseconds.",
         )
         clone_from_backup_timestamp.use_latest_available_backup_time_stamp = AAZBoolArg(
             options=["use-latest-available-backup-time-stamp"],
-            help="Clone from latest available backup timestamp.",
+            help="Clone from the latest available backup timestamp instead of providing timestamp.",
         )
 
         cross_region_disaster_recovery = cls._args_schema.cross_region_disaster_recovery
@@ -338,7 +353,7 @@ class Create(AAZCommand):
         )
         cross_region_disaster_recovery.source_location = AAZStrArg(
             options=["source-location"],
-            help="The name of the region where source Autonomous Database exists.",
+            help="The Azure region where the source Autonomous Database exists. The top-level --location value is the destination region for the new cross-region DR peer, and the --vnet-id and --subnet-id values must belong to that destination region.",
         )
         cross_region_disaster_recovery.source_ocid = AAZStrArg(
             options=["source-ocid"],
@@ -433,7 +448,17 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+
+        if has_value(self.ctx.args.clone_from_backup_timestamp) and has_value(self.ctx.args.database_edition):
+            license_model = None
+            if has_value(self.ctx.args.license_model):
+                license_model = self.ctx.args.license_model.to_serialized_data()
+
+            if license_model != "BringYourOwnLicense":
+                raise InvalidArgumentValueError(
+                    "--database-edition is valid only when --license-model BringYourOwnLicense is used."
+                )
 
     @register_callback
     def post_operations(self):
