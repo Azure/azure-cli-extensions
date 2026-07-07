@@ -334,8 +334,8 @@ class ConnectConfigCreate(_ConnectConfigCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
-   # def pre_operations(self):
-        #_validate_hub_resource_ids(self.ctx.args)
+    def pre_operations(self):
+        _validate_hub_resource_ids(self.ctx.args)
 
 
 class ConnectConfigUpdate(_ConnectConfigUpdate):
