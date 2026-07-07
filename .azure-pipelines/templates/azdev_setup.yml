@@ -13,7 +13,7 @@ steps:
       source ./env/bin/activate
       git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
       python -m pip install -U pip
-      pip install --upgrade "azdev==0.2.12"
+      pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@bb196e370ef0c0c8fcb01ab2e73bf2db7b5821a2#egg=azdev"
       azdev --version
       azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
       pip list -v
