@@ -1,5 +1,10 @@
 name: Azure CLI Extensions Sync Squad Mapping
 
+# This pipeline is schedule-driven only; disable CI and PR triggers so it does
+# not run (and potentially open PRs) on regular pushes/PRs.
+trigger: none
+pr: none
+
 schedules:
 - cron: "20 16 * * 0"
   displayName: 12:20 AM (UTC + 8:00) China Weekly Run
