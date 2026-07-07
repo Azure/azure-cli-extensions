@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database national-character-set list",
 )
 class List(AAZCommand):
-    """List AutonomousDatabaseNationalCharacterSet resources by Location
+    """List Autonomous Database national character set resources by location
 
     :example: List ADBS National Character Set
         az oracle-database autonomous-database national-character-set list --location <location>

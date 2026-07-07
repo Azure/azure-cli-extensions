@@ -33,7 +33,7 @@ class OracleDatabaseGenerateWalletScenario(ScenarioTest):
             self.assertIn('sqlnet.ora', wallet_files)
             self.assertIn('cwallet.sso', wallet_files)
 
-    # @live_only()
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     def test_oracledatabase_generate_wallet_downloads_zip(self):
         resource_group, autonomous_database_name = self._get_adbs()

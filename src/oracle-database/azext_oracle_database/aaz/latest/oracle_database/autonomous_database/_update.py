@@ -15,10 +15,13 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database update",
 )
 class Update(AAZCommand):
-    """Update a AutonomousDatabase
+    """Update an Autonomous Database
 
-    :example: Update Autonomous database
+    :example: Update an Autonomous Database
         az oracle-database autonomous-database update --autonomousdatabasename <ADBS name> --resource-group <resource_group> --tags {Tagkey:TagValue}
+
+    :example: Enable local Autonomous Data Guard
+        az oracle-database autonomous-database update --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --local-data-guard true --local-adg-auto-failover-max-data-loss-limit 0
     """
 
     _aaz_info = {
@@ -159,7 +162,7 @@ class Update(AAZCommand):
         _args_schema.database_edition = AAZStrArg(
             options=["--database-edition"],
             arg_group="Properties",
-            help="The Oracle Database Edition that applies to the Autonomous databases.",
+            help="The Oracle Database edition that applies to the Autonomous Database.",
             nullable=True,
             enum={"EnterpriseEdition": "EnterpriseEdition", "StandardEdition": "StandardEdition"},
         )
@@ -188,7 +191,7 @@ class Update(AAZCommand):
         _args_schema.is_local_data_guard_enabled = AAZBoolArg(
             options=["--local-data-guard", "--is-local-data-guard-enabled"],
             arg_group="Properties",
-            help="Indicates whether the Autonomous Database has local or called in-region Data Guard enabled.",
+            help="Indicates whether local, in-region Autonomous Data Guard is enabled for the Autonomous Database.",
             nullable=True,
         )
         _args_schema.is_mtls_connection_required = AAZBoolArg(
@@ -207,7 +210,7 @@ class Update(AAZCommand):
         _args_schema.local_adg_auto_failover_max_data_loss_limit = AAZIntArg(
             options=["--failover-limit", "--local-adg-auto-failover-max-data-loss-limit"],
             arg_group="Properties",
-            help="Parameter that allows users to select an acceptable maximum data loss limit in seconds, up to which Automatic Failover will be triggered when necessary for a Local Autonomous Data Guard",
+            help="Maximum data loss limit, in seconds, for local Autonomous Data Guard automatic failover when supported.",
             nullable=True,
             fmt=AAZIntArgFormat(
                 maximum=3600,

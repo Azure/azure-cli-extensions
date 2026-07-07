@@ -15,14 +15,14 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database create",
 )
 class Create(AAZCommand):
-    """Create a AutonomousDatabase
+    """Create an Autonomous Database
 
     Use one create mode option per request. The database type is inferred from --regular, --clone,
     --clone-from-backup-timestamp, or --cross-region-disaster-recovery. Do not pass dataBaseType
     directly. Clone and disaster recovery fields must be nested inside the matching create mode
     option.
 
-    :example: Create an Autonomous database
+    :example: Create an Autonomous Database
         az oracle-database autonomous-database create --location <location> --autonomousdatabasename <name> --resource-group <resource_group> --subnet-id <subnet_id> --display-name <display_name> --compute-model ECPU --compute-count <compute_count> --data-storage-size-in-gbs <storage_size> --license-model <BringYourOwnLicense/LicenseIncluded> --db-workload OLTP --admin-password <password> --db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --regular
 
     :example: Clone from an existing Autonomous Database
@@ -32,7 +32,7 @@ class Create(AAZCommand):
         az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyBackupCloneDB --display-name MyBackupCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 32 --license-model BringYourOwnLicense --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone-from-backup-timestamp clone-type=Full source=BackupFromTimestamp source-id=<source_autonomous_database_id> timestamp=2026-06-03T15:45:11.000Z use-latest-available-backup-time-stamp=false
 
     :example: Create a cross-region disaster recovery peer
-        az oracle-database autonomous-database create --resource-group MyResourceGroup --location germanywestcentral --autonomousdatabasename MyCrossRegionPeerDB --display-name MySourceDB --db-version 19c --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <destination_vnet_id> --subnet-id <destination_subnet_id> --cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id=<source_autonomous_database_id> source-location=eastus is-replicate-automatic-backups=true
+        az oracle-database autonomous-database create --resource-group MyResourceGroup --location germanywestcentral --autonomousdatabasename MyCrossRegionPeerDB --display-name MyCrossRegionPeerDB --db-version 19c --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <destination_vnet_id> --subnet-id <destination_subnet_id> --cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id=<source_autonomous_database_id> source-location=eastus is-replicate-automatic-backups=true
     """
 
     _aaz_info = {
@@ -180,7 +180,7 @@ class Create(AAZCommand):
         _args_schema.database_edition = AAZStrArg(
             options=["--database-edition"],
             arg_group="Properties",
-            help="The Oracle Database Edition that applies to the Autonomous databases. Use this only with --license-model BringYourOwnLicense.",
+            help="The Oracle Database edition that applies to the Autonomous Database. Use this only with --license-model BringYourOwnLicense.",
             enum={"EnterpriseEdition": "EnterpriseEdition", "StandardEdition": "StandardEdition"},
         )
         _args_schema.db_version = AAZStrArg(

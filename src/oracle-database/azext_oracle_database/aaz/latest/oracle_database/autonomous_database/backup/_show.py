@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database backup show",
 )
 class Show(AAZCommand):
-    """Get a AutonomousDatabaseBackup
+    """Get an Autonomous Database backup
 
-    :example: Get ADBS Backup
+    :example: Get an Autonomous Database backup
         az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
 
     :example: Get a backup using the Azure backup resource name/id returned by backup create or backup list

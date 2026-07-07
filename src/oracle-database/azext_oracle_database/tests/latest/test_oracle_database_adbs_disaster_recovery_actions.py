@@ -25,7 +25,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
 
         return peer_args
 
-    # @live_only()
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_create_cross_region_disaster_recovery(self, resource_group):
@@ -63,10 +63,10 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
                  '--resource-group {} '
                  '--subnet-id {} '
                  '--display-name {} '
-                 '--compute-model ECPU --compute-count 3 '
-                 '--data-storage-size-in-gbs 2048 --license-model LicenseIncluded '
-                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
-                 '--cpu-auto-scaling true --store-auto-scaling true --is-mtls-connection-required false '
+                 # '--compute-model ECPU --compute-count 3 '
+                 # '--data-storage-size-in-gbs 2048 --license-model LicenseIncluded '
+                 # '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
+                 # '--cpu-auto-scaling true --store-auto-scaling true --is-mtls-connection-required false '
                  '--vnet-id {} '
                  '--cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id={} source-location={} is-replicate-automatic-backups=false '.format(
                      cross_region_dr_location,
@@ -84,7 +84,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_change_disaster_recovery_configuration(self, resource_group):
         resource_group_name = 'PowerShellTestRg'
-        source_database_name = 'tetscrdr'
+        source_database_name = 'ADBScrdrc2buoxjojjil'
 
         self.cmd('az oracle-database autonomous-database change-disaster-recovery-configuration '
                  '--resource-group {} '

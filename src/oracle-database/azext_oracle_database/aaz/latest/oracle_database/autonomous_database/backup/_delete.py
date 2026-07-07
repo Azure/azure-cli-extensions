@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a AutonomousDatabaseBackup
+    """Delete an Autonomous Database backup
 
-    :example: ADBS Backup Delete
+    :example: Delete an Autonomous Database backup
         az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --yes
     """
 

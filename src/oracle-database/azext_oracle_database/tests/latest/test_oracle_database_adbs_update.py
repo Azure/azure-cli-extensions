@@ -13,8 +13,8 @@ from azure.cli.testsdk import ScenarioTest, live_only
 class OracleDatabaseAdbsUpdateScenario(ScenarioTest):
     def _get_adbs(self):
         return (
-            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_RESOURCE_GROUP', 'PowerShellTestRg'),
-            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_NAME', 'DNDAdbsTets')
+            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_RESOURCE_GROUP', 'PowerShellTestRgMihr'),
+            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_UPDATE_NAME', 'testReg0628')
         )
 
     @live_only()
@@ -46,3 +46,13 @@ class OracleDatabaseAdbsUpdateScenario(ScenarioTest):
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
                  '--retention-days 40'.format(resource_group, autonomous_database_name))
+
+    @live_only()
+    @AllowLargeResponse(size_kb=10240)
+    def test_oracledatabase_adbs_update_local_data_guard(self):
+        resource_group, autonomous_database_name = self._get_adbs()
+
+        self.cmd('az oracle-database autonomous-database update '
+                 '--resource-group {} '
+                 '--autonomousdatabasename {} '
+                 '--local-data-guard true'.format(resource_group, autonomous_database_name))
