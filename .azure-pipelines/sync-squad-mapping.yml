@@ -75,8 +75,11 @@ jobs:
       git add .github/policies
       git commit -m "Sync resourceManagement.yml for squad mapping"
 
-      git remote add azclibot https://azclibot:$(GithubToken)@github.com/azclibot/azure-cli-extensions.git
+      $remoteUrl = "https://azclibot:" + $env:GITHUB_TOKEN + "@github.com/azclibot/azure-cli-extensions.git"
+      git remote add azclibot $remoteUrl
       git push azclibot "sync_squad_mapping_$env:Build_BuildId" --force
+    env:
+      GITHUB_TOKEN: $(GithubToken)
     displayName: Git commit and push
     condition: and(succeeded(), eq(variables['ChangesDetected'], 'true'))
 
@@ -86,10 +89,12 @@ jobs:
       $BaseBranch = "main"
       $Description = "This PR synchronizes squad labels in resourceManagement.yml based on the Squad Mapping ADO wiki page."
 
-      $Headers = @{"Accept" = "application/vnd.github+json"; "Authorization" = "Bearer $(GithubToken)" }
+      $Headers = @{"Accept" = "application/vnd.github+json"; "Authorization" = "Bearer $($env:GITHUB_TOKEN)" }
       $RequestBody = @{"title" = $Title; "body" = $Description; "head" = $HeadBranch; "base" = $BaseBranch;}
       $Uri = "https://api.github.com/repos/Azure/azure-cli-extensions/pulls"
 
       Invoke-WebRequest -Uri $Uri -Method POST -Headers $Headers -Body ($RequestBody | ConvertTo-Json)
+    env:
+      GITHUB_TOKEN: $(GithubToken)
     displayName: Create PR to azure/azure-cli-extensions main branch
     condition: and(succeeded(), eq(variables['ChangesDetected'], 'true'))
