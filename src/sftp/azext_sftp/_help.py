@@ -43,6 +43,14 @@ helps['sftp cert'] = """
         - Certificates are valid for a limited time (typically 1 hour)
         - Private keys are generated with 'id_rsa' name when key pair is created
 
+        KEY PAIR OVERWRITE:
+        - When a key pair already exists at the target location, you will be
+          prompted before it is overwritten. Selecting 'y' (default) regenerates
+          the key pair; selecting 'n' reuses the existing keys.
+        - Pass --yes/-y to skip the prompt and overwrite without confirmation.
+        - In non-interactive sessions (no TTY) the existing keys are reused
+          unless --yes is supplied.
+
         The certificate can be used with 'az sftp connect' or with standard SFTP clients.
     examples:
         - name: Generate a certificate using an existing public key
@@ -51,6 +59,8 @@ helps['sftp cert'] = """
           text: az sftp cert --file ~/my_cert.pub
         - name: Generate a certificate with custom SSH client folder
           text: az sftp cert --file ~/my_cert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"
+        - name: Generate a certificate and overwrite an existing key pair without prompting
+          text: az sftp cert --file ~/my_cert.pub --yes
 """
 
 helps['sftp connect'] = """
@@ -75,6 +85,11 @@ helps['sftp connect'] = """
           * Azure Public: {storage-account}.blob.core.windows.net
           * Azure China: {storage-account}.blob.core.chinacloudapi.cn
           * Azure Government: {storage-account}.blob.core.usgovcloudapi.net
+        - Use --endpoint-suffix to override the endpoint suffix for custom environments.
+
+        TRANSFER OPTIONS:
+        - Buffer size: Controls the SFTP transfer buffer size via -B flag (default: 256 KB).
+          Use --buffer-size to tune transfer performance.
 
         SECURITY:
         - Generated credentials are automatically cleaned up after connection
@@ -89,6 +104,12 @@ helps['sftp connect'] = """
           text: az sftp connect --storage-account mystorageaccount --public-key-file ~/.ssh/id_rsa.pub --private-key-file ~/.ssh/id_rsa
         - name: Connect with custom port
           text: az sftp connect --storage-account mystorageaccount --port 2222
+        - name: Connect with custom buffer size for large file transfers
+          text: az sftp connect --storage-account mystorageaccount --buffer-size 1048576
+        - name: Connect with a custom endpoint suffix
+          text: az sftp connect --storage-account mystorageaccount --endpoint-suffix blob.core.usgovcloudapi.net
+        - name: Connect and overwrite an existing SSH key pair without prompting
+          text: az sftp connect --storage-account mystorageaccount --yes
         - name: Connect with additional SFTP arguments for debugging
           text: az sftp connect --storage-account mystorageaccount --sftp-args="-v"
         - name: Connect with custom SSH client folder (Windows)

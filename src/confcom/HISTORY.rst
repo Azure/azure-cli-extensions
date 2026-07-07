@@ -3,6 +3,56 @@
 Release History
 ===============
 
+2.1.0
++++++
+* Add command for generating container policy definitions from radius application templates
+* Add command to insert generated policy into radius application templates
+
+2.0.1
++++++
+* Fix accidental docker dependency even when using tar
+
+2.0.0
++++++
+* Fix path traversal when generating policies from untrusted image tar files
+
+2.0.0b2
++++++++
+* Fix default working directory for Windows containers being set to C:\\ if the image doesn't specify one.
+
+2.0.0b1
++++++++
+* Add Windows container support with CIM-based layer hashing
+* Support for mounted_cim field in security policies for Windows containers
+
+1.8.0
++++++
+* Ensure that fragments are attached to the correct manifest for a multiarch image.
+* Fixed a bug in `fragment attach`.
+
+1.7.2
+++++++
+* Fix ORAS fragment discovery for ORAS CLI >= 1.3.0
+* Fix StatefulSet/Deployment volume mount and securityContext resolution in `containers from_vn2` command to use pod template spec
+* Fix empty command array in `containers from_vn2` command overwriting image entrypoint when no command/args specified in YAML
+* Fix phantom exec_processes entries generated for non-exec probes (httpGet/tcpSocket) in `containers from_vn2` command
+
+1.7.1
+++++++
+* Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
+
+1.7.0
+++++++
+* Add containers from_vn2 command to generate container definitions from a VN2 template.
+
+1.6.0
+++++++
+* Added confcom containers from_image command to generate container definitions from an image reference
+
+1.5.1
+++++++
+* Bumped the Kata genpolicy version to gen4
+
 1.5.0
 ++++++
 * restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input

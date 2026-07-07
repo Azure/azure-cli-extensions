@@ -28,11 +28,22 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappFunctionTests(ScenarioTest):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Install application-insights extension if not already installed
+        try:
+            result = run(['az', 'extension', 'show', '--name', 'application-insights'],
+                         capture_output=True, text=True)
+            if result.returncode != 0:
+                cmd = ['azdev', 'extension', 'add', 'application-insights']
+                run(cmd, check=True)
+                sleep(120)
+        except Exception:
+            pass
+
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
-        cmd = ['azdev', 'extension', 'add', 'application-insights']
-        run(cmd, check=True)
-        sleep(120)
     
 
     @AllowLargeResponse(8192)

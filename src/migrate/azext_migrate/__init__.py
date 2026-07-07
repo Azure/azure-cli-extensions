@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azext_migrate._help import helps  # pylint: disable=unused-import
 
 
 class MigrateCommandsLoader(AzCommandsLoader):

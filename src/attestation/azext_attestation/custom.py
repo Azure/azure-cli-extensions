@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines, line-too-long, protected-access
 
 import base64
 import jwt
@@ -18,10 +18,10 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_pem_x509_certificate
 
-from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Delete as _AttestationDelete,\
+from azext_attestation.aaz.latest.attestation import Create as _AttestationCreate, Delete as _AttestationDelete, \
     Show as _AttestationShow, GetDefaultByLocation as _AttestationGetDefaultByLocation
 from azext_attestation.aaz.latest.attestation.policy import Reset as _ResetPolicy, Set as _SetPolicy, Show as _GetPolicy
-from azext_attestation.aaz.latest.attestation.signer import Add as _AddSigner, Remove as _RemoveSigner,\
+from azext_attestation.aaz.latest.attestation.signer import Add as _AddSigner, Remove as _RemoveSigner, \
     List as _ListSigners
 from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import ArgumentUsageError
@@ -184,7 +184,7 @@ class AddSigner(_AddSigner):
                 signer = f.read()
 
         if signer:
-            if type(signer) == bytes:
+            if isinstance(signer, bytes):
                 args.signer = str(signer, encoding="utf-8")
             else:
                 args.signer = signer
@@ -246,7 +246,7 @@ class RemoveSigner(_RemoveSigner):
                 signer = f.read()
 
         if signer:
-            if type(signer) == bytes:
+            if isinstance(signer, bytes):
                 args.signer = str(signer, encoding="utf-8")
             else:
                 args.signer = signer
@@ -254,7 +254,7 @@ class RemoveSigner(_RemoveSigner):
     def _output(self, *args, **kwargs):
         args = self.ctx.args
         list_args = {"resource_group": args.resource_group, "provider_name": args.provider_name}
-        from azext_attestation.aaz.latest.attestation.signer import List
+        from azext_attestation.aaz.latest.attestation.signer import List  # pylint: disable=reimported
         token = List(cli_ctx=self.cli_ctx)(command_args=list_args)['token']
         result = {'Jwt': token}
         if has_value(token):
@@ -398,7 +398,8 @@ class SetPolicy(_SetPolicy):
         validate_provider_resource_id(self)
 
         if has_value(args.new_attestation_policy_file) and has_value(args.new_attestation_policy):
-            raise ArgumentUsageError('Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
+            raise ArgumentUsageError(
+                'Please specify just one of --new-attestation-policy and --new-attestation-policy-file/-f')
 
         if not has_value(args.new_attestation_policy_file) and not has_value(args.new_attestation_policy):
             raise ArgumentUsageError('Please specify --new-attestation-policy or --new-attestation-policy-file/-f')
@@ -416,7 +417,7 @@ class SetPolicy(_SetPolicy):
                 new_attestation_policy = f.read()
 
         show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name}
-        from azext_attestation.aaz.latest.attestation import Show
+        from azext_attestation.aaz.latest.attestation import Show  # pylint: disable=reimported
         provider = Show(cli_ctx=self.cli_ctx)(command_args=show_args)
 
         if args.policy_format == 'Text':
@@ -434,17 +435,19 @@ class SetPolicy(_SetPolicy):
                 )
             except TypeError as e:
                 print(e)
-                raise ArgumentUsageError('Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
+                raise ArgumentUsageError(
+                    'Failed to encode text content, are you using JWT? If yes, please use --policy-format JWT')
 
         if new_attestation_policy:
-            if type(new_attestation_policy) == bytes:
+            if isinstance(new_attestation_policy, bytes):
                 args.new_attestation_policy = str(new_attestation_policy, encoding="utf-8")
             else:
                 args.new_attestation_policy = new_attestation_policy
 
     def _output(self, *args, **kwargs):
         args = self.ctx.args
-        show_args = {"resource_group": args.resource_group, "name": args.name, "attestation_type": args.attestation_type}
+        show_args = {"resource_group": args.resource_group, "name": args.name,
+                     "attestation_type": args.attestation_type}
         return GetPolicy(cli_ctx=self.cli_ctx)(command_args=show_args)
 
 
@@ -490,7 +493,8 @@ class ResetPolicy(_ResetPolicy):
 
     def _output(self, *args, **kwargs):
         args = self.ctx.args
-        show_args = {"resource_group": args.resource_group, "name": args.name, "attestation_type": args.attestation_type}
+        show_args = {"resource_group": args.resource_group, "name": args.name,
+                     "attestation_type": args.attestation_type}
         return GetPolicy(cli_ctx=self.cli_ctx)(command_args=show_args)
 
 

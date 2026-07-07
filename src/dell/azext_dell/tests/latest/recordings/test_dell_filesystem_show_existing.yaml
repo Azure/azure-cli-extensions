@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dell filesystem show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --filesystem-name
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.12 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/praveensingh-test/providers/Dell.Storage/filesystems/cliuksouth-1?api-version=2025-03-21
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/praveensingh-test/providers/Dell.Storage/filesystems/cliuksouth-1","name":"cliuksouth-1","type":"dell.storage/filesystems","location":"uksouth","tags":{"deploymenT_MODE":"SkipProvision"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-01-21T09:34:35.9923542Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-01-21T09:34:35.9923542Z"},"properties":{"marketplace":{"marketplaceSubscriptionId":"bed502a8-cec0-469c-d4ff-7841e521d1a6","planId":"testplan","planName":"Premium","offerId":"thunderscaletest","publisherId":"dellemc","marketplaceSubscriptionStatus":"Subscribed","endDate":"01/20/2027
+        00:00:00","termUnit":"P1Y"},"provisioningState":"Succeeded","user":{},"delegatedSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/praveensingh-test/providers/Microsoft.Network/virtualNetworks/uksouthVnet/subnets/default2","delegatedSubnetCidr":"10.0.1.0/24","dellReferenceNumber":"100438419","encryption":{"encryptionType":"Microsoft-managed
+        keys (MMK)"},"fileSystemId":"ONEFS-0ad6b06d44738aafcd6527093d9afe3f2268","capacity":{"min":"65","max":"2100","incremental":"1","current":"351"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1257'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Feb 2026 09:22:28 GMT
+      etag:
+      - '"200133ee-0000-1100-0000-6970a06a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 7E73D7D8C76D4BFBB3BE40C55CE6C53C Ref B: PNQ231110907034 Ref C: 2026-02-02T09:22:28Z'
+    status:
+      code: 200
+      message: OK
+version: 1

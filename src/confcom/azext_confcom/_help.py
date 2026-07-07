@@ -105,6 +105,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the default fragments are not included in the generated policy. This includes containers needed to mount azure files, mount secrets, mount git repos, and other common ACI features'
 
+        - name: --platform
+          type: string
+          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker Desktop must be running in the matching container mode to produce correct layer hashes.'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
@@ -116,6 +120,8 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
         - name: Input an ARM Template file and use a fragments JSON file to generate a policy
           text: az confcom acipolicygen --template-file "./template.json" --fragments-json "./fragments.json" --include-fragments
+        - name: Generate a Windows container policy (requires Docker Desktop in Windows containers mode)
+          text: az confcom acipolicygen --template-file "./template.json" --platform windows/amd64 --outraw-pretty-print
 """
 
 helps[
@@ -314,10 +320,114 @@ helps[
       - name: --manifest-tag
         type: string
         short-summary: 'The reference to attach the signed fragment to'
-
+      - name: --platform
+        type: string
+        short-summary: The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.
     examples:
         - name: Attach a signed fragment to a registry
           text: az confcom fragment attach ./fragment.reg.cose --manifest-tag myregistry.azurecr.io/image:latest
         - name: Attach the output of acifragmentgen to a registry
           text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment attach --manifest-tag myregistry.azurecr.io/image:latest
+"""
+
+helps[
+    "confcom containers"
+] = """
+    type: group
+    short-summary: Commands which generate Security Policy Container Definitions.
+"""
+
+helps[
+    "confcom containers from_image"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on an image reference.
+
+    parameters:
+        - name: --platform
+          type: str
+          short-summary: 'The name of the platform the container definition will run on. Must be either "aci" or "vn2".'
+
+
+    examples:
+        - name: Input an image reference and generate container definitions
+          text: az confcom containers from_image my.azurecr.io/myimage:tag
+"""
+
+helps[
+    "confcom containers from_vn2"
+] = """
+    type: command
+    short-summary: Create Security Policy Container Definitions based on a VN2 template.
+
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: 'The name of the container to generate the policy for. If omitted, all containers are returned.'
+
+
+    examples:
+        - name: Input a VN2 Template and generate container definitions
+          text: az confcom containers from_vn2 vn2.yaml --name mycontainer
+        - name: Input a VN2 Template and generate container definitions for all containers
+          text: az confcom containers from_vn2 vn2.yaml
+    """
+
+helps[
+    "confcom containers from_radius"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on a Radius Bicep template.
+
+    parameters:
+        - name: --parameters -p
+          type: string
+          short-summary: 'Parameter file(s) for the Radius Bicep template. Can be specified multiple times.'
+
+        - name: --idx
+          type: int
+          short-summary: 'Index of the container definition in the template to use (0-based). Defaults to 0.'
+
+        - name: --platform
+          type: string
+          short-summary: 'The target platform to create the container definition for (aci or vn2). Defaults to aci.'
+
+    examples:
+        - name: Generate a container definition from a Radius Bicep template
+          text: az confcom containers from_radius ./app.bicep
+        - name: Generate a container definition from a Radius Bicep template with parameters
+          text: az confcom containers from_radius ./app.bicep --parameters ./params.bicepparam
+        - name: Generate a container definition for the second container in the template
+          text: az confcom containers from_radius ./app.bicep --idx 1
+"""
+
+helps[
+    "confcom radius"
+] = """
+    type: group
+    short-summary: Commands to manage security policies for Radius Bicep templates.
+"""
+
+helps[
+    "confcom radius policy_insert"
+] = """
+    type: command
+    short-summary: Insert a generated security policy into a Radius Bicep template.
+
+    parameters:
+        - name: --template -t
+          type: string
+          short-summary: 'Path to the Radius Bicep template to update with the policy.'
+
+        - name: --idx
+          type: int
+          short-summary: 'Index of the container in the template to update (0-based). Defaults to 0.'
+
+    examples:
+        - name: Insert a policy file into a Radius Bicep template
+          text: az confcom radius policy_insert ./policy.rego --template ./app.bicep
+        - name: Pipe a generated policy directly into a Radius Bicep template
+          text: az confcom acipolicygen --template-file ./template.json --print-policy --outraw | az confcom radius policy_insert --template ./app.bicep
+        - name: Insert a policy into the second container of a Radius Bicep template
+          text: az confcom radius policy_insert ./policy.rego --template ./app.bicep --idx 1
 """

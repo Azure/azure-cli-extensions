@@ -4,8 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import yaml
+import shutil
+import subprocess
 import tempfile
+import yaml
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -20,6 +22,7 @@ from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_
 from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet._helpers import get_msi_object_id
+from azext_fleet._helpers import is_stdout_path
 from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
 from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
@@ -27,13 +30,13 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
-from azext_fleet.vendored_sdks.v2025_08_01_preview.models import (
+from azext_fleet.vendored_sdks.v2026_03_02_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
     PlacementV1PlacementPolicy,
     PropagationType,
-    PlacementType
+    PlacementType,
 )
 
 logger = get_logger(__name__)
@@ -218,6 +221,43 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
 
 
+def _convert_kubeconfig_to_azurecli(path):
+    """
+    Convert kubeconfig to use Azure CLI authentication if it uses devicecode.
+
+    Args:
+        path: Path to the kubeconfig file to convert
+    """
+    # Skip conversion if path is stdout
+    if is_stdout_path(path):
+        return
+
+    if shutil.which("kubelogin"):
+        try:
+            subprocess.run(
+                ["kubelogin", "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", path],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            logger.warning("Converted kubeconfig to use Azure CLI authentication.")
+        except subprocess.CalledProcessError as e:
+            logger.warning("Failed to convert kubeconfig with kubelogin: %s", str(e))
+        except subprocess.TimeoutExpired as e:
+            logger.warning("kubelogin command timed out: %s", str(e))
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning("Error running kubelogin: %s", str(e))
+    else:
+        logger.warning(
+            "The fleet hub cluster kubeconfig requires kubelogin. "
+            "Please install kubelogin from https://github.com/Azure/kubelogin or run "
+            "'az aks install-cli' to install both kubectl and kubelogin. "
+            "After installing kubelogin, rerun 'az fleet get-credentials' and the "
+            "kubeconfig will be converted automatically."
+        )
+
+
 def get_credentials(cmd,
                     client,
                     resource_group_name,
@@ -225,7 +265,8 @@ def get_credentials(cmd,
                     path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                     overwrite_existing=False,
                     context_name=None,
-                    member_name=None):
+                    member_name=None,
+                    skip_kubelogin_conversion=False):
 
     # If a member name is given, we use the cluster resource ID from the fleet member
     # to get that member cluster's credentials
@@ -273,6 +314,11 @@ def get_credentials(cmd,
         try:
             kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
             print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+            # Fleet hub is always RBAC-enabled and should convert it with kubelogin so that
+            # user doesn't have to manually run kubelogin convert-kubeconfig -l azurecli
+            # every time after az fleet get-credentials
+            if not skip_kubelogin_conversion:
+                _convert_kubeconfig_to_azurecli(path)
         except (IndexError, ValueError) as exc:
             raise CLIError("Fail to find kubeconfig file.") from exc
 
@@ -335,8 +381,12 @@ def update_fleet_member(cmd,
 def list_fleet_member(cmd,  # pylint: disable=unused-argument
                       client,
                       resource_group_name,
-                      fleet_name):
-    return client.list_by_fleet(resource_group_name, fleet_name)
+                      fleet_name,
+                      cluster_mesh_profile=None):
+    filter_expr = None
+    if cluster_mesh_profile:
+        filter_expr = f"clusterMeshProfile eq {cluster_mesh_profile}"
+    return client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
 def show_fleet_member(cmd,  # pylint: disable=unused-argument
@@ -395,6 +445,9 @@ def create_update_run(cmd,
         raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
                         f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))  # pylint: disable=line-too-long
 
+    if upgrade_type == UPGRADE_TYPE_CONTROLPLANEONLY and node_image_selection is not None:
+        raise CLIError("Node image selection must not be set when upgrade type is 'ControlPlaneOnly'.")
+
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
 
@@ -423,9 +476,12 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    if node_image_selection is None:
-        node_image_selection = "Latest"
-    node_image_selection_type = node_image_selection_model(type=node_image_selection)
+
+    node_image_selection_type = None
+    if upgrade_type != UPGRADE_TYPE_CONTROLPLANEONLY:
+        if node_image_selection is None:
+            node_image_selection = "Latest"
+        node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,
@@ -557,6 +613,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
         for group in stage["groups"]:
             update_groups.append(update_group_model(
                 name=group["name"],
+                max_concurrency=group.get("maxConcurrency"),
                 before_gates=group.get("beforeGates", []),
                 after_gates=group.get("afterGates", []),
             ))
@@ -566,6 +623,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
+            max_concurrency=stage.get("maxConcurrency"),
             before_gates=stage.get("beforeGates", []),
             after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait
@@ -817,6 +875,12 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
+    fleet_managed_namespace_properties_model = cmd.get_models(
+        "FleetManagedNamespaceProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
     resource_quota_model = cmd.get_models(
         "ResourceQuota",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -880,13 +944,17 @@ def create_managed_namespace(cmd,
     else:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
-    managed_namespace = managed_namespace_model(
-        location=fleet.location,
-        tags=tags,
+    fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
         managed_namespace_properties=managed_namespace_props,
         adoption_policy=adoption_policy,
         delete_policy=delete_policy,
         propagation_policy=propagation_policy
+    )
+
+    managed_namespace = managed_namespace_model(
+        location=fleet.location,
+        tags=tags,
+        properties=fleet_managed_namespace_props
     )
 
     return sdk_no_wait(
@@ -985,7 +1053,8 @@ def get_namespace_credentials(cmd,
             path=temp_file.name,
             overwrite_existing=overwrite_existing,
             context_name=context_name,
-            member_name=member_name
+            member_name=member_name,
+            skip_kubelogin_conversion=True  # Skip here, we'll convert after namespace modification
         )
 
         with open(temp_file.name, 'r', encoding='utf-8') as f:
@@ -998,3 +1067,189 @@ def get_namespace_credentials(cmd,
         modified_kubeconfig = yaml.dump(kubeconfig, default_flow_style=False)
         print_or_merge_credentials(path, modified_kubeconfig, overwrite_existing, context_name)
         print(f"Default namespace set to '{managed_namespace_name}' for context '{kubeconfig.get('current-context')}'")
+
+        # Apply kubelogin conversion to the final file after namespace modification
+        _convert_kubeconfig_to_azurecli(path)
+
+
+def create_cluster_mesh_profile(cmd,
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                member_selector=None,
+                                no_wait=False):
+    cluster_mesh_profile_model = cmd.get_models(
+        "ClusterMeshProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="cluster_mesh_profiles"
+    )
+    cluster_mesh_profile_properties_model = cmd.get_models(
+        "ClusterMeshProfileProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="cluster_mesh_profiles"
+    )
+    member_selector_model = cmd.get_models(
+        "MemberSelector",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="cluster_mesh_profiles"
+    )
+
+    selector = None
+    if member_selector is not None:
+        selector = member_selector_model(by_label=member_selector)
+
+    properties = cluster_mesh_profile_properties_model(member_selector=selector)
+    profile = cluster_mesh_profile_model(properties=properties)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        fleet_name,
+        name,
+        profile
+    )
+
+
+def show_cluster_mesh_profile(cmd,  # pylint: disable=unused-argument
+                              client,
+                              resource_group_name,
+                              fleet_name,
+                              name):
+    return client.get(resource_group_name, fleet_name, name)
+
+
+def list_cluster_mesh_profiles(cmd,  # pylint: disable=unused-argument
+                               client,
+                               resource_group_name,
+                               fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
+
+
+def delete_cluster_mesh_profile(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def apply_cluster_mesh_profile(cmd,
+                               client,
+                               resource_group_name,
+                               fleet_name,
+                               name,
+                               what_if=False,
+                               no_wait=False):
+    if what_if:
+        return _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name)
+
+    return sdk_no_wait(no_wait, client.begin_apply, resource_group_name, fleet_name, name)
+
+
+def list_cluster_mesh_profile_members(cmd,
+                                      client,  # pylint: disable=unused-argument
+                                      resource_group_name,
+                                      fleet_name,
+                                      name,
+                                      selector=False):
+    """List fleet members for a cluster mesh profile.
+
+    Modes:
+      --name cmp-1              members currently applied to the mesh
+                                  (server-side: $filter=clusterMeshProfile eq cmp-1)
+      --name cmp-1 --selector   members matching the profile's label selector
+                                  (server-side: $filter=clusterMeshProfile.Selector eq cmp-1)
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+    if selector:
+        filter_expr = f"clusterMeshProfile.Selector eq {name}"
+    else:
+        filter_expr = f"clusterMeshProfile eq {name}"
+    return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
+
+
+def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
+    """Simulate apply by comparing currently-applied members vs selector-matched members.
+
+    Uses the server-side selector filter to find members that match the
+    profile's label selector, including members already assigned to a
+    different mesh profile (conflict detection).
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    this_profile_id = (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.ContainerService/fleets/{fleet_name}"
+        f"/clusterMeshProfiles/{name}"
+    )
+
+    # Members currently in the mesh (already applied to THIS profile)
+    current_filter = f"clusterMeshProfile eq {name}"
+    current_members = {
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=current_filter
+        )
+    }
+
+    # Members matching the profile's selector (server-side filter includes
+    # members assigned to other CMPs, enabling conflict detection).
+    selector_filter = f"clusterMeshProfile.Selector eq {name}"
+    desired_members = {
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=selector_filter
+        )
+    }
+
+    results = []
+    all_names = set(current_members.keys()) | set(desired_members.keys())
+
+    for member_name in sorted(all_names):
+        in_current = member_name in current_members
+        in_desired = member_name in desired_members
+
+        member = desired_members.get(member_name) or current_members.get(member_name)
+
+        mesh_state = None
+        if member.mesh_properties and member.mesh_properties.status:
+            mesh_state = member.mesh_properties.status.state
+
+        action = None
+        error_message = None
+
+        if in_desired and not in_current:
+            # Check if this member already belongs to a different mesh profile
+            existing_profile_id = (
+                member.mesh_properties.cluster_mesh_profile_resource_id
+                if member.mesh_properties else None
+            )
+            if existing_profile_id and existing_profile_id.lower() != this_profile_id.lower():
+                other_name = existing_profile_id.rsplit("/", 1)[-1]
+                action = "Error"
+                error_message = (
+                    f'This member is part of a different clusterMeshProfile "{other_name}". '
+                    f"Remove it from that profile first."
+                )
+            else:
+                action = "Add"
+        elif in_current and not in_desired:
+            action = "Remove"
+        else:
+            action = "-"
+
+        entry = {
+            "Action": action,
+            "ClusterResourceId": member.cluster_resource_id,
+            "ETag": member.e_tag,
+            "MeshMembershipState": mesh_state or "-",
+            "Name": member.name,
+        }
+        if error_message:
+            entry["ErrorMessage"] = error_message
+
+        results.append(entry)
+
+    return results

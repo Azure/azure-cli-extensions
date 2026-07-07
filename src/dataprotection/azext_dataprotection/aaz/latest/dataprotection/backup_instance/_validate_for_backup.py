@@ -22,9 +22,9 @@ class ValidateForBackup(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2026-03-01"],
         ]
     }
 
@@ -242,8 +242,14 @@ class ValidateForBackup(AAZCommand):
         _element.adls_blob_backup_datasource_parameters = AAZObjectArg(
             options=["adls-blob-backup-datasource-parameters"],
         )
+        _element.adls_blob_backup_datasource_parameters_for_auto_protection = AAZObjectArg(
+            options=["adls-blob-backup-datasource-parameters-for-auto-protection"],
+        )
         _element.blob_backup_datasource_parameters = AAZObjectArg(
             options=["blob-backup-datasource-parameters"],
+        )
+        _element.blob_backup_datasource_parameters_for_auto_protection = AAZObjectArg(
+            options=["blob-backup-datasource-parameters-for-auto-protection"],
         )
         _element.kubernetes_cluster_backup_datasource_parameters = AAZObjectArg(
             options=["kubernetes-cluster-backup-datasource-parameters"],
@@ -259,6 +265,14 @@ class ValidateForBackup(AAZCommand):
         containers_list = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.adls_blob_backup_datasource_parameters.containers_list
         containers_list.Element = AAZStrArg()
 
+        adls_blob_backup_datasource_parameters_for_auto_protection = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.adls_blob_backup_datasource_parameters_for_auto_protection
+        adls_blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings = AAZObjectArg(
+            options=["auto-protection-settings"],
+            help="AutoProtection settings",
+            required=True,
+        )
+        cls._build_args_blob_backup_rule_based_auto_protection_settings_create(adls_blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings)
+
         blob_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters
         blob_backup_datasource_parameters.containers_list = AAZListArg(
             options=["containers-list"],
@@ -268,6 +282,14 @@ class ValidateForBackup(AAZCommand):
 
         containers_list = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters.containers_list
         containers_list.Element = AAZStrArg()
+
+        blob_backup_datasource_parameters_for_auto_protection = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters_for_auto_protection
+        blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings = AAZObjectArg(
+            options=["auto-protection-settings"],
+            help="AutoProtection settings",
+            required=True,
+        )
+        cls._build_args_blob_backup_rule_based_auto_protection_settings_create(blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings)
 
         kubernetes_cluster_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters
         kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListArg(
@@ -384,6 +406,58 @@ class ValidateForBackup(AAZCommand):
 
         _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
 
+    _args_blob_backup_rule_based_auto_protection_settings_create = None
+
+    @classmethod
+    def _build_args_blob_backup_rule_based_auto_protection_settings_create(cls, _schema):
+        if cls._args_blob_backup_rule_based_auto_protection_settings_create is not None:
+            _schema.enabled = cls._args_blob_backup_rule_based_auto_protection_settings_create.enabled
+            _schema.rules = cls._args_blob_backup_rule_based_auto_protection_settings_create.rules
+            return
+
+        cls._args_blob_backup_rule_based_auto_protection_settings_create = AAZObjectArg()
+
+        blob_backup_rule_based_auto_protection_settings_create = cls._args_blob_backup_rule_based_auto_protection_settings_create
+        blob_backup_rule_based_auto_protection_settings_create.enabled = AAZBoolArg(
+            options=["enabled"],
+            help="Flag to enable whether auto protection.",
+            required=True,
+        )
+        blob_backup_rule_based_auto_protection_settings_create.rules = AAZListArg(
+            options=["rules"],
+            help="Rules are evaluated in the order provided. Inclusion adds candidates; exclusion removes candidates. If no rules are present, all containers are considered eligible when enabled = true.",
+        )
+
+        rules = cls._args_blob_backup_rule_based_auto_protection_settings_create.rules
+        rules.Element = AAZObjectArg()
+
+        _element = cls._args_blob_backup_rule_based_auto_protection_settings_create.rules.Element
+        _element.mode = AAZStrArg(
+            options=["mode"],
+            help="Exclude removes candidates (after inclusion)",
+            required=True,
+            enum={"Exclude": "Exclude"},
+        )
+        _element.object_type = AAZStrArg(
+            options=["object-type"],
+            help="Type of the specific object - used for deserializing",
+            required=True,
+        )
+        _element.pattern = AAZStrArg(
+            options=["pattern"],
+            help="The string pattern to evaluate against container names. For now this accepts literal strings only (no wildcards or regex).",
+            required=True,
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="Pattern type: Prefix, only pattern type supported for now.",
+            required=True,
+            enum={"Prefix": "Prefix"},
+        )
+
+        _schema.enabled = cls._args_blob_backup_rule_based_auto_protection_settings_create.enabled
+        _schema.rules = cls._args_blob_backup_rule_based_auto_protection_settings_create.rules
+
     def _execute_operations(self):
         self.pre_operations()
         yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
@@ -465,7 +539,7 @@ class ValidateForBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-03-01",
                     required=True,
                 ),
             }
@@ -563,10 +637,14 @@ class ValidateForBackup(AAZCommand):
             _elements = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]")
             if _elements is not None:
                 _elements.set_const("objectType", "AdlsBlobBackupDatasourceParameters", AAZStrType, ".adls_blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("objectType", "AdlsBlobBackupDatasourceParametersForAutoProtection", AAZStrType, ".adls_blob_backup_datasource_parameters_for_auto_protection", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "BlobBackupDatasourceParameters", AAZStrType, ".blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("objectType", "BlobBackupDatasourceParametersForAutoProtection", AAZStrType, ".blob_backup_datasource_parameters_for_auto_protection", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesClusterBackupDatasourceParameters", AAZStrType, ".kubernetes_cluster_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
                 _elements.discriminate_by("objectType", "AdlsBlobBackupDatasourceParameters")
+                _elements.discriminate_by("objectType", "AdlsBlobBackupDatasourceParametersForAutoProtection")
                 _elements.discriminate_by("objectType", "BlobBackupDatasourceParameters")
+                _elements.discriminate_by("objectType", "BlobBackupDatasourceParametersForAutoProtection")
                 _elements.discriminate_by("objectType", "KubernetesClusterBackupDatasourceParameters")
 
             disc_adls_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:AdlsBlobBackupDatasourceParameters}")
@@ -577,6 +655,10 @@ class ValidateForBackup(AAZCommand):
             if containers_list is not None:
                 containers_list.set_elements(AAZStrType, ".")
 
+            disc_adls_blob_backup_datasource_parameters_for_auto_protection = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:AdlsBlobBackupDatasourceParametersForAutoProtection}")
+            if disc_adls_blob_backup_datasource_parameters_for_auto_protection is not None:
+                _ValidateForBackupHelper._build_schema_blob_backup_rule_based_auto_protection_settings_create(disc_adls_blob_backup_datasource_parameters_for_auto_protection.set_prop("autoProtectionSettings", AAZObjectType, ".adls_blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings", typ_kwargs={"flags": {"required": True}}))
+
             disc_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParameters}")
             if disc_blob_backup_datasource_parameters is not None:
                 disc_blob_backup_datasource_parameters.set_prop("containersList", AAZListType, ".blob_backup_datasource_parameters.containers_list", typ_kwargs={"flags": {"required": True}})
@@ -584,6 +666,10 @@ class ValidateForBackup(AAZCommand):
             containers_list = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParameters}.containersList")
             if containers_list is not None:
                 containers_list.set_elements(AAZStrType, ".")
+
+            disc_blob_backup_datasource_parameters_for_auto_protection = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParametersForAutoProtection}")
+            if disc_blob_backup_datasource_parameters_for_auto_protection is not None:
+                _ValidateForBackupHelper._build_schema_blob_backup_rule_based_auto_protection_settings_create(disc_blob_backup_datasource_parameters_for_auto_protection.set_prop("autoProtectionSettings", AAZObjectType, ".blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings", typ_kwargs={"flags": {"required": True}}))
 
             disc_kubernetes_cluster_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}")
             if disc_kubernetes_cluster_backup_datasource_parameters is not None:
@@ -688,6 +774,25 @@ class _ValidateForBackupHelper:
             return
         _builder.set_const("objectType", "DefaultResourceProperties", AAZStrType, ".default_resource_properties", typ_kwargs={"flags": {"required": True}})
         _builder.discriminate_by("objectType", "DefaultResourceProperties")
+
+    @classmethod
+    def _build_schema_blob_backup_rule_based_auto_protection_settings_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("enabled", AAZBoolType, ".enabled", typ_kwargs={"flags": {"required": True}})
+        _builder.set_const("objectType", "BlobBackupRuleBasedAutoProtectionSettings", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("rules", AAZListType, ".rules")
+
+        rules = _builder.get(".rules")
+        if rules is not None:
+            rules.set_elements(AAZObjectType, ".")
+
+        _elements = _builder.get(".rules[]")
+        if _elements is not None:
+            _elements.set_prop("mode", AAZStrType, ".mode", typ_kwargs={"flags": {"required": True}})
+            _elements.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
+            _elements.set_prop("pattern", AAZStrType, ".pattern", typ_kwargs={"flags": {"required": True}})
+            _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
 
 __all__ = ["ValidateForBackup"]

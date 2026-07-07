@@ -3,6 +3,24 @@
 Release History
 ===============
 
+2.3.0
+++++++
+* Add `az network front-door waf-policy managed-rules exception` commands for managed rule set exceptions.
+
+2.2.0
+++++++
+* Bump swagger version to 2025-11-01
+* Add support for managed rule set exceptions (`exceptionsList` on `ManagedRuleSetList`)
+* Add new enum values: `JA4` (MatchVariable), `AsnMatch` and `ClientFingerprint` (Operator)
+
+2.1.0
+++++++
+* Add `--sensitivity` parameter to `az network front-door waf-policy managed-rules override add` for DDoS rule set support.
+
+2.0.0
+++++++
+* Fix a bug in ddos rule set creation.
+
 1.4.0
 ++++++
 * Bump swagger version to 2025-10-01

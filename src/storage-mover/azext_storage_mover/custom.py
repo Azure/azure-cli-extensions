@@ -16,11 +16,12 @@ logger = get_logger(__name__)
 
 def _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
                                                  blob_container_name=None, storage_account_resource_id=None,
-                                                 description=None):
+                                                 endpoint_kind=None, description=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
-        "storage_blob_container": {
+        "endpoint_kind": endpoint_kind,
+        "azure_storage_blob_container": {
             "blob_container_name": blob_container_name,
             "storage_account_resource_id": storage_account_resource_id,
         }
@@ -29,10 +30,12 @@ def _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, 
 
 
 def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, blob_container_name,
-                                          storage_account_resource_id, description=None):
+                                          storage_account_resource_id, endpoint_kind=None, description=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
-                                                        blob_container_name, storage_account_resource_id, description)
+                                                        blob_container_name, storage_account_resource_id,
+                                                        endpoint_kind, description)
+    args["mi_system_assigned"] = "True"
     return Create_Endpoint(args)
 
 
@@ -45,10 +48,11 @@ def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, st
 
 def _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
                                                       file_share_name=None, storage_account_resource_id=None,
-                                                      description=None):
+                                                      endpoint_kind=None, description=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
+        "endpoint_kind": endpoint_kind,
         "azure_storage_smb_file_share": {
             "file_share_name": file_share_name,
             "storage_account_resource_id": storage_account_resource_id,
@@ -58,10 +62,12 @@ def _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_gr
 
 
 def endpoint_create_for_storage_smb_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
-                                               file_share_name, storage_account_resource_id, description=None):
+                                               file_share_name, storage_account_resource_id,
+                                               endpoint_kind=None, description=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
-                                                             file_share_name, storage_account_resource_id, description)
+                                                             file_share_name, storage_account_resource_id,
+                                                             endpoint_kind, description)
     return Create_Endpoint(args)
 
 
@@ -75,10 +81,11 @@ def endpoint_update_for_storage_smb_file_share(cmd, endpoint_name, resource_grou
 
 def _get_args_for_endpoint_for_storage_nfs_file_share(endpoint_name, resource_group, storage_mover_name,
                                                       file_share_name=None, storage_account_resource_id=None,
-                                                      description=None):
+                                                      endpoint_kind=None, description=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
+        "endpoint_kind": endpoint_kind,
         "azure_storage_nfs_file_share": {
             "file_share_name": file_share_name,
             "storage_account_resource_id": storage_account_resource_id,
@@ -88,10 +95,12 @@ def _get_args_for_endpoint_for_storage_nfs_file_share(endpoint_name, resource_gr
 
 
 def endpoint_create_for_storage_nfs_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
-                                               file_share_name, storage_account_resource_id, description=None):
+                                               file_share_name, storage_account_resource_id,
+                                               endpoint_kind=None, description=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_storage_nfs_file_share(endpoint_name, resource_group, storage_mover_name,
-                                                             file_share_name, storage_account_resource_id, description)
+                                                             file_share_name, storage_account_resource_id,
+                                                             endpoint_kind, description)
     return Create_Endpoint(args)
 
 
@@ -105,10 +114,11 @@ def endpoint_update_for_storage_nfs_file_share(cmd, endpoint_name, resource_grou
 
 def _get_args_for_endpoint_for_multi_cloud_connector(endpoint_name, resource_group, storage_mover_name,
                                                      multi_cloud_connector_id=None, aws_s3_bucket_id=None,
-                                                     description=None):
+                                                     endpoint_kind=None, description=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
+        "endpoint_kind": endpoint_kind,
         "azure_multi_cloud_connector": {
             "multi_cloud_connector_id": multi_cloud_connector_id,
             "aws_s3_bucket_id": aws_s3_bucket_id,
@@ -118,10 +128,12 @@ def _get_args_for_endpoint_for_multi_cloud_connector(endpoint_name, resource_gro
 
 
 def endpoint_create_for_multi_cloud_connector(cmd, endpoint_name, resource_group, storage_mover_name,
-                                              multi_cloud_connector_id, aws_s3_bucket_id, description=None):
+                                              multi_cloud_connector_id, aws_s3_bucket_id,
+                                              endpoint_kind=None, description=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_multi_cloud_connector(endpoint_name, resource_group, storage_mover_name,
-                                                            multi_cloud_connector_id, aws_s3_bucket_id, description)
+                                                            multi_cloud_connector_id, aws_s3_bucket_id,
+                                                            endpoint_kind, description)
     return Create_Endpoint(args)
 
 
@@ -134,10 +146,12 @@ def endpoint_update_for_multi_cloud_connector(cmd, endpoint_name, resource_group
 
 
 def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
-                                   export=None, host=None, nfs_version=None, description=None):
+                                   export=None, host=None, nfs_version=None,
+                                   endpoint_kind=None, description=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
+        "endpoint_kind": endpoint_kind,
         "nfs_mount": {
             "export": export,
             "host": host,
@@ -148,10 +162,10 @@ def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_
 
 
 def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name,
-                            export, host, nfs_version=None, description=None):
+                            export, host, nfs_version=None, endpoint_kind=None, description=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
-                                          export, host, nfs_version, description)
+                                          export, host, nfs_version, endpoint_kind, description)
     return Create_Endpoint(args)
 
 
@@ -162,10 +176,12 @@ def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_na
 
 
 def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
-                                   host=None, share_name=None, username_uri=None, password_uri=None, description=None):
+                                   host=None, share_name=None, username_uri=None, password_uri=None,
+                                   endpoint_kind=None, description=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
+        "endpoint_kind": endpoint_kind,
         "smb_mount": {
             "host": host,
             "share_name": share_name
@@ -175,16 +191,17 @@ def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_
         args["smb_mount"]["credentials"] = {
             "username_uri": username_uri,
             "password_uri": password_uri,
-            "type": "AzureKeyVaultSmb"
         }
     return args
 
 
 def endpoint_create_for_smb(cmd, endpoint_name, resource_group, storage_mover_name,
-                            host, share_name, username_uri=None, password_uri=None, description=None):
+                            host, share_name, username_uri=None, password_uri=None,
+                            endpoint_kind=None, description=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
-                                          host, share_name, username_uri, password_uri, description)
+                                          host, share_name, username_uri, password_uri,
+                                          endpoint_kind, description)
     return Create_Endpoint(args)
 
 
@@ -193,4 +210,47 @@ def endpoint_update_for_smb(cmd, endpoint_name, resource_group, storage_mover_na
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
                                           username_uri=username_uri, password_uri=password_uri, description=description)
+    return Update_Endpoint(args)
+
+
+def _get_args_for_endpoint_for_s3_with_hmac(endpoint_name, resource_group, storage_mover_name,
+                                            source_uri=None, source_type=None,
+                                            access_key_uri=None, secret_key_uri=None,
+                                            other_source_type_description=None,
+                                            endpoint_kind=None, description=None):
+    args = {
+        "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
+        "description": description,
+        "endpoint_kind": endpoint_kind,
+        "s3_with_hmac": {
+            "source_uri": source_uri,
+            "source_type": source_type,
+            "other_source_type_description": other_source_type_description,
+        }
+    }
+    if access_key_uri is not None or secret_key_uri is not None:
+        args["s3_with_hmac"]["credentials"] = {
+            "access_key_uri": access_key_uri,
+            "secret_key_uri": secret_key_uri,
+        }
+    return args
+
+
+def endpoint_create_for_s3_with_hmac(cmd, endpoint_name, resource_group, storage_mover_name,
+                                     source_uri, source_type, access_key_uri, secret_key_uri,
+                                     endpoint_kind=None, other_source_type_description=None, description=None):
+    Create_Endpoint = Create(cmd.loader)
+    args = _get_args_for_endpoint_for_s3_with_hmac(
+        endpoint_name, resource_group, storage_mover_name,
+        source_uri, source_type, access_key_uri, secret_key_uri,
+        other_source_type_description, endpoint_kind, description)
+    return Create_Endpoint(args)
+
+
+def endpoint_update_for_s3_with_hmac(cmd, endpoint_name, resource_group, storage_mover_name,
+                                     access_key_uri=None, secret_key_uri=None, description=None):
+    Update_Endpoint = Update(cmd.loader)
+    args = _get_args_for_endpoint_for_s3_with_hmac(
+        endpoint_name, resource_group, storage_mover_name,
+        access_key_uri=access_key_uri, secret_key_uri=secret_key_uri, description=description)
     return Update_Endpoint(args)

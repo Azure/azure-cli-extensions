@@ -1,0 +1,451 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_explicit_proxy000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001","name":"test_azure_firewall_policy_explicit_proxy000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_azure_firewall_policy_explicit_proxy","date":"2026-04-30T04:57:15Z","module":"azure-firewall","Created":"2026-04-30T04:57:17.5016490Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '497'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DBA6AE5DEC364F8C902CAAD4777C52F3 Ref B: MAA211070117060 Ref C: 2026-04-30T04:57:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix":
+      {}}}, "location": "centraluseuap", "properties": {"explicitProxy": {"enableExplicitProxy":
+      true, "enablePacFile": true, "httpPort": 85, "pacFile": "https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac",
+      "pacFilePort": 122}, "sku": {"tier": "Premium"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '504'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.002187729 MB\",\r\n    \"sku\":
+        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
+        \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
+        \     \"httpPort\": 85,\r\n      \"enablePacFile\": true,\r\n      \"pacFilePort\":
+        122,\r\n      \"pacFile\": \"https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac\"\r\n
+        \   },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
+        \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"f28fd12c-d7a5-481d-b168-13054d1f1db2\",\r\n  \"location\": \"centraluseuap\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix\":
+        {}\r\n    }\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/nfvOperations/c75edfef-06ca-4d6b-a2d0-08273895a4ee?api-version=2022-01-01&t=639131218536971207&c=MIIH9DCCBtygAwIBAgIQdsAgI-Kyg0HZE-0tVv24rTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDQyMTE5MDUzNloXDTI2MDcxNzAxMDUzNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC3fbKSP8m8LFzeIZO6MOo64jIfAjKNQosXHVBKGCT3XbJux_2bc8wC1fnOmaoJYbVeyQ40E1rTRc0y5qq-CrJwiks0oHbAxo2tHC6wEOyW1bgo9GIZ9wR9xEWwu3LbhivMe2HFarwuUhTE8QReJn6oRseBkZfXz_rEygSepS2yqf_H_ElWMdJt-D0-aY86TY2Ygq3L6LSL20EzTIR2KQ3VH3ChtVV2zXgWG68l7eoFf8B_ndh7QESRAGoPIjUJ6-Ysh7K8xNifYXIS7PCS1cXjro3xPX2IlJzu-LkufE8ATm3HuUSfRqrkUG601rIveRo75CiZMWPnX6J3ummkzw8lAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBREojLvTaAX7pUpcCsrqGTssvWOjTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBRwA6huwIHX9TKXRTOPFUN9-kPXwYWLA3oFs-bygmjgg01cfbAJ8s1RE59l4J9E7OhJ4BJHf4LjvVr3VeuaSKXLQmotFOxxKyBOw25zN3MyPwoJyjbdw7AikAmetPsY9TNLxaNDe2evOVhkFBVB4czhzQOTwxuSstU3SUsRqvpvzN2OjCJdwHOBQoI55xb8FAM8UPTjDjapqsz9cu7hrXMALkJINgO5YLuEH9VY8wLGCJ_VZdG2ffY_-lVuBQDtP4s9RhDQaoAyUJ1XZeq0nQCht2wAAcRvMpskIVLXnvNG9eGmsVfHbhltRrTF25Do9ndAvHqjIhQstCtiDCgWAAF&s=SlDyolnc4hKjN5BoTNfark6f0BwRxu16LUEa-ImWu-y1mNJfIQ6oIuXTLNqXC_YxdjcDLiKlcG7fImZDhtTwEqw5kd1jFvd4R7L5UsHDk7AdTxIPHO9mmkvlpqMcnUG6y4vsZkMTx5wLy7J0TOR7V4beZnitla-TJ-MeyawgTCOyXNBAd_n4s-ubf93U_bsTgT0QBUZrz5rLdhsyjvQZlUfqlMrPJ-JasakXxq6wd29tKgDr_QLKfjj1iO4kX0UldsItuFFnP43X_1IQgK5rIWmVXXb80teTcKnf4rP2lfFon4BHBdkTXEhmPFINDIqbreBbdcEW9RgBCAhvGeFmKA&h=z4yL6QXAfgP_hIHFsb2DEAU0pRcZYBJTsqVkfePRVqo
+      cache-control:
+      - no-cache
+      content-length:
+      - '1123'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=df9650db-59cf-4c37-9f43-6eb08cf4a39e/centraluseuap/f1b1e09e-1883-466f-a5fe-15ef9f8ffa99
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '0'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: C0A860BB2F0F4F7AAC20FD310103F21F Ref B: MAA211070115025 Ref C: 2026-04-30T04:57:30Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/nfvOperations/c75edfef-06ca-4d6b-a2d0-08273895a4ee?api-version=2022-01-01&t=639131218536971207&c=MIIH9DCCBtygAwIBAgIQdsAgI-Kyg0HZE-0tVv24rTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDQyMTE5MDUzNloXDTI2MDcxNzAxMDUzNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC3fbKSP8m8LFzeIZO6MOo64jIfAjKNQosXHVBKGCT3XbJux_2bc8wC1fnOmaoJYbVeyQ40E1rTRc0y5qq-CrJwiks0oHbAxo2tHC6wEOyW1bgo9GIZ9wR9xEWwu3LbhivMe2HFarwuUhTE8QReJn6oRseBkZfXz_rEygSepS2yqf_H_ElWMdJt-D0-aY86TY2Ygq3L6LSL20EzTIR2KQ3VH3ChtVV2zXgWG68l7eoFf8B_ndh7QESRAGoPIjUJ6-Ysh7K8xNifYXIS7PCS1cXjro3xPX2IlJzu-LkufE8ATm3HuUSfRqrkUG601rIveRo75CiZMWPnX6J3ummkzw8lAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBREojLvTaAX7pUpcCsrqGTssvWOjTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBRwA6huwIHX9TKXRTOPFUN9-kPXwYWLA3oFs-bygmjgg01cfbAJ8s1RE59l4J9E7OhJ4BJHf4LjvVr3VeuaSKXLQmotFOxxKyBOw25zN3MyPwoJyjbdw7AikAmetPsY9TNLxaNDe2evOVhkFBVB4czhzQOTwxuSstU3SUsRqvpvzN2OjCJdwHOBQoI55xb8FAM8UPTjDjapqsz9cu7hrXMALkJINgO5YLuEH9VY8wLGCJ_VZdG2ffY_-lVuBQDtP4s9RhDQaoAyUJ1XZeq0nQCht2wAAcRvMpskIVLXnvNG9eGmsVfHbhltRrTF25Do9ndAvHqjIhQstCtiDCgWAAF&s=SlDyolnc4hKjN5BoTNfark6f0BwRxu16LUEa-ImWu-y1mNJfIQ6oIuXTLNqXC_YxdjcDLiKlcG7fImZDhtTwEqw5kd1jFvd4R7L5UsHDk7AdTxIPHO9mmkvlpqMcnUG6y4vsZkMTx5wLy7J0TOR7V4beZnitla-TJ-MeyawgTCOyXNBAd_n4s-ubf93U_bsTgT0QBUZrz5rLdhsyjvQZlUfqlMrPJ-JasakXxq6wd29tKgDr_QLKfjj1iO4kX0UldsItuFFnP43X_1IQgK5rIWmVXXb80teTcKnf4rP2lfFon4BHBdkTXEhmPFINDIqbreBbdcEW9RgBCAhvGeFmKA&h=z4yL6QXAfgP_hIHFsb2DEAU0pRcZYBJTsqVkfePRVqo
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=df9650db-59cf-4c37-9f43-6eb08cf4a39e/centraluseuap/7e289b33-8c46-46eb-ab09-854965d9bfbd
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A3215660A75B401DBBD2EDC7AFC41CAE Ref B: MAA211070115023 Ref C: 2026-04-30T04:57:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.002187729 MB\",\r\n    \"sku\":
+        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
+        \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
+        \     \"httpPort\": 85,\r\n      \"enablePacFile\": true,\r\n      \"pacFilePort\":
+        122,\r\n      \"pacFile\": \"https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac\"\r\n
+        \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
+        \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"f28fd12c-d7a5-481d-b168-13054d1f1db2\",\r\n  \"location\": \"centraluseuap\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix\":
+        {\r\n        \"clientId\": \"cff41e12-9580-48bb-a50e-935db202d5e7\",\r\n        \"principalId\":
+        \"877664f5-74b9-4190-9653-61304fd4d86d\"\r\n      }\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1256'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:39 GMT
+      etag:
+      - '"f28fd12c-d7a5-481d-b168-13054d1f1db2"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5A813FED96C5410ABE87B83FBF38FDFC Ref B: MAA211070114060 Ref C: 2026-04-30T04:57:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_explicit_proxy000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001","name":"test_azure_firewall_policy_explicit_proxy000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_azure_firewall_policy_explicit_proxy","date":"2026-04-30T04:57:15Z","module":"azure-firewall","Created":"2026-04-30T04:57:17.5016490Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '497'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 70222613A4514F8F95DA16C043BEF703 Ref B: MAA201060515027 Ref C: 2026-04-30T04:57:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix":
+      {}}}, "location": "centraluseuap", "properties": {"explicitProxy": {"enableExplicitProxy":
+      true, "enablePacFile": true, "httpPort": 86, "pacFile": "https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac",
+      "pacFilePort": 122}, "sku": {"tier": "Premium"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '504'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.002435684 MB\",\r\n    \"sku\":
+        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
+        \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
+        \     \"httpPort\": 86,\r\n      \"enablePacFile\": true,\r\n      \"pacFilePort\":
+        122,\r\n      \"pacFile\": \"https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac\"\r\n
+        \   },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
+        \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"6907baf9-dccb-4dcb-b103-da0a3e20be37\",\r\n  \"location\": \"centraluseuap\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix\":
+        {\r\n        \"clientId\": \"cff41e12-9580-48bb-a50e-935db202d5e7\",\r\n        \"principalId\":
+        \"877664f5-74b9-4190-9653-61304fd4d86d\"\r\n      }\r\n    }\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/nfvOperations/1cf27188-4734-4d28-93a5-f70ddf8f1317?api-version=2022-01-01&t=639131218668138322&c=MIIH9DCCBtygAwIBAgIQdsAgI-Kyg0HZE-0tVv24rTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDQyMTE5MDUzNloXDTI2MDcxNzAxMDUzNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC3fbKSP8m8LFzeIZO6MOo64jIfAjKNQosXHVBKGCT3XbJux_2bc8wC1fnOmaoJYbVeyQ40E1rTRc0y5qq-CrJwiks0oHbAxo2tHC6wEOyW1bgo9GIZ9wR9xEWwu3LbhivMe2HFarwuUhTE8QReJn6oRseBkZfXz_rEygSepS2yqf_H_ElWMdJt-D0-aY86TY2Ygq3L6LSL20EzTIR2KQ3VH3ChtVV2zXgWG68l7eoFf8B_ndh7QESRAGoPIjUJ6-Ysh7K8xNifYXIS7PCS1cXjro3xPX2IlJzu-LkufE8ATm3HuUSfRqrkUG601rIveRo75CiZMWPnX6J3ummkzw8lAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBREojLvTaAX7pUpcCsrqGTssvWOjTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBRwA6huwIHX9TKXRTOPFUN9-kPXwYWLA3oFs-bygmjgg01cfbAJ8s1RE59l4J9E7OhJ4BJHf4LjvVr3VeuaSKXLQmotFOxxKyBOw25zN3MyPwoJyjbdw7AikAmetPsY9TNLxaNDe2evOVhkFBVB4czhzQOTwxuSstU3SUsRqvpvzN2OjCJdwHOBQoI55xb8FAM8UPTjDjapqsz9cu7hrXMALkJINgO5YLuEH9VY8wLGCJ_VZdG2ffY_-lVuBQDtP4s9RhDQaoAyUJ1XZeq0nQCht2wAAcRvMpskIVLXnvNG9eGmsVfHbhltRrTF25Do9ndAvHqjIhQstCtiDCgWAAF&s=gcVDemBLgQB23ZDr6vJAorZJeNCFll8JeKKoi3-X7jEw-rALtRve7ruqvZk9QKPDZQGUllRJQWJ8OUXMeR90Iz9Q3RAek2ClBxI4URI935jA3GSGOFEzsT9q2YrgsIocxVESD92n0Hp7jzczQ1GQyWkrmF-XxdsmFjO1CYHgX9oC_im6jkcZZM664Y950b3b2kVS614TJiF1Dkat0J33EBiZbzxSkUviBNSH-90wJtOrAoNa2fYpj3kLyAtx5I1bWfAeCNZExKGZ_TvOIBqdrbi_PKEhudFp5Lt9YymAEgmfS-YpaEHbOYdjmuCW4L_B7iInj2N48cakNa-wj0bq2A&h=jbdqn3vhEDTtL-igWtnWnXVApvAk-9SrsWEN_r9ksoQ
+      cache-control:
+      - no-cache
+      content-length:
+      - '1255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=df9650db-59cf-4c37-9f43-6eb08cf4a39e/centraluseuap/28afe209-1573-4f0f-94e6-d48a6dbeed89
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '0'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 7FD6C5C2699A4BB3A10C61881D130E2B Ref B: MAA201060514029 Ref C: 2026-04-30T04:57:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centraluseuap/nfvOperations/1cf27188-4734-4d28-93a5-f70ddf8f1317?api-version=2022-01-01&t=639131218668138322&c=MIIH9DCCBtygAwIBAgIQdsAgI-Kyg0HZE-0tVv24rTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDQyMTE5MDUzNloXDTI2MDcxNzAxMDUzNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC3fbKSP8m8LFzeIZO6MOo64jIfAjKNQosXHVBKGCT3XbJux_2bc8wC1fnOmaoJYbVeyQ40E1rTRc0y5qq-CrJwiks0oHbAxo2tHC6wEOyW1bgo9GIZ9wR9xEWwu3LbhivMe2HFarwuUhTE8QReJn6oRseBkZfXz_rEygSepS2yqf_H_ElWMdJt-D0-aY86TY2Ygq3L6LSL20EzTIR2KQ3VH3ChtVV2zXgWG68l7eoFf8B_ndh7QESRAGoPIjUJ6-Ysh7K8xNifYXIS7PCS1cXjro3xPX2IlJzu-LkufE8ATm3HuUSfRqrkUG601rIveRo75CiZMWPnX6J3ummkzw8lAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBREojLvTaAX7pUpcCsrqGTssvWOjTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBRwA6huwIHX9TKXRTOPFUN9-kPXwYWLA3oFs-bygmjgg01cfbAJ8s1RE59l4J9E7OhJ4BJHf4LjvVr3VeuaSKXLQmotFOxxKyBOw25zN3MyPwoJyjbdw7AikAmetPsY9TNLxaNDe2evOVhkFBVB4czhzQOTwxuSstU3SUsRqvpvzN2OjCJdwHOBQoI55xb8FAM8UPTjDjapqsz9cu7hrXMALkJINgO5YLuEH9VY8wLGCJ_VZdG2ffY_-lVuBQDtP4s9RhDQaoAyUJ1XZeq0nQCht2wAAcRvMpskIVLXnvNG9eGmsVfHbhltRrTF25Do9ndAvHqjIhQstCtiDCgWAAF&s=gcVDemBLgQB23ZDr6vJAorZJeNCFll8JeKKoi3-X7jEw-rALtRve7ruqvZk9QKPDZQGUllRJQWJ8OUXMeR90Iz9Q3RAek2ClBxI4URI935jA3GSGOFEzsT9q2YrgsIocxVESD92n0Hp7jzczQ1GQyWkrmF-XxdsmFjO1CYHgX9oC_im6jkcZZM664Y950b3b2kVS614TJiF1Dkat0J33EBiZbzxSkUviBNSH-90wJtOrAoNa2fYpj3kLyAtx5I1bWfAeCNZExKGZ_TvOIBqdrbi_PKEhudFp5Lt9YymAEgmfS-YpaEHbOYdjmuCW4L_B7iInj2N48cakNa-wj0bq2A&h=jbdqn3vhEDTtL-igWtnWnXVApvAk-9SrsWEN_r9ksoQ
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=df9650db-59cf-4c37-9f43-6eb08cf4a39e/centraluseuap/6f22bb27-2ea7-42b6-8d2e-09cbc699daf2
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 6BB6A9024432468BB40C02422A12A75D Ref B: MAA201060516027 Ref C: 2026-04-30T04:57:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --explicit-proxy --identity
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"size\": \"0.002435684 MB\",\r\n    \"sku\":
+        {\r\n      \"tier\": \"Premium\"\r\n    },\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\":
+        \"Alert\",\r\n    \"explicitProxy\": {\r\n      \"enableExplicitProxy\": true,\r\n
+        \     \"httpPort\": 86,\r\n      \"enablePacFile\": true,\r\n      \"pacFilePort\":
+        122,\r\n      \"pacFile\": \"https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac\"\r\n
+        \   },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_explicit_proxy000001/providers/Microsoft.Network/firewallPolicies/testFirewallPolicy\",\r\n
+        \ \"name\": \"testFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"6907baf9-dccb-4dcb-b103-da0a3e20be37\",\r\n  \"location\": \"centraluseuap\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix\":
+        {\r\n        \"clientId\": \"cff41e12-9580-48bb-a50e-935db202d5e7\",\r\n        \"principalId\":
+        \"877664f5-74b9-4190-9653-61304fd4d86d\"\r\n      }\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1256'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 30 Apr 2026 04:57:52 GMT
+      etag:
+      - '"6907baf9-dccb-4dcb-b103-da0a3e20be37"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: F71D07F001954BF983BCDE187CDBDBE9 Ref B: MAA201060513029 Ref C: 2026-04-30T04:57:50Z'
+    status:
+      code: 200
+      message: OK
+version: 1

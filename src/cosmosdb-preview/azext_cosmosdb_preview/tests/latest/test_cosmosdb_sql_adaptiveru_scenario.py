@@ -31,7 +31,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
@@ -75,7 +75,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB --server-version 5.0 --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         # Create database
         self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')

@@ -6,7 +6,7 @@ import argparse
 from knack.util import CLIError
 
 
-def process_container_resource(cmd, namespace):
+def process_container_resource(cmd, namespace):  # pylint: disable=unused-argument
     """Processes the resource group parameter from the storage account and container name"""
     if not namespace.storage_account or not namespace.container_name:
         raise ValueError('usage error: Please specify --storage-account and --container-name for blob-storage-target')

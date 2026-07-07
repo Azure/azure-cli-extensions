@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "standby-vm-pool list",
 )
 class List(AAZCommand):
-    """List StandbyVirtualMachinePoolResource resources by subscription ID by resource group name
+    """List StandbyVirtualMachinePoolResource resources by subscription ID
 
     :example: StandbyVirtualMachinePools_ListBySubscription
-        az standby-vm-pool list --subscription 00000000-0000-0000-0000-000000000009 --resource-group myRG
+        az standby-vm-pool list
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2025-03-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2025-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools", "2025-10-01"],
         ]
     }
 
@@ -46,9 +46,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -114,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -196,6 +194,9 @@ class List(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200.value.Element.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -203,6 +204,12 @@ class List(AAZCommand):
             elasticity_profile.min_ready_capacity = AAZIntType(
                 serialized_name="minReadyCapacity",
             )
+            elasticity_profile.post_provisioning_delay = AAZStrType(
+                serialized_name="postProvisioningDelay",
+            )
+
+            dynamic_sizing = cls._schema_on_200.value.Element.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -273,7 +280,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -355,6 +362,9 @@ class List(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200.value.Element.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -362,6 +372,12 @@ class List(AAZCommand):
             elasticity_profile.min_ready_capacity = AAZIntType(
                 serialized_name="minReadyCapacity",
             )
+            elasticity_profile.post_provisioning_delay = AAZStrType(
+                serialized_name="postProvisioningDelay",
+            )
+
+            dynamic_sizing = cls._schema_on_200.value.Element.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

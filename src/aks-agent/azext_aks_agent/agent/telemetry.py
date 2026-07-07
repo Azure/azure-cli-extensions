@@ -20,20 +20,27 @@ APPLICATIONINSIGHTS_INSTRUMENTATION_KEY_ENV = "APPLICATIONINSIGHTS_INSTRUMENTATI
 
 
 class CLITelemetryClient:
-    def __init__(self):
+    def __init__(self, event_type="startup"):
         instrumentation_key = self._get_application_insights_instrumentation_key()
         self._telemetry_client = TelemetryClient(
             instrumentation_key=instrumentation_key
         )
         self.start_time = datetime.datetime.utcnow()
         self.end_time = ""
+        self.mode = None  # Track which mode is used: 'cluster' or 'local'
+        self.event_type = event_type  # Track event type: 'startup', 'init', 'cleanup'
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.end_time = datetime.datetime.utcnow()
-        self.track_agent_started()
+        if self.event_type == "init":
+            self.track_agent_init()
+        elif self.event_type == "cleanup":
+            self.track_agent_cleanup()
+        else:  # default to startup
+            self.track_agent_started()
         self.flush()
 
     def track(self, event_name, properties=None):
@@ -47,7 +54,27 @@ class CLITelemetryClient:
             "time.start": str(self.start_time),
             "time.end": str(self.end_time),
         }
+        if self.mode:
+            timestamp_properties["mode"] = self.mode
         self.track("AgentCLIStartup", properties=timestamp_properties)
+
+    def track_agent_init(self):
+        timestamp_properties = {
+            "time.start": str(self.start_time),
+            "time.end": str(self.end_time),
+        }
+        if self.mode:
+            timestamp_properties["mode"] = self.mode
+        self.track("AgentCLIInit", properties=timestamp_properties)
+
+    def track_agent_cleanup(self):
+        timestamp_properties = {
+            "time.start": str(self.start_time),
+            "time.end": str(self.end_time),
+        }
+        if self.mode:
+            timestamp_properties["mode"] = self.mode
+        self.track("AgentCLICleanup", properties=timestamp_properties)
 
     def flush(self):
         self._telemetry_client.flush()
