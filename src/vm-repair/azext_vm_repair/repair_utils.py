@@ -227,7 +227,7 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
     try:
         logger.info('Checking VM power state...\n')
         VM_TURNED_ON = False
-        vm_statuses = vm_instance_view.get('instanceView', {}).get('statuses')
+        vm_statuses = vm_instance_view.get('instanceView', {}).get('statuses', [])
         for vm_status in vm_statuses:
             if vm_status.get('code') == VM_RUNNING:
                 VM_TURNED_ON = True
@@ -500,7 +500,7 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
 
     logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
-    os_image_ref = source_vm.get('storageProfile', {}).get('imageReference')
+    os_image_ref = source_vm.get('storageProfile', {}).get('imageReference', {})
     if os_image_ref and os_image_ref.get('version') in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
