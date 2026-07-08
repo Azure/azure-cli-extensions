@@ -533,7 +533,7 @@ def start_local_server_migration(cmd,
     # Validate that either ID or name is provided
     if not protected_item_id:
         raise CLIError(
-            "The --protected-item-id parameter must be provided."
+            "The --target-object-id parameter must be provided."
         )
 
     # Determine the operation mode
