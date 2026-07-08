@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database national-character-set show",
 )
 class Show(AAZCommand):
-    """Get a AutonomousDatabaseNationalCharacterSet
+    """Get an Autonomous Database national character set
 
     :example: Get ADBS National Character Set
         az oracle-database autonomous-database national-character-set show --location <location> --name <charset name>
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbsncharsetname = AAZStrArg(
             options=["-n", "--name", "--adbsncharsetname"],
-            help="AutonomousDatabaseNationalCharacterSets name",
+            help="Autonomous Database national character set name",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
