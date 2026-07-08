@@ -628,3 +628,7 @@ def load_command_table(self, _):
         self.command_table["aks safeguards delete"] = Delete(loader=self)
         self.command_table["aks safeguards list"] = List(loader=self)
         self.command_table["aks safeguards wait"] = Wait(loader=self)
+
+    # AKS inference (AI Manager) commands - classic vendored-SDK approach
+    from .aks_inference.commands import load_command_table as _load_aks_inference_commands
+    _load_aks_inference_commands(self, _)

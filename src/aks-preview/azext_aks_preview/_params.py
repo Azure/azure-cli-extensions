@@ -3247,6 +3247,10 @@ def load_arguments(self, _):
             help="Show all VM SKU information including those not available for the current subscription.",
         )
 
+    # AKS inference (AI Manager) commands - classic vendored-SDK approach
+    from .aks_inference._params import load_arguments as _load_aks_inference_arguments
+    _load_aks_inference_arguments(self, _)
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
