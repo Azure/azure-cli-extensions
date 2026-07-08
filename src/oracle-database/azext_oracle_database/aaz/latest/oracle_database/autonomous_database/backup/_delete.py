@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a AutonomousDatabaseBackup
+    """Delete an Autonomous Database backup
 
-    :example: ADBS Backup Delete
-        az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
+    :example: Delete an Autonomous Database backup
+        az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --yes
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
+            help="Azure backup resource name/id. Use the value returned by backup create or backup list.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
