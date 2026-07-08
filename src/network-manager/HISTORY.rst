@@ -2,6 +2,11 @@
 
 Release History
 ===============
+3.1.0
++++++
+* `az network manager routing-config rule-collection rule create/update`: Support comma-separated IP addresses in `--next-hop-address` for ECMP scenarios when `--next-hop-type` is `VirtualAppliance`
+* Upgrade routing rule commands API version to 2025-07-01
+
 3.0.1
 +++++
 * Add NG of type Subnet support for routing config

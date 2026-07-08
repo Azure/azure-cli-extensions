@@ -20,12 +20,15 @@ class Create(AAZCommand):
 
     :example: Create an routing rule.
         az network manager routing-config rule-collection rule create --config-name TestNetworkManagerConfig --manager-name TestNetworkManager --collection-name TestNetworkManagerCollection --name TestNetworkManagerRule --resource-group "rg1" --destination {"destination_address":"10.0.0.0/16","type":"AddressPrefix"} --next-hop {"next_hop_type":"VirtualNetworkGateway"}
+
+    :example: Create an routing rule with ECMP next hop (comma-separated IP addresses).
+        az network manager routing-config rule-collection rule create --config-name TestNetworkManagerConfig --manager-name TestNetworkManager --collection-name TestNetworkManagerCollection --name TestNetworkManagerRule --resource-group "rg1" --destination {"destination_address":"10.0.0.0/16","type":"AddressPrefix"} --next-hop {next_hop_type:VirtualAppliance,next_hop_address:'10.1.0.4,10.1.0.5,10.1.0.6'}
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}/rules/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}/rules/{}", "2025-07-01"],
         ]
     }
 
@@ -116,7 +119,7 @@ class Create(AAZCommand):
         next_hop = cls._args_schema.next_hop
         next_hop.next_hop_address = AAZStrArg(
             options=["next-hop-address"],
-            help="Next hop address. Only relevant if the next hop type is VirtualAppliance.",
+            help="Next hop address. Only relevant if the next hop type is VirtualAppliance. Supports comma-separated IP addresses for ECMP scenarios (e.g., '10.1.0.4,10.1.0.5,10.1.0.6').",
         )
         next_hop.next_hop_type = AAZStrArg(
             options=["next-hop-type"],
@@ -203,7 +206,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
