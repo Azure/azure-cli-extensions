@@ -18,7 +18,7 @@ class GenerateWallet(AAZCommand):
     """Generate wallet action on Autonomous Database
 
     :example: Generate Wallet
-        az oracle-database autonomous-database generate-wallet --autonomousdatabasename <ADBS name> --resource-group <resource_group> --password <password> --is-regional True --file wallet-<ADBS name>.zip
+        az oracle-database autonomous-database generate-wallet --autonomousdatabasename MyAutoDB --resource-group MyResourceGroup --password <password> --is-regional True --file wallet-MyAutoDB.zip
     """
 
     _aaz_info = {
@@ -60,7 +60,7 @@ class GenerateWallet(AAZCommand):
         )
         _args_schema.file = AAZStrArg(
             options=["--file", "-f"],
-            help="Local file path to save the generated wallet zip. Defaults to wallet-<autonomousdatabasename>.zip.",
+            help="Local file path to save the generated wallet zip. Defaults to wallet-{autonomousdatabasename}.zip.",
         )
 
         # define Arg Group "Body"
