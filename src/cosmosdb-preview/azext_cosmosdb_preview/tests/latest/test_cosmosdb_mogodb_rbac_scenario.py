@@ -96,7 +96,7 @@ class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
         })
 
         self.cmd(
-            'az cosmosdb create -n {acc} -g {rg} --kind MongoDB --capabilities EnableMongoRoleBasedAccessControl')
+            'az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind MongoDB --capabilities EnableMongoRoleBasedAccessControl')
         self.cmd(
             'az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
 

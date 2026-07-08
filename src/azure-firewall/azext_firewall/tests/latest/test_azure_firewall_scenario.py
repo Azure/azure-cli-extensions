@@ -6,6 +6,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError, CLIError
+from azure.cli.testsdk import live_only
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -944,7 +945,107 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
-    # removed explicit proxy test as it requires a non static sas url which fails other tests 100% of the time
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='centraluseuap')
+    def test_azure_firewall_policy_explicit_proxy(self, resource_group):
+        self.kwargs.update({
+            'policy_name': 'testFirewallPolicy',
+            'url': "https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac",
+            "identity" : "/subscriptions/e7eb2257-46e4-4826-94df-153853fea38f/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix"
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity "{identity}"',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                    self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
+                 ])
+        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=86 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity [{identity}]',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 86),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                    self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
+                 ])
+
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_configure_multipleMSI', location='centraluseuap')
+    def test_azure_firewall_policy_configure_multipleMSI(self, resource_group):
+        self.kwargs.update({
+            'policy_name': 'testFirewallPolicy',
+            'url': "https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac",
+            "explicit_proxy_identity" : "/subscriptions/e7eb2257-46e4-4826-94df-153853fea38f/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix",
+            "tls_identity" : "/subscriptions/e7eb2257-46e4-4826-94df-153853fea38f/resourcegroups/ExplicitProxyCLIPSTestResource/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ExplicitProxy_tlsidentity",
+            "certificate_name" : "cert",
+            "key_vault_url" : "https://eproxyclipskv.vault.azure.net/secrets/cert/a0497e639d04459aa880901be337c52d"
+        })        
+
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --threat-intel-mode Alert',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('threatIntelMode', 'Alert')
+                 ])
+        
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
+                 '--identity {explicit_proxy_identity} {tls_identity}',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 2)
+                    ])
+        
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity {explicit_proxy_identity}',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 1)
+                    ])
+
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
+                 '--identity [{explicit_proxy_identity}]',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 1)
+                    ])
+
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):

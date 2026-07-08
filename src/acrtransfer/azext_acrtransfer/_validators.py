@@ -25,11 +25,33 @@ def validate_keyvault_secret_uri(namespace):
     uri = namespace.keyvault_secret_uri
     valid = True
 
+    if uri is None:
+        return
+
     if "https://" not in uri or "/secrets/" not in uri:
         valid = False
 
     if not valid:
         logger.warning("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
+
+
+def validate_storage_access_mode_and_secret_uri(namespace):
+    storage_access_mode = namespace.storage_access_mode
+    secret_uri = namespace.keyvault_secret_uri
+
+    allowed_modes = ["ManagedIdentity", "SasToken"]
+
+    if storage_access_mode not in allowed_modes:
+        raise InvalidArgumentValueError(f"Invalid storage access mode '{storage_access_mode}'. Allowed values: {', '.join(allowed_modes)}")
+
+    if storage_access_mode == "ManagedIdentity":
+        # Reject secret-uri when using Managed Identity mode
+        if secret_uri is not None:
+            raise InvalidArgumentValueError("The '--secret-uri' flag cannot be supplied when 'ManagedIdentity' is chosen for the flag '--storage-access-mode'.")
+    elif storage_access_mode == "SasToken":
+        # Require secret-uri when using SasToken mode
+        if secret_uri is None:
+            raise InvalidArgumentValueError("--secret-uri is required when --storage-access-mode is SasToken")
 
 
 def validate_user_assigned_identity_resource_id(namespace):

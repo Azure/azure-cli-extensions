@@ -37,3 +37,59 @@ examples:
             --target /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Web/sites/myFunctionApp \\
             --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity
 """
+
+helps['durabletask scheduler restart'] = """
+type: command
+short-summary: "[Preview] Restart a Durable Task scheduler."
+long-summary: |
+    This command is in preview and may change in future releases.
+
+    Calls the POST /restart operation on the scheduler resource to restart it.
+examples:
+  - name: Restart a scheduler
+    text: |
+        az durabletask scheduler restart -g myResourceGroup -n myScheduler
+"""
+
+helps['durabletask scheduler identity assign'] = """
+type: command
+short-summary: "Assign the user or system managed identities."
+examples:
+  - name: Assign a system-assigned managed identity to a scheduler
+    text: |
+        az durabletask scheduler identity assign -g myResourceGroup -n myScheduler
+  - name: Assign a user-assigned managed identity to a scheduler
+    text: |
+        az durabletask scheduler identity assign -g myResourceGroup -n myScheduler \\
+            --user-assigned /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity
+"""
+
+helps['durabletask scheduler transparent-data-encryption create'] = """
+type: command
+short-summary: "Create a Transparent Data Encryption."
+examples:
+  - name: Create transparent data encryption with a customer-managed key
+    text: |
+        az durabletask scheduler transparent-data-encryption create -g myResourceGroup \\
+            --scheduler-name myScheduler --key-source CustomerManaged \\
+            --key-vault-key-uri https://myvault.vault.azure.net/keys/myKey
+  - name: Create transparent data encryption with a Microsoft-managed key
+    text: |
+        az durabletask scheduler transparent-data-encryption create -g myResourceGroup \\
+            --scheduler-name myScheduler --key-source MicrosoftManaged
+"""
+
+helps['durabletask scheduler transparent-data-encryption update'] = """
+type: command
+short-summary: "Update a Transparent Data Encryption."
+examples:
+  - name: Update transparent data encryption to use a new customer-managed key
+    text: |
+        az durabletask scheduler transparent-data-encryption update -g myResourceGroup \\
+            --scheduler-name myScheduler --key-source CustomerManaged \\
+            --key-vault-key-uri https://myvault.vault.azure.net/keys/myNewKey
+  - name: Update transparent data encryption to use a Microsoft-managed key
+    text: |
+        az durabletask scheduler transparent-data-encryption update -g myResourceGroup \\
+            --scheduler-name myScheduler --key-source MicrosoftManaged
+"""

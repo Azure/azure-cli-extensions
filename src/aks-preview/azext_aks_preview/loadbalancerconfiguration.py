@@ -49,13 +49,10 @@ def aks_loadbalancer_update_internal(cmd, client, raw_parameters):
     # Extract parameters from raw_parameters, falling back to existing values
     primary_agent_pool_name = raw_parameters.get("primary_agent_pool_name")
     if primary_agent_pool_name:
-        if (
+        changes_requested = changes_requested or (
             primary_agent_pool_name.lower()
             != existing_lb.primary_agent_pool_name.lower()
-        ):
-            raise BadRequestError(
-                f"Cannot change primary agent pool name for load balancer configuration '{loadbalancer_name}'."
-            )
+        )
     else:
         # Use existing value
         primary_agent_pool_name = existing_lb.primary_agent_pool_name

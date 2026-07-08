@@ -830,6 +830,9 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
      is used to fetch incremental changes from the SQL database. To use this option, we recommend
      using temporal tables in Azure SQL Database.
     :type delta_snapshot_query: str
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _validation = {
@@ -847,6 +850,7 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
         'refresh_rate': {'key': 'properties.refreshRate', 'type': 'str'},
         'full_snapshot_query': {'key': 'properties.fullSnapshotQuery', 'type': 'str'},
         'delta_snapshot_query': {'key': 'properties.deltaSnapshotQuery', 'type': 'str'},
+        'authentication_mode': {'key': 'properties.authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -861,6 +865,7 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
         refresh_rate: Optional[str] = None,
         full_snapshot_query: Optional[str] = None,
         delta_snapshot_query: Optional[str] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
         super(AzureSqlReferenceInputDataSource, self).__init__(**kwargs)
@@ -874,6 +879,7 @@ class AzureSqlReferenceInputDataSource(ReferenceInputDataSource):
         self.refresh_rate = refresh_rate
         self.full_snapshot_query = full_snapshot_query
         self.delta_snapshot_query = delta_snapshot_query
+        self.authentication_mode = authentication_mode
 
 
 class AzureSynapseDataSourceProperties(msrest.serialization.Model):
@@ -1112,6 +1118,9 @@ class BlobDataSourceProperties(msrest.serialization.Model):
     :param time_format: The time format. Wherever {time} appears in pathPattern, the value of this
      property is used as the time format instead.
     :type time_format: str
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _attribute_map = {
@@ -1120,6 +1129,7 @@ class BlobDataSourceProperties(msrest.serialization.Model):
         'path_pattern': {'key': 'pathPattern', 'type': 'str'},
         'date_format': {'key': 'dateFormat', 'type': 'str'},
         'time_format': {'key': 'timeFormat', 'type': 'str'},
+        'authentication_mode': {'key': 'authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -1130,6 +1140,7 @@ class BlobDataSourceProperties(msrest.serialization.Model):
         path_pattern: Optional[str] = None,
         date_format: Optional[str] = None,
         time_format: Optional[str] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
         super(BlobDataSourceProperties, self).__init__(**kwargs)
@@ -1138,6 +1149,7 @@ class BlobDataSourceProperties(msrest.serialization.Model):
         self.path_pattern = path_pattern
         self.date_format = date_format
         self.time_format = time_format
+        self.authentication_mode = authentication_mode
 
 
 class BlobOutputDataSource(OutputDataSource):
@@ -1288,6 +1300,9 @@ class BlobReferenceInputDataSource(ReferenceInputDataSource):
     :param time_format: The time format. Wherever {time} appears in pathPattern, the value of this
      property is used as the time format instead.
     :type time_format: str
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _validation = {
@@ -1301,6 +1316,7 @@ class BlobReferenceInputDataSource(ReferenceInputDataSource):
         'path_pattern': {'key': 'properties.pathPattern', 'type': 'str'},
         'date_format': {'key': 'properties.dateFormat', 'type': 'str'},
         'time_format': {'key': 'properties.timeFormat', 'type': 'str'},
+        'authentication_mode': {'key': 'properties.authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -1311,6 +1327,7 @@ class BlobReferenceInputDataSource(ReferenceInputDataSource):
         path_pattern: Optional[str] = None,
         date_format: Optional[str] = None,
         time_format: Optional[str] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
         super(BlobReferenceInputDataSource, self).__init__(**kwargs)
@@ -1320,6 +1337,7 @@ class BlobReferenceInputDataSource(ReferenceInputDataSource):
         self.path_pattern = path_pattern
         self.date_format = date_format
         self.time_format = time_format
+        self.authentication_mode = authentication_mode
 
 
 class BlobReferenceInputDataSourceProperties(BlobDataSourceProperties):
@@ -1345,6 +1363,9 @@ class BlobReferenceInputDataSourceProperties(BlobDataSourceProperties):
     :param time_format: The time format. Wherever {time} appears in pathPattern, the value of this
      property is used as the time format instead.
     :type time_format: str
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _attribute_map = {
@@ -1353,6 +1374,7 @@ class BlobReferenceInputDataSourceProperties(BlobDataSourceProperties):
         'path_pattern': {'key': 'pathPattern', 'type': 'str'},
         'date_format': {'key': 'dateFormat', 'type': 'str'},
         'time_format': {'key': 'timeFormat', 'type': 'str'},
+        'authentication_mode': {'key': 'authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -1363,9 +1385,10 @@ class BlobReferenceInputDataSourceProperties(BlobDataSourceProperties):
         path_pattern: Optional[str] = None,
         date_format: Optional[str] = None,
         time_format: Optional[str] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
-        super(BlobReferenceInputDataSourceProperties, self).__init__(storage_accounts=storage_accounts, container=container, path_pattern=path_pattern, date_format=date_format, time_format=time_format, **kwargs)
+        super(BlobReferenceInputDataSourceProperties, self).__init__(storage_accounts=storage_accounts, container=container, path_pattern=path_pattern, date_format=date_format, time_format=time_format, authentication_mode=authentication_mode, **kwargs)
 
 
 class StreamInputDataSource(msrest.serialization.Model):
@@ -1432,6 +1455,9 @@ class BlobStreamInputDataSource(StreamInputDataSource):
     :param source_partition_count: The partition count of the blob input data source. Range 1 -
      256.
     :type source_partition_count: int
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _validation = {
@@ -1446,6 +1472,7 @@ class BlobStreamInputDataSource(StreamInputDataSource):
         'date_format': {'key': 'properties.dateFormat', 'type': 'str'},
         'time_format': {'key': 'properties.timeFormat', 'type': 'str'},
         'source_partition_count': {'key': 'properties.sourcePartitionCount', 'type': 'int'},
+        'authentication_mode': {'key': 'properties.authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -1457,6 +1484,7 @@ class BlobStreamInputDataSource(StreamInputDataSource):
         date_format: Optional[str] = None,
         time_format: Optional[str] = None,
         source_partition_count: Optional[int] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
         super(BlobStreamInputDataSource, self).__init__(**kwargs)
@@ -1467,6 +1495,7 @@ class BlobStreamInputDataSource(StreamInputDataSource):
         self.date_format = date_format
         self.time_format = time_format
         self.source_partition_count = source_partition_count
+        self.authentication_mode = authentication_mode
 
 
 class BlobStreamInputDataSourceProperties(BlobDataSourceProperties):
@@ -1495,6 +1524,9 @@ class BlobStreamInputDataSourceProperties(BlobDataSourceProperties):
     :param source_partition_count: The partition count of the blob input data source. Range 1 -
      256.
     :type source_partition_count: int
+    :param authentication_mode: Authentication Mode. Possible values include: "Msi", "UserToken",
+     "ConnectionString".
+    :type authentication_mode: str or ~stream_analytics_management_client.models.AuthenticationMode
     """
 
     _attribute_map = {
@@ -1504,6 +1536,7 @@ class BlobStreamInputDataSourceProperties(BlobDataSourceProperties):
         'date_format': {'key': 'dateFormat', 'type': 'str'},
         'time_format': {'key': 'timeFormat', 'type': 'str'},
         'source_partition_count': {'key': 'sourcePartitionCount', 'type': 'int'},
+        'authentication_mode': {'key': 'authenticationMode', 'type': 'str'},
     }
 
     def __init__(
@@ -1515,9 +1548,10 @@ class BlobStreamInputDataSourceProperties(BlobDataSourceProperties):
         date_format: Optional[str] = None,
         time_format: Optional[str] = None,
         source_partition_count: Optional[int] = None,
+        authentication_mode: Optional[Union[str, "AuthenticationMode"]] = None,
         **kwargs
     ):
-        super(BlobStreamInputDataSourceProperties, self).__init__(storage_accounts=storage_accounts, container=container, path_pattern=path_pattern, date_format=date_format, time_format=time_format, **kwargs)
+        super(BlobStreamInputDataSourceProperties, self).__init__(storage_accounts=storage_accounts, container=container, path_pattern=path_pattern, date_format=date_format, time_format=time_format, authentication_mode=authentication_mode, **kwargs)
         self.source_partition_count = source_partition_count
 
 

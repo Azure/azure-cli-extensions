@@ -33,16 +33,12 @@ def get_config_value(cmd, config_key, env_var_name, default_value):
     # Priority 1: Environment variable
     env_value = os.environ.get(env_var_name)
     if env_value:
-        logger.debug(
-            "Using %s from environment variable: %s", config_key, env_var_name)
+        logger.debug("Using %s from environment variable: %s", config_key, env_var_name)
         return env_value
 
     # Priority 2: Azure CLI config
     config = cmd.cli_ctx.config
-    config_value = config.get(
-        'managedcleanroom-frontend',
-        config_key,
-        fallback=None)
+    config_value = config.get("managedcleanroom-frontend", config_key, fallback=None)
     if config_value:
         logger.debug("Using %s from Azure CLI config", config_key)
         return config_value
@@ -59,31 +55,25 @@ def get_msal_config(cmd):
     :return: Dict with client_id, tenant_id, authority, scopes
     """
     client_id = get_config_value(
-        cmd,
-        'client_id',
-        'MANAGEDCLEANROOM_CLIENT_ID',
-        DEFAULT_MS_CLIENT_ID)
+        cmd, "client_id", "MANAGEDCLEANROOM_CLIENT_ID", DEFAULT_MS_CLIENT_ID
+    )
     tenant_id = get_config_value(
-        cmd,
-        'tenant_id',
-        'MANAGEDCLEANROOM_TENANT_ID',
-        DEFAULT_MS_TENANT_ID)
+        cmd, "tenant_id", "MANAGEDCLEANROOM_TENANT_ID", DEFAULT_MS_TENANT_ID
+    )
     scopes_str = get_config_value(
-        cmd,
-        'scopes',
-        'MANAGEDCLEANROOM_SCOPES',
-        DEFAULT_MS_SCOPES)
+        cmd, "scopes", "MANAGEDCLEANROOM_SCOPES", DEFAULT_MS_SCOPES
+    )
 
     # Parse scopes (comma-separated string to list)
-    scopes = [s.strip() for s in scopes_str.split(',')]
+    scopes = [s.strip() for s in scopes_str.split(",")]
 
     authority = f"https://login.microsoftonline.com/{tenant_id}"
 
     return {
-        'client_id': client_id,
-        'tenant_id': tenant_id,
-        'authority': authority,
-        'scopes': scopes
+        "client_id": client_id,
+        "tenant_id": tenant_id,
+        "authority": authority,
+        "scopes": scopes,
     }
 
 
@@ -97,9 +87,9 @@ def get_auth_scope(cmd):
     """
     return get_config_value(
         cmd,
-        'auth_scope',
-        'MANAGEDCLEANROOM_AUTH_SCOPE',
-        'https://management.azure.com/'
+        "auth_scope",
+        "MANAGEDCLEANROOM_AUTH_SCOPE",
+        "https://management.azure.com/",
     )
 
 
@@ -168,22 +158,23 @@ def perform_device_code_flow(cmd):
     token_cache = load_cache(cache_file)
 
     app = msal.PublicClientApplication(
-        config['client_id'],
-        authority=config['authority'],
-        token_cache=token_cache
+        config["client_id"], authority=config["authority"], token_cache=token_cache
     )
 
     # Check for existing account in cache
     account = None
     for acc in app.get_accounts():
-        if acc["environment"] == "login.microsoftonline.com" and acc["realm"] == config['tenant_id']:
+        if (
+            acc["environment"] == "login.microsoftonline.com"
+            and acc["realm"] == config["tenant_id"]
+        ):
             account = acc
             break
 
     if account:
         # Try silent token acquisition first
         logger.debug("Attempting silent token acquisition")
-        result = app.acquire_token_silent(config['scopes'], account=account)
+        result = app.acquire_token_silent(config["scopes"], account=account)
         if result and "access_token" in result:
             logger.debug("Successfully acquired token silently")
             save_cache(token_cache, cache_file)
@@ -191,14 +182,14 @@ def perform_device_code_flow(cmd):
 
     # No cached token found, perform device code flow
     logger.info("Initiating device code flow authentication")
-    flow = app.initiate_device_flow(scopes=config['scopes'])
+    flow = app.initiate_device_flow(scopes=config["scopes"])
 
     if "user_code" not in flow:
         raise Exception(
             "Failed to create device flow: {}".format(
-                flow.get(
-                    'error_description',
-                    'Unknown error')))
+                flow.get("error_description", "Unknown error")
+            )
+        )
 
     # Display instructions to user (matches cleanroom pattern)
     print("Please go to", flow["verification_uri"])
@@ -214,8 +205,7 @@ def perform_device_code_flow(cmd):
         oid = result["id_token_claims"].get("oid", "")
 
         if email == "" or oid == "":
-            raise Exception(
-                "Login failed: missing email or oid in token claims")
+            raise Exception("Login failed: missing email or oid in token claims")
 
         logger.info("Authentication successful for user: %s", email)
         print("User:", name)
@@ -227,6 +217,52 @@ def perform_device_code_flow(cmd):
 
     err = result.get("error_description")
     raise Exception("Login failed: {}".format(err))
+
+
+def _read_id_token_from_cache(token_cache, client_id, cache_file):
+    """Read the ID token (JWT) from the MSAL token cache.
+
+    acquire_token_silent() does not return the id_token on silent refresh,
+    but it IS persisted in the cache under the 'IdToken' collection.
+    This helper extracts it, matching on client_id.
+
+    :param token_cache: MSAL SerializableTokenCache (already loaded)
+    :param client_id: The MSAL application client ID to match
+    :param cache_file: Path to the cache JSON file (fallback)
+    :return: JWT id_token string, or None
+    """
+    import json as _json
+
+    # Approach 1: Use the in-memory cache's internal _cache dict.
+    # SerializableTokenCache stores the deserialized JSON in _cache.
+    try:
+        id_tokens = getattr(token_cache, "_cache", {}).get("IdToken", {})
+        for _key, entry in id_tokens.items():
+            if entry.get("client_id") == client_id:
+                secret = entry.get("secret", "")
+                if secret.startswith("eyJ") and secret.count(".") == 2:
+                    logger.debug("Read ID token from in-memory MSAL cache")
+                    return secret
+    except Exception as ex:
+        logger.debug("Failed to read ID token from in-memory cache: %s", ex)
+
+    # Approach 2: Fall back to reading the JSON file directly.
+    try:
+        if os.path.exists(cache_file):
+            with open(cache_file, "r") as f:
+                cache_data = _json.load(f)
+            id_tokens = cache_data.get("IdToken", {})
+            for _key, entry in id_tokens.items():
+                if entry.get("client_id") == client_id:
+                    secret = entry.get("secret", "")
+                    if secret.startswith("eyJ") and secret.count(".") == 2:
+                        logger.debug("Read ID token from cache file")
+                        return secret
+    except Exception as ex:
+        logger.debug("Failed to read ID token from cache file: %s", ex)
+
+    logger.debug("No matching ID token found in MSAL cache")
+    return None
 
 
 def get_msal_token(cmd):
@@ -250,9 +286,7 @@ def get_msal_token(cmd):
 
         token_cache = load_cache(cache_file)
         app = msal.PublicClientApplication(
-            config['client_id'],
-            authority=config['authority'],
-            token_cache=token_cache
+            config["client_id"], authority=config["authority"], token_cache=token_cache
         )
 
         # Find account in cache
@@ -265,27 +299,47 @@ def get_msal_token(cmd):
         account = accounts[0]
         logger.debug(
             "Attempting to acquire token for account: %s",
-            account.get('username', 'unknown'))
+            account.get("username", "unknown"),
+        )
 
         # Try silent token acquisition
-        result = app.acquire_token_silent(config['scopes'], account=account)
+        result = app.acquire_token_silent(config["scopes"], account=account)
 
         if result and "access_token" in result:
             logger.debug("Successfully acquired MSAL token from cache")
             save_cache(token_cache, cache_file)
 
             # Extract tenant ID from token claims
-            tenant_id = result.get(
-                "id_token_claims", {}).get(
-                "tid", config['tenant_id'])
+            tenant_id = result.get("id_token_claims", {}).get(
+                "tid", config["tenant_id"]
+            )
 
-            # Return in format expected by get_frontend_token()
-            # (access_token, subscription, tenant_id)
-            return (result["access_token"], None, tenant_id)
+            # The frontend service validates tokens as JWTs, so we need
+            # the id_token (starts with "eyJ"), NOT the opaque MS Graph
+            # access_token (starts with "EwA").  acquire_token_silent()
+            # does NOT include id_token in its return dict on silent
+            # refresh, but it IS stored in the MSAL token cache.
+            token = result.get("id_token")
+            if not token or not token.startswith("eyJ"):
+                # Read ID token directly from the MSAL cache.
+                # Try the in-memory cache object first, then fall back
+                # to reading the JSON file.
+                token = _read_id_token_from_cache(
+                    token_cache, config["client_id"], cache_file
+                )
+
+            if not token:
+                logger.warning(
+                    "No JWT id_token found in cache; falling back to "
+                    "access_token (frontend may reject this)"
+                )
+                token = result["access_token"]
+
+            return (token, None, tenant_id)
 
         logger.debug(
-            "Failed to acquire token silently: %s",
-            result.get('error', 'Unknown error'))
+            "Failed to acquire token silently: %s", result.get("error", "Unknown error")
+        )
         return None
 
     except Exception as ex:

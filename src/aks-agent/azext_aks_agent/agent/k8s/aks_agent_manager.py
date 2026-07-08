@@ -232,7 +232,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             )
 
             if not secret.data:
-                logger.warning("Secret '%s' exists but has no data", self.llm_secret_name)
+                logger.debug("Secret '%s' exists but has no data", self.llm_secret_name)
                 return
 
             # Decode secret data (base64 encoded)
@@ -927,6 +927,22 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             "create": False,
         }
 
+        # Configure aks-agent pod to use the same service account as aks-mcp for workload identity
+        helm_values["workloadIdentity"] = {
+            "enabled": True,
+        }
+        helm_values["serviceAccount"] = {
+            "create": False,
+            "name": self.aks_mcp_service_account_name,
+        }
+
+        has_empty_api_key = any(
+            not model_config.get("api_key") or not model_config.get("api_key").strip()
+            for model_config in self.llm_config_manager.model_list.values()
+        )
+        if has_empty_api_key:
+            helm_values["azureADTokenAuth"] = True
+
         return helm_values
 
     def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
@@ -1138,6 +1154,16 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
                 "-e", f"AKS_SUBSCRIPTION_ID={self.subscription_id}",
                 "-e", "AZURE_TOKEN_CREDENTIALS=AzureCLICredential"
             ]
+
+            # When no API key is configured for an Azure model, enable Azure AD token authentication
+            model_list = self.llm_config_manager.model_list
+            if model_list and any(
+                "azure/" in model_name and (
+                    not model_config.get("api_key") or not model_config.get("api_key").strip()
+                )
+                for model_name, model_config in model_list.items()
+            ):
+                env_vars.extend(["-e", "AZURE_AD_TOKEN_AUTH=True"])
 
             # Prepare the command
             exec_command = [

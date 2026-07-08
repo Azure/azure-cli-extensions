@@ -1,3 +1,27 @@
+afd origin create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd origin update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd route create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd route update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd secret create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd secret update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd security-policy create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+afd security-policy update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
 account create:
   parameters:
     enrollment_account_name:
@@ -35,6 +59,9 @@ aks create:
       rule_exclusions:
       - option_length_too_long
     node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
+    node_public_ip_prefix_ids:
       rule_exclusions:
         - option_length_too_long
     enable_private_cluster:
@@ -124,6 +151,17 @@ aks create:
     cluster_service_load_balancer_health_probe_mode:
       rule_exclusions:
       - option_length_too_long
+    enable_service_account_image_pull:
+      rule_exclusions:
+      - option_length_too_long
+    service_account_image_pull_default_managed_identity_id:
+      rule_exclusions:
+      - option_length_too_long
+aks nodepool add:
+  parameters:
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -205,6 +243,15 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     disable_application_load_balancer:
+      rule_exclusions:
+      - option_length_too_long
+    enable_service_account_image_pull:
+      rule_exclusions:
+      - option_length_too_long
+    disable_service_account_image_pull:
+      rule_exclusions:
+      - option_length_too_long
+    service_account_image_pull_default_managed_identity_id:
       rule_exclusions:
       - option_length_too_long
 aks agent:
@@ -401,6 +448,83 @@ codespace plan create:
 confidentialledger managedccfs update:
   rule_exclusions:
   - missing_command_test_coverage
+cdn origin-group create:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+  - unrecognized_help_parameter_rule
+cdn origin-group update:
+  rule_exclusions:
+  - faulty_help_example_parameters_rule
+  - unrecognized_help_parameter_rule
+confluent organization environment:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent organization environment cluster:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent organization environment cluster connector:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent organization environment cluster topic:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent agreement default create:
+  rule_exclusions:
+  - missing_command_example
+confluent organization environment create:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    stream_governance_config:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment update:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    stream_governance_config:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster create:
+  rule_exclusions:
+  - missing_command_example
+confluent organization environment cluster update:
+  rule_exclusions:
+  - missing_command_example
+confluent organization environment cluster connector create:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    connector_service_type_info:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster connector update:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    connector_service_type_info:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster topic create:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    partitions_reassignments:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster topic update:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    partitions_reassignments:
+      rule_exclusions:
+      - option_length_too_long
+confluent validation orgvalidate:
+  rule_exclusions:
+  - missing_command_example
+confluent validation orgvalidate-v2:
+  rule_exclusions:
+  - missing_command_example
 containerapp env create:
   parameters:
     infrastructure_subnet_resource_id:
@@ -3504,46 +3628,6 @@ eventgrid namespace topic update:
       rule_exclusions:
       - option_length_too_long
 
-neon postgres endpoint create:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres neon-role create:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres neon-database create:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres get-postgres-version:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres branch:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres endpoint:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres neon-database:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres neon-role:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres organization:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres project:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
 confcom containers from_vn2:
   parameters:
     template:
@@ -3567,3 +3651,30 @@ confcom containers from_image:
     image:
       rule_exclusions:
         - no_positional_parameters
+
+confcom containers from_radius:
+  parameters:
+    template:
+      rule_exclusions:
+        - no_positional_parameters
+
+confcom radius policy_insert:
+  parameters:
+    policy_file:
+      rule_exclusions:
+        - no_positional_parameters
+
+relationship dependency-of create:
+  rule_exclusions:
+    - missing_command_example
+relationship service-group-member create:
+  rule_exclusions:
+    - missing_command_example
+
+cosmosdb sql softdeleted-database list:
+  rule_exclusions:
+    - no_ids_for_list_commands
+
+cosmosdb sql softdeleted-container list:
+  rule_exclusions:
+    - no_ids_for_list_commands
