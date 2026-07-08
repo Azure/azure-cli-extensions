@@ -18,13 +18,13 @@ class Generate(AAZCommand):
     """Generates the manifest for the given provider.
 
     :example: manifest generate
-        az az providerhub manifest generate --provider-namespace "{providerNamespace}"
+        az providerhub manifest generate --provider-namespace "{providerNamespace}
     """
 
     _aaz_info = {
-        "version": "2024-04-01-preview",
+        "version": "2026-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/generatemanifest", "2024-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/generatemanifest", "2026-02-01-preview"],
         ]
     }
 
@@ -113,7 +113,7 @@ class Generate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01-preview",
+                    "api-version", "2026-02-01-preview",
                     required=True,
                 ),
             }
@@ -164,7 +164,7 @@ class Generate(AAZCommand):
                 serialized_name="linkedNotificationRules",
             )
             _schema_on_200.management = AAZObjectType()
-            _schema_on_200.metadata = AAZFreeFormDictType()
+            _schema_on_200.metadata = AAZDictType()
             _schema_on_200.namespace = AAZStrType()
             _schema_on_200.notifications = AAZListType()
             _GenerateHelper._build_schema_notifications_read(_schema_on_200.notifications)
@@ -285,6 +285,12 @@ class Generate(AAZCommand):
             management.expedited_rollout_submitters = AAZListType(
                 serialized_name="expeditedRolloutSubmitters",
             )
+            management.feature_approval_claims = AAZListType(
+                serialized_name="featureApprovalClaims",
+            )
+            management.feature_management_owners = AAZListType(
+                serialized_name="featureManagementOwners",
+            )
             management.incident_contact_email = AAZStrType(
                 serialized_name="incidentContactEmail",
             )
@@ -336,6 +342,12 @@ class Generate(AAZCommand):
             expedited_rollout_submitters = cls._schema_on_200.management.expedited_rollout_submitters
             expedited_rollout_submitters.Element = AAZStrType()
 
+            feature_approval_claims = cls._schema_on_200.management.feature_approval_claims
+            feature_approval_claims.Element = AAZStrType()
+
+            feature_management_owners = cls._schema_on_200.management.feature_management_owners
+            feature_management_owners.Element = AAZStrType()
+
             manifest_owners = cls._schema_on_200.management.manifest_owners
             manifest_owners.Element = AAZStrType()
 
@@ -360,6 +372,9 @@ class Generate(AAZCommand):
             service_tree_infos = cls._schema_on_200.management.service_tree_infos
             service_tree_infos.Element = AAZObjectType()
             _GenerateHelper._build_schema_service_tree_info_read(service_tree_infos.Element)
+
+            metadata = cls._schema_on_200.metadata
+            metadata.Element = AAZAnyType()
 
             provider_authentication = cls._schema_on_200.provider_authentication
             provider_authentication.allowed_audiences = AAZListType(
@@ -450,6 +465,9 @@ class Generate(AAZCommand):
             _element.allowed_unauthorized_actions = AAZListType(
                 serialized_name="allowedUnauthorizedActions",
             )
+            _element.allowed_unauthorized_actions_extensions = AAZListType(
+                serialized_name="allowedUnauthorizedActionsExtensions",
+            )
             _element.authorization_action_mappings = AAZListType(
                 serialized_name="authorizationActionMappings",
             )
@@ -487,7 +505,7 @@ class Generate(AAZCommand):
             _element.marketplace_type = AAZStrType(
                 serialized_name="marketplaceType",
             )
-            _element.metadata = AAZFreeFormDictType()
+            _element.metadata = AAZDictType()
             _element.name = AAZStrType()
             _element.notifications = AAZListType()
             _GenerateHelper._build_schema_notifications_read(_element.notifications)
@@ -499,6 +517,9 @@ class Generate(AAZCommand):
             )
             _element.required_features = AAZListType(
                 serialized_name="requiredFeatures",
+            )
+            _element.resource_deletion_policies = AAZListType(
+                serialized_name="resourceDeletionPolicies",
             )
             _element.resource_deletion_policy = AAZStrType(
                 serialized_name="resourceDeletionPolicy",
@@ -531,6 +552,13 @@ class Generate(AAZCommand):
 
             allowed_unauthorized_actions = cls._schema_on_200.resource_types.Element.allowed_unauthorized_actions
             allowed_unauthorized_actions.Element = AAZStrType()
+
+            allowed_unauthorized_actions_extensions = cls._schema_on_200.resource_types.Element.allowed_unauthorized_actions_extensions
+            allowed_unauthorized_actions_extensions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.resource_types.Element.allowed_unauthorized_actions_extensions.Element
+            _element.action = AAZStrType()
+            _element.intent = AAZStrType()
 
             authorization_action_mappings = cls._schema_on_200.resource_types.Element.authorization_action_mappings
             authorization_action_mappings.Element = AAZObjectType()
@@ -582,6 +610,9 @@ class Generate(AAZCommand):
             )
             _element.linked_type = AAZStrType(
                 serialized_name="linkedType",
+            )
+            _element.options = AAZStrType(
+                flags={"read_only": True},
             )
 
             linked_notification_rules = cls._schema_on_200.resource_types.Element.linked_notification_rules
@@ -665,6 +696,9 @@ class Generate(AAZCommand):
             hidden_paths_on_response = cls._schema_on_200.resource_types.Element.logging_rules.Element.hidden_property_paths.hidden_paths_on_response
             hidden_paths_on_response.Element = AAZStrType()
 
+            metadata = cls._schema_on_200.resource_types.Element.metadata
+            metadata.Element = AAZAnyType()
+
             quota_rule = cls._schema_on_200.resource_types.Element.quota_rule
             quota_rule.location_rules = AAZListType(
                 serialized_name="locationRules",
@@ -699,6 +733,23 @@ class Generate(AAZCommand):
 
             required_features = cls._schema_on_200.resource_types.Element.required_features
             required_features.Element = AAZStrType()
+
+            resource_deletion_policies = cls._schema_on_200.resource_types.Element.resource_deletion_policies
+            resource_deletion_policies.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.resource_types.Element.resource_deletion_policies.Element
+            _element.policy_name = AAZStrType(
+                serialized_name="policyName",
+            )
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.resource_types.Element.resource_deletion_policies.Element.properties
+            properties.maximum_retention_time = AAZStrType(
+                serialized_name="maximumRetentionTime",
+            )
+            properties.minimum_retention_time = AAZStrType(
+                serialized_name="minimumRetentionTime",
+            )
 
             service_tree_infos = cls._schema_on_200.resource_types.Element.service_tree_infos
             service_tree_infos.Element = AAZObjectType()
@@ -752,6 +803,9 @@ class Generate(AAZCommand):
             metrics.Element = AAZObjectType()
 
             _element = cls._schema_on_200.resource_types.Element.throttling_rules.Element.metrics.Element
+            _element.bucket_size = AAZStrType(
+                serialized_name="bucketSize",
+            )
             _element.interval = AAZStrType()
             _element.limit = AAZIntType(
                 flags={"required": True},
