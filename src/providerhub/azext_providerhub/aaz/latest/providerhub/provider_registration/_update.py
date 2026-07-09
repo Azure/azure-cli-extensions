@@ -894,12 +894,14 @@ class Update(AAZCommand):
         _args_schema.opt_in_headers = AAZStrArg(
             options=["--opt-in-headers"],
             arg_group="RequestHeaderOptions",
+            help="The opt-in headers.",
             nullable=True,
             enum={"ClientGroupMembership": "ClientGroupMembership", "ClientPrincipalNameEncoded": "ClientPrincipalNameEncoded", "MSIResourceIdEncoded": "MSIResourceIdEncoded", "ManagementGroupAncestorsEncoded": "ManagementGroupAncestorsEncoded", "NotSpecified": "NotSpecified", "PrivateLinkId": "PrivateLinkId", "PrivateLinkResourceId": "PrivateLinkResourceId", "PrivateLinkVnetTrafficTag": "PrivateLinkVnetTrafficTag", "ResourceGroupLocation": "ResourceGroupLocation", "SignedAuxiliaryTokens": "SignedAuxiliaryTokens", "SignedUserToken": "SignedUserToken", "UnboundedClientGroupMembership": "UnboundedClientGroupMembership"},
         )
         _args_schema.opt_out_headers = AAZStrArg(
             options=["--opt-out-headers"],
             arg_group="RequestHeaderOptions",
+            help="The opt-out headers.",
             nullable=True,
             enum={"NotSpecified": "NotSpecified", "SystemDataCreatedByLastModifiedBy": "SystemDataCreatedByLastModifiedBy"},
         )
@@ -913,7 +915,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.subscription_state_override_actions = AAZListArg(
-            options=["--subscription-state-override-actions"],
+            options=["--override-actions", "--subscription-state-override-actions"],
             arg_group="SubscriptionLifecycleNotificationSpecifications",
             nullable=True,
         )

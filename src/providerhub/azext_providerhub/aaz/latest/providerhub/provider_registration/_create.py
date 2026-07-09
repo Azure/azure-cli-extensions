@@ -613,6 +613,7 @@ class Create(AAZCommand):
         )
         provider_hub_metadata.managed_by_tenant_id = AAZStrArg(
             options=["managed-by-tenant-id"],
+            help="The managed by tenant ID.",
         )
 
         providerhub_metadata_authentication = cls._args_schema.provider_hub_metadata.providerhub_metadata_authentication
