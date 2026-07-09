@@ -437,6 +437,8 @@ class SerialConsole:
                 GV.loading = False
                 PC.clear_screen()
             else:
+                if isinstance(message, bytes):
+                    message = message.decode('utf-8', errors='replace')
                 PC.print(message)
 
         def on_error(*_):
