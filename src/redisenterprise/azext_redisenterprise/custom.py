@@ -23,7 +23,7 @@ from .aaz.latest.redisenterprise.database import Update as _DatabaseUpdate
 from .aaz.latest.redisenterprise.database import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import List as _ClusterList
 from .aaz.latest.redisenterprise import Show as _ClusterShow
-from .aaz.latest.redisenterprise import Wait as _DatabaseWait
+from .aaz.latest.redisenterprise import Wait as _ClusterWait
 from .aaz.latest.redisenterprise import Update as _Update
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
