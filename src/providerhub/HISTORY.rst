@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* Update to API version 2026-02-01-preview.
+* Add support for additional properties to authorized applications, custom rollout, default rollout, manifest, provider registration, and resource type registration operations.
+
 0.2.0
 ++++++
 * Support commands for

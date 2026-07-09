@@ -98,14 +98,15 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.feature_approval_claims = AAZListArg(
-            options=["--feature-approval-claims"],
+            options=["--feature-claims", "--feature-approval-claims"],
             arg_group="Management",
             help="List of claims to approve or reject feature registration.",
             nullable=True,
         )
         _args_schema.feature_management_owners = AAZListArg(
-            options=["--feature-management-owners"],
+            options=["--feature-owners", "--feature-management-owners"],
             arg_group="Management",
+            help="List of feature management owners",
             nullable=True,
         )
         _args_schema.incident_contact_email = AAZStrArg(
@@ -311,7 +312,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.enable_preset_resource_types = AAZBoolArg(
-            options=["--enable-preset-resource-types"],
+            options=["--enable-preset-types", "--enable-preset-resource-types"],
             arg_group="Properties",
             help="Preset resource types enabled?",
             nullable=True,
@@ -431,7 +432,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The provider type. Provider type options are: AuthorizationFree, External, Hidden, Internal, LegacyRegistrationRequired, NotSpecified, RegistrationFree, TenantOnly. Select multiple with comma separated string.",
             nullable=True,
-            enum={"AuthorizationFree": "AuthorizationFree", "Decommissioned": "Decommissioned", "External": "External", "Hidden": "Hidden", "Internal": "Internal", "LegacyRegistrationRequired": "LegacyRegistrationRequired", "NotSpecified": "NotSpecified", "RegistrationFree": "RegistrationFree", "TenantOnly": "TenantOnly"},
         )
         _args_schema.provider_version = AAZStrArg(
             options=["--provider-version"],

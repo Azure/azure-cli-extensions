@@ -90,13 +90,14 @@ class Create(AAZCommand):
             help="List of expedited rollout submitters.",
         )
         _args_schema.feature_approval_claims = AAZListArg(
-            options=["--feature-approval-claims"],
+            options=["--feature-claims", "--feature-approval-claims"],
             arg_group="Management",
             help="List of claims to approve or reject feature registration.",
         )
         _args_schema.feature_management_owners = AAZListArg(
-            options=["--feature-management-owners"],
+            options=["--feature-owners", "--feature-management-owners"],
             arg_group="Management",
+            help="List of feature management owners.",
         )
         _args_schema.incident_contact_email = AAZStrArg(
             options=["--incident-contact-email"],
@@ -257,7 +258,7 @@ class Create(AAZCommand):
             help="The DSTS configuration.",
         )
         _args_schema.enable_preset_resource_types = AAZBoolArg(
-            options=["--enable-preset-resource-types"],
+            options=["--enable-preset-types", "--enable-preset-resource-types"],
             arg_group="Properties",
             help="Preset resource types enabled?",
         )

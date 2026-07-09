@@ -193,6 +193,7 @@ class Update(AAZCommand):
         _args_schema.rollout_id = AAZStrArg(
             options=["--rollout-id"],
             arg_group="Specification",
+            help="The rollout ID.",
             nullable=True,
         )
         _args_schema.skip_release_scope_validation = AAZBoolArg(

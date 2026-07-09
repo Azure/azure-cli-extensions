@@ -167,6 +167,7 @@ class Create(AAZCommand):
         _args_schema.rollout_id = AAZStrArg(
             options=["--rollout-id"],
             arg_group="Specification",
+            help="The rollout ID.",
         )
         _args_schema.skip_release_scope_validation = AAZBoolArg(
             options=["--skip-validation", "--skip-release-scope-validation"],

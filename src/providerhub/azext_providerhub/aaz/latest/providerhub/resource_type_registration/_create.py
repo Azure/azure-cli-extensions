@@ -134,8 +134,9 @@ class Create(AAZCommand):
             help="The allowed unauthorized actions.",
         )
         _args_schema.allowed_unauthorized_actions_extensions = AAZListArg(
-            options=["--allowed-unauthorized-actions-extensions"],
+            options=["--aua-extensions", "--allowed-unauthorized-actions-extensions"],
             arg_group="Properties",
+            help="The allowed unauthorized actions extensions.",
         )
         _args_schema.api_profiles = AAZListArg(
             options=["--api-profiles"],
@@ -369,7 +370,7 @@ class Create(AAZCommand):
             help="The resource concurrency control options.",
         )
         _args_schema.resource_deletion_policies = AAZListArg(
-            options=["--resource-deletion-policies"],
+            options=["--deletion-policies", "--resource-deletion-policies"],
             arg_group="Properties",
             help="List of resource deletion policies added.",
         )
@@ -430,7 +431,6 @@ class Create(AAZCommand):
             options=["--routing-type"],
             arg_group="Properties",
             help="The resource routing type. The options are: CascadeExtension, Default, Extension, Failover, Fanout, HostBased, LocationBased, ProxyOnly, Tenant. Select multiple with a comma separated string.",
-            enum={"BypassEndpointSelectionOptimization": "BypassEndpointSelectionOptimization", "CascadeAuthorizedExtension": "CascadeAuthorizedExtension", "CascadeExtension": "CascadeExtension", "ChildFanout": "ChildFanout", "Default": "Default", "Extension": "Extension", "Failover": "Failover", "Fanout": "Fanout", "HostBased": "HostBased", "LocationBased": "LocationBased", "LocationMapping": "LocationMapping", "ProxyOnly": "ProxyOnly", "ServiceFanout": "ServiceFanout", "Tenant": "Tenant"},
         )
         _args_schema.service_tree_infos = AAZListArg(
             options=["--service-tree-infos"],
@@ -452,6 +452,7 @@ class Create(AAZCommand):
         _args_schema.super_scale_enabled = AAZBoolArg(
             options=["--super-scale-enabled"],
             arg_group="Properties",
+            help="Indicates whether super scale is enabled for this resource type.",
         )
         _args_schema.supports_tags = AAZBoolArg(
             options=["--supports-tags"],
