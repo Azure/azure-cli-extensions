@@ -2447,6 +2447,12 @@ helps['containerapp debug'] = """
     - name: Debug by executing a command inside a container app and exit
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer --command "echo Hello World"
+    - name: Debug with a custom container image
+      text: |
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --container MyContainer --image mcr.microsoft.com/dotnet/sdk:8.0
+    - name: Debug with a custom container image and entrypoint
+      text: |
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --container MyContainer --image mcr.microsoft.com/dotnet/sdk:8.0 --entrypoint /bin/bash
 """
 
 helps['containerapp label-history'] = """
