@@ -357,8 +357,7 @@ class Create(AAZCommand):
         _args_schema.provider_type = AAZStrArg(
             options=["--provider-type"],
             arg_group="Properties",
-            help="The provider type. Provider type options are: AuthorizationFree, External, Hidden, Internal, LegacyRegistrationRequired, NotSpecified, RegistrationFree, TenantOnly. Select multiple with comma separated string.",
-            enum={"AuthorizationFree": "AuthorizationFree", "Decommissioned": "Decommissioned", "External": "External", "Hidden": "Hidden", "Internal": "Internal", "LegacyRegistrationRequired": "LegacyRegistrationRequired", "NotSpecified": "NotSpecified", "RegistrationFree": "RegistrationFree", "TenantOnly": "TenantOnly"},
+            help="The provider type. Provider type options are: AuthorizationFree, External, Hidden, Internal, LegacyRegistrationRequired, NotSpecified, RegistrationFree, TenantOnly. Select multiple with comma separated string."
         )
         _args_schema.provider_version = AAZStrArg(
             options=["--provider-version"],
@@ -608,8 +607,12 @@ class Create(AAZCommand):
         provider_hub_metadata.regional_async_operation_resource_type_name = AAZStrArg(
             options=["regional-async-operation-resource-type-name"],
         )
-        provider_hub_metadata.third_party_provider_authorization = AAZObjectArg(
-            options=["third-party-provider-authorization"],
+        provider_hub_metadata.lighthouse_authorizations = AAZListArg(
+            options=["authorizations", "lighthouse-auth", "lighthouse-authorizations"],
+            help="The lighthouse authorizations.",
+        )
+        provider_hub_metadata.managed_by_tenant_id = AAZStrArg(
+            options=["managed-by-tenant-id"],
         )
 
         providerhub_metadata_authentication = cls._args_schema.provider_hub_metadata.providerhub_metadata_authentication
@@ -625,18 +628,10 @@ class Create(AAZCommand):
         providerhub_metadata_authorizations.Element = AAZObjectArg()
         cls._build_args_resource_provider_authorization_create(providerhub_metadata_authorizations.Element)
 
-        third_party_provider_authorization = cls._args_schema.provider_hub_metadata.third_party_provider_authorization
-        third_party_provider_authorization.authorizations = AAZListArg(
-            options=["authorizations"],
-        )
-        third_party_provider_authorization.managed_by_tenant_id = AAZStrArg(
-            options=["managed-by-tenant-id"],
-        )
+        lighthouse_authorizations = cls._args_schema.provider_hub_metadata.lighthouse_authorizations
+        lighthouse_authorizations.Element = AAZObjectArg()
 
-        authorizations = cls._args_schema.provider_hub_metadata.third_party_provider_authorization.authorizations
-        authorizations.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_hub_metadata.third_party_provider_authorization.authorizations.Element
+        _element = cls._args_schema.provider_hub_metadata.lighthouse_authorizations.Element
         _element.principal_id = AAZStrArg(
             options=["principal-id"],
             required=True,
@@ -1322,7 +1317,7 @@ class Create(AAZCommand):
                 provider_hub_metadata.set_prop("providerAuthentication", AAZObjectType, ".providerhub_metadata_authentication")
                 provider_hub_metadata.set_prop("providerAuthorizations", AAZListType, ".providerhub_metadata_authorizations")
                 provider_hub_metadata.set_prop("regionalAsyncOperationResourceTypeName", AAZStrType, ".regional_async_operation_resource_type_name")
-                provider_hub_metadata.set_prop("thirdPartyProviderAuthorization", AAZObjectType, ".third_party_provider_authorization")
+                provider_hub_metadata.set_prop("thirdPartyProviderAuthorization", AAZObjectType)
 
             provider_authentication = _builder.get(".properties.providerHubMetadata.providerAuthentication")
             if provider_authentication is not None:
@@ -1338,7 +1333,7 @@ class Create(AAZCommand):
 
             third_party_provider_authorization = _builder.get(".properties.providerHubMetadata.thirdPartyProviderAuthorization")
             if third_party_provider_authorization is not None:
-                third_party_provider_authorization.set_prop("authorizations", AAZListType, ".authorizations")
+                third_party_provider_authorization.set_prop("authorizations", AAZListType, ".lighthouse_authorizations")
                 third_party_provider_authorization.set_prop("managedByTenantId", AAZStrType, ".managed_by_tenant_id")
 
             authorizations = _builder.get(".properties.providerHubMetadata.thirdPartyProviderAuthorization.authorizations")
