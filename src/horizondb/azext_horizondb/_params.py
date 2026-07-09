@@ -95,4 +95,43 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
         with self.argument_context('horizondb delete') as c:
             c.argument('yes', arg_type=yes_arg_type)
 
+        # Firewall rule params
+        firewall_rule_name_arg_type = CLIArgumentType(
+            options_list=['--rule-name'],
+            help='Name of the firewall rule.')
+
+        pool_name_arg_type = CLIArgumentType(
+            options_list=['--pool-name'],
+            default='default',
+            help='Name of the HorizonDB pool. Defaults to "default".')
+
+        start_ip_address_arg_type = CLIArgumentType(
+            options_list=['--start-ip-address'],
+            help='The start IP address of the firewall rule (IPv4).')
+
+        end_ip_address_arg_type = CLIArgumentType(
+            options_list=['--end-ip-address'],
+            help='The end IP address of the firewall rule (IPv4).')
+
+        rule_description_arg_type = CLIArgumentType(
+            options_list=['--rule-description'],
+            help='The description of the firewall rule.')
+
+        with self.argument_context('horizondb firewall-rule') as c:
+            c.argument('firewall_rule_name', arg_type=firewall_rule_name_arg_type)
+            c.argument('pool_name', arg_type=pool_name_arg_type)
+
+        with self.argument_context('horizondb firewall-rule create') as c:
+            c.argument('start_ip_address', arg_type=start_ip_address_arg_type)
+            c.argument('end_ip_address', arg_type=end_ip_address_arg_type)
+            c.argument('rule_description', arg_type=rule_description_arg_type)
+
+        with self.argument_context('horizondb firewall-rule update') as c:
+            c.argument('start_ip_address', arg_type=start_ip_address_arg_type)
+            c.argument('end_ip_address', arg_type=end_ip_address_arg_type)
+            c.argument('rule_description', arg_type=rule_description_arg_type)
+
+        with self.argument_context('horizondb firewall-rule delete') as c:
+            c.argument('yes', arg_type=yes_arg_type)
+
     _horizondb_params()
