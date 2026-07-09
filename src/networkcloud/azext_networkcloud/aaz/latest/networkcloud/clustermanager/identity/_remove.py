@@ -16,20 +16,24 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
+
+    :example: Remove system managed identity from a cluster manager
+        az networkcloud clustermanager identity remove --cluster-manager-name "clusterManagerName" --resource-group "resourceGroupName" --subscription "subscriptionName" --system-assigned
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-07-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-05-01-preview", "identity"],
         ]
     }
+
+    AZ_SUPPORT_NO_WAIT = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self.SubresourceSelector(ctx=self.ctx, name="subresource")
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -62,18 +66,18 @@ class Remove(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "ClusterManagerUpdateParameters.identity"
+        # define Arg Group "ClusterManagerParameters.identity"
 
         _args_schema = cls._args_schema
         _args_schema.mi_system_assigned = AAZStrArg(
             options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="ClusterManagerUpdateParameters.identity",
+            arg_group="ClusterManagerParameters.identity",
             help="Set the system managed identity.",
             blank="True",
         )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
-            arg_group="ClusterManagerUpdateParameters.identity",
+            arg_group="ClusterManagerParameters.identity",
             help="Set the user managed identities.",
             blank=[],
         )
@@ -85,10 +89,10 @@ class Remove(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         self.ClusterManagersGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.selectors.subresource.get())
+        self.pre_instance_update(self.ctx.selectors.subresource.required())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.selectors.subresource.get())
-        self.ClusterManagersUpdate(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.selectors.subresource.required())
+        yield self.ClusterManagersCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -108,7 +112,7 @@ class Remove(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
 
     class SubresourceSelector(AAZJsonSelector):
@@ -170,7 +174,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -205,14 +209,30 @@ class Remove(AAZCommand):
 
             return cls._schema_on_200
 
-    class ClusterManagersUpdate(AAZHttpOperation):
+    class ClusterManagersCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -225,7 +245,7 @@ class Remove(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -253,7 +273,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -279,33 +299,37 @@ class Remove(AAZCommand):
 
         @property
         def content(self):
-            identity = self.serialize_content(self.ctx.selectors.subresource.required())
-            return {"identity": identity}
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=self.ctx.vars.instance,
+            )
 
-        def on_200(self, session):
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
-            _RemoveHelper._build_schema_cluster_manager_read(cls._schema_on_200)
+            cls._schema_on_200_201 = AAZObjectType()
+            _RemoveHelper._build_schema_cluster_manager_read(cls._schema_on_200_201)
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.selectors.subresource.get())
+            self._update_instance(self.ctx.selectors.subresource.required())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
