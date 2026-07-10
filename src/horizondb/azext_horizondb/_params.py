@@ -72,7 +72,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         parameter_group_arg_type = CLIArgumentType(
             options_list=['--parameter-group'],
-            help='The resource ID of the parameter group.')
+            help='The resource identifier of the parameter group.')
 
         parameter_group_name_arg_type = CLIArgumentType(
             metavar='NAME',
