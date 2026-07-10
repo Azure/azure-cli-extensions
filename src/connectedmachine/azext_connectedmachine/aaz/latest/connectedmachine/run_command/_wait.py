@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2025-09-16-preview"],
         ]
     }
 
@@ -46,7 +46,9 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
+                max_length=54,
+                min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -58,7 +60,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         return cls._args_schema
@@ -132,7 +134,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }
@@ -193,7 +195,7 @@ class Wait(AAZWaitCommand):
             properties.error_blob_managed_identity = AAZObjectType(
                 serialized_name="errorBlobManagedIdentity",
             )
-            _WaitHelper._build_schema_run_command_managed_identity_read(properties.error_blob_managed_identity)
+            _WaitHelper._build_schema_runcommandmanagedidentity_read(properties.error_blob_managed_identity)
             properties.error_blob_uri = AAZStrType(
                 serialized_name="errorBlobUri",
             )
@@ -204,7 +206,7 @@ class Wait(AAZWaitCommand):
             properties.output_blob_managed_identity = AAZObjectType(
                 serialized_name="outputBlobManagedIdentity",
             )
-            _WaitHelper._build_schema_run_command_managed_identity_read(properties.output_blob_managed_identity)
+            _WaitHelper._build_schema_runcommandmanagedidentity_read(properties.output_blob_managed_identity)
             properties.output_blob_uri = AAZStrType(
                 serialized_name="outputBlobUri",
             )
@@ -218,7 +220,6 @@ class Wait(AAZWaitCommand):
             )
             properties.run_as_password = AAZStrType(
                 serialized_name="runAsPassword",
-                flags={"secret": True},
             )
             properties.run_as_user = AAZStrType(
                 serialized_name="runAsUser",
@@ -262,11 +263,11 @@ class Wait(AAZWaitCommand):
 
             parameters = cls._schema_on_200.properties.parameters
             parameters.Element = AAZObjectType()
-            _WaitHelper._build_schema_run_command_input_parameter_read(parameters.Element)
+            _WaitHelper._build_schema_runcommandinputparameter_read(parameters.Element)
 
             protected_parameters = cls._schema_on_200.properties.protected_parameters
             protected_parameters.Element = AAZObjectType()
-            _WaitHelper._build_schema_run_command_input_parameter_read(protected_parameters.Element)
+            _WaitHelper._build_schema_runcommandinputparameter_read(protected_parameters.Element)
 
             source = cls._schema_on_200.properties.source
             source.command_id = AAZStrType(
@@ -279,7 +280,7 @@ class Wait(AAZWaitCommand):
             source.script_uri_managed_identity = AAZObjectType(
                 serialized_name="scriptUriManagedIdentity",
             )
-            _WaitHelper._build_schema_run_command_managed_identity_read(source.script_uri_managed_identity)
+            _WaitHelper._build_schema_runcommandmanagedidentity_read(source.script_uri_managed_identity)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -310,49 +311,49 @@ class Wait(AAZWaitCommand):
 class _WaitHelper:
     """Helper class for Wait"""
 
-    _schema_run_command_input_parameter_read = None
+    _schema_runcommandinputparameter_read = None
 
     @classmethod
-    def _build_schema_run_command_input_parameter_read(cls, _schema):
-        if cls._schema_run_command_input_parameter_read is not None:
-            _schema.name = cls._schema_run_command_input_parameter_read.name
-            _schema.value = cls._schema_run_command_input_parameter_read.value
+    def _build_schema_runcommandinputparameter_read(cls, _schema):
+        if cls._schema_runcommandinputparameter_read is not None:
+            _schema.name = cls._schema_runcommandinputparameter_read.name
+            _schema.value = cls._schema_runcommandinputparameter_read.value
             return
 
-        cls._schema_run_command_input_parameter_read = _schema_run_command_input_parameter_read = AAZObjectType()
+        cls._schema_runcommandinputparameter_read = _schema_runcommandinputparameter_read = AAZObjectType()
 
-        run_command_input_parameter_read = _schema_run_command_input_parameter_read
-        run_command_input_parameter_read.name = AAZStrType(
+        runcommandinputparameter_read = _schema_runcommandinputparameter_read
+        runcommandinputparameter_read.name = AAZStrType(
             flags={"required": True},
         )
-        run_command_input_parameter_read.value = AAZStrType(
+        runcommandinputparameter_read.value = AAZStrType(
             flags={"required": True},
         )
 
-        _schema.name = cls._schema_run_command_input_parameter_read.name
-        _schema.value = cls._schema_run_command_input_parameter_read.value
+        _schema.name = cls._schema_runcommandinputparameter_read.name
+        _schema.value = cls._schema_runcommandinputparameter_read.value
 
-    _schema_run_command_managed_identity_read = None
+    _schema_runcommandmanagedidentity_read = None
 
     @classmethod
-    def _build_schema_run_command_managed_identity_read(cls, _schema):
-        if cls._schema_run_command_managed_identity_read is not None:
-            _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
-            _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
+    def _build_schema_runcommandmanagedidentity_read(cls, _schema):
+        if cls._schema_runcommandmanagedidentity_read is not None:
+            _schema.client_id = cls._schema_runcommandmanagedidentity_read.client_id
+            _schema.object_id = cls._schema_runcommandmanagedidentity_read.object_id
             return
 
-        cls._schema_run_command_managed_identity_read = _schema_run_command_managed_identity_read = AAZObjectType()
+        cls._schema_runcommandmanagedidentity_read = _schema_runcommandmanagedidentity_read = AAZObjectType()
 
-        run_command_managed_identity_read = _schema_run_command_managed_identity_read
-        run_command_managed_identity_read.client_id = AAZStrType(
+        runcommandmanagedidentity_read = _schema_runcommandmanagedidentity_read
+        runcommandmanagedidentity_read.client_id = AAZStrType(
             serialized_name="clientId",
         )
-        run_command_managed_identity_read.object_id = AAZStrType(
+        runcommandmanagedidentity_read.object_id = AAZStrType(
             serialized_name="objectId",
         )
 
-        _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
-        _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
+        _schema.client_id = cls._schema_runcommandmanagedidentity_read.client_id
+        _schema.object_id = cls._schema_runcommandmanagedidentity_read.object_id
 
 
 __all__ = ["Wait"]

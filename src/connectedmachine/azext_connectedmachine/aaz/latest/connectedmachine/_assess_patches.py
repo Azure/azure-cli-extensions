@@ -22,9 +22,9 @@ class AssessPatches(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/assesspatches", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/assesspatches", "2025-09-16-preview"],
         ]
     }
 
@@ -137,7 +137,7 @@ class AssessPatches(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }
@@ -181,7 +181,7 @@ class AssessPatches(AAZCommand):
                 serialized_name="errorDetails",
                 flags={"read_only": True},
             )
-            _AssessPatchesHelper._build_schema_error_detail_read(_schema_on_200.error_details)
+            _AssessPatchesHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_schema_on_200.error_details)
             _schema_on_200.last_modified_date_time = AAZStrType(
                 serialized_name="lastModifiedDateTime",
                 flags={"read_only": True},
@@ -248,62 +248,60 @@ class AssessPatches(AAZCommand):
 class _AssessPatchesHelper:
     """Helper class for AssessPatches"""
 
-    _schema_error_detail_read = None
+    _schema_azure_resourcemanager_commontypes_errordetail_read = None
 
     @classmethod
-    def _build_schema_error_detail_read(cls, _schema):
-        if cls._schema_error_detail_read is not None:
-            _schema.additional_info = cls._schema_error_detail_read.additional_info
-            _schema.code = cls._schema_error_detail_read.code
-            _schema.details = cls._schema_error_detail_read.details
-            _schema.message = cls._schema_error_detail_read.message
-            _schema.target = cls._schema_error_detail_read.target
+    def _build_schema_azure_resourcemanager_commontypes_errordetail_read(cls, _schema):
+        if cls._schema_azure_resourcemanager_commontypes_errordetail_read is not None:
+            _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+            _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
+            _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
+            _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
+            _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+        cls._schema_azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        error_detail_read = _schema_error_detail_read
-        error_detail_read.additional_info = AAZListType(
+        azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read
+        azure_resourcemanager_commontypes_errordetail_read.additional_info = AAZListType(
             serialized_name="additionalInfo",
             flags={"read_only": True},
         )
-        error_detail_read.code = AAZStrType(
+        azure_resourcemanager_commontypes_errordetail_read.code = AAZStrType(
             flags={"read_only": True},
         )
-        error_detail_read.details = AAZListType(
+        azure_resourcemanager_commontypes_errordetail_read.details = AAZListType(
             flags={"read_only": True},
         )
-        error_detail_read.message = AAZStrType(
+        azure_resourcemanager_commontypes_errordetail_read.message = AAZStrType(
             flags={"read_only": True},
         )
-        error_detail_read.target = AAZStrType(
+        azure_resourcemanager_commontypes_errordetail_read.target = AAZStrType(
             flags={"read_only": True},
         )
 
-        additional_info = _schema_error_detail_read.additional_info
+        additional_info = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
         additional_info.Element = AAZObjectType()
 
-        _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info.Element
+        _element.info = AAZAnyType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
-        cls._build_schema_error_detail_read(details.Element)
+        details = _schema_azure_resourcemanager_commontypes_errordetail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_azure_resourcemanager_commontypes_errordetail_read(details.Element)
 
-        _schema.additional_info = cls._schema_error_detail_read.additional_info
-        _schema.code = cls._schema_error_detail_read.code
-        _schema.details = cls._schema_error_detail_read.details
-        _schema.message = cls._schema_error_detail_read.message
-        _schema.target = cls._schema_error_detail_read.target
+        _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+        _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
+        _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
+        _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
+        _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
 
 
 __all__ = ["AssessPatches"]

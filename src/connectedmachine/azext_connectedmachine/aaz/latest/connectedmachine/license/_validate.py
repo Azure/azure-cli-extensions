@@ -12,26 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine license show",
+    "connectedmachine license validate",
 )
-class Show(AAZCommand):
-    """Get information about the view of a license.
-
-    :example: Sample command for license show
-        az connectedmachine license show --resource-group myResourceGroup --license-name licenseName --subscription mySubscription
+class Validate(AAZCommand):
+    """The operation to validate a license.
     """
 
     _aaz_info = {
         "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2025-09-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/validatelicense", "2025-09-16-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -43,24 +41,91 @@ class Show(AAZCommand):
 
         # define Arg Group ""
 
+        # define Arg Group "Body"
+
         _args_schema = cls._args_schema
-        _args_schema.license_name = AAZStrArg(
-            options=["-n", "--name", "--license-name"],
-            help="The name of the license.",
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
             required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\\.]+",
-            ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.license_details = AAZObjectArg(
+            options=["--license-details"],
+            arg_group="Properties",
+            help="Describes the properties of a License.",
+        )
+        _args_schema.license_type = AAZStrArg(
+            options=["--license-type"],
+            arg_group="Properties",
+            help="The type of the license resource.",
+            enum={"ESU": "ESU"},
+        )
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            arg_group="Properties",
+            help="Describes the tenant id.",
+        )
+
+        license_details = cls._args_schema.license_details
+        license_details.edition = AAZStrArg(
+            options=["edition"],
+            help="Describes the edition of the license. The values are either Standard or Datacenter.",
+            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
+        )
+        license_details.processors = AAZIntArg(
+            options=["processors"],
+            help="Describes the number of processors.",
+        )
+        license_details.state = AAZStrArg(
+            options=["state"],
+            help="Describes the state of the license.",
+            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
+        )
+        license_details.target = AAZStrArg(
+            options=["target"],
+            help="Describes the license target server.",
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2"},
+        )
+        license_details.type = AAZStrArg(
+            options=["type"],
+            help="Describes the license core type (pCore or vCore).",
+            enum={"pCore": "pCore", "vCore": "vCore"},
+        )
+        license_details.volume_license_details = AAZListArg(
+            options=["volume-license-details"],
+            help="A list of volume license details.",
+        )
+
+        volume_license_details = cls._args_schema.license_details.volume_license_details
+        volume_license_details.Element = AAZObjectArg()
+
+        _element = cls._args_schema.license_details.volume_license_details.Element
+        _element.invoice_id = AAZStrArg(
+            options=["invoice-id"],
+            help="The invoice id for the volume license.",
+        )
+        _element.program_year = AAZStrArg(
+            options=["program-year"],
+            help="Describes the program year the volume license is for.",
+            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LicensesGet(ctx=self.ctx)()
+        yield self.LicensesOperationGroupValidateLicense(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,27 +140,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LicensesGet(AAZHttpOperation):
+    class LicensesOperationGroupValidateLicense(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/validateLicense",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -104,14 +185,6 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "licenseName", self.ctx.args.license_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -133,10 +206,54 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("licenseDetails", AAZObjectType, ".license_details")
+                properties.set_prop("licenseType", AAZStrType, ".license_type")
+                properties.set_prop("tenantId", AAZStrType, ".tenant_id")
+
+            license_details = _builder.get(".properties.licenseDetails")
+            if license_details is not None:
+                license_details.set_prop("edition", AAZStrType, ".edition")
+                license_details.set_prop("processors", AAZIntType, ".processors")
+                license_details.set_prop("state", AAZStrType, ".state")
+                license_details.set_prop("target", AAZStrType, ".target")
+                license_details.set_prop("type", AAZStrType, ".type")
+                license_details.set_prop("volumeLicenseDetails", AAZListType, ".volume_license_details")
+
+            volume_license_details = _builder.get(".properties.licenseDetails.volumeLicenseDetails")
+            if volume_license_details is not None:
+                volume_license_details.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.licenseDetails.volumeLicenseDetails[]")
+            if _elements is not None:
+                _elements.set_prop("invoiceId", AAZStrType, ".invoice_id")
+                _elements.set_prop("programYear", AAZStrType, ".program_year")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -247,8 +364,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ValidateHelper:
+    """Helper class for Validate"""
 
 
-__all__ = ["Show"]
+__all__ = ["Validate"]

@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2025-09-16-preview"],
         ]
     }
 
@@ -51,6 +51,9 @@ class Delete(AAZCommand):
             help="The name of the private endpoint connection.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -61,7 +64,7 @@ class Delete(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         return cls._args_schema
@@ -91,7 +94,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -100,7 +103,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -109,7 +112,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -156,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2025-09-16-preview"],
         ]
     }
 
@@ -53,14 +53,14 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PrivateLinkScopesGet(ctx=self.ctx)()
+        self.HybridComputePrivateLinkScopesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +75,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PrivateLinkScopesGet(AAZHttpOperation):
+    class HybridComputePrivateLinkScopesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }
@@ -191,6 +191,9 @@ class Show(AAZCommand):
             properties.public_network_access = AAZStrType(
                 serialized_name="publicNetworkAccess",
             )
+            properties.service_extensions = AAZListType(
+                serialized_name="serviceExtensions",
+            )
 
             private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
             private_endpoint_connections.Element = AAZObjectType()
@@ -239,6 +242,17 @@ class Show(AAZCommand):
             )
             private_link_service_connection_state.status = AAZStrType(
                 flags={"required": True},
+            )
+
+            service_extensions = cls._schema_on_200.properties.service_extensions
+            service_extensions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.service_extensions.Element
+            _element.service_extension_public_network_access = AAZStrType(
+                serialized_name="serviceExtensionPublicNetworkAccess",
+            )
+            _element.service_extension_type = AAZStrType(
+                serialized_name="serviceExtensionType",
             )
 
             system_data = cls._schema_on_200.system_data

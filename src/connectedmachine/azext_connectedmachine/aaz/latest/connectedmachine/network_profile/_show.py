@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine license show",
+    "connectedmachine network-profile show",
 )
 class Show(AAZCommand):
-    """Get information about the view of a license.
-
-    :example: Sample command for license show
-        az connectedmachine license show --resource-group myResourceGroup --license-name licenseName --subscription mySubscription
+    """Get operation to get network information of hybrid machine
     """
 
     _aaz_info = {
         "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2025-09-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/networkprofile", "2025-09-16-preview"],
         ]
     }
 
@@ -44,13 +41,15 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.license_name = AAZStrArg(
-            options=["-n", "--name", "--license-name"],
-            help="The name of the license.",
+        _args_schema.machine_name = AAZStrArg(
+            options=["--machine-name"],
+            help="The name of the hybrid machine.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\\.]+",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
+                max_length=54,
+                min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -60,7 +59,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LicensesGet(ctx=self.ctx)()
+        self.MachinesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +74,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LicensesGet(AAZHttpOperation):
+    class MachinesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,7 +88,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/networkProfile",
                 **self.url_parameters
             )
 
@@ -105,7 +104,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "licenseName", self.ctx.args.license_name,
+                    "machineName", self.ctx.args.machine_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,93 +155,41 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200.network_interfaces = AAZListType(
+                serialized_name="networkInterfaces",
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.license_details = AAZObjectType(
-                serialized_name="licenseDetails",
-            )
-            properties.license_type = AAZStrType(
-                serialized_name="licenseType",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            network_interfaces = cls._schema_on_200.network_interfaces
+            network_interfaces.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.network_interfaces.Element
+            _element.id = AAZStrType()
+            _element.ip_addresses = AAZListType(
+                serialized_name="ipAddresses",
                 flags={"read_only": True},
             )
-            properties.tenant_id = AAZStrType(
-                serialized_name="tenantId",
+            _element.mac_address = AAZStrType(
+                serialized_name="macAddress",
             )
+            _element.name = AAZStrType()
 
-            license_details = cls._schema_on_200.properties.license_details
-            license_details.assigned_licenses = AAZIntType(
-                serialized_name="assignedLicenses",
+            ip_addresses = cls._schema_on_200.network_interfaces.Element.ip_addresses
+            ip_addresses.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.network_interfaces.Element.ip_addresses.Element
+            _element.address = AAZStrType()
+            _element.ip_address_version = AAZStrType(
+                serialized_name="ipAddressVersion",
+            )
+            _element.subnet = AAZObjectType(
                 flags={"read_only": True},
             )
-            license_details.edition = AAZStrType()
-            license_details.immutable_id = AAZStrType(
-                serialized_name="immutableId",
-                flags={"read_only": True},
-            )
-            license_details.processors = AAZIntType()
-            license_details.state = AAZStrType()
-            license_details.target = AAZStrType()
-            license_details.type = AAZStrType()
-            license_details.volume_license_details = AAZListType(
-                serialized_name="volumeLicenseDetails",
-            )
 
-            volume_license_details = cls._schema_on_200.properties.license_details.volume_license_details
-            volume_license_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.license_details.volume_license_details.Element
-            _element.invoice_id = AAZStrType(
-                serialized_name="invoiceId",
+            subnet = cls._schema_on_200.network_interfaces.Element.ip_addresses.Element.subnet
+            subnet.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
             )
-            _element.program_year = AAZStrType(
-                serialized_name="programYear",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

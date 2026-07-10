@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension show",
 )
 class Show(AAZCommand):
-    """Get operation to get the extension.
+    """Show an extension of a Non-Azure machine.
 
-    :example: sample command for extension show
-        az connectedmachine extension show --resource-group myResourceGroup --machine-name myMachine --extension-name CustomScriptExtension
+    :example: Sample command for extension show
+        az connectedmachine extension show --name CustomScriptExtension --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2025-09-16-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Show(AAZCommand):
             help="The name of the machine extension.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
@@ -56,7 +59,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -135,7 +138,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }
@@ -200,15 +203,17 @@ class Show(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            properties.protected_settings = AAZFreeFormDictType(
+            properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
+            _ShowHelper._build_schema_record<unknown>_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
+            properties.settings = AAZDictType()
+            _ShowHelper._build_schema_record<unknown>_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -259,6 +264,21 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_record<unknown>_read = None
+
+    @classmethod
+    def _build_schema_record<unknown>_read(cls, _schema):
+        if cls._schema_record<unknown>_read is not None:
+            _schema.Element = cls._schema_record<unknown>_read.Element
+            return
+
+        cls._schema_record<unknown>_read = _schema_record<unknown>_read = AAZDictType()
+
+        record<unknown>_read = _schema_record<unknown>_read
+        record<unknown>_read.Element = AAZAnyType()
+
+        _schema.Element = cls._schema_record<unknown>_read.Element
 
 
 __all__ = ["Show"]

@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete operation to delete the extension.
+    """Delete an extension.
 
-    :example: sample command for extension delete
-        az connectedmachine extension delete --resource-group myResourceGroup --machine-name myMachine --extension-name MMA
+    :example: Sample command for extension delete
+        az connectedmachine extension delete --name myName --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2025-09-16-preview"],
         ]
     }
 
@@ -51,6 +51,9 @@ class Delete(AAZCommand):
             help="The name of the machine extension.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
@@ -58,7 +61,7 @@ class Delete(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -93,7 +96,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -102,7 +105,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -111,7 +114,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -158,7 +161,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}", "2025-09-16-preview"],
         ]
     }
 
@@ -62,7 +62,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         return cls._args_schema
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }
@@ -177,6 +177,10 @@ class Show(AAZCommand):
             )
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -234,7 +238,7 @@ class Show(AAZCommand):
 
             access_rules = cls._schema_on_200.properties.profile.access_rules
             access_rules.Element = AAZObjectType()
-            _ShowHelper._build_schema_access_rule_read(access_rules.Element)
+            _ShowHelper._build_schema_accessrule_read(access_rules.Element)
 
             enabled_log_categories = cls._schema_on_200.properties.profile.enabled_log_categories
             enabled_log_categories.Element = AAZStrType()
@@ -272,7 +276,7 @@ class Show(AAZCommand):
 
             suggested_access_rules = cls._schema_on_200.properties.provisioning_issues.Element.properties.suggested_access_rules
             suggested_access_rules.Element = AAZObjectType()
-            _ShowHelper._build_schema_access_rule_read(suggested_access_rules.Element)
+            _ShowHelper._build_schema_accessrule_read(suggested_access_rules.Element)
 
             suggested_resource_ids = cls._schema_on_200.properties.provisioning_issues.Element.properties.suggested_resource_ids
             suggested_resource_ids.Element = AAZStrType()
@@ -286,32 +290,52 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
             return cls._schema_on_200
 
 
 class _ShowHelper:
     """Helper class for Show"""
 
-    _schema_access_rule_read = None
+    _schema_accessrule_read = None
 
     @classmethod
-    def _build_schema_access_rule_read(cls, _schema):
-        if cls._schema_access_rule_read is not None:
-            _schema.name = cls._schema_access_rule_read.name
-            _schema.properties = cls._schema_access_rule_read.properties
+    def _build_schema_accessrule_read(cls, _schema):
+        if cls._schema_accessrule_read is not None:
+            _schema.name = cls._schema_accessrule_read.name
+            _schema.properties = cls._schema_accessrule_read.properties
             return
 
-        cls._schema_access_rule_read = _schema_access_rule_read = AAZObjectType()
+        cls._schema_accessrule_read = _schema_accessrule_read = AAZObjectType()
 
-        access_rule_read = _schema_access_rule_read
-        access_rule_read.name = AAZStrType(
+        accessrule_read = _schema_accessrule_read
+        accessrule_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        access_rule_read.properties = AAZObjectType(
+        accessrule_read.properties = AAZObjectType(
             flags={"client_flatten": True, "read_only": True},
         )
 
-        properties = _schema_access_rule_read.properties
+        properties = _schema_accessrule_read.properties
         properties.address_prefixes = AAZListType(
             serialized_name="addressPrefixes",
             flags={"read_only": True},
@@ -320,11 +344,11 @@ class _ShowHelper:
             flags={"read_only": True},
         )
 
-        address_prefixes = _schema_access_rule_read.properties.address_prefixes
+        address_prefixes = _schema_accessrule_read.properties.address_prefixes
         address_prefixes.Element = AAZStrType()
 
-        _schema.name = cls._schema_access_rule_read.name
-        _schema.properties = cls._schema_access_rule_read.properties
+        _schema.name = cls._schema_accessrule_read.name
+        _schema.properties = cls._schema_accessrule_read.properties
 
 
 __all__ = ["Show"]

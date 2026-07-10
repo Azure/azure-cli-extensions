@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension image list",
+    "connectedmachine extension publisher list",
 )
 class List(AAZCommand):
-    """List all Extension versions based on location, publisher, extensionType.
-
-    :example: Sample command for extension image list
-        az connectedmachine extension image list --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent --location eastus
+    """List all Extension publishers based on the location
     """
 
     _aaz_info = {
         "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2025-09-16-preview"],
+            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers", "2025-09-16-preview"],
         ]
     }
 
@@ -45,24 +42,14 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.extension_type = AAZStrArg(
-            options=["--type", "--extension-type"],
-            help="The extensionType of the Extension being received.",
-            required=True,
-        )
         _args_schema.location = AAZResourceLocationArg(
-            required=True,
-        )
-        _args_schema.publisher = AAZStrArg(
-            options=["-p", "--publisher"],
-            help="The publisher of the Extension being received.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionValueV2sList(ctx=self.ctx)()
+        self.ExtensionPublisherOperationGroupList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +65,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ExtensionValueV2sList(AAZHttpOperation):
+    class ExtensionPublisherOperationGroupList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +79,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.HybridCompute/locations/{location}/publishers/{publisher}/extensionTypes/{extensionType}/versions",
+                "/providers/Microsoft.HybridCompute/locations/{location}/publishers",
                 **self.url_parameters
             )
 
@@ -108,15 +95,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "extensionType", self.ctx.args.extension_type,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "location", self.ctx.args.location,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "publisher", self.ctx.args.publisher,
                     required=True,
                 ),
             }
@@ -170,75 +149,8 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.architecture = AAZListType(
-                flags={"read_only": True},
-            )
-            properties.extension_signature_uri = AAZStrType(
-                serialized_name="extensionSignatureUri",
-                flags={"read_only": True},
-            )
-            properties.extension_type = AAZStrType(
-                serialized_name="extensionType",
-                flags={"read_only": True},
-            )
-            properties.extension_uris = AAZListType(
-                serialized_name="extensionUris",
-                flags={"read_only": True},
-            )
-            properties.operating_system = AAZStrType(
-                serialized_name="operatingSystem",
-                flags={"read_only": True},
-            )
-            properties.publisher = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.version = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            architecture = cls._schema_on_200.value.Element.properties.architecture
-            architecture.Element = AAZStrType()
-
-            extension_uris = cls._schema_on_200.value.Element.properties.extension_uris
-            extension_uris.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _element.id = AAZStrType()
+            _element.name = AAZStrType()
 
             return cls._schema_on_200
 

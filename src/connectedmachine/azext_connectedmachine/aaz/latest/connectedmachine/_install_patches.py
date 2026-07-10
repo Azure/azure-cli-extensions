@@ -22,9 +22,9 @@ class InstallPatches(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-31-preview",
+        "version": "2025-09-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/installpatches", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/installpatches", "2025-09-16-preview"],
         ]
     }
 
@@ -55,30 +55,30 @@ class InstallPatches(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "InstallPatchesInput"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.linux_parameters = AAZObjectArg(
             options=["--linux-parameters"],
-            arg_group="InstallPatchesInput",
+            arg_group="Body",
             help="Input for InstallPatches on a Linux VM, as directly received by the API",
         )
-        _args_schema.maximum_duration = AAZStrArg(
+        _args_schema.maximum_duration = AAZDurationArg(
             options=["--maximum-duration"],
-            arg_group="InstallPatchesInput",
+            arg_group="Body",
             help="Specifies the maximum amount of time that the operation will run. It must be an ISO 8601-compliant duration string such as PT4H (4 hours)",
             required=True,
         )
         _args_schema.reboot_setting = AAZStrArg(
             options=["--reboot-setting"],
-            arg_group="InstallPatchesInput",
+            arg_group="Body",
             help="Defines when it is acceptable to reboot a VM during a software update operation.",
             required=True,
             enum={"Always": "Always", "IfRequired": "IfRequired", "Never": "Never"},
         )
         _args_schema.windows_parameters = AAZObjectArg(
             options=["--windows-parameters"],
-            arg_group="InstallPatchesInput",
+            arg_group="Body",
             help="Input for InstallPatches on a Windows VM, as directly received by the API",
         )
 
@@ -128,6 +128,14 @@ class InstallPatches(AAZCommand):
             options=["max-patch-publish-date"],
             help="This is used to install patches that were published on or before this given max published date.",
         )
+        windows_parameters.patch_name_masks_to_exclude = AAZListArg(
+            options=["patch-name-masks-to-exclude"],
+            help="This is used to exclude patches that match the given patch name masks. Alphanumeric strings and wildcard expressions consisting of * and ? are only supported as input values in the list. Null, empty and only whitespaces strings as inputs values are not supported.",
+        )
+        windows_parameters.patch_name_masks_to_include = AAZListArg(
+            options=["patch-name-masks-to-include"],
+            help="This is used to include patches that match the given patch name masks. Alphanumeric strings and wildcard expressions consisting of * and ? are only supported as input values in the list. Null, empty and only whitespaces strings as inputs values are not supported.",
+        )
 
         classifications_to_include = cls._args_schema.windows_parameters.classifications_to_include
         classifications_to_include.Element = AAZStrArg(
@@ -139,6 +147,12 @@ class InstallPatches(AAZCommand):
 
         kb_numbers_to_include = cls._args_schema.windows_parameters.kb_numbers_to_include
         kb_numbers_to_include.Element = AAZStrArg()
+
+        patch_name_masks_to_exclude = cls._args_schema.windows_parameters.patch_name_masks_to_exclude
+        patch_name_masks_to_exclude.Element = AAZStrArg()
+
+        patch_name_masks_to_include = cls._args_schema.windows_parameters.patch_name_masks_to_include
+        patch_name_masks_to_include.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -222,7 +236,7 @@ class InstallPatches(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-31-preview",
+                    "api-version", "2025-09-16-preview",
                     required=True,
                 ),
             }
@@ -277,6 +291,8 @@ class InstallPatches(AAZCommand):
                 windows_parameters.set_prop("kbNumbersToExclude", AAZListType, ".kb_numbers_to_exclude")
                 windows_parameters.set_prop("kbNumbersToInclude", AAZListType, ".kb_numbers_to_include")
                 windows_parameters.set_prop("maxPatchPublishDate", AAZStrType, ".max_patch_publish_date")
+                windows_parameters.set_prop("patchNameMasksToExclude", AAZListType, ".patch_name_masks_to_exclude")
+                windows_parameters.set_prop("patchNameMasksToInclude", AAZListType, ".patch_name_masks_to_include")
 
             classifications_to_include = _builder.get(".windowsParameters.classificationsToInclude")
             if classifications_to_include is not None:
@@ -289,6 +305,14 @@ class InstallPatches(AAZCommand):
             kb_numbers_to_include = _builder.get(".windowsParameters.kbNumbersToInclude")
             if kb_numbers_to_include is not None:
                 kb_numbers_to_include.set_elements(AAZStrType, ".")
+
+            patch_name_masks_to_exclude = _builder.get(".windowsParameters.patchNameMasksToExclude")
+            if patch_name_masks_to_exclude is not None:
+                patch_name_masks_to_exclude.set_elements(AAZStrType, ".")
+
+            patch_name_masks_to_include = _builder.get(".windowsParameters.patchNameMasksToInclude")
+            if patch_name_masks_to_include is not None:
+                patch_name_masks_to_include.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -314,7 +338,7 @@ class InstallPatches(AAZCommand):
                 serialized_name="errorDetails",
                 flags={"read_only": True},
             )
-            _InstallPatchesHelper._build_schema_error_detail_read(_schema_on_200.error_details)
+            _InstallPatchesHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_schema_on_200.error_details)
             _schema_on_200.excluded_patch_count = AAZIntType(
                 serialized_name="excludedPatchCount",
                 flags={"read_only": True},
@@ -377,62 +401,60 @@ class InstallPatches(AAZCommand):
 class _InstallPatchesHelper:
     """Helper class for InstallPatches"""
 
-    _schema_error_detail_read = None
+    _schema_azure_resourcemanager_commontypes_errordetail_read = None
 
     @classmethod
-    def _build_schema_error_detail_read(cls, _schema):
-        if cls._schema_error_detail_read is not None:
-            _schema.additional_info = cls._schema_error_detail_read.additional_info
-            _schema.code = cls._schema_error_detail_read.code
-            _schema.details = cls._schema_error_detail_read.details
-            _schema.message = cls._schema_error_detail_read.message
-            _schema.target = cls._schema_error_detail_read.target
+    def _build_schema_azure_resourcemanager_commontypes_errordetail_read(cls, _schema):
+        if cls._schema_azure_resourcemanager_commontypes_errordetail_read is not None:
+            _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+            _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
+            _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
+            _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
+            _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+        cls._schema_azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        error_detail_read = _schema_error_detail_read
-        error_detail_read.additional_info = AAZListType(
+        azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read
+        azure_resourcemanager_commontypes_errordetail_read.additional_info = AAZListType(
             serialized_name="additionalInfo",
             flags={"read_only": True},
         )
-        error_detail_read.code = AAZStrType(
+        azure_resourcemanager_commontypes_errordetail_read.code = AAZStrType(
             flags={"read_only": True},
         )
-        error_detail_read.details = AAZListType(
+        azure_resourcemanager_commontypes_errordetail_read.details = AAZListType(
             flags={"read_only": True},
         )
-        error_detail_read.message = AAZStrType(
+        azure_resourcemanager_commontypes_errordetail_read.message = AAZStrType(
             flags={"read_only": True},
         )
-        error_detail_read.target = AAZStrType(
+        azure_resourcemanager_commontypes_errordetail_read.target = AAZStrType(
             flags={"read_only": True},
         )
 
-        additional_info = _schema_error_detail_read.additional_info
+        additional_info = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
         additional_info.Element = AAZObjectType()
 
-        _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info.Element
+        _element.info = AAZAnyType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
-        cls._build_schema_error_detail_read(details.Element)
+        details = _schema_azure_resourcemanager_commontypes_errordetail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_azure_resourcemanager_commontypes_errordetail_read(details.Element)
 
-        _schema.additional_info = cls._schema_error_detail_read.additional_info
-        _schema.code = cls._schema_error_detail_read.code
-        _schema.details = cls._schema_error_detail_read.details
-        _schema.message = cls._schema_error_detail_read.message
-        _schema.target = cls._schema_error_detail_read.target
+        _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+        _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
+        _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
+        _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
+        _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
 
 
 __all__ = ["InstallPatches"]
