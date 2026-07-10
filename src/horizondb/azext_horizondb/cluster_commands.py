@@ -49,6 +49,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'horizondb_parameter_group_create', supports_no_wait=True)
         g.custom_command('delete', 'horizondb_parameter_group_delete', supports_no_wait=True)
         g.custom_command('list', 'horizondb_parameter_group_list')
+        g.custom_command('list-connections', 'horizondb_parameter_group_list_connections')
         g.show_command('show', 'get')
 
     with self.command_group('horizondb firewall-rule', firewall_rule_custom,

@@ -84,10 +84,10 @@ helps['horizondb parameter-group create'] = """
 type: command
 short-summary: Create a new Azure HorizonDB parameter group.
 examples:
-  - name: Create a HorizonDB parameter group with custom parameter values. Unspecified parameters inherit the default PostgreSQL values.
-    text: az horizondb parameter-group create --name examplegroup --resource-group exampleresourcegroup --location centralus --version 17 --parameters max_connections=200 shared_buffers=2048 work_mem=8192
-  - name: Create a HorizonDB parameter group that applies parameters immediately.
-    text: az horizondb parameter-group create --name examplegroup --resource-group exampleresourcegroup --location centralus --version 17 --parameters maintenance_work_mem=262144 --apply-immediately true --description "Tuned for faster maintenance"
+  - name: Create an Azure HorizonDB parameter group with custom parameter values. Unspecified parameters inherit the default PostgreSQL values.
+    text: az horizondb parameter-group create --name exampleparametergroup --resource-group exampleresourcegroup --location westus2 --version 17 --parameters max_connections=200 log_min_error_statement=error shared_buffers=2000
+  - name: Create an Azure HorizonDB parameter group that applies parameters immediately and includes a description.
+    text: az horizondb parameter-group create --name exampleparametergroup --resource-group exampleresourcegroup --location westus2 --version 17 --parameters max_connections=200 log_min_error_statement=error shared_buffers=2000 --apply-immediately true --description "Parameter group for high-throughput workloads"
 """
 
 
@@ -96,7 +96,7 @@ type: command
 short-summary: Delete an Azure HorizonDB parameter group.
 examples:
   - name: Delete an Azure HorizonDB parameter group.
-    text: az horizondb parameter-group delete --name examplegroup --resource-group exampleresourcegroup
+    text: az horizondb parameter-group delete --name exampleparametergroup --resource-group exampleresourcegroup
 """
 
 
@@ -105,7 +105,7 @@ type: command
 short-summary: Show details of an Azure HorizonDB parameter group.
 examples:
   - name: Show details of an Azure HorizonDB parameter group.
-    text: az horizondb parameter-group show --name examplegroup --resource-group exampleresourcegroup
+    text: az horizondb parameter-group show --name exampleparametergroup --resource-group exampleresourcegroup
 """
 
 
@@ -117,6 +117,15 @@ examples:
     text: az horizondb parameter-group list
   - name: List Azure HorizonDB parameter groups in a resource group.
     text: az horizondb parameter-group list --resource-group exampleresourcegroup
+"""
+
+
+helps['horizondb parameter-group list-connections'] = """
+type: command
+short-summary: List Azure HorizonDB clusters connected to a parameter group.
+examples:
+  - name: List Azure HorizonDB clusters connected to a parameter group.
+    text: az horizondb parameter-group list-connections --resource-group exampleresourcegroup --name exampleparametergroup
 """
 
 
