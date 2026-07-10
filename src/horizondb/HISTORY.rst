@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b5
++++++++
+* Add support for configuring public access on HorizonDB clusters through `az horizondb create --public-access` and `az horizondb update --public-access`. Supplying an IP address or range automatically creates a firewall rule.
+* Add the `az horizondb firewall-rule` command group (`create`, `show`, `list`, `update`, `delete`) to manage cluster firewall rules.
+
 1.0.0b4
 +++++++
 * Update validation checks for commands. Add short form arguments for user convenience.

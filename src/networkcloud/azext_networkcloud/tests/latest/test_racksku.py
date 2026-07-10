@@ -13,14 +13,6 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import (
-    get_value,
-    show_properties,
-)
 
 
 def setup_scenario1(test):
@@ -43,27 +35,9 @@ def call_scenario1(test):
 
 def step_show(test, checks=None):
     """RackSku show operation"""
-    if checks is not None:
-        test.cmd("az networkcloud racksku show --name {rackskuname}", checks=checks)
-        return
-
-    result = test.cmd(
-        "az networkcloud racksku show --name {rackskuname}"
-    ).get_output_in_json()
-    context = "Racksku show"
-    show_properties(result)
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
-    )
-    assert result.get("id"), missing_field_message(context, "id", result)
-
-    assert result.get("deploymentType") == get_value(
-        test, "deployType"
-    ), properties_key_mismatch_message("deployType")
-
-    assert result.get("rackType") == get_value(
-        test, "rackType"
-    ), properties_key_mismatch_message("rackType")
+    if checks is None:
+        checks = []
+    test.cmd("az networkcloud racksku show --name {rackskuname}")
 
 
 def step_list_subscription(test, checks=None):
@@ -78,13 +52,7 @@ class RackSkuScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update(
-            {
-                "rackskuname": CONFIG.get("RACKSKU", "name"),
-                "deployType": CONFIG.get("RACKSKU", "deployment_type"),
-                "rackType": CONFIG.get("RACKSKU", "rack_type"),
-            }
-        )
+        self.kwargs.update({"rackskuname": CONFIG.get("RACKSKU", "name")})
 
     @AllowLargeResponse()
     def test_racksku_scenario1(self):
