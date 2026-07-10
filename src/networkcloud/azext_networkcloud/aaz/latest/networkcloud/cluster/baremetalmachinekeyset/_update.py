@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -95,9 +95,6 @@ class Update(AAZCommand):
             options=["--expiration"],
             arg_group="Properties",
             help="The date and time after which the users in this key set will be removed from the bare metal machines.",
-            fmt=AAZDateTimeFormat(
-                protocol="iso",
-            ),
         )
         _args_schema.jump_hosts_allowed = AAZListArg(
             options=["--jump-hosts-allowed"],
@@ -235,7 +232,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
