@@ -19,12 +19,16 @@ helps['swiftlet virtual-machine'] = """
 
 helps['swiftlet virtual-machine list'] = """
     type: command
-    short-summary: "List all of the virtual machines in the specified subscription. Use the nextLink property in the \
-response to get the next page of virtual machines."
+    short-summary: "List all of the virtual machines in the specified resource group. Use the nextLink property in the \
+response to get the next page of virtual machines. And List all of the virtual machines in the specified subscription. \
+Use the nextLink property in the response to get the next page of virtual machines."
     examples:
       - name: List all virtual machines in a resource group.
         text: |-
                az swiftlet virtual-machine list --resource-group "myResourceGroup"
+      - name: List all virtual machines in a subscription.
+        text: |-
+               az swiftlet virtual-machine list
 """
 
 helps['swiftlet virtual-machine show'] = """
@@ -38,7 +42,7 @@ helps['swiftlet virtual-machine show'] = """
 
 helps['swiftlet virtual-machine create'] = """
     type: command
-    short-summary: "Create or update a virtual machine."
+    short-summary: "Create a virtual machine."
     parameters:
       - name: --ports
         short-summary: "The ports on which inbound traffic will be allowed."
@@ -52,20 +56,26 @@ port, a range (i.e. 50-60), or "*" to indicate all ports.
 
             Multiple actions can be specified by using more than one --ports argument.
     examples:
+      - name: Create a virtual machine from a snapshot.
+        text: |-
+               az swiftlet virtual-machine create --location "westus" --bundle-sku "Windows_1" --ports \
+port-range="3389" protocol="*" --snapshot-id "subscription/{subscription-id}/resourceGroups/myResourceGroup/providers/M\
+icrosoft.Swiftlet/virtualMachineSnapshots/myVmSnapshot" --tags key1="value1" key2="value2" --resource-group \
+"myResourceGroup" --vm-name "myVirtualMachine"
       - name: Create a virtual machine with password authentication.
         text: |-
-               az swiftlet virtual-machine create --location "westus" --password "{your-password}," --ports \
-port-range="3389" protocol="*" --startup-script "{inline startup script}" --swiftlet-bundle-sku "Windows_1" \
---swiftlet-image-id "windows-2019-datacenter" --username "SwiftletUser" --tags key1="value1" key2="value2" \
---resource-group "myResourceGroup" --vm-name "myVirtualMachine"
+               az swiftlet virtual-machine create --location "westus" --bundle-sku "Windows_1" --image-id \
+"windows-2019-datacenter" --password "{your-password}," --ports port-range="3389" protocol="*" --startup-script \
+"{inline startup script}" --username "SwiftletUser" --tags key1="value1" key2="value2" --resource-group \
+"myResourceGroup" --vm-name "myVirtualMachine"
       - name: Create a virtual machine with ssh authentication.
         text: |-
-               az swiftlet virtual-machine create --location "westus" --ports port-range="22" protocol="*" \
---ssh-public-key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeClRAk2ipUs/l5voIsDC5q9RI+YSRd1Bvd/O+axgY4WiBzG+4FwJWZm/mLLe5D\
-oOdHQwmU2FrKXZSW4w2sYE70KeWnrFViCOX5MTVvJgPE8ClugNl8RWth/tU849DvM9sT7vFgfVSHcAS2yDRyDlueii+8nF2ym8XWAPltFVCyLHRsyBp5YPq\
-K8JFYIa1eybKsY3hEAxRCA+/7bq8et+Gj3coOsuRmrehav7rE6N12Pb80I6ofa6SM5XNYq4Xk0iYNx7R3kdz0Jj9XgZYWjAHjJmT0gTRoOnt6upOuxK7xI/\
-ykWrllgpXrCPu3Ymz+c+ujaqcxDopnAl2lmf69/J1" --startup-script "{inline startup script}" --swiftlet-bundle-sku "Linux_1" \
---swiftlet-image-id "ubuntu-18.04-lts" --username "SwiftletUser" --tags key1="value1" key2="value2" --resource-group \
+               az swiftlet virtual-machine create --location "westus" --bundle-sku "Linux_1" --image-id \
+"ubuntu-18.04-lts" --ports port-range="22" protocol="*" --ssh-public-key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCeClRAk\
+2ipUs/l5voIsDC5q9RI+YSRd1Bvd/O+axgY4WiBzG+4FwJWZm/mLLe5DoOdHQwmU2FrKXZSW4w2sYE70KeWnrFViCOX5MTVvJgPE8ClugNl8RWth/tU849D\
+vM9sT7vFgfVSHcAS2yDRyDlueii+8nF2ym8XWAPltFVCyLHRsyBp5YPqK8JFYIa1eybKsY3hEAxRCA+/7bq8et+Gj3coOsuRmrehav7rE6N12Pb80I6ofa6\
+SM5XNYq4Xk0iYNx7R3kdz0Jj9XgZYWjAHjJmT0gTRoOnt6upOuxK7xI/ykWrllgpXrCPu3Ymz+c+ujaqcxDopnAl2lmf69/J1" --startup-script \
+"{inline startup script}" --username "SwiftletUser" --tags key1="value1" key2="value2" --resource-group \
 "myResourceGroup" --vm-name "myVirtualMachine"
 """
 
@@ -74,7 +84,7 @@ helps['swiftlet virtual-machine update'] = """
     short-summary: "Update a virtual machine."
     parameters:
       - name: --ports
-        short-summary: "Specifies the list of ports to be opened."
+        short-summary: "The ports on which inbound traffic will be allowed."
         long-summary: |
             Usage: --ports port-range=XX protocol=XX
 
@@ -85,7 +95,7 @@ port, a range (i.e. 50-60), or "*" to indicate all ports.
 
             Multiple actions can be specified by using more than one --ports argument.
     examples:
-      - name: Update tags of a virtual machine.
+      - name: Update tags and ports of a virtual machine.
         text: |-
                az swiftlet virtual-machine update --ports port-range="80" protocol="TCP" --ports port-range="50-60" \
 protocol="UDP" --tags key3="value3" --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
@@ -98,24 +108,6 @@ helps['swiftlet virtual-machine delete'] = """
       - name: Delete a virtual machine.
         text: |-
                az swiftlet virtual-machine delete --resource-group "myResourceGroup" --vm-name "myVirtualMachine"
-"""
-
-helps['swiftlet virtual-machine list-bundle'] = """
-    type: command
-    short-summary: "List all Swiftlet bundles available for the specified subscription and Azure location."
-    examples:
-      - name: List available Swiftlet bundles
-        text: |-
-               az swiftlet virtual-machine list-bundle --location "westus"
-"""
-
-helps['swiftlet virtual-machine list-image'] = """
-    type: command
-    short-summary: "List all Swiftlet images available for the specified subscription and Azure location."
-    examples:
-      - name: List available Swiftlet images
-        text: |-
-               az swiftlet virtual-machine list-image --location "westus"
 """
 
 helps['swiftlet virtual-machine start'] = """
@@ -152,4 +144,137 @@ helps['swiftlet virtual-machine wait'] = """
         text: |-
                az swiftlet virtual-machine wait --resource-group "myResourceGroup" --vm-name "myVirtualMachine" \
 --deleted
+"""
+
+helps['swiftlet virtual-machine-image'] = """
+    type: group
+    short-summary: swiftlet virtual-machine-image
+"""
+
+helps['swiftlet virtual-machine-image list'] = """
+    type: command
+    short-summary: "List all Swiftlet VM images available for the specified subscription and Azure location."
+    examples:
+      - name: List available Swiftlet VM images
+        text: |-
+               az swiftlet virtual-machine-image list --location "westus"
+"""
+
+helps['swiftlet virtual-machine-image show'] = """
+    type: command
+    short-summary: "Gets information about the virtual machine image."
+    examples:
+      - name: Get a virtual machine image.
+        text: |-
+               az swiftlet virtual-machine-image show --image-name "windows-2019-datacenter" --location "westus"
+"""
+
+helps['swiftlet virtual-machine-bundle'] = """
+    type: group
+    short-summary: swiftlet virtual-machine-bundle
+"""
+
+helps['swiftlet virtual-machine-bundle list'] = """
+    type: command
+    short-summary: "List all Swiftlet VM bundles available for the specified subscription and Azure location."
+    examples:
+      - name: List available Swiftlet VM bundles
+        text: |-
+               az swiftlet virtual-machine-bundle list --location "westus"
+"""
+
+helps['swiftlet virtual-machine-bundle show'] = """
+    type: command
+    short-summary: "Gets information about the virtual machine bundle."
+    examples:
+      - name: Get a virtual machine bundle.
+        text: |-
+               az swiftlet virtual-machine-bundle show --bundle-name "Windows_1" --location "westus"
+"""
+
+helps['swiftlet virtual-machine-snapshot'] = """
+    type: group
+    short-summary: swiftlet virtual-machine-snapshot
+"""
+
+helps['swiftlet virtual-machine-snapshot list'] = """
+    type: command
+    short-summary: "List all of the virtual machine snapshots available under the specified virtual machine. Use the \
+nextLink property in the response to get the next page of virtual machine snapshots. And List all of the virtual \
+machine snapshots in the specified resource group. Use the nextLink property in the response to get the next page of \
+virtual machine snapshots. And List all of the virtual machine snapshots in the specified subscription. Use the \
+nextLink property in the response to get the next page of virtual machines snapshots."
+    examples:
+      - name: List all virtual machine snapshots under a VM.
+        text: |-
+               az swiftlet virtual-machine-snapshot list --resource-group "myResourceGroup" --vm-name \
+"myVirtualMachine"
+      - name: List all virtual machine snapshots in a resource group.
+        text: |-
+               az swiftlet virtual-machine-snapshot list --resource-group "myResourceGroup"
+      - name: List all virtual machine snapshots in a subscription.
+        text: |-
+               az swiftlet virtual-machine-snapshot list
+"""
+
+helps['swiftlet virtual-machine-snapshot show'] = """
+    type: command
+    short-summary: "Gets information about the virtual machine snapshot."
+    examples:
+      - name: Get a virtual machine snapshot.
+        text: |-
+               az swiftlet virtual-machine-snapshot show --resource-group "myResourceGroup" --snapshot-name \
+"myVmSnapshot"
+"""
+
+helps['swiftlet virtual-machine-snapshot create'] = """
+    type: command
+    short-summary: "Create a virtual machine snapshot."
+    examples:
+      - name: Create a virtual machine snapshot.
+        text: |-
+               az swiftlet virtual-machine-snapshot create --location "westus" --virtual-machine-id \
+"/subscriptions/{subscription-id}/resourceGroups/myResourceGroup/providers/Microsoft.Swiftlet/virtualMachines/myVirtual\
+Machine" --tags key1="value1" key2="value2" --resource-group "myResourceGroup" --snapshot-name "myVmSnapshot"
+"""
+
+helps['swiftlet virtual-machine-snapshot update'] = """
+    type: command
+    short-summary: "Update a virtual machine snapshot."
+    examples:
+      - name: Update tags of a virtual machine snapshot.
+        text: |-
+               az swiftlet virtual-machine-snapshot update --tags key3="value3" --resource-group "myResourceGroup" \
+--snapshot-name "myVmSnapshot"
+"""
+
+helps['swiftlet virtual-machine-snapshot delete'] = """
+    type: command
+    short-summary: "Delete a virtual machine snapshot."
+    examples:
+      - name: Delete a virtual machine snapshot.
+        text: |-
+               az swiftlet virtual-machine-snapshot delete --resource-group "myResourceGroup" --snapshot-name \
+"myVmSnapshot"
+"""
+
+helps['swiftlet virtual-machine-snapshot wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the swiftlet virtual-machine-snapshot is met.
+    examples:
+      - name: Pause executing next line of CLI script until the swiftlet virtual-machine-snapshot is successfully \
+created.
+        text: |-
+               az swiftlet virtual-machine-snapshot wait --resource-group "myResourceGroup" --snapshot-name \
+"myVmSnapshot" --created
+      - name: Pause executing next line of CLI script until the swiftlet virtual-machine-snapshot is successfully \
+updated.
+        text: |-
+               az swiftlet virtual-machine-snapshot wait --resource-group "myResourceGroup" --snapshot-name \
+"myVmSnapshot" --updated
+      - name: Pause executing next line of CLI script until the swiftlet virtual-machine-snapshot is successfully \
+deleted.
+        text: |-
+               az swiftlet virtual-machine-snapshot wait --resource-group "myResourceGroup" --snapshot-name \
+"myVmSnapshot" --deleted
 """
