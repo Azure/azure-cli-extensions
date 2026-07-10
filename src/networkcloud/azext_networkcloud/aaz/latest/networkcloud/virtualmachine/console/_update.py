@@ -26,9 +26,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -104,9 +104,6 @@ class Update(AAZCommand):
             options=["--expiration"],
             arg_group="Properties",
             help="The date and time after which the key will be disallowed access.",
-            fmt=AAZDateTimeFormat(
-                protocol="iso",
-            ),
         )
         _args_schema.ssh_public_key = AAZObjectArg(
             options=["--ssh-public-key"],
@@ -118,6 +115,7 @@ class Update(AAZCommand):
         ssh_public_key.key_data = AAZStrArg(
             options=["key-data"],
             help="The public ssh key of the user.",
+            required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -209,7 +207,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -251,7 +249,7 @@ class Update(AAZCommand):
 
             ssh_public_key = _builder.get(".properties.sshPublicKey")
             if ssh_public_key is not None:
-                ssh_public_key.set_prop("keyData", AAZStrType, ".key_data")
+                ssh_public_key.set_prop("keyData", AAZStrType, ".key_data", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:

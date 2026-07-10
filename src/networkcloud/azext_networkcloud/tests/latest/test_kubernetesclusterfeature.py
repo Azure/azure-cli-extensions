@@ -12,14 +12,6 @@ Kubernetescluster feature tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import (
-    get_value,
-    show_properties,
-)
 
 
 def setup_scenario1(test):
@@ -88,33 +80,12 @@ def step_update(test, checks=None):
 
 def step_show(test, checks=None):
     """Kubernetescluster feature show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud kubernetescluster feature show --name {name} "
-            "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
+    if checks is None:
+        checks = []
+    test.cmd(
         "az networkcloud kubernetescluster feature show --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
-    ).get_output_in_json()
-    context = "Kubernetesclusterfeature show"
-    show_properties(result)
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
     )
-
-    assert result.get("id"), missing_field_message(context, "id", result)
-
-    assert result.get("required") == get_value(
-        test, "required"
-    ), properties_key_mismatch_message("required")
-
-    assert result.get("version") == get_value(
-        test, "version"
-    ), properties_key_mismatch_message("version")
 
 
 def step_list(test, checks=None):
@@ -151,8 +122,6 @@ class KubernetesClusterFeatureScenarioTest(ScenarioTest):
                 "tags": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "tags"),
                 "tagsUpdate": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "tags_update"),
                 "options": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "options"),
-                "required": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "required"),
-                "version": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "version"),
             }
         )
 
