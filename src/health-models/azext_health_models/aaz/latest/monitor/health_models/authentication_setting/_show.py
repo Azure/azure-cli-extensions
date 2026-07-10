@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models authentication-setting show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a AuthenticationSetting

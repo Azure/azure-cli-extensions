@@ -6,7 +6,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_horizondb._client_factory import (
     cf_horizondb_clusters,
-    cf_horizondb_parameter_groups)
+    cf_horizondb_parameter_groups,
+    cf_horizondb_firewall_rules)
 from azext_horizondb.utils._transformers import (
     table_transform_output)
 
@@ -28,6 +29,11 @@ def load_command_table(self, _):
 
     parameter_group_commands = CliCommandType(
         operations_tmpl='azext_horizondb.commands.parameter_group_commands#{}')
+
+    firewall_rule_custom = CliCommandType(
+        operations_tmpl='azext_horizondb.commands.firewall_rule_commands#{}',
+        client_factory=cf_horizondb_firewall_rules)
+
     with self.command_group('horizondb', horizondb_clusters_sdk,
                             custom_command_type=custom_commands,
                             client_factory=cf_horizondb_clusters) as g:
@@ -44,3 +50,12 @@ def load_command_table(self, _):
         g.custom_command('delete', 'horizondb_parameter_group_delete', supports_no_wait=True)
         g.custom_command('list', 'horizondb_parameter_group_list')
         g.show_command('show', 'get')
+
+    with self.command_group('horizondb firewall-rule', firewall_rule_custom,
+                            custom_command_type=firewall_rule_custom,
+                            client_factory=cf_horizondb_firewall_rules) as g:
+        g.custom_command('create', 'horizondb_firewall_rule_create')
+        g.custom_command('update', 'horizondb_firewall_rule_update')
+        g.custom_command('delete', 'horizondb_firewall_rule_delete')
+        g.custom_show_command('show', 'horizondb_firewall_rule_get')
+        g.custom_command('list', 'horizondb_firewall_rule_list')
