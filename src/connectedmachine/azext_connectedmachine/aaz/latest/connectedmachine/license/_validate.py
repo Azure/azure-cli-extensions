@@ -19,9 +19,9 @@ class Validate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-16-preview",
+        "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/validatelicense", "2025-09-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/validatelicense", "2026-06-16-preview"],
         ]
     }
 
@@ -96,7 +96,7 @@ class Validate(AAZCommand):
         license_details.target = AAZStrArg(
             options=["target"],
             help="Describes the license target server.",
-            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2"},
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
         )
         license_details.type = AAZStrArg(
             options=["type"],
@@ -196,7 +196,7 @@ class Validate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-16-preview",
+                    "api-version", "2026-06-16-preview",
                     required=True,
                 ),
             }

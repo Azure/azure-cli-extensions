@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2025-09-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview"],
         ]
     }
 
@@ -129,7 +129,7 @@ class Wait(AAZWaitCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-16-preview",
+                    "api-version", "2026-06-16-preview",
                     required=True,
                 ),
             }
@@ -165,7 +165,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
@@ -199,7 +199,27 @@ class Wait(AAZWaitCommand):
                 serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            identity.type = AAZStrType()
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200.properties
             properties.ad_fqdn = AAZStrType(
@@ -316,6 +336,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="serviceStatuses",
             )
             properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status_reason = AAZStrType(
+                serialized_name="statusReason",
                 flags={"read_only": True},
             )
             properties.storage_profile = AAZObjectType(

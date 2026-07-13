@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-16-preview",
+        "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2025-09-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview"],
         ]
     }
 
@@ -292,7 +292,7 @@ class Update(AAZCommand):
             options=["target"],
             help="Describes the license target server.",
             nullable=True,
-            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2"},
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
         )
         license_details.type = AAZStrArg(
             options=["type"],
@@ -422,8 +422,7 @@ class Update(AAZCommand):
         identity.type = AAZStrArg(
             options=["type"],
             help="The identity type.",
-            nullable=True,
-            enum={"SystemAssigned": "SystemAssigned"},
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
 
         tags = cls._args_schema.tags
@@ -578,7 +577,7 @@ class Update(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-16-preview",
+                    "api-version", "2026-06-16-preview",
                     required=True,
                 ),
             }
@@ -614,7 +613,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
@@ -648,7 +647,27 @@ class Update(AAZCommand):
                 serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            identity.type = AAZStrType()
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200.properties
             properties.ad_fqdn = AAZStrType(
@@ -765,6 +784,10 @@ class Update(AAZCommand):
                 serialized_name="serviceStatuses",
             )
             properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status_reason = AAZStrType(
+                serialized_name="statusReason",
                 flags={"read_only": True},
             )
             properties.storage_profile = AAZObjectType(
@@ -1311,7 +1334,7 @@ class Update(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-16-preview",
+                    "api-version", "2026-06-16-preview",
                     required=True,
                 ),
             }
@@ -1359,7 +1382,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
@@ -1393,7 +1416,27 @@ class Update(AAZCommand):
                 serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            identity.type = AAZStrType()
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200.properties
             properties.ad_fqdn = AAZStrType(
@@ -1510,6 +1553,10 @@ class Update(AAZCommand):
                 serialized_name="serviceStatuses",
             )
             properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status_reason = AAZStrType(
+                serialized_name="statusReason",
                 flags={"read_only": True},
             )
             properties.storage_profile = AAZObjectType(
@@ -2016,14 +2063,14 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
