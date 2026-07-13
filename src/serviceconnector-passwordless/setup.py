@@ -35,7 +35,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'azure-core',
     'PyMySQL==1.1.1',
-    'pyodbc~=5.2.0',
+    'pyodbc~=5.3.0',
     'psycopg2-binary~=2.9.10',
     'azure-mgmt-servicelinker==1.2.0b3'
 ]
