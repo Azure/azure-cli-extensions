@@ -5,7 +5,7 @@ Release History
 
 2.44.1
 ++++++
-* Make ``azureml-registry-tools`` (used by ``modelpublisher model-card`` commands) install only on Python < 3.14, so the extension installs on Azure CLI builds bundling Python 3.14.
+* Pin ``azureml-registry-tools`` to 0.1.0a64 (adds Python 3.14 support) and gate it to Python < 3.15, so the extension installs and all ``modelpublisher`` commands — including ``model-card`` — work on Azure CLI builds bundling Python 3.14 (e.g. az 2.88).
 
 2.44.0
 ++++++
