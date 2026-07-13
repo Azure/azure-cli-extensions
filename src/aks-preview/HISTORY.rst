@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b9
+++++++++
+* Update the minimum required cli core version to `2.85.0` (actually required since `20.0.0b5`).
+
 21.0.0b8
 ++++++++
 * `az aks create`: Add `--enable-on-demand-monitor` to enable on-demand monitor for the cluster.
@@ -73,7 +77,7 @@ Pending
 ++++++
 * `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
 * Vendor new SDK and bump API version to 2026-03-02-preview.
-* Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
+* Update the minimum required cli core version to `2.76.0` (actually required since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
 
 20.0.0b6
@@ -237,7 +241,7 @@ Pending
 
 19.0.0b6
 +++++++
-* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
+* Update the minimum required cli core version to `2.73.0` (actually required since `18.0.0b35`).
 
 19.0.0b5
 +++++++
@@ -802,7 +806,7 @@ Pending
 2.0.0b8
 +++++++
 * Add `az aks check-network outbound` command to check outbound network from nodes.
-* Update the minimum required cli core version to `2.56.0` (actually since `2.0.0b7`).
+* Update the minimum required cli core version to `2.56.0` (actually required since `2.0.0b7`).
 
 2.0.0b7
 +++++++
@@ -1311,7 +1315,7 @@ Pending
 ++++++
 
 * Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
-* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Update the minimum required cli core version to `2.38.0` (actually required since `0.5.92`).
 * Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
 
 0.5.94
