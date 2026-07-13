@@ -12,4 +12,8 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group(
+        "trustedsigning",
+        deprecate_info=self.deprecate(redirect="artifact-signing", hide=True),
+    ):
+        pass
