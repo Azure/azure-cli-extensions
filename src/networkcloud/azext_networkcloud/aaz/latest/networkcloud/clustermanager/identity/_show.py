@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of managed identities.
+
+    :example: Show the details of managed identities for a cluster manager
+        az networkcloud clustermanager identity show --resource-group "resourceGroupName" --cluster-manager-name "clusterManagerName"
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-07-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-05-01-preview", "identity"],
         ]
     }
 
@@ -131,7 +134,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

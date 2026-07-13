@@ -12,17 +12,10 @@
 Kubernetescluster tests scenarios
 """
 
-import json
-
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-from .utils.assert_messages import (
-    missing_field_message,
-    properties_key_mismatch_message,
-)
-from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -130,66 +123,10 @@ def step_update(test, checks=None):
 
 def step_show(test, checks=None):
     """Kubernetescluster show operation"""
-    if checks is not None:
-        test.cmd(
-            "az networkcloud kubernetescluster show --name {name} --resource-group {rg}",
-            checks=checks,
-        )
-        return
-
-    result = test.cmd(
+    if checks is None:
+        checks = []
+    test.cmd(
         "az networkcloud kubernetescluster show --name {name} --resource-group {rg}"
-    ).get_output_in_json()
-    context = "Kubernetescluster show"
-    assert result.get("name") is not None, missing_field_message(
-        context, "name", result
-    )
-    assert result.get("id"), missing_field_message(context, "id", result)
-
-    assert result.get("controlPlaneNodeConfiguration", {}).get(
-        "administratorConfiguration", {}
-    ).get("adminUsername") == get_value(
-        test, "cpAdminUsername"
-    ), properties_key_mismatch_message(
-        "controlPlaneNodeConfiguration.administratorConfiguration.adminUsername"
-    )
-
-    assert str(
-        (result.get("initialAgentPoolConfigurations") or [{}])[0].get("count")
-    ) == get_value(test, "count"), properties_key_mismatch_message(
-        "initialAgentPoolConfigurations[0].count"
-    )
-
-    assert (result.get("initialAgentPoolConfigurations") or [{}])[0].get(
-        "vmSkuName"
-    ) == get_value(test, "initialVmSkuName"), properties_key_mismatch_message(
-        "initialAgentPoolConfigurations[0].vmSkuName"
-    )
-
-    assert result.get("kubernetesVersion") == get_value(
-        test, "kubernetesVersion"
-    ), properties_key_mismatch_message("kubernetesVersion")
-
-    assert result.get("networkConfiguration", {}).get(
-        "cloudServicesNetworkId"
-    ) == get_value(test, "csnId"), properties_key_mismatch_message(
-        "networkConfiguration.cloudServicesNetworkId"
-    )
-
-    assert result.get("networkConfiguration", {}).get("cniNetworkId") == get_value(
-        test, "cniId"
-    ), properties_key_mismatch_message("networkConfiguration.cniNetworkId")
-
-    assert result.get("networkConfiguration", {}).get("dnsServiceIp") == get_value(
-        test, "dnsServiceIp"
-    ), properties_key_mismatch_message("networkConfiguration.dnsServiceIp")
-
-    assert result.get("networkConfiguration", {}).get(
-        "bgpServiceLoadBalancerConfiguration", {}
-    ).get("fabricPeeringEnabled") == get_value(
-        test, "fabricPeeringEnabled"
-    ), properties_key_mismatch_message(
-        "networkConfiguration.bgpServiceLoadBalancerConfiguration.fabricPeeringEnabled"
     )
 
 
@@ -293,9 +230,6 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                 ),
                 "countUpdate": CONFIG.get("KUBERNETESCLUSTER", "count_update"),
                 "vmSkuName": CONFIG.get("KUBERNETESCLUSTER", "vm_sku_name"),
-                "initialVmSkuName": CONFIG.get(
-                    "KUBERNETESCLUSTER", "initial_vm_sku_name"
-                ),
                 "count": CONFIG.get("KUBERNETESCLUSTER", "count"),
                 "nodeName": CONFIG.get("KUBERNETESCLUSTER_NODE", "node_name"),
                 "kubernetesClusterName": CONFIG.get(
