@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.0
++++++++++++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations.
+* Replace `--marker` and `--show-next-marker` from `sig image-definition list-community` and `sig image-version list-community` with `--max-items` and `--next-token`. AAZ has its own handling for pagination.
+
 1.0.0b2
 +++++++++++++++
 * Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
