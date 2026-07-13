@@ -65,8 +65,8 @@ class Update(AAZCommand):
         # define Arg Group "Administrator"
 
         _args_schema = cls._args_schema
-        _args_schema.admin_password = AAZPasswordArg(
-            options=["-p", "--admin-password"],
+        _args_schema.password = AAZPasswordArg(
+            options=["-p", "--password"],
             arg_group="Administrator",
             help="The administrator password.",
             nullable=True,
@@ -504,7 +504,7 @@ class Update(AAZCommand):
 
             administrator = _builder.get(".properties.administrator")
             if administrator is not None:
-                administrator.set_prop("password", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
+                administrator.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 administrator.set_prop("userName", AAZStrType, ".admin_user")
 
             auth_config = _builder.get(".properties.authConfig")

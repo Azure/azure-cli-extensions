@@ -38,13 +38,19 @@ def _resolve_cluster_id(ctx, name_or_id):
 def _keep_only_args(args_schema, keep):
     """Deregister (hide) every argument on the schema except those in ``keep``.
 
+    Hidden arguments are also marked optional so a deregistered-but-required
+    argument (for example the base ``create`` password on a replica) does not
+    fail schema validation with a missing-required-field error.
+
     Framework arguments that are not resource properties (for example ``no_wait``
     and ``subscription``) are always preserved.
     """
     _always_keep = {"no_wait", "subscription"}
     for _name in list(args_schema._fields):
         if _name not in keep and _name not in _always_keep:
-            args_schema._fields[_name]._registered = False
+            _field = args_schema._fields[_name]
+            _field._registered = False
+            _field._required = False
 
 
 def _add_principal_type_arg(args_schema):
@@ -112,8 +118,8 @@ class ResetPassword(_MongoClusterUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        _keep_only_args(args_schema, {"cluster_name", "resource_group", "admin_password"})
-        password = args_schema.admin_password
+        _keep_only_args(args_schema, {"cluster_name", "resource_group", "password"})
+        password = args_schema.password
         password._options = ["--password", "-p"]
         password._required = True
         password._help["name"] = "--password -p"
@@ -202,7 +208,7 @@ class Restore(_MongoClusterCreate):
     cluster at the requested point in time.
 
     :example: Restore a cluster to a point in time.
-        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --password MyP@ssw0rd123!
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -215,9 +221,9 @@ class Restore(_MongoClusterCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(
             args_schema,
-            {"cluster_name", "resource_group", "location", "admin_user", "admin_password"})
+            {"cluster_name", "resource_group", "location", "admin_user", "password"})
         args_schema.admin_user._required = True
-        args_schema.admin_password._required = True
+        args_schema.password._required = True
         args_schema.source_cluster = AAZStrArg(
             options=["--source-cluster"],
             arg_group="Restore",
@@ -263,7 +269,7 @@ class Restore(_MongoClusterCreate):
             if administrator is not None:
                 administrator.set_prop("userName", AAZStrType, ".admin_user")
                 administrator.set_prop(
-                    "password", AAZStrType, ".admin_password",
+                    "password", AAZStrType, ".password",
                     typ_kwargs={"flags": {"secret": True}})
 
             restore_parameters = _builder.get(".properties.restoreParameters")

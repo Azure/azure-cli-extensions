@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "documentdb mongocluster user show",
 )
 class Show(AAZCommand):
-    """Get the defintion of a Mongo cluster user.
+    """Get the definition of a Mongo cluster user.
 
     :example: Get a user.
         az documentdb mongocluster user show -n alice@contoso.com --cluster-name MyCluster -g MyResourceGroup
