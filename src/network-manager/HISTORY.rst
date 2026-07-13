@@ -2,6 +2,11 @@
 
 Release History
 ===============
+3.0.2
++++++
+* `az network manager connect-config create`: Fix `--hub` `resource-id` to accept any ARM resource ID (e.g. `Microsoft.Network/virtualHubs` and sub-resources like `connectionPolicies`)
+* `az network manager connect-config update`: Fix `--hub` `resource-id` to accept any ARM resource ID (e.g. `Microsoft.Network/virtualHubs` and sub-resources like `connectionPolicies`)
+
 3.0.1
 +++++
 * Add NG of type Subnet support for routing config

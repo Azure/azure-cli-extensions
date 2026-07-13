@@ -1444,6 +1444,7 @@ def aks_create(
     enable_backup=False,
     backup_strategy=None,
     backup_configuration_file=None,
+    enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
 ):
@@ -1705,6 +1706,8 @@ def aks_update(
     disable_application_load_balancer=False,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    enable_on_demand_monitor=False,
+    disable_on_demand_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
     # backup (delegates to the dataprotection extension)
     enable_backup=False,

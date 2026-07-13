@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b8
+++++++++
+* `az aks create`: Add `--enable-on-demand-monitor` to enable on-demand monitor for the cluster.
+* `az aks update`: Add `--enable-on-demand-monitor` and `--disable-on-demand-monitor` to manage on-demand monitor for the cluster.
+
 21.0.0b7
 ++++++++
 * `az aks create`: Add `--node-disruption-policy` (preview) to set the node disruption policy at cluster creation time. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.

@@ -8,17 +8,50 @@
 from knack.log import get_logger
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
+from ..utils.temp_cluster_capabilities import temp_cluster_capabilities
+from ..utils.validators import (
+    is_supported_vcore,
+    validate_resource_group)
+from ..utils._util import (
+    check_resource_group,
+    generate_missing_cluster_parameters)
+from ..utils._network import resolve_public_access_range
 
 logger = get_logger(__name__)
 
+HORIZONDB_VERSION_DEFAULT = 17
 
-def horizondb_cluster_create(client, resource_group_name, cluster_name, location,
-                             administrator_login, administrator_login_password,
+
+def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name=None, location=None,
+                             administrator_login=None, administrator_login_password=None,
                              tags=None, version=None,
                              replica_count=None, v_cores=None,
                              zone_placement_policy=None,
+                             public_access=None, yes=False,
                              no_wait=False):
     from azext_horizondb.vendored_sdks.models import HorizonDbCluster, HorizonDbClusterProperties
+
+    if not check_resource_group(resource_group_name):
+        resource_group_name = None
+
+    # Generate missing parameters
+    resource_group_name, cluster_name, location = generate_missing_cluster_parameters(cmd, resource_group_name, cluster_name,
+                                                                                      location)
+
+    if version is None:
+        version = HORIZONDB_VERSION_DEFAULT
+
+    if v_cores is not None:
+        cluster_capability = (temp_cluster_capabilities.get("value") or [{}])[0]
+        processor_capabilities = (cluster_capability.get("supportedProcessor") or [{}])[0]
+
+        if not is_supported_vcore(processor_capabilities, v_cores):
+            supported_vcores = processor_capabilities.get("supportedVcores", [])
+            raise ArgumentUsageError(
+                "Invalid value for '--v-cores'. Supported values: {}".format(
+                    ", ".join(str(v) for v in supported_vcores)
+                )
+            )
 
     properties = HorizonDbClusterProperties(
         administrator_login=administrator_login,
@@ -36,22 +69,69 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
         properties=properties,
     )
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       cluster_name=cluster_name,
-                       resource=resource)
+    # Resolve --public-access up front (including client-IP detection / prompts for 'Enabled') so any
+    # failure happens before the cluster is provisioned. HorizonDB's publicNetworkAccess flag is
+    # service-computed (read-only), so public access is opened by creating a firewall rule.
+    firewall_range = _resolve_public_access_range_for_command(public_access, yes, is_update=False)
+
+    result = sdk_no_wait(no_wait, client.begin_create_or_update,
+                         resource_group_name=resource_group_name,
+                         cluster_name=cluster_name,
+                         resource=resource)
+
+    if firewall_range is None:
+        return result
+
+    cluster = result.result() if hasattr(result, 'result') else result
+    _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait)
+    return cluster
 
 
-def horizondb_cluster_update(client, resource_group_name, cluster_name,
+def _resolve_public_access_range_for_command(public_access, yes, is_update):
+    """Return an (start_ip, end_ip) tuple to open via a firewall rule, or None when no rule should be
+    created. Handles the read-only-flag reality: 'Disabled'/'None'/unset create no rule."""
+    if not public_access:
+        return None
+    if str(public_access).lower() == 'disabled':
+        if is_update:
+            logger.warning("HorizonDB public network access is managed through firewall rules. To "
+                           "remove public access, delete rules with 'az horizondb firewall-rule "
+                           "delete' (list them with 'az horizondb firewall-rule list').")
+        return None
+
+    start_ip, end_ip = resolve_public_access_range(public_access, yes)
+    if start_ip == -1 or end_ip == -1:
+        return None
+    return start_ip, end_ip
+
+
+def _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait):
+    from .._client_factory import cf_horizondb_firewall_rules
+    from .firewall_rule_commands import create_firewall_rule
+    start_ip, end_ip = firewall_range
+    firewall_client = cf_horizondb_firewall_rules(cmd.cli_ctx, None)
+    poller = create_firewall_rule(cmd, firewall_client, resource_group_name, cluster_name,
+                                  start_ip_address=start_ip, end_ip_address=end_ip)
+    if not no_wait:
+        poller.result()
+
+
+def horizondb_cluster_update(cmd, client, resource_group_name, cluster_name,
                              administrator_login_password=None, tags=None,
                              v_cores=None,
                              parameter_group=None,
+                             public_access=None, yes=False,
                              no_wait=False):
     from azext_horizondb.vendored_sdks.models import (
         HorizonDbClusterForPatchUpdate,
         HorizonDbClusterParameterGroupConnectionProperties,
         HorizonDbClusterPropertiesForPatchUpdate,
     )
+
+    validate_resource_group(resource_group_name)
+
+    # Resolve --public-access up front so prompts/failures happen before any patch or firewall PUT.
+    firewall_range = _resolve_public_access_range_for_command(public_access, yes, is_update=True)
 
     cluster_properties = {}
     if administrator_login_password is not None:
@@ -67,15 +147,23 @@ def horizondb_cluster_update(client, resource_group_name, cluster_name,
     if cluster_properties:
         patch_properties["properties"] = HorizonDbClusterPropertiesForPatchUpdate(**cluster_properties)
 
-    if not patch_properties:
+    if not patch_properties and not public_access:
         raise ArgumentUsageError("Specify at least one argument to update.")
 
-    properties = HorizonDbClusterForPatchUpdate(**patch_properties)
+    update_result = None
+    if patch_properties:
+        properties = HorizonDbClusterForPatchUpdate(**patch_properties)
+        update_result = sdk_no_wait(no_wait, client.begin_update,
+                                    resource_group_name=resource_group_name,
+                                    cluster_name=cluster_name,
+                                    properties=properties)
 
-    return sdk_no_wait(no_wait, client.begin_update,
-                       resource_group_name=resource_group_name,
-                       cluster_name=cluster_name,
-                       properties=properties)
+    if firewall_range is not None:
+        _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait)
+
+    if update_result is not None:
+        return update_result
+    return client.get(resource_group_name=resource_group_name, cluster_name=cluster_name)
 
 
 def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_wait=False, yes=False):

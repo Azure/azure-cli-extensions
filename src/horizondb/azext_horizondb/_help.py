@@ -23,6 +23,12 @@ examples:
     text: az horizondb create --name examplecluster --resource-group exampleresourcegroup --location centralus --administrator-login myadmin --administrator-login-password examplepassword --version 17 --v-cores 4 --replica-count 3
   - name: Create a HorizonDB cluster with zone placement policy.
     text: az horizondb create --name examplecluster --resource-group exampleresourcegroup --location centralus --administrator-login myadmin --administrator-login-password examplepassword --version 17 --v-cores 4 --replica-count 3 --zone-placement-policy Strict
+  - name: Create a HorizonDB cluster and allow public access from a single IP address (creates a firewall rule).
+    text: az horizondb create --name examplecluster --resource-group exampleresourcegroup --location centralus --administrator-login myadmin --administrator-login-password examplepassword --version 17 --v-cores 4 --public-access 12.12.12.12
+  - name: Create a HorizonDB cluster and allow public access from a range of IP addresses.
+    text: az horizondb create --name examplecluster --resource-group exampleresourcegroup --location centralus --administrator-login myadmin --administrator-login-password examplepassword --version 17 --v-cores 4 --public-access 12.12.12.0-12.12.12.255
+  - name: Create a HorizonDB cluster and allow public access from all IP addresses.
+    text: az horizondb create --name examplecluster --resource-group exampleresourcegroup --location centralus --administrator-login myadmin --administrator-login-password examplepassword --version 17 --v-cores 4 --public-access All
 """
 
 
@@ -34,6 +40,8 @@ examples:
     text: az horizondb update --name examplecluster --resource-group exampleresourcegroup --v-cores 6
   - name: Assign a parameter group to an existing HorizonDB cluster.
     text: az horizondb update --name examplecluster --resource-group exampleresourcegroup --parameter-group /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.HorizonDb/parameterGroups/{parameterGroup}
+  - name: Enable public access on an existing HorizonDB cluster (detects your client IP and prompts to create a firewall rule).
+    text: az horizondb update --name examplecluster --resource-group exampleresourcegroup --public-access Enabled
 """
 
 
@@ -66,43 +74,59 @@ examples:
 """
 
 
-helps['horizondb identity'] = """
+helps['horizondb firewall-rule'] = """
 type: group
-short-summary: Manage user assigned managed identities for an Azure HorizonDB cluster.
+short-summary: Manage firewall rules for an Azure HorizonDB cluster.
+long-summary: >
+  Firewall rules control public access to a HorizonDB cluster and are applied to the cluster's
+  default pool. Use these commands to allow inbound connections from specific IP addresses or ranges.
 """
 
 
-helps['horizondb identity assign'] = """
+helps['horizondb firewall-rule create'] = """
 type: command
-short-summary: Add user assigned managed identities to an Azure HorizonDB cluster.
+short-summary: Create a firewall rule for an Azure HorizonDB cluster.
 examples:
-  - name: Assign a user assigned managed identity to a HorizonDB cluster.
-    text: az horizondb identity assign --name examplecluster --resource-group exampleresourcegroup --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exampleresourcegroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleidentity
+  - name: Create a firewall rule allowing a single IP address.
+    text: az horizondb firewall-rule create --resource-group exampleresourcegroup --cluster-name examplecluster --name allowclientip --start-ip-address 12.12.12.12
+  - name: Create a firewall rule allowing a range of IP addresses.
+    text: az horizondb firewall-rule create --resource-group exampleresourcegroup --cluster-name examplecluster --name allowrange --start-ip-address 12.12.12.0 --end-ip-address 12.12.12.255
+  - name: Create a firewall rule allowing access from all Azure-internal IP addresses.
+    text: az horizondb firewall-rule create --resource-group exampleresourcegroup --cluster-name examplecluster --name allowazure --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 """
 
 
-helps['horizondb identity list'] = """
+helps['horizondb firewall-rule update'] = """
 type: command
-short-summary: List all user assigned managed identities from an Azure HorizonDB cluster.
+short-summary: Update a firewall rule for an Azure HorizonDB cluster.
 examples:
-  - name: List identities for a HorizonDB cluster.
-    text: az horizondb identity list --name examplecluster --resource-group exampleresourcegroup
+  - name: Update the IP range of an existing firewall rule.
+    text: az horizondb firewall-rule update --resource-group exampleresourcegroup --cluster-name examplecluster --name allowrange --start-ip-address 12.12.12.0 --end-ip-address 12.12.12.128
 """
 
 
-helps['horizondb identity remove'] = """
+helps['horizondb firewall-rule show'] = """
 type: command
-short-summary: Remove user assigned managed identities from an Azure HorizonDB cluster.
+short-summary: Show the details of a firewall rule for an Azure HorizonDB cluster.
 examples:
-  - name: Remove a user assigned managed identity from a HorizonDB cluster.
-    text: az horizondb identity remove --name examplecluster --resource-group exampleresourcegroup --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exampleresourcegroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleidentity
+  - name: Show a firewall rule.
+    text: az horizondb firewall-rule show --resource-group exampleresourcegroup --cluster-name examplecluster --name allowclientip
 """
 
 
-helps['horizondb identity show'] = """
+helps['horizondb firewall-rule list'] = """
 type: command
-short-summary: Get a user assigned managed identity from an Azure HorizonDB cluster.
+short-summary: List the firewall rules for an Azure HorizonDB cluster.
 examples:
-  - name: Show a specific identity from a HorizonDB cluster.
-    text: az horizondb identity show --name examplecluster --resource-group exampleresourcegroup --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exampleresourcegroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleidentity
+  - name: List all firewall rules for a cluster.
+    text: az horizondb firewall-rule list --resource-group exampleresourcegroup --cluster-name examplecluster
+"""
+
+
+helps['horizondb firewall-rule delete'] = """
+type: command
+short-summary: Delete a firewall rule for an Azure HorizonDB cluster.
+examples:
+  - name: Delete a firewall rule.
+    text: az horizondb firewall-rule delete --resource-group exampleresourcegroup --cluster-name examplecluster --name allowclientip
 """

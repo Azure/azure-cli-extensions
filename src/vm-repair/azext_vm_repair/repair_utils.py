@@ -47,15 +47,14 @@ def _set_repair_map_url(url):
 
 
 def _uses_managed_disk(vm):
-    if vm.storage_profile.os_disk.managed_disk is None:
+    if vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk') is None:
         return False
     return True
 
 
 def _is_gen2(vm):
-    gen = 1
-    gen = vm.instance_view.hyper_v_generation
-    if gen.lower() == 'v2':
+    gen = vm.get('instanceView', {}).get('hyperVGeneration')
+    if gen and gen.lower() == 'v2':
         return 2
     return 1
 
@@ -228,9 +227,9 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
     try:
         logger.info('Checking VM power state...\n')
         VM_TURNED_ON = False
-        vm_statuses = vm_instance_view.instance_view.statuses
+        vm_statuses = vm_instance_view.get('instanceView', {}).get('statuses', [])
         for vm_status in vm_statuses:
-            if vm_status.code == VM_RUNNING:
+            if vm_status.get('code') == VM_RUNNING:
                 VM_TURNED_ON = True
         # VM already on
         if VM_TURNED_ON:
@@ -264,8 +263,8 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
 
 
 def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
-    location = source_vm.location
-    source_vm_sku = source_vm.hardware_profile.vm_size
+    location = source_vm.get('location')
+    source_vm_sku = source_vm.get('hardwareProfile', {}).get('vmSize')
 
     if requested_sku:
         # override the auto-selection with a provided sku
@@ -338,13 +337,13 @@ def _fetch_encryption_settings(source_vm):
     key_vault = None
     kekurl = None
     secreturl = None
-    if source_vm.storage_profile.os_disk.encryption_settings is not None:
+    if source_vm.get('storageProfile', {}).get('osDisk', {}).get('encryptionSettings') is not None:
         return Encryption.DUAL, key_vault, kekurl, secreturl
     # Unmanaged disk only support dual
     if not _uses_managed_disk(source_vm):
         return Encryption.NONE, key_vault, kekurl, secreturl
 
-    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
     show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.enabled,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
                         .format(i=disk_id)
     encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
@@ -360,7 +359,7 @@ def _fetch_encryption_settings(source_vm):
 
 
 def _check_hyperV_gen(source_vm):
-    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
     hyperVGen = loads(_call_az_command(show_disk_command))
@@ -371,7 +370,7 @@ def _check_hyperV_gen(source_vm):
 # this function seems redundant
 # TODO: test if this can be merged with _check_hyperV_gen, the test mid-function seems to be a relic
 def _check_linux_hyperV_gen(source_vm):
-    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
     disk_hyperVGen = loads(_call_az_command(show_disk_command))
@@ -379,7 +378,7 @@ def _check_linux_hyperV_gen(source_vm):
     if disk_hyperVGen != 'V2':
         logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
-        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
+        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.get('id'))
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
         vm_hyperVGen = hyperVGen_list[0]
         if vm_hyperVGen != 'V2':
@@ -482,7 +481,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
 
 
 def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
-    location = source_vm.location
+    location = source_vm.get('location')
     publisher = "MicrosoftWindowsServer"
     offer = "WindowsServer"
     sku = "2022-datacenter-smalldisk"
@@ -501,8 +500,8 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
 
     logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
-    os_image_ref = source_vm.storage_profile.image_reference
-    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
+    os_image_ref = source_vm.get('storageProfile', {}).get('imageReference', {})
+    if os_image_ref and os_image_ref.get('version') in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
@@ -513,13 +512,13 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
 
 
 def _fetch_matching_windows_os_urn(source_vm):
-    location = source_vm.location
+    location = source_vm.get('location')
 
     # We will prefer to fetch image using source vm sku, that we match the CVM requirements.
-    if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
-        sku = source_vm.storage_profile.image_reference.sku
-        offer = source_vm.storage_profile.image_reference.offer
-        publisher = source_vm.storage_profile.image_reference.publisher
+    if source_vm.get('storageProfile', {}).get('imageReference') is not None:
+        sku = source_vm['storageProfile']['imageReference'].get('sku')
+        offer = source_vm['storageProfile']['imageReference'].get('offer')
+        publisher = source_vm['storageProfile']['imageReference'].get('publisher')
         fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
         logger.info('Fetching compatible Windows OS images from gallery V2...')
         urns = loads(_call_az_command(fetch_urn_command))
@@ -792,8 +791,8 @@ def _fetch_architecture(source_vm):
     """
     Returns the architecture of the source VM.
     """
-    location = source_vm.location
-    vm_size = source_vm.hardware_profile.vm_size
+    location = source_vm.get('location')
+    vm_size = source_vm.get('hardwareProfile', {}).get('vmSize')
     architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
                             .format(loc=location, vm_size=vm_size)
 
@@ -807,11 +806,11 @@ def _fetch_non_standard_security_type(source_vm):
     """
     Returns security type if security type is not standard and needs to be set.
     """
-    if source_vm.security_profile is None or source_vm.security_profile.security_type is None:
+    if source_vm.get('securityProfile', {}).get('securityType') is None:
         return
-    if source_vm.security_profile.security_type.lower() == "standard":
+    if source_vm['securityProfile']['securityType'].lower() == "standard":
         return
-    return source_vm.security_profile.security_type
+    return source_vm['securityProfile']['securityType']
 
 
 def _fetch_vm_security_profile_parameters(source_vm):
@@ -820,22 +819,23 @@ def _fetch_vm_security_profile_parameters(source_vm):
     if non_standard_security_type is None:
         return create_repair_vm_command
     create_repair_vm_command += ' --security-type {securityType}'.format(securityType=non_standard_security_type)
-    if source_vm.security_profile.uefi_settings is not None:
-        if source_vm.security_profile.uefi_settings.secure_boot_enabled is not None:
-            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm.security_profile.uefi_settings.secure_boot_enabled)
+    if source_vm.get('securityProfile', {}).get('uefiSettings') is not None:
+        if source_vm['securityProfile']['uefiSettings'].get('secureBootEnabled') is not None:
+            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm['securityProfile']['uefiSettings']['secureBootEnabled'])
 
-        if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
-            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)
+        if source_vm['securityProfile']['uefiSettings'].get('vTpmEnabled') is not None:
+            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm['securityProfile']['uefiSettings']['vTpmEnabled'])
     return create_repair_vm_command
 
 
 def _fetch_osdisk_security_profile_parameters(source_vm):
     create_repair_vm_command = ''
-    if source_vm.storage_profile.os_disk.managed_disk is not None and source_vm.storage_profile.os_disk.managed_disk.security_profile is not None:
-        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.security_encryption_type)
+    managed_disk = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk')
+    if managed_disk is not None and managed_disk.get('securityProfile') is not None:
+        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=managed_disk['securityProfile'].get('securityEncryptionType'))
 
-        if source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set is not None:
-            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
+        if managed_disk['securityProfile'].get('diskEncryptionSet') is not None:
+            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=managed_disk['securityProfile']['diskEncryptionSet'].get('id'))
 
     return create_repair_vm_command
 
