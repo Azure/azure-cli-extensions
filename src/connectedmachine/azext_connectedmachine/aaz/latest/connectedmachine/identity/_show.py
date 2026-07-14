@@ -12,24 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine show",
+    "connectedmachine identity show",
 )
 class Show(AAZCommand):
-    """Get information about the model view or the instance view of an Azure Arc-Enabled Server.
+    """Show the details of managed identities.
 
-    :example: Sample command for show
-        az connectedmachine show --name myMachine --resource-group myResourceGroup
+    :example: Show the managed identities assigned to a machine
+        az connectedmachine identity show --resource-group myResourceGroup --machine-name myMachine
     """
 
     _aaz_info = {
         "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview", "identity"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         self._execute_operations()
         return self._output()
 
@@ -48,7 +49,6 @@ class Show(AAZCommand):
             options=["-n", "--name", "--machine-name"],
             help="The name of the hybrid machine.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
@@ -79,8 +79,19 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
 
     class MachinesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"

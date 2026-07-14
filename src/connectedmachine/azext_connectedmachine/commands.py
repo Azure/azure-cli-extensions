@@ -9,6 +9,18 @@
 # pylint: disable=too-many-statements
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
+    with self.command_group("connectedmachine"):
+        from .custom import List
+        self.command_table["connectedmachine list"] = List(loader=self)
+        # hide the standalone by-subscription command; `list` now covers both
+        self.command_table.pop("connectedmachine list-by-sub", None)
+
+    with self.command_group("connectedmachine license"):
+        from .custom import LicenseList
+        self.command_table["connectedmachine license list"] = LicenseList(loader=self)
+        # hide the standalone by-resource-group command; `license list` now covers both
+        self.command_table.pop("connectedmachine license list-by-rg", None)
+
     with self.command_group("connectedmachine license-profile"):
         from .custom import ProfileCreate
         self.command_table["connectedmachine license-profile create"] = ProfileCreate(loader=self)

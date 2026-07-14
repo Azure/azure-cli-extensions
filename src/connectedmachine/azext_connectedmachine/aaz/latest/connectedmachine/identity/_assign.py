@@ -12,26 +12,31 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine update",
+    "connectedmachine identity assign",
 )
-class Update(AAZCommand):
-    """Update an Azure Arc-Enabled Server. Please note some properties can be set only during machine creation.
+class Assign(AAZCommand):
+    """Assign the user or system managed identities.
 
-    :example: Sample command for update
-        az connectedmachine update --name myMachine --resource-group myResourceGroup --location eastus2euap
+    :example: Assign the system-assigned managed identity to a machine
+        az connectedmachine identity assign --resource-group myResourceGroup --machine-name myMachine --system-assigned
+
+    :example: Assign user-assigned managed identities to a machine
+        az connectedmachine identity assign --resource-group myResourceGroup --machine-name myMachine --user-assigned /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity
+
+    :example: Assign both system-assigned and user-assigned managed identities
+        az connectedmachine identity assign --resource-group myResourceGroup --machine-name myMachine --system-assigned --user-assigned /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity
     """
 
     _aaz_info = {
         "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview", "identity"],
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         self._execute_operations()
         return self._output()
 
@@ -50,7 +55,6 @@ class Update(AAZCommand):
             options=["-n", "--name", "--machine-name"],
             help="The name of the hybrid machine.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
@@ -66,443 +70,32 @@ class Update(AAZCommand):
             enum={"instanceView": "instanceView"},
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Resource.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.agent_upgrade = AAZObjectArg(
-            options=["--agent-upgrade"],
-            arg_group="Properties",
-            help="The info of the machine w.r.t Agent Upgrade",
-            nullable=True,
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Resource.identity",
+            help="Set the system managed identity.",
+            blank="True",
         )
-        _args_schema.client_public_key = AAZStrArg(
-            options=["--client-public-key"],
-            arg_group="Properties",
-            help="Public Key that the client provides to be used during initial resource onboarding",
-            nullable=True,
-        )
-        _args_schema.extensions = AAZListArg(
-            options=["--extensions"],
-            arg_group="Properties",
-            help="Machine Extensions information (deprecated field)",
-            nullable=True,
-        )
-        _args_schema.hardware_resource_id = AAZStrArg(
-            options=["--hardware-resource-id"],
-            arg_group="Properties",
-            help="Specifies the resource ID of the associated hardware device. Only settable by HCI RP.",
-            nullable=True,
-        )
-        _args_schema.identity_key_store = AAZStrArg(
-            options=["--identity-key-store"],
-            arg_group="Properties",
-            help="Specifies the identity key store a machine is using.",
-            nullable=True,
-            enum={"Default": "Default", "TPM": "TPM"},
-        )
-        _args_schema.license_profile = AAZObjectArg(
-            options=["--license-profile"],
-            arg_group="Properties",
-            help="Specifies the License related properties for a machine.",
-            nullable=True,
-        )
-        _args_schema.location_data = AAZObjectArg(
-            options=["--location-data"],
-            arg_group="Properties",
-            help="Metadata pertaining to the geographic location of the resource.",
-            nullable=True,
-        )
-        _args_schema.mssql_discovered = AAZStrArg(
-            options=["--mssql-discovered"],
-            arg_group="Properties",
-            help="Specifies whether any MS SQL instance is discovered on the machine.",
-            nullable=True,
-        )
-        _args_schema.os_profile = AAZObjectArg(
-            options=["--os-profile"],
-            arg_group="Properties",
-            help="Specifies the operating system settings for the hybrid machine.",
-            nullable=True,
-        )
-        _args_schema.os_type = AAZStrArg(
-            options=["--os-type"],
-            arg_group="Properties",
-            help="The type of Operating System (windows/linux).",
-            nullable=True,
-        )
-        _args_schema.parent_cluster_resource_id = AAZResourceIdArg(
-            options=["--parent-cluster-resource-id"],
-            arg_group="Properties",
-            help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
-            nullable=True,
-        )
-        _args_schema.private_link_scope_resource_id = AAZResourceIdArg(
-            options=["--private-link-scope-resource-id"],
-            arg_group="Properties",
-            help="The resource id of the private link scope this machine is assigned to, if any.",
-            nullable=True,
-        )
-        _args_schema.service_statuses = AAZObjectArg(
-            options=["--service-statuses"],
-            arg_group="Properties",
-            help="Statuses of dependent services that are reported back to ARM.",
-            nullable=True,
-        )
-        _args_schema.tpm_ek_certificate = AAZStrArg(
-            options=["--tpm-ek-certificate"],
-            arg_group="Properties",
-            help="Endorsement Key Certificate of the Trusted Platform Module (TPM) that the client provides to be used during initial resource onboarding.",
-            nullable=True,
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Resource.identity",
+            help="Set the user managed identities.",
+            blank=[],
         )
 
-        agent_upgrade = cls._args_schema.agent_upgrade
-        agent_upgrade.correlation_id = AAZUuidArg(
-            options=["correlation-id"],
-            help="The correlation ID associated with an agent upgrade operation.",
-            nullable=True,
-        )
-        agent_upgrade.desired_version = AAZStrArg(
-            options=["desired-version"],
-            help="Specifies the version info w.r.t AgentUpgrade for the machine.",
-            nullable=True,
-        )
-        agent_upgrade.enable_automatic_upgrade = AAZBoolArg(
-            options=["enable-automatic-upgrade"],
-            help="Specifies if the machine's agent should be upgraded",
-            nullable=True,
-        )
-
-        extensions = cls._args_schema.extensions
-        extensions.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.extensions.Element
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="The machine extension name.",
-            nullable=True,
-        )
-        _element.status = AAZObjectArg(
-            options=["status"],
-            help="Instance view status.",
-            nullable=True,
-        )
-        _element.type = AAZStrArg(
-            options=["type"],
-            help="Specifies the type of the extension; an example is \"CustomScriptExtension\".",
-            nullable=True,
-        )
-        _element.type_handler_version = AAZStrArg(
-            options=["type-handler-version"],
-            help="Specifies the version of the script handler.",
-            nullable=True,
-        )
-
-        status = cls._args_schema.extensions.Element.status
-        status.code = AAZStrArg(
-            options=["code"],
-            help="The status code.",
-            nullable=True,
-        )
-        status.display_status = AAZStrArg(
-            options=["display-status"],
-            help="The short localizable label for the status.",
-            nullable=True,
-        )
-        status.level = AAZStrArg(
-            options=["level"],
-            help="The level code.",
-            nullable=True,
-            enum={"Error": "Error", "Info": "Info", "Warning": "Warning"},
-        )
-        status.message = AAZStrArg(
-            options=["message"],
-            help="The detailed status message, including for alerts and error messages.",
-            nullable=True,
-        )
-        status.time = AAZDateTimeArg(
-            options=["time"],
-            help="The time of the status.",
-            nullable=True,
-        )
-
-        license_profile = cls._args_schema.license_profile
-        license_profile.esu_profile = AAZObjectArg(
-            options=["esu-profile"],
-            help="Properties for the Machine ESU profile.",
-            nullable=True,
-        )
-
-        esu_profile = cls._args_schema.license_profile.esu_profile
-        esu_profile.assigned_license = AAZObjectArg(
-            options=["assigned-license"],
-            help="The assigned license resource.",
-            nullable=True,
-        )
-        esu_profile.license_assignment_state = AAZStrArg(
-            options=["license-assignment-state"],
-            help="Describes the license assignment state (Assigned or NotAssigned).",
-            nullable=True,
-            enum={"Assigned": "Assigned", "NotAssigned": "NotAssigned"},
-        )
-
-        assigned_license = cls._args_schema.license_profile.esu_profile.assigned_license
-        assigned_license.license_details = AAZObjectArg(
-            options=["license-details"],
-            help="Describes the properties of a License.",
-            nullable=True,
-        )
-        assigned_license.license_type = AAZStrArg(
-            options=["license-type"],
-            help="The type of the license resource.",
-            nullable=True,
-            enum={"ESU": "ESU"},
-        )
-        assigned_license.tenant_id = AAZStrArg(
-            options=["tenant-id"],
-            help="Describes the tenant id.",
-            nullable=True,
-        )
-        assigned_license.tags = AAZDictArg(
-            options=["tags"],
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        license_details = cls._args_schema.license_profile.esu_profile.assigned_license.license_details
-        license_details.edition = AAZStrArg(
-            options=["edition"],
-            help="Describes the edition of the license. The values are either Standard or Datacenter.",
-            nullable=True,
-            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
-        )
-        license_details.processors = AAZIntArg(
-            options=["processors"],
-            help="Describes the number of processors.",
-            nullable=True,
-        )
-        license_details.state = AAZStrArg(
-            options=["state"],
-            help="Describes the state of the license.",
-            nullable=True,
-            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
-        )
-        license_details.target = AAZStrArg(
-            options=["target"],
-            help="Describes the license target server.",
-            nullable=True,
-            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
-        )
-        license_details.type = AAZStrArg(
-            options=["type"],
-            help="Describes the license core type (pCore or vCore).",
-            nullable=True,
-            enum={"pCore": "pCore", "vCore": "vCore"},
-        )
-        license_details.volume_license_details = AAZListArg(
-            options=["volume-license-details"],
-            help="A list of volume license details.",
-            nullable=True,
-        )
-
-        volume_license_details = cls._args_schema.license_profile.esu_profile.assigned_license.license_details.volume_license_details
-        volume_license_details.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.license_profile.esu_profile.assigned_license.license_details.volume_license_details.Element
-        _element.invoice_id = AAZStrArg(
-            options=["invoice-id"],
-            help="The invoice id for the volume license.",
-            nullable=True,
-        )
-        _element.program_year = AAZStrArg(
-            options=["program-year"],
-            help="Describes the program year the volume license is for.",
-            nullable=True,
-            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
-        )
-
-        tags = cls._args_schema.license_profile.esu_profile.assigned_license.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        location_data = cls._args_schema.location_data
-        location_data.city = AAZStrArg(
-            options=["city"],
-            help="The city or locality where the resource is located.",
-            nullable=True,
-        )
-        location_data.country_or_region = AAZStrArg(
-            options=["country-or-region"],
-            help="The country or region where the resource is located",
-            nullable=True,
-        )
-        location_data.district = AAZStrArg(
-            options=["district"],
-            help="The district, state, or province where the resource is located.",
-            nullable=True,
-        )
-        location_data.name = AAZStrArg(
-            options=["name"],
-            help="A canonical name for the geographic or physical location.",
-            fmt=AAZStrArgFormat(
-                max_length=256,
-            ),
-        )
-
-        os_profile = cls._args_schema.os_profile
-        os_profile.linux_configuration = AAZObjectArg(
-            options=["linux-configuration"],
-            help="Specifies the linux configuration for update management.",
-            nullable=True,
-        )
-        os_profile.windows_configuration = AAZObjectArg(
-            options=["windows-configuration"],
-            help="Specifies the windows configuration for update management.",
-            nullable=True,
-        )
-
-        linux_configuration = cls._args_schema.os_profile.linux_configuration
-        linux_configuration.patch_settings = AAZObjectArg(
-            options=["patch-settings"],
-            help="Specifies the patch settings.",
-            nullable=True,
-        )
-        cls._build_args_patchsettings_create_or_update_update(linux_configuration.patch_settings)
-
-        windows_configuration = cls._args_schema.os_profile.windows_configuration
-        windows_configuration.patch_settings = AAZObjectArg(
-            options=["patch-settings"],
-            help="Specifies the patch settings.",
-            nullable=True,
-        )
-        cls._build_args_patchsettings_create_or_update_update(windows_configuration.patch_settings)
-
-        service_statuses = cls._args_schema.service_statuses
-        service_statuses.extension_service = AAZObjectArg(
-            options=["extension-service"],
-            help="The state of the extension service on the Arc-enabled machine.",
-            nullable=True,
-        )
-        cls._build_args_servicestatus_create_or_update_update(service_statuses.extension_service)
-        service_statuses.guest_configuration_service = AAZObjectArg(
-            options=["guest-configuration-service"],
-            help="The state of the guest configuration service on the Arc-enabled machine.",
-            nullable=True,
-        )
-        cls._build_args_servicestatus_create_or_update_update(service_statuses.guest_configuration_service)
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Resource",
-            help="Identity for the resource.",
-            nullable=True,
-        )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
-            arg_group="Resource",
-            help="Indicates which kind of Arc machine placement on-premises, such as HCI, SCVMM or VMware etc.",
-            nullable=True,
-            enum={"AVS": "AVS", "AWS": "AWS", "EPS": "EPS", "GCP": "GCP", "HCI": "HCI", "SCVMM": "SCVMM", "VMware": "VMware"},
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="The identity type.",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
         return cls._args_schema
-
-    _args_patchsettings_create_or_update_update = None
-
-    @classmethod
-    def _build_args_patchsettings_create_or_update_update(cls, _schema):
-        if cls._args_patchsettings_create_or_update_update is not None:
-            _schema.assessment_mode = cls._args_patchsettings_create_or_update_update.assessment_mode
-            _schema.enable_hotpatching = cls._args_patchsettings_create_or_update_update.enable_hotpatching
-            _schema.patch_mode = cls._args_patchsettings_create_or_update_update.patch_mode
-            return
-
-        cls._args_patchsettings_create_or_update_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        patchsettings_create_or_update_update = cls._args_patchsettings_create_or_update_update
-        patchsettings_create_or_update_update.assessment_mode = AAZStrArg(
-            options=["assessment-mode"],
-            help="Specifies the assessment mode.",
-            nullable=True,
-            enum={"AutomaticByPlatform": "AutomaticByPlatform", "ImageDefault": "ImageDefault"},
-        )
-        patchsettings_create_or_update_update.enable_hotpatching = AAZBoolArg(
-            options=["enable-hotpatching"],
-            help="Captures the hotpatch capability enrollment intent of the customers, which enables customers to patch their Windows machines without requiring a reboot.",
-            nullable=True,
-        )
-        patchsettings_create_or_update_update.patch_mode = AAZStrArg(
-            options=["patch-mode"],
-            help="Specifies the patch mode.",
-            nullable=True,
-            enum={"AutomaticByOS": "AutomaticByOS", "AutomaticByPlatform": "AutomaticByPlatform", "ImageDefault": "ImageDefault", "Manual": "Manual"},
-        )
-
-        _schema.assessment_mode = cls._args_patchsettings_create_or_update_update.assessment_mode
-        _schema.enable_hotpatching = cls._args_patchsettings_create_or_update_update.enable_hotpatching
-        _schema.patch_mode = cls._args_patchsettings_create_or_update_update.patch_mode
-
-    _args_servicestatus_create_or_update_update = None
-
-    @classmethod
-    def _build_args_servicestatus_create_or_update_update(cls, _schema):
-        if cls._args_servicestatus_create_or_update_update is not None:
-            _schema.startup_type = cls._args_servicestatus_create_or_update_update.startup_type
-            _schema.status = cls._args_servicestatus_create_or_update_update.status
-            return
-
-        cls._args_servicestatus_create_or_update_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        servicestatus_create_or_update_update = cls._args_servicestatus_create_or_update_update
-        servicestatus_create_or_update_update.startup_type = AAZStrArg(
-            options=["startup-type"],
-            help="The behavior of the service when the Arc-enabled machine starts up.",
-            nullable=True,
-        )
-        servicestatus_create_or_update_update.status = AAZStrArg(
-            options=["status"],
-            help="The current status of the service.",
-            nullable=True,
-        )
-
-        _schema.startup_type = cls._args_servicestatus_create_or_update_update.startup_type
-        _schema.status = cls._args_servicestatus_create_or_update_update.status
 
     def _execute_operations(self):
         self.pre_operations()
         self.MachinesGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
+        self.pre_instance_update(self.ctx.selectors.subresource.get())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.post_instance_update(self.ctx.selectors.subresource.get())
         self.MachinesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -523,8 +116,19 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
 
     class MachinesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -631,9 +235,9 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_schema_on_200.system_data)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
-            _UpdateHelper._build_schema_record_string_read(_schema_on_200.tags)
+            _AssignHelper._build_schema_record_string_read(_schema_on_200.tags)
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -695,7 +299,7 @@ class Update(AAZCommand):
                 serialized_name="detectedProperties",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_record_string_read(properties.detected_properties)
+            _AssignHelper._build_schema_record_string_read(properties.detected_properties)
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"read_only": True},
@@ -841,11 +445,11 @@ class Update(AAZCommand):
 
             extensions_allow_list = cls._schema_on_200.properties.agent_configuration.extensions_allow_list
             extensions_allow_list.Element = AAZObjectType()
-            _UpdateHelper._build_schema_configurationextension_read(extensions_allow_list.Element)
+            _AssignHelper._build_schema_configurationextension_read(extensions_allow_list.Element)
 
             extensions_block_list = cls._schema_on_200.properties.agent_configuration.extensions_block_list
             extensions_block_list.Element = AAZObjectType()
-            _UpdateHelper._build_schema_configurationextension_read(extensions_block_list.Element)
+            _AssignHelper._build_schema_configurationextension_read(extensions_block_list.Element)
 
             incoming_connections_ports = cls._schema_on_200.properties.agent_configuration.incoming_connections_ports
             incoming_connections_ports.Element = AAZStrType()
@@ -887,11 +491,11 @@ class Update(AAZCommand):
 
             error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(error_details.Element)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
             extensions.Element = AAZObjectType()
-            _UpdateHelper._build_schema_machineextensioninstanceview_read(extensions.Element)
+            _AssignHelper._build_schema_machineextensioninstanceview_read(extensions.Element)
 
             firmware_profile = cls._schema_on_200.properties.firmware_profile
             firmware_profile.serial_number = AAZStrType(
@@ -993,9 +597,9 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(assigned_license.system_data)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(assigned_license.system_data)
             assigned_license.tags = AAZDictType()
-            _UpdateHelper._build_schema_record_string_read(assigned_license.tags)
+            _AssignHelper._build_schema_record_string_read(assigned_license.tags)
             assigned_license.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -1073,7 +677,7 @@ class Update(AAZCommand):
             product_profile.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -1107,7 +711,7 @@ class Update(AAZCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -1182,24 +786,24 @@ class Update(AAZCommand):
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _UpdateHelper._build_schema_patchsettings_read(linux_configuration.patch_settings)
+            _AssignHelper._build_schema_patchsettings_read(linux_configuration.patch_settings)
 
             windows_configuration = cls._schema_on_200.properties.os_profile.windows_configuration
             windows_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _UpdateHelper._build_schema_patchsettings_read(windows_configuration.patch_settings)
+            _AssignHelper._build_schema_patchsettings_read(windows_configuration.patch_settings)
 
             service_statuses = cls._schema_on_200.properties.service_statuses
             service_statuses.extension_service = AAZObjectType(
                 serialized_name="extensionService",
             )
-            _UpdateHelper._build_schema_servicestatus_read(service_statuses.extension_service)
+            _AssignHelper._build_schema_servicestatus_read(service_statuses.extension_service)
             service_statuses.guest_configuration_service = AAZObjectType(
                 serialized_name="guestConfigurationService",
             )
-            _UpdateHelper._build_schema_servicestatus_read(service_statuses.guest_configuration_service)
+            _AssignHelper._build_schema_servicestatus_read(service_statuses.guest_configuration_service)
 
             storage_profile = cls._schema_on_200.properties.storage_profile
             storage_profile.disks = AAZListType(
@@ -1244,9 +848,9 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_element.system_data)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_element.system_data)
             _element.tags = AAZDictType()
-            _UpdateHelper._build_schema_record_string_read(_element.tags)
+            _AssignHelper._build_schema_record_string_read(_element.tags)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -1264,18 +868,18 @@ class Update(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            _UpdateHelper._build_schema_machineextensioninstanceview_read(properties.instance_view)
+            _AssignHelper._build_schema_machineextensioninstanceview_read(properties.instance_view)
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _UpdateHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _AssignHelper._build_schema_record_unknown_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record_unknown_read(properties.settings)
+            _AssignHelper._build_schema_record_unknown_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -1400,9 +1004,9 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_schema_on_200.system_data)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
-            _UpdateHelper._build_schema_record_string_read(_schema_on_200.tags)
+            _AssignHelper._build_schema_record_string_read(_schema_on_200.tags)
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -1464,7 +1068,7 @@ class Update(AAZCommand):
                 serialized_name="detectedProperties",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_record_string_read(properties.detected_properties)
+            _AssignHelper._build_schema_record_string_read(properties.detected_properties)
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"read_only": True},
@@ -1610,11 +1214,11 @@ class Update(AAZCommand):
 
             extensions_allow_list = cls._schema_on_200.properties.agent_configuration.extensions_allow_list
             extensions_allow_list.Element = AAZObjectType()
-            _UpdateHelper._build_schema_configurationextension_read(extensions_allow_list.Element)
+            _AssignHelper._build_schema_configurationextension_read(extensions_allow_list.Element)
 
             extensions_block_list = cls._schema_on_200.properties.agent_configuration.extensions_block_list
             extensions_block_list.Element = AAZObjectType()
-            _UpdateHelper._build_schema_configurationextension_read(extensions_block_list.Element)
+            _AssignHelper._build_schema_configurationextension_read(extensions_block_list.Element)
 
             incoming_connections_ports = cls._schema_on_200.properties.agent_configuration.incoming_connections_ports
             incoming_connections_ports.Element = AAZStrType()
@@ -1656,11 +1260,11 @@ class Update(AAZCommand):
 
             error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(error_details.Element)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
             extensions.Element = AAZObjectType()
-            _UpdateHelper._build_schema_machineextensioninstanceview_read(extensions.Element)
+            _AssignHelper._build_schema_machineextensioninstanceview_read(extensions.Element)
 
             firmware_profile = cls._schema_on_200.properties.firmware_profile
             firmware_profile.serial_number = AAZStrType(
@@ -1762,9 +1366,9 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(assigned_license.system_data)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(assigned_license.system_data)
             assigned_license.tags = AAZDictType()
-            _UpdateHelper._build_schema_record_string_read(assigned_license.tags)
+            _AssignHelper._build_schema_record_string_read(assigned_license.tags)
             assigned_license.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -1842,7 +1446,7 @@ class Update(AAZCommand):
             product_profile.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -1876,7 +1480,7 @@ class Update(AAZCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -1951,24 +1555,24 @@ class Update(AAZCommand):
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _UpdateHelper._build_schema_patchsettings_read(linux_configuration.patch_settings)
+            _AssignHelper._build_schema_patchsettings_read(linux_configuration.patch_settings)
 
             windows_configuration = cls._schema_on_200.properties.os_profile.windows_configuration
             windows_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _UpdateHelper._build_schema_patchsettings_read(windows_configuration.patch_settings)
+            _AssignHelper._build_schema_patchsettings_read(windows_configuration.patch_settings)
 
             service_statuses = cls._schema_on_200.properties.service_statuses
             service_statuses.extension_service = AAZObjectType(
                 serialized_name="extensionService",
             )
-            _UpdateHelper._build_schema_servicestatus_read(service_statuses.extension_service)
+            _AssignHelper._build_schema_servicestatus_read(service_statuses.extension_service)
             service_statuses.guest_configuration_service = AAZObjectType(
                 serialized_name="guestConfigurationService",
             )
-            _UpdateHelper._build_schema_servicestatus_read(service_statuses.guest_configuration_service)
+            _AssignHelper._build_schema_servicestatus_read(service_statuses.guest_configuration_service)
 
             storage_profile = cls._schema_on_200.properties.storage_profile
             storage_profile.disks = AAZListType(
@@ -2013,9 +1617,9 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_element.system_data)
+            _AssignHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_element.system_data)
             _element.tags = AAZDictType()
-            _UpdateHelper._build_schema_record_string_read(_element.tags)
+            _AssignHelper._build_schema_record_string_read(_element.tags)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -2033,18 +1637,18 @@ class Update(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            _UpdateHelper._build_schema_machineextensioninstanceview_read(properties.instance_view)
+            _AssignHelper._build_schema_machineextensioninstanceview_read(properties.instance_view)
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _UpdateHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _AssignHelper._build_schema_record_unknown_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record_unknown_read(properties.settings)
+            _AssignHelper._build_schema_record_unknown_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -2055,164 +1659,26 @@ class Update(AAZCommand):
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self._update_instance(self.ctx.selectors.subresource.get())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 value=instance,
-                typ=AAZObjectType
+                typ=AAZIdentityObjectType
             )
-            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
-            _builder.set_prop("kind", AAZStrType, ".kind")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "assign"}})
+            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "assign"}})
 
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("agentUpgrade", AAZObjectType, ".agent_upgrade")
-                properties.set_prop("clientPublicKey", AAZStrType, ".client_public_key")
-                properties.set_prop("extensions", AAZListType, ".extensions")
-                properties.set_prop("hardwareResourceId", AAZStrType, ".hardware_resource_id")
-                properties.set_prop("identityKeyStore", AAZStrType, ".identity_key_store")
-                properties.set_prop("licenseProfile", AAZObjectType, ".license_profile")
-                properties.set_prop("locationData", AAZObjectType, ".location_data")
-                properties.set_prop("mssqlDiscovered", AAZStrType, ".mssql_discovered")
-                properties.set_prop("osProfile", AAZObjectType, ".os_profile")
-                properties.set_prop("osType", AAZStrType, ".os_type")
-                properties.set_prop("parentClusterResourceId", AAZStrType, ".parent_cluster_resource_id")
-                properties.set_prop("privateLinkScopeResourceId", AAZStrType, ".private_link_scope_resource_id")
-                properties.set_prop("serviceStatuses", AAZObjectType, ".service_statuses")
-                properties.set_prop("tpmEkCertificate", AAZStrType, ".tpm_ek_certificate")
-
-            agent_upgrade = _builder.get(".properties.agentUpgrade")
-            if agent_upgrade is not None:
-                agent_upgrade.set_prop("correlationId", AAZStrType, ".correlation_id")
-                agent_upgrade.set_prop("desiredVersion", AAZStrType, ".desired_version")
-                agent_upgrade.set_prop("enableAutomaticUpgrade", AAZBoolType, ".enable_automatic_upgrade")
-
-            extensions = _builder.get(".properties.extensions")
-            if extensions is not None:
-                extensions.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.extensions[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("status", AAZObjectType, ".status")
-                _elements.set_prop("type", AAZStrType, ".type")
-                _elements.set_prop("typeHandlerVersion", AAZStrType, ".type_handler_version")
-
-            status = _builder.get(".properties.extensions[].status")
-            if status is not None:
-                status.set_prop("code", AAZStrType, ".code")
-                status.set_prop("displayStatus", AAZStrType, ".display_status")
-                status.set_prop("level", AAZStrType, ".level")
-                status.set_prop("message", AAZStrType, ".message")
-                status.set_prop("time", AAZStrType, ".time")
-
-            license_profile = _builder.get(".properties.licenseProfile")
-            if license_profile is not None:
-                license_profile.set_prop("esuProfile", AAZObjectType, ".esu_profile")
-
-            esu_profile = _builder.get(".properties.licenseProfile.esuProfile")
-            if esu_profile is not None:
-                esu_profile.set_prop("assignedLicense", AAZObjectType, ".assigned_license")
-                esu_profile.set_prop("licenseAssignmentState", AAZStrType, ".license_assignment_state")
-
-            assigned_license = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense")
-            if assigned_license is not None:
-                assigned_license.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                assigned_license.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.properties")
-            if properties is not None:
-                properties.set_prop("licenseDetails", AAZObjectType, ".license_details")
-                properties.set_prop("licenseType", AAZStrType, ".license_type")
-                properties.set_prop("tenantId", AAZStrType, ".tenant_id")
-
-            license_details = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.properties.licenseDetails")
-            if license_details is not None:
-                license_details.set_prop("edition", AAZStrType, ".edition")
-                license_details.set_prop("processors", AAZIntType, ".processors")
-                license_details.set_prop("state", AAZStrType, ".state")
-                license_details.set_prop("target", AAZStrType, ".target")
-                license_details.set_prop("type", AAZStrType, ".type")
-                license_details.set_prop("volumeLicenseDetails", AAZListType, ".volume_license_details")
-
-            volume_license_details = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.properties.licenseDetails.volumeLicenseDetails")
-            if volume_license_details is not None:
-                volume_license_details.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.properties.licenseDetails.volumeLicenseDetails[]")
-            if _elements is not None:
-                _elements.set_prop("invoiceId", AAZStrType, ".invoice_id")
-                _elements.set_prop("programYear", AAZStrType, ".program_year")
-
-            tags = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            location_data = _builder.get(".properties.locationData")
-            if location_data is not None:
-                location_data.set_prop("city", AAZStrType, ".city")
-                location_data.set_prop("countryOrRegion", AAZStrType, ".country_or_region")
-                location_data.set_prop("district", AAZStrType, ".district")
-                location_data.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-
-            os_profile = _builder.get(".properties.osProfile")
-            if os_profile is not None:
-                os_profile.set_prop("linuxConfiguration", AAZObjectType, ".linux_configuration")
-                os_profile.set_prop("windowsConfiguration", AAZObjectType, ".windows_configuration")
-
-            linux_configuration = _builder.get(".properties.osProfile.linuxConfiguration")
-            if linux_configuration is not None:
-                _UpdateHelper._build_schema_patchsettings_create_or_update_update(linux_configuration.set_prop("patchSettings", AAZObjectType, ".patch_settings", typ_kwargs={"flags": {"client_flatten": True}}))
-
-            windows_configuration = _builder.get(".properties.osProfile.windowsConfiguration")
-            if windows_configuration is not None:
-                _UpdateHelper._build_schema_patchsettings_create_or_update_update(windows_configuration.set_prop("patchSettings", AAZObjectType, ".patch_settings", typ_kwargs={"flags": {"client_flatten": True}}))
-
-            service_statuses = _builder.get(".properties.serviceStatuses")
-            if service_statuses is not None:
-                _UpdateHelper._build_schema_servicestatus_create_or_update_update(service_statuses.set_prop("extensionService", AAZObjectType, ".extension_service"))
-                _UpdateHelper._build_schema_servicestatus_create_or_update_update(service_statuses.set_prop("guestConfigurationService", AAZObjectType, ".guest_configuration_service"))
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            user_assigned = _builder.get(".userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             return _instance_value
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
-
-    @classmethod
-    def _build_schema_patchsettings_create_or_update_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("assessmentMode", AAZStrType, ".assessment_mode")
-        _builder.set_prop("enableHotpatching", AAZBoolType, ".enable_hotpatching")
-        _builder.set_prop("patchMode", AAZStrType, ".patch_mode")
-
-    @classmethod
-    def _build_schema_servicestatus_create_or_update_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("startupType", AAZStrType, ".startup_type")
-        _builder.set_prop("status", AAZStrType, ".status")
+class _AssignHelper:
+    """Helper class for Assign"""
 
     _schema_azure_resourcemanager_commontypes_errordetail_read = None
 
@@ -2462,4 +1928,4 @@ class _UpdateHelper:
         _schema.status = cls._schema_servicestatus_read.status
 
 
-__all__ = ["Update"]
+__all__ = ["Assign"]

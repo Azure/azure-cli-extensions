@@ -12,22 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension wait",
+    "connectedmachine license list-by-rg",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class ListByRg(AAZCommand):
+    """List operation to get all licenses of a non-Azure machine
     """
 
     _aaz_info = {
+        "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses", "2026-06-16-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,26 +42,6 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="",
-            ),
-        )
-        _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
-            help="The name of the machine containing the extension.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
-                max_length=54,
-                min_length=1,
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -67,7 +49,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachineExtensionsGet(ctx=self.ctx)()
+        self.LicensesListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,10 +61,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class MachineExtensionsGet(AAZHttpOperation):
+    class LicensesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +79,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions/{extensionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses",
                 **self.url_parameters
             )
 
@@ -111,14 +94,6 @@ class Wait(AAZWaitCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -167,72 +142,83 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.license_details = AAZObjectType(
+                serialized_name="licenseDetails",
             )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
+            properties.license_type = AAZStrType(
+                serialized_name="licenseType",
             )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            properties.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            properties.protected_settings = AAZDictType(
-                serialized_name="protectedSettings",
-            )
-            _WaitHelper._build_schema_record_unknown_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZDictType()
-            _WaitHelper._build_schema_record_unknown_read(properties.settings)
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
-            instance_view = cls._schema_on_200.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            license_details = cls._schema_on_200.value.Element.properties.license_details
+            license_details.assigned_licenses = AAZIntType(
+                serialized_name="assignedLicenses",
+                flags={"read_only": True},
+            )
+            license_details.edition = AAZStrType()
+            license_details.immutable_id = AAZStrType(
+                serialized_name="immutableId",
+                flags={"read_only": True},
+            )
+            license_details.processors = AAZIntType()
+            license_details.state = AAZStrType()
+            license_details.target = AAZStrType()
+            license_details.type = AAZStrType()
+            license_details.volume_license_details = AAZListType(
+                serialized_name="volumeLicenseDetails",
             )
 
-            status = cls._schema_on_200.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
+            volume_license_details = cls._schema_on_200.value.Element.properties.license_details.volume_license_details
+            volume_license_details.Element = AAZObjectType()
 
-            system_data = cls._schema_on_200.system_data
+            _element = cls._schema_on_200.value.Element.properties.license_details.volume_license_details.Element
+            _element.invoice_id = AAZStrType(
+                serialized_name="invoiceId",
+            )
+            _element.program_year = AAZStrType(
+                serialized_name="programYear",
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -252,29 +238,14 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
+            tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
-
-    _schema_record_unknown_read = None
-
-    @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
-            return
-
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
-
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
-
-        _schema.Element = cls._schema_record_unknown_read.Element
+class _ListByRgHelper:
+    """Helper class for ListByRg"""
 
 
-__all__ = ["Wait"]
+__all__ = ["ListByRg"]

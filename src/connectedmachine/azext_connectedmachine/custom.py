@@ -11,6 +11,11 @@
 # pylint: disable=unused-argument
 # pylint: disable=too-many-statements
 
+from azure.cli.core.aaz import has_value, AAZResourceGroupNameArg
+from .aaz.latest.connectedmachine._list import List as _List
+from .aaz.latest.connectedmachine._list_by_sub import ListBySub as _ListBySub
+from .aaz.latest.connectedmachine.license._list import List as _LicenseList
+from .aaz.latest.connectedmachine.license._list_by_rg import ListByRg as _LicenseListByRg
 from .aaz.latest.connectedmachine.license_profile import Create as _ProfileCreate
 from .aaz.latest.connectedmachine.license_profile import Update as _ProfileUpdate
 from .aaz.latest.connectedmachine.license_profile import Show as _ProfileShow
@@ -80,3 +85,49 @@ class ProfileDelete(_ProfileDelete):
     def pre_operations(self):
         args = self.ctx.args
         args.license_profile_name = "Default"
+
+
+# Combine list-by-resource-group and list-by-subscription into a single `list`
+# command. When --resource-group is provided the command lists by resource
+# group; otherwise it lists across the whole subscription.
+class List(_List):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # make --resource-group optional so the command can also list by subscription
+        # pylint: disable=protected-access
+        args_schema.resource_group._required = False
+
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        if has_value(self.ctx.args.resource_group):
+            self.MachinesListByResourceGroup(ctx=self.ctx)()          # inherited from _List
+        else:
+            _ListBySub.MachinesListBySubscription(ctx=self.ctx)()     # reused from _ListBySub
+        self.post_operations()
+
+
+# Combine license list-by-subscription and list-by-resource-group into a single
+# `license list` command. When --resource-group is provided the command lists by
+# resource group; otherwise it lists across the whole subscription.
+class LicenseList(_LicenseList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # add an optional --resource-group so the command can also list by resource group
+        # pylint: disable=protected-access
+        args_schema.resource_group = AAZResourceGroupNameArg()
+
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        if has_value(self.ctx.args.resource_group):
+            _LicenseListByRg.LicensesListByResourceGroup(ctx=self.ctx)()   # reused from _LicenseListByRg
+        else:
+            self.LicensesListBySubscription(ctx=self.ctx)()                # inherited from _LicenseList
+        self.post_operations()
