@@ -165,7 +165,14 @@ def check_extension_version(extension_name):
     extension_to_check = extension_to_check[0]
 
     for ext in available_extensions:
-        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+        if ext.get('name') != extension_name:
+            continue
+
+        if not ext.get('version') or not extension_to_check.get('version'):
+            logger.warning("Could not verify the '%s' extension version; skipping update check. Consider running 'az upgrade'.", extension_name)
+            return
+
+        if ext['version'] > extension_to_check['version']:
             logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
             return
 
