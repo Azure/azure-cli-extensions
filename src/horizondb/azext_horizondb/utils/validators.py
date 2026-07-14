@@ -154,4 +154,3 @@ def validate_private_endpoint_connection_id(cmd, namespace):  # pylint: disable=
             '--resource-group <resource-group>.')
     if hasattr(namespace, 'connection_id'):
         del namespace.connection_id
-        del namespace.connection_id
