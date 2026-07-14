@@ -2,6 +2,8 @@
 
 ### Azure Machine Learning CLI (v2) v 2.44.1
 
+-  Fixed datastore create failing with TypeError: Object of type Datastore is not JSON serializable. The datastore operation was migrated to the TypeSpec client while the          datastore entity still produced a legacy msrest model; the request body is now serialized to its wire form before being sent, keeping the on-the-wire request unchanged.
+
 ## 2026-06-18
 
 ### Azure Machine Learning CLI (v2) v 2.44.0
