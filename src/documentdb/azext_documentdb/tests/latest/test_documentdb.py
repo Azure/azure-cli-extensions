@@ -487,6 +487,50 @@ class DocumentdbScenario(ScenarioTest):
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
         self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
 
+    # ---- test 9: negative cases (validation + service rejections) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_neg', location='eastus2')
+    def test_documentdb_mongocluster_negative(self, resource_group):
+        self._base_kwargs()
+
+        # Client-side validation (invalid enum values and a missing required
+        # argument) makes the parser raise SystemExit before any request is sent.
+        client_side_failures = [
+            'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
+            '--admin-user {admin} --password {password} --tier M30 --storage-size 128 '
+            '--storage-type NotARealDisk --shard-count 1 --high-availability Disabled',
+            'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
+            '--admin-user {admin} --password {password} --tier M30 --storage-size 128 '
+            '--storage-type PremiumSSDv2 --shard-count 1 --high-availability NotAMode',
+            'documentdb mongocluster replica promote -n {cluster} -g {rg} --mode Switchover',
+            'documentdb mongocluster replica promote -n {cluster} -g {rg} '
+            '--mode NotSwitchover --promote-option Forced',
+        ]
+        for command in client_side_failures:
+            with self.assertRaises(SystemExit):
+                self.cmd(command)
+
+        # Operations on resources that do not exist are rejected by the service.
+        self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg}',
+            expect_failure=True,
+        )
+        self.cmd(
+            'documentdb mongocluster firewall-rule show -n missing-rule '
+            '--cluster-name {cluster} -g {rg}',
+            expect_failure=True,
+        )
+        self.cmd(
+            'documentdb mongocluster user show -n missing-user '
+            '--cluster-name {cluster} -g {rg}',
+            expect_failure=True,
+        )
+        self.cmd(
+            'documentdb mongocluster replica list --cluster-name {cluster} -g {rg}',
+            expect_failure=True,
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
