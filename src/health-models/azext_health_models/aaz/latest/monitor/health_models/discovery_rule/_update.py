@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models discovery-rule update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a DiscoveryRule
 
     :example: DiscoveryRules_CreateOrUpdate
-        az monitor health-models discovery-rule update --resource-group myResourceGroup --health-model-name myHealthModel --discovery-rule-name myDiscoveryRule
+        az monitor health-models discovery-rule update --resource-group myResourceGroup --health-model-name myHealthModel --discovery-rule-name myDiscoveryRule --authentication-setting authSetting1 --display-name myDisplayName --discover-relationships Enabled --add-recommended-signals Enabled --specification "{kind:ResourceGraphQuery,resourceGraphQuery:'resources | where subscriptionId == '/7ddfffd7-9b32-40df-1234-828cbd55d6f4'/ | where resourceGroup == '/my-rg'/'}" --add-resource-health-signal Enabled
     """
 
     _aaz_info = {

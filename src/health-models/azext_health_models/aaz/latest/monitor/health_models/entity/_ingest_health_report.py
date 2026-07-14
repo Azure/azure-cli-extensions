@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity ingest-health-report",
+    is_preview=True,
 )
 class IngestHealthReport(AAZCommand):
     """Ingest a health report for a specific signal on an entity (the entity must already exist)
 
     :example: Entities_IngestHealthReport
-        az monitor health-models entity ingest-health-report --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --signal-name uniqueSignalName1 --value 85.5 --health-state Degraded --evaluation-rules "{degraded-rule:{operator:GreaterThan,threshold:70},unhealthy-rule:{operator:GreaterThan,threshold:90}}" --expires-in-minutes 60 --additional-context CPU usage elevated due to batch processing job
+        az monitor health-models entity ingest-health-report --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --signal-name uniqueSignalName1 --value 85.5 --health-state Degraded --evaluation-rules "{degraded-rule:{operator:GreaterThan,threshold:70},unhealthy-rule:{operator:GreaterThan,threshold:90}}" --expires-in-minutes 60 --additional-context "CPU usage elevated due to batch processing job"
     """
 
     _aaz_info = {
