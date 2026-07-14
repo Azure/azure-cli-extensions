@@ -8,7 +8,6 @@ from ..responseparsers.amwlocationresponseparser import (
     parseResourceProviderResponseForLocations
 )
 from ..constants import RP_LOCATION_API
-from knack.util import CLIError
 
 
 def get_supported_rp_locations(cmd, rp_name, subscription):

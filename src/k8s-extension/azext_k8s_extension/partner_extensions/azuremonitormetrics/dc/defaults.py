@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from ..constants import DC_TYPE
-from ..deaults import get_default_region
 
 
 # DCR = 64, DCE = 44, DCRA = 64

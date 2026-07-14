@@ -26,9 +26,9 @@ import azure.mgmt.loganalytics
 import azure.mgmt.loganalytics.models
 from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError, MutuallyExclusiveArgumentError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
-from azure.core.exceptions import HttpResponseError
 
 from .._client_factory import cf_resources
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
@@ -118,7 +118,7 @@ class AzureMLKubernetes(DefaultExtension):
                configuration_settings_file, configuration_protected_settings_file, plan_name,
                plan_publisher, plan_product):
 
-        logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
+        logger.warning("Troubleshooting: %s", self.TSG_LINK)
 
         if scope == 'namespace':
             raise InvalidArgumentValueError("Invalid scope '{}'.  This extension can't be installed "
@@ -168,7 +168,7 @@ class AzureMLKubernetes(DefaultExtension):
 
                 if resource.properties.get('distribution', '').lower() == self.OPEN_SHIFT:
                     configuration_settings[self.OPEN_SHIFT] = 'true'
-            except:
+            except (AttributeError, KeyError, TypeError):
                 pass
         except HttpResponseError as ex:
             raise ex
@@ -224,13 +224,14 @@ class AzureMLKubernetes(DefaultExtension):
         return extension, name, create_identity
 
     def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
-        logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
+        logger.warning("Troubleshooting: %s", self.TSG_LINK)
         user_confirmation_factory(cmd, yes)
 
+    # pylint: disable=too-many-branches
     def Update(self, cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, auto_upgrade_mode, release_train, version, configuration_settings,
                configuration_protected_settings, original_extension, yes=False):
 
-        logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
+        logger.warning("Troubleshooting: %s", self.TSG_LINK)
 
         input_configuration_settings = copy.deepcopy(configuration_settings)
         input_configuration_protected_settings = copy.deepcopy(configuration_protected_settings)
@@ -789,5 +790,4 @@ def _check_nodeselector_existed(configuration_settings, configuration_protected_
 def _is_valid_service_type(service_type):
     if service_type:
         return service_type.lower() == 'nodeport' or service_type.lower() == 'loadbalancer' or service_type.lower() == 'clusterip'
-    else:
-        return False
+    return False

@@ -5,10 +5,6 @@
 
 # pylint: disable=unused-argument
 
-import datetime
-import json
-import re
-
 from ..utils import get_cluster_rp_api_version, is_skip_prerequisites_specified
 
 from knack.log import get_logger
@@ -21,9 +17,6 @@ from ..vendored_sdks.models import Scope
 
 from .DefaultExtension import DefaultExtension
 from .azuremonitormetrics.azuremonitorprofile import ensure_azure_monitor_profile_prerequisites, unlink_azure_monitor_profile_artifacts
-
-from .._client_factory import (
-    cf_resources, cf_resource_groups, cf_log_analytics)
 
 logger = get_logger(__name__)
 

@@ -14,7 +14,7 @@ from .. import consts
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import AzCLIError, CLIError, InvalidArgumentValueError, ClientRequestError
+from azure.cli.core.azclierror import AzCLIError, CLIError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait, send_raw_request
@@ -50,6 +50,7 @@ ContainerInsightsStreams = [
 
 
 class ContainerInsights(DefaultExtension):
+    # pylint: disable=too-many-branches
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, auto_upgrade_mode, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
@@ -95,6 +96,7 @@ class ContainerInsights(DefaultExtension):
         )
         return extension, name, create_identity
 
+    # pylint: disable=too-many-branches
     def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
         # Delete DCR-A if it exists incase of MSI Auth
         useAADAuth = False
@@ -194,7 +196,6 @@ class ContainerInsights(DefaultExtension):
                     break
                 except Exception as ex:
                     logger.warning(f"Error deleting DCR: {str(ex)}")
-                    pass
 
             if enable_high_log_scale_mode:
                 _delete_dce_for_dcr(cmd, subscription_id, resource_group_name, dcr_config)
@@ -315,7 +316,6 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "usgovvirginia": "usgovvirginia"
     }
 
-    from azure.core.exceptions import HttpResponseError
     from azure.cli.core.profiles import ResourceType
 
     cluster_location = ''
@@ -431,7 +431,6 @@ def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
     parsed = parse_resource_id(workspace_resource_id)
     subscription_id, resource_group = parsed["subscription"], parsed["resource_group"]
 
-    from azure.core.exceptions import HttpResponseError
     resources = cf_resources(cmd.cli_ctx, subscription_id)
     try:
         resource = resources.get_by_id(workspace_resource_id, '2015-11-01-preview')
@@ -528,6 +527,7 @@ def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
 
 def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name,
                                      configuration_settings, configuration_protected_settings, is_ci_extension_type):
+    # pylint: disable=too-many-branches
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
@@ -549,17 +549,17 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
         if 'omsagent.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['omsagent.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
-            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
-                useAADAuth = True
-            else:
-                useAADAuth = False
+            useAADAuth = bool(
+                (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true")
+                or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting)
+            )
         elif 'amalogs.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['amalogs.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
-            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
-                useAADAuth = True
-            else:
-                useAADAuth = False
+            useAADAuth = bool(
+                (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true")
+                or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting)
+            )
         if useAADAuth and ('dataCollectionSettings' in configuration_settings):
             dataCollectionSettingsString = configuration_settings["dataCollectionSettings"]
             logger.info("provided dataCollectionSettings  is : %s", dataCollectionSettingsString)
@@ -731,7 +731,7 @@ def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
 
 
 def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id, extensionSettings, enable_high_log_scale_mode):
-    from azure.core.exceptions import HttpResponseError
+    # pylint: disable=too-many-branches
 
     cluster_region = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)

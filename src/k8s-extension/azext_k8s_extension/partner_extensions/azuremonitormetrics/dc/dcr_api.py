@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import json
 from knack.util import CLIError
-from .defaults import get_default_dcr_name, sanitize_name
+from .defaults import get_default_dcr_name
 from ..constants import (
     DC_API
 )

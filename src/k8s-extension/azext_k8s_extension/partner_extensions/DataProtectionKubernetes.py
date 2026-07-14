@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,too-many-instance-attributes
 from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError

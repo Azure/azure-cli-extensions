@@ -20,7 +20,6 @@ from kubernetes.client import CoreV1Api, V1NodeList
 from kubernetes.client.rest import ApiException
 
 from knack.log import get_logger
-from knack.commands import CLICommand
 
 logger = get_logger(__name__)
 
@@ -58,10 +57,10 @@ def read_config_settings_file(file_path):
         with open(file_path, "r") as f:
             settings = json.load(f)
             if len(settings) == 0:
-                raise Exception("File {} is empty".format(file_path))
+                raise ValidationError("File {} is empty".format(file_path))
             return settings
     except ValueError as ex:
-        raise Exception("File {} is not a valid JSON file".format(file_path)) from ex
+        raise ValidationError("File {} is not a valid JSON file".format(file_path)) from ex
 
 
 def is_dogfood_cluster(cmd):
@@ -217,7 +216,7 @@ def walk_through_pods(api_instance: CoreV1Api, folder_namespace: str, namespace:
 
     for pod in pods.items:
         pod_name = pod.metadata.name
-        pod_information_status = collect_pod_information(api_instance, pods_folder_name, namespace, pod)
+        pod_information_status = collect_pod_information(pods_folder_name, namespace, pod)
         if not pod_information_status:
             logger.error(f"Failed to collect information for pod '{pod_name}'")
             return False
@@ -281,7 +280,7 @@ def convert_to_pod_dict(pod) -> dict:
     }
 
 
-def collect_pod_information(api_instance: CoreV1Api, pods_folder_name: str, namespace: str, pod) -> bool:
+def collect_pod_information(pods_folder_name: str, namespace: str, pod) -> bool:
     pod_metadata = convert_to_pod_dict(pod)
     if pod_metadata is None:
         logger.error(f"Failed to collect metadata for pod in namespace '{namespace}'")
@@ -410,5 +409,4 @@ def check_namespace_exists(api_instance, namespace: str) -> bool:
     except ApiException as e:
         if e.status == 404:
             return False
-        else:
-            raise  # Re-raise other exceptions
+        raise  # Re-raise other exceptions

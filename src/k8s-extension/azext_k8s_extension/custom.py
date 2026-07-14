@@ -18,6 +18,7 @@ from .utils import (
     is_dogfood_cluster,
     read_config_settings_file,
 )
+from knack.commands import CLICommand
 from knack.log import get_logger
 
 from azure.cli.core import get_default_cli, telemetry
@@ -38,7 +39,7 @@ from .vendored_sdks.models import Identity, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
-from .partner_extensions.AzureMonitorMetrics import AzureMonitorMetrics
+from .partner_extensions.AzureMonitorMetrics import AzureMonitorMetrics  # pylint: disable=no-name-in-module
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
@@ -56,15 +57,11 @@ from ._client_factory import cf_resources
 
 from kubernetes import client as kube_client
 from kubernetes import config
-from kubernetes.config.kube_config import KubeConfigMerger
-from kubernetes.client.rest import ApiException
-from kubernetes.client import CoreV1Api, V1NodeList
+from kubernetes.client import CoreV1Api
 
 from typing import Optional, Union
 
 import oras.client
-
-from knack.commands import CLICommand
 
 logger = get_logger(__name__)
 
