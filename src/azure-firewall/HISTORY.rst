@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.2.1
+++++++
+* `az network firewall create` : Fix `managementIpConfiguration.subnet.id` not being set for non-Basic tier firewalls when `--m-conf-name` is provided.
+
 2.2.0
 ++++++
 * `az network firewall policy create` : Updated parameter `--identity` to support multiple MSIs
