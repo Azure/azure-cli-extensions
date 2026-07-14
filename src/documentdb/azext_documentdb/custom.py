@@ -14,6 +14,7 @@ from azext_documentdb.aaz.latest.documentdb.mongocluster import Create as _Mongo
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Update as _MongoClusterUpdate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.user import Create as _UserCreate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.user import Update as _UserUpdate
+from azext_documentdb.aaz.latest.documentdb.mongocluster.replica import Promote as _ReplicaPromote
 
 logger = get_logger(__name__)
 
@@ -279,5 +280,65 @@ class Restore(_MongoClusterCreate):
                     typ_kwargs={"flags": {"required": True}})
                 restore_parameters.set_prop(
                     "pointInTimeUTC", AAZStrType, ".restore_time")
+
+            return self.serialize_content(_content_value)
+
+
+class ReplicaPromote(_ReplicaPromote):
+    """Promote a replica mongo cluster to a primary role.
+
+    :example: Promote a replica to primary.
+        az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --mode Switchover --promote-option Forced
+    """
+
+    # ``promote`` already exists as a generated command, so this wrapper only
+    # needs to override the request body. It is swapped in over the generated
+    # command through ``commands.py`` (which runs after the generated table is
+    # loaded), exactly like the ``user create``/``user update`` overrides, so it
+    # deliberately does not re-register the command name.
+    class MongoClustersPromote(_ReplicaPromote.MongoClustersPromote):
+
+        def __call__(self, *args, **kwargs):
+            # The generated operation passes ``None`` as the long-running
+            # operation's final-result callback, so azure-core raises
+            # ``TypeError: 'NoneType' object is not callable`` when the promote
+            # completes and it tries to parse the final resource. The promote
+            # returns no body, so pass a no-op callback (``on_200``) instead,
+            # mirroring how the generated ``delete`` handles its empty response.
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            return self.on_error(session.http_response)
+
+        def on_200(self, session):
+            pass
+
+        @property
+        def content(self):
+            # The service expects the promote payload nested under "properties",
+            # but the generated command sends "mode"/"promoteOption" at the root,
+            # which the service rejects with a schema error. Wrap them here.
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}},
+            )
+            _builder.set_prop(
+                "properties", AAZObjectType, typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("mode", AAZStrType, ".mode")
+                properties.set_prop(
+                    "promoteOption", AAZStrType, ".promote_option",
+                    typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)

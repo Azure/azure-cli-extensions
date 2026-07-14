@@ -66,6 +66,25 @@ class DocumentdbScenario(ScenarioTest):
                 time.sleep(delay)
         return None
 
+    def _wait_until_provisioned(self, target, retries=40, delay=30):
+        """Poll a mongo cluster (by kwargs key ``target``) until it is provisioned.
+
+        A mutating long-running operation can report success while the cluster is
+        still settling (``provisioningState`` briefly stays ``Updating``), so this
+        polls the resource until it reaches ``Succeeded``. During a live recording
+        it sleeps between attempts; on playback the recorded responses replay in
+        order.
+        """
+        import time
+        command = 'documentdb mongocluster show -n {' + target + '} -g {rg}'
+        for _ in range(retries):
+            result = self.cmd(command).get_output_in_json()
+            if result['properties']['provisioningState'] == 'Succeeded':
+                return result
+            if self.in_recording or self.is_live:
+                time.sleep(delay)
+        return None
+
     def _create_cluster(self, extra=''):
         """Create the shared base cluster and block until it is provisioned.
 
@@ -423,6 +442,50 @@ class DocumentdbScenario(ScenarioTest):
                 os.remove(enc_file)
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 8: replica promote (forced switchover to primary) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_promote', location='eastus2')
+    def test_documentdb_mongocluster_replica_promote(self, resource_group):
+        self._base_kwargs()
+        self.kwargs.update({
+            'replica': self.create_random_name('cli-mc-rep', 20),
+            'replica_loc': 'westus2',
+        })
+
+        # A source cluster with the GeoReplicas preview feature and a cross-region
+        # replica are the starting topology for a promote.
+        self._create_cluster(extra='--preview-features GeoReplicas ')
+        self._cmd_retry(
+            'documentdb mongocluster replica create -n {replica} -g {rg} '
+            '--location {replica_loc} --source-cluster {cluster} --source-location {loc}',
+            checks=[
+                self.check('name', '{replica}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.replica.role', 'GeoAsyncReplica'),
+            ],
+        )
+
+        # Promote the replica to primary with a forced switchover. The former
+        # replica settles into the primary role once the operation completes.
+        self._cmd_retry(
+            'documentdb mongocluster replica promote -n {replica} -g {rg} '
+            '--mode Switchover --promote-option Forced'
+        )
+        self._wait_until_provisioned('replica')
+        self.cmd(
+            'documentdb mongocluster show -n {replica} -g {rg}',
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.replica.role', 'Primary'),
+            ],
+        )
+
+        # The roles are swapped by the switchover, so the former source is now a
+        # replica and must be deleted before the newly promoted primary.
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+        self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
 
 
 if __name__ == '__main__':
