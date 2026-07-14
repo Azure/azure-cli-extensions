@@ -18,7 +18,7 @@ class GenerateWallet(AAZCommand):
     """Generate wallet action on Autonomous Database
 
     :example: Generate Wallet
-        az oracle-database autonomous-database generate-wallet --autonomousdatabasename <ADBS name> --resource-group <resource_group> --password <password> --is-regional True
+        az oracle-database autonomous-database generate-wallet --autonomousdatabasename MyAutoDB --resource-group MyResourceGroup --password <password> --is-regional True --file wallet-MyAutoDB.zip
     """
 
     _aaz_info = {
@@ -57,6 +57,10 @@ class GenerateWallet(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.file = AAZStrArg(
+            options=["--file", "-f"],
+            help="Local file path to save the generated wallet zip. Defaults to wallet-{autonomousdatabasename}.zip.",
         )
 
         # define Arg Group "Body"
@@ -102,7 +106,33 @@ class GenerateWallet(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        import base64
+        from azure.cli.core.azclierror import FileOperationError, ValidationError
+        from knack.log import get_logger
+
+        logger = get_logger(__name__)
+        wallet_files = result.get("walletFiles") or result.get("wallet_files")
+        if not wallet_files:
+            raise ValidationError("No walletFiles content returned from the API.")
+
+        try:
+            wallet_zip = base64.b64decode(wallet_files, validate=True)
+        except Exception as ex:
+            raise ValidationError("Failed to decode walletFiles as base64 content: {}".format(str(ex)))
+
+        file_path = self.ctx.args.file.to_serialized_data() if self.ctx.args.file else None
+        if not file_path:
+            autonomous_database_name = self.ctx.args.autonomousdatabasename.to_serialized_data()
+            file_path = "wallet-{}.zip".format(autonomous_database_name)
+
+        try:
+            with open(file_path, "wb") as wallet_file:
+                wallet_file.write(wallet_zip)
+        except Exception as ex:
+            raise FileOperationError("Failed to save wallet file: {}".format(str(ex)))
+
+        logger.warning("Wallet saved to: %s", file_path)
+        return {"file": file_path, "message": "Wallet saved to: {}".format(file_path)}
 
     class AutonomousDatabasesGenerateWallet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
