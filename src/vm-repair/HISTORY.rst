@@ -5,6 +5,7 @@ Release History
 2.2.1
 ++++++
 Migrate code from Azure SDK to AAZ based commands for compute operations
+Fix 'str' > 'NoneType' crash in check_extension_version when extension version is null
 
 2.2.0
 ++++++
