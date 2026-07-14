@@ -15,6 +15,7 @@ from azure.mgmt.compute import ComputeManagementClient
 from azure.mgmt.containerservice import ContainerServiceClient
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.network import NetworkManagementClient
+from azure.mgmt.network.models import Delegation, Subnet
 from knack.log import get_logger
 
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
@@ -234,13 +235,15 @@ def add_and_delegate_aci_subnet(cmd, cluster, resource_group_name):
             f"Could not find a free /{ACI_SUBNET_PREFIX} in VNET '{vnet_name}' to create subnet '{ACI_SUBNET_NAME}'."
         )
 
-    subnet_params = {
-        "address_prefix": str(new_cidr),
-        "delegations": [{
-            "name": "aci-delegation",
-            "service_name": ACI_DELEGATION_SERVICE_NAME,
-        }],
-    }
+    subnet_params = Subnet(
+        address_prefix=str(new_cidr),
+        delegations=[
+            Delegation(
+                name="aci-delegation",
+                service_name=ACI_DELEGATION_SERVICE_NAME,
+            )
+        ],
+    )
 
     logger.info(
         "Creating subnet '%s' (%s) in VNET '%s' (resource group '%s') delegated to ACI...",
