@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
+import os
+import tempfile
 import unittest
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
@@ -10,15 +13,21 @@ from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 
 
 class DocumentdbScenario(ScenarioTest):
-    """End-to-end lifecycle for `az documentdb mongocluster`.
+    """Scenario tests for `az documentdb mongocluster`.
 
-    Each long-running operation runs synchronously (the command blocks until the
+    Each ``test_*`` method is an independent scenario with its own resource group
+    and its own recording, so a failure in one scenario does not mask the others
+    and a single scenario can be re-recorded on its own.
+
+    Every long-running operation runs synchronously (the command blocks until the
     operation reaches a terminal state). The mongo cluster service can keep an
     internal lock for a while after an operation reports ``Succeeded``, so
     ``_cmd_retry`` reissues a mutating command while the service still reports an
     operation ``in-progress``. It only sleeps between attempts during a live
     recording run; on playback the recorded responses replay in order.
     """
+
+    # ---- helpers (not prefixed test_, so they never run as tests) ----
 
     def _cmd_retry(self, command, checks=None, retries=12, delay=45):
         import time
@@ -57,21 +66,38 @@ class DocumentdbScenario(ScenarioTest):
                 time.sleep(delay)
         return None
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_documentdb', location='eastus2')
-    def test_documentdb_mongocluster_lifecycle(self, resource_group):
+    def _create_cluster(self, extra=''):
+        """Create the shared base cluster and block until it is provisioned.
+
+        ``extra`` appends scenario-specific create flags (for example Entra auth or
+        the GeoReplicas preview feature).
+        """
+        self._cmd_retry(
+            'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
+            '--admin-user {admin} --password {password} '
+            '--tier M30 --storage-size 128 --storage-type PremiumSSDv2 '
+            '--shard-count 1 --high-availability Disabled ' + extra,
+            checks=[
+                self.check('name', '{cluster}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+            ],
+        )
+
+    def _base_kwargs(self):
         self.kwargs.update({
             'cluster': self.create_random_name('cli-mc', 20),
-            'replica': self.create_random_name('cli-mc-rep', 20),
-            'restored': self.create_random_name('cli-mc-rst', 20),
             'loc': 'eastus2',
-            'replica_loc': 'westus2',
             'admin': 'testadmin',
             'password': 'CliTest2026!Pw',
-            'new_password': 'CliReset2026!Pw',
-            'fw': 'allow-office',
-            'user_oid': '71581c6f-df31-4790-bc49-26c6b38df8bd',
         })
+
+    # ---- test 1: cluster CRUD + connection strings + reset-password ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_crud', location='eastus2')
+    def test_documentdb_mongocluster_crud(self, resource_group):
+        self._base_kwargs()
+        self.kwargs['new_password'] = 'CliReset2026!Pw'
 
         # Name availability for a fresh cluster name.
         self.cmd(
@@ -79,16 +105,11 @@ class DocumentdbScenario(ScenarioTest):
             checks=[self.check('nameAvailable', True)],
         )
 
-        # Create the cluster. Entra auth is enabled so users can be added later, and
-        # the GeoReplicas preview feature is turned on so this cluster can act as the
-        # source of a cross-region replica further down.
+        self._create_cluster()
+
+        # Inspect the provisioned cluster.
         self.cmd(
-            'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
-            '--admin-user {admin} --password {password} '
-            '--tier M30 --storage-size 128 --storage-type PremiumSSDv2 '
-            '--shard-count 1 --high-availability Disabled '
-            '--auth-allowed-modes NativeAuth MicrosoftEntraID '
-            '--preview-features GeoReplicas',
+            'documentdb mongocluster show -n {cluster} -g {rg}',
             checks=[
                 self.check('name', '{cluster}'),
                 self.check('properties.provisioningState', 'Succeeded'),
@@ -100,19 +121,16 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
 
-        # Inspect the provisioned cluster.
-        self.cmd(
-            'documentdb mongocluster show -n {cluster} -g {rg}',
-            checks=[
-                self.check('name', '{cluster}'),
-                self.check('properties.provisioningState', 'Succeeded'),
-            ],
-        )
-
         # The cluster shows up in the resource-group listing.
         self.cmd(
             'documentdb mongocluster list -g {rg}',
             checks=[self.check("length([?name=='{cluster}'])", 1)],
+        )
+
+        # Connection strings are available for the provisioned cluster.
+        self.cmd(
+            'documentdb mongocluster list-connection-strings --cluster-name {cluster} -g {rg}',
+            checks=[self.greater_than('length(connectionStrings)', 0)],
         )
 
         # Update the cluster (tags).
@@ -130,6 +148,19 @@ class DocumentdbScenario(ScenarioTest):
             'documentdb mongocluster reset-password -n {cluster} -g {rg} --password {new_password}'
         )
 
+        # Delete the cluster.
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 2: firewall rules (create/show/update/list/delete) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_fw', location='eastus2')
+    def test_documentdb_mongocluster_firewall(self, resource_group):
+        self._base_kwargs()
+        self.kwargs['fw'] = 'allow-office'
+
+        self._create_cluster()
+
         # Add a firewall rule.
         self._cmd_retry(
             'documentdb mongocluster firewall-rule create -n {fw} --cluster-name {cluster} -g {rg} '
@@ -145,6 +176,16 @@ class DocumentdbScenario(ScenarioTest):
             'documentdb mongocluster firewall-rule show -n {fw} --cluster-name {cluster} -g {rg}',
             checks=[self.check('name', '{fw}')],
         )
+
+        # Update the firewall rule's address range.
+        self._cmd_retry(
+            'documentdb mongocluster firewall-rule update -n {fw} --cluster-name {cluster} -g {rg} '
+            '--start-ip-address 203.0.113.10 --end-ip-address 203.0.113.20',
+            checks=[
+                self.check('properties.startIpAddress', '203.0.113.10'),
+                self.check('properties.endIpAddress', '203.0.113.20'),
+            ],
+        )
         self.cmd(
             'documentdb mongocluster firewall-rule list --cluster-name {cluster} -g {rg}',
             checks=[self.check("length([?name=='{fw}'])", 1)],
@@ -152,6 +193,19 @@ class DocumentdbScenario(ScenarioTest):
         self._cmd_retry(
             'documentdb mongocluster firewall-rule delete -n {fw} --cluster-name {cluster} -g {rg} --yes'
         )
+
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 3: Microsoft Entra users (create/show/list/delete) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_user', location='eastus2')
+    def test_documentdb_mongocluster_user(self, resource_group):
+        self._base_kwargs()
+        self.kwargs['user_oid'] = '71581c6f-df31-4790-bc49-26c6b38df8bd'
+
+        # Entra auth must be enabled at create time to add Entra users.
+        self._create_cluster(extra='--auth-allowed-modes NativeAuth MicrosoftEntraID ')
 
         # Create a Microsoft Entra-backed user (custom --type wrapper).
         self._cmd_retry(
@@ -177,9 +231,71 @@ class DocumentdbScenario(ScenarioTest):
             'documentdb mongocluster user delete -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
         )
 
-        # Create a cross-region read replica from this cluster (the source has the
-        # GeoReplicas preview feature enabled at create time). A replica inherits the
-        # source configuration and admin credentials, so no password is passed here.
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 4: managed identity (assign/show/remove) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_identity', location='eastus2')
+    def test_documentdb_mongocluster_identity(self, resource_group):
+        self._base_kwargs()
+        self.kwargs.update({
+            'mi1': self.create_random_name('cli-mc-mi', 20),
+            'mi2': self.create_random_name('cli-mc-mi', 20),
+        })
+
+        # Two user-assigned identities. Normalize the resource group segment
+        # casing returned by 'identity create'.
+        mi1 = self.cmd('identity create -g {rg} -n {mi1} -l {loc}').get_output_in_json()
+        self.kwargs['mi1_id'] = mi1['id'].replace('/resourcegroups/', '/resourceGroups/')
+        mi2 = self.cmd('identity create -g {rg} -n {mi2} -l {loc}').get_output_in_json()
+        self.kwargs['mi2_id'] = mi2['id'].replace('/resourcegroups/', '/resourceGroups/')
+
+        # Create the cluster with the first user-assigned identity.
+        self._create_cluster(extra='--user-assigned {mi1_id} ')
+        self.cmd(
+            'documentdb mongocluster identity show -n {cluster} -g {rg}',
+            checks=[
+                self.check('type', 'UserAssigned'),
+                self.exists('userAssignedIdentities."{mi1_id}"'),
+            ],
+        )
+
+        # A second identity can be assigned once the cluster already has one.
+        # The freshly assigned identity comes back with an empty value until its
+        # client/principal ids populate, so the count is asserted instead.
+        self._cmd_retry(
+            'documentdb mongocluster identity assign -n {cluster} -g {rg} --user-assigned {mi2_id}',
+            checks=[
+                self.check('type', 'UserAssigned'),
+                self.check('length(userAssignedIdentities)', 2),
+            ],
+        )
+
+        # Remove the second identity; it is no longer listed afterwards.
+        self._cmd_retry(
+            'documentdb mongocluster identity remove -n {cluster} -g {rg} --user-assigned {mi2_id}',
+            checks=[self.not_exists('userAssignedIdentities."{mi2_id}"')],
+        )
+
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 5: cross-region replica (create/list/delete) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_replica', location='eastus2')
+    def test_documentdb_mongocluster_replica(self, resource_group):
+        self._base_kwargs()
+        self.kwargs.update({
+            'replica': self.create_random_name('cli-mc-rep', 20),
+            'replica_loc': 'westus2',
+        })
+
+        # The source cluster needs the GeoReplicas preview feature at create time.
+        self._create_cluster(extra='--preview-features GeoReplicas ')
+
+        # Create a cross-region read replica. A replica inherits the source
+        # configuration and admin credentials, so no password is passed here.
         self._cmd_retry(
             'documentdb mongocluster replica create -n {replica} -g {rg} '
             '--location {replica_loc} --source-cluster {cluster} --source-location {loc}',
@@ -189,17 +305,26 @@ class DocumentdbScenario(ScenarioTest):
                 self.check('properties.replica.role', 'GeoAsyncReplica'),
             ],
         )
-
-        # The replica now shows up in the source cluster's replica list.
         self.cmd(
             'documentdb mongocluster replica list --cluster-name {cluster} -g {rg}',
             checks=[self.check("length([?name=='{replica}'])", 1)],
         )
         self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
 
-        # Point-in-time restore into a new cluster, using this cluster as the source.
-        # Wait (only while recording) until the first backup produces a restore point,
-        # then restore from it.
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 6: point-in-time restore ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore', location='eastus2')
+    def test_documentdb_mongocluster_restore(self, resource_group):
+        self._base_kwargs()
+        self.kwargs['restored'] = self.create_random_name('cli-mc-rst', 20)
+
+        self._create_cluster()
+
+        # Wait (only while recording) until the first backup produces a restore
+        # point, then restore into a new cluster from that point in time.
         earliest = self._wait_for_restore_point()
         self.kwargs['restore_time'] = earliest or '2026-01-01T00:00:00Z'
         self._cmd_retry(
@@ -213,7 +338,90 @@ class DocumentdbScenario(ScenarioTest):
         )
         self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')
 
-        # Delete the source cluster.
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 7: customer-managed key (CMK) encryption at rest ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_cmk', location='eastus2')
+    def test_documentdb_mongocluster_cmk(self, resource_group):
+        self._base_kwargs()
+        self.kwargs.update({
+            'mi': self.create_random_name('climcmi', 20),
+            'kv': self.create_random_name('climckv', 20),
+            'key': 'cli-mc-cmk-key',
+        })
+
+        # A user-assigned identity that the cluster uses to reach the key vault.
+        mi = self.cmd('identity create -g {rg} -n {mi} -l {loc}').get_output_in_json()
+        self.kwargs['mi_id'] = mi['id'].replace('/resourcegroups/', '/resourceGroups/')
+        self.kwargs['mi_principal'] = mi['principalId']
+
+        # A key vault with purge protection (required for CMK) using access
+        # policies so the identity can wrap/unwrap the key.
+        self.cmd(
+            'keyvault create -g {rg} -n {kv} -l {loc} '
+            '--enable-purge-protection true --enable-rbac-authorization false'
+        )
+        self.cmd(
+            'keyvault set-policy -g {rg} -n {kv} --object-id {mi_principal} '
+            '--key-permissions get list wrapKey unwrapKey'
+        )
+        key = self.cmd(
+            'keyvault key create --vault-name {kv} -n {key} --kty RSA'
+        ).get_output_in_json()
+        # The key-encryption-key URL must not carry the key version.
+        self.kwargs['key_url'] = key['key']['kid'].rsplit('/', 1)[0]
+
+        # The encryption configuration is passed as a JSON file because the key
+        # URL cannot go through the shorthand syntax cleanly.
+        enc = {
+            'customer-managed-key-encryption': {
+                'key-encryption-key-identity': {
+                    'identity-type': 'UserAssignedIdentity',
+                    'user-assigned-identity-resource-id': self.kwargs['mi_id'],
+                },
+                'key-encryption-key-url': self.kwargs['key_url'],
+            }
+        }
+        enc_file = os.path.join(
+            tempfile.gettempdir(),
+            'cli_documentdb_cmk_enc_{}.json'.format(self.kwargs['cluster']),
+        )
+        with open(enc_file, 'w') as handle:
+            json.dump(enc, handle)
+        self.kwargs['enc_file'] = enc_file.replace('\\', '/')
+
+        try:
+            self._cmd_retry(
+                'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
+                '--admin-user {admin} --password {password} '
+                '--tier M30 --storage-size 128 --storage-type PremiumSSD '
+                '--shard-count 1 --high-availability Disabled '
+                '--user-assigned {mi_id} --encryption @{enc_file}',
+                checks=[
+                    self.check('name', '{cluster}'),
+                    self.check('properties.provisioningState', 'Succeeded'),
+                    self.check(
+                        'properties.encryption.customerManagedKeyEncryption.'
+                        'keyEncryptionKeyIdentity.identityType',
+                        'UserAssignedIdentity',
+                    ),
+                    self.check(
+                        'properties.encryption.customerManagedKeyEncryption.'
+                        'keyEncryptionKeyIdentity.userAssignedIdentityResourceId',
+                        '{mi_id}',
+                    ),
+                    self.check(
+                        'properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyUrl',
+                        '{key_url}',
+                    ),
+                ],
+            )
+        finally:
+            if os.path.exists(enc_file):
+                os.remove(enc_file)
+
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
 
