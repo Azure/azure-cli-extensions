@@ -20,7 +20,7 @@ def _resolve_source_cluster(client, resource_group_name, source_cluster):
         source_cluster_name = source_cluster_id_parts.get("name")
         if not source_resource_group or not source_cluster_name:
             raise ArgumentUsageError(
-                "Invalid source cluster resource ID. Ensure it contains both resource group and cluster name."
+                "Invalid source cluster resource identifier. Ensure it contains both resource group and cluster name."
             )
         return client.get(resource_group_name=source_resource_group, cluster_name=source_cluster_name)
     return client.get(resource_group_name=resource_group_name, cluster_name=source_cluster)
@@ -57,15 +57,17 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
 
 
 def _parse_restore_time(restore_time):
+    import datetime
     if restore_time is None:
-        return None
+        # During preview, default to 6 minutes before now to satisfy the minimum 5-minute buffer.
+        return datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0) - datetime.timedelta(minutes=6)
     from dateutil import parser
     try:
         return parser.parse(restore_time)
     except (ValueError, OverflowError):
         raise InvalidArgumentValueError(
             "The restore time value has an incorrect date format. "
-            "Please use ISO8601 format, e.g., 2024-04-26T02:10:00+00:00.")
+            "Please use ISO8601 format, e.g., 2026-07-15T02:10:00+00:00.")
 
 
 def horizondb_cluster_restore(client, resource_group_name, cluster_name, source_cluster,

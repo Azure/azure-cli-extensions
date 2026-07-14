@@ -39,14 +39,14 @@ examples:
 
 helps['horizondb restore'] = """
 type: command
-short-summary: Restore an Azure HorizonDB cluster from a source cluster.
+short-summary: Restore an Azure HorizonDB cluster from backups of an existing source cluster.
 examples:
-  - name: Restore a HorizonDB cluster from a source cluster in the same resource group.
+  - name: Restore an Azure HorizonDB cluster from most recent backup of an existing source cluster in the same subscription and resource group.
     text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster sourcecluster
-  - name: Restore a HorizonDB cluster from a source cluster using resource ID.
+  - name: Restore an Azure HorizonDB cluster from most recent backup of an existing source cluster, given its identifier, to a specific resource group.
     text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/examplerg/providers/Microsoft.HorizonDB/clusters/sourcecluster
-  - name: Restore a HorizonDB cluster to a specific point in time.
-    text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster sourcecluster --restore-time "2024-04-26T02:10:00+00:00"
+  - name: Restore an Azure HorizonDB cluster from a specific point in time in the backup chain of an existing source cluster in the same subscription and resource group.
+    text: az horizondb restore --name restoredcluster --resource-group exampleresourcegroup --source-cluster sourcecluster --restore-time "2026-07-15T02:10:00+00:00"
 """
 
 

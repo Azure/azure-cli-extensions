@@ -15,11 +15,6 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 
-def _get_current_time():
-    import datetime
-    return datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc, microsecond=0).isoformat()
-
-
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
 
     # HorizonDB
@@ -71,14 +66,14 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         source_cluster_arg_type = CLIArgumentType(
             options_list=['--source-cluster'],
-            help='Name or resource ID of the source HorizonDB cluster to restore from.')
+            help='Name or resource identifier of the source Azure HorizonDB cluster to restore from.')
 
         restore_time_arg_type = CLIArgumentType(
             options_list=['--restore-time'],
-            default=_get_current_time(),
-            help='The point in time in UTC to restore from (ISO8601 format), e.g., 2024-04-26T02:10:00+00:00. '
-                 'The default value is set to current time. During preview, the restore time must be at least '
-                 '5 minutes before the current time.')
+            help='The point in time in UTC to restore from (ISO8601 format), e.g., 2026-07-15T02:10:00+00:00. '
+                 'During preview, you must set restore time to be at least 5 minutes before the current time. '
+                 "If --restore-time isn't specified, during preview, it will internally be adjusted to 6 minutes "
+                 'before now.')
 
         parameter_group_arg_type = CLIArgumentType(
             options_list=['--parameter-group'],
