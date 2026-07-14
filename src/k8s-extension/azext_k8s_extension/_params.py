@@ -17,6 +17,7 @@ from .action import (
 
 from knack.commands import CLICommand
 
+
 def load_arguments(self, _: CLICommand) -> None:
     with self.argument_context(consts.EXTENSION_NAME) as c:
         c.argument('location',
@@ -46,10 +47,10 @@ def load_arguments(self, _: CLICommand) -> None:
                    arg_type=get_three_state_flag(),
                    help='Automatically upgrade minor version of the extension instance.')
         c.argument('auto_upgrade_mode',
-               arg_group="Version",
-             options_list=['--auto-upgrade-mode'],
-               arg_type=get_enum_type(['none', 'patch', 'compatible']),
-               help='Automatically upgrade version of the extension instance based on the selected mode. Default mode is \'compatible\' which is equivalent to \'--auto-upgrade-minor-version true\'. Use \'none\' to disable auto upgrade. Use \'patch\' to upgrade to the latest patch version. Use \'compatible\' to upgrade to the latest compatible minor/patch version.')
+                   arg_group="Version",
+                   options_list=['--auto-upgrade-mode'],
+                   arg_type=get_enum_type(['none', 'patch', 'compatible']),
+                   help='Automatically upgrade version of the extension instance based on the selected mode. Default mode is \'compatible\' which is equivalent to \'--auto-upgrade-minor-version true\'. Use \'none\' to disable auto upgrade. Use \'patch\' to upgrade to the latest patch version. Use \'compatible\' to upgrade to the latest compatible minor/patch version.')
         c.argument('version',
                    arg_group="Version",
                    help='Specify the version to install for the extension instance if'

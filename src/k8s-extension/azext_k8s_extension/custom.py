@@ -69,6 +69,8 @@ from knack.commands import CLICommand
 logger = get_logger(__name__)
 
 # A factory method to return the correct extension class based off of the extension name
+
+
 def ExtensionFactory(extension_name):
     extension_map = {
         "microsoft.azuremonitor.containers": ContainerInsights,
@@ -605,10 +607,10 @@ def troubleshoot_extension(
         load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
         # Install helm client
-        helm_client_location = install_helm_client(cmd)
+        install_helm_client(cmd)
 
         # Install kubectl client
-        kubectl_client_location = install_kubectl_client()
+        install_kubectl_client()
 
         # Checking the connection to kubernetes cluster.
         check_kube_connection()
@@ -629,7 +631,7 @@ def troubleshoot_extension(
         api_instance = kube_client.CoreV1Api()
 
         for namespace in namespaces:
-            collect_namespace_status = collect_namespace(api_instance,filepath_with_timestamp, namespace)
+            collect_namespace_status = collect_namespace(api_instance, filepath_with_timestamp, namespace)
             if collect_namespace_status is not True:
                 storage_space_available = False
 
@@ -648,6 +650,7 @@ def troubleshoot_extension(
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         raise ManualInterrupt("Process terminated externally.")
+
 
 def collect_namespace(api_instance: CoreV1Api, base_path: str, namespace: str) -> bool:
     print(f"Step: {utils.get_utctimestring()}: Collecting diagnostics information for namespace '{namespace}'...")
@@ -682,6 +685,7 @@ def collect_namespace(api_instance: CoreV1Api, base_path: str, namespace: str) -
 
     return collection_success
 
+
 def set_kube_config(kube_config: Union[str, None]) -> Union[str, None]:
     print(f"Step: {utils.get_utctimestring()}: Setting KubeConfig")
     if kube_config:
@@ -692,6 +696,7 @@ def set_kube_config(kube_config: Union[str, None]) -> Union[str, None]:
             kube_config = kube_config[:-1]
         return kube_config
     return None
+
 
 def load_kube_config(
     kube_config: Union[str, None], kube_context: Union[str, None], skip_ssl_verification: bool
@@ -706,6 +711,7 @@ def load_kube_config(
             Configuration.set_default(default_config)
     except Exception as e:
         telemetry.set_exception(
+
             exception=e,
             fault_type=consts.LOAD_KUBECONFIG_FAULT_TYPE,
             summary="Problem loading the kubeconfig file",
@@ -713,9 +719,11 @@ def load_kube_config(
         logger.warning(consts.KUBECONFIG_LOAD_FAILED_WARNING)
         raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
+
 def install_helm_client(cmd: CLICommand) -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Helm client if it does not exist"
+
     )
     # Return helm client path set by user
     helm_client_path = os.getenv("HELM_CLIENT_PATH")
@@ -736,6 +744,7 @@ def install_helm_client(cmd: CLICommand) -> str:
         download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
+
         )
         artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
@@ -828,6 +837,7 @@ def install_helm_client(cmd: CLICommand) -> str:
 
     return install_location
 
+
 def install_kubectl_client() -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Kubectl client if it does not exist"
@@ -851,6 +861,7 @@ def install_kubectl_client() -> str:
         kubectl_path = os.path.join(kubectl_filepath, kubectl)
 
         if os.path.isfile(kubectl_path):
+
             return kubectl_path
 
         # Downloading kubectl executable if its not present in the machine
@@ -874,6 +885,7 @@ def install_kubectl_client() -> str:
         )
         raise CLIInternalError(f"Unable to install kubectl. Error: {e}")
 
+
 def check_kube_connection() -> str:
     print(f"Step: {utils.get_utctimestring()}: Checking Connectivity to Cluster")
     api_instance = kube_client.VersionApi()
@@ -892,11 +904,13 @@ def check_kube_connection() -> str:
     raise CLIInternalError(
         "Unable to verify connectivity to the Kubernetes cluster. No version information could be retrieved.")
 
+
 def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp):
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
     # We do not create any identities for managedClusters
+
     if cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE:
         return None, None
 
@@ -914,7 +928,6 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
     except HttpResponseError as ex:
         raise ex
     identity_type = "SystemAssigned"
-
     return Identity(type=identity_type), location
 
 
@@ -964,10 +977,12 @@ def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version, aut
 
         if normalized_auto_upgrade_mode != "none":
             message = "To pin to specific version, auto-upgrade-mode must be set to 'none'."
+
             raise MutuallyExclusiveArgumentError(message)
 
         auto_upgrade_minor_version = False
         auto_upgrade_mode = "none"
+
 
 def __validate_auto_upgrade_mode(auto_upgrade_minor_version, auto_upgrade_mode):
     if auto_upgrade_minor_version is not None and auto_upgrade_mode is not None:

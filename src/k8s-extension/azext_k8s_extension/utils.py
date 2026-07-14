@@ -24,6 +24,7 @@ from knack.commands import CLICommand
 
 logger = get_logger(__name__)
 
+
 def get_cluster_rp_api_version(cluster_type, cluster_rp=None) -> Tuple[str, str]:
     if cluster_type.lower() == consts.PROVISIONED_CLUSTER_TYPE:
         if cluster_rp is None or cluster_rp.strip() == "":
@@ -83,8 +84,10 @@ def is_skip_prerequisites_specified(configuration_settings):
 
     return has_skip_prerequisites_set
 
+
 def get_utctimestring() -> str:
     return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())
+
 
 def validate_node_api_response(api_instance: CoreV1Api) -> Union[V1NodeList, None]:
     try:
@@ -96,6 +99,7 @@ def validate_node_api_response(api_instance: CoreV1Api) -> Union[V1NodeList, Non
             exc_info=True,
         )
         return None
+
 
 def kubernetes_exception_handler(
     ex: Exception,
@@ -131,6 +135,7 @@ def kubernetes_exception_handler(
 
         logger.debug("Kubernetes Exception", exc_info=True)
 
+
 def create_unique_folder_name(base_name: str) -> str:
     """Create a unique folder name using the base name and current timestamp.
 
@@ -148,6 +153,7 @@ def create_unique_folder_name(base_name: str) -> str:
     timestamp = time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
     return f"{sanitized_base_name}-{timestamp}"
 
+
 def create_folder_diagnostics_namespace(base_folder: str, namespace: str) -> tuple[str, bool]:
     print(
         f"Step: {get_utctimestring()}: Creating folder for namespace '{namespace}'"
@@ -160,6 +166,7 @@ def create_folder_diagnostics_namespace(base_folder: str, namespace: str) -> tup
         return "", False
 
     return namespace_folder_name, True
+
 
 def collect_namespace_configmaps(api_instance, namespace_folder_name: str, namespace: str) -> bool:
     print(
@@ -188,6 +195,7 @@ def collect_namespace_configmaps(api_instance, namespace_folder_name: str, names
             return False
 
     return True
+
 
 def walk_through_pods(api_instance: CoreV1Api, folder_namespace: str, namespace: str) -> bool:
     print(
@@ -235,6 +243,7 @@ def walk_through_pods(api_instance: CoreV1Api, folder_namespace: str, namespace:
 
     return True
 
+
 def collect_container_logs(api_instance: CoreV1Api, containers_folder_name: str, namespace: str, pod_name: str, container) -> bool:
     print(
         f"Step: {get_utctimestring()}: Collecting logs from container '{container.name}' in pod '{pod_name}'"
@@ -243,8 +252,8 @@ def collect_container_logs(api_instance: CoreV1Api, containers_folder_name: str,
     container_name = container.name
 
     container_log = api_instance.read_namespaced_pod_log(
-                        name=pod_name, container=container_name, namespace=namespace
-                    )
+        name=pod_name, container=container_name, namespace=namespace
+    )
 
     container_logs_file_name = os.path.join(containers_folder_name, f"{container_name}_logs.txt")
 
@@ -256,6 +265,7 @@ def collect_container_logs(api_instance: CoreV1Api, containers_folder_name: str,
         return False
 
     return True
+
 
 def convert_to_pod_dict(pod) -> dict:
     if pod.metadata is None or pod.status is None:
@@ -269,6 +279,7 @@ def convert_to_pod_dict(pod) -> dict:
         "annotations": pod_metadata.annotations,
         "status": pod_status,
     }
+
 
 def collect_pod_information(api_instance: CoreV1Api, pods_folder_name: str, namespace: str, pod) -> bool:
     pod_metadata = convert_to_pod_dict(pod)
@@ -290,10 +301,12 @@ def collect_pod_information(api_instance: CoreV1Api, pods_folder_name: str, name
 
     return save_pod_metadata(pod_folder_name, pod_metadata)
 
+
 def save_pod_metadata(pod_folder_name: str, pod: dict) -> bool:
     metadata_file = os.path.join(pod_folder_name, "metadata.json")
 
     return save_as_json(metadata_file, pod)
+
 
 def save_as_json(destination: str, data) -> bool:
     try:
@@ -303,6 +316,7 @@ def save_as_json(destination: str, data) -> bool:
     except Exception as e:
         logger.error(f"Failed to save data to {destination}: {e}")
         return False
+
 
 def create_folder_diagnosticlogs(folder_name: str, base_folder_name: str) -> tuple[str, bool]:
     print(
@@ -361,6 +375,7 @@ def create_folder_diagnosticlogs(folder_name: str, base_folder_name: str) -> tup
         )
         return "", False
 
+
 def get_mcr_path(active_directory_endpoint: str) -> str:
     active_directory_array = active_directory_endpoint.split(".")
 
@@ -385,6 +400,7 @@ def get_mcr_path(active_directory_endpoint: str) -> str:
 
     mcr_url = f"mcr.microsoft.{mcr_postfix}"
     return mcr_url
+
 
 def check_namespace_exists(api_instance, namespace: str) -> bool:
     print(f"Step: {get_utctimestring()}: Checking if namespace '{namespace}' exists...")

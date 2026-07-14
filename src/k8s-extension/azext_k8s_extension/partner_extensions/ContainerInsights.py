@@ -130,7 +130,7 @@ class ContainerInsights(DefaultExtension):
                 useAADAuthSetting = configSettings['amalogs.useAADAuth']
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
-            
+
             # Check if high log scale mode was enabled
             if useAADAuth and 'amalogs.enableHighLogScaleMode' in configSettings:
                 highLogScaleSetting = configSettings['amalogs.enableHighLogScaleMode']
@@ -170,7 +170,7 @@ class ContainerInsights(DefaultExtension):
                 try:
                     workspace_resource = resources.get_by_id(workspace_resource_id, '2015-11-01-preview')
                     workspace_region = workspace_resource.location.replace(" ", "").lower()
-                except Exception as ex:
+                except Exception:
                     logger.warning("Skipping DCR and DCE deletion due to inability to determine workspace region")
                     return
             # If workspace_region still couldn't be determined, skip deletion
@@ -181,7 +181,7 @@ class ContainerInsights(DefaultExtension):
             # Use workspace_region for DCR name to match creation logic
             dcr_name = f"MSCI-{workspace_region}-{cluster_name}"
             dcr_name = dcr_name[0:64]
-            
+
             dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Insights/dataCollectionRules/{dcr_name}"
             dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version={DCR_API_VERSION}"
             response = send_raw_request(cmd.cli_ctx, "GET", dcr_url)
@@ -200,6 +200,7 @@ class ContainerInsights(DefaultExtension):
                 _delete_dce_for_dcr(cmd, subscription_id, resource_group_name, dcr_config)
 
 # Custom Validation Logic for Container Insights
+
 
 def _invoke_deployment(cmd, resource_group_name, deployment_name, template, parameters, validate, no_wait,
                        subscription_id=None):
@@ -678,17 +679,19 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
 def _delete_dce_for_dcr(cmd, subscription_id, cluster_resource_group_name, dcr_config):
     """Delete Data Collection Endpoint associated with a DCR if it exists"""
     try:
-        if ("properties" in dcr_config and 
-            "dataCollectionEndpointId" in dcr_config["properties"] and 
-            dcr_config["properties"]["dataCollectionEndpointId"]):
-            
+        if (
+            "properties" in dcr_config
+            and "dataCollectionEndpointId" in dcr_config["properties"]
+            and dcr_config["properties"]["dataCollectionEndpointId"]
+        ):
+
             dce_id = dcr_config["properties"]["dataCollectionEndpointId"]
             dce_parts = dce_id.split('/')
 
             if len(dce_parts) > 0:
                 dce_name = dce_parts[-1]
                 dce_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionEndpoints/{dce_name}"
-                dce_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dce_resource_id}?api-version=2022-06-01"              
+                dce_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dce_resource_id}?api-version=2022-06-01"
                 # Try to delete up to 3 times
                 for retry in range(3):
                     try:
@@ -705,6 +708,7 @@ def _delete_dce_for_dcr(cmd, subscription_id, cluster_resource_group_name, dcr_c
     except CLIError:
         pass
     return True
+
 
 def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
     tags = {}
