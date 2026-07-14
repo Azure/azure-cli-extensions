@@ -709,6 +709,11 @@ helps['kusto attached-database-configuration show'] = """
 helps['kusto attached-database-configuration create'] = """
     type: command
     short-summary: "Create an attached database configuration."
+    examples:
+      - name: Create an attached database configuration.
+        text: |-
+               az kusto attached-database-configuration create -g rg -n config1 --cluster-name "KustoClusterLeader" --cluster-resource-id id \
+--database-name "KustoDatabase" --default-principals-modification-kind "Union" --table-level-sharing-properties external-tables-to-exclude="ExternalTable2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1"
 """
 
 helps['kusto attached-database-configuration update'] = """
