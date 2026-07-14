@@ -167,7 +167,7 @@ class AddWorkloadIdentityAuthInfo(argparse.Action):
         # convert into user identity
         namespace.user_identity_auth_info = action
 
-    def get_action(self, values, option_string, command_name):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string, command_name):
         try:
             # --workload-identity <user-identity-resource-id>
             properties = defaultdict(list)
