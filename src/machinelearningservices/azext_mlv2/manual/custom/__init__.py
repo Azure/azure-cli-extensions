@@ -45,6 +45,7 @@ from .index import *  # pylint: disable=wrong-import-position,unused-wildcard-im
 from .job import *  # pylint: disable=wrong-import-position,unused-wildcard-import
 from .marketplace_subscription import *  # pylint: disable=wrong-import-position,unused-wildcard-import
 from .model import *  # pylint: disable=wrong-import-position,unused-wildcard-import
+from .model_hosting import *  # pylint: disable=wrong-import-position,unused-wildcard-import
 from .online_deployment import *  # pylint: disable=wrong-import-position,unused-wildcard-import
 from .online_endpoint import *  # pylint: disable=wrong-import-position,unused-wildcard-import
 from .registry import *  # pylint: disable=wrong-import-position,unused-wildcard-import

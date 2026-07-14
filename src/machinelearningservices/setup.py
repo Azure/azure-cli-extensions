@@ -10,7 +10,7 @@ from io import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '2.44.0'
+VERSION = '2.44.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -53,5 +53,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_mlv2': ['azext_metadata.json']},
+    package_data={'azext_mlv2': ['azext_metadata.json', 'manual/config/self-serve-config.json']},
 )

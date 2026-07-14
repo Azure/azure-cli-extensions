@@ -7,7 +7,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
 from azure.cli.core import AzCommandsLoader
 
 from azext_mlv2.generated._help import helps  # pylint: disable=unused-import

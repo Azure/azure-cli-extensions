@@ -498,3 +498,46 @@ def load_command_table(self, _):
 
     with self.command_group("ml azure-openai-deployment", client_factory=cf_ml_cl, is_preview=True) as g:
         g.custom_command("list", "ml_azure_openai_deployment_list")
+
+    with self.command_group("ml modelpublisher gpu-config", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command("create", "ml_model_hosting_create_config")
+        g.custom_show_command("show", "ml_model_hosting_show_config")
+        g.custom_command("list", "ml_model_hosting_list_config")
+    with self.command_group("ml modelpublisher plan", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command("create", "ml_model_hosting_create_plan")
+        g.custom_show_command("show", "ml_model_hosting_plan_config_show")
+        g.custom_command("list", "ml_model_hosting_plan_details_list")
+        g.custom_command(
+            "update", "ml_model_hosting_plan_details_update_status")
+    with self.command_group("ml modelpublisher", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_show_command("show", "ml_model_hosting_publisher_show")
+        g.custom_command(
+            "update", "ml_model_hosting_update_publisher_details")
+        g.custom_command("enable-marketplace-integration", "ml_model_hosting_enable_marketplace_integration")
+    with self.command_group("ml modelpublisher registry", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command("set",
+                         "ml_model_hosting_set_registry")
+    with self.command_group("ml modelpublisher model", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command("create", "ml_model_hosting_create_model")
+        g.custom_show_command("show", "ml_model_hosting_show_model")
+        g.custom_command("list", "ml_model_hosting_list_model")
+        g.custom_command("approval", "ml_model_hosting_approve_model")
+    with self.command_group("ml modelpublisher release-candidate", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command(
+            "create", "ml_model_hosting_create_release_candidate")
+        g.custom_show_command("show", "ml_model_hosting_show_release_candidate")
+        g.custom_command("list", "ml_model_hosting_list_release_candidate")
+        g.custom_command("download-validation-result",
+                         "ml_model_hosting_download_validation_result_release_candidate")
+        g.custom_command("download-deployment-logs",
+                         "ml_model_hosting_download_deployment_logs_release_candidate")
+        g.custom_command(
+            "promote-to-prod", "ml_model_hosting_promote_to_prod_release_candidate")
+    with self.command_group("ml modelpublisher model-card", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command("generate-template", "ml_model_hosting_generate_model_card_template")
+        g.custom_command("validate", "ml_model_hosting_validate_model_card_template")
+        g.custom_command("apply", "ml_model_hosting_apply_model_card_template")
+    with self.command_group("ml modelpublisher model-card-internal", client_factory=cf_ml_cl, is_preview=True) as g:
+        g.custom_command("update", "ml_model_hosting_update_model_card")
+        g.custom_show_command("show", "ml_model_hosting_get_model_card")
+        g.custom_command("attach", "ml_model_hosting_attach_model_card")

@@ -28,6 +28,7 @@ from ._index_help import get_index_help
 from ._job_help import get_job_help
 from ._marketplace_subscription_help import get_marketplace_subscription_help
 from ._model_help import get_model_help
+from ._model_hosting_help import get_model_hosting_help
 from ._online_deployment_help import get_online_deployment_help
 from ._online_endpoint_help import get_online_endpoint_help
 from ._registry_help import get_registry_help
@@ -63,6 +64,7 @@ get_feature_store_entity_help()
 get_azure_openai_deployment_help()
 get_index_help()
 get_capability_host_help()
+get_model_hosting_help()
 
 if private_features_enabled():
     get_virtualcluster_help()
