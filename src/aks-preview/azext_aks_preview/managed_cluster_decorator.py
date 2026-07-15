@@ -573,8 +573,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         )
 
-    # pylint: disable=too-many-branches
-    def _get_outbound_type(
+    def _get_outbound_type(  # pylint: disable=too-many-branches
         self,
         enable_validation: bool = False,
         read_only: bool = False,
@@ -604,9 +603,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # read the original value passed by the command
         outbound_type = self.raw_param.get("outbound_type")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        # Preserve the existing value when the user did not explicitly provide one.
         read_from_mc = False
-        if self.decorator_mode == DecoratorMode.CREATE:
+        if outbound_type is None:
             if (
                 self.mc and
                 self.mc.network_profile and
@@ -717,7 +716,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                                 "userDefinedRouting doesn't support customizing \
                                 a standard load balancer with IP addresses"
                             )
-            if self.decorator_mode == DecoratorMode.UPDATE:
+            if self.decorator_mode == DecoratorMode.UPDATE and not read_from_mc:
                 if outbound_type in [
                     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
                     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
@@ -4363,6 +4362,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
+        if self.context.get_enable_hosted_system():
+            return mc
+
         agentpool_profile = self.agentpool_decorator.construct_agentpool_profile_preview()
         mc.agent_pool_profiles = [agentpool_profile]
         return mc
@@ -5448,7 +5450,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         ssh_access = self.context.get_ssh_access()
         if ssh_access is not None:
-            for agent_pool_profile in mc.agent_pool_profiles:
+            for agent_pool_profile in (mc.agent_pool_profiles or []):
                 if agent_pool_profile.security_profile is None:
                     agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
                 agent_pool_profile.security_profile.ssh_access = ssh_access
@@ -5576,10 +5578,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if node_subnet_id:
                 mc.hosted_system_profile.node_subnet_id = node_subnet_id
 
-            # Remove default agent pool profiles when hosted system profile is enabled
-            if mc.agent_pool_profiles is not None:
-                mc.agent_pool_profiles = None
-
         return mc
 
     def process_add_role_assignment_for_vnet_subnet(self, mc: ManagedCluster) -> None:
@@ -5605,6 +5603,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         # Preserve base behavior for the --vnet-subnet-id case.
         super().process_add_role_assignment_for_vnet_subnet(mc)
+
+        # Azure CLI 2.86+ handles Managed System Pool BYO subnets in the base
+        # decorator. Keep the fallback below only for the extension's minimum
+        # supported CLI (2.85), avoiding duplicate role-assignment requests.
+        if callable(getattr(AKSManagedClusterCreateDecorator, "_get_byo_hosted_system_subnet_ids", None)):
+            return
 
         # Only extend for BYO VNet HOBO; outside that mode --apiserver-subnet-id keeps its
         # generic apiserver-VNet-integration meaning and must NOT trigger an extra RBAC grant.
@@ -5639,16 +5643,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # flag AND stash the HOBO subnet list so the post-create handler can iterate it;
         # base behavior only grants on --vnet-subnet-id, which is absent for BYO HOBO.
         if service_principal_profile is None and not assign_identity:
-            self.context.set_intermediate(
-                "need_post_creation_vnet_permission_granting",
-                True,
-                overwrite_exists=True,
-            )
-            self.context.set_intermediate(
-                "hobo_byo_subnets_pending_grant",
-                hobo_subnets,
-                overwrite_exists=True,
-            )
+            pending_post_creation_subnets = [
+                subnet_id
+                for subnet_id in hobo_subnets
+                if not self.context.external_functions.subnet_role_assignment_exists(self.cmd, subnet_id)
+            ]
+            if pending_post_creation_subnets:
+                self.context.set_intermediate(
+                    "need_post_creation_vnet_permission_granting",
+                    True,
+                    overwrite_exists=True,
+                )
+                self.context.set_intermediate(
+                    "byo_hosted_system_subnets_pending_grant",
+                    pending_post_creation_subnets,
+                    overwrite_exists=True,
+                )
             return
 
         for subnet_id in hobo_subnets:
@@ -5757,8 +5767,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_imds_restriction(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
         mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
-        # set up enable hosted components
-        # enabling hosted components will remove the default agent pool profiles from the mc object
+        # Set up hosted components. Managed System Pool creation already skipped
+        # synthesizing the default agent pool in set_up_agentpool_profile.
         mc = self.set_up_enable_hosted_components(mc)
 
         # validate the azure cli core version
@@ -5858,10 +5868,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             vnet_subnet_id = self.context.get_vnet_subnet_id()
             if vnet_subnet_id:
                 scopes.append(vnet_subnet_id)
-            hobo_subnets = self.context.get_intermediate(
-                "hobo_byo_subnets_pending_grant", default_value=[]
+            hosted_system_subnets = self.context.get_intermediate(
+                "byo_hosted_system_subnets_pending_grant", default_value=[]
             )
-            for subnet in hobo_subnets or []:
+            for subnet in hosted_system_subnets or []:
                 if subnet and subnet not in scopes:
                     scopes.append(subnet)
             for scope in scopes:
@@ -6310,14 +6320,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        # Preview-specific change: an AKS ManagedCluster of automatic
-        # cluster with hosted system components may not have agent pools
-        # When transitioning from hosted to non-hosted automatic clusters,
-        # customers must first add a system node pool before disabling
-        # the hosted system profile.
+        # Managed System Pool clusters manage the system pool server-side. Do not
+        # treat a user pool as the CLI-managed default pool during a generic update.
+        if mc.hosted_system_profile and mc.hosted_system_profile.enabled:
+            return mc
+
         if not mc.agent_pool_profiles:
-            if mc.hosted_system_profile and mc.hosted_system_profile.enabled:
-                return mc
             raise UnknownError(
                 "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
                 "updating agentpool profile."

@@ -740,22 +740,28 @@ helps['aks create'] = f"""
               Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
         - name: --enable-hosted-system
           type: bool
-          short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+          short-summary: (Automatic SKU) Explicitly opt in to a Managed System Pool for the Automatic cluster.
           long-summary: |
-              Deterministically opts the cluster into HOBO (Hosted Overlay System Pool). AKS hosts and manages the system node pool.
-              This is also implied when you provide the BYO VNet subnet trio.
-        - name: --sys-node-subnet-id --system-node-subnet-id
+              Only valid with `--sku automatic`. Use this flag when you want to deterministically
+              request a Managed System Pool regardless of region defaults. It is also implied when
+              you supply the bring-your-own VNet subnet trio (`--system-node-subnet-id`,
+              `--node-subnet-id`, `--apiserver-subnet-id`).
+        - name: --system-node-subnet-id
           type: string
-          short-summary: Resource ID of the subnet to be used by AKS-managed hosted system nodes (BYO VNet HOBO).
+          short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by the Managed System Pool in an Automatic cluster.
           long-summary: |
-              Must be provided together with `--node-subnet-id` and `--apiserver-subnet-id`,
-              and all three subnets must belong to the same VNet. Only valid with `--sku automatic`.
+              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
+              `--system-node-subnet-id` (this flag, for the Managed System Pool), `--node-subnet-id`
+              (for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
+              All three subnets must belong to the same VNet and can only be used with `--sku automatic`.
         - name: --node-subnet-id
           type: string
-          short-summary: Resource ID of the subnet joined by tenant worker nodes in BYO VNet HOBO clusters.
+          short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by user node pools in an Automatic cluster.
           long-summary: |
-              Must be provided together with `--system-node-subnet-id` and `--apiserver-subnet-id`,
-              and all three subnets must belong to the same VNet. Only valid with `--sku automatic`.
+              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
+              `--system-node-subnet-id` (for the Managed System Pool), `--node-subnet-id` (this flag,
+              for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
+              All three subnets must belong to the same VNet and can only be used with `--sku automatic`.
         - name: --control-plane-scaling-size --cp-scaling-size
           type: string
           short-summary: (PREVIEW) The control plane scaling size for the cluster.

@@ -1312,7 +1312,6 @@ def load_arguments(self, _):
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
         c.argument(
             "system_node_subnet_id",
-            options_list=["--system-node-subnet-id", "--sys-node-subnet-id"],
             validator=validate_system_node_subnet_id,
             is_preview=True,
         )

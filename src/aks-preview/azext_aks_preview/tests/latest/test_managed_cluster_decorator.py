@@ -81,6 +81,7 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
+    AKSManagedClusterCreateDecorator,
     AKSManagedClusterParamDict,
 )
 from azext_aks_preview.tests.latest.mocks import (
@@ -5126,7 +5127,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx._get_outbound_type(enable_validation=True)
 
-
     def test_get_enable_gateway_api(self):
         # default value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -6572,16 +6572,100 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            agent_pool_profiles=[self.models.ManagedClusterAgentPoolProfile(name="nodepool1")],
-        )
+        agent_pool_profiles = [self.models.ManagedClusterAgentPoolProfile(name="nodepool1")]
+        mc_1 = self.models.ManagedCluster(location="test_location", agent_pool_profiles=agent_pool_profiles)
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_enable_hosted_components(mc_1)
         self.assertTrue(dec_mc_1.hosted_system_profile.enabled)
         self.assertEqual(dec_mc_1.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
         self.assertEqual(dec_mc_1.hosted_system_profile.node_subnet_id, node_subnet_id)
-        self.assertIsNone(dec_mc_1.agent_pool_profiles)
+        self.assertEqual(dec_mc_1.agent_pool_profiles, agent_pool_profiles)
+
+    def test_process_add_role_assignment_for_byo_hobo_system_identity_cli_285_fallback(self):
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_managed_identity": True,
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            AKSManagedClusterCreateDecorator,
+            "_get_byo_hosted_system_subnet_ids",
+            None,
+            create=True,
+        ), patch.object(
+            AKSManagedClusterCreateDecorator,
+            "process_add_role_assignment_for_vnet_subnet",
+            return_value=None,
+        ), patch.object(
+            dec_1.context.external_functions,
+            "subnet_role_assignment_exists",
+            return_value=False,
+        ):
+            dec_1.process_add_role_assignment_for_vnet_subnet(mc_1)
+
+        self.assertTrue(
+            dec_1.context.get_intermediate("need_post_creation_vnet_permission_granting")
+        )
+        self.assertEqual(
+            dec_1.context.get_intermediate("byo_hosted_system_subnets_pending_grant"),
+            [system_node_subnet_id, node_subnet_id, apiserver_subnet_id],
+        )
+
+    def test_process_add_role_assignment_for_byo_hobo_cli_285_fallback_only_defers_missing_subnets(self):
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_managed_identity": True,
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            AKSManagedClusterCreateDecorator,
+            "_get_byo_hosted_system_subnet_ids",
+            None,
+            create=True,
+        ), patch.object(
+            AKSManagedClusterCreateDecorator,
+            "process_add_role_assignment_for_vnet_subnet",
+            return_value=None,
+        ), patch.object(
+            dec_1.context.external_functions,
+            "subnet_role_assignment_exists",
+            side_effect=[True, False, True],
+        ):
+            dec_1.process_add_role_assignment_for_vnet_subnet(mc_1)
+
+        self.assertTrue(
+            dec_1.context.get_intermediate("need_post_creation_vnet_permission_granting")
+        )
+        self.assertEqual(
+            dec_1.context.get_intermediate("byo_hosted_system_subnets_pending_grant"),
+            [node_subnet_id],
+        )
 
     def test_build_gitops_addon_profile(self):
         # default
@@ -17781,6 +17865,33 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(result_1, mc_1)
         self.assertIsNone(result_1.agent_pool_profiles)
         self.assertTrue(result_1.hosted_system_profile.enabled)
+
+    def test_update_agentpool_profile_hosted_system_with_user_pool_skips_default_pool_update(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agent_pool_profiles = [
+            self.models.ManagedClusterAgentPoolProfile(name="userpool", mode="User")
+        ]
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=agent_pool_profiles,
+            hosted_system_profile=self.models.ManagedClusterHostedSystemProfile(enabled=True),
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            dec_1.agentpool_decorator,
+            "update_agentpool_profile_preview",
+        ) as update_agentpool_profile:
+            result_1 = dec_1.update_agentpool_profile(mc_1)
+
+        self.assertIs(result_1, mc_1)
+        self.assertEqual(result_1.agent_pool_profiles, agent_pool_profiles)
+        update_agentpool_profile.assert_not_called()
 
     def test_update_agentpool_profile_with_none_agent_pool_profiles_no_hosted_system(
         self,
