@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.ai.ml.constants._common import YAMLRefDocLinks
+from azure.ai.ml.constants._common import YAMLRefDocLinks  # pylint: disable=no-name-in-module,import-error
 
 from ._common_params import (
     add_common_params,

@@ -14,7 +14,7 @@ from azext_mlv2.manual._params._common_params import (
     add_override_param,
 )
 
-from azure.ai.ml.constants._common import YAMLRefDocLinks
+from azure.ai.ml.constants._common import YAMLRefDocLinks  # pylint: disable=no-name-in-module,import-error
 
 
 def add_name_param(c):

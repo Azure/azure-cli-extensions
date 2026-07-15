@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from azure.ai.ml.constants._common import YAMLRefDocLinks
+from azure.ai.ml.constants._common import YAMLRefDocLinks  # pylint: disable=no-name-in-module,import-error
 from azure.cli.core.commands.parameters import get_three_state_flag
 
 from ._common_params import add_common_params, add_file_param, add_override_param

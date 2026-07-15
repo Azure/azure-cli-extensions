@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 from azext_mlv2.manual.custom.utils import private_features_enabled
 
-from azure.ai.ml.constants._common import YAMLRefDocLinks
+from azure.ai.ml.constants._common import YAMLRefDocLinks  # pylint: disable=no-name-in-module,import-error
 from azure.cli.core.commands.parameters import get_three_state_flag
 
 from ._common_params import (
