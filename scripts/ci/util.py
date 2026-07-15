@@ -125,9 +125,13 @@ def fetch_github_index(repo, branch, token=None):
         try:
             return r.json()
         except ValueError as exc:
-            raise RuntimeError("Failed to parse index.json from GitHub: {}".format(exc))
+            raise RuntimeError(
+                "Failed to parse index.json from GitHub ({}): {}".format(url, exc)
+            ) from exc
     except requests.exceptions.RequestException as exc:
-        raise RuntimeError("Failed to fetch index.json from GitHub: {}".format(exc))
+        raise RuntimeError(
+            "Failed to fetch index.json from GitHub ({}): {}".format(url, exc)
+        ) from exc
 
 
 def upload_wheel_no_overwrite(whl_path, storage_account, storage_container, blob_prefix=None):
