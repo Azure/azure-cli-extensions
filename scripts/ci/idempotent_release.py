@@ -73,6 +73,7 @@ NAME_REGEX = r'^(.*?)-\d+\.\d+\.\d+'
 # -- status constants ---------------------------------------------------------
 COMMIT_NEEDED = 'COMMIT_NEEDED'
 ALREADY_UP_TO_DATE = 'ALREADY_UP_TO_DATE'
+NEW_EXTENSION = 'NEW_EXTENSION'
 
 
 # =============================================================================
@@ -166,19 +167,13 @@ def step_build_index(authoritative_whl, blob_url, github_repo='Azure/azure-cli-e
         original_content = f.read()
     curr_index = json.loads(original_content)
 
-    # If this is a brand-new extension (first release), add it to the index.
+    # If this is a brand-new extension (first release), signal the caller
+    # to use azdev extension update-index — the proven tool for creating
+    # new index entries with the correct structure.
     if extension_name not in curr_index.get('extensions', {}):
-        print("[Step 2] Extension '{}' is new — adding to index.json".format(extension_name))
-        curr_index['extensions'][extension_name] = [{
-            'downloadUrl': blob_url,
-            'sha256Digest': computed_hash,
-            'filename': whl_filename,
-            'metadata': metadata,
-        }]
-        with open(index_path, 'w') as f:
-            f.write(json.dumps(curr_index, indent=4, sort_keys=True))
-        print("[Step 2] Added new extension '{}' -> COMMIT_NEEDED".format(extension_name))
-        return extension_name, computed_hash, COMMIT_NEEDED
+        print("[Step 2] Extension '{}' is new — needs azdev extension update-index".format(
+            extension_name))
+        return extension_name, computed_hash, NEW_EXTENSION
 
     # Check if the SHA-256 already matches — if so, no update needed.
     entry = curr_index['extensions'][extension_name]
