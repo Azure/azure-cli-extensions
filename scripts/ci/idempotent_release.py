@@ -141,17 +141,18 @@ def step_build_index(authoritative_whl, blob_url, github_repo='Azure/azure-cli-e
         github_token = os.environ.get('GITHUB_TOKEN')
         remote_index = fetch_github_index(github_repo, github_branch, github_token)
         remote_entries = remote_index.get('extensions', {}).get(extension_name, [])
-        remote_sha = remote_entries[0].get('sha256Digest') if remote_entries else None
-        if remote_sha == computed_hash:
+        # Find the entry matching this specific wheel filename (not just [0])
+        remote_entry = next((e for e in remote_entries if e.get('filename') == whl_filename), None)
+        if remote_entry and remote_entry.get('sha256Digest') == computed_hash:
             print("[Step 2] Remote GitHub index.json already has correct SHA-256 "
-                  "for '{}' -> ALREADY_UP_TO_DATE".format(extension_name))
+                  "for '{}' ({}) -> ALREADY_UP_TO_DATE".format(extension_name, whl_filename))
             return extension_name, computed_hash, ALREADY_UP_TO_DATE
-        if remote_sha:
-            print("[Step 2] Remote SHA '{}' differs from computed '{}'".format(
-                remote_sha, computed_hash))
+        if remote_entry:
+            print("[Step 2] Remote SHA '{}' differs from computed '{}' for {}".format(
+                remote_entry.get('sha256Digest'), computed_hash, whl_filename))
         else:
-            print("[Step 2] Extension '{}' not found in remote index (new or missing)".format(
-                extension_name))
+            print("[Step 2] Filename '{}' not found in remote index for '{}'".format(
+                whl_filename, extension_name))
     except Exception as exc:
         # Non-fatal: if we can't reach GitHub, fall through to the local check.
         print("[Step 2] WARNING: Could not check remote index.json: {}".format(exc))
@@ -162,7 +163,7 @@ def step_build_index(authoritative_whl, blob_url, github_repo='Azure/azure-cli-e
     metadata = get_ext_metadata(ext_dir, authoritative_whl, extension_name)
 
     # Read current local index.json.
-    index_path = os.path.join('src', 'index.json')
+    index_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'index.json'))
     with open(index_path, 'r') as f:
         original_content = f.read()
     curr_index = json.loads(original_content)
@@ -175,21 +176,33 @@ def step_build_index(authoritative_whl, blob_url, github_repo='Azure/azure-cli-e
             extension_name))
         return extension_name, computed_hash, NEW_EXTENSION
 
-    # Check if the SHA-256 already matches — if so, no update needed.
+    # Check if this specific filename's SHA-256 already matches.
     entry = curr_index['extensions'][extension_name]
-    existing_sha = entry[0].get('sha256Digest')
-    if existing_sha == computed_hash:
-        print("[Step 2] index.json already has correct SHA-256 for '{}' -> ALREADY_UP_TO_DATE".format(
-            extension_name))
+    existing_entry = next((e for e in entry if e.get('filename') == whl_filename), None)
+    if existing_entry and existing_entry.get('sha256Digest') == computed_hash:
+        print("[Step 2] index.json already has correct SHA-256 for '{}' ({}) -> ALREADY_UP_TO_DATE".format(
+            extension_name, whl_filename))
         return extension_name, computed_hash, ALREADY_UP_TO_DATE
 
-    # Update the entry.
-    print("[Step 2] Updating index.json: existing SHA '{}' -> '{}'".format(
-        existing_sha, computed_hash))
-    entry[0]['downloadUrl'] = blob_url
-    entry[0]['sha256Digest'] = computed_hash
-    entry[0]['filename'] = whl_filename
-    entry[0]['metadata'] = metadata
+    # Update or append the entry for this filename.
+    if existing_entry:
+        # Same filename exists but with different SHA — update in place.
+        print("[Step 2] Updating index.json: existing SHA '{}' -> '{}'".format(
+            existing_entry.get('sha256Digest'), computed_hash))
+        existing_entry['downloadUrl'] = blob_url
+        existing_entry['sha256Digest'] = computed_hash
+        existing_entry['filename'] = whl_filename
+        existing_entry['metadata'] = metadata
+    else:
+        # New version of an existing extension — prepend to the list.
+        print("[Step 2] Adding new version '{}' to index.json for '{}'".format(
+            whl_filename, extension_name))
+        entry.insert(0, {
+            'downloadUrl': blob_url,
+            'sha256Digest': computed_hash,
+            'filename': whl_filename,
+            'metadata': metadata,
+        })
 
     curr_index['extensions'][extension_name] = entry
     with open(index_path, 'w') as f:
