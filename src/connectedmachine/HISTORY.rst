@@ -4,7 +4,7 @@ Release History
 ===============
 4.0.0b1
 +++++	
-* 2025/06/19-preview is used for aaz generation. Migrated to aaz.
+* 2026/06/19-preview is used for aaz generation. Migrated to aaz.
 
 3.0.0b1
 +++++	

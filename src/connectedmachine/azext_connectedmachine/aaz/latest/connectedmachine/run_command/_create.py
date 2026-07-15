@@ -133,9 +133,11 @@ class Create(AAZCommand):
         error_blob_managed_identity = cls._args_schema.error_blob_managed_identity
         error_blob_managed_identity.client_id = AAZStrArg(
             options=["client-id"],
+            help="Client Id (GUID value) of the user-assigned managed identity. ObjectId should not be used if this is provided.",
         )
         error_blob_managed_identity.object_id = AAZStrArg(
             options=["object-id"],
+            help="Object Id (GUID value) of the user-assigned managed identity. ClientId should not be used if this is provided.",
         )
 
         parameters = cls._args_schema.parameters
@@ -359,7 +361,7 @@ class Create(AAZCommand):
                 properties.set_prop("outputBlobUri", AAZStrType, ".output_blob_uri")
                 properties.set_prop("parameters", AAZListType, ".parameters")
                 properties.set_prop("protectedParameters", AAZListType, ".protected_parameters")
-                properties.set_prop("runAsPassword", AAZStrType, ".run_as_password")
+                properties.set_prop("runAsPassword", AAZStrType, ".run_as_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("runAsUser", AAZStrType, ".run_as_user")
                 properties.set_prop("source", AAZObjectType, ".source")
                 properties.set_prop("timeoutInSeconds", AAZIntType, ".timeout_in_seconds")
@@ -461,6 +463,7 @@ class Create(AAZCommand):
             )
             properties.run_as_password = AAZStrType(
                 serialized_name="runAsPassword",
+                flags={"secret": True},
             )
             properties.run_as_user = AAZStrType(
                 serialized_name="runAsUser",
