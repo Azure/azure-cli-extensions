@@ -6309,6 +6309,63 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+    def test_set_up_agentpool_profile_hosted_system_skips_default_pool(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "sku": "automatic",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            dec_1.agentpool_decorator,
+            "construct_agentpool_profile_preview",
+        ) as construct_agentpool_profile:
+            dec_mc_1 = dec_1.set_up_agentpool_profile(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.agent_pool_profiles)
+        construct_agentpool_profile.assert_not_called()
+
+    def test_set_up_agentpool_profile_ssh_access_allows_no_agent_pools(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_access": CONST_SSH_ACCESS_LOCALUSER},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location", agent_pool_profiles=None)
+        dec_1.context.attach_mc(mc_1)
+
+        dec_mc_1 = dec_1.set_up_agentpool_profile_ssh_access(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.agent_pool_profiles)
+
+    def test_set_up_linux_profile_hosted_system_skips_ssh_key(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "sku": "automatic",
+                "ssh_key_value": "unused-for-managed-system-pool",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        dec_mc_1 = dec_1.set_up_linux_profile(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.linux_profile)
+
     def test_set_up_network_profile_preview(self):
         # custom value
         dec_1 = AKSPreviewManagedClusterCreateDecorator(

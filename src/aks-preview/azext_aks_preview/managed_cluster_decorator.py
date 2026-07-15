@@ -4367,6 +4367,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.agent_pool_profiles = [agentpool_profile]
         return mc
 
+    def set_up_linux_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Skip VM SSH configuration when the system pool is fully managed by AKS."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_hosted_system():
+            return mc
+
+        return super().set_up_linux_profile(mc)
+
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 

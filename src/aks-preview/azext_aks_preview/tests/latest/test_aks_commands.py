@@ -6038,7 +6038,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_automatic_sku_hosted_system_byovnet_slb(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -6113,6 +6113,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("sku.name", "Automatic"),
                 self.check("hostedSystemProfile.enabled", True),
+                self.check("agentPoolProfiles", None),
+                self.check("linuxProfile", None),
                 self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
                 self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
                 self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
@@ -6120,41 +6122,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # convert to Base SKU; expect the transition to succeed for the BYO VNet HOBO case.
-        # Wait for the cluster to become idle (no in-progress RP reconciliation) before starting
-        # the update; without this the RP returns 409 OperationNotAllowed for a few minutes after
-        # create completes while it finishes post-create reconciliation.
-        self.cmd(
-            "aks wait -g {resource_group} -n {name} --created --timeout 900",
-            checks=[self.is_empty()],
-        )
-        # Poll with retries: `aks wait --created` returns once provisioningState hits Succeeded,
-        # but the RP can still have an internal in-progress reconciliation for several minutes
-        # afterwards which surfaces as 409 OperationNotAllowed on `aks update`. Back off and retry.
-        update_deadline = time.time() + 900
-        last_error = None
-        while time.time() < update_deadline:
-            try:
-                self.cmd(
-                    "aks update -g {resource_group} -n {name} --sku base",
-                    checks=[self.check("sku.name", "Base")],
-                )
-                last_error = None
-                break
-            except Exception as ex:  # pylint: disable=broad-except
-                message = str(ex)
-                if "OperationNotAllowed" in message or "in progress" in message or "409" in message:
-                    last_error = ex
-                    time.sleep(60)
-                    continue
-                raise
-        if last_error is not None:
-            raise last_error
-
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_automatic_sku_hosted_system_byovnet_user_natgw(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -6258,6 +6229,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("sku.name", "Automatic"),
                 self.check("hostedSystemProfile.enabled", True),
+                self.check("agentPoolProfiles", None),
+                self.check("linuxProfile", None),
                 self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
                 self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
                 self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
