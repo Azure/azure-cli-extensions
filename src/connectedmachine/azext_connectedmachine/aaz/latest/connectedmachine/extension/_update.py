@@ -355,14 +355,14 @@ class Update(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _UpdateHelper._build_schema_record<unknown>_read(properties.protected_settings)
+            _UpdateHelper._build_schema_record_unknown_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record<unknown>_read(properties.settings)
+            _UpdateHelper._build_schema_record_unknown_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -558,14 +558,14 @@ class Update(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _UpdateHelper._build_schema_record<unknown>_read(properties.protected_settings)
+            _UpdateHelper._build_schema_record_unknown_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record<unknown>_read(properties.settings)
+            _UpdateHelper._build_schema_record_unknown_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -680,20 +680,20 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_record<unknown>_read = None
+    _schema_record_unknown_read = None
 
     @classmethod
-    def _build_schema_record<unknown>_read(cls, _schema):
-        if cls._schema_record<unknown>_read is not None:
-            _schema.Element = cls._schema_record<unknown>_read.Element
+    def _build_schema_record_unknown_read(cls, _schema):
+        if cls._schema_record_unknown_read is not None:
+            _schema.Element = cls._schema_record_unknown_read.Element
             return
 
-        cls._schema_record<unknown>_read = _schema_record<unknown>_read = AAZDictType()
+        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
 
-        record<unknown>_read = _schema_record<unknown>_read
-        record<unknown>_read.Element = AAZAnyType()
+        record_unknown_read = _schema_record_unknown_read
+        record_unknown_read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record<unknown>_read.Element
+        _schema.Element = cls._schema_record_unknown_read.Element
 
 
 __all__ = ["Update"]
