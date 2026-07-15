@@ -18,7 +18,7 @@ class Generate(AAZCommand):
     """Generates the manifest for the given provider.
 
     :example: manifest generate
-        az providerhub manifest generate --provider-namespace "{providerNamespace}
+        az providerhub manifest generate --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {
