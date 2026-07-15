@@ -122,7 +122,10 @@ def fetch_github_index(repo, branch, token=None):
         r = requests.get(url, headers=headers, timeout=30)
         if r.status_code != 200:
             raise RuntimeError("Failed to fetch index.json from GitHub: HTTP {}".format(r.status_code))
-        return r.json()
+        try:
+            return r.json()
+        except ValueError as exc:
+            raise RuntimeError("Failed to parse index.json from GitHub: {}".format(exc))
     except requests.exceptions.RequestException as exc:
         raise RuntimeError("Failed to fetch index.json from GitHub: {}".format(exc))
 
