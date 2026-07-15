@@ -71,12 +71,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_upgrade_minor_version = AAZBoolArg(
-            options=["--auto-upgrade-minor-version"],
+            options=["--auto-upgrade-minor", "--auto-upgrade-minor-version"],
             arg_group="Properties",
             help="Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.",
         )
         _args_schema.enable_automatic_upgrade = AAZBoolArg(
-            options=["--enable-automatic-upgrade"],
+            options=["--enable-autoupgrade", "--enable-automatic-upgrade"],
             arg_group="Properties",
             help="Indicates whether the extension should be automatically upgraded by the platform if there is a newer version available.",
         )
@@ -392,14 +392,14 @@ class Create(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _CreateHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _CreateHelper._build_schema_record<unknown>_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _CreateHelper._build_schema_record_unknown_read(properties.settings)
+            _CreateHelper._build_schema_record<unknown>_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -451,20 +451,20 @@ class Create(AAZCommand):
 class _CreateHelper:
     """Helper class for Create"""
 
-    _schema_record_unknown_read = None
+    _schema_record<unknown>_read = None
 
     @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
+    def _build_schema_record<unknown>_read(cls, _schema):
+        if cls._schema_record<unknown>_read is not None:
+            _schema.Element = cls._schema_record<unknown>_read.Element
             return
 
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
+        cls._schema_record<unknown>_read = _schema_record<unknown>_read = AAZDictType()
 
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
+        record<unknown>_read = _schema_record<unknown>_read
+        record<unknown>_read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record_unknown_read.Element
+        _schema.Element = cls._schema_record<unknown>_read.Element
 
 
 __all__ = ["Create"]

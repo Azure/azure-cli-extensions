@@ -185,7 +185,7 @@ class Wait(AAZWaitCommand):
             )
             _WaitHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
-            _WaitHelper._build_schema_record_string_read(_schema_on_200.tags)
+            _WaitHelper._build_schema_record<string>_read(_schema_on_200.tags)
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -247,7 +247,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="detectedProperties",
                 flags={"read_only": True},
             )
-            _WaitHelper._build_schema_record_string_read(properties.detected_properties)
+            _WaitHelper._build_schema_record<string>_read(properties.detected_properties)
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"read_only": True},
@@ -547,7 +547,7 @@ class Wait(AAZWaitCommand):
             )
             _WaitHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(assigned_license.system_data)
             assigned_license.tags = AAZDictType()
-            _WaitHelper._build_schema_record_string_read(assigned_license.tags)
+            _WaitHelper._build_schema_record<string>_read(assigned_license.tags)
             assigned_license.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -798,7 +798,7 @@ class Wait(AAZWaitCommand):
             )
             _WaitHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_element.system_data)
             _element.tags = AAZDictType()
-            _WaitHelper._build_schema_record_string_read(_element.tags)
+            _WaitHelper._build_schema_record<string>_read(_element.tags)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -820,14 +820,14 @@ class Wait(AAZWaitCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _WaitHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _WaitHelper._build_schema_record<unknown>_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _WaitHelper._build_schema_record_unknown_read(properties.settings)
+            _WaitHelper._build_schema_record<unknown>_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -1036,35 +1036,35 @@ class _WaitHelper:
         _schema.patch_mode = cls._schema_patchsettings_read.patch_mode
         _schema.status = cls._schema_patchsettings_read.status
 
-    _schema_record_string_read = None
+    _schema_record<string>_read = None
 
     @classmethod
-    def _build_schema_record_string_read(cls, _schema):
-        if cls._schema_record_string_read is not None:
-            _schema.Element = cls._schema_record_string_read.Element
+    def _build_schema_record<string>_read(cls, _schema):
+        if cls._schema_record<string>_read is not None:
+            _schema.Element = cls._schema_record<string>_read.Element
             return
 
-        cls._schema_record_string_read = _schema_record_string_read = AAZDictType()
+        cls._schema_record<string>_read = _schema_record<string>_read = AAZDictType()
 
-        record_string_read = _schema_record_string_read
-        record_string_read.Element = AAZStrType()
+        record<string>_read = _schema_record<string>_read
+        record<string>_read.Element = AAZStrType()
 
-        _schema.Element = cls._schema_record_string_read.Element
+        _schema.Element = cls._schema_record<string>_read.Element
 
-    _schema_record_unknown_read = None
+    _schema_record<unknown>_read = None
 
     @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
+    def _build_schema_record<unknown>_read(cls, _schema):
+        if cls._schema_record<unknown>_read is not None:
+            _schema.Element = cls._schema_record<unknown>_read.Element
             return
 
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
+        cls._schema_record<unknown>_read = _schema_record<unknown>_read = AAZDictType()
 
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
+        record<unknown>_read = _schema_record<unknown>_read
+        record<unknown>_read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record_unknown_read.Element
+        _schema.Element = cls._schema_record<unknown>_read.Element
 
     _schema_servicestatus_read = None
 

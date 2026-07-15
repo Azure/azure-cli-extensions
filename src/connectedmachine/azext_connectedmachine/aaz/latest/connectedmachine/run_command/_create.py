@@ -79,18 +79,17 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.error_blob_managed_identity = AAZObjectArg(
-            options=["--error-blob-managed-identity"],
+            options=["--error-blob-identity", "--error-blob-managed-identity"],
             arg_group="Properties",
-            help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
+            help="The managed identity used to access the error blob.",
         )
-        cls._build_args_runcommandmanagedidentity_create_or_update_create(_args_schema.error_blob_managed_identity)
         _args_schema.error_blob_uri = AAZStrArg(
             options=["--error-blob-uri"],
             arg_group="Properties",
             help="Specifies the Azure storage blob where script error stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer errorBlobManagedIdentity parameter.",
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-blob-managed-identity"],
+            options=["--output-blob-identity", "--output-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
@@ -129,6 +128,14 @@ class Create(AAZCommand):
             options=["--timeout-in-seconds"],
             arg_group="Properties",
             help="The timeout in seconds to execute the run command.",
+        )
+
+        error_blob_managed_identity = cls._args_schema.error_blob_managed_identity
+        error_blob_managed_identity.client_id = AAZStrArg(
+            options=["client-id"],
+        )
+        error_blob_managed_identity.object_id = AAZStrArg(
+            options=["object-id"],
         )
 
         parameters = cls._args_schema.parameters
@@ -346,7 +353,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("asyncExecution", AAZBoolType, ".async_execution")
-                _CreateHelper._build_schema_runcommandmanagedidentity_create_or_update_create(properties.set_prop("errorBlobManagedIdentity", AAZObjectType, ".error_blob_managed_identity"))
+                properties.set_prop("errorBlobManagedIdentity", AAZObjectType, ".error_blob_managed_identity")
                 properties.set_prop("errorBlobUri", AAZStrType, ".error_blob_uri")
                 _CreateHelper._build_schema_runcommandmanagedidentity_create_or_update_create(properties.set_prop("outputBlobManagedIdentity", AAZObjectType, ".output_blob_managed_identity"))
                 properties.set_prop("outputBlobUri", AAZStrType, ".output_blob_uri")
@@ -356,6 +363,11 @@ class Create(AAZCommand):
                 properties.set_prop("runAsUser", AAZStrType, ".run_as_user")
                 properties.set_prop("source", AAZObjectType, ".source")
                 properties.set_prop("timeoutInSeconds", AAZIntType, ".timeout_in_seconds")
+
+            error_blob_managed_identity = _builder.get(".properties.errorBlobManagedIdentity")
+            if error_blob_managed_identity is not None:
+                error_blob_managed_identity.set_prop("clientId", AAZStrType, ".client_id")
+                error_blob_managed_identity.set_prop("objectId", AAZStrType, ".object_id")
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:

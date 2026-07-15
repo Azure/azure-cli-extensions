@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListByRg(AAZCommand):
     """List operation to get all licenses of a non-Azure machine
+
+    :example: az connectedmachine license list-by-rg
+        az connectedmachine license list-by-rg --resource-group myResourceGroup --subscription mySubscription
     """
 
     _aaz_info = {

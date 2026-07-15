@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension type list",
+    "connectedmachine private-link-scope current show",
 )
-class List(AAZCommand):
-    """List all Extension types based on location and publisher
+class Show(AAZCommand):
+    """Get a Azure Arc PrivateLinkScope's validation details for a given machine.
 
-    :example: Sample command for extension type list
-        az connectedmachine extension type list --location eastus --publisher microsoft.compute
+    :example: Sample command for private-link-scope current show
+        az connectedmachine private-link-scope current show --resource-group my-resource-group --scope-name my-privatelinkscope --subscription my-subscritpion
     """
 
     _aaz_info = {
         "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/privatelinkscopes/current", "2026-06-16-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,19 +44,25 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
+        _args_schema.machine_name = AAZStrArg(
+            options=["--machine-name"],
+            help="The name of the hybrid machine.",
             required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
+                max_length=54,
+                min_length=1,
+            ),
         )
-        _args_schema.publisher = AAZStrArg(
-            options=["--publisher"],
-            help="The publisher of the Extension being received.",
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionTypeOperationGroupList(ctx=self.ctx)()
+        self.MachinesGetValidationDetailsForMachine(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,11 +74,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ExtensionTypeOperationGroupList(AAZHttpOperation):
+    class MachinesGetValidationDetailsForMachine(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +91,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.HybridCompute/locations/{location}/publishers/{publisher}/extensionTypes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/privateLinkScopes/current",
                 **self.url_parameters
             )
 
@@ -103,11 +107,15 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "location", self.ctx.args.location,
+                    "machineName", self.ctx.args.machine_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "publisher", self.ctx.args.publisher,
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -150,25 +158,45 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.connection_details = AAZListType(
+                serialized_name="connectionDetails",
             )
-            _schema_on_200.value = AAZListType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
+            )
 
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
+            connection_details = cls._schema_on_200.connection_details
+            connection_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType()
-            _element.name = AAZStrType()
+            _element = cls._schema_on_200.connection_details.Element
+            _element.group_id = AAZStrType(
+                serialized_name="groupId",
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.link_identifier = AAZStrType(
+                serialized_name="linkIdentifier",
+                flags={"read_only": True},
+            )
+            _element.member_name = AAZStrType(
+                serialized_name="memberName",
+                flags={"read_only": True},
+            )
+            _element.private_ip_address = AAZStrType(
+                serialized_name="privateIpAddress",
+                flags={"read_only": True},
+            )
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

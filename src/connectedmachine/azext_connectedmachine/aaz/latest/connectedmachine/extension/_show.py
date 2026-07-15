@@ -206,14 +206,14 @@ class Show(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _ShowHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _ShowHelper._build_schema_record<unknown>_read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _ShowHelper._build_schema_record_unknown_read(properties.settings)
+            _ShowHelper._build_schema_record<unknown>_read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -265,20 +265,20 @@ class Show(AAZCommand):
 class _ShowHelper:
     """Helper class for Show"""
 
-    _schema_record_unknown_read = None
+    _schema_record<unknown>_read = None
 
     @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
+    def _build_schema_record<unknown>_read(cls, _schema):
+        if cls._schema_record<unknown>_read is not None:
+            _schema.Element = cls._schema_record<unknown>_read.Element
             return
 
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
+        cls._schema_record<unknown>_read = _schema_record<unknown>_read = AAZDictType()
 
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
+        record<unknown>_read = _schema_record<unknown>_read
+        record<unknown>_read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record_unknown_read.Element
+        _schema.Element = cls._schema_record<unknown>_read.Element
 
 
 __all__ = ["Show"]

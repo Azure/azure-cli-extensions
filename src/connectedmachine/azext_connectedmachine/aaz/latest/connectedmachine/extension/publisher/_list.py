@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all Extension publishers based on the location
+
+    :example: Sample command for extension publisher list
+        az connectedmachine extension publisher list --publisher microsoft.azure.monitor --location eastus
     """
 
     _aaz_info = {
