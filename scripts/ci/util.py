@@ -114,6 +114,7 @@ def fetch_github_index(repo, branch, token=None):
         RuntimeError: If the fetch fails
     """
     import requests
+    # external-url-exempt: This function fetches index.json from GitHub raw content, which is necessary for the operation of the script. It is called in pipeline code only.
     url = 'https://raw.githubusercontent.com/{}/{}/src/index.json'.format(repo, branch)
     headers = {}
     if token:
