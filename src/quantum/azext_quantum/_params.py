@@ -55,6 +55,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_output_format_type = CLIArgumentType(help='The expected job output format')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
+    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', choices=['V1', 'V2'])
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
     job_type_type = CLIArgumentType(options_list=['--job-type'], help='Job type to be listed, example "QuantumComputing".')
@@ -75,6 +76,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('provider_sku_list', provider_sku_list_type)
         c.argument('auto_accept', auto_accept_type)
         c.argument('skip_autoadd', skip_autoadd_type)
+        c.argument('workspace_kind', workspace_kind_type)
+
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
