@@ -29,7 +29,7 @@ class IdentityScenarioTest(ScenarioTest):
             'machine': 'LAPTOP-4GNU2K3H',
             'rg': 'yao_test',
             'location': 'eastus',
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
         })
 
         # Assign the system managed identity to the machine

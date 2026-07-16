@@ -35,12 +35,12 @@ class ESULicenseScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_esulicense')
     def test_esu_license(self):
         self.kwargs.update({
-            'customScriptName': 'custom-test',
-            'machine': 'testmachine',
+            'customScriptName': 'custom-test2',
+            'machine': 'LAPTOP-4GNU2K3H',
             'machineSA': 'WIN-U20CKFHMICE',
             'machinePaygo': 'WIN-U57JFKURUK8',
-            'rg': 'ytongtest',
-            'location': 'westus2',
+            'rg': 'yao_test',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
             'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PayGo_Test_CLI/providers/Microsoft.HybridCompute/machines/WIN-U57JFKURUK8/licenseProfiles/default', 

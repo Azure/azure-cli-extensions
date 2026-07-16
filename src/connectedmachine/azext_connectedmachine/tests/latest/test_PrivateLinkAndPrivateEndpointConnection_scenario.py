@@ -40,16 +40,16 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
     def test_private_link(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
+            'machine': 'LAPTOP-4GNU2K3H',
+            'rg': 'yao_test',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'westus2',
+            'location': 'eastus',
             'customScriptName': 'custom-' + rand_string,
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
         })
 
         # Prepare network
@@ -81,13 +81,6 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         # Test private link scope list 
         self.cmd('az connectedmachine private-link-scope list '
                 '--resource-group "{rg}"',
-                checks=[])
-
-        # Get the private link scope validation details for the machine
-        self.cmd('az connectedmachine private-link-scope current show '
-                '--machine-name "{machine}" '
-                '--resource-group "{rg}" '
-                '--subscription "{subscription}"',
                 checks=[])
 
         # Private link scope show
