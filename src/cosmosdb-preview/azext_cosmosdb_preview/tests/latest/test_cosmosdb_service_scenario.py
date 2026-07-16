@@ -20,7 +20,7 @@ class Cosmosdb_previewServiceScenarioTest(ScenarioTest):
         })
 
         # Create account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName=eastus2 failoverPriority=0 isZoneRedundant=False')
 
         service_create = self.cmd('az cosmosdb service create -a {acc} -g {rg} --name "sqlDedicatedGateway" --kind SqlDedicatedGateway --gateway-type IntegratedCache --count 1 --size "Cosmos.D4s" ').get_output_in_json()
         assert service_create["name"] == "sqlDedicatedGateway"

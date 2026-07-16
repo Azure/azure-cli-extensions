@@ -90,7 +90,8 @@ class FleetHubfulScenarioTest(ScenarioTest):
                      self.check('name', '{namespace_name}'),
                      self.check('properties.adoptionPolicy', 'Always'),
                      self.check('properties.deletePolicy', 'Delete'),
-                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}')
+                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}'),
+                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.rolloutStrategy.type', 'RollingUpdate')
                  ])
         
         self.cmd('fleet namespace wait -g {rg} -f {fleet_name} -n {namespace_name} --created', checks=[self.is_empty()])
@@ -98,6 +99,21 @@ class FleetHubfulScenarioTest(ScenarioTest):
         self.cmd('fleet namespace show -g {rg} -f {fleet_name} -n {namespace_name}', checks=[
             self.check('name', '{namespace_name}')
         ])
+
+        self.cmd('fleet namespace update -g {rg} --fleet-name {fleet_name} -n {namespace_name} '
+                 '--tags env=test --adoption-policy IfIdentical --delete-policy Keep '
+                 '--labels app=myapp --cpu-requests 500m --memory-limits 256Mi '
+                 '--ingress-policy DenyAll',
+                 checks=[
+                     self.check('name', '{namespace_name}'),
+                     self.check('tags.env', 'test'),
+                     self.check('properties.adoptionPolicy', 'IfIdentical'),
+                     self.check('properties.deletePolicy', 'Keep'),
+                     self.check('properties.managedNamespaceProperties.labels.app', 'myapp'),
+                     self.check('properties.managedNamespaceProperties.defaultResourceQuota.cpuRequest', '500m'),
+                     self.check('properties.managedNamespaceProperties.defaultResourceQuota.memoryLimit', '256Mi'),
+                     self.check('properties.managedNamespaceProperties.defaultNetworkPolicy.ingress', 'DenyAll')
+                 ])
 
         self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --context namespace-{namespace_name} --overwrite-existing')
 

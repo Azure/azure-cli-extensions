@@ -43,6 +43,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             method_name, recording_processors=[KeyReplacer()]
         )
 
+    def _create_log_analytics_workspace(self, resource_group_location):
+        workspace_name = self.create_random_name("clilaw", 16)
+        workspace_location = (
+            "eastus2" if resource_group_location.lower().endswith("euap") else resource_group_location
+        )
+        self.kwargs.update(
+            {
+                "workspace_name": workspace_name,
+                "workspace_location": workspace_location,
+            }
+        )
+        return self.cmd(
+            "monitor log-analytics workspace create -g {resource_group} -n {workspace_name} "
+            "--location {workspace_location} --query id -o tsv"
+        ).output.strip()
+
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         supported_versions = self.cmd(
@@ -5978,13 +5994,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
+        self.kwargs.update({
+            "workspace_resource_id": self._create_log_analytics_workspace(resource_group_location),
+        })
 
         # create an Automatic cluster with hosted system enabled
         # hobo pool is fully managed by AKS, not accessible to users, and can only be configured during creation,
         # so we only need to test for cluster creation here
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --enable-hosted-system "
+            "--sku automatic --enable-hosted-system --workspace-resource-id={workspace_resource_id} "
             "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AutomaticHostedSystemProfilePreview "
             "--ssh-key-value={ssh_key_value}"
@@ -6014,6 +6033,209 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus3"
+    )
+    def test_aks_automatic_sku_hosted_system_byovnet_slb(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("clivnet", 16)
+        identity_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "vnet_name": vnet_name,
+                "identity_name": identity_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # user-assigned MSI is required for BYO VNet on automatic SKU
+        identity_id = self.cmd(
+            "identity create -g {resource_group} -n {identity_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"identity_id": identity_id})
+
+        # create a BYO VNet with 3 subnets: system-node, node, apiserver
+        self.cmd(
+            "network vnet create -g {resource_group} -n {vnet_name} "
+            "--address-prefix 10.0.0.0/8 "
+            "--subnet-name systemnode --subnet-prefix 10.42.0.0/20"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --address-prefix 10.43.0.0/16"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name apiserver --address-prefix 10.44.0.0/28"
+        )
+        system_node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name systemnode "
+            "--query id -o tsv"
+        ).output.strip()
+        node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name node "
+            "--query id -o tsv"
+        ).output.strip()
+        apiserver_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name apiserver "
+            "--query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({
+            "system_node_subnet_id": system_node_subnet_id,
+            "node_subnet_id": node_subnet_id,
+            "apiserver_subnet_id": apiserver_subnet_id,
+            "workspace_resource_id": self._create_log_analytics_workspace(resource_group_location),
+        })
+
+        # BYO VNet HOBO automatic cluster with loadBalancer outbound
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --enable-hosted-system --workspace-resource-id={workspace_resource_id} "
+            "--enable-managed-identity --assign-identity {identity_id} "
+            "--system-node-subnet-id={system_node_subnet_id} "
+            "--node-subnet-id={node_subnet_id} "
+            "--apiserver-subnet-id={apiserver_subnet_id} "
+            "--outbound-type loadBalancer "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("hostedSystemProfile.enabled", True),
+                self.check("agentPoolProfiles", None),
+                self.check("linuxProfile", None),
+                self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
+                self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
+                self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
+                self.check("networkProfile.outboundType", "loadBalancer"),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus3"
+    )
+    def test_aks_automatic_sku_hosted_system_byovnet_user_natgw(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("clivnet", 16)
+        identity_name = self.create_random_name("cliakstest", 16)
+        natgw_name = self.create_random_name("clinatgw", 16)
+        pip_name = self.create_random_name("clinatpip", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "vnet_name": vnet_name,
+                "identity_name": identity_name,
+                "natgw_name": natgw_name,
+                "pip_name": pip_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # user-assigned MSI is required for BYO VNet on automatic SKU
+        identity_id = self.cmd(
+            "identity create -g {resource_group} -n {identity_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"identity_id": identity_id})
+
+        # create a BYO VNet with 3 subnets: system-node, node, apiserver
+        self.cmd(
+            "network vnet create -g {resource_group} -n {vnet_name} "
+            "--address-prefix 10.0.0.0/8 "
+            "--subnet-name systemnode --subnet-prefix 10.42.0.0/20"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --address-prefix 10.43.0.0/16"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name apiserver --address-prefix 10.44.0.0/28"
+        )
+
+        # Create a user-assigned NAT gateway and attach it to the node subnet
+        self.cmd(
+            "network public-ip create -g {resource_group} -n {pip_name} "
+            "--sku Standard --allocation-method Static"
+        )
+        self.cmd(
+            "network nat gateway create -g {resource_group} -n {natgw_name} "
+            "--public-ip-addresses {pip_name} --idle-timeout 10"
+        )
+        natgw_id = self.cmd(
+            "network nat gateway show -g {resource_group} -n {natgw_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"natgw_id": natgw_id})
+
+        # Attach the NAT gateway to both the system-node and node subnets (egress paths)
+        self.cmd(
+            "network vnet subnet update -g {resource_group} --vnet-name {vnet_name} "
+            "--name systemnode --nat-gateway {natgw_id}"
+        )
+        self.cmd(
+            "network vnet subnet update -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --nat-gateway {natgw_id}"
+        )
+
+        system_node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name systemnode "
+            "--query id -o tsv"
+        ).output.strip()
+        node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name node "
+            "--query id -o tsv"
+        ).output.strip()
+        apiserver_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name apiserver "
+            "--query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({
+            "system_node_subnet_id": system_node_subnet_id,
+            "node_subnet_id": node_subnet_id,
+            "apiserver_subnet_id": apiserver_subnet_id,
+            "workspace_resource_id": self._create_log_analytics_workspace(resource_group_location),
+        })
+
+        # BYO VNet HOBO automatic cluster with userAssignedNATGateway outbound
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --enable-hosted-system --workspace-resource-id={workspace_resource_id} "
+            "--enable-managed-identity --assign-identity {identity_id} "
+            "--system-node-subnet-id={system_node_subnet_id} "
+            "--node-subnet-id={node_subnet_id} "
+            "--apiserver-subnet-id={apiserver_subnet_id} "
+            "--outbound-type userAssignedNATGateway "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("hostedSystemProfile.enabled", True),
+                self.check("agentPoolProfiles", None),
+                self.check("linuxProfile", None),
+                self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
+                self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
+                self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
+                self.check("networkProfile.outboundType", "userAssignedNATGateway"),
+            ],
         )
 
     @AllowLargeResponse()
@@ -24413,6 +24635,47 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_create_with_on_demand_monitor(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create with --enable-on-demand-monitor
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-on-demand-monitor "
+            "-o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "healthMonitorProfile.enableOnDemandMonitor",
+                    True,
+                ),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_update_with_continuous_control_plane_and_addon_monitor(
         self, resource_group, resource_group_location
     ):
@@ -24468,6 +24731,76 @@ spec:
                 self.check("provisioningState", "Succeeded"),
                 self.check(
                     "healthMonitorProfile.enableContinuousControlPlaneAndAddonMonitor",
+                    False,
+                ),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_with_on_demand_monitor(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create a cluster without the flag
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "-o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # update -- enable on-demand monitor
+        enable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-on-demand-monitor "
+            "-o json"
+        )
+        self.cmd(
+            enable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "healthMonitorProfile.enableOnDemandMonitor",
+                    True,
+                ),
+            ],
+        )
+
+        # update -- disable on-demand monitor
+        disable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-on-demand-monitor "
+            "-o json"
+        )
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "healthMonitorProfile.enableOnDemandMonitor",
                     False,
                 ),
             ],

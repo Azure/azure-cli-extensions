@@ -53,8 +53,10 @@ Dependency between aks-preview and azure-cli/acs (azure-cli-core)
       - >= `\2.61.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.61.0>`_, 2024/05/21
     * - 18.0.0b35 ~ 20.0.0b2
       - >= `\2.73.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.73.0>`_, 2025/05/19
-    * - 20.0.0b3 ~ latest
+    * - 20.0.0b3 ~ 20.0.0b4
       - >= `\2.76.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.76.0>`_, 2025/08/15
+    * - 20.0.0b5 ~ latest
+      - >= `\2.85.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.85.0>`_, 2026/04/07
 
 Released version and adopted API version
 ========================================
@@ -98,130 +100,130 @@ Released version and adopted API version
       - Out of support
     * - 0.5.49 ~ 0.5.52
       - 2021-11-01-preview
-      - Out of support, API version **deprecated** on 2023/07/01
+      - Out of support
     * - 0.5.53 ~ 0.5.57
       - 2022-01-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.58 ~ 0.5.60
       - 2022-02-02-preview
-      - Out of support, API version **deprecated** on 2023/08/01
+      - Out of support
     * - 0.5.61 ~ 0.5.66
       - 2022-03-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.67 ~ 0.5.78
       - 2022-04-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.79 ~ 0.5.91
       - 2022-05-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.92 ~ 0.5.93
       - 2022-06-02-preview
-      - Out of support, API version **deprecated** on 2023/09/01
+      - Out of support
     * - 0.5.94 ~ 0.5.100
       - 2022-07-02-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.101 ~ 0.5.104
       - 2022-08-02-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.105 ~ 0.5.107
       - 2022-08-03-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.108 ~ 0.5.115
       - 2022-09-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.116 ~ 0.5.121
       - 2022-10-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.122 ~ 0.5.128
       - 2022-11-02-preview
-      - Out of support, API version **deprecated** on 2024/09/01
+      - Out of support
     * - 0.5.129 ~ 0.5.132
       - 2023-01-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.133 ~ 0.5.137
       - 2023-02-02-preview
-      - Out of support, API version **deprecated** on 2024/11/01
+      - Out of support
     * - 0.5.138 ~ 0.5.139
       - 2023-03-02-preview
-      - Out of support, API version **deprecated** on 2025/02/03
+      - Out of support
     * - 0.5.140 ~ 0.5.142
       - 2023-04-02-preview
-      - Out of support, API version **deprecated** on 2025/02/10
+      - Out of support
     * - 0.5.143 ~ 0.5.149
       - 2023-05-02-preview
-      - Out of support, API version **deprecated** on 2025/02/17
+      - Out of support
     * - 0.5.150 ~ 0.5.153
       - 2023-06-02-preview
-      - Out of support, API version **deprecated** on 2025/02/24
+      - Out of support
     * - 0.5.154 ~ 0.5.161
       - 2023-07-02-preview
-      - Out of support, API version **deprecated** on 2025/03/03
+      - Out of support
     * - 0.5.162 ~ 0.5.166
       - 2023-08-02-preview
-      - Out of support, API version **deprecated** on 2025/03/10
+      - Out of support
     * - 0.5.167 ~ 0.5.171
       - 2023-09-02-preview
-      - Plan to **retire** on 2024/12/01
+      - Plan to **retire** on 2026/09/01
     * - 0.5.172 ~ 1.0.0b5
       - 2023-10-02-preview
-      - Plan to **retire** on 2024/12/01
+      - Out of support, plan to **retire** on 2026/07/01
     * - 1.0.0b6 ~ 1.0.0b6
       - 2023-11-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 1.0.0b7 ~ 2.0.0b6
       - 2024-01-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 2.0.0b7 ~ 3.0.0b9
       - 2024-02-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 3.0.0b10 ~ 5.0.0b1
       - 2024-03-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 5.0.0b2 ~ 7.0.0b2
       - 2024-04-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 7.0.0b3 ~ 7.0.0b3
       - 2024-05-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 7.0.0b4 ~ 9.0.0b1
       - 2024-06-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 9.0.0b2 ~ 13.0.0b1
       - 2024-07-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 13.0.0b2 ~ 13.0.0b8
       - 2024-09-02-preview
-      - 
+      - Out of support, plan to **retire** on 2026/07/01
     * - 13.0.0b9 ~ 13.0.0b9
       - 2024-10-02-preview
-      - 
+      - Plan to **retire** on 2027/02/01
     * - 14.0.0b1 ~ 14.0.0b3
       - 2025-01-02-preview
-      - 
+      - Plan to **retire** on 2027/02/01
     * - 14.0.0b4 ~ 18.0.0b1
       - 2025-02-02-preview
-      - 
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b2 ~ 18.0.0b10
       - 2025-03-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b11 ~ 18.0.0b15
       - 2025-04-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b16 ~ 18.0.0b21
       - 2025-05-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b22 ~ 18.0.0b34
       - 2025-06-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b35 ~ 18.0.0b43
       - 2025-07-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 18.0.0b44 ~ 19.0.0b9
       - 2025-08-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 19.0.0b10 ~ 19.0.0b17
       - 2025-09-02-preview
-      -
+      - Plan to **retire** on 2027/02/01
     * - 19.0.0b18 ~ 19.0.0b23
       - 2025-10-02-preview
       -

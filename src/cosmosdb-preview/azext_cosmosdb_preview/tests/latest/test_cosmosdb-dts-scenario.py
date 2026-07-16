@@ -32,7 +32,7 @@ class Cosmosdb_previewDtsScenarioTest(ScenarioTest):
             'loc': 'eastus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableCassandra')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableCassandra')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job
