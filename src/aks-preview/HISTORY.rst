@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+21.0.0b10
+++++++++
 * `az aks create`: Add parameters `--system-node-subnet-id`, `--node-subnet-id` and `--enable-hosted-system` to support BYO VNet for Automatic Managed System Pool clusters.
 
 21.0.0b9
