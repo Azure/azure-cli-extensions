@@ -185,3 +185,84 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
+
+    def test_add_maintenance_configuration_with_window_id(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        window_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+            "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": window_id,
+        }
+
+        result = mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertEqual(result.maintenance_window_id, window_id)
+        self.assertIsNone(result.time_in_week)
+        self.assertIsNone(result.maintenance_window)
+
+    def test_add_maintenance_configuration_with_window_id_for_default_config(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        window_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+            "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "default",
+            "maintenance_window_id": window_id,
+        }
+
+        result = mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertEqual(result.maintenance_window_id, window_id)
+
+    def test_add_maintenance_configuration_window_id_conflicts_with_schedule(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": (
+                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+                "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+            ),
+            "schedule_type": "Daily",
+            "interval_days": 2,
+        }
+
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--maintenance-window-id", str(cm.exception))
+        self.assertIn("--schedule-type", str(cm.exception))
+        self.assertIn("--interval-days", str(cm.exception))
+
+    def test_add_maintenance_configuration_window_id_conflicts_with_default_schedule(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "default",
+            "maintenance_window_id": (
+                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+                "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+            ),
+            "weekday": "Monday",
+            "start_hour": 1,
+        }
+
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--weekday", str(cm.exception))
+        self.assertIn("--start-hour", str(cm.exception))

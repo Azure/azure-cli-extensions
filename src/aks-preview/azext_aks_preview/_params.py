@@ -2794,6 +2794,14 @@ def load_arguments(self, _):
                 validator=validate_start_time,
                 help="The start time of the maintenance window. e.g. 09:30.",
             )
+            c.argument(
+                "maintenance_window_id",
+                help=(
+                    "Resource ID of a shared MaintenanceWindow resource to link this maintenance "
+                    "configuration to. When set, the schedule lives in the referenced MaintenanceWindow "
+                    "and inline schedule arguments cannot be used. Omit for no shared resource."
+                ),
+            )
 
     for scope in [
         "aks maintenanceconfiguration show",

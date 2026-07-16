@@ -897,7 +897,8 @@ def aks_maintenanceconfiguration_add(
     duration_hours=None,
     utc_offset=None,
     start_date=None,
-    start_time=None
+    start_time=None,
+    maintenance_window_id=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
@@ -930,7 +931,8 @@ def aks_maintenanceconfiguration_update(
     duration_hours=None,
     utc_offset=None,
     start_date=None,
-    start_time=None
+    start_time=None,
+    maintenance_window_id=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
