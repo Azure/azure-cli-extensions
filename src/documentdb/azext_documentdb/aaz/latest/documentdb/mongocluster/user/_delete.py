@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a mongo cluster user.
 
     :example: Delete a user.
-        az documentdb mongocluster user delete -n alice@contoso.com --cluster-name MyCluster -g MyResourceGroup
+        az documentdb mongocluster user delete -n alice-entra --cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {

@@ -47,44 +47,6 @@ class DocumentdbScenario(ScenarioTest):
             raise last_error
         return None
 
-    def _wait_for_restore_point(self, retries=40, delay=45):
-        """Poll the cluster until a restore point is available and return it.
-
-        A freshly created cluster has no backup yet, so ``earliestRestoreTime`` is
-        null until the first backup completes. During a live recording this polls
-        until the value appears; on playback the recorded responses replay in order.
-        """
-        import time
-        for _ in range(retries):
-            earliest = self.cmd(
-                'documentdb mongocluster show -n {cluster} -g {rg} '
-                '--query properties.backup.earliestRestoreTime -o tsv'
-            ).output.strip()
-            if earliest:
-                return earliest
-            if self.in_recording or self.is_live:
-                time.sleep(delay)
-        return None
-
-    def _wait_until_provisioned(self, target, retries=40, delay=30):
-        """Poll a mongo cluster (by kwargs key ``target``) until it is provisioned.
-
-        A mutating long-running operation can report success while the cluster is
-        still settling (``provisioningState`` briefly stays ``Updating``), so this
-        polls the resource until it reaches ``Succeeded``. During a live recording
-        it sleeps between attempts; on playback the recorded responses replay in
-        order.
-        """
-        import time
-        command = 'documentdb mongocluster show -n {' + target + '} -g {rg}'
-        for _ in range(retries):
-            result = self.cmd(command).get_output_in_json()
-            if result['properties']['provisioningState'] == 'Succeeded':
-                return result
-            if self.in_recording or self.is_live:
-                time.sleep(delay)
-        return None
-
     def _create_cluster(self, extra=''):
         """Create the shared base cluster and block until it is provisioned.
 
@@ -176,33 +138,38 @@ class DocumentdbScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_fw', location='eastus2')
     def test_documentdb_mongocluster_firewall(self, resource_group):
         self._base_kwargs()
-        self.kwargs['fw'] = 'allow-office'
+        self.kwargs['fw'] = 'allow-azure'
 
         self._create_cluster()
 
-        # Add a firewall rule.
-        self._cmd_retry(
+        # Add a firewall rule using the explicit wait path: create returns
+        # immediately with --no-wait, then the native wait command blocks until
+        # the rule is provisioned. 0.0.0.0-0.0.0.0 is the convention that allows
+        # all Azure services.
+        self.cmd(
             'documentdb mongocluster firewall-rule create -n {fw} --cluster-name {cluster} -g {rg} '
-            '--start-ip-address 203.0.113.0 --end-ip-address 203.0.113.255',
-            checks=[
-                self.check('name', '{fw}'),
-                self.check('properties.startIpAddress', '203.0.113.0'),
-                self.check('properties.endIpAddress', '203.0.113.255'),
-                self.check('properties.provisioningState', 'Succeeded'),
-            ],
+            '--start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0 --no-wait'
+        )
+        self.cmd(
+            'documentdb mongocluster firewall-rule wait -n {fw} --cluster-name {cluster} -g {rg} --created'
         )
         self.cmd(
             'documentdb mongocluster firewall-rule show -n {fw} --cluster-name {cluster} -g {rg}',
-            checks=[self.check('name', '{fw}')],
+            checks=[
+                self.check('name', '{fw}'),
+                self.check('properties.startIpAddress', '0.0.0.0'),
+                self.check('properties.endIpAddress', '0.0.0.0'),
+                self.check('properties.provisioningState', 'Succeeded'),
+            ],
         )
 
-        # Update the firewall rule's address range.
+        # Update the rule to allow the whole IPv4 range (0.0.0.0-255.255.255.255).
         self._cmd_retry(
             'documentdb mongocluster firewall-rule update -n {fw} --cluster-name {cluster} -g {rg} '
-            '--start-ip-address 203.0.113.10 --end-ip-address 203.0.113.20',
+            '--start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255',
             checks=[
-                self.check('properties.startIpAddress', '203.0.113.10'),
-                self.check('properties.endIpAddress', '203.0.113.20'),
+                self.check('properties.startIpAddress', '0.0.0.0'),
+                self.check('properties.endIpAddress', '255.255.255.255'),
             ],
         )
         self.cmd(
@@ -342,9 +309,17 @@ class DocumentdbScenario(ScenarioTest):
 
         self._create_cluster()
 
-        # Wait (only while recording) until the first backup produces a restore
-        # point, then restore into a new cluster from that point in time.
-        earliest = self._wait_for_restore_point()
+        # Wait (via the native wait command) until the first backup produces a
+        # restore point, then read that point in time and restore into a new
+        # cluster from it.
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.backup.earliestRestoreTime!=null"'
+        )
+        earliest = self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg} '
+            '--query properties.backup.earliestRestoreTime -o tsv'
+        ).output.strip()
         self.kwargs['restore_time'] = earliest or '2026-01-01T00:00:00Z'
         self._cmd_retry(
             'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
@@ -441,6 +416,20 @@ class DocumentdbScenario(ScenarioTest):
             if os.path.exists(enc_file):
                 os.remove(enc_file)
 
+        # CMK is the only scenario that uses a managed identity on the cluster
+        # today, so validate that the user-assigned identity is actually assigned.
+        self.cmd(
+            'documentdb mongocluster identity show -n {cluster} -g {rg}',
+            checks=[
+                self.check('type', 'UserAssigned'),
+                self.exists('userAssignedIdentities."{mi_id}"'),
+                self.check(
+                    'userAssignedIdentities."{mi_id}".principalId',
+                    '{mi_principal}',
+                ),
+            ],
+        )
+
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
     # ---- test 8: replica promote (forced switchover to primary) ----
@@ -473,7 +462,10 @@ class DocumentdbScenario(ScenarioTest):
             'documentdb mongocluster replica promote -n {replica} -g {rg} '
             '--mode Switchover --promote-option Forced'
         )
-        self._wait_until_provisioned('replica')
+        self.cmd(
+            'documentdb mongocluster wait -n {replica} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'"'
+        )
         self.cmd(
             'documentdb mongocluster show -n {replica} -g {rg}',
             checks=[

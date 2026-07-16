@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the definition of a Mongo cluster user.
 
     :example: Get a user.
-        az documentdb mongocluster user show -n alice@contoso.com --cluster-name MyCluster -g MyResourceGroup
+        az documentdb mongocluster user show -n alice-entra --cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {

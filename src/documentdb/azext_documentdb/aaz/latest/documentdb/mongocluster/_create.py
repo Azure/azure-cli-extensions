@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.
 
     :example: Create a mongo cluster with Premium SSD v2 storage.
-        az documentdb mongocluster create -n MyCluster -g MyResourceGroup --location eastus --admin-user dbadmin --password MyP@ssw0rd123! --tier M30 --storage-size 128 --storage-type PremiumSSDv2 --shard-count 1 --high-availability Disabled
+        az documentdb mongocluster create -n MyCluster -g MyResourceGroup --location eastus --admin-user dbadmin --admin-password MyP@ssw0rd123! --tier M30 --storage-size 128 --storage-type PremiumSSDv2 --shard-count 1 --high-availability Disabled
     """
 
     _aaz_info = {
@@ -62,8 +62,8 @@ class Create(AAZCommand):
         # define Arg Group "Administrator"
 
         _args_schema = cls._args_schema
-        _args_schema.password = AAZPasswordArg(
-            options=["-p", "--password"],
+        _args_schema.admin_password = AAZPasswordArg(
+            options=["-p", "--password", "--admin-password"],
             arg_group="Administrator",
             help="The administrator password.",
             required=True,
@@ -382,7 +382,7 @@ class Create(AAZCommand):
 
             administrator = _builder.get(".properties.administrator")
             if administrator is not None:
-                administrator.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
+                administrator.set_prop("password", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
                 administrator.set_prop("userName", AAZStrType, ".admin_user")
 
             auth_config = _builder.get(".properties.authConfig")

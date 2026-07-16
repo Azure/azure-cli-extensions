@@ -106,7 +106,7 @@ class ResetPassword(_MongoClusterUpdate):
     """Reset the administrator password of a mongo cluster.
 
     :example: Reset the administrator password.
-        az documentdb mongocluster reset-password -n MyCluster -g MyResourceGroup --password NewP@ssw0rd123!
+        az documentdb mongocluster reset-password -n MyCluster -g MyResourceGroup --admin-password NewP@ssw0rd123!
     """
 
     # Own schema caches so the deregister/rename below never mutate the shared
@@ -119,11 +119,11 @@ class ResetPassword(_MongoClusterUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        _keep_only_args(args_schema, {"cluster_name", "resource_group", "password"})
-        password = args_schema.password
-        password._options = ["--password", "-p"]
+        _keep_only_args(args_schema, {"cluster_name", "resource_group", "admin_password"})
+        password = args_schema.admin_password
+        password._options = ["--admin-password", "--password", "-p"]
         password._required = True
-        password._help["name"] = "--password -p"
+        password._help["name"] = "--admin-password --password -p"
         password._help["short-summary"] = "The new administrator password."
         return args_schema
 
@@ -209,7 +209,7 @@ class Restore(_MongoClusterCreate):
     cluster at the requested point in time.
 
     :example: Restore a cluster to a point in time.
-        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --password MyP@ssw0rd123!
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -222,9 +222,9 @@ class Restore(_MongoClusterCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(
             args_schema,
-            {"cluster_name", "resource_group", "location", "admin_user", "password"})
+            {"cluster_name", "resource_group", "location", "admin_user", "admin_password"})
         args_schema.admin_user._required = True
-        args_schema.password._required = True
+        args_schema.admin_password._required = True
         args_schema.source_cluster = AAZStrArg(
             options=["--source-cluster"],
             arg_group="Restore",
@@ -270,7 +270,7 @@ class Restore(_MongoClusterCreate):
             if administrator is not None:
                 administrator.set_prop("userName", AAZStrType, ".admin_user")
                 administrator.set_prop(
-                    "password", AAZStrType, ".password",
+                    "password", AAZStrType, ".admin_password",
                     typ_kwargs={"flags": {"secret": True}})
 
             restore_parameters = _builder.get(".properties.restoreParameters")
