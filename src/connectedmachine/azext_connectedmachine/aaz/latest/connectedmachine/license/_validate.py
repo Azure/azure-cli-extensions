@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Validate(AAZCommand):
     """The operation to validate a license.
+
+    :example: Sample command for license validate
+        az connectedmachine license validate --location myLocation --subscription mySubscription
     """
 
     _aaz_info = {
