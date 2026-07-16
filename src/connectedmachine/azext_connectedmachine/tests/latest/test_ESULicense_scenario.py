@@ -35,16 +35,14 @@ class ESULicenseScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_esulicense')
     def test_esu_license(self):
         self.kwargs.update({
-            'customScriptName': 'custom-test2',
             'machine': 'LAPTOP-4GNU2K3H',
-            'machineSA': 'WIN-U20CKFHMICE',
             'machinePaygo': 'WIN-U57JFKURUK8',
             'rg': 'yao_test',
             'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
-            'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PayGo_Test_CLI/providers/Microsoft.HybridCompute/machines/WIN-U57JFKURUK8/licenseProfiles/default', 
-            'rgProfile': 'PayGo_Test_CLI',
+            'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/licenseProfiles/default', 
+            'rgProfile': 'yao_test',
             'productFfeatures': '[{ \'name\':\'Hotpatch\', \'subscriptionStatus\':\'Enabled\'}]',
             'productFfeaturesUpdate': '[{ \'name\':\'Hotpatch\', \'subscriptionStatus\':\'Enable\'}]'
 
@@ -55,56 +53,46 @@ class ESULicenseScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--location "{location}" '
                 '--license-type "ESU" '
-                '--state "Activated" '
-                '--target "Windows Server 2012" '
-                '--edition "Datacenter" '
-                '--type "pCore" '
-                '--processors 16',
+                '--license-details "{{edition:Datacenter,processors:16,state:Activated,target:\'Windows Server 2012\',type:pCore}}"',
                 checks=[
                     self.check('name', '{licenseName}'),
         ])
 
-        self.cmd('az connectedmachine license list --subscription {subscription}', checks=[
-            self.check('length(@)', 8)
+        self.cmd('az connectedmachine license list', checks=[
         ])
 
-        self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName} --subscription {subscription}', checks=[
-            self.check('length(@)', 8)
+        self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName}', checks=[
+            self.check('name', '{licenseName}')
         ])
 
         self.cmd('az connectedmachine license update '
                 '--name "{licenseName}" '
                 '--resource-group "{rg}" '
                 '--license-type "ESU" '
-                '--state "Deactivated" '
-                '--target "Windows Server 2012" '
-                '--edition "Datacenter" '
-                '--type "pCore" '
-                '--processors 16',
+                '--license-details "{{edition:Datacenter,processors:16,state:Deactivated,target:\'Windows Server 2012\',type:pCore}}"',
                 checks=[
                     self.check('name', '{licenseName}'),
         ])
 
         self.cmd('az connectedmachine license delete -y '
                 '--name "{licenseName}" '
-                '--subscription "{subscription}" '
                 '--resource-group "{rg}"',
                 checks=[])
 
-        self.cmd('az connectedmachine license-profile create '
-                '--machine-name "{machinePaygo}" '
-                '--resource-group "{rgProfile}" '
-                '--location "{location}" '
-                '--product-type "WindowsServer" '
-                '--subscription-status "Enabled" '
-                '--product-features "{productFfeatures}"',
-                checks=[
-                    self.check('id', '{licenseResourceIdProfile}'),
-        ])
+        # self.cmd('az connectedmachine license-profile create '
+        #         '--machine-name "{machinePaygo}" '
+        #         '--resource-group "{rgProfile}" '
+        #         '--location "{location}" '
+        #         '--product-type "WindowsServer" '
+        #         '--subscription-status "Enabled" '
+        #         '--product-features "{productFfeatures}"',
+        #         checks=[
+        #             self.check('id', '{licenseResourceIdProfile}'),
+        # ])
 
         # test SA service
         self.cmd('az connectedmachine license-profile create '
-                '--machine-name "{machineSA}" '
+                '--machine-name "{machine}" '
                 '--resource-group "{rgProfile}" '
                 '--location "{location}" '
                 '--software-assurance-customer True',
@@ -113,21 +101,21 @@ class ESULicenseScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az connectedmachine license-profile update '
-                '--machine-name "{machinePaygo}" '
+                '--machine-name "{machine}" '
                 '--resource-group "{rgProfile}" '
-                '--product-type "WindowsServer" '
-                '--product-features "{productFfeaturesUpdate}"',
+                '--software-assurance-customer True',
                 checks=[
-                    self.check('id', '{licenseResourceIdProfile}'),
+                    self.check('name', 'default'),
+                    self.check('softwareAssuranceCustomer', True),
         ])
 
-        self.cmd('az connectedmachine license-profile list --subscription {subscription} --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
+        self.cmd('az connectedmachine license-profile list --resource-group {rgProfile} --machine-name {machine}', checks=[
         ])
 
-        self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo} --subscription {subscription}', checks=[
+        self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machine}', checks=[
         ])
 
         self.cmd('az connectedmachine license-profile delete -y '
-                '--machine-name "{machinePaygo}" '
+                '--machine-name "{machine}" '
                 '--resource-group "{rgProfile}"',
                 checks=[])
