@@ -73,3 +73,9 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
                 '--subscription "{subscription}" '
                 '--perimeter-name "{perimeterName}"',
                 checks=[])  
+
+        # Get the network information of the hybrid machine
+        self.cmd('az connectedmachine network-profile show '
+                '--machine-name "{machine}" '
+                '--resource-group "{rg}"',
+                checks=[])

@@ -49,9 +49,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--extension-name"],
             help="The name of the machine extension.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="",
-            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],

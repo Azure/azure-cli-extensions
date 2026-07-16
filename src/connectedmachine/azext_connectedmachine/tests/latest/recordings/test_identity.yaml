@@ -1,0 +1,365 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"6b5f56b9-3748-4a07-8c97-c065d5b3a0ad","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T04:06:16.826903Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"1d137974-aec4-4879-8a31-d8c56f70bfdf","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.13.0.110","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.13.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/WindowsOsUpdateExtension","name":"WindowsOsUpdateExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.SoftwareUpdateManagement","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.35.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"updateConfiguration":{"activityId":"6e5bbf0b-e4fb-4459-9df0-8919348ed893","startTime":"2026-07-16T04:08:56.0862354Z","action":"Assessment"}},"provisioningState":"Succeeded","instanceView":{"name":"WindowsOsUpdateExtension","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.35.0","status":{"code":"0","level":"Information","message":"Extension
+        Message: Assessment operation with activity id 6e5bbf0b-e4fb-4459-9df0-8919348ed893
+        completed successfully. 0 patches were found. , OperationResult: {\"activityId\":\"6e5bbf0b-e4fb-4459-9df0-8919348ed893\",\"inputStartTime\":\"2026-07-16T04:08:56Z\",\"lastModifiedTime\":\"2026-07-16T04:18:41Z\",\"extensionTriggerTime\":\"2026-07-16T04:09:02Z\",\"action\":\"Assessment\",\"actionStatus\":\"success\",\"patchServiceUsed\":\"WU\",\"isManagedBySccm\":true,\"assessmentDetails\":{\"rebootPending\":false,\"countByCategory\":{\"critical\":0,\"security\":0,\"updateRollup\":0,\"featurePack\":0,\"servicePack\":0,\"definition\":0,\"tools\":0,\"updates\":0,\"other\":0},\"totalCount\":0,\"patches\":\"i44FAA==\",\"action\":\"Assessment\"},\"topLevelStatusMessage\":\"Assessment
+        operation with activity id 6e5bbf0b-e4fb-4459-9df0-8919348ed893 completed
+        successfully. 0 patches were found. \",\"internalErrorMessage\":\"\",\"topLevelStatus\":0,\"logs\":\"i44FAA==\",\"errorCount\":0,\"failureRetryCount\":0,\"retriggerCount\":0,\"sequenceNumber\":2,\"errors\":null}"}}},"systemData":{"createdBy":"8c420feb-03df-47cc-8a05-55df0cf3064b","createdByType":"Application","createdAt":"2026-07-16T03:46:08.0741528Z","lastModifiedBy":"8c420feb-03df-47cc-8a05-55df0cf3064b","lastModifiedByType":"Application","lastModifiedAt":"2026-07-16T04:08:57.4101068Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/testextension","name":"testextension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.NetworkWatcher","type":"NetworkWatcherAgentWindows","typeHandlerVersion":"1.4.2798.3","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"testextension","type":"NetworkWatcherAgentWindows","typeHandlerVersion":"1.4.2798.3","status":{"code":"0","level":"Information","message":"Extension
+        Message: Default configuration is in effect."}}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T03:31:53.1343792Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T03:36:59.8532432Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/AzureSecurityWindowsAgent","name":"AzureSecurityWindowsAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Security.Monitoring","type":"AzureSecurityWindowsAgent","typeHandlerVersion":"1.8.0.76","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{},"provisioningState":"Succeeded","instanceView":{"name":"AzureSecurityWindowsAgent","type":"AzureSecurityWindowsAgent","typeHandlerVersion":"1.8.0.76","status":{"code":"0","level":"Information","message":"Extension
+        Message: ExtensionOperation:enable. Status:Success"}}},"systemData":{"createdBy":"de7a8a45-a708-42e4-89fc-10c73dcfe59e","createdByType":"Application","createdAt":"2026-06-18T16:33:59.1308412Z","lastModifiedBy":"de7a8a45-a708-42e4-89fc-10c73dcfe59e","lastModifiedByType":"Application","lastModifiedAt":"2026-06-18T16:33:59.1308412Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/GenevaMonitoringAgent","name":"GenevaMonitoringAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Geneva","type":"GenevaMonitoring","typeHandlerVersion":"2.75.0.2","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"provisioningState":"Succeeded","instanceView":{"name":"GenevaMonitoringAgent","type":"GenevaMonitoring","typeHandlerVersion":"2.75.0.2","status":{"code":"0","level":"Information","message":"Extension
+        Message: ExtensionOperation:enable. Status:Success"}}},"systemData":{"createdBy":"46eecd83-013a-45a7-8b6e-74aa422cd307","createdByType":"Application","createdAt":"2026-06-18T16:33:22.3968056Z","lastModifiedBy":"46eecd83-013a-45a7-8b6e-74aa422cd307","lastModifiedByType":"Application","lastModifiedAt":"2026-06-18T16:33:22.3968056Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/WindowsPatchExtension","name":"WindowsPatchExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.CPlat.Core","type":"WindowsPatchExtension","typeHandlerVersion":"1.5.83","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"cloudType":"Arc","operation":"ConfigurePatching","maximumDuration":"PT60M","activityId":"badb5c5c-bb49-4939-9615-6c5f2240ac2e","assessmentMode":"AutomaticByPlatform","maximumAssessmentInterval":"PT12H","startTime":"2026-07-13T17:32:26.2977083+00:00"},"provisioningState":"Succeeded","instanceView":{"name":"WindowsPatchExtension","type":"WindowsPatchExtension","typeHandlerVersion":"1.5.83","status":{"code":"0","level":"Information","message":"Extension
+        Message: \"[\"[\"[\"[\"Successfully completed [ConfigurePatching] operation
+        with ActivityID [badb5c5c-bb49-4939-9615-6c5f2240ac2e]\"].\"].\"].\"].\",
+        ConfigurePatchingSummary: {\"activityId\":\"badb5c5c-bb49-4939-9615-6c5f2240ac2e\",\"startTime\":\"2026-07-13T17:32:26.2977083+00:00\",\"lastModifiedTime\":\"2026-07-13T17:32:48.8734204+00:00\",\"automaticOSPatchState\":\"Enabled\",\"autoAssessmentStatus\":{\"autoAssessmentState\":\"Enabled\",\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"}},\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"},\"configurePatchStatus\":1,\"configurePatchStatusString\":\"success\"},
+        HotpatchStatus: {\"hotpatchEnablementStatus\":\"Disabled\",\"hotpatchReadinessStatus\":\"Unknown\",\"lastRefreshedTime\":\"2026-07-15T15:07:16.4678994+00:00\",\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"}}, PatchAssessmentSummary: {\"assessmentActivityId\":\"4d71a677-8b80-443d-8513-17df2221d12e\",\"patchServiceUsed\":\"WU\",\"rebootPending\":false,\"startTime\":\"2026-07-15T15:07:13.3629205+00:00\",\"lastModifiedTime\":\"2026-07-15T15:07:43.5708878+00:00\",\"criticalAndSecurityPatchCount\":3,\"otherPatchCount\":1,\"startedBy\":\"Platform\",\"patches\":[{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"1a6c1515-7239-4ce2-a7f9-8663f974c8b4\",\"name\":\"2026-07
+        .NET 8.0.29 Security Update for ARM64 Client (KB5104032)\",\"kbid\":\"5104032\",\"classifications\":[\"Security\"],\"msrcSeverity\":\"Important\"},{\"rebootBehavior\":\"NeverReboots\",\"publishedDate\":\"2026-07-15T04:00:00.0000000Z\",\"patchId\":\"42662f05-b663-49e7-b73e-55b3bf919580\",\"name\":\"Security
+        Intelligence Update for Microsoft Defender Antivirus - KB2267602 (Version
+        1.455.155.0) - Current Channel (Broad)\",\"kbid\":\"2267602\",\"classifications\":[\"Definition\"],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"beaf1a0b-db0d-466a-b1a1-35db3ea964c7\",\"name\":\"2026-07
+        .NET Framework Security Update (KB5101001)\",\"kbid\":\"5101001\",\"classifications\":[\"Security\"],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"b045adcf-3361-4fd1-8afc-2533adf25431\",\"name\":\"Windows
+        11, version 25H2\",\"kbid\":\"5101650\",\"classifications\":[],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"ed067ee3-e3a8-4e9f-bc54-093c17ab3ea9\",\"name\":\"2026-07
+        Security Update (KB5101650) (26100.8875)\",\"kbid\":\"5101650\",\"classifications\":[\"Security\"],\"msrcSeverity\":null}],\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"},\"patchAssessmentStatus\":1,\"patchAssessmentStatusString\":\"success\"}"}}},"systemData":{"createdBy":"c8f5141d-83e0-4e9a-84d0-bb6677e26f64","createdByType":"Application","createdAt":"2026-06-22T17:31:33.868172Z","lastModifiedBy":"5e5e43d4-54da-4211-86a4-c6e7f3715801","lastModifiedByType":"Application","lastModifiedAt":"2026-07-13T17:32:26.6266874Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/testext6","name":"testext6","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Monitor","type":"AzureMonitorWindowsAgent","typeHandlerVersion":"1.43.0.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"provisioningState":"Failed","instanceView":{"name":"testext6","type":"AzureMonitorWindowsAgent","typeHandlerVersion":"1.43.0.0","status":{"code":"null","level":"Error","message":"Extension
+        failed to install. Install of extension failed with error: Unzipping of extension
+        failed with error: Failed to open unzip object to unzip package to location:
+        C:\\Packages\\Plugins\\Microsoft.Azure.Monitor.AzureMonitorWindowsAgent\\1.43.0.0
+        "}}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-26T19:50:41.4828039Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-26T19:50:41.4828039Z"}}],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-18T16:22:24.3636556Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-18T16:22:24.3636556Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '14315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 04:30:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0EE189C0BE3F48C3BEC8787C81FA6D7C Ref B: MNZ221060619025 Ref C: 2026-07-16T04:30:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus", "properties":
+      {"agentUpgrade": {"enableAutomaticUpgrade": true}, "clientPublicKey": "MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB",
+      "cloudMetadata": {}, "licenseProfile": {"esuProfile": {"licenseAssignmentState":
+      "NotAssigned"}}, "mssqlDiscovered": "false", "osProfile": {"windowsConfiguration":
+      {"patchSettings": {"assessmentMode": "AutomaticByPlatform"}}}, "osType": "windows",
+      "serviceStatuses": {"extensionService": {"startupType": "automatic", "status":
+      "running"}, "guestConfigurationService": {"startupType": "automatic", "status":
+      "running"}}, "vmId": "1d137974-aec4-4879-8a31-d8c56f70bfdf"}, "tags": {"azsecpack":
+      "nonprod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1013'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"6b5f56b9-3748-4a07-8c97-c065d5b3a0ad","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Updating","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T04:06:16.826903Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"1d137974-aec4-4879-8a31-d8c56f70bfdf","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.13.0.110","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.13.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-18T16:22:24.3636556Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T04:30:33.5622437Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3888'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 04:30:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=0cd46ea8-7371-4f65-9bb5-5de55bea6d52/westus2/cdc2a2b8-de59-436c-b5a6-786f9161e34c
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: DE5EAE2FB6D94A14978B4185374A8FC5 Ref B: BL2AA2011001052 Ref C: 2026-07-16T04:30:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"6b5f56b9-3748-4a07-8c97-c065d5b3a0ad","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T04:06:16.826903Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"1d137974-aec4-4879-8a31-d8c56f70bfdf","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.13.0.110","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.13.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/WindowsOsUpdateExtension","name":"WindowsOsUpdateExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.SoftwareUpdateManagement","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.35.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"updateConfiguration":{"activityId":"6e5bbf0b-e4fb-4459-9df0-8919348ed893","startTime":"2026-07-16T04:08:56.0862354Z","action":"Assessment"}},"provisioningState":"Succeeded","instanceView":{"name":"WindowsOsUpdateExtension","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.35.0","status":{"code":"0","level":"Information","message":"Extension
+        Message: Assessment operation with activity id 6e5bbf0b-e4fb-4459-9df0-8919348ed893
+        completed successfully. 0 patches were found. , OperationResult: {\"activityId\":\"6e5bbf0b-e4fb-4459-9df0-8919348ed893\",\"inputStartTime\":\"2026-07-16T04:08:56Z\",\"lastModifiedTime\":\"2026-07-16T04:18:41Z\",\"extensionTriggerTime\":\"2026-07-16T04:09:02Z\",\"action\":\"Assessment\",\"actionStatus\":\"success\",\"patchServiceUsed\":\"WU\",\"isManagedBySccm\":true,\"assessmentDetails\":{\"rebootPending\":false,\"countByCategory\":{\"critical\":0,\"security\":0,\"updateRollup\":0,\"featurePack\":0,\"servicePack\":0,\"definition\":0,\"tools\":0,\"updates\":0,\"other\":0},\"totalCount\":0,\"patches\":\"i44FAA==\",\"action\":\"Assessment\"},\"topLevelStatusMessage\":\"Assessment
+        operation with activity id 6e5bbf0b-e4fb-4459-9df0-8919348ed893 completed
+        successfully. 0 patches were found. \",\"internalErrorMessage\":\"\",\"topLevelStatus\":0,\"logs\":\"i44FAA==\",\"errorCount\":0,\"failureRetryCount\":0,\"retriggerCount\":0,\"sequenceNumber\":2,\"errors\":null}"}}},"systemData":{"createdBy":"8c420feb-03df-47cc-8a05-55df0cf3064b","createdByType":"Application","createdAt":"2026-07-16T03:46:08.0741528Z","lastModifiedBy":"8c420feb-03df-47cc-8a05-55df0cf3064b","lastModifiedByType":"Application","lastModifiedAt":"2026-07-16T04:08:57.4101068Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/testextension","name":"testextension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.NetworkWatcher","type":"NetworkWatcherAgentWindows","typeHandlerVersion":"1.4.2798.3","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"testextension","type":"NetworkWatcherAgentWindows","typeHandlerVersion":"1.4.2798.3","status":{"code":"0","level":"Information","message":"Extension
+        Message: Default configuration is in effect."}}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T03:31:53.1343792Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T03:36:59.8532432Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/AzureSecurityWindowsAgent","name":"AzureSecurityWindowsAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Security.Monitoring","type":"AzureSecurityWindowsAgent","typeHandlerVersion":"1.8.0.76","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{},"provisioningState":"Succeeded","instanceView":{"name":"AzureSecurityWindowsAgent","type":"AzureSecurityWindowsAgent","typeHandlerVersion":"1.8.0.76","status":{"code":"0","level":"Information","message":"Extension
+        Message: ExtensionOperation:enable. Status:Success"}}},"systemData":{"createdBy":"de7a8a45-a708-42e4-89fc-10c73dcfe59e","createdByType":"Application","createdAt":"2026-06-18T16:33:59.1308412Z","lastModifiedBy":"de7a8a45-a708-42e4-89fc-10c73dcfe59e","lastModifiedByType":"Application","lastModifiedAt":"2026-06-18T16:33:59.1308412Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/GenevaMonitoringAgent","name":"GenevaMonitoringAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Geneva","type":"GenevaMonitoring","typeHandlerVersion":"2.75.0.2","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"provisioningState":"Succeeded","instanceView":{"name":"GenevaMonitoringAgent","type":"GenevaMonitoring","typeHandlerVersion":"2.75.0.2","status":{"code":"0","level":"Information","message":"Extension
+        Message: ExtensionOperation:enable. Status:Success"}}},"systemData":{"createdBy":"46eecd83-013a-45a7-8b6e-74aa422cd307","createdByType":"Application","createdAt":"2026-06-18T16:33:22.3968056Z","lastModifiedBy":"46eecd83-013a-45a7-8b6e-74aa422cd307","lastModifiedByType":"Application","lastModifiedAt":"2026-06-18T16:33:22.3968056Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/WindowsPatchExtension","name":"WindowsPatchExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.CPlat.Core","type":"WindowsPatchExtension","typeHandlerVersion":"1.5.83","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"cloudType":"Arc","operation":"ConfigurePatching","maximumDuration":"PT60M","activityId":"badb5c5c-bb49-4939-9615-6c5f2240ac2e","assessmentMode":"AutomaticByPlatform","maximumAssessmentInterval":"PT12H","startTime":"2026-07-13T17:32:26.2977083+00:00"},"provisioningState":"Succeeded","instanceView":{"name":"WindowsPatchExtension","type":"WindowsPatchExtension","typeHandlerVersion":"1.5.83","status":{"code":"0","level":"Information","message":"Extension
+        Message: \"[\"[\"[\"[\"Successfully completed [ConfigurePatching] operation
+        with ActivityID [badb5c5c-bb49-4939-9615-6c5f2240ac2e]\"].\"].\"].\"].\",
+        ConfigurePatchingSummary: {\"activityId\":\"badb5c5c-bb49-4939-9615-6c5f2240ac2e\",\"startTime\":\"2026-07-13T17:32:26.2977083+00:00\",\"lastModifiedTime\":\"2026-07-13T17:32:48.8734204+00:00\",\"automaticOSPatchState\":\"Enabled\",\"autoAssessmentStatus\":{\"autoAssessmentState\":\"Enabled\",\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"}},\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"},\"configurePatchStatus\":1,\"configurePatchStatusString\":\"success\"},
+        HotpatchStatus: {\"hotpatchEnablementStatus\":\"Disabled\",\"hotpatchReadinessStatus\":\"Unknown\",\"lastRefreshedTime\":\"2026-07-15T15:07:16.4678994+00:00\",\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"}}, PatchAssessmentSummary: {\"assessmentActivityId\":\"4d71a677-8b80-443d-8513-17df2221d12e\",\"patchServiceUsed\":\"WU\",\"rebootPending\":false,\"startTime\":\"2026-07-15T15:07:13.3629205+00:00\",\"lastModifiedTime\":\"2026-07-15T15:07:43.5708878+00:00\",\"criticalAndSecurityPatchCount\":3,\"otherPatchCount\":1,\"startedBy\":\"Platform\",\"patches\":[{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"1a6c1515-7239-4ce2-a7f9-8663f974c8b4\",\"name\":\"2026-07
+        .NET 8.0.29 Security Update for ARM64 Client (KB5104032)\",\"kbid\":\"5104032\",\"classifications\":[\"Security\"],\"msrcSeverity\":\"Important\"},{\"rebootBehavior\":\"NeverReboots\",\"publishedDate\":\"2026-07-15T04:00:00.0000000Z\",\"patchId\":\"42662f05-b663-49e7-b73e-55b3bf919580\",\"name\":\"Security
+        Intelligence Update for Microsoft Defender Antivirus - KB2267602 (Version
+        1.455.155.0) - Current Channel (Broad)\",\"kbid\":\"2267602\",\"classifications\":[\"Definition\"],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"beaf1a0b-db0d-466a-b1a1-35db3ea964c7\",\"name\":\"2026-07
+        .NET Framework Security Update (KB5101001)\",\"kbid\":\"5101001\",\"classifications\":[\"Security\"],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"b045adcf-3361-4fd1-8afc-2533adf25431\",\"name\":\"Windows
+        11, version 25H2\",\"kbid\":\"5101650\",\"classifications\":[],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"ed067ee3-e3a8-4e9f-bc54-093c17ab3ea9\",\"name\":\"2026-07
+        Security Update (KB5101650) (26100.8875)\",\"kbid\":\"5101650\",\"classifications\":[\"Security\"],\"msrcSeverity\":null}],\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"},\"patchAssessmentStatus\":1,\"patchAssessmentStatusString\":\"success\"}"}}},"systemData":{"createdBy":"c8f5141d-83e0-4e9a-84d0-bb6677e26f64","createdByType":"Application","createdAt":"2026-06-22T17:31:33.868172Z","lastModifiedBy":"5e5e43d4-54da-4211-86a4-c6e7f3715801","lastModifiedByType":"Application","lastModifiedAt":"2026-07-13T17:32:26.6266874Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/testext6","name":"testext6","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Monitor","type":"AzureMonitorWindowsAgent","typeHandlerVersion":"1.43.0.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"provisioningState":"Failed","instanceView":{"name":"testext6","type":"AzureMonitorWindowsAgent","typeHandlerVersion":"1.43.0.0","status":{"code":"null","level":"Error","message":"Extension
+        failed to install. Install of extension failed with error: Unzipping of extension
+        failed with error: Failed to open unzip object to unzip package to location:
+        C:\\Packages\\Plugins\\Microsoft.Azure.Monitor.AzureMonitorWindowsAgent\\1.43.0.0
+        "}}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-26T19:50:41.4828039Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-26T19:50:41.4828039Z"}}],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-18T16:22:24.3636556Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T04:30:33.5622437Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '14315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 04:30:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C51954D837BD4907BB0DC863CC375A4A Ref B: MNZ221060618047 Ref C: 2026-07-16T04:30:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"6b5f56b9-3748-4a07-8c97-c065d5b3a0ad","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T04:06:16.826903Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"1d137974-aec4-4879-8a31-d8c56f70bfdf","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.13.0.110","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.13.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/WindowsOsUpdateExtension","name":"WindowsOsUpdateExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.SoftwareUpdateManagement","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.35.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"updateConfiguration":{"activityId":"6e5bbf0b-e4fb-4459-9df0-8919348ed893","startTime":"2026-07-16T04:08:56.0862354Z","action":"Assessment"}},"provisioningState":"Succeeded","instanceView":{"name":"WindowsOsUpdateExtension","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.35.0","status":{"code":"0","level":"Information","message":"Extension
+        Message: Assessment operation with activity id 6e5bbf0b-e4fb-4459-9df0-8919348ed893
+        completed successfully. 0 patches were found. , OperationResult: {\"activityId\":\"6e5bbf0b-e4fb-4459-9df0-8919348ed893\",\"inputStartTime\":\"2026-07-16T04:08:56Z\",\"lastModifiedTime\":\"2026-07-16T04:18:41Z\",\"extensionTriggerTime\":\"2026-07-16T04:09:02Z\",\"action\":\"Assessment\",\"actionStatus\":\"success\",\"patchServiceUsed\":\"WU\",\"isManagedBySccm\":true,\"assessmentDetails\":{\"rebootPending\":false,\"countByCategory\":{\"critical\":0,\"security\":0,\"updateRollup\":0,\"featurePack\":0,\"servicePack\":0,\"definition\":0,\"tools\":0,\"updates\":0,\"other\":0},\"totalCount\":0,\"patches\":\"i44FAA==\",\"action\":\"Assessment\"},\"topLevelStatusMessage\":\"Assessment
+        operation with activity id 6e5bbf0b-e4fb-4459-9df0-8919348ed893 completed
+        successfully. 0 patches were found. \",\"internalErrorMessage\":\"\",\"topLevelStatus\":0,\"logs\":\"i44FAA==\",\"errorCount\":0,\"failureRetryCount\":0,\"retriggerCount\":0,\"sequenceNumber\":2,\"errors\":null}"}}},"systemData":{"createdBy":"8c420feb-03df-47cc-8a05-55df0cf3064b","createdByType":"Application","createdAt":"2026-07-16T03:46:08.0741528Z","lastModifiedBy":"8c420feb-03df-47cc-8a05-55df0cf3064b","lastModifiedByType":"Application","lastModifiedAt":"2026-07-16T04:08:57.4101068Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/testextension","name":"testextension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.NetworkWatcher","type":"NetworkWatcherAgentWindows","typeHandlerVersion":"1.4.2798.3","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"testextension","type":"NetworkWatcherAgentWindows","typeHandlerVersion":"1.4.2798.3","status":{"code":"0","level":"Information","message":"Extension
+        Message: Default configuration is in effect."}}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T03:31:53.1343792Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T03:36:59.8532432Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/AzureSecurityWindowsAgent","name":"AzureSecurityWindowsAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Security.Monitoring","type":"AzureSecurityWindowsAgent","typeHandlerVersion":"1.8.0.76","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{},"provisioningState":"Succeeded","instanceView":{"name":"AzureSecurityWindowsAgent","type":"AzureSecurityWindowsAgent","typeHandlerVersion":"1.8.0.76","status":{"code":"0","level":"Information","message":"Extension
+        Message: ExtensionOperation:enable. Status:Success"}}},"systemData":{"createdBy":"de7a8a45-a708-42e4-89fc-10c73dcfe59e","createdByType":"Application","createdAt":"2026-06-18T16:33:59.1308412Z","lastModifiedBy":"de7a8a45-a708-42e4-89fc-10c73dcfe59e","lastModifiedByType":"Application","lastModifiedAt":"2026-06-18T16:33:59.1308412Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/GenevaMonitoringAgent","name":"GenevaMonitoringAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Geneva","type":"GenevaMonitoring","typeHandlerVersion":"2.75.0.2","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"provisioningState":"Succeeded","instanceView":{"name":"GenevaMonitoringAgent","type":"GenevaMonitoring","typeHandlerVersion":"2.75.0.2","status":{"code":"0","level":"Information","message":"Extension
+        Message: ExtensionOperation:enable. Status:Success"}}},"systemData":{"createdBy":"46eecd83-013a-45a7-8b6e-74aa422cd307","createdByType":"Application","createdAt":"2026-06-18T16:33:22.3968056Z","lastModifiedBy":"46eecd83-013a-45a7-8b6e-74aa422cd307","lastModifiedByType":"Application","lastModifiedAt":"2026-06-18T16:33:22.3968056Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/WindowsPatchExtension","name":"WindowsPatchExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.CPlat.Core","type":"WindowsPatchExtension","typeHandlerVersion":"1.5.83","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"cloudType":"Arc","operation":"ConfigurePatching","maximumDuration":"PT60M","activityId":"badb5c5c-bb49-4939-9615-6c5f2240ac2e","assessmentMode":"AutomaticByPlatform","maximumAssessmentInterval":"PT12H","startTime":"2026-07-13T17:32:26.2977083+00:00"},"provisioningState":"Succeeded","instanceView":{"name":"WindowsPatchExtension","type":"WindowsPatchExtension","typeHandlerVersion":"1.5.83","status":{"code":"0","level":"Information","message":"Extension
+        Message: \"[\"[\"[\"[\"Successfully completed [ConfigurePatching] operation
+        with ActivityID [badb5c5c-bb49-4939-9615-6c5f2240ac2e]\"].\"].\"].\"].\",
+        ConfigurePatchingSummary: {\"activityId\":\"badb5c5c-bb49-4939-9615-6c5f2240ac2e\",\"startTime\":\"2026-07-13T17:32:26.2977083+00:00\",\"lastModifiedTime\":\"2026-07-13T17:32:48.8734204+00:00\",\"automaticOSPatchState\":\"Enabled\",\"autoAssessmentStatus\":{\"autoAssessmentState\":\"Enabled\",\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"}},\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"},\"configurePatchStatus\":1,\"configurePatchStatusString\":\"success\"},
+        HotpatchStatus: {\"hotpatchEnablementStatus\":\"Disabled\",\"hotpatchReadinessStatus\":\"Unknown\",\"lastRefreshedTime\":\"2026-07-15T15:07:16.4678994+00:00\",\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"}}, PatchAssessmentSummary: {\"assessmentActivityId\":\"4d71a677-8b80-443d-8513-17df2221d12e\",\"patchServiceUsed\":\"WU\",\"rebootPending\":false,\"startTime\":\"2026-07-15T15:07:13.3629205+00:00\",\"lastModifiedTime\":\"2026-07-15T15:07:43.5708878+00:00\",\"criticalAndSecurityPatchCount\":3,\"otherPatchCount\":1,\"startedBy\":\"Platform\",\"patches\":[{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"1a6c1515-7239-4ce2-a7f9-8663f974c8b4\",\"name\":\"2026-07
+        .NET 8.0.29 Security Update for ARM64 Client (KB5104032)\",\"kbid\":\"5104032\",\"classifications\":[\"Security\"],\"msrcSeverity\":\"Important\"},{\"rebootBehavior\":\"NeverReboots\",\"publishedDate\":\"2026-07-15T04:00:00.0000000Z\",\"patchId\":\"42662f05-b663-49e7-b73e-55b3bf919580\",\"name\":\"Security
+        Intelligence Update for Microsoft Defender Antivirus - KB2267602 (Version
+        1.455.155.0) - Current Channel (Broad)\",\"kbid\":\"2267602\",\"classifications\":[\"Definition\"],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"beaf1a0b-db0d-466a-b1a1-35db3ea964c7\",\"name\":\"2026-07
+        .NET Framework Security Update (KB5101001)\",\"kbid\":\"5101001\",\"classifications\":[\"Security\"],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"b045adcf-3361-4fd1-8afc-2533adf25431\",\"name\":\"Windows
+        11, version 25H2\",\"kbid\":\"5101650\",\"classifications\":[],\"msrcSeverity\":null},{\"rebootBehavior\":\"CanRequestReboot\",\"publishedDate\":\"2026-07-14T04:00:00.0000000Z\",\"patchId\":\"ed067ee3-e3a8-4e9f-bc54-093c17ab3ea9\",\"name\":\"2026-07
+        Security Update (KB5101650) (26100.8875)\",\"kbid\":\"5101650\",\"classifications\":[\"Security\"],\"msrcSeverity\":null}],\"errors\":{\"details\":[],\"code\":\"Success\",\"message\":\"0
+        error/s reported\"},\"patchAssessmentStatus\":1,\"patchAssessmentStatusString\":\"success\"}"}}},"systemData":{"createdBy":"c8f5141d-83e0-4e9a-84d0-bb6677e26f64","createdByType":"Application","createdAt":"2026-06-22T17:31:33.868172Z","lastModifiedBy":"5e5e43d4-54da-4211-86a4-c6e7f3715801","lastModifiedByType":"Application","lastModifiedAt":"2026-07-13T17:32:26.6266874Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H/extensions/testext6","name":"testext6","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.Azure.Monitor","type":"AzureMonitorWindowsAgent","typeHandlerVersion":"1.43.0.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"provisioningState":"Failed","instanceView":{"name":"testext6","type":"AzureMonitorWindowsAgent","typeHandlerVersion":"1.43.0.0","status":{"code":"null","level":"Error","message":"Extension
+        failed to install. Install of extension failed with error: Unzipping of extension
+        failed with error: Failed to open unzip object to unzip package to location:
+        C:\\Packages\\Plugins\\Microsoft.Azure.Monitor.AzureMonitorWindowsAgent\\1.43.0.0
+        "}}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-26T19:50:41.4828039Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-26T19:50:41.4828039Z"}}],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-18T16:22:24.3636556Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T04:30:33.5622437Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '14315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 04:30:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5C8AACB627D34469B0DF2FAF5E71CABB Ref B: MNZ221060610053 Ref C: 2026-07-16T04:30:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "eastus", "properties": {"agentUpgrade":
+      {"enableAutomaticUpgrade": true}, "clientPublicKey": "MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB",
+      "cloudMetadata": {}, "licenseProfile": {"esuProfile": {"licenseAssignmentState":
+      "NotAssigned"}}, "mssqlDiscovered": "false", "osProfile": {"windowsConfiguration":
+      {"patchSettings": {"assessmentMode": "AutomaticByPlatform"}}}, "osType": "windows",
+      "serviceStatuses": {"extensionService": {"startupType": "automatic", "status":
+      "running"}, "guestConfigurationService": {"startupType": "automatic", "status":
+      "running"}}, "vmId": "1d137974-aec4-4879-8a31-d8c56f70bfdf"}, "tags": {"azsecpack":
+      "nonprod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1003'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"None","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Updating","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T04:06:16.826903Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"1d137974-aec4-4879-8a31-d8c56f70bfdf","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAtaElM2S3gfqM4XPs4HonqqlD/GHD4C/Jj+coxUWt4RSmu8IJR6DllUrkUcsEacqOZDnlOISkhLAMUwO+JQM/Lq58TbdD0KZ92oJ78YP6r0+J1A2hV6vVWpsuw3iFh9Pww6nWPebpNmARUGu4lW5pAiuZlSW5Iv4mwCQNcrSyKfMiYlEc96O/pPE+eYPoSShVkMzDUC/T4rEpr4R3mMfRgFW18HrL0OCA25fdtGbCMOMu0if/2s8Z3HaFlwkAoNWRyIcefpJFccl0crftqPHhM6toQB24xyHRi6oeCtiPnn2jTUmTV0/a8DK+BF7D1I3C8cj1imcKlFE+ZWvd3DIUswIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.13.0.110","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.13.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-18T16:22:24.3636556Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T04:30:38.2374284Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3825'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 04:30:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=0cd46ea8-7371-4f65-9bb5-5de55bea6d52/westus2/02941d1f-ab03-407f-86f6-37c3cb64cb02
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2DA6B015EA9F43F484F3D31493FBFDEC Ref B: MNZ221060619021 Ref C: 2026-07-16T04:30:37Z'
+    status:
+      code: 200
+      message: OK
+version: 1

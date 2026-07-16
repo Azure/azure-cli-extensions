@@ -52,9 +52,6 @@ class Update(AAZCommand):
             help="The name of the private endpoint connection.",
             required=True,
             id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="",
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,

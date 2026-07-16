@@ -49,6 +49,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
             'private_endpoint_connection': 'pec-' + rand_string,
             'location': 'westus2',
             'customScriptName': 'custom-' + rand_string,
+            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
         })
 
         # Prepare network
@@ -80,6 +81,13 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         # Test private link scope list 
         self.cmd('az connectedmachine private-link-scope list '
                 '--resource-group "{rg}"',
+                checks=[])
+
+        # Get the private link scope validation details for the machine
+        self.cmd('az connectedmachine private-link-scope current show '
+                '--machine-name "{machine}" '
+                '--resource-group "{rg}" '
+                '--subscription "{subscription}"',
                 checks=[])
 
         # Private link scope show
