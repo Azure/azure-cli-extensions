@@ -9,7 +9,7 @@ import shlex
 import os
 import re
 from json import loads
-import pkgutil
+import importlib
 import requests
 
 from knack.log import get_logger
@@ -30,8 +30,7 @@ def _get_cloud_init_script():
     SCRIPTS_DIR_NAME = 'scripts'
     CLOUD_INIT = 'linux-build_setup-cloud-init.txt'
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
+    mod = importlib.import_module(REPAIR_DIR_NAME)
     rootpath = os.path.dirname(mod.__file__)
     return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
 
@@ -107,8 +106,7 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
 
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
+    mod = importlib.import_module(REPAIR_DIR_NAME)
     rootpath = os.path.dirname(mod.__file__)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, script_name)
 

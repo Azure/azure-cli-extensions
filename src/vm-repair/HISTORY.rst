@@ -5,6 +5,7 @@ Release History
 2.2.1
 ++++++
 Migrate code from Azure SDK to AAZ based commands for compute operations
+Replace deprecated pkgutil loader with importlib.import_module
 
 2.2.0
 ++++++
