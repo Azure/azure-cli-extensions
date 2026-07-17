@@ -1437,6 +1437,8 @@ def aks_create(
     # app routing istio
     enable_app_routing_istio=False,
     enable_hosted_system=False,
+    system_node_subnet_id=None,
+    node_subnet_id=None,
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
@@ -1444,6 +1446,7 @@ def aks_create(
     enable_backup=False,
     backup_strategy=None,
     backup_configuration_file=None,
+    enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
 ):
@@ -1705,6 +1708,8 @@ def aks_update(
     disable_application_load_balancer=False,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    enable_on_demand_monitor=False,
+    disable_on_demand_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
     # backup (delegates to the dataprotection extension)
     enable_backup=False,
@@ -1916,14 +1921,21 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
-    if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
+    agent_pool_profiles = instance.agent_pool_profiles or []
+    if not agent_pool_profiles:
+        raise CLIError(
+            "The cluster has no scalable node pools (this may be a Managed System Pool for "
+            "an Automatic cluster). Use az aks nodepool add/scale against a user node pool instead."
+        )
+
+    if len(agent_pool_profiles) > 1 and nodepool_name == "":
         raise CLIError(
             "There are more than one node pool in the cluster. "
             "Please specify nodepool name or use az aks nodepool command to scale node pool"
         )
 
-    for agent_profile in (instance.agent_pool_profiles or []):
-        if agent_profile.name == nodepool_name or (nodepool_name == "" and instance.agent_pool_profiles and len(instance.agent_pool_profiles) == 1):
+    for agent_profile in agent_pool_profiles:
+        if agent_profile.name == nodepool_name or (nodepool_name == "" and len(agent_pool_profiles) == 1):
             if agent_profile.enable_auto_scaling:
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")

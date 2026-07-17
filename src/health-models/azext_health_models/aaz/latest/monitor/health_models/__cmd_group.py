@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "monitor health-models",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Healthmodel
+    """Manage Azure Monitor health models.
     """
     pass
 

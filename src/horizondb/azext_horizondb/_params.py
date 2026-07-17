@@ -14,7 +14,9 @@ from azure.cli.core.commands.parameters import (
     get_enum_type)
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 from .utils.validators import (
-    validate_replica_count)
+    validate_replica_count,
+    public_access_validator,
+    ip_address_validator)
 
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-locals
@@ -72,6 +74,48 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             options_list=['--parameter-group'],
             help='The resource ID of the parameter group.')
 
+        public_access_create_arg_type = CLIArgumentType(
+            options_list=['--public-access'],
+            validator=public_access_validator,
+            help="Determines the public access for the cluster by creating a firewall rule on the "
+                 "default pool. Enter a single IP address or a range of IP addresses (dash-separated, "
+                 "no spaces) to be included in the allowed list of IPs. Specifying 'All' allows public "
+                 "access from any IP (0.0.0.0-255.255.255.255). 'Enabled' detects your current client "
+                 "IP and prompts to allow it. 'None' and 'Disabled' do not create a firewall rule. "
+                 "Acceptable values: 'Enabled', 'Disabled', 'All', 'None', '{startIP}' and "
+                 "'{startIP}-{endIP}' where each IP ranges from 0.0.0.0 to 255.255.255.255.")
+
+        public_access_update_arg_type = CLIArgumentType(
+            options_list=['--public-access'],
+            arg_type=get_enum_type(['Enabled', 'Disabled']),
+            help="Enable or disable public access on the cluster. 'Enabled' detects your current "
+                 "client IP and prompts to create a firewall rule on the default pool. 'Disabled' "
+                 "points you to the 'az horizondb firewall-rule' commands to remove public access.")
+
+        firewall_cluster_name_arg_type = CLIArgumentType(
+            options_list=['--cluster-name', '-c'],
+            id_part=None,
+            help='Name of the HorizonDB cluster.')
+
+        firewall_rule_name_arg_type = CLIArgumentType(
+            options_list=['--name', '-n'],
+            id_part=None,
+            help='The name of the firewall rule.')
+
+        start_ip_address_arg_type = CLIArgumentType(
+            options_list=['--start-ip-address'],
+            help='The start IP address of the firewall rule (IPv4). Must be dotted-quad format. Use '
+                 '0.0.0.0 to represent all Azure-internal IP addresses.')
+
+        end_ip_address_arg_type = CLIArgumentType(
+            options_list=['--end-ip-address'],
+            help='The end IP address of the firewall rule (IPv4). Must be dotted-quad format. Use '
+                 '0.0.0.0 to represent all Azure-internal IP addresses.')
+
+        firewall_rule_description_arg_type = CLIArgumentType(
+            options_list=['--description'],
+            help='The description of the firewall rule.')
+
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('cluster_name', arg_type=cluster_name_arg_type)
@@ -85,14 +129,36 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('replica_count', arg_type=replica_count_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)
             c.argument('zone_placement_policy', arg_type=zone_placement_policy_arg_type)
+            c.argument('public_access', arg_type=public_access_create_arg_type)
+            c.argument('yes', arg_type=yes_arg_type)
 
         with self.argument_context('horizondb update') as c:
             c.argument('tags', tags_type)
             c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
             c.argument('v_cores', arg_type=v_cores_arg_type)
             c.argument('parameter_group', arg_type=parameter_group_arg_type)
+            c.argument('public_access', arg_type=public_access_update_arg_type)
+            c.argument('yes', arg_type=yes_arg_type)
 
         with self.argument_context('horizondb delete') as c:
+            c.argument('yes', arg_type=yes_arg_type)
+
+        with self.argument_context('horizondb firewall-rule') as c:
+            c.argument('resource_group_name', arg_type=resource_group_name_type)
+            c.argument('cluster_name', arg_type=firewall_cluster_name_arg_type)
+            c.argument('firewall_rule_name', arg_type=firewall_rule_name_arg_type)
+
+        with self.argument_context('horizondb firewall-rule create') as c:
+            c.argument('start_ip_address', arg_type=start_ip_address_arg_type, validator=ip_address_validator)
+            c.argument('end_ip_address', arg_type=end_ip_address_arg_type)
+            c.argument('description', arg_type=firewall_rule_description_arg_type)
+
+        with self.argument_context('horizondb firewall-rule update') as c:
+            c.argument('start_ip_address', arg_type=start_ip_address_arg_type, validator=ip_address_validator)
+            c.argument('end_ip_address', arg_type=end_ip_address_arg_type)
+            c.argument('description', arg_type=firewall_rule_description_arg_type)
+
+        with self.argument_context('horizondb firewall-rule delete') as c:
             c.argument('yes', arg_type=yes_arg_type)
 
     _horizondb_params()
