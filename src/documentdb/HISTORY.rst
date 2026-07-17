@@ -9,7 +9,7 @@ Release History
 * Add ``az documentdb mongocluster`` commands to create, update, show, list, and delete
   mongo clusters, list connection strings, and check name availability.
 * Add ``az documentdb mongocluster firewall-rule`` commands to manage IP firewall rules.
-* Add ``az documentdb mongocluster user`` commands to manage Microsoft Entra-backed
+* Add ``az documentdb mongocluster entra-user`` commands to manage Microsoft Entra ID
   database users.
 * Add ``az documentdb mongocluster identity`` commands to manage the cluster's
   user-assigned managed identity.

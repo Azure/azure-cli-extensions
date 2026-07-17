@@ -23,7 +23,7 @@ managed identity, cross-region read replicas, and point-in-time restore.
 |--|--|
 | `az documentdb mongocluster` | Create and manage mongo clusters |
 | `az documentdb mongocluster firewall-rule` | Manage IP firewall rules (public access) |
-| `az documentdb mongocluster user` | Manage Microsoft Entra-backed database users |
+| `az documentdb mongocluster entra-user` | Manage Microsoft Entra ID database users |
 | `az documentdb mongocluster identity` | Manage the cluster's user-assigned managed identity |
 | `az documentdb mongocluster replica` | List, create, and promote cross-region read replicas |
 
@@ -60,11 +60,12 @@ az documentdb mongocluster firewall-rule create -n AllowMyIp --cluster-name MyCl
 az documentdb mongocluster firewall-rule list --cluster-name MyCluster -g MyResourceGroup
 ```
 
-### Microsoft Entra-backed users
+### Microsoft Entra ID users
 
 ```bash
-az documentdb mongocluster user create -n alice --cluster-name MyCluster -g MyResourceGroup \
-    --type User --role db=admin role=root
+# The user is identified by its Microsoft Entra object (client) ID, not a friendly name.
+az documentdb mongocluster entra-user create --object-id 11111111-1111-1111-1111-111111111111 \
+    --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
 ```
 
 ### Managed identity (user-assigned)

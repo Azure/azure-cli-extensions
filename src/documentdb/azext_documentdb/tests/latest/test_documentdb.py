@@ -195,7 +195,7 @@ class DocumentdbScenario(ScenarioTest):
 
         # Create a Microsoft Entra-backed user (custom --type wrapper).
         self._cmd_retry(
-            'documentdb mongocluster user create -n {user_oid} --cluster-name {cluster} -g {rg} '
+            'documentdb mongocluster entra-user create -n {user_oid} --cluster-name {cluster} -g {rg} '
             '--type User --role db=admin role=root',
             checks=[
                 self.check('name', '{user_oid}'),
@@ -204,17 +204,17 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
         self.cmd(
-            'documentdb mongocluster user show -n {user_oid} --cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster entra-user show -n {user_oid} --cluster-name {cluster} -g {rg}',
             checks=[self.check('name', '{user_oid}')],
         )
         self.cmd(
-            'documentdb mongocluster user list --cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster entra-user list --cluster-name {cluster} -g {rg}',
             checks=[self.check("length([?name=='{user_oid}'])", 1)],
         )
         # Note: the service does not support updating an existing Microsoft Entra ID
         # user, so only create/show/list/delete are exercised here.
         self._cmd_retry(
-            'documentdb mongocluster user delete -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
+            'documentdb mongocluster entra-user delete -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
         )
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
@@ -514,7 +514,7 @@ class DocumentdbScenario(ScenarioTest):
             expect_failure=True,
         )
         self.cmd(
-            'documentdb mongocluster user show -n missing-user '
+            'documentdb mongocluster entra-user show -n missing-user '
             '--cluster-name {cluster} -g {rg}',
             expect_failure=True,
         )

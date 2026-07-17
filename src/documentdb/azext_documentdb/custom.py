@@ -12,8 +12,8 @@ from knack.log import get_logger
 from azure.cli.core.aaz import register_command, AAZStrArg, AAZObjectType, AAZStrType
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Create as _MongoClusterCreate
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Update as _MongoClusterUpdate
-from azext_documentdb.aaz.latest.documentdb.mongocluster.user import Create as _UserCreate
-from azext_documentdb.aaz.latest.documentdb.mongocluster.user import Update as _UserUpdate
+from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Create as _UserCreate
+from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Update as _UserUpdate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.replica import Promote as _ReplicaPromote
 
 logger = get_logger(__name__)

@@ -14,8 +14,8 @@
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from azext_documentdb.custom import (
         UserCreate, UserUpdate, ResetPassword, ReplicaCreate, Restore, ReplicaPromote)
-    self.command_table['documentdb mongocluster user create'] = UserCreate(loader=self)
-    self.command_table['documentdb mongocluster user update'] = UserUpdate(loader=self)
+    self.command_table['documentdb mongocluster entra-user create'] = UserCreate(loader=self)
+    self.command_table['documentdb mongocluster entra-user update'] = UserUpdate(loader=self)
     self.command_table['documentdb mongocluster reset-password'] = ResetPassword(loader=self)
     self.command_table['documentdb mongocluster replica create'] = ReplicaCreate(loader=self)
     self.command_table['documentdb mongocluster replica promote'] = ReplicaPromote(loader=self)
