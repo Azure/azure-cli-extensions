@@ -2655,19 +2655,24 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                 else None
             )
 
-            upgrade_channel_enabled = upgrade_channel and str(upgrade_channel).lower() != "none"
-            node_os_channel_enabled = node_os_upgrade_channel and str(node_os_upgrade_channel).lower() not in [
-                "none",
-                "unmanaged",
-            ]
+            upgrade_channel_value = getattr(upgrade_channel, "value", upgrade_channel)
+            node_os_upgrade_channel_value = getattr(node_os_upgrade_channel, "value", node_os_upgrade_channel)
+
+            upgrade_channel_enabled = (
+                upgrade_channel_value and str(upgrade_channel_value).lower() != "none"
+            )
+            node_os_channel_enabled = (
+                node_os_upgrade_channel_value and
+                str(node_os_upgrade_channel_value).lower() not in ["none", "unmanaged"]
+            )
 
             if upgrade_channel_enabled:
                 logger.warning(
                     "Auto-upgrade is enabled on cluster '%s' (upgradeChannel=%s, nodeOSUpgradeChannel=%s). "
                     "Rollback will not succeed until auto-upgrade is disabled. Please disable auto-upgrade to roll back the node pool.",
                     cluster_name,
-                    upgrade_channel or "none",
-                    node_os_upgrade_channel or "Unmanaged",
+                    upgrade_channel_value or "none",
+                    node_os_upgrade_channel_value or "Unmanaged",
                 )
             if node_os_channel_enabled:
                 logger.warning(
@@ -2675,7 +2680,7 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                     "The orchestrator version rollback will proceed, but the node image rollback "
                     "will not succeed. Please disable nodeOSUpgradeChannel if you want to roll back the node image.",
                     cluster_name,
-                    node_os_upgrade_channel,
+                    node_os_upgrade_channel_value,
                 )
         except Exception as ex:  # pylint: disable=broad-except
             logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
