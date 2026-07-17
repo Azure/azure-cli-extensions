@@ -106,7 +106,7 @@ class Dapr(DefaultExtension):
 
     def Create(self, cmd, client, resource_group_name: str, cluster_name: str, name: str, cluster_type: str,
                cluster_rp: str, extension_type: str, scope: str, auto_upgrade_minor_version: bool,
-               release_train: str, version: str, target_namespace: str, release_namespace: str,
+               auto_upgrade_mode: str, release_train: str, version: str, target_namespace: str, release_namespace: str,
                configuration_settings: dict, configuration_protected_settings: dict,
                configuration_settings_file: str, configuration_protected_settings_file: str,
                plan_name: str, plan_publisher: str, plan_product: str):
@@ -138,17 +138,17 @@ class Dapr(DefaultExtension):
         extension_instance = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
+            auto_upgrade_mode=auto_upgrade_mode,
             release_train=release_train or self.DEFAULT_RELEASE_TRAIN,
             version=version,
             scope=extension_scope,
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,
-            identity=None,
-            location=""
         )
         return extension_instance, release_name, create_identity
 
     def Update(self, cmd, resource_group_name: str, cluster_name: str, auto_upgrade_minor_version: bool,
+               auto_upgrade_mode: str,
                release_train: str, version: str, configuration_settings: dict,
                configuration_protected_settings: dict, original_extension: Extension, yes: bool = False) \
             -> PatchExtension:
@@ -193,6 +193,7 @@ class Dapr(DefaultExtension):
             configuration_settings = input_configuration_settings
 
         return PatchExtension(auto_upgrade_minor_version=auto_upgrade_minor_version,
+                              auto_upgrade_mode=auto_upgrade_mode,
                               release_train=release_train,
                               version=version,
                               configuration_settings=configuration_settings,

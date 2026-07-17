@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models signal-definition list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List SignalDefinition resources by HealthModel

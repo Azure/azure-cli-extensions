@@ -31,10 +31,10 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
     def test_oracledatabase_adbs_create_cross_region_disaster_recovery(self, resource_group):
         subscription_id = self.get_subscription_id()
         resource_group_name = 'PowerShellTestRg'
-        source_database_name = 'tetscrdr'
+        source_database_name = 'DNDAdbsTets'
         source_location = 'eastus'
         cross_region_dr_location = 'germanywestcentral'
-        cross_region_dr_vnet_name = 'testAbdsNet'
+        cross_region_dr_vnet_name = 'newCrdrFra'
         cross_region_dr_subnet_name = 'default2'
         cross_region_dr_name = os.environ.get(
             'AZURE_ORACLE_DATABASE_ADBS_CRDR_NAME',
@@ -63,16 +63,17 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
                  '--resource-group {} '
                  '--subnet-id {} '
                  '--display-name {} '
-                 '--compute-model ECPU --compute-count 2 '
-                 '--data-storage-size-in-gbs 1024 --license-model LicenseIncluded '
-                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
+                 # '--compute-model ECPU --compute-count 3 '
+                 # '--data-storage-size-in-gbs 2048 --license-model LicenseIncluded '
+                 # '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
+                 # '--cpu-auto-scaling true --store-auto-scaling true --is-mtls-connection-required false '
                  '--vnet-id {} '
-                 '--cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id={} source-location={} is-replicate-automatic-backups=true '.format(
+                 '--cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id={} source-location={} is-replicate-automatic-backups=false '.format(
                      cross_region_dr_location,
                      cross_region_dr_name,
                      resource_group_name,
                      cross_region_dr_subnet_id,
-                     source_database_name,
+                     cross_region_dr_name,
                      cross_region_dr_vnet_id,
                      source_id,
                      source_location
@@ -83,7 +84,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_change_disaster_recovery_configuration(self, resource_group):
         resource_group_name = 'PowerShellTestRg'
-        source_database_name = 'tetscrdr'
+        source_database_name = 'ADBScrdrc2buoxjojjil'
 
         self.cmd('az oracle-database autonomous-database change-disaster-recovery-configuration '
                  '--resource-group {} '

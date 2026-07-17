@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models relationship update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Relationship
 
     :example: Relationships_CreateOrUpdate
-        az monitor health-models relationship update --resource-group rgopenapi --health-model-name model1 --relationship-name rel1
+        az monitor health-models relationship update --resource-group rgopenapi --health-model-name model1 --relationship-name rel1 --display-name "My relationship" --tags "{key9681:ixfvzsfnpvkkbrce}"
     """
 
     _aaz_info = {

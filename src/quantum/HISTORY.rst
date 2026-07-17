@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b17
++++++++++++++++
+* Fixed bug where Quantum workspace creation flow uses plain (JSON-serializable) primitive values instead of SDK enum objects in ARM-template deployment parameters, preventing serialization issues and test failures.
+
 1.0.0b16
 +++++++++++++++
 * Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.

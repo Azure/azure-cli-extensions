@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b2
+++++++
+* Mark the ``az monitor health-models`` command group and all of its commands as preview (``[Preview]``), matching the extension's preview status.
+
 1.0.0b1
 ++++++
 * Initial preview release. Supports the ``Microsoft.CloudHealth`` resource provider at API version ``2026-05-01-preview``.
