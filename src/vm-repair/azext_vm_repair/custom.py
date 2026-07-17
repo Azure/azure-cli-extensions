@@ -144,6 +144,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Fetching the architecture of the source VM.
         architecture_type = _fetch_architecture(source_vm)
 
+        # Enrich telemetry with VM context
+        command.telemetry_context.update({
+            'OsType': 'Linux' if is_linux else 'Windows',
+            'HyperVGeneration': str(vm_hypervgen),
+            'Architecture': str(architecture_type),
+            'IsManagedDisk': str(is_managed),
+            'IsEncrypted': str(bool(encrypt_recovery_key)),
+            'EnableNested': str(bool(enable_nested)),
+            'AssociatePublicIp': str(bool(associate_public_ip)),
+        })
+
         # Checking if the source VM's OS is Linux and if it uses a managed disk.
         if is_linux and _uses_managed_disk(source_vm):
             # Setting the OS type to 'Linux'.
@@ -422,34 +433,42 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
         command.message = "Command interrupted by user input. Cleaning up resources."
+        command.exception_type = 'KeyboardInterrupt'
     except AzCommandError as azCommandError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
         command.message = "Repair create failed. Cleaning up created resources."
+        command.exception_type = 'AzCommandError'
     except SkuDoesNotSupportHyperV as skuDoesNotSupportHyperV:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(skuDoesNotSupportHyperV)
         command.message = "provided sku does not support nested VM in hyperv. Please run command without --enabled-nested or provide a valid --size parameter. Cleaning up created resources."
+        command.exception_type = 'SkuDoesNotSupportHyperV'
     except ScriptReturnsError as scriptReturnsError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(scriptReturnsError)
         command.message = "Error returned from script when enabling hyperv."
+        command.exception_type = 'ScriptReturnsError'
     except SkuNotAvailableError as skuNotAvailableError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(skuNotAvailableError)
         command.message = "Please check if the current subscription can create more VM resources. Cleaning up created resources."
+        command.exception_type = 'SkuNotAvailableError'
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(unmanagedDiskCopyError)
         command.message = "Repair create failed. Please try again at another time. Cleaning up created resources."
+        command.exception_type = 'UnmanagedDiskCopyError'
     except WindowsOsNotAvailableError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = 'Compatible Windows OS image not available.'
         command.message = 'A compatible Windows OS image is not available at this time, please check subscription.'
+        command.exception_type = 'WindowsOsNotAvailableError'
     except Exception as exception:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+        command.exception_type = type(exception).__name__
 
     finally:
         if command.error_stack_trace:
@@ -546,16 +565,19 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
         command.message = "Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
+        command.exception_type = 'KeyboardInterrupt'
     except AzCommandError as azCommandError:
         # Capture the stack trace and set the error message if an Azure command error occurs
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
         command.message = "Repair restore failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
+        command.exception_type = 'AzCommandError'
     except Exception as exception:
         # Capture the stack trace and set the error message if an unexpected error occurs
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+        command.exception_type = type(exception).__name__
     finally:
         # Log the stack trace if an error has occurred
         if command.error_stack_trace:
@@ -707,22 +729,27 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
         command.message = "Repair run failed. Command interrupted by user input."
+        command.exception_type = 'KeyboardInterrupt'
     except AzCommandError as azCommandError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
         command.message = "Repair run failed."
+        command.exception_type = 'AzCommandError'
     except requests.exceptions.RequestException as exception:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = "Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library"
+        command.exception_type = 'RequestException'
     except RunScriptNotFoundForIdError as exception:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = "Repair run failed. Run ID not found."
+        command.exception_type = 'RunScriptNotFoundForIdError'
     except Exception as exception:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+        command.exception_type = type(exception).__name__
     finally:
         if command.error_stack_trace:
             logger.debug(command.error_stack_trace)
@@ -918,26 +945,31 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
         command.message = "Command interrupted by user input."
+        command.exception_type = 'KeyboardInterrupt'
     except AzCommandError as azCommandError:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
         command.message = "Reset NIC failed."
+        command.exception_type = 'AzCommandError'
     except SupportingResourceNotFoundError as resourceError:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(resourceError)
         command.message = "Reset NIC could not be initiated."
+        command.exception_type = 'SupportingResourceNotFoundError'
     except CommandCanceledByUserError as canceledError:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(canceledError)
         command.message = VM_OFF_MESSAGE
+        command.exception_type = 'CommandCanceledByUserError'
     except Exception as exception:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(exception)
         command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+        command.exception_type = type(exception).__name__
     else:
         command.set_status_success()
         command.message = 'VM guest NIC reset complete. The VM is in running state.'
@@ -1017,6 +1049,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command failed when running fstab script."
         command.message = "Command failed when running fstab script."
+        command.exception_type = 'FstabScriptError'
 
         # If the resource group existed before, confirm before cleaning up resources
         # Otherwise, clean up resources without confirmation
@@ -1117,6 +1150,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command failed when running  script."
         command.message = "Command failed when running script."
+        command.exception_type = 'ButtonScriptError'
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)
         else:
