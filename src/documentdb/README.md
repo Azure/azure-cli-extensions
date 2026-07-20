@@ -64,7 +64,7 @@ az documentdb mongocluster firewall-rule list --cluster-name MyCluster -g MyReso
 
 ```bash
 # The user is identified by its Microsoft Entra object (client) ID, not a friendly name.
-az documentdb mongocluster entra-user create --object-id 11111111-1111-1111-1111-111111111111 \
+az documentdb mongocluster entra-user assign --object-id 11111111-1111-1111-1111-111111111111 \
     --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
 ```
 

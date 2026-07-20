@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster entra-user delete",
+    "documentdb mongocluster entra-user remove",
     confirmation="Are you sure you want to perform this operation?",
 )
-class Delete(AAZCommand):
-    """Delete a Microsoft Entra ID user from a mongo cluster.
+class Remove(AAZCommand):
+    """Remove a Microsoft Entra ID principal's access from a mongo cluster.
 
-    :example: Delete an Entra ID user by object ID.
-        az documentdb mongocluster entra-user delete --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup
+    :example: Remove an Entra ID user's access by object ID.
+        az documentdb mongocluster entra-user remove --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {
@@ -176,8 +176,8 @@ class Delete(AAZCommand):
             pass
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _RemoveHelper:
+    """Helper class for Remove"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Remove"]

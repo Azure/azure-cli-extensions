@@ -12,7 +12,7 @@ from knack.log import get_logger
 from azure.cli.core.aaz import register_command, AAZStrArg, AAZObjectType, AAZStrType
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Create as _MongoClusterCreate
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Update as _MongoClusterUpdate
-from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Create as _UserCreate
+from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Assign as _UserAssign
 from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Update as _UserUpdate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.replica import Promote as _ReplicaPromote
 
@@ -81,7 +81,7 @@ def _build_identity_provider(args):
         args.identity_provider.microsoft_entra_id.principal_type = args.principal_type
 
 
-class UserCreate(_UserCreate):
+class UserAssign(_UserAssign):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)

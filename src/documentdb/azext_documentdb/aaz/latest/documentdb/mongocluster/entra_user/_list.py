@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List the Microsoft Entra ID users on a mongo cluster.
 
     :example: List Entra ID users on a cluster.
-        az documentdb mongocluster entra-user list --cluster-name MyCluster -g MyResourceGroup
+        az documentdb mongocluster user list --cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {

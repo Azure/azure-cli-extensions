@@ -182,7 +182,7 @@ class DocumentdbScenario(ScenarioTest):
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
-    # ---- test 3: Microsoft Entra users (create/show/list/delete) ----
+    # ---- test 3: Microsoft Entra users (assign/show/list/remove) ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_user', location='eastus2')
@@ -193,9 +193,9 @@ class DocumentdbScenario(ScenarioTest):
         # Entra auth must be enabled at create time to add Entra users.
         self._create_cluster(extra='--auth-allowed-modes NativeAuth MicrosoftEntraID ')
 
-        # Create a Microsoft Entra-backed user (custom --type wrapper).
+        # Grant a Microsoft Entra principal data-plane access (custom --type wrapper).
         self._cmd_retry(
-            'documentdb mongocluster entra-user create -n {user_oid} --cluster-name {cluster} -g {rg} '
+            'documentdb mongocluster entra-user assign -n {user_oid} --cluster-name {cluster} -g {rg} '
             '--type User --role db=admin role=root',
             checks=[
                 self.check('name', '{user_oid}'),
@@ -212,9 +212,9 @@ class DocumentdbScenario(ScenarioTest):
             checks=[self.check("length([?name=='{user_oid}'])", 1)],
         )
         # Note: the service does not support updating an existing Microsoft Entra ID
-        # user, so only create/show/list/delete are exercised here.
+        # user, so only assign/show/list/remove are exercised here.
         self._cmd_retry(
-            'documentdb mongocluster entra-user delete -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
+            'documentdb mongocluster entra-user remove -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
         )
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
