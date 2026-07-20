@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks extension`: Add `microsoft.virtualnodes` to the list of allowed extension types.
 
 21.0.0b10
 ++++++++
