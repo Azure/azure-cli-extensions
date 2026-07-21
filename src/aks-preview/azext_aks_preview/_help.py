@@ -171,6 +171,10 @@ helps['aks create'] = f"""
           type: int
           short-summary: NAT gateway idle timeout in minutes.
           long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+        - name: --outbound-type-sku
+          type: string
+          short-summary: SKU of the managed NAT gateway (Standard or StandardV2).
+          long-summary: Only valid with --outbound-type managedNATGateway. StandardV2 selects the NAT Gateway V2 shape, which supports IPv6, user-provided public IPs, and user-provided IP prefixes. If omitted, defaults to StandardV2 where the region supports it, otherwise Standard.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
@@ -1041,6 +1045,10 @@ helps['aks update'] = """
           type: int
           short-summary: NAT gateway idle timeout in minutes.
           long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+        - name: --outbound-type-sku
+          type: string
+          short-summary: SKU of the managed NAT gateway (Standard or StandardV2).
+          long-summary: Only valid with --outbound-type managedNATGateway. StandardV2 selects the NAT Gateway V2 shape, which supports IPv6, user-provided public IPs, and user-provided IP prefixes. If omitted, defaults to StandardV2 where the region supports it, otherwise Standard.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.

@@ -176,6 +176,22 @@ class TestCreateNatGatewayV2Profile(unittest.TestCase):
         self.assertIsNotNone(profile)
         self.assertEqual(profile.managed_outbound_ip_profile.count_i_pv6, 8)
 
+    def test_create_with_sku_standardv2(self):
+        profile = natgateway.create_nat_gateway_profile(
+            None, None, models=self.nat_gateway_models,
+            nat_gateway_sku="StandardV2",
+        )
+        self.assertIsNotNone(profile)
+        self.assertEqual(profile.sku, "StandardV2")
+
+    def test_create_with_sku_standard(self):
+        profile = natgateway.create_nat_gateway_profile(
+            2, 30, models=self.nat_gateway_models,
+            nat_gateway_sku="Standard",
+        )
+        self.assertEqual(profile.sku, "Standard")
+        self.assertEqual(profile.managed_outbound_ip_profile.count, 2)
+
 
 class TestUpdateNatGatewayV2Profile(unittest.TestCase):
     def setUp(self):
@@ -216,6 +232,16 @@ class TestUpdateNatGatewayV2Profile(unittest.TestCase):
         self.assertEqual(profile.managed_outbound_ip_profile.count, 2)
         self.assertEqual(profile.idle_timeout_in_minutes, 10)
 
+    def test_v2_update_with_sku(self):
+        origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
+            idle_timeout_in_minutes=4,
+        )
+        profile = natgateway.update_nat_gateway_profile(
+            None, None, origin_profile, models=self.nat_gateway_models,
+            nat_gateway_sku="StandardV2",
+        )
+        self.assertEqual(profile.sku, "StandardV2")
+
 
 class TestIsNatGatewayV2ProfileProvided(unittest.TestCase):
     def test_only_ipv6_count(self):
@@ -233,6 +259,10 @@ class TestIsNatGatewayV2ProfileProvided(unittest.TestCase):
     def test_all_none(self):
         result = natgateway.is_nat_gateway_profile_provided(None, None, None, None, None)
         self.assertFalse(result)
+
+    def test_only_sku(self):
+        result = natgateway.is_nat_gateway_profile_provided(None, None, nat_gateway_sku="StandardV2")
+        self.assertTrue(result)
 
 
 class TestValidateNatGatewayV2Params(unittest.TestCase):
@@ -283,6 +313,56 @@ class TestValidateNatGatewayV2Params(unittest.TestCase):
         ns = self._make_namespace(outbound_type='loadBalancer')
         # No V2 params set, should not raise
         validate_nat_gateway_v2_params(ns)
+
+    def test_v2_params_allowed_when_outbound_type_is_managed_nat_gateway(self):
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='managedNATGateway',
+        )
+        # GA shape: V2 params are valid with managedNATGateway (+ --outbound-type-sku StandardV2)
+        validate_nat_gateway_v2_params(ns)
+
+
+class TestValidateOutboundTypeSku(unittest.TestCase):
+    """Test the --outbound-type-sku cross-parameter validator."""
+
+    def _make_namespace(self, **kwargs):
+        from types import SimpleNamespace
+        defaults = {
+            'nat_gateway_sku': None,
+            'outbound_type': None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_sku_allowed_with_managed_nat_gateway(self):
+        from azext_aks_preview._validators import validate_outbound_type_sku
+        ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type='managedNATGateway')
+        validate_outbound_type_sku(ns)
+
+    def test_sku_allowed_with_legacy_managed_nat_gateway_v2(self):
+        from azext_aks_preview._validators import validate_outbound_type_sku
+        ns = self._make_namespace(nat_gateway_sku='Standard', outbound_type='managedNATGatewayV2')
+        validate_outbound_type_sku(ns)
+
+    def test_sku_allowed_when_outbound_type_not_specified(self):
+        """On update the outbound type may be omitted when the cluster is already managed NAT gw."""
+        from azext_aks_preview._validators import validate_outbound_type_sku
+        ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type=None)
+        validate_outbound_type_sku(ns)
+
+    def test_sku_rejected_with_non_nat_outbound_type(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_outbound_type_sku
+        ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type='loadBalancer')
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_outbound_type_sku(ns)
+
+    def test_no_sku_passes_always(self):
+        from azext_aks_preview._validators import validate_outbound_type_sku
+        ns = self._make_namespace(outbound_type='loadBalancer')
+        validate_outbound_type_sku(ns)
 
 
 if __name__ == '__main__':
