@@ -3,6 +3,18 @@
 Release History
 ===============
 
+1.0.0b2
++++++++
+* Rename ``az documentdb mongocluster user`` to ``entra-user``; the group only supports
+  Microsoft Entra ID principals, so the name makes that explicit.
+* The user identifier is now ``--object-id`` (the Entra object/client ID GUID), keeping the
+  ``-n``/``--name`` aliases.
+* Rename ``entra-user create``/``delete`` to ``assign``/``remove``: the Entra principal already
+  exists, so the command grants or revokes its data-plane access, matching
+  ``mongocluster identity assign/remove``.
+* Add ``--password``/``-p`` aliases to the administrator password across create, update,
+  reset-password, and restore.
+
 1.0.0b1
 +++++++
 * Initial release of the DocumentDB (Azure Cosmos DB for MongoDB vCore) extension.
