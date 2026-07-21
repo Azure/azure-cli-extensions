@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -145,7 +145,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -215,9 +215,6 @@ class Show(AAZCommand):
             )
             properties.forwarding_protocol = AAZStrType(
                 serialized_name="forwardingProtocol",
-            )
-            properties.grpc_state = AAZStrType(
-                serialized_name="grpcState",
             )
             properties.https_redirect = AAZStrType(
                 serialized_name="httpsRedirect",
