@@ -621,6 +621,8 @@ def validate_addons(namespace):
     addons = namespace.addons
     addon_args = addons.split(',')
     _recognize_addons(addon_args)
+    if 'monitoring' in addon_args:
+        _warn_monitoring_addon_deprecated()
 
 
 def validate_pod_identity_pod_labels(namespace):
@@ -1201,15 +1203,44 @@ def validate_azure_monitor_and_opentelemetry_for_update(namespace):
     validate_opentelemetry_logs_dependencies_for_update(namespace)
 
 
+def _warn_monitoring_addon_deprecated():
+    """Emit a deprecation warning steering users to --enable-azure-monitor-logs."""
+    logger.warning(
+        "The 'monitoring' addon (--enable-addons monitoring / --disable-addons monitoring) is "
+        "deprecated for Container Insights. Use '--enable-azure-monitor-logs' / "
+        "'--disable-azure-monitor-logs' instead, which configure the azureMonitorProfile."
+    )
+
+
 def validate_azure_monitor_logs_and_enable_addons(namespace):
     """Validate that enable_azure_monitor_logs and enable_addons don't conflict."""
+    enable_addons = getattr(namespace, 'enable_addons', None)
     if hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs:
-        if hasattr(namespace, 'enable_addons') and namespace.enable_addons:
-            if 'monitoring' in namespace.enable_addons:
-                raise ArgumentUsageError(
-                    "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
-                    "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
-                )
+        if enable_addons and 'monitoring' in enable_addons:
+            raise ArgumentUsageError(
+                "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
+                "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
+            )
+        # The containerInsights path is always MSI/AAD; legacy (non-MSI) auth cannot be expressed.
+        _validate_monitor_logs_requires_msi_auth(namespace)
+    elif enable_addons and 'monitoring' in enable_addons:
+        _warn_monitoring_addon_deprecated()
+
+
+def _validate_monitor_logs_requires_msi_auth(namespace):
+    """--enable-azure-monitor-logs uses the containerInsights path, which is always MSI/AAD auth.
+
+    Legacy (non-MSI) auth has no representation on that surface, so reject an explicit request to
+    disable MSI auth alongside it.
+    """
+    disable_msi_auth = getattr(namespace, 'disable_msi_auth_for_monitoring', None)
+    enable_msi_auth = getattr(namespace, 'enable_msi_auth_for_monitoring', None)
+    if disable_msi_auth or enable_msi_auth is False:
+        raise ArgumentUsageError(
+            "'--enable-azure-monitor-logs' onboards Container Insights via the azureMonitorProfile, "
+            "which always uses managed-identity (MSI/AAD) authentication. It cannot be combined with "
+            "disabling MSI auth for monitoring."
+        )
 
 
 def validate_azure_monitor_logs_enable_disable(namespace):
@@ -1220,6 +1251,8 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+    if hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs:
+        _validate_monitor_logs_requires_msi_auth(namespace)
 
 
 def validate_nat_gateway_managed_outbound_ipv6_count(namespace):

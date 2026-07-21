@@ -13,6 +13,11 @@ Pending
 +++++++
 * `az aks nodepool update`: Avoid applying VirtualMachines autoscaler profile conversions twice with newer Azure CLI versions while preserving compatibility with older CLI versions.
 
+21.0.0b14
+++++++++
+* `az aks create/update`: `--enable-azure-monitor-logs` / `--disable-azure-monitor-logs` now configure the modern ``azureMonitorProfile.containerInsights`` profile instead of the legacy ``addonProfiles.omsagent`` addon. The containerInsights path always uses managed-identity (MSI/AAD) auth.
+* `az aks create/update`: Deprecate the ``monitoring`` addon (``--enable-addons monitoring`` / ``--disable-addons monitoring``) for Container Insights in favor of ``--enable-azure-monitor-logs`` / ``--disable-azure-monitor-logs``.
+
 21.0.0b13
 ++++++++
 * `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. `--maintenance-window-id` cannot be combined with `--config-file` (set the `maintenanceWindowId` property in the JSON instead) and cannot be empty. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.

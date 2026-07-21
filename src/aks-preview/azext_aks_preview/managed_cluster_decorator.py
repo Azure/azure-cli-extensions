@@ -4592,11 +4592,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         container_network_logs_enabled = self.context.get_container_network_logs(mc)
         if container_network_logs_enabled is not None:
-            monitoring_addon_profile = addon_profiles.get(addon_consts.get("CONST_MONITORING_ADDON_NAME"))
-            if monitoring_addon_profile:
-                config = monitoring_addon_profile.config or {}
-                config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
-                monitoring_addon_profile.config = config
+            # Container network logs are configured on the modern azureMonitorProfile.containerInsights
+            # surface (containerNetworkLogs enum) rather than the legacy omsagent addon config.
+            self._ensure_azure_monitor_profile(mc)
+            if mc.azure_monitor_profile.container_insights is None:
+                mc.azure_monitor_profile.container_insights = (
+                    self.models.ManagedClusterAzureMonitorProfileContainerInsights()
+                )
+            mc.azure_monitor_profile.container_insights.container_network_logs = (
+                "Enabled" if container_network_logs_enabled else "Disabled"
+            )
 
         # Trigger validation for high log scale mode when container network logs are enabled.
         # This ensures proper error messages are raised before cluster creation if the user
@@ -5023,18 +5028,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         )
 
     def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
-        """Set up Azure Monitor logs configuration."""
+        """Set up Azure Monitor logs (Container Insights) via azureMonitorProfile.containerInsights.
 
-        addon_consts = self.context.get_addon_consts()
-
-        if mc.addon_profiles is None:
-            mc.addon_profiles = {}
-
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        addon_profile = mc.addon_profiles.get(
-            CONST_MONITORING_ADDON_NAME,
-            self.models.ManagedClusterAddonProfile(enabled=False))
-        addon_profile.enabled = True
+        Writes the modern ``azureMonitorProfile.containerInsights`` surface instead of the legacy
+        ``addonProfiles.omsagent`` addon. The AKS RP normalizes containerInsights into omsagent on
+        the PUT (defaulting ``useAADAuth=true``), so the ama-logs agent is still provisioned and
+        MSI/AAD auth is implied on this path. See plan.md for the RP contract details.
+        """
+        self._ensure_azure_monitor_profile(mc)
 
         # Get or create workspace resource ID
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
@@ -5051,28 +5052,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
         workspace_resource_id = sanitize_func(workspace_resource_id)
 
-        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
-            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
-        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
-
-        # Get MSI auth setting using the same logic as update decorator
-        enable_msi_auth_bool = self.context.get_enable_msi_auth_for_monitoring()
-
-        if enable_msi_auth_bool:
-            enable_msi_auth = "true"
-        else:
-            enable_msi_auth = "false"
-
-        # Create completely new config
-        addon_profile.config = {
-            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
-            CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth
-        }
-        mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
+        container_insights = mc.azure_monitor_profile.container_insights
+        if container_insights is None:
+            container_insights = self.models.ManagedClusterAzureMonitorProfileContainerInsights()
+        container_insights.enabled = True
+        container_insights.log_analytics_workspace_resource_id = workspace_resource_id
+        mc.azure_monitor_profile.container_insights = container_insights
 
         # DCR and DCRA creation is deferred to postprocessing_after_mc_created
         # so that all flags are finalized and the cluster exists.
-        # Only MSI clusters need a DCR.
+        # Only MSI clusters need a DCR; the containerInsights path is always MSI/AAD.
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
 
     def _setup_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
@@ -5910,15 +5899,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         cluster, cluster_resource_id, self.cmd
                     )
             elif self._should_create_dcra():
-                addon_consts = self.context.get_addon_consts()
-                monitoring_addon_key = (
-                    _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
-                    if cluster.addon_profiles
-                    else addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                )
+                monitoring_addon_profile = self._get_monitoring_addon_profile_for_dcr(cluster)
                 self.context.external_functions.ensure_container_insights_for_monitoring(
                     self.cmd,
-                    cluster.addon_profiles[monitoring_addon_key],
+                    monitoring_addon_profile,
                     self.context.get_subscription_id(),
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
@@ -6173,6 +6157,46 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             params.get("enable_container_network_logs") is not None or
             params.get("enable_retina_flow_logs") is not None or
             params.get("enable_high_log_scale_mode") is not None
+        )
+
+    def _get_monitoring_addon_profile_for_dcr(self, cluster: ManagedCluster):
+        """Return the omsagent-style addon profile the shared DCR/DCRA engine consumes.
+
+        Container Insights is now configured via ``azureMonitorProfile.containerInsights`` and the
+        AKS RP normalizes it into ``addonProfiles.omsagent`` on the PUT response. When that mirrored
+        addon is present we use it directly. Otherwise (e.g. mocked responses in unit tests) we build
+        a transient omsagent-style profile from ``containerInsights`` so the DCR engine still gets the
+        workspace id and MSI/AAD auth signal. This object is only passed to the engine, never persisted.
+        """
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+        monitoring_addon_key = (
+            _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
+            if cluster.addon_profiles
+            else None
+        )
+        if (monitoring_addon_key and cluster.addon_profiles and
+                monitoring_addon_key in cluster.addon_profiles and
+                cluster.addon_profiles[monitoring_addon_key].config):
+            return cluster.addon_profiles[monitoring_addon_key]
+
+        workspace_resource_id = None
+        container_insights = (
+            cluster.azure_monitor_profile.container_insights
+            if cluster.azure_monitor_profile
+            else None
+        )
+        if container_insights is not None:
+            workspace_resource_id = container_insights.log_analytics_workspace_resource_id
+        return self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
+                CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+            },
         )
 
 
@@ -6464,14 +6488,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         container_network_logs_enabled = self.context.get_container_network_logs(mc)
         if container_network_logs_enabled is not None:
-            if mc.addon_profiles:
-                addon_consts = self.context.get_addon_consts()
-                monitoring_addon_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
-                monitoring_addon_profile = mc.addon_profiles.get(monitoring_addon_key)
-                if monitoring_addon_profile:
-                    config = monitoring_addon_profile.config or {}
-                    config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
-                    mc.addon_profiles[monitoring_addon_key].config = config
+            # Container network logs are configured on the modern containerInsights surface.
+            self._ensure_azure_monitor_profile(mc)
+            if mc.azure_monitor_profile.container_insights is None:
+                mc.azure_monitor_profile.container_insights = (
+                    self.models.ManagedClusterAzureMonitorProfileContainerInsights()
+                )
+            mc.azure_monitor_profile.container_insights.container_network_logs = (
+                "Enabled" if container_network_logs_enabled else "Disabled"
+            )
 
         # When enabling CNL, the DCR must be updated to add the high-scale stream.
         # Set the postprocessing intermediate so that the update path calls ensure_container_insights.
@@ -8477,16 +8502,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
 
     def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
-        """Set up Azure Monitor logs configuration."""
+        """Set up Azure Monitor logs (Container Insights) via azureMonitorProfile.containerInsights.
 
+        Writes the modern ``azureMonitorProfile.containerInsights`` surface instead of the legacy
+        ``addonProfiles.omsagent`` addon. The AKS RP normalizes containerInsights into omsagent on
+        the PUT (defaulting ``useAADAuth=true``), so MSI/AAD auth is implied on this path.
+        """
         addon_consts = self.context.get_addon_consts()
-        if mc.addon_profiles is None:
-            mc.addon_profiles = {}
-
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
             "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
-        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
         # Get or create workspace resource ID
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
@@ -8503,57 +8527,46 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
         workspace_resource_id = sanitize_func(workspace_resource_id)
 
-        # Call get_enable_msi_auth_for_monitoring BEFORE detecting the existing key,
-        # because the parent's implementation may normalize addon_profiles keys in-place
-        # (e.g., renaming "omsAgent" to "omsagent").
-        enable_msi_auth_bool = self.context.get_enable_msi_auth_for_monitoring()
-        if enable_msi_auth_bool:
-            enable_msi_auth = "true"
-        else:
-            enable_msi_auth = "false"
+        # Detect workspace change from the existing surfaces (containerInsights preferred, omsagent
+        # addon fallback for brownfield clusters) so DCR postprocessing updates the DCR destination.
+        old_workspace = ""
+        if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights and
+                mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id):
+            old_workspace = mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id
+        elif mc.addon_profiles:
+            existing_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+            existing_profile = mc.addon_profiles.get(existing_key) if existing_key else None
+            if existing_profile and existing_profile.config:
+                old_workspace = existing_profile.config.get(
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, "") or ""
+        if old_workspace and old_workspace.lower() != workspace_resource_id.lower():
+            self.context.set_intermediate(
+                "monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
-        # Detect existing key (could be "omsagent" or "omsAgent" from Azure API)
-        existing_key = None
-        if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-            existing_key = CONST_MONITORING_ADDON_NAME
-        elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
-            existing_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+        self._ensure_azure_monitor_profile(mc)
+        container_insights = mc.azure_monitor_profile.container_insights
+        if container_insights is None:
+            container_insights = self.models.ManagedClusterAzureMonitorProfileContainerInsights()
+        container_insights.enabled = True
+        container_insights.log_analytics_workspace_resource_id = workspace_resource_id
 
-        if existing_key:
-            addon_profile = mc.addon_profiles[existing_key]
-            # Detect workspace change: if the workspace is different from the existing one,
-            # trigger DCR postprocessing so the DCR destination gets updated.
-            old_config = addon_profile.config or {}
-            old_workspace = old_config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, "")
-            if old_workspace and old_workspace.lower() != workspace_resource_id.lower():
-                self.context.set_intermediate(
-                    "monitoring_addon_postprocessing_required", True, overwrite_exists=True)
-        else:
-            addon_profile = self.models.ManagedClusterAddonProfile(enabled=False)
-            existing_key = CONST_MONITORING_ADDON_NAME
-
-        addon_profile.enabled = True
-
-        new_config = {
-            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
-            CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth
-        }
-
-        # Also set enableRetinaNetworkFlags if container network logs are being enabled
-        # in the same command. This must be done here because update_monitoring_profile_flow_logs
-        # may run before update_addon_profiles when the base class calls it first.
+        # Container network logs are configured on the containerInsights surface as well.
         container_network_logs_enabled = self.context.get_container_network_logs(mc)
         if container_network_logs_enabled is not None:
-            new_config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
+            container_insights.container_network_logs = (
+                "Enabled" if container_network_logs_enabled else "Disabled"
+            )
 
-        # Replace the entire config, not just individual keys
-        addon_profile.config = new_config
-
-        mc.addon_profiles[existing_key] = addon_profile
+        mc.azure_monitor_profile.container_insights = container_insights
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
 
     def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
-        """Disable Azure Monitor logs configuration."""
+        """Disable Azure Monitor logs configuration.
+
+        Clears ``azureMonitorProfile.containerInsights`` (the RP source of truth) as the primary
+        surface, and also clears the legacy ``addonProfiles.omsagent`` addon when present (brownfield
+        clusters / RP-mirrored state) so the RP does not re-enable the addon.
+        """
         addon_consts = self.context.get_addon_consts()
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
@@ -8564,12 +8577,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if addon_key not in mc.addon_profiles:
                 addon_key = None
 
-        # If the addon profile doesn't exist at all, there's nothing to disable
-        if not addon_key:
+        container_insights = (
+            mc.azure_monitor_profile.container_insights
+            if mc.azure_monitor_profile
+            else None
+        )
+
+        # If neither the legacy addon nor the containerInsights surface exists, nothing to disable
+        if not addon_key and container_insights is None:
             return
 
-        # Check if Azure Monitor logs (monitoring addon) is currently enabled
-        azure_monitor_logs_enabled = mc.addon_profiles[addon_key].enabled
+        # Check if Azure Monitor logs is currently enabled on either surface
+        azure_monitor_logs_enabled = (
+            (addon_key is not None and mc.addon_profiles[addon_key].enabled) or
+            (container_insights is not None and container_insights.enabled)
+        )
 
         # Check if OpenTelemetry logs are enabled and prompt for confirmation
         opentelemetry_logs_enabled = (
@@ -8587,11 +8609,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not prompt_y_n(msg, default="n"):
                 raise CLIError("Operation cancelled.")
 
-        # Check if MSI auth is enabled - if so, cleanup DCR/DCRA BEFORE disabling (same as aks_disable_addons)
-        addon_config = mc.addon_profiles[addon_key].config
-        has_msi_auth_key = addon_config and CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config
-        msi_auth_enabled = (addon_config and has_msi_auth_key and
-                            str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
+        # Check if MSI auth is enabled - if so, cleanup DCR/DCRA BEFORE disabling (same as aks_disable_addons).
+        # The containerInsights path is always MSI/AAD, so treat it as MSI-enabled when the legacy
+        # addon config is not present.
+        if addon_key is not None:
+            addon_config = mc.addon_profiles[addon_key].config
+            has_msi_auth_key = addon_config and CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config
+            msi_auth_enabled = (addon_config and has_msi_auth_key and
+                                str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true")
+        else:
+            msi_auth_enabled = container_insights is not None
 
         # Perform DCR/DCRA cleanup BEFORE disabling (same as aks_disable_addons lines 2796-2822)
         if azure_monitor_logs_enabled and msi_auth_enabled:
@@ -8626,11 +8653,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     # Ignore TypeError just like aks_disable_addons does (line 2823)
                     pass
 
-        # Now disable the addon and clear configuration
-        mc.addon_profiles[addon_key].enabled = False
-        mc.addon_profiles[addon_key].config = None
+        # Now disable the legacy addon (when present) and clear its configuration
+        if addon_key is not None:
+            mc.addon_profiles[addon_key].enabled = False
+            mc.addon_profiles[addon_key].config = None
 
-        # Also disable azureMonitorProfile.containerInsights (the new API surface)
+        # Disable azureMonitorProfile.containerInsights (the source-of-truth API surface).
         # The RP uses containerInsights.enabled as the source of truth; if it remains
         # true while the legacy addon is disabled, the RP re-enables the addon.
         if (mc.azure_monitor_profile and

@@ -193,7 +193,7 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "--enable-addons monitoring". Turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: Enables Container Insights logs for the cluster by configuring the azureMonitorProfile.containerInsights profile (managed-identity/MSI auth). This is the preferred way to onboard Container Insights and supersedes the deprecated "--enable-addons monitoring". Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring is enabled --no-wait argument will have no effect
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -1116,7 +1116,7 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks enable-addons -a monitoring". Enables Log Analytics monitoring for the cluster. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: Enables Container Insights logs for the cluster by configuring the azureMonitorProfile.containerInsights profile (managed-identity/MSI auth). This is the preferred way to onboard Container Insights and supersedes the deprecated "az aks enable-addons -a monitoring". Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring is enabled --no-wait argument will have no effect
         - name: --disable-azure-monitor-logs
           type: bool
           short-summary: Disable Azure Monitor logs for the cluster.

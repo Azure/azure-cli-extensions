@@ -828,7 +828,9 @@ def load_arguments(self, _):
             "enable_azure_monitor_logs",
             action="store_true",
             validator=validate_azure_monitor_logs_and_enable_addons,
-            help="Enable Azure Monitor logs for the cluster. Equivalent to '--enable-addons monitoring'."
+            help="Enable Azure Monitor logs (Container Insights) for the cluster. Configures the "
+                 "azureMonitorProfile.containerInsights profile (managed-identity/MSI auth). Preferred "
+                 "over the deprecated '--enable-addons monitoring'."
         )
         c.argument("workspace_resource_id")
         c.argument(
@@ -1562,13 +1564,17 @@ def load_arguments(self, _):
             "enable_azure_monitor_logs",
             action="store_true",
             validator=validate_azure_monitor_logs_enable_disable,
-            help="Enable Azure Monitor logs for the cluster. Equivalent to 'az aks enable-addons -a monitoring'."
+            help="Enable Azure Monitor logs (Container Insights) for the cluster. Configures the "
+                 "azureMonitorProfile.containerInsights profile (managed-identity/MSI auth). Preferred "
+                 "over the deprecated 'az aks enable-addons -a monitoring'."
         )
 # Monitoring parameters are inherited from base CLI
         c.argument(
             "disable_azure_monitor_logs",
             action="store_true",
-            help="Disable Azure Monitor logs for the cluster. Equivalent to 'az aks disable-addons -a monitoring'."
+            help="Disable Azure Monitor logs (Container Insights) for the cluster. Clears the "
+                 "azureMonitorProfile.containerInsights profile. Preferred over the deprecated "
+                 "'az aks disable-addons -a monitoring'."
         )
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")

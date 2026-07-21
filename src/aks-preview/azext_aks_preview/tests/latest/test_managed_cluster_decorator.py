@@ -12435,13 +12435,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ):
             dec_mc_1 = dec_1.update_addon_profiles(mc_1)
 
-        # Verify monitoring addon is enabled
-        self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_1.addon_profiles)
-        self.assertTrue(dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        # Verify Container Insights is enabled on the azureMonitorProfile surface
+        self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
+        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.container_insights)
+        self.assertTrue(dec_mc_1.azure_monitor_profile.container_insights.enabled)
         self.assertEqual(
-            dec_mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
-                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
-            ],
+            dec_mc_1.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id,
             "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace",
         )
 
@@ -12509,9 +12508,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ):
             dec_mc_3 = dec_3.update_azure_monitor_profile(dec_mc_3)
 
-        # Verify monitoring addon is enabled
-        self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_3.addon_profiles)
-        self.assertTrue(dec_mc_3.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        # Verify Container Insights is enabled
+        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.container_insights)
+        self.assertTrue(dec_mc_3.azure_monitor_profile.container_insights.enabled)
 
         # Verify OpenTelemetry logs are configured
         if (
@@ -12555,15 +12554,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ):
             dec_mc_4 = dec_4.update_addon_profiles(mc_4)
 
-        # Verify MSI auth is enabled
-        self.assertIn(CONST_MONITORING_ADDON_NAME, dec_mc_4.addon_profiles)
-        self.assertTrue(dec_mc_4.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
-        self.assertEqual(
-            dec_mc_4.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
-                CONST_MONITORING_USING_AAD_MSI_AUTH
-            ],
-            "true",
-        )
+        # Verify Container Insights is enabled; MSI/AAD auth is implied on this path (RP-defaulted)
+        self.assertIsNotNone(dec_mc_4.azure_monitor_profile.container_insights)
+        self.assertTrue(dec_mc_4.azure_monitor_profile.container_insights.enabled)
 
     def test_update_disable_azure_monitor_logs(self):
         # Test disabling Azure Monitor logs when currently enabled
@@ -13081,17 +13074,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Call _setup_azure_monitor_logs
         dec_1._setup_azure_monitor_logs(mc_1)
 
-        # Verify: The existing key is preserved (no duplicate created).
-        # The implementation keeps the original casing ("omsAgent") found in addon_profiles.
+        # Verify: Container Insights is configured on the azureMonitorProfile surface with the new
+        # workspace. The legacy omsAgent addon is left untouched (brownfield) — the RP reconciles it.
+        self.assertIsNotNone(mc_1.azure_monitor_profile.container_insights)
+        self.assertTrue(mc_1.azure_monitor_profile.container_insights.enabled)
+        self.assertEqual(
+            mc_1.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id,
+            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace",
+        )
+        # No duplicate omsagent key was created
         self.assertEqual(
             len([k for k in mc_1.addon_profiles if k.lower() == "omsagent"]), 1
-        )  # No duplicate
-        # Find the actual key used (could be normalized or preserved depending on parent behavior)
-        actual_key = next(k for k in mc_1.addon_profiles if k.lower() == "omsagent")
-        self.assertTrue(mc_1.addon_profiles[actual_key].enabled)
-        self.assertEqual(
-            mc_1.addon_profiles[actual_key].config["logAnalyticsWorkspaceResourceID"],
-            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace",
         )
 
     def test_setup_azure_monitor_logs_with_omsagent_lowercase(self):
@@ -15308,9 +15301,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True,
                 )
             },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs="Enabled",
+                ),
+            ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
         # Verify HLSM is auto-enabled when CNL is enabled
@@ -15359,9 +15357,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "False"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs="Disabled",
+                ),
+            ),
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -15442,6 +15445,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         }
         self.assertEqual(
             dec_mc_4.addon_profiles["omsagent"], ground_truth_mc_4["omsagent"]
+        )
+        # Container network logs are also recorded on the containerInsights surface.
+        self.assertEqual(
+            dec_mc_4.azure_monitor_profile.container_insights.container_network_logs,
+            "Enabled",
         )
 
         # Case 5: enable_acns and enable_retina_network_flow_logs without monitoring addon
@@ -15567,6 +15575,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs="Enabled",
+                ),
+            ),
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
         # Verify HLSM is auto-enabled when using deprecated flag
@@ -15692,19 +15705,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             return_value=None,
         ):
             dec_mc_11 = dec_11.set_up_addon_profiles(mc_11)
-        ground_truth_mc_11 = {
-            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={
-                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
-                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
-                    "enableRetinaNetworkFlags": "True",
-                },
-            ),
-        }
+        # Container Insights is configured on the azureMonitorProfile surface (no legacy omsagent),
+        # including the container network logs setting.
+        self.assertNotIn("omsagent", dec_mc_11.addon_profiles or {})
+        container_insights_11 = dec_mc_11.azure_monitor_profile.container_insights
+        self.assertIsNotNone(container_insights_11)
+        self.assertTrue(container_insights_11.enabled)
         self.assertEqual(
-            dec_mc_11.addon_profiles["omsagent"], ground_truth_mc_11["omsagent"]
+            container_insights_11.log_analytics_workspace_resource_id,
+            "/test_workspace_resource_id",
         )
+        self.assertEqual(container_insights_11.container_network_logs, "Enabled")
 
         # Case 12: Verify monitoring_addon_postprocessing_required is set when CNL is enabled (update path)
         # This test verifies the fix for the bug where DCR is not updated when enabling CNL on update
@@ -15756,9 +15767,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True,
                 )
             },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs="Enabled",
+                ),
+            ),
         )
         self.assertEqual(dec_mc_12, ground_truth_mc_12)
 
@@ -15812,9 +15828,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "False"}
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs="Disabled",
+                ),
+            ),
         )
         self.assertEqual(dec_mc_13, ground_truth_mc_13)
 
@@ -15862,10 +15883,15 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 ),
             ),
             addon_profiles={
-                "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "False"}
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
                 )
             },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs="Disabled",
+                ),
+            ),
         )
         self.assertEqual(dec_mc_13b, ground_truth_mc_13b)
 
@@ -16269,8 +16295,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec.context.attach_mc(mc)
         dec_mc = dec.update_monitoring_profile_flow_logs(mc)
         self.assertEqual(
-            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
-            "True",
+            dec_mc.azure_monitor_profile.container_insights.container_network_logs,
+            "Enabled",
         )
         self.assertTrue(
             dec.context.get_intermediate("monitoring_addon_postprocessing_required")
@@ -16306,8 +16332,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec.context.attach_mc(mc)
         dec_mc = dec.update_monitoring_profile_flow_logs(mc)
         self.assertEqual(
-            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
-            "True",
+            dec_mc.azure_monitor_profile.container_insights.container_network_logs,
+            "Enabled",
         )
         self.assertTrue(dec.context.get_enable_high_log_scale_mode())
         self.assertTrue(
@@ -18114,8 +18140,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             dec._setup_azure_monitor_logs(mc)
 
         addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
-        self.assertIsNotNone(addon_profile)
-        self.assertEqual(addon_profile.config.get("enableRetinaNetworkFlags"), "True")
+        self.assertIsNone(addon_profile)
+        self.assertIsNotNone(mc.azure_monitor_profile.container_insights)
+        self.assertEqual(
+            mc.azure_monitor_profile.container_insights.container_network_logs, "Enabled")
 
     def test_setup_azure_monitor_logs_no_retina_flags_without_cnl(self):
         """_setup_azure_monitor_logs does NOT set enableRetinaNetworkFlags when CNL is not specified."""
@@ -18142,8 +18170,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             dec._setup_azure_monitor_logs(mc)
 
         addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
-        self.assertIsNotNone(addon_profile)
-        self.assertNotIn("enableRetinaNetworkFlags", addon_profile.config)
+        self.assertIsNone(addon_profile)
+        self.assertIsNotNone(mc.azure_monitor_profile.container_insights)
+        self.assertIsNone(mc.azure_monitor_profile.container_insights.container_network_logs)
 
     # ------------------------------------------------------------------
     # Tests for _setup_azure_monitor_logs workspace change detection
@@ -18188,10 +18217,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 "monitoring_addon_postprocessing_required", default_value=False
             )
         )
-        # Verify workspace was updated
-        actual_key = next(k for k in mc.addon_profiles if k.lower() == "omsagent")
+        # Verify workspace was updated on the containerInsights surface
+        self.assertIsNotNone(mc.azure_monitor_profile.container_insights)
         self.assertEqual(
-            mc.addon_profiles[actual_key].config["logAnalyticsWorkspaceResourceID"],
+            mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id,
             new_ws,
         )
 
@@ -18583,12 +18612,16 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_enable.context.set_intermediate("subscription_id", "test-subscription-id")
         dec_enable._setup_azure_monitor_logs(mc)
 
-        # Config should only have workspace + MSI auth — no CNL or HLSM keys
-        addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
-        self.assertTrue(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
-        self.assertIn("logAnalyticsWorkspaceResourceID", addon_config)
-        self.assertIn(CONST_MONITORING_USING_AAD_MSI_AUTH, addon_config)
-        self.assertNotIn("enableRetinaNetworkFlags", addon_config)
+        # Container Insights is re-enabled on the azureMonitorProfile surface with a fresh
+        # workspace and no CNL carried forward. The legacy omsagent addon is left untouched.
+        container_insights = mc.azure_monitor_profile.container_insights
+        self.assertIsNotNone(container_insights)
+        self.assertTrue(container_insights.enabled)
+        self.assertEqual(
+            container_insights.log_analytics_workspace_resource_id,
+            "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-workspace",
+        )
+        self.assertIsNone(container_insights.container_network_logs)
 
 
 if __name__ == "__main__":
