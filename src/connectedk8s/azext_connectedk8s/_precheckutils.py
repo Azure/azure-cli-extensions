@@ -25,7 +25,9 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
-# pylint: disable
+# pylint: disable=too-many-positional-arguments, consider-using-with
+# Precheck flow orchestrates many steps and captures rich diagnostics, so complexity is currently centralized.
+# Keep these suppressions local to this module until the precheck workflow is split into smaller units.
 
 diagnoser_output: list[str] = []
 
@@ -114,16 +116,16 @@ def fetch_diagnostic_checks_results(
             return consts.Diagnostic_Check_Passed, storage_space_available
 
         # If any of the check remain Incomplete than we will return Incomplete
-        if (
-            dns_check == consts.Diagnostic_Check_Incomplete
-            or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete
+        if consts.Diagnostic_Check_Incomplete in (
+            dns_check,
+            outbound_connectivity_check,
         ):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         return consts.Diagnostic_Check_Failed, storage_space_available
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         logger.exception(
             "An exception has occured while trying to execute cluster diagnostic checks "
             "container on the cluster."
@@ -284,7 +286,7 @@ def executing_cluster_diagnostic_checks_job(
                             "Cluster Diagnostic Checks Job reached completed state"
                         )
                         w.stop()
-            except Exception:
+            except (KeyError, AttributeError, TypeError):
                 logger.debug(
                     "Caught Exception, executing Cluster Diagnostic Checks job: ",
                     exc_info=True,
@@ -355,7 +357,7 @@ def executing_cluster_diagnostic_checks_job(
                             filepath_with_timestamp,
                             "cluster_diagnostic_checks_job_log.txt",
                         )
-                        with open(dns_check_path, "w+") as f:
+                        with open(dns_check_path, "w+", encoding="utf-8") as f:
                             f.write(cluster_diagnostic_checks_container_log)
                 except OSError as e:
                     if "[Errno 28]" in str(e):
@@ -379,7 +381,7 @@ def executing_cluster_diagnostic_checks_job(
                         )
 
                 # To handle any exception that may occur during the execution
-                except Exception as e:
+                except (ValueError, TypeError) as e:
                     logger.exception(
                         "An exception has occured while saving the Cluster "
                         "Diagnostic Checks Job logs in the local machine."
@@ -407,9 +409,11 @@ def executing_cluster_diagnostic_checks_job(
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        raise CLIInternalError(f"Failed to execute Cluster Diagnostic Checks Job: {e}")
+        raise CLIInternalError(
+            f"Failed to execute Cluster Diagnostic Checks Job: {e}"
+        ) from e
 
     return cluster_diagnostic_checks_container_log
 
@@ -494,7 +498,9 @@ def fetching_cli_output_logs(
             )
             # If any results are obtained during the process than we will add it to the text file.
             if len(diagnoser_output) > 0:
-                with open(cli_output_logger_path, "w+") as cli_output_writer:
+                with open(
+                    cli_output_logger_path, "w+", encoding="utf-8"
+                ) as cli_output_writer:
                     for output in diagnoser_output:
                         cli_output_writer.write(output + "\n")
                     # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that
@@ -504,13 +510,17 @@ def fetching_cli_output_logs(
 
             # If no issues was found during the whole troubleshoot execution
             elif flag:
-                with open(cli_output_logger_path, "w+") as cli_output_writer:
+                with open(
+                    cli_output_logger_path, "w+", encoding="utf-8"
+                ) as cli_output_writer:
                     cli_output_writer.write(
                         "The diagnoser didn't find any issues on the cluster.\n"
                     )
             # If process was terminated by user
             else:
-                with open(cli_output_logger_path, "w+") as cli_output_writer:
+                with open(
+                    cli_output_logger_path, "w+", encoding="utf-8"
+                ) as cli_output_writer:
                     cli_output_writer.write("Process terminated externally.\n")
 
         return consts.Diagnostic_Check_Passed
@@ -527,7 +537,7 @@ def fetching_cli_output_logs(
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.exception(
             "An exception has occured while trying to store the diagnoser results."
         )

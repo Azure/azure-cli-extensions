@@ -10,7 +10,8 @@ from typing import Any
 from azure.cli.core.azclierror import ArgumentUsageError
 
 
-# pylint: disable=protected-access, too-few-public-methods
+# pylint: disable=protected-access
+# Access to protected members of argparse is necessary for custom action classes
 class AddConfigurationSettings(argparse._AppendAction):
     def __call__(
         self,
@@ -40,7 +41,6 @@ class AddConfigurationSettings(argparse._AppendAction):
         setattr(namespace, self.dest, config_settings)
 
 
-# pylint: disable=protected-access, too-few-public-methods
 class AddConfigurationProtectedSettings(argparse._AppendAction):
     def __call__(
         self,

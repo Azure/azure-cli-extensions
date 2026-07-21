@@ -57,6 +57,12 @@ logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
+# pylint: disable=consider-using-with
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-lines
+# Long diagnostic and command strings are kept readable in one place for operator troubleshooting.
+# Some broad exception boundaries are retained to keep best-effort cleanup and telemetry collection.
 
 
 def ensure_correlation_id(cmd: CLICommand, log_prefix: str = "connectedk8s") -> str:
@@ -112,7 +118,7 @@ def validate_connect_rp_location(cmd: CLICommand, location: str) -> None:
 
     try:
         providerDetails = resourceClient.get("Microsoft.Kubernetes")
-    except Exception as e:  # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-exception-caught
         arm_exception_handler(
             e,
             consts.Get_ResourceProvider_Fault_Type,
@@ -173,7 +179,7 @@ def validate_custom_token(
                 )
                 rg = resource_client.get(resource_group_name)
                 location = rg.location
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-exception-caught
                 telemetry.set_exception(
                     exception=ex,
                     fault_type=consts.Location_Fetch_Fault_Type,
@@ -181,7 +187,7 @@ def validate_custom_token(
                 )
                 raise ValidationError(
                     f"Unable to fetch location from resource group: '{ex}'"
-                )
+                ) from ex
         return True, location
     return False, location
 
@@ -347,7 +353,7 @@ def save_cluster_diagnostic_checks_pod_description(
                             filepath_with_timestamp,
                             "cluster_diagnostic_checks_pod_description.txt",
                         )
-                        with open(dns_check_path, "w+") as f:
+                        with open(dns_check_path, "w+", encoding="utf-8") as f:
                             f.write(pod_description)
                 else:
                     telemetry.set_exception(
@@ -376,7 +382,7 @@ def save_cluster_diagnostic_checks_pod_description(
             )
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.exception(
             "An exception has occured while saving the cluster diagnostic checks pod "
             "description in the local machine."
@@ -413,7 +419,7 @@ def check_cluster_DNS(
             )
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
-                with open(dns_check_path, "w+") as dns:
+                with open(dns_check_path, "w+", encoding="utf-8") as dns:
                     dns.write(
                         formatted_dns_log
                         + "\nWe found an issue with the DNS resolution on your cluster."
@@ -427,7 +433,7 @@ def check_cluster_DNS(
 
         if storage_space_available:
             dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
-            with open(dns_check_path, "w+") as dns:
+            with open(dns_check_path, "w+", encoding="utf-8") as dns:
                 dns.write(
                     formatted_dns_log + "\nCluster DNS check passed successfully."
                 )
@@ -460,7 +466,7 @@ def check_cluster_DNS(
             )
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.exception(
             "An exception has occured while performing the DNS check on the cluster."
         )
@@ -477,6 +483,8 @@ def check_cluster_DNS(
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
+# pylint: disable=too-many-return-statements
+# Outbound connectivity check returns different results based on connection state
 def check_cluster_outbound_connectivity(
     outbound_connectivity_check_log: str,
     filepath_with_timestamp: str,
@@ -511,7 +519,9 @@ def check_cluster_outbound_connectivity(
                         consts.Outbound_Network_Connectivity_Check_for_cluster_connect,
                     )
                     with open(
-                        cluster_connect_outbound_connectivity_check_path, "w+"
+                        cluster_connect_outbound_connectivity_check_path,
+                        "w+",
+                        encoding="utf-8",
                     ) as outbound:
                         outbound.write(
                             "Response code "
@@ -542,7 +552,9 @@ def check_cluster_outbound_connectivity(
                         consts.Outbound_Network_Connectivity_Check_for_cluster_connect,
                     )
                     with open(
-                        cluster_connect_outbound_connectivity_check_path, "w+"
+                        cluster_connect_outbound_connectivity_check_path,
+                        "w+",
+                        encoding="utf-8",
                     ) as outbound:
                         outbound.write(
                             "Response code "
@@ -566,7 +578,9 @@ def check_cluster_outbound_connectivity(
                         filepath_with_timestamp,
                         consts.Outbound_Network_Connectivity_Check_for_onboarding,
                     )
-                    with open(outbound_connectivity_check_path, "w+") as outbound:
+                    with open(
+                        outbound_connectivity_check_path, "w+", encoding="utf-8"
+                    ) as outbound:
                         outbound.write(
                             "Response code "
                             + Onboarding_Precheck_Endpoint_outbound_connectivity_response
@@ -593,7 +607,9 @@ def check_cluster_outbound_connectivity(
                     filepath_with_timestamp,
                     consts.Outbound_Network_Connectivity_Check_for_onboarding,
                 )
-                with open(outbound_connectivity_check_path, "w+") as outbound:
+                with open(
+                    outbound_connectivity_check_path, "w+", encoding="utf-8"
+                ) as outbound:
                     outbound.write(
                         "Response code "
                         + Onboarding_Precheck_Endpoint_outbound_connectivity_response
@@ -624,7 +640,9 @@ def check_cluster_outbound_connectivity(
                         filepath_with_timestamp,
                         consts.Outbound_Network_Connectivity_Check,
                     )
-                    with open(outbound_connectivity_check_path, "w+") as outbound:
+                    with open(
+                        outbound_connectivity_check_path, "w+", encoding="utf-8"
+                    ) as outbound:
                         outbound.write(
                             "Response code "
                             + outbound_connectivity_response
@@ -647,7 +665,9 @@ def check_cluster_outbound_connectivity(
                 outbound_connectivity_check_path = os.path.join(
                     filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check
                 )
-                with open(outbound_connectivity_check_path, "w+") as outbound:
+                with open(
+                    outbound_connectivity_check_path, "w+", encoding="utf-8"
+                ) as outbound:
                     outbound.write(
                         "Response code "
                         + outbound_connectivity_response
@@ -686,7 +706,7 @@ def check_cluster_outbound_connectivity(
             )
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.exception(
             "An exception has occured while performing the outbound connectivity check "
             "on the cluster."
@@ -748,7 +768,7 @@ def create_folder_diagnosticlogs(time_stamp: str, folder_name: str) -> tuple[str
         return "", False
 
     # To handle any exception that may occur during the execution
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.exception(
             "An exception has occured while creating the diagnostic logs folder in "
             "your local machine."
@@ -801,7 +821,7 @@ def get_helm_registry(
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     headers = None
     if os.getenv("AZURE_ACCESS_TOKEN"):
-        headers = ["Authorization=Bearer {}".format(os.getenv("AZURE_ACCESS_TOKEN"))]
+        headers = [f"Authorization=Bearer {os.getenv('AZURE_ACCESS_TOKEN')}"]
     # Sending request with retries
     r = send_request_with_retries(
         cmd.cli_ctx,
@@ -817,7 +837,7 @@ def get_helm_registry(
         try:
             repository_path: str = r.json().get("repositoryPath")
             return repository_path
-        except Exception as e:
+        except (ValueError, KeyError, AttributeError) as e:
             telemetry.set_exception(
                 exception=e,
                 fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
@@ -825,7 +845,7 @@ def get_helm_registry(
             )
             raise CLIInternalError(
                 f"Error while fetching helm chart registry path from JSON response: {e}"
-            )
+            ) from e
     else:
         telemetry.set_exception(
             exception=Exception("No content in response"),
@@ -861,7 +881,7 @@ def get_helm_values(
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     headers = None
     if os.getenv("AZURE_ACCESS_TOKEN"):
-        headers = ["Authorization=Bearer {}".format(os.getenv("AZURE_ACCESS_TOKEN"))]
+        headers = [f"Authorization=Bearer {os.getenv('AZURE_ACCESS_TOKEN')}"]
     # Sending request with retries
     r = send_request_with_retries(
         cmd.cli_ctx,
@@ -878,7 +898,7 @@ def get_helm_values(
         try:
             content: dict[str, Any] = r.json()
             return content
-        except Exception as e:
+        except (ValueError, KeyError) as e:
             telemetry.set_exception(
                 exception=e,
                 fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
@@ -886,7 +906,7 @@ def get_helm_values(
             )
             raise CLIInternalError(
                 f"Error while fetching helm values from DP from JSON response: {e}"
-            )
+            ) from e
     else:
         telemetry.set_exception(
             exception=Exception("No content in response"),
@@ -907,7 +927,7 @@ def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     headers = None
     if os.getenv("AZURE_ACCESS_TOKEN"):
-        headers = ["Authorization=Bearer {}".format(os.getenv("AZURE_ACCESS_TOKEN"))]
+        headers = [f"Authorization=Bearer {os.getenv('AZURE_ACCESS_TOKEN')}"]
     # Sending request with retries
     r = send_request_with_retries(
         cmd.cli_ctx,
@@ -979,8 +999,12 @@ def update_gateway_cluster_link(
     )
 
     if response.status_code == 200:
+        # Use lazy interpolation to satisfy pylint W1203 and avoid eager string formatting.
         logger.info(
-            f"Gateway {operation_type} succeeded for cluster '{cluster_name}' in resource group '{resource_group}'."
+            "Gateway %s succeeded for cluster '%s' in resource group '%s'.",
+            operation_type,
+            cluster_name,
+            resource_group,
         )
         return True
 
@@ -1020,14 +1044,14 @@ def send_request_with_retries(
                 body=request_body,
             )
             return response
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             if i == retry_count - 1:
                 telemetry.set_exception(
                     exception=e, fault_type=fault_type, summary=summary
                 )
                 raise CLIInternalError(
                     f"Error while fetching helm chart registry path: {e}"
-                )
+                ) from e
             time.sleep(retry_delay)
 
     assert False
@@ -1185,7 +1209,7 @@ def ensure_namespace_cleanup() -> None:
             if not api_response.items:
                 return
             time.sleep(5)
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-exception-caught
             logger.exception("Error while retrieving namespace information.")
             kubernetes_exception_handler(
                 e,
@@ -1289,7 +1313,11 @@ def cleanup_release_install_namespace_if_exists() -> None:
         )
 
 
-# DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
+# DO NOT use this method for re-put scenarios. This method involves new NS creation for helm
+# release. For re-put scenarios, brownfield scenario needs to be handled where helm release
+# still stays in default NS
+# pylint: disable=too-many-locals
+# Multiple local variables needed for helm release configuration and installation
 def helm_install_release(
     resource_manager: str,
     chart_path: str,
@@ -1378,9 +1406,8 @@ def helm_install_release(
                     "--set",
                     f"systemDefaultValues.activeDirectoryEndpoint={active_directory}",
                     "--set",
-                    "systemDefaultValues.image.repository={}".format(
-                        registry_path.split("/")[0]
-                    ),
+                    "systemDefaultValues.image.repository="
+                    f"{registry_path.split('/')[0]}",
                 ]
             )
         else:
@@ -1585,7 +1612,7 @@ def flatten(dd: Any, separator: str = ".", prefix: str = "") -> dict[str, Any]:
 
         return {prefix: dd}
 
-    except Exception as e:
+    except (TypeError, AttributeError, RecursionError) as e:
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
@@ -1593,7 +1620,7 @@ def flatten(dd: Any, separator: str = ".", prefix: str = "") -> dict[str, Any]:
         )
         raise CLIInternalError(
             "Error while flattening the user supplied helm values dict"
-        )
+        ) from e
 
 
 def check_features_to_update(features_to_update: list[str]) -> tuple[bool, bool, bool]:
@@ -1614,10 +1641,10 @@ def user_confirmation(message: str, yes: bool = False) -> None:
     try:
         if not prompt_y_n(message):
             raise ManualInterrupt("Operation cancelled.")
-    except NoTTYException:
+    except NoTTYException as exc:
         raise CLIInternalError(
             "Unable to prompt for confirmation as no tty available. Use --yes."
-        )
+        ) from exc
 
 
 def is_guid(guid: str) -> bool:
@@ -1693,9 +1720,9 @@ def check_provider_registrations(
                     "HybridCompute' before running the connect command."
                 )
                 raise ValidationError(err_msg)
-    except ValidationError as e:
-        raise e
-    except Exception:
+    except ValidationError:
+        raise
+    except Exception:  # pylint: disable=broad-exception-caught
         logger.exception("Couldn't check the required provider's registration status")
 
 
@@ -1714,7 +1741,7 @@ def can_create_clusterrolebindings() -> bool | str:
         response = api_instance.create_self_subject_access_review(access_review)
         allowed: bool = response.status.allowed
         return allowed
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         warn_msg = (
             "Couldn't check for the permission to create clusterrolebindings on this k8s cluster. "
             f"Error: {ex}"
@@ -1727,7 +1754,7 @@ def validate_node_api_response(api_instance: CoreV1Api) -> V1NodeList | None:
     try:
         node_api_response = api_instance.list_node()
         return node_api_response
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         logger.debug(
             "Error occcured while listing nodes on this kubernetes cluster:",
             exc_info=True,
@@ -1738,7 +1765,7 @@ def validate_node_api_response(api_instance: CoreV1Api) -> V1NodeList | None:
 def az_cli(args_str: str) -> Any:
     args = args_str.split()
     cli: AzCli = get_default_cli()
-    with open(os.devnull, "w") as devnull:
+    with open(os.devnull, "w", encoding="utf-8") as devnull:
         cli.invoke(args, out_file=devnull)
     if cli.result.result:
         return cli.result.result
@@ -1751,8 +1778,10 @@ def is_cli_using_msal_auth() -> bool:
     response_cli_version = az_cli("version --output json")
     try:
         cli_version = response_cli_version["azure-cli"]
-    except Exception as ex:
-        raise CLIInternalError(f"Unable to decode the az cli version installed: {ex}")
+    except (KeyError, TypeError) as ex:
+        raise CLIInternalError(
+            f"Unable to decode the az cli version installed: {ex}"
+        ) from ex
     v1 = cli_version
     v2 = consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION
     for i, j in zip(map(int, v1.split(".")), map(int, v2.split("."))):
@@ -1778,7 +1807,7 @@ def get_metadata(arm_endpoint: str, api_version: str = "2022-09-01") -> dict[str
         msg = f"ARM metadata endpoint '{metadata_endpoint}' returned status code {response.status_code}."
         raise HttpResponseError(msg)
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-exception-caught
         msg = f"Failed to request ARM metadata {metadata_endpoint}."
         print(msg, file=sys.stderr)
         print(
@@ -1832,7 +1861,7 @@ def helm_update_agent(
     user_values_location = os.path.join(
         os.path.expanduser("~"), ".azure", "userValues.txt"
     )
-    with open(user_values_location, "w+") as existing_user_values:
+    with open(user_values_location, "w+", encoding="utf-8") as existing_user_values:
         response_helm_values_get = Popen(
             cmd_helm_values, stdout=existing_user_values, stderr=PIPE
         )

@@ -185,7 +185,7 @@ class AccessTokenCredential:
         self, session: requests.Session | None = None
     ) -> requests.Session:
         session = session or requests.Session()
-        header = "{} {}".format("Bearer", self.access_token)
+        header = f"Bearer {self.access_token}"
         session.headers["Authorization"] = header
         return session
 

@@ -48,7 +48,7 @@ if TYPE_CHECKING:
 features_types = CLIArgumentType(nargs="+", choices=CaseInsensitiveList(Feature_Values))
 
 
-def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
+def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # pylint: disable=too-many-statements
     pls_arm_id_type = CLIArgumentType(
         options_list=["--private-link-scope-resource-id", "--pls-arm-id"],
         arg_group="PrivateLink",
