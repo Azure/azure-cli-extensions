@@ -6,7 +6,6 @@ Release History
 1.0.0b18
 +++++++++++++++
 * Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.
-* Preserved legacy workspace creation behavior when ``--workspace-kind`` is not specified.
 
 1.0.0b17
 +++++++++++++++

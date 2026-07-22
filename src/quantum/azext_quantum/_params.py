@@ -78,7 +78,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('skip_autoadd', skip_autoadd_type)
         c.argument('workspace_kind', workspace_kind_type)
 
-
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('target_id', target_id_type)

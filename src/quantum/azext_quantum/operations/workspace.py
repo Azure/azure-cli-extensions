@@ -283,7 +283,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if workspace_kind:
         parameters['workspaceKind'] = workspace_kind
 
-
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
     deployment_properties = {
