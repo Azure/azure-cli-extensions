@@ -5,12 +5,17 @@
 import os
 import sys
 from typing import Dict, Optional
+from unittest.mock import MagicMock
 
 import pytest
 from kubernetes.client.models import V1Node, V1NodeList, V1NodeSpec, V1ObjectMeta
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-from azext_connectedk8s.custom import get_kubernetes_distro, get_kubernetes_infra
+from azext_connectedk8s.custom import (
+    expand_proxy_skip_range_keywords,
+    get_kubernetes_distro,
+    get_kubernetes_infra,
+)
 
 
 def create_node(
@@ -86,3 +91,65 @@ def test_distro_invalid_metadata():
     node = create_node(provider_id="aws://node1", labels=None, annotations=None)
     api_response = V1NodeList(items=[node])
     assert get_kubernetes_distro(api_response) == "generic"
+
+
+# --------------------- Tests for expand_proxy_skip_range_keywords ---------------------
+def _proxy_cmd(active_directory="https://login.microsoftonline.com"):
+    cmd = MagicMock()
+    cmd.cli_ctx.cloud.endpoints.active_directory = active_directory
+    return cmd
+
+
+ARC_PUBLIC = (
+    ".his.arc.azure.com,"
+    ".dp.kubernetesconfiguration.azure.com,"
+    ".guestconfiguration.azure.com"
+)
+
+
+def test_expand_arc_keyword_public_cloud():
+    assert expand_proxy_skip_range_keywords(_proxy_cmd(), "Arc") == ARC_PUBLIC
+
+
+@pytest.mark.parametrize("keyword", ["Arc", "arc", "ARC", " aRc "])
+def test_expand_arc_keyword_is_case_and_space_insensitive(keyword):
+    assert expand_proxy_skip_range_keywords(_proxy_cmd(), keyword) == ARC_PUBLIC
+
+
+def test_expand_arc_keyword_preserves_other_entries():
+    out = expand_proxy_skip_range_keywords(_proxy_cmd(), "Arc,10.0.0.0/16,.svc")
+    assert out == ARC_PUBLIC + ",10.0.0.0/16,.svc"
+
+
+def test_expand_arc_keyword_china_cloud():
+    cmd = _proxy_cmd("https://login.chinacloudapi.cn")
+    out = expand_proxy_skip_range_keywords(cmd, "Arc")
+    assert out == (
+        ".his.arc.azure.cn,"
+        ".dp.kubernetesconfiguration.azure.cn,"
+        ".guestconfiguration.azure.cn"
+    )
+
+
+def test_expand_arc_keyword_usgov_cloud():
+    cmd = _proxy_cmd("https://login.microsoftonline.us")
+    out = expand_proxy_skip_range_keywords(cmd, "Arc")
+    assert out == (
+        ".his.arc.azure.us,"
+        ".dp.kubernetesconfiguration.azure.us,"
+        ".guestconfiguration.azure.us"
+    )
+
+
+def test_expand_no_keyword_returns_unchanged():
+    val = "10.0.0.0/16,.svc,localhost"
+    assert expand_proxy_skip_range_keywords(_proxy_cmd(), val) == val
+
+
+def test_expand_empty_returns_unchanged():
+    assert expand_proxy_skip_range_keywords(_proxy_cmd(), "") == ""
+
+
+def test_expand_arc_keyword_deduplicates():
+    out = expand_proxy_skip_range_keywords(_proxy_cmd(), "Arc,Arc")
+    assert out == ARC_PUBLIC
