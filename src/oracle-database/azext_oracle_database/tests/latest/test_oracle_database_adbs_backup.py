@@ -9,12 +9,12 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk.decorators import serial_test
+from azure.cli.testsdk.decorators import (serial_test , live_only)
 
 
 class OracleDatabaseAdbsBackupScenario(ScenarioTest):
 
-    # @live_only()
+    @live_only()
     @serial_test()
     @AllowLargeResponse(size_kb=10240)
     def test_01_oracledatabase_adbs_backup_show(self):
@@ -37,7 +37,7 @@ class OracleDatabaseAdbsBackupScenario(ScenarioTest):
                      backup_resource_name
                  ))
 
-    # @live_only()
+    @live_only()
     @serial_test()
     @AllowLargeResponse(size_kb=10240)
     def test__oracledatabase_adbs_backup_update(self):
@@ -66,7 +66,7 @@ class OracleDatabaseAdbsBackupScenario(ScenarioTest):
                      updated_retention_period_in_days
                  ))
 
-    # @live_only()
+    @live_only()
     @serial_test()
     @AllowLargeResponse(size_kb=10240)
     def test_03_oracledatabase_adbs_backup_delete(self):
