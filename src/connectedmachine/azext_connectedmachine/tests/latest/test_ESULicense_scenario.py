@@ -79,16 +79,43 @@ class ESULicenseScenarioTest(ScenarioTest):
                 '--resource-group "{rg}"',
                 checks=[])
 
+        self.cmd('az connectedmachine license-profile create '
+                '--machine-name "{machinePaygo}" '
+                '--resource-group "{rgProfile}" '
+                '--location "{location}" '
+                '--product-type "WindowsServer" '
+                '--subscription-status "Enabled" '
+                '--product-features "{productFfeatures}"',
+                checks=[
+                    self.check('id', '{licenseResourceIdProfile}'),
+        ])
+
+        # # PayGo test - enable Windows Server Pay-as-you-go on a Windows Server 2025 machine
+        # # (Hotpatch product feature is omitted because it requires Virtualization-Based Security)
         # self.cmd('az connectedmachine license-profile create '
         #         '--machine-name "{machinePaygo}" '
         #         '--resource-group "{rgProfile}" '
         #         '--location "{location}" '
         #         '--product-type "WindowsServer" '
-        #         '--subscription-status "Enabled" '
-        #         '--product-features "{productFfeatures}"',
+        #         '--subscription-status "Enabled"',
         #         checks=[
-        #             self.check('id', '{licenseResourceIdProfile}'),
+        #             self.check('productType', 'WindowsServer'),
+        #             self.check('subscriptionStatus', 'Enabled'),
+        #             self.check('provisioningState', 'Succeeded'),
         # ])
+
+        # self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
+        #     self.check('productType', 'WindowsServer'),
+        #     self.check('subscriptionStatus', 'Enabled'),
+        # ])
+
+        # self.cmd('az connectedmachine license-profile list --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
+        # ])
+
+        # self.cmd('az connectedmachine license-profile delete -y '
+        #         '--machine-name "{machinePaygo}" '
+        #         '--resource-group "{rgProfile}"',
+        #         checks=[])
 
         # test SA service
         self.cmd('az connectedmachine license-profile create '
