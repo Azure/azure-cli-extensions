@@ -30,6 +30,8 @@ helps["connectedk8s connect"] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Onboard a connected kubernetes cluster with private link feature enabled by specifying private link parameters.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-private-link true --private-link-scope-resource-id pls/resource/arm/id
+    - name: Onboard a connected kubernetes cluster and skip the proxy for the Azure Arc private-link endpoints using the 'Arc' keyword.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range Arc,10.0.0.0/24 --enable-private-link true --private-link-scope-resource-id pls/resource/arm/id
     - name: Onboard a connected kubernetes cluster with custom onboarding timeout.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-timeout 600
     - name: Onboard a connected kubernetes cluster with oidc issuer and the workload identity webhook enabled.
@@ -47,6 +49,8 @@ helps["connectedk8s update"] = """
     examples:
     - name: Update proxy values for the agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName  --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+    - name: Update proxy values and skip the proxy for the Azure Arc private-link endpoints using the 'Arc' keyword.
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range Arc,10.0.0.0/24
     - name: Disable proxy settings for agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-proxy
     - name: Disable auto-upgrade of agents
