@@ -187,14 +187,12 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
-            is_preview=True,
         )
         c.argument(
             "self_hosted_issuer",
             options_list=["--self-hosted-issuer"],
             arg_group="Workload Identity",
             help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS",
-            is_preview=True,
             validator=validate_self_hosted_issuer,
         )
         c.argument(
@@ -203,7 +201,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
-            is_preview=True,
         )
         c.argument(
             "gateway_resource_id",
@@ -321,7 +318,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
-            is_preview=True,
             validator=validate_enable_oidc_issuer_updates,
         )
         c.argument(
@@ -329,7 +325,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             options_list=["--self-hosted-issuer"],
             arg_group="Workload Identity",
             help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS",
-            is_preview=True,
             validator=validate_self_hosted_issuer,
         )
         c.argument(
@@ -338,7 +333,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
-            is_preview=True,
             validator=validate_workload_identity_updates,
         )
         c.argument(
@@ -347,7 +341,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             options_list=["--disable-workload-identity", "--disable-wi"],
             arg_group="Workload Identity",
             help="Disable workload identity webhook",
-            is_preview=True,
             validator=validate_workload_identity_updates,
         )
         c.argument(
