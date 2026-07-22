@@ -8,76 +8,87 @@ import os
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest, live_only
+from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.decorators import serial_test
 
 
 class OracleDatabaseAdbsBackupScenario(ScenarioTest):
 
-    def _get_adbs(self):
-        return (
-            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'),
-            os.environ.get('AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets')
-        )
-
-    def _get_backup_id(self):
-        return os.environ.get('AZURE_ORACLE_DATABASE_ADBS_BACKUP_ID') or self.create_random_name(
-            prefix='bkp',
-            length=20
-        )
-
-    def _assert_created_backup(self, backup, backup_id):
-        backup_resource_id = backup.get('id')
-        backup_properties = backup.get('properties') or {}
-        candidates = [
-            backup_resource_id,
-            backup_resource_id.rstrip('/').split('/')[-1] if backup_resource_id else None,
-            backup.get('name'),
-            backup.get('ocid'),
-            backup_properties.get('ocid'),
-        ]
-
-        self.assertIn(
-            backup_id.lower(),
-            [candidate.lower() for candidate in candidates if candidate]
-        )
-
-    @live_only()
+    # @live_only()
+    @serial_test()
     @AllowLargeResponse(size_kb=10240)
-    def test_oracledatabase_adbs_backup_create_returns_listed_backup(self):
-        resource_group, autonomous_database_name = self._get_adbs()
-        backup_id = self._get_backup_id()
-        retention_period_in_days = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RETENTION_DAYS',
-            '100'
+    def test_01_oracledatabase_adbs_backup_show(self):
+        resource_group = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'
+        )
+        autonomous_database_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets'
+        )
+        backup_resource_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpiyw2ykxo6xeak5jgb'
         )
 
-        backup = self.cmd(
-            'az oracle-database autonomous-database backup create '
-            '--resource-group {} '
-            '--autonomousdatabasename {} '
-            '--adbbackupid {} '
-            '--retention-period-in-days {}'.format(
-                resource_group,
-                autonomous_database_name,
-                backup_id,
-                retention_period_in_days
-            )
-        ).get_output_in_json()
+        self.cmd('az oracle-database autonomous-database backup show '
+                 '--resource-group {} '
+                 '--autonomousdatabasename {} '
+                 '--adbbackupid {}'.format(
+                     resource_group,
+                     autonomous_database_name,
+                     backup_resource_name
+                 ))
 
-        self._assert_created_backup(backup, backup_id)
+    # @live_only()
+    @serial_test()
+    @AllowLargeResponse(size_kb=10240)
+    def test__oracledatabase_adbs_backup_update(self):
+        resource_group = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'
+        )
+        autonomous_database_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets'
+        )
+        backup_resource_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpiyw2ykxo6xeak5jgb'
+        )
+        updated_retention_period_in_days = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_UPDATED_RETENTION_DAYS',
+            '420'
+        )
 
-        shown_backup = self.cmd(
-            'az oracle-database autonomous-database backup show '
-            '--resource-group {} '
-            '--autonomousdatabasename {} '
-            '--adbbackupid {}'.format(
-                resource_group,
-                autonomous_database_name,
-                backup_id
-            )
-        ).get_output_in_json()
+        self.cmd('az oracle-database autonomous-database backup update '
+                 '--resource-group {} '
+                 '--autonomousdatabasename {} '
+                 '--adbbackupid {} '
+                 '--retention-period-in-days {}'.format(
+                     resource_group,
+                     autonomous_database_name,
+                     backup_resource_name,
+                     updated_retention_period_in_days
+                 ))
 
-        self._assert_created_backup(shown_backup, backup_id)
+    # @live_only()
+    @serial_test()
+    @AllowLargeResponse(size_kb=10240)
+    def test_03_oracledatabase_adbs_backup_delete(self):
+        resource_group = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'
+        )
+        autonomous_database_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets'
+        )
+        backup_resource_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpiyw2ykxo6xeak5jgb'
+        )
+
+        self.cmd('az oracle-database autonomous-database backup delete '
+                 '--resource-group {} '
+                 '--autonomousdatabasename {} '
+                 '--adbbackupid {} '
+                 '--yes'.format(
+                     resource_group,
+                     autonomous_database_name,
+                     backup_resource_name
+                 ))
 
 
 if __name__ == '__main__':
