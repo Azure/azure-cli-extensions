@@ -8508,10 +8508,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ``addonProfiles.omsagent`` addon. The AKS RP normalizes containerInsights into omsagent on
         the PUT (defaulting ``useAADAuth=true``), so MSI/AAD auth is implied on this path.
         """
-        addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
-            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
-
         # Get or create workspace resource ID
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
         if not workspace_resource_id:
@@ -8527,21 +8523,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
         workspace_resource_id = sanitize_func(workspace_resource_id)
 
-        # Detect workspace change from the existing surfaces (containerInsights preferred, omsagent
-        # addon fallback for brownfield clusters) so DCR postprocessing updates the DCR destination.
-        old_workspace = ""
-        if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights and
-                mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id):
-            old_workspace = mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id
-        elif mc.addon_profiles:
-            existing_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
-            existing_profile = mc.addon_profiles.get(existing_key) if existing_key else None
-            if existing_profile and existing_profile.config:
-                old_workspace = existing_profile.config.get(
-                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, "") or ""
-        if old_workspace and old_workspace.lower() != workspace_resource_id.lower():
-            self.context.set_intermediate(
-                "monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+        # Ensure the DCR/DCRA is (re)created in postprocessing whenever Container Insights is
+        # enabled on the update path. Previously only a workspace *change* triggered this, so a
+        # first-time `az aks update --enable-azure-monitor-logs` left the agent in MSI mode with no
+        # DCR to collect against -> no data flowed. ensure_container_insights_for_monitoring is
+        # idempotent, so re-ensuring on every enable is safe and self-heals clusters missing a DCR.
+        self.context.set_intermediate(
+            "monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
         self._ensure_azure_monitor_profile(mc)
         container_insights = mc.azure_monitor_profile.container_insights

@@ -18224,8 +18224,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             new_ws,
         )
 
-    def test_setup_azure_monitor_logs_same_workspace_no_postprocessing(self):
-        """_setup_azure_monitor_logs does NOT set monitoring_addon_postprocessing_required when workspace is unchanged."""
+    def test_setup_azure_monitor_logs_same_workspace_requires_postprocessing(self):
+        """_setup_azure_monitor_logs always requires DCR postprocessing on enable (idempotent ensure),
+        even when the workspace is unchanged, so the DCR/DCRA is (re)created."""
         ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/same-ws"
         dec = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -18258,14 +18259,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ):
             dec._setup_azure_monitor_logs(mc)
 
-        self.assertFalse(
+        self.assertTrue(
             dec.context.get_intermediate(
                 "monitoring_addon_postprocessing_required", default_value=False
             )
         )
 
     def test_setup_azure_monitor_logs_workspace_change_case_insensitive(self):
-        """_setup_azure_monitor_logs compares workspaces case-insensitively (no false positives on casing)."""
+        """_setup_azure_monitor_logs always requires DCR postprocessing on enable (idempotent ensure)."""
         ws_lower = "/subscriptions/test/resourcegroups/test/providers/microsoft.operationalinsights/workspaces/my-ws"
         ws_mixed = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/my-ws"
         dec = AKSPreviewManagedClusterUpdateDecorator(
@@ -18299,15 +18300,16 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ):
             dec._setup_azure_monitor_logs(mc)
 
-        # Same workspace (different casing) should NOT trigger postprocessing
-        self.assertFalse(
+        # DCR postprocessing is always required on enable so the DCR/DCRA is ensured
+        self.assertTrue(
             dec.context.get_intermediate(
                 "monitoring_addon_postprocessing_required", default_value=False
             )
         )
 
-    def test_setup_azure_monitor_logs_new_addon_no_postprocessing(self):
-        """_setup_azure_monitor_logs does NOT trigger postprocessing when there is no existing addon (fresh enable)."""
+    def test_setup_azure_monitor_logs_new_addon_requires_postprocessing(self):
+        """_setup_azure_monitor_logs triggers DCR postprocessing on a first-time enable (no existing
+        addon), so the DCR/DCRA is created and data flows (previously this was skipped -> no data)."""
         new_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-ws"
         dec = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -18332,8 +18334,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ):
             dec._setup_azure_monitor_logs(mc)
 
-        # Fresh enable — no old workspace to compare, should NOT trigger postprocessing
-        self.assertFalse(
+        # First-time enable must trigger DCR/DCRA creation in postprocessing
+        self.assertTrue(
             dec.context.get_intermediate(
                 "monitoring_addon_postprocessing_required", default_value=False
             )
