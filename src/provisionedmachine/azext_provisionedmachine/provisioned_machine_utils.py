@@ -97,6 +97,17 @@ ROLE_PERMISSIONS = {
 # Input validation
 # ---------------------------------------------------------------------------
 
+def normalize_role_for_certificate(role):
+    """Normalize a role name for use as an SSH certificate principal.
+
+    OpenSSH principals typically do not contain spaces and are case-sensitive.
+    Devices expect normalized role names: all lowercase, no spaces.
+
+    E.g. ``Provisioned Machine Admin`` → ``provisionedmachineadmin``
+    """
+    return role.replace(" ", "").lower()
+
+
 def validate_resource_id(resource_id):
     """Validate that *resource_id* looks like a fully-qualified ARM resource ID."""
     if not resource_id or not _RESOURCE_ID_PATTERN.match(resource_id):
