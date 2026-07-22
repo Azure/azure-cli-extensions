@@ -52,6 +52,9 @@ class Update(AAZCommand):
             help="The name of the machine extension.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
@@ -72,7 +75,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_upgrade_minor_version = AAZBoolArg(
-            options=["--auto-upgrade-version", "--auto-upgrade-minor-version"],
+            options=["--auto-upgrade-min", "--auto-upgrade-minor-version"],
             arg_group="Properties",
             help="Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.",
             nullable=True,
@@ -352,14 +355,14 @@ class Update(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _UpdateHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _UpdateHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record_unknown_read(properties.settings)
+            _UpdateHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -555,14 +558,14 @@ class Update(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _UpdateHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _UpdateHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record_unknown_read(properties.settings)
+            _UpdateHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -677,20 +680,20 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_record_unknown_read = None
+    _schema_record_unknown__read = None
 
     @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
+    def _build_schema_record_unknown__read(cls, _schema):
+        if cls._schema_record_unknown__read is not None:
+            _schema.Element = cls._schema_record_unknown__read.Element
             return
 
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
+        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
 
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
+        record_unknown__read = _schema_record_unknown__read
+        record_unknown__read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record_unknown_read.Element
+        _schema.Element = cls._schema_record_unknown__read.Element
 
 
 __all__ = ["Update"]

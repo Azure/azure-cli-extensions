@@ -49,6 +49,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--extension-name"],
             help="The name of the machine extension.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
@@ -68,12 +71,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_upgrade_minor_version = AAZBoolArg(
-            options=["--auto-upgrade-minor", "--auto-upgrade-minor-version"],
+            options=["--auto-upgrade-min", "--auto-upgrade-minor-version"],
             arg_group="Properties",
             help="Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.",
         )
         _args_schema.enable_automatic_upgrade = AAZBoolArg(
-            options=["--enable-autoupgrade", "--enable-automatic-upgrade"],
+            options=["--enable-auto-upgrade", "--enable-automatic-upgrade"],
             arg_group="Properties",
             help="Indicates whether the extension should be automatically upgraded by the platform if there is a newer version available.",
         )
@@ -389,14 +392,14 @@ class Create(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _CreateHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _CreateHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _CreateHelper._build_schema_record_unknown_read(properties.settings)
+            _CreateHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -448,20 +451,20 @@ class Create(AAZCommand):
 class _CreateHelper:
     """Helper class for Create"""
 
-    _schema_record_unknown_read = None
+    _schema_record_unknown__read = None
 
     @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
+    def _build_schema_record_unknown__read(cls, _schema):
+        if cls._schema_record_unknown__read is not None:
+            _schema.Element = cls._schema_record_unknown__read.Element
             return
 
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
+        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
 
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
+        record_unknown__read = _schema_record_unknown__read
+        record_unknown__read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record_unknown_read.Element
+        _schema.Element = cls._schema_record_unknown__read.Element
 
 
 __all__ = ["Create"]

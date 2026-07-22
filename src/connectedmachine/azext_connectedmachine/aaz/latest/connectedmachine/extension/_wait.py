@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="The name of the machine extension.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],
@@ -199,14 +202,14 @@ class Wait(AAZWaitCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _WaitHelper._build_schema_record_unknown_read(properties.protected_settings)
+            _WaitHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _WaitHelper._build_schema_record_unknown_read(properties.settings)
+            _WaitHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -258,20 +261,20 @@ class Wait(AAZWaitCommand):
 class _WaitHelper:
     """Helper class for Wait"""
 
-    _schema_record_unknown_read = None
+    _schema_record_unknown__read = None
 
     @classmethod
-    def _build_schema_record_unknown_read(cls, _schema):
-        if cls._schema_record_unknown_read is not None:
-            _schema.Element = cls._schema_record_unknown_read.Element
+    def _build_schema_record_unknown__read(cls, _schema):
+        if cls._schema_record_unknown__read is not None:
+            _schema.Element = cls._schema_record_unknown__read.Element
             return
 
-        cls._schema_record_unknown_read = _schema_record_unknown_read = AAZDictType()
+        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
 
-        record_unknown_read = _schema_record_unknown_read
-        record_unknown_read.Element = AAZAnyType()
+        record_unknown__read = _schema_record_unknown__read
+        record_unknown__read.Element = AAZAnyType()
 
-        _schema.Element = cls._schema_record_unknown_read.Element
+        _schema.Element = cls._schema_record_unknown__read.Element
 
 
 __all__ = ["Wait"]
