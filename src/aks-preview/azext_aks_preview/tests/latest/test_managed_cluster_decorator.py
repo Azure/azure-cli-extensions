@@ -18419,6 +18419,59 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec._disable_azure_monitor_logs(mc)
         self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
 
+    def test_disable_azure_monitor_logs_clears_container_network_logs(self):
+        """Disabling monitoring clears containerInsights.container_network_logs so a later
+        re-enable (without a CNL flag) does not silently resurrect CNL (rubber-duck finding #2)."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace",
+                    container_network_logs="Enabled",
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+        dec._disable_azure_monitor_logs(mc)
+        self.assertFalse(mc.azure_monitor_profile.container_insights.enabled)
+        self.assertIsNone(mc.azure_monitor_profile.container_insights.container_network_logs)
+
+    def test_hlsm_disable_blocked_when_cnl_enabled_on_containerinsights(self):
+        """--enable-high-log-scale-mode false is rejected when CNL is enabled on the modern
+        containerInsights surface (not just the legacy omsagent field) (rubber-duck finding #3)."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    container_network_logs="Enabled",
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec.update_monitoring_profile_flow_logs(mc)
+
     # ------------------------------------------------------------------
     # Tests for update_monitoring_profile_flow_logs: monitoring_being_enabled bypass
     # ------------------------------------------------------------------

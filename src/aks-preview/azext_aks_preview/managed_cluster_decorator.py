@@ -192,6 +192,73 @@ def _get_monitoring_addon_key_from_consts(addon_profiles, addon_consts):
     )
 
 
+def _is_container_network_logs_enabled_on_mc(mc, addon_consts):
+    """Return True if container network logs are already enabled on the cluster.
+
+    Checks the modern ``azureMonitorProfile.containerInsights.containerNetworkLogs`` surface first
+    (where the CLI now writes CNL), falling back to the legacy
+    ``addonProfiles.omsagent.config.enableRetinaNetworkFlags`` for brownfield clusters.
+    """
+    if mc is None:
+        return False
+    if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights and
+            mc.azure_monitor_profile.container_insights.container_network_logs is not None):
+        cnl = mc.azure_monitor_profile.container_insights.container_network_logs
+        # cnl may be a plain string ("Enabled"/"Disabled") or the ContainerNetworkLogs enum;
+        # normalize via the enum's .value so str-enum repr does not break the comparison.
+        cnl = getattr(cnl, "value", cnl)
+        return str(cnl).lower() == "enabled"
+    if mc.addon_profiles:
+        mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+        monitoring_profile = mc.addon_profiles.get(mk)
+        if monitoring_profile and monitoring_profile.config:
+            return str(
+                monitoring_profile.config.get("enableRetinaNetworkFlags", "")
+            ).lower() == "true"
+    return False
+
+
+def _build_monitoring_addon_profile_for_dcr(addon_consts, models, cluster):
+    """Return the omsagent-style addon profile the shared DCR/DCRA engine consumes.
+
+    Container Insights is now configured via ``azureMonitorProfile.containerInsights`` and the AKS RP
+    normalizes it into ``addonProfiles.omsagent`` on the PUT response. When that mirrored addon is
+    present (and has config) we use it directly. Otherwise (e.g. mocked responses in unit tests, or a
+    hypothetical response without the mirror) we build a transient omsagent-style profile from
+    ``containerInsights`` so the DCR engine still gets the workspace id and MSI/AAD auth signal. The
+    returned object is only passed to the engine, never persisted on the cluster.
+    """
+    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+        "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
+    CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+    monitoring_addon_key = (
+        _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
+        if cluster.addon_profiles
+        else None
+    )
+    if (monitoring_addon_key and cluster.addon_profiles and
+            monitoring_addon_key in cluster.addon_profiles and
+            cluster.addon_profiles[monitoring_addon_key].config):
+        return cluster.addon_profiles[monitoring_addon_key]
+
+    workspace_resource_id = None
+    container_insights = (
+        cluster.azure_monitor_profile.container_insights
+        if cluster.azure_monitor_profile
+        else None
+    )
+    if container_insights is not None:
+        workspace_resource_id = container_insights.log_analytics_workspace_resource_id
+    return models.ManagedClusterAddonProfile(
+        enabled=True,
+        config={
+            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
+            CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+        },
+    )
+
+
 # pylint: disable=too-few-public-methods
 class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
     """Store the models used in aks series of commands.
@@ -3255,15 +3322,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # If user explicitly disables HLSM, check if CNL is already enabled on the cluster
         if enable_high_log_scale_mode is False:
-            cnl_already_enabled = False
-            if self.mc and self.mc.addon_profiles:
-                addon_consts = self.get_addon_consts()
-                mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
-                monitoring_profile = self.mc.addon_profiles.get(mk)
-                if monitoring_profile and monitoring_profile.config:
-                    cnl_already_enabled = str(
-                        monitoring_profile.config.get("enableRetinaNetworkFlags", "")
-                    ).lower() == "true"
+            cnl_already_enabled = _is_container_network_logs_enabled_on_mc(
+                self.mc, self.get_addon_consts())
             if cnl_already_enabled:
                 raise MutuallyExclusiveArgumentError(
                     "Cannot explicitly disable --enable-high-log-scale-mode while "
@@ -6160,44 +6220,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         )
 
     def _get_monitoring_addon_profile_for_dcr(self, cluster: ManagedCluster):
-        """Return the omsagent-style addon profile the shared DCR/DCRA engine consumes.
-
-        Container Insights is now configured via ``azureMonitorProfile.containerInsights`` and the
-        AKS RP normalizes it into ``addonProfiles.omsagent`` on the PUT response. When that mirrored
-        addon is present we use it directly. Otherwise (e.g. mocked responses in unit tests) we build
-        a transient omsagent-style profile from ``containerInsights`` so the DCR engine still gets the
-        workspace id and MSI/AAD auth signal. This object is only passed to the engine, never persisted.
-        """
-        addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
-            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
-        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
-
-        monitoring_addon_key = (
-            _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
-            if cluster.addon_profiles
-            else None
-        )
-        if (monitoring_addon_key and cluster.addon_profiles and
-                monitoring_addon_key in cluster.addon_profiles and
-                cluster.addon_profiles[monitoring_addon_key].config):
-            return cluster.addon_profiles[monitoring_addon_key]
-
-        workspace_resource_id = None
-        container_insights = (
-            cluster.azure_monitor_profile.container_insights
-            if cluster.azure_monitor_profile
-            else None
-        )
-        if container_insights is not None:
-            workspace_resource_id = container_insights.log_analytics_workspace_resource_id
-        return self.models.ManagedClusterAddonProfile(
-            enabled=True,
-            config={
-                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
-                CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
-            },
-        )
+        """Return the omsagent-style addon profile the shared DCR/DCRA engine consumes."""
+        return _build_monitoring_addon_profile_for_dcr(
+            self.context.get_addon_consts(), self.models, cluster)
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -6549,15 +6574,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         elif enable_high_log_scale_mode is False:
             # Check if CNL is already enabled on the cluster — cannot disable HLSM while CNL is on
-            cnl_already_enabled = False
-            if mc.addon_profiles:
-                addon_consts = self.context.get_addon_consts()
-                mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
-                monitoring_profile = mc.addon_profiles.get(mk)
-                if monitoring_profile and monitoring_profile.config:
-                    cnl_already_enabled = str(
-                        monitoring_profile.config.get("enableRetinaNetworkFlags", "")
-                    ).lower() == "true"
+            cnl_already_enabled = _is_container_network_logs_enabled_on_mc(
+                mc, self.context.get_addon_consts())
             if cnl_already_enabled:
                 raise MutuallyExclusiveArgumentError(
                     "Cannot explicitly disable --enable-high-log-scale-mode while "
@@ -8652,6 +8670,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if (mc.azure_monitor_profile and
                 mc.azure_monitor_profile.container_insights):
             mc.azure_monitor_profile.container_insights.enabled = False
+            # Clear container network logs so a later re-enable (without a CNL flag) does not
+            # silently resurrect CNL from stale state.
+            mc.azure_monitor_profile.container_insights.container_network_logs = None
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
@@ -8894,49 +8915,55 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             addon_consts = self.context.get_addon_consts()
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-            monitoring_addon_key = (
-                _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
-                if cluster.addon_profiles
-                else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            # Resolve the omsagent-style profile the DCR engine consumes. Prefer the RP-mirrored
+            # omsagent from the PUT response; fall back to a transient profile synthesized from
+            # containerInsights so a missing/unmirrored addon does not silently skip DCR creation
+            # (or crash on a None config).
+            monitoring_addon_profile = _build_monitoring_addon_profile_for_dcr(
+                addon_consts, self.models, cluster)
+
+            # Container Insights is considered enabled if either surface reports it.
+            container_insights_enabled = bool(
+                cluster.azure_monitor_profile and
+                cluster.azure_monitor_profile.container_insights and
+                cluster.azure_monitor_profile.container_insights.enabled
+            )
+            monitoring_enabled = bool(monitoring_addon_profile.enabled) or container_insights_enabled
+
+            addon_config = monitoring_addon_profile.config or {}
+            msi_auth_enabled = (
+                CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
+                str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
             )
 
-            if (cluster.addon_profiles and
-                    monitoring_addon_key in cluster.addon_profiles and
-                    cluster.addon_profiles[monitoring_addon_key].enabled):
+            if monitoring_enabled and msi_auth_enabled:
+                # Check parameter sizes to identify what might be causing large headers
+                data_collection_settings = self.context.get_data_collection_settings()
 
-                # Check if MSI auth is enabled
-                if (CONST_MONITORING_USING_AAD_MSI_AUTH in
-                    cluster.addon_profiles[monitoring_addon_key].config and
-                    str(cluster.addon_profiles[monitoring_addon_key].config[
-                        CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
-
-                    # Check parameter sizes to identify what might be causing large headers
-                    data_collection_settings = self.context.get_data_collection_settings()
-
-                    # Try to limit data_collection_settings size to avoid "Request Header Fields Too Large" error
+                # Try to limit data_collection_settings size to avoid "Request Header Fields Too Large" error
+                safe_data_collection_settings = None
+                if data_collection_settings and len(str(data_collection_settings)) > 10000:
                     safe_data_collection_settings = None
-                    if data_collection_settings and len(str(data_collection_settings)) > 10000:
-                        safe_data_collection_settings = None
-                    else:
-                        safe_data_collection_settings = data_collection_settings
+                else:
+                    safe_data_collection_settings = data_collection_settings
 
-                    self.context.external_functions.ensure_container_insights_for_monitoring(
-                        self.cmd,
-                        cluster.addon_profiles[monitoring_addon_key],
-                        self.context.get_subscription_id(),
-                        self.context.get_resource_group_name(),
-                        self.context.get_name(),
-                        self.context.get_location(),
-                        remove_monitoring=False,
-                        aad_route=self.context.get_enable_msi_auth_for_monitoring(),
-                        create_dcr=True,
-                        create_dcra=True,
-                        enable_syslog=self.context.get_enable_syslog(),
-                        data_collection_settings=safe_data_collection_settings,
-                        is_private_cluster=self.context.get_enable_private_cluster(),
-                        ampls_resource_id=self.context.get_ampls_resource_id(),
-                        enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
-                    )
+                self.context.external_functions.ensure_container_insights_for_monitoring(
+                    self.cmd,
+                    monitoring_addon_profile,
+                    self.context.get_subscription_id(),
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    self.context.get_location(),
+                    remove_monitoring=False,
+                    aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                    create_dcr=True,
+                    create_dcra=True,
+                    enable_syslog=self.context.get_enable_syslog(),
+                    data_collection_settings=safe_data_collection_settings,
+                    is_private_cluster=self.context.get_enable_private_cluster(),
+                    ampls_resource_id=self.context.get_ampls_resource_id(),
+                    enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
+                )
 
         # Monitoring addon disable cleanup is now done upfront in _disable_azure_monitor_logs (not in postprocessing)
         # This matches the pattern from aks_disable_addons lines 2796-2822 where cleanup happens BEFORE the PUT
