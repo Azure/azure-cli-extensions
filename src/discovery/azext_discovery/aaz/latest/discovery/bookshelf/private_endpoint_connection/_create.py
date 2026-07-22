@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the specified private endpoint connection.
+
+    :example: Approve a bookshelf private endpoint connection.
+        az discovery bookshelf private-endpoint-connection create --resource-group MyResourceGroup --bookshelf-name MyBookshelf --name MyPrivateEndpointConnection --connection-state status=Approved description="Approved for private access"
     """
 
     _aaz_info = {

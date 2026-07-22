@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Bookshelf
+
+    :example: Create a bookshelf with private networking.
+        az discovery bookshelf create --resource-group MyResourceGroup --name MyBookshelf --location eastus --pe-subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MyPrivateEndpointSubnet --search-subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySearchSubnet --workload-identities "{'/subscriptions/<subscription-id>/resourceGroups/MyIdentityRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyUami':{}}" --tags SkipAssociateKeyVaultToNsp=True
     """
 
     _aaz_info = {

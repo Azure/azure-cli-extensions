@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Workspace
+
+    :example: Disable public network access for a workspace.
+        az discovery workspace update --resource-group MyResourceGroup --name MyWorkspace --public-network-access Disabled
     """
 
     _aaz_info = {

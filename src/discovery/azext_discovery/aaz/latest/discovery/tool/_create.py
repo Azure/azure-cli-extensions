@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Tool
+
+    :example: Create a tool from inline definition content.
+        az discovery tool create --resource-group MyResourceGroup --name MyTool --location eastus --version 1.0.0 --definition-content '{"name":"mytool","description":"Utility tool","version":"1.0.0","category":"testing","infra":[{"infra_type":"container","name":"worker","image":{"acr":"myregistry.azurecr.io/mytool:1.0.0"},"compute":{"min_resources":{"cpu":"1","ram":"2Gi","gpu":"0","storage":"0"},"max_resources":{"cpu":"2","ram":"4Gi","storage":"0"},"recommended_sku":["Standard_D4s_v6"],"pool_type":"static","pool_size":1}}]}'
     """
 
     _aaz_info = {

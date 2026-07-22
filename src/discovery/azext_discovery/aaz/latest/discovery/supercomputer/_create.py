@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Supercomputer
+
+    :example: Create a supercomputer with user-assigned identities.
+        az discovery supercomputer create --resource-group MyResourceGroup --name MySupercomputer --location eastus --subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySupercomputerSubnet --identities "{cluster-identity:{id:'/subscriptions/<subscription-id>/resourceGroups/MyIdentityRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyUami'},kubelet-identity:{id:'/subscriptions/<subscription-id>/resourceGroups/MyIdentityRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyUami'},workload-identities:{'/subscriptions/<subscription-id>/resourceGroups/MyIdentityRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyUami':{}}}" --tags SkipAssociateKeyVaultToNsp=True
     """
 
     _aaz_info = {

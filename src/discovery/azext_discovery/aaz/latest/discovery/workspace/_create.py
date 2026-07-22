@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Workspace
+
+    :example: Create a workspace with dedicated subnets and a user-assigned identity.
+        az discovery workspace create --resource-group MyResourceGroup --name MyWorkspace --location eastus --workspace-identity id=/subscriptions/<subscription-id>/resourceGroups/MyIdentityRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyWorkspaceIdentity --pe-subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MyPrivateEndpointSubnet --agent-subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MyAgentSubnet --workspace-subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MyWorkspaceSubnet --tags SkipAssociateKeyVaultToNsp=True networkIsolation=true
     """
 
     _aaz_info = {

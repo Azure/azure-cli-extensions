@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a StorageContainer
+
+    :example: Create a storage container backed by Azure Storage Blob.
+        az discovery storage-container create --resource-group MyResourceGroup --name MyStorageContainer --location eastus --storage-store azure-storage-blob="{storage-account-id:/subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.Storage/storageAccounts/MyStorageAccount}"
     """
 
     _aaz_info = {

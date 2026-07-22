@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the specified private endpoint connection.
+
+    :example: Update the approval state of a workspace private endpoint connection.
+        az discovery workspace private-endpoint-connection update --resource-group MyResourceGroup --workspace-name MyWorkspace --name MyPrivateEndpointConnection --connection-state status=Approved description="Re-approved via CLI"
     """
 
     _aaz_info = {

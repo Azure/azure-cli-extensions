@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Project
+
+    :example: Create a project in a workspace.
+        az discovery workspace project create --resource-group MyResourceGroup --workspace-name MyWorkspace --name MyProject --location eastus --settings behavior-preferences="Use the approved chat model deployment."
     """
 
     _aaz_info = {

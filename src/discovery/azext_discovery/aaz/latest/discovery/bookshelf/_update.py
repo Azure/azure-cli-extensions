@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Bookshelf
+
+    :example: Disable public network access for a bookshelf.
+        az discovery bookshelf update --resource-group MyResourceGroup --name MyBookshelf --public-network-access Disabled
     """
 
     _aaz_info = {

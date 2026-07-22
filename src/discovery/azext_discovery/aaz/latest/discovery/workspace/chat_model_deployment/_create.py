@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a ChatModelDeployment
+
+    :example: Create a chat model deployment for GPT-4o.
+        az discovery workspace chat-model-deployment create --resource-group MyResourceGroup --workspace-name MyWorkspace --name MyChatModelDeployment --location eastus --model-format OpenAI --model-name gpt-4o --capacity 10
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Tool
+
+    :example: Update the version of a tool.
+        az discovery tool update --resource-group MyResourceGroup --name MyTool --version 2.0.0
     """
 
     _aaz_info = {

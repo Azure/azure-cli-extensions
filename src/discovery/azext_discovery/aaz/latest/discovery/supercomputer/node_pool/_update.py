@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a NodePool
+
+    :example: Scale a node pool by updating its minimum and maximum node counts.
+        az discovery supercomputer node-pool update --resource-group MyResourceGroup --supercomputer-name MySupercomputer --name MyNodePool --min-node-count 2 --max-node-count 8
     """
 
     _aaz_info = {

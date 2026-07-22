@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Project
+
+    :example: Update project behavior preferences.
+        az discovery workspace project update --resource-group MyResourceGroup --workspace-name MyWorkspace --name MyProject --settings behavior-preferences="Answer using workspace-approved tools only."
     """
 
     _aaz_info = {

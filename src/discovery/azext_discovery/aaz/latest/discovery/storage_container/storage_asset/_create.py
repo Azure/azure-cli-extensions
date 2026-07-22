@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a StorageAsset
+
+    :example: Create a storage asset in a storage container.
+        az discovery storage-container storage-asset create --resource-group MyResourceGroup --storage-container-name MyStorageContainer --name MyStorageAsset --location eastus --description "Curated genomics dataset" --path data/genomics
     """
 
     _aaz_info = {

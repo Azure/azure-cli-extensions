@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a NodePool
+
+    :example: Create a GPU node pool for a supercomputer.
+        az discovery supercomputer node-pool create --resource-group MyResourceGroup --supercomputer-name MySupercomputer --name MyNodePool --location eastus --subnet-id /subscriptions/<subscription-id>/resourceGroups/MyNetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MyNodePoolSubnet --vm-size Standard_NC4as_T4_v3 --min-node-count 1 --max-node-count 4
     """
 
     _aaz_info = {
