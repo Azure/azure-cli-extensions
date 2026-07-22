@@ -279,18 +279,20 @@ class AzureFirewallCreate(_AzureFirewallCreate):
                                        "subnet": subnet_id if has_value(subnet_id) else None,
                                        "public_ip_address": args.public_ip if has_value(args.public_ip) else None}]
 
-        if has_value(args.tier) and has_value(args.sku):
-            if tier.lower() == 'basic' and sku.lower() == 'azfw_vnet':
-                management_subnet_id = resource_id(
-                    subscription=get_subscription_id(self.cli_ctx),
-                    resource_group=args.resource_group,
-                    namespace='Microsoft.Network',
-                    type='virtualNetworks',
-                    name=args.vnet_name,
-                    child_type_1='subnets',
-                    child_name_1='AzureFirewallManagementSubnet'
-                )
-                args.mgmt_ip_conf_subnet = management_subnet_id
+        # A management IP configuration always requires the AzureFirewallManagementSubnet. It is created
+        # either implicitly for Basic tier or explicitly whenever the user passes --m-conf-name.
+        is_vnet_sku = not has_value(args.sku) or args.sku.to_serialized_data().lower() == 'azfw_vnet'
+        is_basic_tier = has_value(args.tier) and args.tier.to_serialized_data().lower() == 'basic'
+        if is_vnet_sku and (is_basic_tier or has_value(args.m_conf_name)):
+            args.mgmt_ip_conf_subnet = resource_id(
+                subscription=get_subscription_id(self.cli_ctx),
+                resource_group=args.resource_group,
+                namespace='Microsoft.Network',
+                type='virtualNetworks',
+                name=args.vnet_name,
+                child_type_1='subnets',
+                child_name_1='AzureFirewallManagementSubnet'
+            )
 
         if has_value(args.enable_explicit_proxy):
             args.additional_properties['Network.ExplicitProxy.EnableExplicitProxy'] = args.enable_explicit_proxy

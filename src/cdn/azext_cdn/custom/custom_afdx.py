@@ -314,7 +314,7 @@ class AFDOriginCreate(_AFDOriginCreate):  # pylint: disable=too-few-public-metho
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        _add_arg_option(args_schema.origin_capacity_resource, "--origin-capacity")
+        _add_arg_option_if_exists(args_schema, 'origin_capacity_resource', "--origin-capacity")
         return args_schema
 
 
@@ -328,7 +328,7 @@ class AFDOriginUpdate(_AFDOriginUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        _add_arg_option(args_schema.origin_capacity_resource, "--origin-capacity")
+        _add_arg_option_if_exists(args_schema, 'origin_capacity_resource', "--origin-capacity")
         return args_schema
 
     def pre_instance_update(self, instance):
