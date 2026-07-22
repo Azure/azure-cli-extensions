@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.10.14
++++++++
+* Added an ``Arc`` keyword for ``--proxy-skip-range`` on ``az connectedk8s connect`` and ``az connectedk8s update``. Passing ``Arc`` expands to the Azure Arc private-link data-plane endpoints (``.his.arc.azure.<suffix>``, ``.dp.kubernetesconfiguration.azure.<suffix>``, ``.guestconfiguration.azure.<suffix>``) for the active cloud, so customers no longer need to enumerate them by hand.
+
 1.10.13
 +++++++
 * Propagate ``x-ms-correlation-request-id`` end-to-end for ``az connectedk8s proxy``: mint one uuid per session, stamp it on the outbound ARM call (echoed back by ARM) and thread it into every localhost call to arcProxy so the entire session (ARM → arcProxy → Relay → ConnectedProxyAgent) shares one id in logs and Geneva.
