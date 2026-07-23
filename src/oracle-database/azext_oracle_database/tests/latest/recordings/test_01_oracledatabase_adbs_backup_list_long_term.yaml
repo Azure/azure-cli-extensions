@@ -1,0 +1,84 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database backup list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.5.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/testADgConfig/autonomousDatabaseBackups?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-20t10:59:08.000z","name":"Jul
+        20, 2026 10:59:08 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        20, 2026 10:59:08 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqafqq7kk5sptrko2ry6tslmgpa6ghxbbcde5idnajl6iea","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.000185742187568394,"timeAvailableTil":"2026-09-18T10:55:55.000Z","timeStarted":"2026-07-20T10:55:55.000Z","timeEnded":"2026-07-20T10:59:08.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-19t11:22:07.000z","name":"Jul
+        19, 2026 11:22:07 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        19, 2026 11:22:07 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqa3zw3p7waztfrogsapgdoiiy2354kbpdxxnb4aezk4rsa","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.0002391601565250312,"timeAvailableTil":"2026-09-17T11:19:32.000Z","timeStarted":"2026-07-19T11:19:32.000Z","timeEnded":"2026-07-19T11:22:07.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-18t09:46:28.000z","name":"Jul
+        18, 2026 09:46:28 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        18, 2026 09:46:28 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqabnygmesvouqsba6nni2om3bynb4o27f3rvi2mck5ynfa","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00020380859405122465,"timeAvailableTil":"2026-09-16T09:43:25.000Z","timeStarted":"2026-07-18T09:43:25.000Z","timeEnded":"2026-07-18T09:46:28.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-17t10:31:14.000z","name":"Jul
+        17, 2026 10:31:14 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        17, 2026 10:31:14 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqalczrxguyd6aah5p3socsfxjaxufw7vphh5c2nd62dt7q","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.001132714844061411,"timeAvailableTil":"2026-09-15T10:27:23.000Z","timeStarted":"2026-07-17T10:27:23.000Z","timeEnded":"2026-07-17T10:31:14.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/bkpclilivetest","name":"autonomousdatabasebackup20260717060935","type":"Longterm","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"autonomousdatabasebackup20260717060935","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrja42oyaaj6tpiksahk2ncbtbbkyrchgbfvhebjqlfkfohdncou7q","isAutomatic":false,"lifecycleState":"Deleting","retentionPeriodInDays":95,"sizeInTbs":0.005667209625244141,"timeAvailableTil":"2026-10-20T06:09:46.000Z","timeStarted":"2026-07-17T06:09:46.000Z","timeEnded":"2026-07-17T06:10:11.000Z","backupType":"LongTerm","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/bkpiv6nk5xubag6ofmw7","name":"autonomousdatabasebackup20260717055231","type":"Longterm","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"autonomousdatabasebackup20260717055231","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrja42oyaaat7gnrpg2r7val526wnh5hnweqrtnlczv4fwwns5ibhq","isAutomatic":false,"lifecycleState":"Deleting","retentionPeriodInDays":95,"sizeInTbs":0.005667209625244141,"timeAvailableTil":"2026-10-20T05:53:43.000Z","timeStarted":"2026-07-17T05:53:43.000Z","timeEnded":"2026-07-17T05:54:22.000Z","backupType":"LongTerm","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-16t09:26:39.000z","name":"Jul
+        16, 2026 09:26:39 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        16, 2026 09:26:39 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqa5tujok5adinxbrenux6e3bpauhroris6fgmn4skm3chq","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00021025390651630005,"timeAvailableTil":"2026-09-14T09:23:22.000Z","timeStarted":"2026-07-16T09:23:22.000Z","timeEnded":"2026-07-16T09:26:39.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-15t08:33:22.000z","name":"Jul
+        15, 2026 08:33:22 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        15, 2026 08:33:22 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqatqs4iely4ymrse3hylzo6bltxktemmsw6w4rrrvzx7ja","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00018378906224825187,"timeAvailableTil":"2026-09-13T08:30:33.000Z","timeStarted":"2026-07-15T08:30:33.000Z","timeEnded":"2026-07-15T08:33:22.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-14t10:01:34.000z","name":"Jul
+        14, 2026 10:01:34 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        14, 2026 10:01:34 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqal2osxzexclrjxtksbi66up7dq7mx2soa5i23cay6kdfq","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00021337890666472958,"timeAvailableTil":"2026-09-12T09:58:48.000Z","timeStarted":"2026-07-14T09:58:48.000Z","timeEnded":"2026-07-14T10:01:34.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-13t09:43:26.000z","name":"Jul
+        13, 2026 09:43:26 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        13, 2026 09:43:26 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqasgt5v2qrg4fmkmb57xe3q72lgagzzgdc72lzavg3aqsq","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00020429687538126018,"timeAvailableTil":"2026-09-11T09:40:32.000Z","timeStarted":"2026-07-13T09:40:32.000Z","timeEnded":"2026-07-13T09:43:26.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-12t08:55:01.000z","name":"Jul
+        12, 2026 08:55:01 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        12, 2026 08:55:01 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqakcrxv7scgh2bxchtxaxn4rv5z5gdj5noahcn3ia52ica","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.000204785155801801,"timeAvailableTil":"2026-09-10T08:52:28.000Z","timeStarted":"2026-07-12T08:52:28.000Z","timeEnded":"2026-07-12T08:55:01.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-11t09:03:23.000z","name":"Jul
+        11, 2026 09:03:23 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        11, 2026 09:03:23 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqa77jagn3e4khpmuybgxgw3dgo2schec5eooyireptlkrq","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00021123046917637112,"timeAvailableTil":"2026-09-09T09:00:38.000Z","timeStarted":"2026-07-11T09:00:38.000Z","timeEnded":"2026-07-11T09:03:23.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-10t08:54:45.000z","name":"Jul
+        10, 2026 08:54:45 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        10, 2026 08:54:45 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqariyol543drg5p32szlvkhllt4l7rbiwwcoqgpqhcezza","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00042363281227153493,"timeAvailableTil":"2026-09-08T08:50:00.000Z","timeStarted":"2026-07-10T08:50:00.000Z","timeEnded":"2026-07-10T08:54:45.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-09t01:15:49.000z","name":"Jul
+        09, 2026 01:15:49 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        09, 2026 01:15:49 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqa772mrofg2k5swsrsrwy2w653ipzydxcp7nb6cbjv4wta","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00017597656278667273,"timeAvailableTil":"2026-09-07T01:12:35.000Z","timeStarted":"2026-07-09T01:12:35.000Z","timeEnded":"2026-07-09T01:15:49.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-08t01:10:37.000z","name":"Jul
+        08, 2026 01:10:37 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        08, 2026 01:10:37 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqa72g6uzu2ljg7cyvsuiaskipitr4syjtxm3m6jslpfesa","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":0.00011513671870488906,"timeAvailableTil":"2026-09-06T01:08:25.000Z","timeStarted":"2026-07-08T01:08:25.000Z","timeEnded":"2026-07-08T01:10:37.000Z","backupType":"Incremental","provisioningState":"Deleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltestrg/providers/Oracle.Database/autonomousDatabases/testadgconfig/autonomousDatabaseBackups/2026-07-07t17:55:25.000z","name":"Jul
+        07, 2026 17:55:25 UTC","type":"Incremental","properties":{"autonomousDatabaseOcid":"ocid1.autonomousdatabase.oc1.iad.anuwcljrnirvylqa2dkxnfiibsombblfj6qu7vtrhi52m7llj5iwg4qsfpoq","dbVersion":"19c","displayName":"Jul
+        07, 2026 17:55:25 UTC","ocid":"ocid1.autonomousdatabasebackup.oc1.iad.anuwcljrnirvylqaqpgmfyc64aqnhqg6bhawx2jryawv3p6dig37zbtdb76q","isAutomatic":true,"lifecycleState":"Deleting","retentionPeriodInDays":60,"sizeInTbs":4.414062459545676E-05,"timeAvailableTil":"2026-09-05T17:54:21.000Z","timeStarted":"2026-07-07T17:54:21.000Z","timeEnded":"2026-07-07T17:55:25.000Z","backupType":"Incremental","provisioningState":"Deleted"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13739'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Jul 2026 01:53:27 GMT
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-E2980D8D0483222-202607220153/E5D62449CA1E84F29622606A4941445B/3D9DD9BCBE52E7EF32084F1454C1F80F
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/eastus/c1b186b7-09d9-4ef5-995c-2596ed05697f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 1F8712CA5AE642B38D558376416E0936 Ref B: BY1AA1072320060 Ref C: 2026-07-22T01:53:25Z'
+    status:
+      code: 200
+      message: OK
+version: 1

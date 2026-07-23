@@ -8,8 +8,8 @@ import os
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk.decorators import (serial_test , live_only)
+from azure.cli.testsdk import ScenarioTest, live_only
+from azure.cli.testsdk.decorators import serial_test
 
 
 class OracleDatabaseAdbsBackupScenario(ScenarioTest):
