@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "discovery storage-container",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Storage Container
+    """Manage storage containers and storage assets.
     """
     pass
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "discovery tool",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Tool
+    """Manage tools.
     """
     pass
 

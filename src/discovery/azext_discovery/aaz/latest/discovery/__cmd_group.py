@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "discovery",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Discovery
+    """Manage Microsoft Discovery resources.
     """
     pass
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "discovery workspace",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Workspace
+    """Manage workspaces, projects, and chat model deployments.
     """
     pass
 

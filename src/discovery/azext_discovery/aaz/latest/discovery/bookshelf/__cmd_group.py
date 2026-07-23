@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "discovery bookshelf",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Bookshelf
+    """Manage bookshelves.
     """
     pass
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "discovery supercomputer",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Supercomputer
+    """Manage supercomputers and nodepools.
     """
     pass
 
