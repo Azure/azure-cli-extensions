@@ -8,6 +8,7 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group, validate_tags)
+from azure.cli.core.util import parse_proxy_resource_id
 from typing import Any, Dict, Iterable, Optional
 
 
@@ -127,3 +128,29 @@ def _valid_range(addr_range):
     if addr_range.isdigit() and 0 <= int(addr_range) <= 255:
         return True
     return False
+
+
+def validate_private_endpoint_connection_id(cmd, namespace):  # pylint: disable=unused-argument
+    if getattr(namespace, 'connection_id', None):
+        result = parse_proxy_resource_id(namespace.connection_id)
+        provider_type = '{}/{}'.format(result.get('namespace'), result.get('type')).lower() if result else ''
+        child_type = (result.get('child_type_1') or '').lower() if result else ''
+        if (not result or
+                provider_type != 'microsoft.horizondb/clusters' or
+                child_type != 'privateendpointconnections' or
+                result.get('last_child_num') != 1):
+            raise CLIError('The --id value must be a HorizonDB cluster private endpoint connection resource ID.')
+        namespace.resource_group_name = result.get('resource_group')
+        namespace.cluster_name = result.get('name')
+        namespace.private_endpoint_connection_name = result.get('child_name_1')
+
+    if not all([
+            getattr(namespace, 'resource_group_name', None),
+            getattr(namespace, 'cluster_name', None),
+            getattr(namespace, 'private_endpoint_connection_name', None)]):
+        raise CLIError(
+            'Specify either --id <private-endpoint-connection-id> or '
+            '--name <private-endpoint-connection-name> --cluster-name <cluster-name> '
+            '--resource-group <resource-group>.')
+    if hasattr(namespace, 'connection_id'):
+        del namespace.connection_id
