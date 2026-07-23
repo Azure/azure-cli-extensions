@@ -41,7 +41,7 @@ logger = get_logger(__name__)
 
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
-allowed_extensions = ["microsoft.dataprotection.kubernetes"]
+allowed_extensions = ["microsoft.dataprotection.kubernetes", "microsoft.virtualnodes"]
 
 
 def which(binary):
