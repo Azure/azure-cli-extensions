@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}", "2024-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}", "2026-02-01-preview"],
         ]
     }
 
@@ -109,7 +109,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01-preview",
+                    "api-version", "2026-02-01-preview",
                     required=True,
                 ),
             }
@@ -169,6 +169,9 @@ class Wait(AAZWaitCommand):
             properties.dsts_configuration = AAZObjectType(
                 serialized_name="dstsConfiguration",
             )
+            properties.enable_preset_resource_types = AAZBoolType(
+                serialized_name="enablePresetResourceTypes",
+            )
             properties.enable_tenant_linked_notification = AAZBoolType(
                 serialized_name="enableTenantLinkedNotification",
                 nullable=True,
@@ -185,6 +188,9 @@ class Wait(AAZWaitCommand):
             properties.legacy_registrations = AAZListType(
                 serialized_name="legacyRegistrations",
             )
+            properties.lifecycle_info = AAZObjectType(
+                serialized_name="lifecycleInfo",
+            )
             properties.linked_notification_rules = AAZListType(
                 serialized_name="linkedNotificationRules",
             )
@@ -192,7 +198,7 @@ class Wait(AAZWaitCommand):
             properties.management_group_global_notification_endpoints = AAZListType(
                 serialized_name="managementGroupGlobalNotificationEndpoints",
             )
-            properties.metadata = AAZFreeFormDictType()
+            properties.metadata = AAZDictType()
             properties.namespace = AAZStrType()
             properties.notification_options = AAZStrType(
                 serialized_name="notificationOptions",
@@ -201,6 +207,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="notificationSettings",
             )
             properties.notifications = AAZListType()
+            properties.obo_subscription_id = AAZStrType(
+                serialized_name="oboSubscriptionId",
+            )
             properties.optional_features = AAZListType(
                 serialized_name="optionalFeatures",
             )
@@ -299,6 +308,23 @@ class Wait(AAZWaitCommand):
             legacy_registrations = cls._schema_on_200.properties.legacy_registrations
             legacy_registrations.Element = AAZStrType()
 
+            lifecycle_info = cls._schema_on_200.properties.lifecycle_info
+            lifecycle_info.allowed_subscriptions = AAZListType(
+                serialized_name="allowedSubscriptions",
+            )
+            lifecycle_info.isolation_type = AAZStrType(
+                serialized_name="isolationType",
+            )
+            lifecycle_info.lifecycle_stage = AAZStrType(
+                serialized_name="lifecycleStage",
+            )
+            lifecycle_info.partner_category = AAZStrType(
+                serialized_name="partnerCategory",
+            )
+
+            allowed_subscriptions = cls._schema_on_200.properties.lifecycle_info.allowed_subscriptions
+            allowed_subscriptions.Element = AAZStrType()
+
             linked_notification_rules = cls._schema_on_200.properties.linked_notification_rules
             linked_notification_rules.Element = AAZObjectType()
 
@@ -344,6 +370,12 @@ class Wait(AAZWaitCommand):
             )
             management.expedited_rollout_submitters = AAZListType(
                 serialized_name="expeditedRolloutSubmitters",
+            )
+            management.feature_approval_claims = AAZListType(
+                serialized_name="featureApprovalClaims",
+            )
+            management.feature_management_owners = AAZListType(
+                serialized_name="featureManagementOwners",
             )
             management.incident_contact_email = AAZStrType(
                 serialized_name="incidentContactEmail",
@@ -396,6 +428,12 @@ class Wait(AAZWaitCommand):
             expedited_rollout_submitters = cls._schema_on_200.properties.management.expedited_rollout_submitters
             expedited_rollout_submitters.Element = AAZStrType()
 
+            feature_approval_claims = cls._schema_on_200.properties.management.feature_approval_claims
+            feature_approval_claims.Element = AAZStrType()
+
+            feature_management_owners = cls._schema_on_200.properties.management.feature_management_owners
+            feature_management_owners.Element = AAZStrType()
+
             manifest_owners = cls._schema_on_200.properties.management.manifest_owners
             manifest_owners.Element = AAZStrType()
 
@@ -432,6 +470,9 @@ class Wait(AAZWaitCommand):
             management_group_global_notification_endpoints = cls._schema_on_200.properties.management_group_global_notification_endpoints
             management_group_global_notification_endpoints.Element = AAZObjectType()
             _WaitHelper._build_schema_resource_provider_endpoint_read(management_group_global_notification_endpoints.Element)
+
+            metadata = cls._schema_on_200.properties.metadata
+            metadata.Element = AAZAnyType()
 
             notification_settings = cls._schema_on_200.properties.notification_settings
             notification_settings.subscriber_settings = AAZListType(
