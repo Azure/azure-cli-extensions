@@ -151,28 +151,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Deleting")
             ])
 
-            # Create a V2 workspace and verify workspaceKind
-            test_workspace_temp = get_test_workspace_random_name()
-            self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-                self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
-            ])
-            self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-                self.check("properties.workspaceKind", "V2")
-            ])
-            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-                self.check("properties.provisioningState", "Deleting")
-            ])
-
-            # Create a V2 workspace via the "--skip-role-assignment" code path and verify workspaceKind
-            test_workspace_temp = get_test_workspace_random_name()
-            self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
-                self.check("name", test_workspace_temp),
-                self.check("properties.workspaceKind", "V2"),
-                self.check("properties.provisioningState", "Accepted")
-            ])
-            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-                self.check("properties.provisioningState", "Deleting")
-            ])
             # Create a workspace specifying "--skip-autoadd"
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
@@ -210,6 +188,45 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             ])
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
+
+    @live_only()
+    def test_workspace_v2_create_destroy(self):
+        # initialize values
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_storage_account = get_test_workspace_storage()
+        test_provider_sku_list = get_test_workspace_provider_sku_list()
+
+        if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
+            # Create V2 workspace via ARM template path
+
+            test_workspace_temp = get_test_workspace_random_name()
+            self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+                self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp)
+            ])
+            self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+                self.check("properties.workspaceKind","V2")
+            ])
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+                self.check("properties.provisioningState", "Deleting")
+            ])
+
+            # Create a V2 workspace via --skip-role-assignment path
+            test_workspace_temp = get_test_workspace_random_name()
+            self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept --skip-role-assignment -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+                self.check("name", test_workspace_temp),
+                self.check("properties.provisioningState", "Accepted")
+            ])
+            self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+                self.check("properties.workspaceKind", "V2")
+            ])
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+                self.check("name", test_workspace_temp),
+                self.check("properties.provisioningState", "Deleting")
+            ])
+        else:
+            self.skipTest(f"Skipping test_workspace_v2_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
+
 
     @live_only()
     def test_workspace_keys(self):
