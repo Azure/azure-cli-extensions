@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp function list/show': Raise a clear error when ingress is disabled instead of a generic server error
 
 1.3.0b4
 ++++++
