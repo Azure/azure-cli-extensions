@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b7
++++++++
+* Add support for restoring HorizonDB clusters through `az horizondb restore`.
+
 1.0.0b6
 +++++++
 * Add private endpoint connection commands: `az horizondb private-endpoint-connection list/show/approve/reject/delete`.

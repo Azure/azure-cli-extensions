@@ -6,8 +6,9 @@
 # pylint: disable=line-too-long, too-many-locals
 
 from knack.log import get_logger
-from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait, user_confirmation
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from ..utils.temp_cluster_capabilities import temp_cluster_capabilities
 from ..utils.validators import (
     is_supported_vcore,
@@ -20,6 +21,19 @@ from ..utils._network import resolve_public_access_range
 logger = get_logger(__name__)
 
 HORIZONDB_VERSION_DEFAULT = 17
+
+
+def _resolve_source_cluster(client, resource_group_name, source_cluster):
+    if is_valid_resource_id(source_cluster):
+        source_cluster_id_parts = parse_resource_id(source_cluster)
+        source_resource_group = source_cluster_id_parts.get("resource_group")
+        source_cluster_name = source_cluster_id_parts.get("name")
+        if not source_resource_group or not source_cluster_name:
+            raise ArgumentUsageError(
+                "Invalid source cluster resource identifier. Ensure it contains both resource group and cluster name."
+            )
+        return client.get(resource_group_name=source_resource_group, cluster_name=source_cluster_name)
+    return client.get(resource_group_name=resource_group_name, cluster_name=source_cluster)
 
 
 def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name=None, location=None,
@@ -85,6 +99,49 @@ def horizondb_cluster_create(cmd, client, resource_group_name=None, cluster_name
     cluster = result.result() if hasattr(result, 'result') else result
     _create_public_access_firewall_rule(cmd, resource_group_name, cluster_name, firewall_range, no_wait)
     return cluster
+
+
+def _parse_restore_time(restore_time):
+    import datetime
+    if restore_time is None:
+        # During preview, default to 6 minutes before now to satisfy the minimum 5-minute buffer.
+        return datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0) - datetime.timedelta(minutes=6)
+    from dateutil import parser
+    try:
+        parsed = parser.parse(restore_time)
+    except (ValueError, OverflowError):
+        raise InvalidArgumentValueError(
+            "The restore time value has an incorrect date format. "
+            "Please use ISO8601 format, e.g., 2026-07-15T02:10:00+00:00.")
+    # Normalize to a UTC-aware datetime so the value sent to the service is unambiguous.
+    # A value without an explicit offset is interpreted as UTC (per the --restore-time contract);
+    # an offset-aware value is converted to UTC.
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=datetime.timezone.utc)
+    return parsed.astimezone(datetime.timezone.utc)
+
+
+def horizondb_cluster_restore(client, resource_group_name, cluster_name, source_cluster,
+                              restore_time=None, tags=None, no_wait=False):
+    from azext_horizondb.vendored_sdks.models import HorizonDbCluster, HorizonDbClusterProperties
+
+    source_cluster_resource = _resolve_source_cluster(client, resource_group_name, source_cluster)
+    properties = HorizonDbClusterProperties(
+        create_mode="PointInTimeRestore",
+        source_cluster_resource_id=source_cluster_resource.id,
+        point_in_time_utc=_parse_restore_time(restore_time),
+    )
+
+    resource = HorizonDbCluster(
+        location=source_cluster_resource.location,
+        tags=tags,
+        properties=properties,
+    )
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       resource=resource)
 
 
 def _resolve_public_access_range_for_command(public_access, yes, is_update):

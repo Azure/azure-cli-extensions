@@ -69,6 +69,17 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             arg_type=get_enum_type(['Strict', 'BestEffort']),
             help='Defines how replicas are placed across availability zones.')
 
+        source_cluster_arg_type = CLIArgumentType(
+            options_list=['--source-cluster'],
+            help='Name or resource identifier of the source Azure HorizonDB cluster to restore from.')
+
+        restore_time_arg_type = CLIArgumentType(
+            options_list=['--restore-time'],
+            help='The point in time in UTC to restore from (ISO8601 format), e.g., 2026-07-15T02:10:00+00:00. '
+                 'During preview, you must set restore time to be at least 5 minutes before the current time. '
+                 "If --restore-time isn't specified, during preview, it will internally be adjusted to 6 minutes "
+                 'before now.')
+
         parameter_group_arg_type = CLIArgumentType(
             options_list=['--parameter-group'],
             help='The resource ID of the parameter group.')
@@ -153,6 +164,11 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('zone_placement_policy', arg_type=zone_placement_policy_arg_type)
             c.argument('public_access', arg_type=public_access_create_arg_type)
             c.argument('yes', arg_type=yes_arg_type)
+
+        with self.argument_context('horizondb restore') as c:
+            c.argument('tags', tags_type)
+            c.argument('source_cluster', arg_type=source_cluster_arg_type)
+            c.argument('restore_time', arg_type=restore_time_arg_type)
 
         with self.argument_context('horizondb update') as c:
             c.argument('tags', tags_type)
