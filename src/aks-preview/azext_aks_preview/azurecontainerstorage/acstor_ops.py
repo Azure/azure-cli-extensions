@@ -12,6 +12,9 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_EXT_INSTALLATION_NAMESPACE,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
+    CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+    CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAMESPACE,
+    CONST_DISTRIBUTED_CACHE_K8S_EXTENSION_NAME,
     CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
@@ -797,3 +800,109 @@ def perform_azure_container_storage_update(
             raise UnknownError(
                 "Failed to disable Azure Container Storage with error: %s" % delete_ex
             ) from delete_ex
+
+
+def perform_enable_distributed_cache(
+    cmd,
+    resource_group,
+    cluster_name,
+    is_extension_installed=False,
+    is_called_from_extension=False,
+):
+    # This will be set true only when aks-preview extension is used
+    # and we want the aks-preview ManagedClusterDecorator to call the
+    # perform_enable_distributed_cache function.
+    if not is_called_from_extension:
+        return
+
+    # Enabling only installs the install controller. Cache components are
+    # deployed later, driven by the creation of the corresponding CR.
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+
+    if is_extension_installed:
+        logger.warning("Distributed cache is already enabled on the cluster.")
+        return
+
+    try:
+        result = k8s_extension_custom_mod.create_k8s_extension(
+            cmd,
+            client,
+            resource_group,
+            cluster_name,
+            CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+            "managedClusters",
+            CONST_DISTRIBUTED_CACHE_K8S_EXTENSION_NAME,
+            auto_upgrade_minor_version=True,
+            release_train="stable",
+            scope="cluster",
+            release_namespace=CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAMESPACE,
+        )
+        long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
+        if long_op_result.provisioning_state == "Succeeded":
+            logger.warning("Distributed cache successfully installed")
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.error("Distributed cache failed to install.\nError: %s", ex)
+        logger.warning("Cleaning up the cluster by disabling distributed cache")
+        try:
+            delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
+                cmd,
+                client,
+                resource_group,
+                cluster_name,
+                CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+                "managedClusters",
+                yes=True,
+            )
+            LongRunningOperation(cmd.cli_ctx)(delete_op_result)
+            logger.warning(
+                "Please retry enabling distributed cache by running "
+                "`az aks update` along with "
+                "`--enable-azure-container-storage distributedcache`"
+            )
+        except Exception as delete_ex:  # pylint: disable=broad-except
+            raise UnknownError(
+                "Failed to clean up distributed cache with error: %s" % delete_ex
+            ) from delete_ex
+
+
+def perform_disable_distributed_cache(
+    cmd,
+    resource_group,
+    cluster_name,
+    is_extension_installed=False,
+    is_called_from_extension=False,
+):
+    # This will be set true only when aks-preview extension is used
+    # and we want the aks-preview ManagedClusterDecorator to call the
+    # perform_disable_distributed_cache function.
+    if not is_called_from_extension:
+        return
+
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+
+    if not is_extension_installed:
+        logger.warning("Distributed cache is not enabled on the cluster.")
+        return
+
+    # Deleting the install controller triggers removal of the remaining cache
+    # components from the cluster.
+    try:
+        delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
+            cmd,
+            client,
+            resource_group,
+            cluster_name,
+            CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+            "managedClusters",
+            yes=True,
+        )
+        LongRunningOperation(cmd.cli_ctx)(delete_op_result)
+        logger.warning("Distributed cache has been disabled.")
+    except Exception as delete_ex:  # pylint: disable=broad-except
+        raise UnknownError(
+            "Failed to disable distributed cache with error: %s" % delete_ex
+        ) from delete_ex
