@@ -80,11 +80,11 @@ az documentdb mongocluster identity show -n MyCluster -g MyResourceGroup
 
 ```bash
 # List the parent cluster's replicas
-az documentdb mongocluster replica list --cluster-name MyCluster -g MyResourceGroup
+az documentdb mongocluster replica list --parent-cluster-name MyCluster -g MyResourceGroup
 
-# Create a cross-region GeoReplica (the source must have the GeoReplicas preview feature enabled)
+# Create a cross-region GeoReplica (the parent must have the GeoReplicas preview feature enabled)
 az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup -l centralus \
-    --source-cluster MyCluster --source-location eastus2
+    --parent-cluster-name MyCluster --parent-location eastus2
 
 # Promote a replica to primary
 az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup
@@ -94,6 +94,6 @@ az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup
 
 ```bash
 az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
-    --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
+    --parent-cluster-name MyCluster --restore-time "2026-06-30T10:00:00Z" \
     --admin-user dbadmin --admin-password MyP@ssw0rd123!
 ```

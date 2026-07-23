@@ -137,7 +137,7 @@ class ReplicaCreate(_MongoClusterCreate):
     configuration (compute, storage, sharding) from the source cluster.
 
     :example: Create a replica of a cluster in another region.
-        az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --source-cluster MySourceCluster --source-location eastus2
+        az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --parent-cluster-name MySourceCluster --parent-location eastus2
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -149,26 +149,26 @@ class ReplicaCreate(_MongoClusterCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(args_schema, {"cluster_name", "resource_group", "location"})
-        args_schema.source_cluster = AAZStrArg(
-            options=["--source-cluster"],
+        args_schema.parent_cluster = AAZStrArg(
+            options=["--parent-cluster-name"],
             arg_group="Replica",
             required=True,
-            help="Name or resource ID of the source (primary) mongo cluster to replicate "
+            help="Name or resource ID of the parent (primary) mongo cluster to replicate "
                  "from. If a name is given, the current subscription and resource group are "
                  "assumed.",
         )
-        args_schema.source_location = AAZStrArg(
-            options=["--source-location"],
+        args_schema.parent_location = AAZStrArg(
+            options=["--parent-location"],
             arg_group="Replica",
             required=True,
-            help="The Azure region of the source cluster (for example: eastus2).",
+            help="The Azure region of the parent cluster (for example: eastus2).",
         )
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
-        args.source_cluster = _resolve_cluster_id(
-            self.ctx, args.source_cluster.to_serialized_data())
+        args.parent_cluster = _resolve_cluster_id(
+            self.ctx, args.parent_cluster.to_serialized_data())
 
     class MongoClustersCreateOrUpdate(_MongoClusterCreate.MongoClustersCreateOrUpdate):
 
@@ -192,10 +192,10 @@ class ReplicaCreate(_MongoClusterCreate):
             replica_parameters = _builder.get(".properties.replicaParameters")
             if replica_parameters is not None:
                 replica_parameters.set_prop(
-                    "sourceResourceId", AAZStrType, ".source_cluster",
+                    "sourceResourceId", AAZStrType, ".parent_cluster",
                     typ_kwargs={"flags": {"required": True}})
                 replica_parameters.set_prop(
-                    "sourceLocation", AAZStrType, ".source_location",
+                    "sourceLocation", AAZStrType, ".parent_location",
                     typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
@@ -209,7 +209,7 @@ class Restore(_MongoClusterCreate):
     cluster at the requested point in time.
 
     :example: Restore a cluster to a point in time.
-        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --parent-cluster-name MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -225,11 +225,11 @@ class Restore(_MongoClusterCreate):
             {"cluster_name", "resource_group", "location", "admin_user", "admin_password"})
         args_schema.admin_user._required = True
         args_schema.admin_password._required = True
-        args_schema.source_cluster = AAZStrArg(
-            options=["--source-cluster"],
+        args_schema.parent_cluster = AAZStrArg(
+            options=["--parent-cluster-name"],
             arg_group="Restore",
             required=True,
-            help="Name or resource ID of the source mongo cluster to restore from. If a "
+            help="Name or resource ID of the parent mongo cluster to restore from. If a "
                  "name is given, the current subscription and resource group are assumed.",
         )
         args_schema.restore_time = AAZStrArg(
@@ -243,8 +243,8 @@ class Restore(_MongoClusterCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        args.source_cluster = _resolve_cluster_id(
-            self.ctx, args.source_cluster.to_serialized_data())
+        args.parent_cluster = _resolve_cluster_id(
+            self.ctx, args.parent_cluster.to_serialized_data())
 
     class MongoClustersCreateOrUpdate(_MongoClusterCreate.MongoClustersCreateOrUpdate):
 
@@ -276,7 +276,7 @@ class Restore(_MongoClusterCreate):
             restore_parameters = _builder.get(".properties.restoreParameters")
             if restore_parameters is not None:
                 restore_parameters.set_prop(
-                    "sourceResourceId", AAZStrType, ".source_cluster",
+                    "sourceResourceId", AAZStrType, ".parent_cluster",
                     typ_kwargs={"flags": {"required": True}})
                 restore_parameters.set_prop(
                     "pointInTimeUTC", AAZStrType, ".restore_time")

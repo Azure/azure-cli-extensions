@@ -284,7 +284,7 @@ class DocumentdbScenario(ScenarioTest):
         # configuration and admin credentials, so no password is passed here.
         self._cmd_retry(
             'documentdb mongocluster replica create -n {replica} -g {rg} '
-            '--location {replica_loc} --source-cluster {cluster} --source-location {loc}',
+            '--location {replica_loc} --parent-cluster-name {cluster} --parent-location {loc}',
             checks=[
                 self.check('name', '{replica}'),
                 self.check('properties.provisioningState', 'Succeeded'),
@@ -292,7 +292,7 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
         self.cmd(
-            'documentdb mongocluster replica list --cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster replica list --parent-cluster-name {cluster} -g {rg}',
             checks=[self.check("length([?name=='{replica}'])", 1)],
         )
         self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
@@ -323,7 +323,7 @@ class DocumentdbScenario(ScenarioTest):
         self.kwargs['restore_time'] = earliest or '2026-01-01T00:00:00Z'
         self._cmd_retry(
             'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
-            '--source-cluster {cluster} --restore-time {restore_time} '
+            '--parent-cluster-name {cluster} --restore-time {restore_time} '
             '--admin-user {admin} --password {password}',
             checks=[
                 self.check('name', '{restored}'),
@@ -448,7 +448,7 @@ class DocumentdbScenario(ScenarioTest):
         self._create_cluster(extra='--preview-features GeoReplicas ')
         self._cmd_retry(
             'documentdb mongocluster replica create -n {replica} -g {rg} '
-            '--location {replica_loc} --source-cluster {cluster} --source-location {loc}',
+            '--location {replica_loc} --parent-cluster-name {cluster} --parent-location {loc}',
             checks=[
                 self.check('name', '{replica}'),
                 self.check('properties.provisioningState', 'Succeeded'),
@@ -519,7 +519,7 @@ class DocumentdbScenario(ScenarioTest):
             expect_failure=True,
         )
         self.cmd(
-            'documentdb mongocluster replica list --cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster replica list --parent-cluster-name {cluster} -g {rg}',
             expect_failure=True,
         )
 
