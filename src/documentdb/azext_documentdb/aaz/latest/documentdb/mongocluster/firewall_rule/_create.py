@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster firewall-rule create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new firewall rule or updates an existing firewall rule on a mongo cluster.

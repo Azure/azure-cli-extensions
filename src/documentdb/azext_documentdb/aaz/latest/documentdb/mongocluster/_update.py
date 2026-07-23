@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.

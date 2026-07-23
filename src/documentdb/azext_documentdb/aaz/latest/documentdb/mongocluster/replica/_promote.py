@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster replica promote",
+    is_preview=True,
 )
 class Promote(AAZCommand):
     """Promotes a replica mongo cluster to a primary role.

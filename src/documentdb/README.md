@@ -1,7 +1,7 @@
 # Azure CLI DocumentDB Extension #
 
-This is an extension to Azure CLI to manage **Azure Cosmos DB for MongoDB (vCore)**
-clusters — the `Microsoft.DocumentDB/mongoClusters` resource — under the
+This is an extension to Azure CLI to manage **Azure DocumentDB**
+clusters (the `Microsoft.DocumentDB/mongoClusters` resource) under the
 `az documentdb mongocluster` command group.
 
 ## How to install ##
@@ -12,7 +12,7 @@ az extension add --name documentdb
 
 ## Background ##
 
-DocumentDB (Mongo vCore) is a fully managed, MongoDB-compatible database service.
+Azure DocumentDB is a fully managed, MongoDB-compatible database service.
 This extension exposes the management-plane operations for mongo clusters and their
 sub-resources: IP firewall rules, Microsoft Entra-backed database users, user-assigned
 managed identity, cross-region read replicas, and point-in-time restore.

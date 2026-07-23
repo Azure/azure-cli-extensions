@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster replica list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the replicas for the mongo cluster.

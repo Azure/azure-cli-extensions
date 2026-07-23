@@ -14,10 +14,12 @@ Release History
   ``mongocluster identity assign/remove``.
 * Add ``--password``/``-p`` aliases to the administrator password across create, update,
   reset-password, and restore.
+* Mark all commands and groups as Preview so the reference docs reflect the preview status.
+* Rebrand the extension name to Azure DocumentDB.
 
 1.0.0b1
 +++++++
-* Initial release of the DocumentDB (Azure Cosmos DB for MongoDB vCore) extension.
+* Initial release of the Azure DocumentDB extension.
 * Add ``az documentdb mongocluster`` commands to create, update, show, list, and delete
   mongo clusters, list connection strings, and check name availability.
 * Add ``az documentdb mongocluster firewall-rule`` commands to manage IP firewall rules.

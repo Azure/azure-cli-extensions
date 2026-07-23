@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster entra-user update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Microsoft Entra ID user on a mongo cluster.

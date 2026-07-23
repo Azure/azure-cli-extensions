@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.
