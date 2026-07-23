@@ -2037,9 +2037,65 @@ class TestValidateCustomEndpoints(unittest.TestCase):
 
 
 class OpenTelemetryPortsNamespace:
-    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_logs_port=None,
+                 opentelemetry_metrics_port_grpc=None, opentelemetry_logs_traces_port_grpc=None):
         self.opentelemetry_metrics_port = opentelemetry_metrics_port
         self.opentelemetry_logs_port = opentelemetry_logs_port
+        self.opentelemetry_metrics_port_grpc = opentelemetry_metrics_port_grpc
+        self.opentelemetry_logs_traces_port_grpc = opentelemetry_logs_traces_port_grpc
+
+
+class OpenTelemetryDeprecatedAliasNamespace:
+    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_metrics_port_deprecated=None,
+                 opentelemetry_logs_port=None, opentelemetry_logs_port_deprecated=None,
+                 enable_opentelemetry_logs=False, enable_opentelemetry_logs_deprecated=False,
+                 disable_opentelemetry_logs=False, disable_opentelemetry_logs_deprecated=False):
+        self.opentelemetry_metrics_port = opentelemetry_metrics_port
+        self.opentelemetry_metrics_port_deprecated = opentelemetry_metrics_port_deprecated
+        self.opentelemetry_logs_port = opentelemetry_logs_port
+        self.opentelemetry_logs_port_deprecated = opentelemetry_logs_port_deprecated
+        self.enable_opentelemetry_logs = enable_opentelemetry_logs
+        self.enable_opentelemetry_logs_deprecated = enable_opentelemetry_logs_deprecated
+        self.disable_opentelemetry_logs = disable_opentelemetry_logs
+        self.disable_opentelemetry_logs_deprecated = disable_opentelemetry_logs_deprecated
+
+
+class TestMergeOpenTelemetryDeprecatedAliases(unittest.TestCase):
+    def test_deprecated_port_merged_when_current_unset(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(opentelemetry_metrics_port_deprecated=8080)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertEqual(ns.opentelemetry_metrics_port, 8080)
+
+    def test_current_port_takes_precedence_over_deprecated(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(
+            opentelemetry_metrics_port=9000,
+            opentelemetry_metrics_port_deprecated=8080,
+        )
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertEqual(ns.opentelemetry_metrics_port, 9000)
+
+    def test_deprecated_logs_port_merged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(opentelemetry_logs_port_deprecated=4317)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertEqual(ns.opentelemetry_logs_port, 4317)
+
+    def test_deprecated_enable_flag_merged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(enable_opentelemetry_logs_deprecated=True)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertTrue(ns.enable_opentelemetry_logs)
+
+    def test_deprecated_disable_flag_merged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace(disable_opentelemetry_logs_deprecated=True)
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertTrue(ns.disable_opentelemetry_logs)
+
+    def test_no_deprecated_values_leaves_current_unchanged(self):
+        ns = OpenTelemetryDeprecatedAliasNamespace()
+        validators._merge_opentelemetry_deprecated_aliases(ns)
+        self.assertIsNone(ns.opentelemetry_metrics_port)
+        self.assertIsNone(ns.opentelemetry_logs_port)
+        self.assertFalse(ns.enable_opentelemetry_logs)
+        self.assertFalse(ns.disable_opentelemetry_logs)
 
 
 class TestValidateOpenTelemetryPorts(unittest.TestCase):
@@ -2063,14 +2119,52 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
         )
         validators.validate_opentelemetry_ports(namespace)
 
-    def test_same_ports_throws_error(self):
+    def test_all_four_distinct_ports_specified(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_metrics_port_grpc=8081,
+            opentelemetry_logs_port=8082,
+            opentelemetry_logs_traces_port_grpc=8083,
+        )
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_same_http_ports_throws_error(self):
         namespace = OpenTelemetryPortsNamespace(
             opentelemetry_metrics_port=8080,
             opentelemetry_logs_port=8080
         )
         err = (
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http "
+            "cannot both be set to 8080."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_same_metrics_http_and_grpc_throws_error(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_metrics_port_grpc=8080,
+        )
+        err = (
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-metrics-port-grpc "
+            "cannot both be set to 8080."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_same_grpc_ports_throws_error(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port_grpc=9090,
+            opentelemetry_logs_traces_port_grpc=9090,
+        )
+        err = (
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-grpc and --opentelemetry-logs-traces-port-grpc "
+            "cannot both be set to 9090."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
@@ -2078,28 +2172,42 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
 
     def test_metrics_port_below_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=0)
-        err = "OpenTelemetry metrics port must be between 1 and 65535, got 0."
+        err = "OpenTelemetry port --opentelemetry-metrics-port-http must be between 1 and 65535, got 0."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_metrics_port_above_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=65536)
-        err = "OpenTelemetry metrics port must be between 1 and 65535, got 65536."
+        err = "OpenTelemetry port --opentelemetry-metrics-port-http must be between 1 and 65535, got 65536."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_grpc_port_above_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port_grpc=70000)
+        err = "OpenTelemetry port --opentelemetry-metrics-port-grpc must be between 1 and 65535, got 70000."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_logs_port_below_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=-1)
-        err = "OpenTelemetry logs port must be between 1 and 65535, got -1."
+        err = "OpenTelemetry port --opentelemetry-logs-traces-port-http must be between 1 and 65535, got -1."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_logs_port_above_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=100000)
-        err = "OpenTelemetry logs port must be between 1 and 65535, got 100000."
+        err = "OpenTelemetry port --opentelemetry-logs-traces-port-http must be between 1 and 65535, got 100000."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_grpc_port_below_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_traces_port_grpc=0)
+        err = "OpenTelemetry port --opentelemetry-logs-traces-port-grpc must be between 1 and 65535, got 0."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2111,6 +2219,7 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
             opentelemetry_logs_port=65535
         )
         validators.validate_opentelemetry_ports(namespace)
+
 
 
 class OpenTelemetryMetricsDependenciesNamespace:
@@ -2220,7 +2329,7 @@ class TestValidateOpenTelemetryLogsDependencies(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_opentelemetry_logs_dependencies(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2258,7 +2367,7 @@ class TestValidateOpenTelemetryLogsDependenciesForUpdate(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2269,7 +2378,8 @@ class AzureMonitorAndOpenTelemetryNamespace:
                  enable_opentelemetry_logs=False, disable_opentelemetry_logs=False,
                  enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False,
                  enable_azure_monitor_logs=False,
-                 opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+                 opentelemetry_metrics_port=None, opentelemetry_logs_port=None,
+                 opentelemetry_metrics_port_grpc=None, opentelemetry_logs_traces_port_grpc=None):
         self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
         self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
         self.enable_opentelemetry_logs = enable_opentelemetry_logs
@@ -2279,6 +2389,8 @@ class AzureMonitorAndOpenTelemetryNamespace:
         self.enable_azure_monitor_logs = enable_azure_monitor_logs
         self.opentelemetry_metrics_port = opentelemetry_metrics_port
         self.opentelemetry_logs_port = opentelemetry_logs_port
+        self.opentelemetry_metrics_port_grpc = opentelemetry_metrics_port_grpc
+        self.opentelemetry_logs_traces_port_grpc = opentelemetry_logs_traces_port_grpc
 
 
 class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
@@ -2302,8 +2414,9 @@ class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
             opentelemetry_logs_port=8080
         )
         err = (
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http "
+            "cannot both be set to 8080."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
@@ -2352,8 +2465,9 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
             opentelemetry_logs_port=8080
         )
         err = (
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http "
+            "cannot both be set to 8080."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
@@ -2374,7 +2488,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
         self.assertEqual(str(cm.exception), err)

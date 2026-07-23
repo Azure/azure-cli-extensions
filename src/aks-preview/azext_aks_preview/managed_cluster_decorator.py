@@ -3012,19 +3012,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Validate that port is not negative
             if opentelemetry_metrics_port < 0:
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-metrics-port must be a non-negative integer."
+                    "--opentelemetry-metrics-port-http must be a non-negative integer."
                 )
             # Check if disabling Azure Monitor metrics - port specification is invalid
             if self.get_disable_azure_monitor_metrics():
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-metrics-port cannot be specified when --disable-azure-monitor-metrics is used."
+                    "--opentelemetry-metrics-port-http cannot be specified when --disable-azure-monitor-metrics is used."
                 )
 
             # For CREATE: --enable-opentelemetry-metrics must be explicitly specified
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not self.get_enable_opentelemetry_metrics():
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-metrics-port can only be specified when "
+                        "--opentelemetry-metrics-port-http can only be specified when "
                         "--enable-opentelemetry-metrics is also specified."
                     )
             # For UPDATE: allow if either explicitly enabling OR already enabled in cluster
@@ -3039,12 +3039,57 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
                 if not explicitly_enabling and not already_enabled:
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-metrics-port can only be specified when "
+                        "--opentelemetry-metrics-port-http can only be specified when "
                         "--enable-opentelemetry-metrics is also specified or "
                         "OpenTelemetry metrics are already enabled."
                     )
 
         return opentelemetry_metrics_port
+
+    def get_opentelemetry_metrics_port_grpc(self) -> Union[int, None]:
+        """Obtain the value of opentelemetry_metrics_port_grpc.
+        :return: int or None
+        """
+        opentelemetry_metrics_port_grpc = self.raw_param.get("opentelemetry_metrics_port_grpc")
+
+        # Validate that port is only specified when OpenTelemetry metrics are enabled
+        if opentelemetry_metrics_port_grpc is not None:
+            # Validate that port is not negative
+            if opentelemetry_metrics_port_grpc < 0:
+                raise InvalidArgumentValueError(
+                    "--opentelemetry-metrics-port-grpc must be a non-negative integer."
+                )
+            # Check if disabling Azure Monitor metrics - port specification is invalid
+            if self.get_disable_azure_monitor_metrics():
+                raise InvalidArgumentValueError(
+                    "--opentelemetry-metrics-port-grpc cannot be specified when --disable-azure-monitor-metrics is used."
+                )
+
+            # For CREATE: --enable-opentelemetry-metrics must be explicitly specified
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if not self.get_enable_opentelemetry_metrics():
+                    raise InvalidArgumentValueError(
+                        "--opentelemetry-metrics-port-grpc can only be specified when "
+                        "--enable-opentelemetry-metrics is also specified."
+                    )
+            # For UPDATE: allow if either explicitly enabling OR already enabled in cluster
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                explicitly_enabling = self.get_enable_opentelemetry_metrics()
+                already_enabled = (
+                    self.mc and
+                    self.mc.azure_monitor_profile and
+                    self.mc.azure_monitor_profile.app_monitoring and
+                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics and
+                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled
+                )
+                if not explicitly_enabling and not already_enabled:
+                    raise InvalidArgumentValueError(
+                        "--opentelemetry-metrics-port-grpc can only be specified when "
+                        "--enable-opentelemetry-metrics is also specified or "
+                        "OpenTelemetry metrics are already enabled."
+                    )
+
+        return opentelemetry_metrics_port_grpc
 
     def _get_enable_opentelemetry_logs(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_opentelemetry_logs.
@@ -3061,8 +3106,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if enable_opentelemetry_logs and self._get_disable_opentelemetry_logs(
                     enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-opentelemetry-logs and "
-                    "--disable-opentelemetry-logs at the same time."
+                    "Cannot specify --enable-opentelemetry-logs-traces and "
+                    "--disable-opentelemetry-logs-traces at the same time."
                 )
 
             # For update operations, validate that Azure Monitor logs is enabled
@@ -3126,7 +3171,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if disable_opentelemetry_logs and self._get_enable_opentelemetry_logs(enable_validation=False):
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+                    "Cannot specify --enable-opentelemetry-logs-traces and "
+                    "--disable-opentelemetry-logs-traces at the same time."
                 )
         return disable_opentelemetry_logs if disable_opentelemetry_logs is not None else False
 
@@ -3149,20 +3195,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Validate that port is not negative
             if opentelemetry_logs_port < 0:
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-logs-port must be a non-negative integer."
+                    "--opentelemetry-logs-traces-port-http must be a non-negative integer."
                 )
             # Check if disabling Azure Monitor logs - port specification is invalid
             if self.get_disable_azure_monitor_logs():
                 raise InvalidArgumentValueError(
-                    "--opentelemetry-logs-port cannot be specified when --disable-azure-monitor-logs is used."
+                    "--opentelemetry-logs-traces-port-http cannot be specified when --disable-azure-monitor-logs is used."
                 )
 
-            # For CREATE: --enable-opentelemetry-logs must be explicitly specified
+            # For CREATE: --enable-opentelemetry-logs-traces must be explicitly specified
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not self.get_enable_opentelemetry_logs():
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-logs-port can only be specified when "
-                        "--enable-opentelemetry-logs is also specified."
+                        "--opentelemetry-logs-traces-port-http can only be specified when "
+                        "--enable-opentelemetry-logs-traces is also specified."
                     )
             # For UPDATE: allow if either explicitly enabling OR already enabled in cluster
             elif self.decorator_mode == DecoratorMode.UPDATE:
@@ -3176,12 +3222,57 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
                 if not explicitly_enabling and not already_enabled:
                     raise InvalidArgumentValueError(
-                        "--opentelemetry-logs-port can only be specified when "
-                        "--enable-opentelemetry-logs is also specified or "
+                        "--opentelemetry-logs-traces-port-http can only be specified when "
+                        "--enable-opentelemetry-logs-traces is also specified or "
                         "OpenTelemetry logs are already enabled."
                     )
 
         return opentelemetry_logs_port
+
+    def get_opentelemetry_logs_traces_port_grpc(self) -> Union[int, None]:
+        """Obtain the value of opentelemetry_logs_traces_port_grpc.
+        :return: int or None
+        """
+        opentelemetry_logs_traces_port_grpc = self.raw_param.get("opentelemetry_logs_traces_port_grpc")
+
+        # Validate that port is only specified when OpenTelemetry logs are enabled
+        if opentelemetry_logs_traces_port_grpc is not None:
+            # Validate that port is not negative
+            if opentelemetry_logs_traces_port_grpc < 0:
+                raise InvalidArgumentValueError(
+                    "--opentelemetry-logs-traces-port-grpc must be a non-negative integer."
+                )
+            # Check if disabling Azure Monitor logs - port specification is invalid
+            if self.get_disable_azure_monitor_logs():
+                raise InvalidArgumentValueError(
+                    "--opentelemetry-logs-traces-port-grpc cannot be specified when --disable-azure-monitor-logs is used."
+                )
+
+            # For CREATE: --enable-opentelemetry-logs-traces must be explicitly specified
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if not self.get_enable_opentelemetry_logs():
+                    raise InvalidArgumentValueError(
+                        "--opentelemetry-logs-traces-port-grpc can only be specified when "
+                        "--enable-opentelemetry-logs-traces is also specified."
+                    )
+            # For UPDATE: allow if either explicitly enabling OR already enabled in cluster
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                explicitly_enabling = self.get_enable_opentelemetry_logs()
+                already_enabled = (
+                    self.mc and
+                    self.mc.azure_monitor_profile and
+                    self.mc.azure_monitor_profile.app_monitoring and
+                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces and
+                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+                )
+                if not explicitly_enabling and not already_enabled:
+                    raise InvalidArgumentValueError(
+                        "--opentelemetry-logs-traces-port-grpc can only be specified when "
+                        "--enable-opentelemetry-logs-traces is also specified or "
+                        "OpenTelemetry logs are already enabled."
+                    )
+
+        return opentelemetry_logs_traces_port_grpc
 
     def get_enable_high_log_scale_mode(self) -> Union[bool, None]:
         """Obtain the value of enable_high_log_scale_mode.
@@ -5082,8 +5173,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         otlp_metrics_config = (
             self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True))
         metrics_port = self.context.get_opentelemetry_metrics_port()
-        if metrics_port:
+        if metrics_port is not None:
             otlp_metrics_config.http_port = metrics_port
+        metrics_port_grpc = self.context.get_opentelemetry_metrics_port_grpc()
+        if metrics_port_grpc is not None:
+            otlp_metrics_config.grpc_port = metrics_port_grpc
 
         mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_config
 
@@ -5095,8 +5189,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False))
         else:
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
-            # Clear the port when disabling OpenTelemetry metrics
+            # Clear the ports when disabling OpenTelemetry metrics
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = None
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.grpc_port = None
 
     def _setup_opentelemetry_logs(self, mc: ManagedCluster) -> None:
         """Set up OpenTelemetry logs configuration."""
@@ -5105,8 +5200,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
         otlp_logs_config = otel_logs_cls(enabled=True)
         logs_port = self.context.get_opentelemetry_logs_port()
-        if logs_port:
+        if logs_port is not None:
             otlp_logs_config.http_port = logs_port
+        logs_port_grpc = self.context.get_opentelemetry_logs_traces_port_grpc()
+        if logs_port_grpc is not None:
+            otlp_logs_config.grpc_port = logs_port_grpc
 
         mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces = otlp_logs_config
 
@@ -5120,8 +5218,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
             else:
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled = False
-                # Clear the port when disabling OpenTelemetry logs
+                # Clear the ports when disabling OpenTelemetry logs
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = None
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.grpc_port = None
 
     def set_up_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure monitor profile for the ManagedCluster object.
@@ -7552,8 +7651,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             otlp_metrics_config = (
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
             )
-            if self.context.get_opentelemetry_metrics_port():
+            if self.context.get_opentelemetry_metrics_port() is not None:
                 otlp_metrics_config.http_port = self.context.get_opentelemetry_metrics_port()
+            if self.context.get_opentelemetry_metrics_port_grpc() is not None:
+                otlp_metrics_config.grpc_port = self.context.get_opentelemetry_metrics_port_grpc()
 
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_config
 
@@ -7569,8 +7670,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Configure OpenTelemetry logs with custom port if provided
             otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
             otlp_logs_config = otel_logs_cls(enabled=True)
-            if self.context.get_opentelemetry_logs_port():
+            if self.context.get_opentelemetry_logs_port() is not None:
                 otlp_logs_config.http_port = self.context.get_opentelemetry_logs_port()
+            if self.context.get_opentelemetry_logs_traces_port_grpc() is not None:
+                otlp_logs_config.grpc_port = self.context.get_opentelemetry_logs_traces_port_grpc()
 
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces = otlp_logs_config
 
@@ -7605,6 +7708,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             else:
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = None
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.grpc_port = None
 
         # Handle disable OpenTelemetry logs updates
         if self.context.get_disable_opentelemetry_logs():
@@ -7623,9 +7727,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             else:
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled = False
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = None
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.grpc_port = None
 
         # Handle standalone port updates for OpenTelemetry metrics
-        if (self.context.get_opentelemetry_metrics_port() and
+        if (self.context.get_opentelemetry_metrics_port() is not None and
                 not self.context.get_enable_opentelemetry_metrics() and
                 not self.context.get_disable_opentelemetry_metrics()):
             # Only update port if OpenTelemetry metrics is already enabled and we're not changing the enabled state
@@ -7636,8 +7741,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 metrics_port = self.context.get_opentelemetry_metrics_port()
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = metrics_port
 
+        # Handle standalone gRPC port updates for OpenTelemetry metrics
+        if (self.context.get_opentelemetry_metrics_port_grpc() is not None and
+                not self.context.get_enable_opentelemetry_metrics() and
+                not self.context.get_disable_opentelemetry_metrics()):
+            if (mc.azure_monitor_profile and
+                    mc.azure_monitor_profile.app_monitoring and
+                    mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics and
+                    mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled):
+                metrics_port_grpc = self.context.get_opentelemetry_metrics_port_grpc()
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.grpc_port = metrics_port_grpc
+
         # Handle standalone port updates for OpenTelemetry logs
-        if (self.context.get_opentelemetry_logs_port() and
+        if (self.context.get_opentelemetry_logs_port() is not None and
                 not self.context.get_enable_opentelemetry_logs() and
                 not self.context.get_disable_opentelemetry_logs()):
             # Only update port if OpenTelemetry logs is already enabled and we're not changing the enabled state
@@ -7647,6 +7763,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled):
                 logs_port = self.context.get_opentelemetry_logs_port()
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = logs_port
+
+        # Handle standalone gRPC port updates for OpenTelemetry logs
+        if (self.context.get_opentelemetry_logs_traces_port_grpc() is not None and
+                not self.context.get_enable_opentelemetry_logs() and
+                not self.context.get_disable_opentelemetry_logs()):
+            if (mc.azure_monitor_profile and
+                    mc.azure_monitor_profile.app_monitoring and
+                    mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces and
+                    mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled):
+                logs_port_grpc = self.context.get_opentelemetry_logs_traces_port_grpc()
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.grpc_port = logs_port_grpc
 
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
@@ -7658,8 +7785,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                          self.context.raw_param.get("enable_opentelemetry_logs") or
                          self.context.raw_param.get("disable_opentelemetry_metrics") or
                          self.context.raw_param.get("disable_opentelemetry_logs") or
-                         self.context.get_opentelemetry_metrics_port() or
-                         self.context.get_opentelemetry_logs_port())
+                         self.context.get_opentelemetry_metrics_port() is not None or
+                         self.context.get_opentelemetry_metrics_port_grpc() is not None or
+                         self.context.get_opentelemetry_logs_port() is not None or
+                         self.context.get_opentelemetry_logs_traces_port_grpc() is not None)
         if azure_monitor_metrics or opentelemetry:
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
@@ -8652,8 +8781,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled = False
-            # Clear the port when disabling OpenTelemetry logs
+            # Clear the ports when disabling OpenTelemetry logs
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = None
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.grpc_port = None
 
     def _disable_azure_monitor_metrics(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor metrics configuration."""
@@ -8694,8 +8824,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Also disable OpenTelemetry metrics when disabling Azure Monitor metrics
         if opentelemetry_metrics_enabled:
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
-            # Clear the port when disabling OpenTelemetry metrics
+            # Clear the ports when disabling OpenTelemetry metrics
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = None
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.grpc_port = None
 
     def update_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Update addon profiles for the ManagedCluster object.

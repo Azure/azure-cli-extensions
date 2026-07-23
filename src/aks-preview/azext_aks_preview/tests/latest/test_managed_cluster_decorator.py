@@ -8645,6 +8645,30 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_2.get_opentelemetry_metrics_port(), 8080)
 
+    def test_get_opentelemetry_metrics_port_grpc(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_metrics_port_grpc": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_opentelemetry_metrics_port_grpc(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "opentelemetry_metrics_port_grpc": 8082,
+                    "enable_opentelemetry_metrics": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_opentelemetry_metrics_port_grpc(), 8082)
+
     def test_get_enable_opentelemetry_logs(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -8703,6 +8727,80 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_2.get_opentelemetry_logs_port(), 8081)
+
+    def test_get_opentelemetry_logs_traces_port_grpc(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_logs_traces_port_grpc": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_opentelemetry_logs_traces_port_grpc(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"opentelemetry_logs_traces_port_grpc": 8083, "enable_opentelemetry_logs": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_opentelemetry_logs_traces_port_grpc(), 8083)
+
+    def test_set_up_azure_monitor_profile_with_opentelemetry_grpc_ports(self):
+        # Test enabling OpenTelemetry metrics with both HTTP and gRPC ports
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port": 8080,
+                "opentelemetry_metrics_port_grpc": 8082,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
+
+        otlp_metrics = dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        self.assertTrue(otlp_metrics.enabled)
+        self.assertEqual(otlp_metrics.http_port, 8080)
+        self.assertEqual(otlp_metrics.grpc_port, 8082)
+
+    def test_disable_opentelemetry_metrics_clears_grpc_port(self):
+        # Disabling OpenTelemetry metrics must clear BOTH http and grpc ports
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_opentelemetry_metrics": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        existing_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+            enabled=True, http_port=8080, grpc_port=8082
+        )
+        app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+            open_telemetry_metrics=existing_metrics
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                app_monitoring=app_monitoring
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_1._disable_opentelemetry_metrics(mc_1)
+        otlp_metrics = mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        self.assertFalse(otlp_metrics.enabled)
+        self.assertIsNone(otlp_metrics.http_port)
+        self.assertIsNone(otlp_metrics.grpc_port)
 
     def test_set_up_azure_monitor_profile_with_opentelemetry(self):
         # Test enabling Azure Monitor metrics with OpenTelemetry metrics

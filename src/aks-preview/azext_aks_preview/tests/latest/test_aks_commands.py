@@ -16565,16 +16565,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
+            '--enable-managed-identity --enable-azure-monitor-logs --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
+            '--output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),
             self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', 8082),
         ])
 
         # delete
@@ -16607,28 +16608,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-monitor-logs with OpenTelemetry logs
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--enable-azure-monitor-logs --enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
+            '--enable-azure-monitor-logs --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=9090 --opentelemetry-logs-traces-port-grpc=9092 '
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),
             self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 9090),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 9090),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', 9092),
         ])
 
         # update: disable OpenTelemetry logs but keep Azure Monitor logs
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--disable-opentelemetry-logs'
+            '--disable-opentelemetry-logs-traces'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),  # Still enabled
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', False),
         ])
 
         # update: disable-azure-monitor-logs (should also disable OpenTelemetry logs)
@@ -16802,8 +16803,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=8080 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
+            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8080 --opentelemetry-metrics-port-grpc=8082 '
+            '--output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -16825,7 +16826,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.grpcPort', 8082),
         ])
 
         # delete
@@ -16858,8 +16860,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-monitor-metrics with OpenTelemetry metrics
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes '
-            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port=9090 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
+            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port-http=9090 '
             '--output=json'
         )
 
@@ -16950,6 +16951,75 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     time.sleep(60)
                 else:
                     raise  # Re-raise on final attempt
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_opentelemetry_deprecated_flag_aliases(self, resource_group, resource_group_location):
+        # Verifies the deprecated OTLP flag aliases still work and redirect to the
+        # renamed parameters (i.e. --enable-opentelemetry-logs -> --enable-opentelemetry-logs-traces,
+        # --opentelemetry-logs-port -> --opentelemetry-logs-traces-port-http,
+        # --opentelemetry-metrics-port -> --opentelemetry-metrics-port-http).
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d2s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # Intentionally use the DEPRECATED flag names; they must still bind the same
+        # destinations and configure OpenTelemetry on the new API surface.
+        create_cmd = (
+            'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
+            '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics '
+            '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
+            '--output=json'
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # azuremonitor metrics is enabled in a postprocessing update; wait for it to settle.
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.omsagent.enabled', True),
+            self.check('azureMonitorProfile.metrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', 8081),
+        ])
+
+        # Disable using the deprecated disable alias.
+        update_cmd = (
+            'aks update --resource-group={resource_group} --name={name} --yes --output=json '
+            '--disable-opentelemetry-logs'
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', False),
+        ])
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -17092,10 +17162,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
             '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
-            '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
-            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
+            '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8081 --opentelemetry-metrics-port-grpc=8083 '
             '--enable-windows-recording-rules '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview --output=json'
+            '--output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -17124,17 +17194,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor app monitoring checks
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry logs checks
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 8080),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', 8082),
             # OpenTelemetry metrics checks
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 8081),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', 8081),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.grpcPort', 8083),
         ])
 
         # Phase 2: Update - disable only OpenTelemetry logs (keep everything else)
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--disable-opentelemetry-logs'
+            '--disable-opentelemetry-logs-traces'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -17158,7 +17230,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor app monitoring should still be enabled
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry logs should be disabled
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', False),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', False),
+            # Disabling OpenTelemetry logs should clear both ports
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', None),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', None),
             # OpenTelemetry metrics should still be enabled
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
         ])
@@ -17191,14 +17266,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry metrics should be disabled
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', False),
+            # Disabling OpenTelemetry metrics should clear both ports
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', None),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.grpcPort', None),
         ])
 
         # Phase 4: Update - re-enable all OpenTelemetry features with different ports
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--enable-opentelemetry-logs --opentelemetry-logs-port=9090 '
-            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=9091 '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
+            '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=9090 --opentelemetry-logs-traces-port-grpc=9092 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=9091 --opentelemetry-metrics-port-grpc=9093 '
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -17220,10 +17297,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry features should be re-enabled with new ports
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 9090),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 9090),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', 9092),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 9091),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', 9091),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.grpcPort', 9093),
         ])
 
         # Phase 5: Update - disable Azure Monitor metrics (should also disable OpenTelemetry metrics)
@@ -17253,7 +17332,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # Azure Monitor app monitoring should still be enabled
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # OpenTelemetry logs should still be enabled (independent of metrics)
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
         ])
 
         # Phase 6: Update - disable Azure Monitor logs (should also disable OpenTelemetry logs)
@@ -17285,10 +17364,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
-            '--enable-opentelemetry-logs --opentelemetry-logs-port=7070 '
-            '--enable-opentelemetry-metrics --opentelemetry-metrics-port=7071 '
+            '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=7070 --opentelemetry-logs-traces-port-grpc=7072 '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=7071 --opentelemetry-metrics-port-grpc=7073 '
             '--enable-windows-recording-rules '
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -17311,17 +17389,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
             # All OpenTelemetry features should be enabled with new ports
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogs.port', 7070),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 7070),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', 7072),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.enabled', True),
-            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.port', 7071),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.httpPort', 7071),
+            self.check('azureMonitorProfile.appMonitoring.openTelemetryMetrics.grpcPort', 7073),
         ])
 
         # Phase 8: Final cleanup - disable all monitoring features
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--disable-azure-monitor-logs --disable-azure-monitor-metrics --disable-azure-monitor-app-monitoring '
-            '--disable-opentelemetry-logs --disable-opentelemetry-metrics'
+            '--disable-opentelemetry-logs-traces --disable-opentelemetry-metrics'
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
