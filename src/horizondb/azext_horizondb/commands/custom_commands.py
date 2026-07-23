@@ -108,11 +108,17 @@ def _parse_restore_time(restore_time):
         return datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0) - datetime.timedelta(minutes=6)
     from dateutil import parser
     try:
-        return parser.parse(restore_time)
+        parsed = parser.parse(restore_time)
     except (ValueError, OverflowError):
         raise InvalidArgumentValueError(
             "The restore time value has an incorrect date format. "
             "Please use ISO8601 format, e.g., 2026-07-15T02:10:00+00:00.")
+    # Normalize to a UTC-aware datetime so the value sent to the service is unambiguous.
+    # A value without an explicit offset is interpreted as UTC (per the --restore-time contract);
+    # an offset-aware value is converted to UTC.
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=datetime.timezone.utc)
+    return parsed.astimezone(datetime.timezone.utc)
 
 
 def horizondb_cluster_restore(client, resource_group_name, cluster_name, source_cluster,

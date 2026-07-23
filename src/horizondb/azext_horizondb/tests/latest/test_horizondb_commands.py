@@ -72,24 +72,25 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
 
         self.assertEqual(show_result['properties']['vCores'], v_cores_update)
 
-        if self.is_live:
-            from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta, timezone
 
-            restored_cluster_name = self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH)
+        restored_cluster_name = self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH)
 
-            # Restore time must be at least 5 minutes (300s) before the current time during preview.
-            restore_time = (datetime.now(timezone.utc) - timedelta(minutes=6)).replace(microsecond=0).isoformat()
+        # Restore time must be at least 5 minutes (300s) before the current time during preview.
+        # Playback matches on method + URI only (not request body), so this value is not
+        # replay-sensitive; in live runs it must be a recent time within the retention window.
+        restore_time = (datetime.now(timezone.utc) - timedelta(minutes=6)).replace(microsecond=0).isoformat()
 
-            # Restore cluster
-            restore_result = self.cmd('horizondb restore -g {} -n {} --source-cluster {} --restore-time {}'.format(
-                resource_group, restored_cluster_name, cluster_name, restore_time)).get_output_in_json()
+        # Restore cluster
+        restore_result = self.cmd('horizondb restore -g {} -n {} --source-cluster {} --restore-time {}'.format(
+            resource_group, restored_cluster_name, cluster_name, restore_time)).get_output_in_json()
 
-            self.assertEqual(restore_result['name'], restored_cluster_name)
-            self.assertEqual(restore_result['properties']['createMode'], 'PointInTimeRestore')
+        self.assertEqual(restore_result['name'], restored_cluster_name)
+        self.assertEqual(restore_result['properties']['createMode'], 'PointInTimeRestore')
 
-            # Delete restored cluster
-            self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, restored_cluster_name),
-                     checks=NoneCheck())
+        # Delete restored cluster
+        self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, restored_cluster_name),
+                 checks=NoneCheck())
 
         # Delete cluster
         self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, cluster_name),
