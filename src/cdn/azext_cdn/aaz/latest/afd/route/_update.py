@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a new route with the specified route name under the specified subscription, resource group, profile, and AzureFrontDoor endpoint.
 
     :example: Routes_Create
-        az afd route update --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --route-name route1 --cache-configuration "{compression-settings:{content-types-to-compress:[text/html,application/octet-stream],is-compression-enabled:True},query-parameters:querystring=test,query-string-caching-behavior:IgnoreSpecifiedQueryStrings}" --formatted-custom-domains "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/customDomains/domain1}]" --enabled-state Enabled --forwarding-protocol MatchRequest --grpc-state Enabled --https-redirect Enabled --link-to-default-domain Enabled --origin-group /subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/originGroups/originGroup1 --origin-path None --patterns-to-match "[/*]" --formatted-rule-sets "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/ruleSets/ruleSet1}]" --supported-protocols "[Https,Http]"
+        az afd route update --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --route-name route1 --cache-configuration "{compression-settings:{content-types-to-compress:[text/html,application/octet-stream],is-compression-enabled:True},query-parameters:querystring=test,query-string-caching-behavior:IgnoreSpecifiedQueryStrings}" --formatted-custom-domains "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/customDomains/domain1}]" --enabled-state Enabled --forwarding-protocol MatchRequest --https-redirect Enabled --link-to-default-domain Enabled --origin-group /subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/originGroups/originGroup1 --origin-path None --patterns-to-match "[/*]" --formatted-rule-sets "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/ruleSets/ruleSet1}]" --supported-protocols "[Https,Http]"
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -112,13 +112,6 @@ class Update(AAZCommand):
             help="Protocol this rule will use when forwarding traffic to backends.",
             nullable=True,
             enum={"HttpOnly": "HttpOnly", "HttpsOnly": "HttpsOnly", "MatchRequest": "MatchRequest"},
-        )
-        _args_schema.grpc_state = AAZStrArg(
-            options=["--grpc-state"],
-            arg_group="Properties",
-            help="Whether or not gRPC is enabled on this route. Permitted values are 'Enabled' or 'Disabled'",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.https_redirect = AAZStrArg(
             options=["--https-redirect"],
@@ -331,7 +324,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -438,7 +431,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -504,7 +497,6 @@ class Update(AAZCommand):
                 properties.set_prop("customDomains", AAZListType, ".formatted_custom_domains")
                 properties.set_prop("enabledState", AAZStrType, ".enabled_state")
                 properties.set_prop("forwardingProtocol", AAZStrType, ".forwarding_protocol")
-                properties.set_prop("grpcState", AAZStrType, ".grpc_state")
                 properties.set_prop("httpsRedirect", AAZStrType, ".https_redirect")
                 properties.set_prop("linkToDefaultDomain", AAZStrType, ".link_to_default_domain")
                 properties.set_prop("originGroup", AAZObjectType)
@@ -639,9 +631,6 @@ class _UpdateHelper:
         )
         properties.forwarding_protocol = AAZStrType(
             serialized_name="forwardingProtocol",
-        )
-        properties.grpc_state = AAZStrType(
-            serialized_name="grpcState",
         )
         properties.https_redirect = AAZStrType(
             serialized_name="httpsRedirect",

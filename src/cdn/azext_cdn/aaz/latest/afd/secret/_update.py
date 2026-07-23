@@ -17,20 +17,23 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new Secret within the specified profile.
 
-    :example: Secrets_CreateCustomerCertificateType
+    :example: Secrets_Create
         az afd secret update --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}"
 
+    :example: Secrets_CreateCustomerCertificateType
+        az afd secret update --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}"
+
     :example: Secrets_CreateMtlsCertificateChainType
-        az afd secret update --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:MtlsCertificateChain,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secretVersion:abcdef1234578900abcdef1234567890}"
+        az afd secret update --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:MtlsCertificateChain,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secretVersion:abcdef1234578900abcdef1234567890}"
 
     :example: Secrets_CreateUrlSigningKeyType
-        az afd secret update --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:MtlsCertificateChain,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secretVersion:abcdef1234578900abcdef1234567890}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:UrlSigningKey,keyId:customKeyId,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/urlsigningkeyname},secretVersion:abcdef1234578900abcdef1234567890}"
+        az afd secret update --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:CustomerCertificate,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:MtlsCertificateChain,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secretVersion:abcdef1234578900abcdef1234567890}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{type:UrlSigningKey,keyId:customKeyId,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/urlsigningkeyname},secretVersion:abcdef1234578900abcdef1234567890}"
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -259,7 +262,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -362,7 +365,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
