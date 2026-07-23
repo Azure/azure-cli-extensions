@@ -151,6 +151,18 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Deleting")
             ])
 
+            # Create a V2 workspace and verify workspaceKind
+            test_workspace_temp = get_test_workspace_random_name()
+            self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+                self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+            ])
+            self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks =[
+                self.check("properties.workspaceKind", "V2")
+            ])
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+                self.check("properties.provisioningState", "Deleting")
+            ])
+
             # Create a workspace specifying "--skip-autoadd"
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
