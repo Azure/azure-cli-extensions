@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.2.1
+++++++
+Fixing a command injection vulnerability (MSRC 115198 / VULN-185362). Source VM tag values copied via ``--copy-tags`` could contain shell metacharacters that, on Windows, were interpreted by ``cmd.exe`` and executed as arbitrary commands on the operator's workstation. Tag keys and values are now validated and quoted before being interpolated into the ``az`` command, and ``_call_az_command`` quotes every argument so ``cmd.exe`` treats shell metacharacters as literal text. Minimum fixed version: 2.2.1.
+
 2.2.0
 ++++++
 Adding `--tags` parameter to `vm repair create` and `vm repair repair-and-restore` commands to allow users to tag the repair VM for organizational requirements
