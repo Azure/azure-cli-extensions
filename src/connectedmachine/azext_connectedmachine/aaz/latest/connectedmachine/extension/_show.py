@@ -49,9 +49,6 @@ class Show(AAZCommand):
             help="The name of the machine extension.",
             required=True,
             id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="",
-            ),
         )
         _args_schema.machine_name = AAZStrArg(
             options=["--machine-name"],

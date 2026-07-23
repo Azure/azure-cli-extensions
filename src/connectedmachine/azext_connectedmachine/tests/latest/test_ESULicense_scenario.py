@@ -36,7 +36,7 @@ class ESULicenseScenarioTest(ScenarioTest):
     def test_esu_license(self):
         self.kwargs.update({
             'machine': 'LAPTOP-4GNU2K3H',
-            'machinePaygo': 'WIN-U57JFKURUK8',
+            'machinePaygo': 'PAYGOWS2025',
             'rg': 'yao_test',
             'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
@@ -53,7 +53,11 @@ class ESULicenseScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--location "{location}" '
                 '--license-type "ESU" '
-                '--license-details "{{edition:Datacenter,processors:16,state:Activated,target:\'Windows Server 2012\',type:pCore}}"',
+                '--edition "Datacenter" '
+                '--processors 16 '
+                '--state "Activated" '
+                '--target "Windows Server 2012" '
+                '--type "pCore"',
                 checks=[
                     self.check('name', '{licenseName}'),
         ])
@@ -69,7 +73,11 @@ class ESULicenseScenarioTest(ScenarioTest):
                 '--name "{licenseName}" '
                 '--resource-group "{rg}" '
                 '--license-type "ESU" '
-                '--license-details "{{edition:Datacenter,processors:16,state:Deactivated,target:\'Windows Server 2012\',type:pCore}}"',
+                '--edition "Datacenter" '
+                '--processors 16 '
+                '--state "Deactivated" '
+                '--target "Windows Server 2012" '
+                '--type "pCore"',
                 checks=[
                     self.check('name', '{licenseName}'),
         ])
@@ -79,43 +87,32 @@ class ESULicenseScenarioTest(ScenarioTest):
                 '--resource-group "{rg}"',
                 checks=[])
 
+        # PayGo test - enable Windows Server Pay-as-you-go on a Windows Server 2025 machine
+        # (Hotpatch product feature is omitted because it requires Virtualization-Based Security)
         self.cmd('az connectedmachine license-profile create '
                 '--machine-name "{machinePaygo}" '
                 '--resource-group "{rgProfile}" '
                 '--location "{location}" '
                 '--product-type "WindowsServer" '
-                '--subscription-status "Enabled" '
-                '--product-features "{productFfeatures}"',
+                '--subscription-status "Enabled"',
                 checks=[
-                    self.check('id', '{licenseResourceIdProfile}'),
+                    self.check('productType', 'WindowsServer'),
+                    self.check('subscriptionStatus', 'Enabled'),
+                    self.check('provisioningState', 'Succeeded'),
         ])
 
-        # # PayGo test - enable Windows Server Pay-as-you-go on a Windows Server 2025 machine
-        # # (Hotpatch product feature is omitted because it requires Virtualization-Based Security)
-        # self.cmd('az connectedmachine license-profile create '
-        #         '--machine-name "{machinePaygo}" '
-        #         '--resource-group "{rgProfile}" '
-        #         '--location "{location}" '
-        #         '--product-type "WindowsServer" '
-        #         '--subscription-status "Enabled"',
-        #         checks=[
-        #             self.check('productType', 'WindowsServer'),
-        #             self.check('subscriptionStatus', 'Enabled'),
-        #             self.check('provisioningState', 'Succeeded'),
-        # ])
+        self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
+            self.check('productType', 'WindowsServer'),
+            self.check('subscriptionStatus', 'Enabled'),
+        ])
 
-        # self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
-        #     self.check('productType', 'WindowsServer'),
-        #     self.check('subscriptionStatus', 'Enabled'),
-        # ])
+        self.cmd('az connectedmachine license-profile list --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
+        ])
 
-        # self.cmd('az connectedmachine license-profile list --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
-        # ])
-
-        # self.cmd('az connectedmachine license-profile delete -y '
-        #         '--machine-name "{machinePaygo}" '
-        #         '--resource-group "{rgProfile}"',
-        #         checks=[])
+        self.cmd('az connectedmachine license-profile delete -y '
+                '--machine-name "{machinePaygo}" '
+                '--resource-group "{rgProfile}"',
+                checks=[])
 
         # test SA service
         self.cmd('az connectedmachine license-profile create '

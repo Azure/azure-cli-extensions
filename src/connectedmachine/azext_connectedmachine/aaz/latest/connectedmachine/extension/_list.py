@@ -78,8 +78,8 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance_value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance_next_link)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
     class MachineExtensionsList(AAZHttpOperation):
