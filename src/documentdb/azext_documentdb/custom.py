@@ -12,8 +12,9 @@ from knack.log import get_logger
 from azure.cli.core.aaz import register_command, AAZStrArg, AAZObjectType, AAZStrType
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Create as _MongoClusterCreate
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Update as _MongoClusterUpdate
-from azext_documentdb.aaz.latest.documentdb.mongocluster.user import Create as _UserCreate
-from azext_documentdb.aaz.latest.documentdb.mongocluster.user import Update as _UserUpdate
+from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Assign as _UserAssign
+from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Update as _UserUpdate
+from azext_documentdb.aaz.latest.documentdb.mongocluster.replica import Promote as _ReplicaPromote
 
 logger = get_logger(__name__)
 
@@ -38,13 +39,19 @@ def _resolve_cluster_id(ctx, name_or_id):
 def _keep_only_args(args_schema, keep):
     """Deregister (hide) every argument on the schema except those in ``keep``.
 
+    Hidden arguments are also marked optional so a deregistered-but-required
+    argument (for example the base ``create`` password on a replica) does not
+    fail schema validation with a missing-required-field error.
+
     Framework arguments that are not resource properties (for example ``no_wait``
     and ``subscription``) are always preserved.
     """
     _always_keep = {"no_wait", "subscription"}
     for _name in list(args_schema._fields):
         if _name not in keep and _name not in _always_keep:
-            args_schema._fields[_name]._registered = False
+            _field = args_schema._fields[_name]
+            _field._registered = False
+            _field._required = False
 
 
 def _add_principal_type_arg(args_schema):
@@ -74,7 +81,7 @@ def _build_identity_provider(args):
         args.identity_provider.microsoft_entra_id.principal_type = args.principal_type
 
 
-class UserCreate(_UserCreate):
+class UserAssign(_UserAssign):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -99,7 +106,7 @@ class ResetPassword(_MongoClusterUpdate):
     """Reset the administrator password of a mongo cluster.
 
     :example: Reset the administrator password.
-        az documentdb mongocluster reset-password -n MyCluster -g MyResourceGroup --password NewP@ssw0rd123!
+        az documentdb mongocluster reset-password -n MyCluster -g MyResourceGroup --admin-password NewP@ssw0rd123!
     """
 
     # Own schema caches so the deregister/rename below never mutate the shared
@@ -114,9 +121,9 @@ class ResetPassword(_MongoClusterUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(args_schema, {"cluster_name", "resource_group", "admin_password"})
         password = args_schema.admin_password
-        password._options = ["--password", "-p"]
+        password._options = ["--admin-password", "--password", "-p"]
         password._required = True
-        password._help["name"] = "--password -p"
+        password._help["name"] = "--admin-password --password -p"
         password._help["short-summary"] = "The new administrator password."
         return args_schema
 
@@ -130,7 +137,7 @@ class ReplicaCreate(_MongoClusterCreate):
     configuration (compute, storage, sharding) from the source cluster.
 
     :example: Create a replica of a cluster in another region.
-        az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --source-cluster MySourceCluster --source-location eastus2
+        az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --parent-cluster-name MySourceCluster --parent-location eastus2
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -142,26 +149,26 @@ class ReplicaCreate(_MongoClusterCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(args_schema, {"cluster_name", "resource_group", "location"})
-        args_schema.source_cluster = AAZStrArg(
-            options=["--source-cluster"],
+        args_schema.parent_cluster = AAZStrArg(
+            options=["--parent-cluster-name"],
             arg_group="Replica",
             required=True,
-            help="Name or resource ID of the source (primary) mongo cluster to replicate "
+            help="Name or resource ID of the parent (primary) mongo cluster to replicate "
                  "from. If a name is given, the current subscription and resource group are "
                  "assumed.",
         )
-        args_schema.source_location = AAZStrArg(
-            options=["--source-location"],
+        args_schema.parent_location = AAZStrArg(
+            options=["--parent-location"],
             arg_group="Replica",
             required=True,
-            help="The Azure region of the source cluster (for example: eastus2).",
+            help="The Azure region of the parent cluster (for example: eastus2).",
         )
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
-        args.source_cluster = _resolve_cluster_id(
-            self.ctx, args.source_cluster.to_serialized_data())
+        args.parent_cluster = _resolve_cluster_id(
+            self.ctx, args.parent_cluster.to_serialized_data())
 
     class MongoClustersCreateOrUpdate(_MongoClusterCreate.MongoClustersCreateOrUpdate):
 
@@ -185,10 +192,10 @@ class ReplicaCreate(_MongoClusterCreate):
             replica_parameters = _builder.get(".properties.replicaParameters")
             if replica_parameters is not None:
                 replica_parameters.set_prop(
-                    "sourceResourceId", AAZStrType, ".source_cluster",
+                    "sourceResourceId", AAZStrType, ".parent_cluster",
                     typ_kwargs={"flags": {"required": True}})
                 replica_parameters.set_prop(
-                    "sourceLocation", AAZStrType, ".source_location",
+                    "sourceLocation", AAZStrType, ".parent_location",
                     typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
@@ -202,7 +209,7 @@ class Restore(_MongoClusterCreate):
     cluster at the requested point in time.
 
     :example: Restore a cluster to a point in time.
-        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --parent-cluster-name MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -218,11 +225,11 @@ class Restore(_MongoClusterCreate):
             {"cluster_name", "resource_group", "location", "admin_user", "admin_password"})
         args_schema.admin_user._required = True
         args_schema.admin_password._required = True
-        args_schema.source_cluster = AAZStrArg(
-            options=["--source-cluster"],
+        args_schema.parent_cluster = AAZStrArg(
+            options=["--parent-cluster-name"],
             arg_group="Restore",
             required=True,
-            help="Name or resource ID of the source mongo cluster to restore from. If a "
+            help="Name or resource ID of the parent mongo cluster to restore from. If a "
                  "name is given, the current subscription and resource group are assumed.",
         )
         args_schema.restore_time = AAZStrArg(
@@ -236,8 +243,8 @@ class Restore(_MongoClusterCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        args.source_cluster = _resolve_cluster_id(
-            self.ctx, args.source_cluster.to_serialized_data())
+        args.parent_cluster = _resolve_cluster_id(
+            self.ctx, args.parent_cluster.to_serialized_data())
 
     class MongoClustersCreateOrUpdate(_MongoClusterCreate.MongoClustersCreateOrUpdate):
 
@@ -269,9 +276,69 @@ class Restore(_MongoClusterCreate):
             restore_parameters = _builder.get(".properties.restoreParameters")
             if restore_parameters is not None:
                 restore_parameters.set_prop(
-                    "sourceResourceId", AAZStrType, ".source_cluster",
+                    "sourceResourceId", AAZStrType, ".parent_cluster",
                     typ_kwargs={"flags": {"required": True}})
                 restore_parameters.set_prop(
                     "pointInTimeUTC", AAZStrType, ".restore_time")
+
+            return self.serialize_content(_content_value)
+
+
+class ReplicaPromote(_ReplicaPromote):
+    """Promote a replica mongo cluster to a primary role.
+
+    :example: Promote a replica to primary.
+        az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --mode Switchover --promote-option Forced
+    """
+
+    # ``promote`` already exists as a generated command, so this wrapper only
+    # needs to override the request body. It is swapped in over the generated
+    # command through ``commands.py`` (which runs after the generated table is
+    # loaded), exactly like the ``user create``/``user update`` overrides, so it
+    # deliberately does not re-register the command name.
+    class MongoClustersPromote(_ReplicaPromote.MongoClustersPromote):
+
+        def __call__(self, *args, **kwargs):
+            # The generated operation passes ``None`` as the long-running
+            # operation's final-result callback, so azure-core raises
+            # ``TypeError: 'NoneType' object is not callable`` when the promote
+            # completes and it tries to parse the final resource. The promote
+            # returns no body, so pass a no-op callback (``on_200``) instead,
+            # mirroring how the generated ``delete`` handles its empty response.
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            return self.on_error(session.http_response)
+
+        def on_200(self, session):
+            pass
+
+        @property
+        def content(self):
+            # The service expects the promote payload nested under "properties",
+            # but the generated command sends "mode"/"promoteOption" at the root,
+            # which the service rejects with a schema error. Wrap them here.
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}},
+            )
+            _builder.set_prop(
+                "properties", AAZObjectType, typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("mode", AAZStrType, ".mode")
+                properties.set_prop(
+                    "promoteOption", AAZStrType, ".promote_option",
+                    typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)

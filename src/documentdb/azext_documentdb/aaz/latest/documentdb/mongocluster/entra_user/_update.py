@@ -12,13 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster user update",
+    "documentdb mongocluster entra-user update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a new user or updates an existing user on a mongo cluster.
+    """Update a Microsoft Entra ID user on a mongo cluster.
 
-    :example: Update a user's roles.
-        az documentdb mongocluster user update -n alice-entra --cluster-name MyCluster -g MyResourceGroup --role db=admin role=root
+    :example: Update an Entra ID user's roles.
+        az documentdb mongocluster user update --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup --role db=admin role=root
     """
 
     _aaz_info = {
@@ -61,9 +62,9 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.user_name = AAZStrArg(
-            options=["-n", "--name", "--user-name"],
-            help="The name of the mongo cluster user.",
+        _args_schema.object_id = AAZStrArg(
+            options=["-n", "--name", "--object-id"],
+            help="Object ID (client ID) of the Microsoft Entra principal. Provide the GUID of the service principal or user, not a friendly name or UPN.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -191,7 +192,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "userName", self.ctx.args.user_name,
+                    "userName", self.ctx.args.object_id,
                     required=True,
                 ),
             }
@@ -294,7 +295,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "userName", self.ctx.args.user_name,
+                    "userName", self.ctx.args.object_id,
                     required=True,
                 ),
             }
