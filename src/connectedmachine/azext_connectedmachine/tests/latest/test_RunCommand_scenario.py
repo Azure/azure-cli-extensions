@@ -54,7 +54,7 @@ class RunCommandScenarioTest(ScenarioTest):
         self.cmd('az connectedmachine run-command create '
                 '--resource-group "{rg}" '
                 '--location "{location}" '
-                '--source script="Write-Host Hello World!" '
+                '--script "Write-Host Hello World!" '
                 '--name "{runcommand}" '
                 '--machine-name "{machine}" '
                 '--parameters "{parameters}" '

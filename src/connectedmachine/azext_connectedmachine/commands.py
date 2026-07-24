@@ -9,17 +9,19 @@
 # pylint: disable=too-many-statements
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group("connectedmachine"):
+    with self.command_group("connectedmachine") as g:
         from .custom import List
         self.command_table["connectedmachine list"] = List(loader=self)
-        # hide the standalone by-subscription command; `list` now covers both
-        self.command_table.pop("connectedmachine list-by-sub", None)
+        # deprecate list-by-sub in favor of list (keep for backward compatibility)
+        if "connectedmachine list-by-sub" in self.command_table:
+            self.command_table["connectedmachine list-by-sub"].deprecate_info = g.deprecate(redirect="connectedmachine list", hide=True)
 
-    with self.command_group("connectedmachine license"):
+    with self.command_group("connectedmachine license") as g:
         from .custom import LicenseList
         self.command_table["connectedmachine license list"] = LicenseList(loader=self)
-        # hide the standalone by-resource-group command; `license list` now covers both
-        self.command_table.pop("connectedmachine license list-by-rg", None)
+        # deprecate list-by-rg in favor of license list (keep for backward compatibility)
+        if "connectedmachine license list-by-rg" in self.command_table:
+            self.command_table["connectedmachine license list-by-rg"].deprecate_info = g.deprecate(redirect="connectedmachine license list", hide=True)
 
     with self.command_group("connectedmachine license-profile"):
         from .custom import ProfileCreate
