@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete an Autonomous Database backup
 
     :example: Delete an Autonomous Database backup
-        az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --yes
+        az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name> --yes
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="Azure backup resource name/id. Use the value returned by backup create or backup list.",
+            help="Azure backup resource name. Use the final segment of the id returned by backup list, not the full Azure resource ID.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
