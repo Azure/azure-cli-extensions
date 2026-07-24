@@ -409,7 +409,7 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             ).items
         except Exception as e:  # pylint: disable=broad-except
             logger.debug(
-                f"Unable to list {consts.Arc_Namespace} pods after Helm timeout.", exc_info=True
+                "Unable to list %s pods after Helm timeout.", consts.Arc_Namespace, exc_info=True
             )
             diagnostics_status = "Failed"
             return (
@@ -425,7 +425,7 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             ).items
         except Exception as e:  # pylint: disable=broad-except
             logger.debug(
-                f"Unable to list {consts.Arc_Namespace} events after Helm timeout.", exc_info=True
+                "Unable to list %s events after Helm timeout.", consts.Arc_Namespace, exc_info=True
             )
             diagnostics_status = "Partial"
             evidence.append(
@@ -440,7 +440,7 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             )
         except Exception as e:  # pylint: disable=broad-except
             logger.debug(
-                f"Unable to list {consts.Arc_Namespace} secrets after Helm timeout.", exc_info=True
+                "Unable to list %s secrets after Helm timeout.", consts.Arc_Namespace, exc_info=True
             )
             diagnostics_status = "Partial"
             evidence.append(
