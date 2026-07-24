@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b18
++++++++++++++++
+* Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.
+
 1.0.0b17
 +++++++++++++++
 * Fixed bug where Quantum workspace creation flow uses plain (JSON-serializable) primitive values instead of SDK enum objects in ARM-template deployment parameters, preventing serialization issues and test failures.
