@@ -76,6 +76,30 @@ Helm_Install_Release_Userfault_Messages = [
     "timed out waiting for the condition",
     "connection refused",
 ]
+Helm_Timeout_Messages = (
+    "timed out waiting for the condition",
+    "context deadline exceeded",
+    "deadline exceeded",
+)
+Helm_Timeout_Signal_Classifications = (
+    "ImagePullFailure",
+    "CrashLoopBackOff",
+    "ContainerCreateFailure",
+    "PendingOrUnschedulable",
+    "ClusterResourceOrSchedulingConstraint",
+    "MissingIdentityCertificateSecret",
+    "MissingKubeAadProxyCertificateSecret",
+    "KeyPairOrIdentityCertificateSync",
+)
+Helm_Timeout_Resolved_Classifications = (
+    "GenericHelmTimeout",
+    "ImagePullFailure",
+    "PendingOrUnschedulable",
+    "ClusterIdentityFailure",
+)
+Max_Helm_Timeout_Diagnostic_Evidence = 8
+Max_Helm_Timeout_Event_Evidence = 5
+Cluster_Identity_Operator_Prefix = "clusteridentityoperator"
 Custom_Locations_Provider_Namespace = "Microsoft.ExtendedLocation"
 Connected_Cluster_Provider_Namespace = "Microsoft.Kubernetes"
 Kubernetes_Configuration_Provider_Namespace = "Microsoft.KubernetesConfiguration"
@@ -125,6 +149,19 @@ KeyPair_Generate_Fault_Type = "keypair-generation-error"
 PublicKey_Export_Fault_Type = "publickey-export-error"
 PrivateKey_Export_Fault_Type = "privatekey-export-error"
 Install_HelmRelease_Fault_Type = "helm-release-install-error"
+Helm_Timeout_ImagePull_Fault_Type = "helm-timeout-image-pull-failure"
+Helm_Timeout_PendingOrUnschedulable_Fault_Type = (
+    "helm-timeout-pending-or-unschedulable"
+)
+Helm_Timeout_ClusterIdentity_Fault_Type = "helm-timeout-cluster-identity-error"
+Helm_Timeout_Generic_Fault_Type = "helm-timeout-error"
+# Customer-facing AZK8S error codes surfaced for Helm timeout classifications.
+# Ranges follow the error code chart: Helm & Agent Lifecycle (0500-0599),
+# Network & Connectivity (0300-0399).
+Helm_Timeout_PendingOrUnschedulable_Error_Code = "AZK8S0512"
+Helm_Timeout_ImagePull_Error_Code = "AZK8S0513"
+Helm_Timeout_Generic_Error_Code = "AZK8S0514"
+Helm_Timeout_ClusterIdentity_Error_Code = "AZK8S0309"
 Delete_HelmRelease_Fault_Type = "helm-release-delete-error"
 Check_PodStatus_Fault_Type = "check-pod-status-error"
 Kubernetes_Connectivity_FaultType = "kubernetes-cluster-connection-error"
