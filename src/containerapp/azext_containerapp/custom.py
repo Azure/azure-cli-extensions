@@ -1571,9 +1571,9 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                                        resolve_cpu_configuration_from_service,
                                                                        resolve_memory_configuration_from_service,
                                                                        resolve_replicas_from_service,
-                                                                       resolve_environment_from_service,
                                                                        resolve_secret_from_service)
-    from ._compose_utils import validate_memory_and_cpu_setting
+    from ._compose_utils import (validate_memory_and_cpu_setting,
+                                 resolve_environment_from_service)
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
