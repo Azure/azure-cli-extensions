@@ -5752,6 +5752,37 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_container_network_logs(mc)
         self.assertTrue(result)
 
+    def test_get_container_network_logs_with_containerinsights_only_cluster(self):
+        """CNL enable succeeds when monitoring is already on via azureMonitorProfile.containerInsights
+        only (no legacy omsagent addon) - the modern source-of-truth surface must be honored."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_container_network_logs": True,
+                    "enable_acns": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
     def test_get_container_network_logs_legacy_disable_retina_flow_logs(self):
         """Test get_container_network_logs returns False when legacy disable_retina_flow_logs is specified."""
         ctx = AKSPreviewManagedClusterContext(
@@ -18447,6 +18478,35 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec._disable_azure_monitor_logs(mc)
         self.assertFalse(mc.azure_monitor_profile.container_insights.enabled)
         self.assertIsNone(mc.azure_monitor_profile.container_insights.container_network_logs)
+
+    def test_hlsm_standalone_allowed_on_containerinsights_only_cluster(self):
+        """--enable-high-log-scale-mode is accepted when monitoring is on via containerInsights only
+        (no legacy omsagent addon). MSI is implied on that surface, so neither the 'monitoring must be
+        enabled' nor the 'MSI required' guard should reject it."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace",
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
 
     def test_hlsm_disable_blocked_when_cnl_enabled_on_containerinsights(self):
         """--enable-high-log-scale-mode false is rejected when CNL is enabled on the modern

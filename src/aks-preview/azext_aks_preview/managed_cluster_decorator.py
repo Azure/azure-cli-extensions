@@ -218,6 +218,48 @@ def _is_container_network_logs_enabled_on_mc(mc, addon_consts):
     return False
 
 
+def _is_monitoring_enabled_on_mc(mc, addon_consts):
+    """Return True if Container Insights is enabled on the cluster.
+
+    Checks the modern ``azureMonitorProfile.containerInsights`` surface (the RP source of truth)
+    first, falling back to the legacy ``addonProfiles.omsagent`` addon for brownfield clusters.
+    """
+    if mc is None:
+        return False
+    if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights and
+            mc.azure_monitor_profile.container_insights.enabled):
+        return True
+    if mc.addon_profiles:
+        mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+        monitoring_profile = mc.addon_profiles.get(mk)
+        return bool(monitoring_profile and monitoring_profile.enabled)
+    return False
+
+
+def _is_monitoring_msi_auth_on_mc(mc, addon_consts):
+    """Return True if Container Insights uses MSI/AAD auth on the cluster.
+
+    The modern ``containerInsights`` surface is always MSI/AAD (the RP defaults ``useAADAuth=true``
+    when it mirrors the profile), so treat an enabled containerInsights as MSI. Otherwise fall back
+    to the legacy ``omsagent.config.useAADAuth`` flag.
+    """
+    if mc is None:
+        return False
+    if (mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights and
+            mc.azure_monitor_profile.container_insights.enabled):
+        return True
+    CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+    if mc.addon_profiles:
+        mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+        monitoring_profile = mc.addon_profiles.get(mk)
+        addon_config = (monitoring_profile.config or {}) if monitoring_profile else {}
+        return (
+            CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
+            str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
+        )
+    return False
+
+
 def _build_monitoring_addon_profile_for_dcr(addon_consts, models, cluster):
     """Return the omsagent-style addon profile the shared DCR/DCRA engine consumes.
 
@@ -1198,13 +1240,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "monitoring" in enable_addons or
                 bool(self.raw_param.get("enable_azure_monitor_logs"))
             )
-            monitoring_already_enabled = False
-            if mc.addon_profiles:
-                addon_consts = self.get_addon_consts()
-                mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
-                monitoring_already_enabled = bool(
-                    mc.addon_profiles.get(mk) and mc.addon_profiles[mk].enabled
-                )
+            monitoring_already_enabled = _is_monitoring_enabled_on_mc(mc, self.get_addon_consts())
             monitoring_enabled = monitoring_being_enabled or monitoring_already_enabled
             if not acns_enabled or not monitoring_enabled:
                 raise InvalidArgumentValueError(
@@ -6542,29 +6578,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
             if not monitoring_being_enabled:
-                # Only validate existing addon state when not enabling monitoring simultaneously
+                # Only validate existing cluster state when not enabling monitoring simultaneously.
+                # Check the modern containerInsights surface first, then the legacy omsagent addon.
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-                # Resolve the addon profile, normalizing non-standard key casing.
-                monitoring_addon_profile = None
-                if mc.addon_profiles:
-                    mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
-                    monitoring_addon_profile = mc.addon_profiles.get(mk)
-
-                if not monitoring_addon_profile or not monitoring_addon_profile.enabled:
+                if not _is_monitoring_enabled_on_mc(mc, addon_consts):
                     raise RequiredArgumentMissingError(
-                        "--enable-high-log-scale-mode requires the Azure Monitor logs addon (omsagent) "
+                        "--enable-high-log-scale-mode requires Azure Monitor logs (Container Insights) "
                         "to be enabled on the cluster. Please enable it first with "
-                        "--enable-addons monitoring or --enable-azure-monitor-logs."
+                        "--enable-azure-monitor-logs."
                     )
 
-                addon_config = monitoring_addon_profile.config or {}
-                msi_auth_enabled = (
-                    CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
-                    str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
-                )
-                if not msi_auth_enabled:
+                if not _is_monitoring_msi_auth_on_mc(mc, addon_consts):
                     raise RequiredArgumentMissingError(
                         "--enable-high-log-scale-mode requires MSI authentication to be enabled "
                         "for the monitoring addon. Please enable it with --enable-msi-auth-for-monitoring."
