@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension create",
 )
 class Create(AAZCommand):
-    """Create operation to create or update the extension.
+    """Create an extension.
 
-    :example: sample command for extension create
-        az connectedmachine extension create --resource-group myResourceGroup --machine-name myMachine --extension-name CustomScriptExtension --location eastus2euap --publisher Microsoft.Compute --type-handler-version 1.10 --type CustomScriptExtension --settings "{commandToExecute:\'powershell.exe -c "Get-Process | Where-Object { $_.CPU -gt 10000 }"\'}"
+    :example: Sample command for extension create
+        az connectedmachine extension create --name CustomScriptExtension --location eastus2euap --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-06-16-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-06-16-preview"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Create(AAZCommand):
             help="The name of the machine where the extension should be created or updated.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -63,26 +63,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "ExtensionParameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="ExtensionParameters",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="ExtensionParameters",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -107,7 +87,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The machine extension instance view.",
         )
-        _args_schema.protected_settings = AAZFreeFormDictArg(
+        _args_schema.protected_settings = AAZDictArg(
             options=["--protected-settings"],
             arg_group="Properties",
             help="The extension can contain either protectedSettings or protectedSettingsFromKeyVault or no protected settings at all.",
@@ -117,7 +97,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The name of the extension handler publisher.",
         )
-        _args_schema.settings = AAZFreeFormDictArg(
+        _args_schema.settings = AAZDictArg(
             options=["--settings"],
             arg_group="Properties",
             help="Json formatted public settings for the extension.",
@@ -173,6 +153,32 @@ class Create(AAZCommand):
             options=["time"],
             help="The time of the status.",
         )
+
+        protected_settings = cls._args_schema.protected_settings
+        protected_settings.Element = AAZAnyTypeArg()
+
+        settings = cls._args_schema.settings
+        settings.Element = AAZAnyTypeArg()
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -204,7 +210,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -213,7 +219,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -260,7 +266,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-06-16-preview",
                     required=True,
                 ),
             }
@@ -295,9 +301,9 @@ class Create(AAZCommand):
                 properties.set_prop("enableAutomaticUpgrade", AAZBoolType, ".enable_automatic_upgrade")
                 properties.set_prop("forceUpdateTag", AAZStrType, ".force_update_tag")
                 properties.set_prop("instanceView", AAZObjectType, ".instance_view")
-                properties.set_prop("protectedSettings", AAZFreeFormDictType, ".protected_settings")
+                properties.set_prop("protectedSettings", AAZDictType, ".protected_settings")
                 properties.set_prop("publisher", AAZStrType, ".publisher")
-                properties.set_prop("settings", AAZFreeFormDictType, ".settings")
+                properties.set_prop("settings", AAZDictType, ".settings")
                 properties.set_prop("type", AAZStrType, ".type")
                 properties.set_prop("typeHandlerVersion", AAZStrType, ".type_handler_version")
 
@@ -318,11 +324,11 @@ class Create(AAZCommand):
 
             protected_settings = _builder.get(".properties.protectedSettings")
             if protected_settings is not None:
-                protected_settings.set_anytype_elements(".")
+                protected_settings.set_elements(AAZAnyType, ".")
 
             settings = _builder.get(".properties.settings")
             if settings is not None:
-                settings.set_anytype_elements(".")
+                settings.set_elements(AAZAnyType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -380,15 +386,17 @@ class Create(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            properties.protected_settings = AAZFreeFormDictType(
+            properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
+            _CreateHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
+            properties.settings = AAZDictType()
+            _CreateHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -439,6 +447,21 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_record_unknown__read = None
+
+    @classmethod
+    def _build_schema_record_unknown__read(cls, _schema):
+        if cls._schema_record_unknown__read is not None:
+            _schema.Element = cls._schema_record_unknown__read.Element
+            return
+
+        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
+
+        record_unknown__read = _schema_record_unknown__read
+        record_unknown__read.Element = AAZAnyType()
+
+        _schema.Element = cls._schema_record_unknown__read.Element
 
 
 __all__ = ["Create"]

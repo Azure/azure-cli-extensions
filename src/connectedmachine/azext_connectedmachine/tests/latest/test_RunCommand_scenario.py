@@ -41,11 +41,11 @@ class RunCommandScenarioTest(ScenarioTest):
     def test_run_command(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
-            'location': 'westus2',
+            'machine': 'LAPTOP-4GNU2K3H',
+            'rg': 'yao_test',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
-            'runcommand': 'myRunCommand2',
+            'runcommand': 'myRunCommand',
         })
 
         parameters_string = '''[{"name":"param1","value":"value1"}]'''
@@ -68,7 +68,7 @@ class RunCommandScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--machine-name "{machine}"',
                 checks=[
-                    self.check('length(@)', 2)
+                    self.check('length(@)', 1)
                 ])
 
         self.cmd('az connectedmachine run-command show '
