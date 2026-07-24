@@ -221,9 +221,7 @@ def test_build_helm_timeout_telemetry_properties_marks_classifications():
         == "ImagePullFailure"
     )
     assert properties["Context.Default.AzureCLI.helmTimeoutEvidenceCount"] == "2"
-    assert (
-        properties["Context.Default.AzureCLI.helmTimeoutImagePullFailure"] == "true"
-    )
+    assert properties["Context.Default.AzureCLI.helmTimeoutImagePullFailure"] == "true"
     assert (
         properties["Context.Default.AzureCLI.helmTimeoutGenericHelmTimeout"] == "false"
     )
@@ -248,11 +246,17 @@ def test_resolve_helm_timeout_classification_priority():
     )
     assert (
         _resolve_helm_timeout_classification(
-            {"ClusterResourceOrSchedulingConstraint", "KeyPairOrIdentityCertificateSync"}
+            {
+                "ClusterResourceOrSchedulingConstraint",
+                "KeyPairOrIdentityCertificateSync",
+            }
         )
         == "PendingOrUnschedulable"
     )
-    assert _resolve_helm_timeout_classification({"CrashLoopBackOff"}) == "GenericHelmTimeout"
+    assert (
+        _resolve_helm_timeout_classification({"CrashLoopBackOff"})
+        == "GenericHelmTimeout"
+    )
 
 
 def test_get_advanced_helm_timeout_fault_type_from_error_message():
