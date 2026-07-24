@@ -59,7 +59,7 @@ setup(
     extras_require={
         "linting": [
             "mypy>=1.13.0",
-            "ruff>=0.7.2",
+            "ruff>=0.7.2,<0.16.0",
             "types-jmespath>=1.0.2",
             "types-psutil>=6.1.0",
             "types-pyyaml>=6.0.12",
