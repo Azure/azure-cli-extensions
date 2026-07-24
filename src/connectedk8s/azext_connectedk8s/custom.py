@@ -3073,17 +3073,21 @@ def upgrade_agents(
     _, error_helm_upgrade = response_helm_upgrade.communicate()
 
     if response_helm_upgrade.returncode != 0:
-        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
-        if any(
-            message in helm_upgrade_error_message
-            for message in consts.Helm_Install_Release_Userfault_Messages
-        ):
-            telemetry.set_user_fault()
-        telemetry.set_exception(
-            exception=Exception(error_helm_upgrade.decode("ascii")),
-            fault_type=consts.Install_HelmRelease_Fault_Type,
-            summary="Unable to install helm release",
+        helm_upgrade_error_message = utils.append_timeout_diagnostics(
+            utils.process_helm_error_detail(error_helm_upgrade.decode("ascii")),
+            helm_operation="upgrade",
         )
+        if not utils.is_advanced_helm_timeout_diagnostics(helm_upgrade_error_message):
+            if any(
+                message in helm_upgrade_error_message
+                for message in consts.Helm_Install_Release_Userfault_Messages
+            ):
+                telemetry.set_user_fault()
+            telemetry.set_exception(
+                exception=Exception(helm_upgrade_error_message),
+                fault_type=consts.Install_HelmRelease_Fault_Type,
+                summary="Unable to install helm release",
+            )
         raise CLIInternalError(
             str.format(consts.Upgrade_Agent_Failure, helm_upgrade_error_message)
         )
