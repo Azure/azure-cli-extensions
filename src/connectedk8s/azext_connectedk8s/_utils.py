@@ -114,7 +114,9 @@ def _get_event_timestamp(event: Any) -> str:
     return str(timestamp or "")
 
 
-def _collect_timeout_diagnostics_from_pods(pods: list[Any]) -> tuple[list[str], set[str]]:
+def _collect_timeout_diagnostics_from_pods(
+    pods: list[Any],
+) -> tuple[list[str], set[str]]:
     evidence: list[str] = []
     classifications: set[str] = set()
 
@@ -150,19 +152,21 @@ def _collect_timeout_diagnostics_from_pods(pods: list[Any]) -> tuple[list[str], 
             elif reason in ("CreateContainerConfigError", "CreateContainerError"):
                 classifications.add("ContainerCreateFailure")
 
-            detail = (
-                f"Pod {pod_name} container {container_name} is waiting: {reason}"
-            )
+            detail = f"Pod {pod_name} container {container_name} is waiting: {reason}"
             if restart_count is not None:
                 detail += f", restarts={restart_count}"
             if message:
-                detail += f", message={_truncate_timeout_diagnostic_message(str(message))}"
+                detail += (
+                    f", message={_truncate_timeout_diagnostic_message(str(message))}"
+                )
             evidence.append(detail)
 
     return evidence, classifications
 
 
-def _collect_timeout_diagnostics_from_events(events: list[Any]) -> tuple[list[str], set[str]]:
+def _collect_timeout_diagnostics_from_events(
+    events: list[Any],
+) -> tuple[list[str], set[str]]:
     evidence: list[str] = []
     classifications: set[str] = set()
     warning_events = [
@@ -173,7 +177,9 @@ def _collect_timeout_diagnostics_from_events(events: list[Any]) -> tuple[list[st
     for event in warning_events[: consts.Max_Helm_Timeout_Event_Evidence]:
         reason = _get_object_value(event, "reason") or "<unknown>"
         message = _get_object_value(event, "message") or ""
-        involved_name = _get_object_value(event, "involved_object", "name") or "<unknown>"
+        involved_name = (
+            _get_object_value(event, "involved_object", "name") or "<unknown>"
+        )
         message_lower = str(message).lower()
 
         if reason in ("FailedScheduling", "NotTriggerScaleUp") or any(
@@ -213,7 +219,8 @@ def _collect_timeout_diagnostics_from_events(events: list[Any]) -> tuple[list[st
 
 
 def _collect_clusteridentityoperator_evidence(
-        pods: list[Any], secret_names: set[str] | None) -> tuple[list[str], set[str]]:
+    pods: list[Any], secret_names: set[str] | None
+) -> tuple[list[str], set[str]]:
     evidence: list[str] = []
     classifications: set[str] = set()
     cluster_identity_pods = [
@@ -234,11 +241,15 @@ def _collect_clusteridentityoperator_evidence(
             f"Secret {consts.MSI_Certificate_Secret_Name} is not present in namespace {consts.Arc_Namespace}."
         )
         if not cluster_identity_pods:
-            evidence.append(f"No clusteridentityoperator pod was found in namespace {consts.Arc_Namespace}.")
+            evidence.append(
+                f"No clusteridentityoperator pod was found in namespace {consts.Arc_Namespace}."
+            )
 
     for pod in cluster_identity_pods:
         pod_name = _get_object_value(pod, "metadata", "name")
-        container_statuses = _get_object_value(pod, "status", "container_statuses") or []
+        container_statuses = (
+            _get_object_value(pod, "status", "container_statuses") or []
+        )
         for container_status in container_statuses:
             waiting_reason = _get_object_value(
                 container_status, "state", "waiting", "reason"
@@ -328,7 +339,7 @@ def _build_helm_timeout_telemetry_properties(
 
 
 def _get_helm_timeout_classification_from_properties(
-    telemetry_properties: dict[str, str]
+    telemetry_properties: dict[str, str],
 ) -> str:
     return telemetry_properties.get(
         "Context.Default.AzureCLI.helmTimeoutClassification", ""
@@ -404,12 +415,12 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
         diagnostics_status = "Collected"
 
         try:
-            pods = corev1_api_instance.list_namespaced_pod(
-                consts.Arc_Namespace
-            ).items
+            pods = corev1_api_instance.list_namespaced_pod(consts.Arc_Namespace).items
         except Exception as e:  # pylint: disable=broad-except
             logger.debug(
-                f"Unable to list {consts.Arc_Namespace} pods after Helm timeout.", exc_info=True
+                "Unable to list %s pods after Helm timeout.",
+                consts.Arc_Namespace,
+                exc_info=True,
             )
             diagnostics_status = "Failed"
             return (
@@ -425,7 +436,9 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             ).items
         except Exception as e:  # pylint: disable=broad-except
             logger.debug(
-                f"Unable to list {consts.Arc_Namespace} events after Helm timeout.", exc_info=True
+                "Unable to list %s events after Helm timeout.",
+                consts.Arc_Namespace,
+                exc_info=True,
             )
             diagnostics_status = "Partial"
             evidence.append(
@@ -440,7 +453,9 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             )
         except Exception as e:  # pylint: disable=broad-except
             logger.debug(
-                f"Unable to list {consts.Arc_Namespace} secrets after Helm timeout.", exc_info=True
+                "Unable to list %s secrets after Helm timeout.",
+                consts.Arc_Namespace,
+                exc_info=True,
             )
             diagnostics_status = "Partial"
             evidence.append(
@@ -450,8 +465,8 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             secret_names = None
 
         pod_evidence, pod_classifications = _collect_timeout_diagnostics_from_pods(pods)
-        event_evidence, event_classifications = _collect_timeout_diagnostics_from_events(
-            events
+        event_evidence, event_classifications = (
+            _collect_timeout_diagnostics_from_events(events)
         )
         (
             identity_evidence,
@@ -472,7 +487,9 @@ def _collect_arc_agent_timeout_diagnostics() -> tuple[str, dict[str, str]]:
             )
             omitted_count = len(evidence) - consts.Max_Helm_Timeout_Diagnostic_Evidence
             if omitted_count > 0:
-                evidence_summary += f"\n... {omitted_count} additional signal(s) omitted."
+                evidence_summary += (
+                    f"\n... {omitted_count} additional signal(s) omitted."
+                )
             logger.debug(
                 "Read-only cluster checks after Helm timeout classified as %s. Evidence:\n%s",
                 resolved_classification,
@@ -522,7 +539,9 @@ def append_timeout_diagnostics(
         in HELM_TIMEOUT_USER_FAULT_CLASSIFICATIONS
     ):
         telemetry.set_user_fault()
-    _set_helm_timeout_classification_exception(f"{error_message}\n\n{diagnostics}", telemetry_properties)
+    _set_helm_timeout_classification_exception(
+        f"{error_message}\n\n{diagnostics}", telemetry_properties
+    )
 
     return (
         f"{error_message}\n\n"
