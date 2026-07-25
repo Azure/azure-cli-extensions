@@ -1,0 +1,30 @@
+{
+  "${DOLLAR}schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "shellExtensions": [
+    {
+      "name": "AzPush",
+      "type": "shellExtension",
+      "properties": {
+      },
+      "package": {
+        "reference": {
+          "path": "arcdata-cli.tar"
+        }
+      },
+      "launch": {
+        "command": [
+          "/bin/bash",
+          "-c",
+          "az login --identity && ./push-to-blob.sh"
+        ],
+        "identity": {
+          "type": "UserAssigned",
+          "userAssignedIdentities": [
+            "/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/arcdata-ev2-helper/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ev2-shell-runner-arc-helm-extension"
+          ]
+        }
+      }
+    }
+  ]
+}
