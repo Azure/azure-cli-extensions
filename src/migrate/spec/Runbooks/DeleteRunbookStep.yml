@@ -1,0 +1,25 @@
+info:
+  name: DeleteRunbookStep
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/DeleteStep?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "stepId": "step1"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

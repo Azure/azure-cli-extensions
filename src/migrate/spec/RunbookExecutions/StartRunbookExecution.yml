@@ -1,0 +1,25 @@
+info:
+  name: CreateOrUpdateRunbookExecution
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/executions/{{RunbookExecutionName}}?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "properties": {}
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

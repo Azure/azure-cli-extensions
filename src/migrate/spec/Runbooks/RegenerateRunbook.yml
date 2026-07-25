@@ -1,0 +1,19 @@
+info:
+  name: RegenerateRunbook
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/Regenerate?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

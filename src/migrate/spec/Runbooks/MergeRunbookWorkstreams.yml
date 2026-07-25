@@ -1,0 +1,29 @@
+info:
+  name: MergeRunbookWorkstreams
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/MergeWorkstreams?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "workstreamId": [
+          "workstream-1",
+          "workstream-2"
+        ],
+        "newWorkstreamName": "merged-workstream"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

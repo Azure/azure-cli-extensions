@@ -1,0 +1,27 @@
+info:
+  name: PerformRunbookExecutionAction
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/executions/{{RunbookExecutionName}}/PerformAction?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "action": 1,
+        "targetId": "",
+        "migrationEntityIds": []
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

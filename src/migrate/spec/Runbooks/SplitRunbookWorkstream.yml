@@ -1,0 +1,32 @@
+info:
+  name: SplitRunbookWorkstream
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/SplitWorkstream?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "sourceWorkstreamId": "workstream-source",
+        "stepIds": [
+          "step1"
+        ],
+        "migrationEntityIds": [
+          "entity-1"
+        ],
+        "newWorkstreamName": "new-workstream"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

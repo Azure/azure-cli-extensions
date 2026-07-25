@@ -1,0 +1,27 @@
+info:
+  name: ProvideRunbookExecutionStepApproval
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: https://management.azure.com/{{MigrateProjectResourceId}}/runbooks/{{RunbookName}}/executions/{{RunbookExecutionName}}/ProvideApproval?api-version={{RunbooksAPIVersion}}
+  params:
+    - name: api-version
+      value: "{{RunbooksAPIVersion}}"
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "action": "Approve",
+        "targetId": "step1",
+        "migrationEntityIds": []
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
