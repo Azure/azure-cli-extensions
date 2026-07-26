@@ -7,52 +7,85 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import AvailableOperations
+    from ._models_py3 import DiskSnapshot
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorResponse
+    from ._models_py3 import OperationDetail
+    from ._models_py3 import OperationDisplay
     from ._models_py3 import Port
+    from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
-    from ._models_py3 import SwiftletBundle
-    from ._models_py3 import SwiftletBundleListResult
-    from ._models_py3 import SwiftletImage
-    from ._models_py3 import SwiftletImageListResult
-    from ._models_py3 import SwiftletOperationListResult
-    from ._models_py3 import SwiftletOperationValue
     from ._models_py3 import TrackedResource
+    from ._models_py3 import TrackedResourceCreateParameters
     from ._models_py3 import UpdateResource
     from ._models_py3 import VirtualMachine
+    from ._models_py3 import VirtualMachineBundle
+    from ._models_py3 import VirtualMachineBundleListResult
+    from ._models_py3 import VirtualMachineBundleProperties
+    from ._models_py3 import VirtualMachineCreateParameters
+    from ._models_py3 import VirtualMachineImage
+    from ._models_py3 import VirtualMachineImageListResult
+    from ._models_py3 import VirtualMachineImageProperties
     from ._models_py3 import VirtualMachineListResult
+    from ._models_py3 import VirtualMachineSnapshot
+    from ._models_py3 import VirtualMachineSnapshotCreateParameters
+    from ._models_py3 import VirtualMachineSnapshotListResult
+    from ._models_py3 import VirtualMachineSnapshotUpdate
     from ._models_py3 import VirtualMachineUpdate
 except (SyntaxError, ImportError):
+    from ._models import AvailableOperations  # type: ignore
+    from ._models import DiskSnapshot  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorResponse  # type: ignore
+    from ._models import OperationDetail  # type: ignore
+    from ._models import OperationDisplay  # type: ignore
     from ._models import Port  # type: ignore
+    from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
-    from ._models import SwiftletBundle  # type: ignore
-    from ._models import SwiftletBundleListResult  # type: ignore
-    from ._models import SwiftletImage  # type: ignore
-    from ._models import SwiftletImageListResult  # type: ignore
-    from ._models import SwiftletOperationListResult  # type: ignore
-    from ._models import SwiftletOperationValue  # type: ignore
     from ._models import TrackedResource  # type: ignore
+    from ._models import TrackedResourceCreateParameters  # type: ignore
     from ._models import UpdateResource  # type: ignore
     from ._models import VirtualMachine  # type: ignore
+    from ._models import VirtualMachineBundle  # type: ignore
+    from ._models import VirtualMachineBundleListResult  # type: ignore
+    from ._models import VirtualMachineBundleProperties  # type: ignore
+    from ._models import VirtualMachineCreateParameters  # type: ignore
+    from ._models import VirtualMachineImage  # type: ignore
+    from ._models import VirtualMachineImageListResult  # type: ignore
+    from ._models import VirtualMachineImageProperties  # type: ignore
     from ._models import VirtualMachineListResult  # type: ignore
+    from ._models import VirtualMachineSnapshot  # type: ignore
+    from ._models import VirtualMachineSnapshotCreateParameters  # type: ignore
+    from ._models import VirtualMachineSnapshotListResult  # type: ignore
+    from ._models import VirtualMachineSnapshotUpdate  # type: ignore
     from ._models import VirtualMachineUpdate  # type: ignore
 
 __all__ = [
+    'AvailableOperations',
+    'DiskSnapshot',
     'ErrorAdditionalInfo',
     'ErrorResponse',
+    'OperationDetail',
+    'OperationDisplay',
     'Port',
+    'ProxyResource',
     'Resource',
-    'SwiftletBundle',
-    'SwiftletBundleListResult',
-    'SwiftletImage',
-    'SwiftletImageListResult',
-    'SwiftletOperationListResult',
-    'SwiftletOperationValue',
     'TrackedResource',
+    'TrackedResourceCreateParameters',
     'UpdateResource',
     'VirtualMachine',
+    'VirtualMachineBundle',
+    'VirtualMachineBundleListResult',
+    'VirtualMachineBundleProperties',
+    'VirtualMachineCreateParameters',
+    'VirtualMachineImage',
+    'VirtualMachineImageListResult',
+    'VirtualMachineImageProperties',
     'VirtualMachineListResult',
+    'VirtualMachineSnapshot',
+    'VirtualMachineSnapshotCreateParameters',
+    'VirtualMachineSnapshotListResult',
+    'VirtualMachineSnapshotUpdate',
     'VirtualMachineUpdate',
 ]
