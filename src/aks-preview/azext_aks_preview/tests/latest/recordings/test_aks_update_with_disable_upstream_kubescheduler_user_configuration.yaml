@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2euap/kubernetesVersions?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2euap/kubernetesVersions?api-version=2026-05-02-preview
   response:
     body:
       string: "{\n \"values\": [\n  {\n   \"version\": \"1.33\",\n   \"capabilities\":
@@ -249,7 +249,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/managedClusters/cliakstest000001''
@@ -298,8 +298,8 @@ interactions:
       {"podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
       "outboundType": "loadBalancer", "loadBalancerSku": "standard"}, "disableLocalAccounts":
       false, "storageProfile": {}, "bootstrapProfile": {"artifactSource": "Direct"},
-      "schedulerProfile": {"schedulerInstanceProfiles": {"upstream": {"schedulerConfigMode":
-      "ManagedByCRD"}}}}}'
+      "schedulerProfile": {"upstream": {"schedulerConfigMode":
+      "ManagedByCRD"}}}}'
     headers:
       AKSHTTPCustomFeatures:
       - Microsoft.ContainerService/UserDefinedSchedulerConfigurationPreview
@@ -321,7 +321,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -375,9 +375,8 @@ interactions:
         \  \"live-patching-controller\": {\n    \"enableV2\": true\n   },\n   \"static-egress-controller\":
         {\n    \"enableV2\": true\n   }\n  },\n  \"nodeProvisioningProfile\": {\n
         \  \"mode\": \"Manual\",\n   \"defaultNodePools\": \"Auto\"\n  },\n  \"bootstrapProfile\":
-        {\n   \"artifactSource\": \"Direct\"\n  },\n  \"schedulerProfile\": {\n   \"schedulerInstanceProfiles\":
-        {\n    \"upstream\": {\n     \"schedulerConfigMode\": \"ManagedByCRD\"\n    }\n
-        \  }\n  }\n },\n \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n
+        {\n   \"artifactSource\": \"Direct\"\n  },\n  \"schedulerProfile\": {\n   \n    \"upstream\": {\n     \"schedulerConfigMode\": \"ManagedByCRD\"\n    }\n
+        \  \n  }\n },\n \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n
         \ \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n
         \ \"name\": \"Base\",\n  \"tier\": \"Free\"\n }\n}"
     headers:
@@ -1130,7 +1129,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -1188,8 +1187,8 @@ interactions:
         true\n   },\n   \"static-egress-controller\": {\n    \"enableV2\": true\n
         \  }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"Manual\",\n   \"defaultNodePools\":
         \"Auto\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n
-        \ },\n  \"schedulerProfile\": {\n   \"schedulerInstanceProfiles\": {\n    \"upstream\":
-        {\n     \"schedulerConfigMode\": \"ManagedByCRD\"\n    }\n   }\n  }\n },\n
+        \ },\n  \"schedulerProfile\": {\n   \n    \"upstream\":
+        {\n     \"schedulerConfigMode\": \"ManagedByCRD\"\n    }\n   \n  }\n },\n
         \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n
         \ \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n
         \ \"name\": \"Base\",\n  \"tier\": \"Free\"\n },\n \"eTag\": \"c4cf3ccf-6d88-46c0-a7ea-6a1c452657b1\"\n}"
@@ -1236,7 +1235,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -1294,8 +1293,8 @@ interactions:
         true\n   },\n   \"static-egress-controller\": {\n    \"enableV2\": true\n
         \  }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"Manual\",\n   \"defaultNodePools\":
         \"Auto\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n
-        \ },\n  \"schedulerProfile\": {\n   \"schedulerInstanceProfiles\": {\n    \"upstream\":
-        {\n     \"schedulerConfigMode\": \"ManagedByCRD\"\n    }\n   }\n  }\n },\n
+        \ },\n  \"schedulerProfile\": {\n   \n    \"upstream\":
+        {\n     \"schedulerConfigMode\": \"ManagedByCRD\"\n    }\n   \n  }\n },\n
         \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n
         \ \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n
         \ \"name\": \"Base\",\n  \"tier\": \"Free\"\n },\n \"eTag\": \"c4cf3ccf-6d88-46c0-a7ea-6a1c452657b1\"\n}"
@@ -1354,8 +1353,7 @@ interactions:
       "disableLocalAccounts": false, "securityProfile": {}, "storageProfile": {},
       "workloadAutoScalerProfile": {}, "metricsProfile": {"costAnalysis": {"enabled":
       false}}, "nodeProvisioningProfile": {"mode": "Manual", "defaultNodePools": "Auto"},
-      "bootstrapProfile": {"artifactSource": "Direct"}, "schedulerProfile": {"schedulerInstanceProfiles":
-      {"upstream": {"schedulerConfigMode": "Default"}}}}}'
+      "bootstrapProfile": {"artifactSource": "Direct"}, "schedulerProfile": {"upstream": {"schedulerConfigMode": "Default"}}}}'
     headers:
       AKSHTTPCustomFeatures:
       - Microsoft.ContainerService/UserDefinedSchedulerConfigurationPreview
@@ -1377,7 +1375,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -1435,8 +1433,8 @@ interactions:
         true\n   },\n   \"static-egress-controller\": {\n    \"enableV2\": true\n
         \  }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"Manual\",\n   \"defaultNodePools\":
         \"Auto\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n
-        \ },\n  \"schedulerProfile\": {\n   \"schedulerInstanceProfiles\": {\n    \"upstream\":
-        {\n     \"schedulerConfigMode\": \"Default\"\n    }\n   }\n  }\n },\n \"identity\":
+        \ },\n  \"schedulerProfile\": {\n   \n    \"upstream\":
+        {\n     \"schedulerConfigMode\": \"Default\"\n    }\n   \n  }\n },\n \"identity\":
         {\n  \"type\": \"SystemAssigned\",\n  \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n
         \ \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n
         \ \"name\": \"Base\",\n  \"tier\": \"Free\"\n },\n \"eTag\": \"c4cf3ccf-6d88-46c0-a7ea-6a1c452657b1\"\n}"
@@ -1790,7 +1788,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -1848,8 +1846,8 @@ interactions:
         true\n   },\n   \"static-egress-controller\": {\n    \"enableV2\": true\n
         \  }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"Manual\",\n   \"defaultNodePools\":
         \"Auto\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n
-        \ },\n  \"schedulerProfile\": {\n   \"schedulerInstanceProfiles\": {\n    \"upstream\":
-        {\n     \"schedulerConfigMode\": \"Default\"\n    }\n   }\n  }\n },\n \"identity\":
+        \ },\n  \"schedulerProfile\": {\n   \n    \"upstream\":
+        {\n     \"schedulerConfigMode\": \"Default\"\n    }\n   \n  }\n },\n \"identity\":
         {\n  \"type\": \"SystemAssigned\",\n  \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n
         \ \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n
         \ \"name\": \"Base\",\n  \"tier\": \"Free\"\n },\n \"eTag\": \"ede250ca-4f56-48de-8c63-b9a3a6810235\"\n}"
@@ -1897,7 +1895,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.3 (Linux-6.11.0-26-generic-x86_64-with-glibc2.39)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-04-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2026-05-02-preview
   response:
     body:
       string: ''

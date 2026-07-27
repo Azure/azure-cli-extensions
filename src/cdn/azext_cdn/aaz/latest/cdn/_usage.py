@@ -22,9 +22,9 @@ class Usage(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cdn/checkresourceusage", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cdn/checkresourceusage", "2026-04-01-preview"],
         ]
     }
 
@@ -103,7 +103,7 @@ class Usage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }

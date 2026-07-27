@@ -5,8 +5,10 @@
 
 from knack.prompting import NoTTYException, prompt_pass
 from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group, validate_tags)
+from azure.cli.core.util import parse_proxy_resource_id
 from typing import Any, Dict, Iterable, Optional
 
 
@@ -70,3 +72,85 @@ def validate_replica_count(ns):
         return
     if ns.replica_count < 1 or ns.replica_count > 16:
         raise CLIError('Replica count must be between 1 and 16, inclusive.')
+
+
+def ip_address_validator(ns):
+    if (ns.end_ip_address and not _validate_ranges_in_ip(ns.end_ip_address)) or \
+       (ns.start_ip_address and not _validate_ranges_in_ip(ns.start_ip_address)):
+        raise CLIError('Invalid IP address. Provide an IPv4 address, for example 12.12.12.12.')
+    if ns.start_ip_address and ns.end_ip_address:
+        _validate_start_and_end_ip_address_order(ns.start_ip_address, ns.end_ip_address)
+
+
+def public_access_validator(ns):
+    if ns.public_access:
+        val = ns.public_access.lower()
+        if not (val in ['disabled', 'enabled', 'all', 'none'] or
+                (len(val.split('-')) == 1 and _validate_ip(val)) or
+                (len(val.split('-')) == 2 and _validate_ip(val))):
+            raise CLIError('Invalid value for --public-access. '
+                           'Allowed values: \'Disabled\', \'Enabled\', \'All\', \'None\', \'<startIP>\', '
+                           'or \'<startIP>-<endIP>\', where each IP ranges from 0.0.0.0 to 255.255.255.255.')
+        if len(val.split('-')) == 2:
+            vals = val.split('-')
+            _validate_start_and_end_ip_address_order(vals[0], vals[1])
+
+
+def _validate_start_and_end_ip_address_order(start_ip, end_ip):
+    start_ip_elements = [int(octet) for octet in start_ip.split('.')]
+    end_ip_elements = [int(octet) for octet in end_ip.split('.')]
+
+    for idx in range(4):
+        if start_ip_elements[idx] < end_ip_elements[idx]:
+            break
+        if start_ip_elements[idx] > end_ip_elements[idx]:
+            raise ArgumentUsageError('The end IP address is smaller than the start IP address.')
+
+
+def _validate_ip(ips):
+    parsed_input = ips.split('-')
+    if len(parsed_input) == 1:
+        return _validate_ranges_in_ip(parsed_input[0])
+    if len(parsed_input) == 2:
+        return _validate_ranges_in_ip(parsed_input[0]) and _validate_ranges_in_ip(parsed_input[1])
+    return False
+
+
+def _validate_ranges_in_ip(ip):
+    parsed_ip = ip.split('.')
+    if len(parsed_ip) == 4 and _valid_range(parsed_ip[0]) and _valid_range(parsed_ip[1]) \
+       and _valid_range(parsed_ip[2]) and _valid_range(parsed_ip[3]):
+        return True
+    return False
+
+
+def _valid_range(addr_range):
+    if addr_range.isdigit() and 0 <= int(addr_range) <= 255:
+        return True
+    return False
+
+
+def validate_private_endpoint_connection_id(cmd, namespace):  # pylint: disable=unused-argument
+    if getattr(namespace, 'connection_id', None):
+        result = parse_proxy_resource_id(namespace.connection_id)
+        provider_type = '{}/{}'.format(result.get('namespace'), result.get('type')).lower() if result else ''
+        child_type = (result.get('child_type_1') or '').lower() if result else ''
+        if (not result or
+                provider_type != 'microsoft.horizondb/clusters' or
+                child_type != 'privateendpointconnections' or
+                result.get('last_child_num') != 1):
+            raise CLIError('The --id value must be a HorizonDB cluster private endpoint connection resource ID.')
+        namespace.resource_group_name = result.get('resource_group')
+        namespace.cluster_name = result.get('name')
+        namespace.private_endpoint_connection_name = result.get('child_name_1')
+
+    if not all([
+            getattr(namespace, 'resource_group_name', None),
+            getattr(namespace, 'cluster_name', None),
+            getattr(namespace, 'private_endpoint_connection_name', None)]):
+        raise CLIError(
+            'Specify either --id <private-endpoint-connection-id> or '
+            '--name <private-endpoint-connection-name> --cluster-name <cluster-name> '
+            '--resource-group <resource-group>.')
+    if hasattr(namespace, 'connection_id'):
+        del namespace.connection_id

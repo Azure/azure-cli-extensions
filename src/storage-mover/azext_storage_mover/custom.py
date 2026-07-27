@@ -244,6 +244,7 @@ def endpoint_create_for_s3_with_hmac(cmd, endpoint_name, resource_group, storage
         endpoint_name, resource_group, storage_mover_name,
         source_uri, source_type, access_key_uri, secret_key_uri,
         other_source_type_description, endpoint_kind, description)
+    args["mi_system_assigned"] = "True"
     return Create_Endpoint(args)
 
 
