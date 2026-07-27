@@ -3667,6 +3667,22 @@ def load_arguments(self, _):
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
 
+    # aks identity-binding commands
+    for scope in ['aks identity-binding create',
+                  'aks identity-binding update']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "allowed_subjects_from_file",
+                options_list=["--allowed-subjects-from-file"],
+                type=file_type,
+                completer=FilesCompleter(),
+                help="Path to a JSON file containing an array of subjects authorized to use this "
+                     "identity binding for token exchange. Each entry has a required "
+                     "'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes "
+                     "label selector with 'matchLabels' (an array of \"key=value\" strings) and/or "
+                     "'matchExpressions'. Maximum 100 entries.",
+            )
+
     # aks list-vm-skus command
     with self.argument_context("aks list-vm-skus") as c:
         c.argument(
