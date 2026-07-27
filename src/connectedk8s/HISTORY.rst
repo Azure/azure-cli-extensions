@@ -12,6 +12,7 @@ Release History
 * Move kubeadm distribution detection to be evaluated last to prevent incorrect cluster distribution classification.
 * Updated CLIENT_PROXY_VERSION to 1.3.034631.
 * Removed workload identity preview feature flag.
+* Added telemetry for pre-onboarding diagnostic results, including diagnostics execution failures.
 
 1.11.1
 +++++++
