@@ -758,9 +758,9 @@ def cleanup_scenario13(test):
 
 def call_scenario13(test):
     """# Testcase: scenario13 cluster update with nullable properties set to null"""
-    setup_scenario11(test)
+    setup_scenario13(test)
     step_update_nullable_properties(test, checks=[])
-    cleanup_scenario11(test)
+    cleanup_scenario13(test)
 
 
 def step_update_nullable_properties(test, checks=None):
