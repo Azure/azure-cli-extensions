@@ -18,7 +18,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SkuNotAvailableError)
 
-from azure.cli.core.azclierror import CLIError
+from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -47,16 +47,72 @@ def _set_repair_map_url(url):
 
 
 def _uses_managed_disk(vm):
-    if vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk') is None:
+    if vm.storage_profile.os_disk.managed_disk is None:
         return False
     return True
 
 
 def _is_gen2(vm):
-    gen = vm.get('instanceView', {}).get('hyperVGeneration')
-    if gen and gen.lower() == 'v2':
+    gen = 1
+    gen = vm.instance_view.hyper_v_generation
+    if gen.lower() == 'v2':
         return 2
     return 1
+
+
+def _quote_cmd_arg(arg):
+    """
+    Quote a single argument for safe use on a Windows 'cmd /c' command line.
+
+    The argument is always wrapped in double quotes so that cmd.exe treats shell
+    metacharacters such as & | < > ( ) ^ as literal text instead of operators.
+    Embedded double quotes and any backslashes that precede them are escaped using
+    the Windows CommandLineToArgvW convention so the receiving program parses the
+    original value. This prevents command injection from untrusted values (for
+    example source VM tags) that are interpolated into the command string.
+    See MSRC 115198 / VULN-185362.
+    """
+    result = '"'
+    backslash_count = 0
+    for char in arg:
+        if char == '\\':
+            backslash_count += 1
+        elif char == '"':
+            # Double the backslashes that precede the quote, then escape the quote.
+            result += '\\' * (backslash_count * 2 + 1)
+            result += '"'
+            backslash_count = 0
+        else:
+            result += '\\' * backslash_count
+            result += char
+            backslash_count = 0
+    # Double any trailing backslashes so they do not escape the closing quote.
+    result += '\\' * (backslash_count * 2)
+    result += '"'
+    return result
+
+
+# Characters that cannot be safely carried through a Windows 'cmd /c' command line when
+# interpolated from an untrusted tag value (for example a source VM tag copied via
+# --copy-tags). Double quotes and ASCII control characters break argument tokenization,
+# and '%' / '!' are expanded by cmd.exe as environment / delayed-expansion variables even
+# inside double quotes -- '%' in particular cannot be reliably escaped on a 'cmd /c' line
+# (a leading '^' is preserved as a literal caret and corrupts the value). Such characters
+# are therefore rejected at the boundary rather than escaped. See MSRC 115198 / VULN-185362.
+def _validate_tags_for_command(merged_tags):
+    """
+    Reject tag keys and values that contain characters which are unsafe to interpolate
+    into the 'az' command string. Raises InvalidArgumentValueError on the first offending
+    key or value; returns None when every tag is safe.
+    """
+    for tag_key, tag_value in merged_tags.items():
+        for tag_field in (str(tag_key), str(tag_value)):
+            if any(unsafe_char in tag_field for unsafe_char in ('"', '%', '!')) or \
+                    any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+                raise InvalidArgumentValueError(
+                    f'Tag keys and values must not contain double quotes, percent signs, '
+                    f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
+                )
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):
@@ -71,10 +127,6 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # If command does not start with 'az' then raise exception
     if not tokenized_command or tokenized_command[0] != 'az':
         raise AzCommandError("The command string is not an 'az' command!")
-    # If run on windows, add 'cmd /c'
-    windows_os_name = 'nt'
-    if os.name == windows_os_name:
-        tokenized_command = ['cmd', '/c'] + tokenized_command
 
     # Hide sensitive data such as passwords from logs
     if secure_params:
@@ -82,7 +134,30 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
             if param:
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
-    process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+    # On Windows, 'az' resolves to a batch file (az.cmd) so the call must be launched
+    # through cmd.exe. Handing the tokenized list to subprocess would let cmd.exe
+    # re-interpret shell metacharacters: subprocess.list2cmdline only quotes tokens that
+    # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
+    # and the '&' would be parsed as a command separator. To prevent command injection
+    # from untrusted interpolated values (for example source VM tags), build the command
+    # line explicitly and wrap every token in double quotes so cmd.exe treats
+    # metacharacters as literal text.
+    #
+    # The whole command is additionally wrapped in one outer pair of quotes and invoked
+    # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
+    # line (its documented /c behavior), which would unbalance the quoting around the final
+    # argument and re-expose metacharacters. With '/s' and a leading+trailing quote, cmd.exe
+    # strips exactly those outer quotes and parses the remainder verbatim, keeping every
+    # per-token quote balanced. See MSRC 115198 / VULN-185362.
+    windows_os_name = 'nt'
+    if os.name == windows_os_name:
+        quoted_command = ' '.join(_quote_cmd_arg(token) for token in tokenized_command)
+        command_to_run = 'cmd /s /c "' + quoted_command + '"'
+    else:
+        command_to_run = tokenized_command
+
+    process = subprocess.Popen(command_to_run, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
@@ -227,9 +302,9 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
     try:
         logger.info('Checking VM power state...\n')
         VM_TURNED_ON = False
-        vm_statuses = vm_instance_view.get('instanceView', {}).get('statuses', [])
+        vm_statuses = vm_instance_view.instance_view.statuses
         for vm_status in vm_statuses:
-            if vm_status.get('code') == VM_RUNNING:
+            if vm_status.code == VM_RUNNING:
                 VM_TURNED_ON = True
         # VM already on
         if VM_TURNED_ON:
@@ -263,8 +338,8 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
 
 
 def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
-    location = source_vm.get('location')
-    source_vm_sku = source_vm.get('hardwareProfile', {}).get('vmSize')
+    location = source_vm.location
+    source_vm_sku = source_vm.hardware_profile.vm_size
 
     if requested_sku:
         # override the auto-selection with a provided sku
@@ -337,13 +412,13 @@ def _fetch_encryption_settings(source_vm):
     key_vault = None
     kekurl = None
     secreturl = None
-    if source_vm.get('storageProfile', {}).get('osDisk', {}).get('encryptionSettings') is not None:
+    if source_vm.storage_profile.os_disk.encryption_settings is not None:
         return Encryption.DUAL, key_vault, kekurl, secreturl
     # Unmanaged disk only support dual
     if not _uses_managed_disk(source_vm):
         return Encryption.NONE, key_vault, kekurl, secreturl
 
-    disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.enabled,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
                         .format(i=disk_id)
     encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
@@ -359,7 +434,7 @@ def _fetch_encryption_settings(source_vm):
 
 
 def _check_hyperV_gen(source_vm):
-    disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
     hyperVGen = loads(_call_az_command(show_disk_command))
@@ -370,7 +445,7 @@ def _check_hyperV_gen(source_vm):
 # this function seems redundant
 # TODO: test if this can be merged with _check_hyperV_gen, the test mid-function seems to be a relic
 def _check_linux_hyperV_gen(source_vm):
-    disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
     disk_hyperVGen = loads(_call_az_command(show_disk_command))
@@ -378,7 +453,7 @@ def _check_linux_hyperV_gen(source_vm):
     if disk_hyperVGen != 'V2':
         logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
-        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.get('id'))
+        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
         vm_hyperVGen = hyperVGen_list[0]
         if vm_hyperVGen != 'V2':
@@ -481,7 +556,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
 
 
 def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
-    location = source_vm.get('location')
+    location = source_vm.location
     publisher = "MicrosoftWindowsServer"
     offer = "WindowsServer"
     sku = "2022-datacenter-smalldisk"
@@ -500,8 +575,8 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
 
     logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
-    os_image_ref = source_vm.get('storageProfile', {}).get('imageReference', {})
-    if os_image_ref and os_image_ref.get('version') in urns[0]:
+    os_image_ref = source_vm.storage_profile.image_reference
+    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
@@ -512,13 +587,13 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
 
 
 def _fetch_matching_windows_os_urn(source_vm):
-    location = source_vm.get('location')
+    location = source_vm.location
 
     # We will prefer to fetch image using source vm sku, that we match the CVM requirements.
-    if source_vm.get('storageProfile', {}).get('imageReference') is not None:
-        sku = source_vm['storageProfile']['imageReference'].get('sku')
-        offer = source_vm['storageProfile']['imageReference'].get('offer')
-        publisher = source_vm['storageProfile']['imageReference'].get('publisher')
+    if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
+        sku = source_vm.storage_profile.image_reference.sku
+        offer = source_vm.storage_profile.image_reference.offer
+        publisher = source_vm.storage_profile.image_reference.publisher
         fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
         logger.info('Fetching compatible Windows OS images from gallery V2...')
         urns = loads(_call_az_command(fetch_urn_command))
@@ -791,8 +866,8 @@ def _fetch_architecture(source_vm):
     """
     Returns the architecture of the source VM.
     """
-    location = source_vm.get('location')
-    vm_size = source_vm.get('hardwareProfile', {}).get('vmSize')
+    location = source_vm.location
+    vm_size = source_vm.hardware_profile.vm_size
     architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
                             .format(loc=location, vm_size=vm_size)
 
@@ -806,11 +881,11 @@ def _fetch_non_standard_security_type(source_vm):
     """
     Returns security type if security type is not standard and needs to be set.
     """
-    if source_vm.get('securityProfile', {}).get('securityType') is None:
+    if source_vm.security_profile is None or source_vm.security_profile.security_type is None:
         return
-    if source_vm['securityProfile']['securityType'].lower() == "standard":
+    if source_vm.security_profile.security_type.lower() == "standard":
         return
-    return source_vm['securityProfile']['securityType']
+    return source_vm.security_profile.security_type
 
 
 def _fetch_vm_security_profile_parameters(source_vm):
@@ -819,23 +894,22 @@ def _fetch_vm_security_profile_parameters(source_vm):
     if non_standard_security_type is None:
         return create_repair_vm_command
     create_repair_vm_command += ' --security-type {securityType}'.format(securityType=non_standard_security_type)
-    if source_vm.get('securityProfile', {}).get('uefiSettings') is not None:
-        if source_vm['securityProfile']['uefiSettings'].get('secureBootEnabled') is not None:
-            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm['securityProfile']['uefiSettings']['secureBootEnabled'])
+    if source_vm.security_profile.uefi_settings is not None:
+        if source_vm.security_profile.uefi_settings.secure_boot_enabled is not None:
+            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm.security_profile.uefi_settings.secure_boot_enabled)
 
-        if source_vm['securityProfile']['uefiSettings'].get('vTpmEnabled') is not None:
-            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm['securityProfile']['uefiSettings']['vTpmEnabled'])
+        if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
+            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)
     return create_repair_vm_command
 
 
 def _fetch_osdisk_security_profile_parameters(source_vm):
     create_repair_vm_command = ''
-    managed_disk = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk')
-    if managed_disk is not None and managed_disk.get('securityProfile') is not None:
-        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=managed_disk['securityProfile'].get('securityEncryptionType'))
+    if source_vm.storage_profile.os_disk.managed_disk is not None and source_vm.storage_profile.os_disk.managed_disk.security_profile is not None:
+        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.security_encryption_type)
 
-        if managed_disk['securityProfile'].get('diskEncryptionSet') is not None:
-            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=managed_disk['securityProfile']['diskEncryptionSet'].get('id'))
+        if source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set is not None:
+            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
 
     return create_repair_vm_command
 

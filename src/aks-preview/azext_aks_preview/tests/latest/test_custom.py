@@ -19,6 +19,7 @@ from azext_aks_preview.custom import (
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azext_aks_preview.tests.latest.test_vm_skus import _make_sku, _make_restriction
+from knack.util import CLIError
 
 
 class TestCustomCommand(unittest.TestCase):
@@ -55,21 +56,14 @@ class TestCustomCommand(unittest.TestCase):
         self.assertEqual(aks_stop(self.cmd, self.client, "rg", "name", False), None)
 
     def test_aks_scale_with_none_agent_pool_profiles(self):
-        """Test aks_scale handles None agent_pool_profiles gracefully"""
-        # Test case: automatic cluster with hosted system components, no agent pools
+        """Managed System Pool clusters return a useful error instead of len(None)."""
         mc = self.models.ManagedCluster(location="test_location")
-        mc.agent_pool_profiles = None  # This is the key scenario
+        mc.agent_pool_profiles = None
         mc.pod_identity_profile = None
-
         self.client.get = Mock(return_value=mc)
 
-        # Should not raise NoneType error and should return without crashing
-        try:
-            result = aks_scale(self.cmd, self.client, "rg", "name", 3, "nodepool1")
-            # We expect this to complete without NoneType errors
-        except Exception as e:
-            # Should not be a NoneType error
-            self.assertNotIn("NoneType", str(type(e)))
+        with self.assertRaisesRegex(CLIError, "no scalable node pools"):
+            aks_scale(self.cmd, self.client, "rg", "name", 3, "nodepool1")
 
     def test_aks_upgrade_node_image_only_skips_machines_mode_pool(self):
         """Machines mode pools must be skipped during --node-image-only to avoid a known client-side error."""

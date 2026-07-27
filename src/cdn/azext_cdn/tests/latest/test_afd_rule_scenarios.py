@@ -54,12 +54,37 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_rule_set_list_cmd(resource_group, profile_name, checks=list_checks)
 
         rule_set_name = self.create_random_name(prefix='ruleset', length=16)
-        self.afd_rule_set_add_cmd(resource_group, rule_set_name, profile_name)
+        batch_rules = [{
+            'rule-name': 'r0',
+            'order': 0,
+            'match-processing-behavior': 'Continue',
+            'conditions': [],
+            'actions': [{
+                'route-configuration-override': {
+                    'parameters': {
+                        'cache-configuration': {
+                            'cache-behavior': 'HonorOrigin',
+                            'query-string-caching-behavior': 'UseQueryString',
+                            'is-compression-enabled': 'Disabled'
+                        }
+                    }
+                }
+            }]
+        }]
+        self.afd_rule_set_add_cmd(resource_group, rule_set_name, profile_name,
+                                  batch_mode='true',
+                                  rules=batch_rules)
 
         list_checks = [JMESPathCheck('length(@)', 1)]
         self.afd_rule_set_list_cmd(resource_group, profile_name, checks=list_checks)
 
         show_checks = [JMESPathCheck('name', rule_set_name),
+                       JMESPathCheck('batchMode', True),
+                       JMESPathCheck('length(rules)', 1),
+                       JMESPathCheck('rules[0].ruleName', 'r0'),
+                       JMESPathCheck('rules[0].order', 0),
+                       JMESPathCheck('rules[0].actions[0].name', 'RouteConfigurationOverride'),
+                       JMESPathCheck('rules[0].actions[0].parameters.cacheConfiguration.cacheBehavior', 'HonorOrigin'),
                        JMESPathCheck('provisioningState', 'Succeeded')]
         self.afd_rule_set_show_cmd(resource_group, rule_set_name, profile_name, checks=show_checks)
 

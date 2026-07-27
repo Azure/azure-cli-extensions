@@ -90,7 +90,7 @@ class Show(AAZCommand):
         target_backup_id = self.ctx.args.adbbackupid.to_serialized_data()
         next_link = None
         while True:
-            self.ctx.next_link = next_link
+            self.ctx.next_link = next_link if next_link else AAZUndefined
             self.AutonomousDatabaseBackupsListByParent(ctx=self.ctx)()
             backups = self.deserialize_output(self.ctx.vars.backup_list.value, client_flatten=True)
             result = self._find_backup(backups, target_backup_id)

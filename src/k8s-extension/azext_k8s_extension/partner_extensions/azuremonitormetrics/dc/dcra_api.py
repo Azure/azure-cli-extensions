@@ -12,7 +12,7 @@ from .defaults import get_default_dcra_name
 def create_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name, dcr_resource_id):
     from azure.cli.core.util import send_raw_request
     cluster_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}"
-    dcra_name = get_default_dcra_name(cmd, cluster_region, cluster_name)
+    dcra_name = get_default_dcra_name()
     dcra_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{dcra_name}"
     description_str = "Promtheus data collection association between DCR, DCE and target AKS resource"
     # only create or delete the association between the DCR and cluster
