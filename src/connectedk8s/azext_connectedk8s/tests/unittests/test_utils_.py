@@ -5,15 +5,51 @@
 import os
 import sys
 from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-from azext_connectedk8s._utils import (
+
+if isinstance(sys.modules.get("azext_connectedk8s._utils"), MagicMock):
+    sys.modules.pop("azext_connectedk8s._utils", None)
+
+_STUBS = {
+    "azure": MagicMock(),
+    "azure.cli": MagicMock(),
+    "azure.cli.core": MagicMock(),
+    "azure.cli.core.azclierror": MagicMock(),
+    "azure.cli.core.commands": MagicMock(),
+    "azure.cli.core.commands.client_factory": MagicMock(),
+    "azure.cli.core.util": MagicMock(),
+    "azure.core": MagicMock(),
+    "azure.core.exceptions": MagicMock(),
+    "knack": MagicMock(),
+    "knack.log": MagicMock(),
+    "knack.help_files": MagicMock(),
+    "knack.util": MagicMock(),
+    "knack.cli": MagicMock(),
+    "knack.config": MagicMock(),
+    "knack.prompting": MagicMock(),
+    "knack.commands": MagicMock(),
+    "knack.arguments": MagicMock(),
+    "knack.events": MagicMock(),
+    "kubernetes": MagicMock(),
+    "kubernetes.client": MagicMock(),
+    "kubernetes.client.rest": MagicMock(),
+    "msrest": MagicMock(),
+    "msrest.exceptions": MagicMock(),
+    "azext_connectedk8s._client_factory": MagicMock(),
+}
+for mod, stub in _STUBS.items():
+    sys.modules.setdefault(mod, stub)
+
+from azext_connectedk8s._utils import (  # noqa: E402
     _build_helm_timeout_telemetry_properties,
     _collect_timeout_diagnostics_from_events,
     _collect_timeout_diagnostics_from_pods,
     _resolve_helm_timeout_classification,
+    check_cluster_DNS,
     get_advanced_helm_timeout_fault_type,
     get_mcr_path,
     is_helm_timeout_error,
@@ -275,3 +311,41 @@ def test_get_advanced_helm_timeout_fault_type_from_error_message():
 
 if __name__ == "__main__":
     pytest.main()
+
+
+class TestCheckClusterDNS:
+    def _run(self, dns_log):
+        diagnoser_output = []
+        result, _ = check_cluster_DNS(
+            dns_log,
+            os.path.join(os.path.dirname(__file__), "tmp_dns"),
+            False,
+            diagnoser_output,
+        )
+        return result, diagnoser_output
+
+    def test_nxdomain_detected(self):
+        log = "DNS Result: ** server can't find kubernetes.default.svc.cluster.local: NXDOMAIN"
+        result, diag = self._run(log)
+        assert result == "Failed"
+        assert "type=NXDOMAIN" in diag[0]
+
+    def test_servfail_detected(self):
+        log = "DNS Result: ;; Got SERVFAIL reply from 10.96.0.10\n** server can't find kubernetes.default.dns.podman: SERVFAIL"
+        result, diag = self._run(log)
+        assert result == "Failed"
+        assert "type=SERVFAIL" in diag[0]
+
+    def test_timeout_detected(self):
+        log = "DNS Result: ;; connection timed out; no servers could be reached"
+        result, diag = self._run(log)
+        assert result == "Failed"
+        assert "type=no-servers-reachable" in diag[0]
+
+    def test_passed(self):
+        log = (
+            "DNS Result: Name: kubernetes.default.svc.cluster.local\nAddress: 10.96.0.1"
+        )
+        result, diag = self._run(log)
+        assert result == "Passed"
+        assert diag == []
