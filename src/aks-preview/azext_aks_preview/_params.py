@@ -3673,7 +3673,7 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument(
                 "allowed_subjects_from_file",
-                options_list=["--allowed-subjects-from-file"],
+                options_list=["--allowed-subjects-from-file", "-f"],
                 type=file_type,
                 completer=FilesCompleter(),
                 help="Path to a JSON file containing an array of subjects authorized to use this "
