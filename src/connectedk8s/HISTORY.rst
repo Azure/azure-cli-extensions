@@ -2,13 +2,31 @@
 
 Release History
 ===============
-1.10.13
+1.11.2
 +++++++
-* Propagate ``x-ms-correlation-request-id`` end-to-end for ``az connectedk8s proxy``: mint one uuid per session, stamp it on the outbound ARM call (echoed back by ARM) and thread it into every localhost call to arcProxy so the entire session (ARM → arcProxy → Relay → ConnectedProxyAgent) shares one id in logs and Geneva.
+* Fix telemetry "Unknown" errors: wrap string exceptions, add missing instrumentation, and catch-all decorator for unhandled exceptions.
+* Propagate correlation ID end-to-end for ``az connectedk8s proxy``.
+* [MultiCloudConnector] Allow AgentNotInstalled to Agent conversion in connected clusters.
+* Add debug log for helm binary location.
+* Add diagnosis logic for helm timeouts to improve failure classification.
+* Updated CLIENT_PROXY_VERSION to 1.3.034631.
+* Removed workload identity preview feature flag.
 
-1.10.12
+1.11.1
++++++++
+* Added ARM64 support for Helm binary installation.
+* Handle removal of '--all' flag in Helm 4 to ensure compatibility.
+* Added Helm overrides support for Application Gateway for Containers (AGC).
+* Updated CSP version.
+* Updated CLIENT_PROXY_VERSION to 1.3.033892.
+* Updated pre-diagnostics version.
+
+1.11.0
 +++++
-* Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+* [Breaking Change] Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+* Update cluster diagnostics image to comply with Pod Security Standards-Restricted level( Updated image version:1.31.2).
+* Add endpoint overrides for Azure Government cloud environments
+* Update Proxy Image to 1.3.032281
 
 1.10.11
 +++++++
