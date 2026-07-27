@@ -5989,7 +5989,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test that MSI auth is correctly detected when service_principal_profile.client_id='msi'.
 
         The base class returns False when client_id is not None, but MSI-based clusters set
-        client_id to 'msi'. The preview override should check the addon config for useAADAuth.
+        client_id to 'msi'. The preview override should check the monitoring profile.
         """
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -6010,6 +6010,29 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                     },
                 )
             },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_msi_auth_for_monitoring()
+        self.assertTrue(result)
+
+    def test_get_enable_msi_auth_for_monitoring_with_containerinsights_only(self):
+        """The modern containerInsights profile implies MSI even without an omsagent mirror."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            service_principal_profile=self.models.ManagedClusterServicePrincipalProfile(
+                client_id="msi",
+            ),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                ),
+            ),
         )
         ctx.attach_mc(mc)
         result = ctx.get_enable_msi_auth_for_monitoring()
@@ -15388,7 +15411,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={}
                 )
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
@@ -15470,7 +15493,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 config={
                     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
                     CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
-                    "enableRetinaNetworkFlags": "True",
                 },
             ),
         }
@@ -15583,7 +15605,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={}
                 )
             },
         )
@@ -15603,7 +15625,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={}
                 )
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
@@ -15833,7 +15855,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={}
                 )
             },
         )
@@ -15859,7 +15881,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsagent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={}
                 )
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
@@ -15915,7 +15937,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
             addon_profiles={
                 "omsAgent": self.models.ManagedClusterAddonProfile(
-                    enabled=True, config={"enableRetinaNetworkFlags": "True"}
+                    enabled=True, config={}
                 )
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(

@@ -2413,6 +2413,13 @@ class TestValidateAzureMonitorLogsAndEnableAddons(unittest.TestCase):
         # Should not raise an exception
         validators.validate_azure_monitor_logs_and_enable_addons(namespace)
 
+    def test_validate_addons_warns_for_create_enable_addons_monitoring(self):
+        namespace = SimpleNamespace(enable_addons=["monitoring"])
+        with patch.object(validators.logger, "warning") as warning:
+            validators.validate_addons(namespace)
+        warning.assert_called_once()
+        self.assertIn("deprecated", warning.call_args.args[0])
+
 
 class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
     def test_enable_and_disable_azure_monitor_logs_throws_error(self):

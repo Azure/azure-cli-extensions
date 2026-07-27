@@ -616,10 +616,12 @@ def validate_addon(namespace):
 
 
 def validate_addons(namespace):
-    if not hasattr(namespace, 'addons'):
+    addons = getattr(namespace, 'addons', None)
+    if addons is None:
+        addons = getattr(namespace, 'enable_addons', None)
+    if not addons:
         return
-    addons = namespace.addons
-    addon_args = addons.split(',')
+    addon_args = addons.split(',') if isinstance(addons, str) else list(addons)
     _recognize_addons(addon_args)
     if 'monitoring' in addon_args:
         _warn_monitoring_addon_deprecated()
