@@ -205,6 +205,16 @@ def _find_monitoring_addon_profile(addon_profiles, addon_consts):
     return key, addon_profiles.get(key) if key else None
 
 
+def _get_monitoring_addon_config_value(monitoring_profile, config_key):
+    """Read a monitoring addon config value without assuming key casing."""
+    if not monitoring_profile or not monitoring_profile.config or not config_key:
+        return None
+    for key, value in monitoring_profile.config.items():
+        if key.lower() == config_key.lower():
+            return value
+    return None
+
+
 def _is_container_network_logs_enabled_on_mc(mc, addon_consts):
     """Return True if container network logs are already enabled on the cluster.
 
@@ -270,9 +280,10 @@ def _is_monitoring_msi_auth_on_mc(mc, addon_consts):
     CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
     if mc.addon_profiles:
         _, monitoring_profile = _find_monitoring_addon_profile(mc.addon_profiles, addon_consts)
-        addon_config = (monitoring_profile.config or {}) if monitoring_profile else {}
-        if CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config:
-            return str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
+        use_aad_auth = _get_monitoring_addon_config_value(
+            monitoring_profile, CONST_MONITORING_USING_AAD_MSI_AUTH)
+        if use_aad_auth is not None:
+            return str(use_aad_auth).lower() == "true"
     if mc.azure_monitor_profile and mc.azure_monitor_profile.container_insights is not None:
         return bool(mc.azure_monitor_profile.container_insights.enabled)
     return False
@@ -304,13 +315,8 @@ def _get_legacy_monitoring_workspace_id(mc, addon_consts):
     if not mc or not mc.addon_profiles:
         return None
     _, monitoring_profile = _find_monitoring_addon_profile(mc.addon_profiles, addon_consts)
-    if not monitoring_profile or not monitoring_profile.config:
-        return None
     workspace_key = addon_consts.get("CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
-    for key, value in monitoring_profile.config.items():
-        if key.lower() == workspace_key.lower():
-            return value
-    return None
+    return _get_monitoring_addon_config_value(monitoring_profile, workspace_key)
 
 
 def _get_legacy_container_network_logs_value(mc, addon_consts):
@@ -318,12 +324,11 @@ def _get_legacy_container_network_logs_value(mc, addon_consts):
     if not mc or not mc.addon_profiles:
         return None
     _, monitoring_profile = _find_monitoring_addon_profile(mc.addon_profiles, addon_consts)
-    if not monitoring_profile or not monitoring_profile.config:
+    value = _get_monitoring_addon_config_value(
+        monitoring_profile, "enableRetinaNetworkFlags")
+    if value is None:
         return None
-    for key, value in monitoring_profile.config.items():
-        if key.lower() == "enableretinanetworkflags":
-            return "Enabled" if str(value).lower() == "true" else "Disabled"
-    return None
+    return "Enabled" if str(value).lower() == "true" else "Disabled"
 
 
 def _get_or_create_container_insights_profile(mc, models, addon_consts):
@@ -349,10 +354,10 @@ def _build_monitoring_addon_profile_for_dcr(addon_consts, models, cluster):
 
     Container Insights is now configured via ``azureMonitorProfile.containerInsights`` and the AKS RP
     normalizes it into ``addonProfiles.omsagent`` on the PUT response. When that mirrored addon is
-    present (and has config) we use it directly. Otherwise (e.g. mocked responses in unit tests, or a
-    hypothetical response without the mirror) we build a transient omsagent-style profile from
-    ``containerInsights`` so the DCR engine still gets the workspace id and MSI/AAD auth signal. The
-    returned object is only passed to the engine, never persisted on the cluster.
+    present, enabled, and has a workspace we use it directly. Otherwise (e.g. mocked responses in
+    unit tests, or a hypothetical response without the mirror) we build a transient omsagent-style
+    profile only when ``containerInsights`` is enabled and has a workspace. The returned object is
+    only passed to the engine, never persisted on the cluster.
     """
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
         "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
@@ -360,17 +365,24 @@ def _build_monitoring_addon_profile_for_dcr(addon_consts, models, cluster):
 
     _, monitoring_addon_profile = _find_monitoring_addon_profile(
         cluster.addon_profiles, addon_consts)
-    if monitoring_addon_profile and monitoring_addon_profile.config:
+    monitoring_workspace_id = _get_monitoring_addon_config_value(
+        monitoring_addon_profile, CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID)
+    if monitoring_addon_profile and monitoring_addon_profile.enabled and monitoring_workspace_id:
         return monitoring_addon_profile
 
-    workspace_resource_id = None
     container_insights = (
         cluster.azure_monitor_profile.container_insights
         if cluster.azure_monitor_profile
         else None
     )
-    if container_insights is not None:
-        workspace_resource_id = container_insights.log_analytics_workspace_resource_id
+    workspace_resource_id = (
+        container_insights.log_analytics_workspace_resource_id
+        if container_insights
+        else None
+    )
+    if not (container_insights and container_insights.enabled and workspace_resource_id):
+        return monitoring_addon_profile
+
     return models.ManagedClusterAddonProfile(
         enabled=True,
         config={
@@ -8648,6 +8660,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ``addonProfiles.omsagent`` addon. The AKS RP normalizes containerInsights into omsagent on
         the PUT (defaulting ``useAADAuth=true``), so MSI/AAD auth is implied on this path.
         """
+        addon_consts = self.context.get_addon_consts()
+        if (_is_monitoring_enabled_on_mc(mc, addon_consts) and
+                not _is_monitoring_msi_auth_on_mc(mc, addon_consts)):
+            resource_group_name = self.context.get_resource_group_name()
+            cluster_name = self.context.get_name()
+            raise ArgumentUsageError(
+                "Azure Monitor logs are already enabled using legacy shared-key authentication. "
+                "Migrate monitoring to managed-identity authentication first with "
+                f"'az aks addon update -g {resource_group_name} -n {cluster_name} -a monitoring "
+                "--enable-msi-auth-for-monitoring true', then rerun this command."
+            )
+
         # Get or create workspace resource ID
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
         if not workspace_resource_id:
@@ -8795,9 +8819,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if (mc.azure_monitor_profile and
                 mc.azure_monitor_profile.container_insights):
             mc.azure_monitor_profile.container_insights.enabled = False
-            # Clear container network logs so a later re-enable (without a CNL flag) does not
-            # silently resurrect CNL from stale state.
-            mc.azure_monitor_profile.container_insights.container_network_logs = None
+            # Explicitly disable CNL so the PUT cannot preserve stale enabled state.
+            mc.azure_monitor_profile.container_insights.container_network_logs = "Disabled"
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
@@ -9038,30 +9061,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         if monitoring_addon_postprocessing_required:
             addon_consts = self.context.get_addon_consts()
-            CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
             # Resolve the omsagent-style profile the DCR engine consumes. Prefer the RP-mirrored
             # omsagent from the PUT response; fall back to a transient profile synthesized from
-            # containerInsights so a missing/unmirrored addon does not silently skip DCR creation
-            # (or crash on a None config).
+            # a complete, enabled containerInsights profile.
             monitoring_addon_profile = _build_monitoring_addon_profile_for_dcr(
                 addon_consts, self.models, cluster)
 
-            # Container Insights is considered enabled if either surface reports it.
-            container_insights_enabled = bool(
-                cluster.azure_monitor_profile and
-                cluster.azure_monitor_profile.container_insights and
-                cluster.azure_monitor_profile.container_insights.enabled
-            )
-            monitoring_enabled = bool(monitoring_addon_profile.enabled) or container_insights_enabled
-
-            addon_config = monitoring_addon_profile.config or {}
+            monitoring_enabled = _is_monitoring_enabled_on_mc(cluster, addon_consts)
             msi_auth_enabled = (
-                CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
-                str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
+                bool(self.context.raw_param.get("enable_azure_monitor_logs")) or
+                _is_monitoring_msi_auth_on_mc(cluster, addon_consts)
+            )
+            workspace_id = _get_monitoring_addon_config_value(
+                monitoring_addon_profile,
+                addon_consts.get("CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"),
             )
 
-            if monitoring_enabled and msi_auth_enabled:
+            if (monitoring_enabled and msi_auth_enabled and monitoring_addon_profile and
+                    monitoring_addon_profile.enabled and workspace_id):
                 # Check parameter sizes to identify what might be causing large headers
                 data_collection_settings = self.context.get_data_collection_settings()
 

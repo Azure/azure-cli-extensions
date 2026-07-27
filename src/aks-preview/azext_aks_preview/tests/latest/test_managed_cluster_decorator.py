@@ -16666,6 +16666,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True,
                     config={
                         CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID:
+                            "/subscriptions/test/resourceGroups/test/providers/"
+                            "Microsoft.OperationalInsights/workspaces/test",
                     },
                 )
             },
@@ -16681,6 +16684,164 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         _, kwargs = mock_ecifm.call_args
         self.assertTrue(kwargs["create_dcr"])
         self.assertTrue(kwargs["enable_high_log_scale_mode"])
+
+    def test_update_postprocessing_skips_dcr_without_monitoring_profile(self):
+        """Explicitly disabling HLSM is a no-op when Container Insights was never configured."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec.update_monitoring_profile_flow_logs(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(mc)
+
+        mock_ecifm.assert_not_called()
+
+    def test_update_postprocessing_skips_dcr_for_configless_monitoring_addon(self):
+        """A config-less omsagent response must not reach the DCR engine with a null workspace."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={},
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec.update_monitoring_profile_flow_logs(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(mc)
+
+        mock_ecifm.assert_not_called()
+
+    def test_update_postprocessing_uses_amp_intent_when_mirrored_auth_is_false_or_absent(self):
+        """A valid AMP enable response must create DCR/DCRA even if the legacy auth echo is stale."""
+        workspace_id = "/subscriptions/test/resourceGroups/rg/providers/" \
+                       "Microsoft.OperationalInsights/workspaces/ws"
+        for use_aad_auth in ("false", None):
+            with self.subTest(use_aad_auth=use_aad_auth):
+                addon_config = {
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_id,
+                }
+                if use_aad_auth is not None:
+                    addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH] = use_aad_auth
+                cluster = self.models.ManagedCluster(
+                    location="test_location",
+                    addon_profiles={
+                        CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                            enabled=True,
+                            config=addon_config,
+                        ),
+                    },
+                    azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                        container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                            enabled=True,
+                            log_analytics_workspace_resource_id=workspace_id,
+                        ),
+                    ),
+                )
+                dec = AKSPreviewManagedClusterUpdateDecorator(
+                    self.cmd,
+                    self.client,
+                    {
+                        "enable_azure_monitor_logs": True,
+                        "name": "test_name",
+                        "resource_group_name": "test_rg_name",
+                        "location": "test_location",
+                    },
+                    CUSTOM_MGMT_AKS_PREVIEW,
+                )
+                dec.context.attach_mc(cluster)
+                dec.context.set_intermediate("subscription_id", "test_subscription_id")
+                dec.context.set_intermediate(
+                    "monitoring_addon_postprocessing_required", True)
+
+                with patch.object(
+                    dec.context.external_functions,
+                    "ensure_container_insights_for_monitoring",
+                    return_value=None,
+                ) as mock_ecifm:
+                    dec.postprocessing_after_mc_created(cluster)
+
+                mock_ecifm.assert_called_once()
+                _, kwargs = mock_ecifm.call_args
+                self.assertTrue(kwargs["aad_route"])
+                self.assertTrue(kwargs["create_dcr"])
+                self.assertTrue(kwargs["create_dcra"])
+
+    def test_update_postprocessing_respects_shared_key_auth_without_amp_enable_intent(self):
+        """An unrelated HLSM update must not create MSI DCR artifacts for a shared-key cluster."""
+        workspace_id = "/subscriptions/test/resourceGroups/rg/providers/" \
+                       "Microsoft.OperationalInsights/workspaces/ws"
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_id,
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                    },
+                ),
+            },
+        )
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec.context.attach_mc(cluster)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec.context.set_intermediate(
+            "monitoring_addon_postprocessing_required", True)
+
+        with patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+
+        mock_ecifm.assert_not_called()
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -18392,6 +18553,86 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(mc.azure_monitor_profile.container_insights)
         self.assertIsNone(mc.azure_monitor_profile.container_insights.container_network_logs)
 
+    def test_setup_azure_monitor_logs_rejects_enabled_shared_key_cluster(self):
+        """An already-enabled shared-key cluster must migrate auth before switching to AMP."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/rg/providers/"
+                                         "Microsoft.OperationalInsights/workspaces/ws",
+                "resource_group_name": "test-rg",
+                "name": "test-cluster",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID:
+                            "/subscriptions/test/resourceGroups/rg/providers/"
+                            "Microsoft.OperationalInsights/workspaces/ws",
+                        "UseAADAuth": "false",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+
+        with self.assertRaises(ArgumentUsageError) as cm:
+            dec._setup_azure_monitor_logs(mc)
+
+        self.assertIn(
+            "az aks addon update -g test-rg -n test-cluster -a monitoring "
+            "--enable-msi-auth-for-monitoring true",
+            str(cm.exception),
+        )
+        self.assertIsNone(mc.azure_monitor_profile)
+
+    def test_setup_azure_monitor_logs_allows_reenable_from_disabled_shared_key_addon(self):
+        """The RP migrates auth on a disabled-to-enabled transition, so this case remains valid."""
+        workspace_id = "/subscriptions/test/resourceGroups/rg/providers/" \
+                       "Microsoft.OperationalInsights/workspaces/ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": workspace_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=False,
+                    config={
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_id,
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda value: value,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        self.assertTrue(mc.azure_monitor_profile.container_insights.enabled)
+        self.assertEqual(
+            mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id,
+            workspace_id,
+        )
+
     # ------------------------------------------------------------------
     # Tests for _setup_azure_monitor_logs workspace change detection
     # ------------------------------------------------------------------
@@ -18638,8 +18879,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
 
     def test_disable_azure_monitor_logs_clears_container_network_logs(self):
-        """Disabling monitoring clears containerInsights.container_network_logs so a later
-        re-enable (without a CNL flag) does not silently resurrect CNL (rubber-duck finding #2)."""
+        """Disabling monitoring explicitly disables CNL so it cannot be resurrected later."""
         dec = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -18664,7 +18904,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec.client.get = Mock(return_value=mc)
         dec._disable_azure_monitor_logs(mc)
         self.assertFalse(mc.azure_monitor_profile.container_insights.enabled)
-        self.assertIsNone(mc.azure_monitor_profile.container_insights.container_network_logs)
+        self.assertEqual(
+            mc.azure_monitor_profile.container_insights.container_network_logs,
+            "Disabled",
+        )
 
     def test_hlsm_standalone_allowed_on_containerinsights_only_cluster(self):
         """--enable-high-log-scale-mode is accepted when monitoring is on via containerInsights only
