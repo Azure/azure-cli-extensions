@@ -9,6 +9,7 @@ Release History
 * [MultiCloudConnector] Allow AgentNotInstalled to Agent conversion in connected clusters.
 * Add debug log for helm binary location.
 * Add diagnosis logic for helm timeouts to improve failure classification.
+* Move kubeadm distribution detection to be evaluated last to prevent incorrect cluster distribution classification.
 * Updated CLIENT_PROXY_VERSION to 1.3.034631.
 * Removed workload identity preview feature flag.
 
