@@ -170,7 +170,7 @@ class SshCertCreate(AAZCommand):
             if cert_path:
                 shutil.copy2(tmp_cert_path, cert_path)
                 import oschmod  # pylint: disable=import-outside-toplevel
-                oschmod.set_mode(cert_path, 0o600)
+                oschmod.set_mode(cert_path, 0o644)
                 final_cert = os.path.abspath(cert_path)
 
             # Clean up temp files if user provided custom paths for both.
