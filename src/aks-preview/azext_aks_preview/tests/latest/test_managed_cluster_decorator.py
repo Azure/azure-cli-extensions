@@ -6015,6 +6015,26 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_enable_msi_auth_for_monitoring()
         self.assertTrue(result)
 
+    def test_create_monitoring_defaults_to_msi_when_auth_flag_omitted(self):
+        """Legacy create keeps its existing MSI default while the raw flag remains None."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_addons": "monitoring",
+                "enable_msi_auth_for_monitoring": None,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            service_principal_profile=self.models.ManagedClusterServicePrincipalProfile(
+                client_id="msi",
+            ),
+        )
+        ctx.attach_mc(mc)
+        self.assertTrue(ctx.get_enable_msi_auth_for_monitoring())
+
     def test_get_enable_msi_auth_for_monitoring_with_containerinsights_only(self):
         """The modern containerInsights profile implies MSI even without an omsagent mirror."""
         ctx = AKSPreviewManagedClusterContext(
@@ -9894,6 +9914,34 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_setup_azure_monitor_logs_applies_amp_controls(self):
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/rg/providers/"
+                                         "Microsoft.OperationalInsights/workspaces/ws",
+                "syslog_port": 28331,
+                "disable_prometheus_metrics_scraping": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda value: value,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        container_insights = mc.azure_monitor_profile.container_insights
+        self.assertTrue(container_insights.enabled)
+        self.assertEqual(container_insights.syslog_port, 28331)
+        self.assertTrue(container_insights.disable_prometheus_metrics_scraping)
+
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -9903,6 +9951,117 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
+
+    def test_update_amp_controls_preserve_existing_container_insights(self):
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "syslog_port": 29000,
+                "enable_prometheus_metrics_scraping": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspaces/ws",
+                    syslog_port=28330,
+                    disable_prometheus_metrics_scraping=True,
+                    container_network_logs="Enabled",
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec.update_azure_monitor_profile(mc)
+
+        container_insights = mc.azure_monitor_profile.container_insights
+        self.assertTrue(container_insights.enabled)
+        self.assertEqual(
+            container_insights.log_analytics_workspace_resource_id,
+            "/subscriptions/test/workspaces/ws",
+        )
+        self.assertEqual(container_insights.syslog_port, 29000)
+        self.assertFalse(container_insights.disable_prometheus_metrics_scraping)
+        self.assertEqual(container_insights.container_network_logs, "Enabled")
+        self.assertFalse(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_update_amp_controls_materialize_brownfield_profile(self):
+        workspace_id = "/subscriptions/test/resourceGroups/rg/providers/" \
+                       "Microsoft.OperationalInsights/workspaces/ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_prometheus_metrics_scraping": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": workspace_id,
+                        "useAADAuth": "true",
+                        "enableRetinaNetworkFlags": "true",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec._apply_azure_monitor_logs_amp_control_updates(mc)
+
+        container_insights = mc.azure_monitor_profile.container_insights
+        self.assertTrue(container_insights.enabled)
+        self.assertEqual(container_insights.log_analytics_workspace_resource_id, workspace_id)
+        self.assertTrue(container_insights.disable_prometheus_metrics_scraping)
+        self.assertEqual(container_insights.container_network_logs, "Enabled")
+
+    def test_update_amp_controls_require_monitoring(self):
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "syslog_port": 28331,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec._apply_azure_monitor_logs_amp_control_updates(mc)
+
+    def test_update_amp_controls_reject_legacy_shared_key_cluster(self):
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "syslog_port": 28331,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspaces/ws",
+                        "useAADAuth": "false",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        with self.assertRaises(ArgumentUsageError):
+            dec._apply_azure_monitor_logs_amp_control_updates(mc)
 
     def test_check_raw_parameters(self):
         # default value in `aks_create`
@@ -15360,6 +15519,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
                     container_network_logs="Enabled",
                 ),
             ),
@@ -15416,6 +15576,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
                     container_network_logs="Disabled",
                 ),
             ),
@@ -15630,6 +15791,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
                     container_network_logs="Enabled",
                 ),
             ),
@@ -15825,6 +15987,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
                     container_network_logs="Enabled",
                 ),
             ),
@@ -15886,6 +16049,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
                     container_network_logs="Disabled",
                 ),
             ),
@@ -15942,6 +16106,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
                     container_network_logs="Disabled",
                 ),
             ),

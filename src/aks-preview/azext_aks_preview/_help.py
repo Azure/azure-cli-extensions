@@ -194,6 +194,16 @@ helps['aks create'] = f"""
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
           long-summary: Enables Container Insights logs for the cluster by configuring the azureMonitorProfile.containerInsights profile (managed-identity/MSI auth). This is the preferred way to onboard Container Insights and supersedes the deprecated "--enable-addons monitoring". Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring is enabled --no-wait argument will have no effect
+        - name: --syslog-port
+          type: int
+          short-summary: Set the syslog host port for Azure Monitor Container Insights.
+          long-summary: Configures containerInsights.syslogPort. This controls the host port only and is distinct from --enable-syslog, which controls syslog collection in the DCR. If omitted, the service default is 28330.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping for Azure Monitor Container Insights.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping for Azure Monitor Container Insights.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -1120,10 +1130,20 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-logs
           type: bool
           short-summary: Disable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks disable-addons -a monitoring". Disables Log Analytics monitoring for the cluster.
+          long-summary: Disables Container Insights through azureMonitorProfile.containerInsights. The CLI also clears the legacy mirrored addon state when present for brownfield compatibility.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
+        - name: --syslog-port
+          type: int
+          short-summary: Set the syslog host port for Azure Monitor Container Insights.
+          long-summary: Configures containerInsights.syslogPort. This controls the host port only and is distinct from --enable-syslog, which controls syslog collection in the DCR. If omitted, the service default is 28330.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping for Azure Monitor Container Insights.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping for Azure Monitor Container Insights.
         - name: --enable-msi-auth-for-monitoring
           type: bool
           short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).

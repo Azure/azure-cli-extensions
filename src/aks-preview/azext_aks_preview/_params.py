@@ -192,6 +192,8 @@ from azext_aks_preview._validators import (
     validate_azure_monitor_and_opentelemetry_for_create,
     validate_azure_monitor_and_opentelemetry_for_update,
     validate_azure_monitor_logs_and_enable_addons,
+    validate_azure_monitor_logs_amp_controls_for_create,
+    validate_azure_monitor_logs_amp_controls_for_update,
     validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
@@ -833,6 +835,28 @@ def load_arguments(self, _):
                  "over the deprecated '--enable-addons monitoring'."
         )
         c.argument("workspace_resource_id")
+        c.argument(
+            "syslog_port",
+            type=int,
+            is_preview=True,
+            validator=validate_azure_monitor_logs_amp_controls_for_create,
+            help="Syslog host port for Azure Monitor Container Insights. This configures the host "
+                 "port only; use --enable-syslog to control syslog collection."
+        )
+        c.argument(
+            "enable_prometheus_metrics_scraping",
+            action="store_true",
+            is_preview=True,
+            validator=validate_azure_monitor_logs_amp_controls_for_create,
+            help="Enable Prometheus metrics scraping for Azure Monitor Container Insights."
+        )
+        c.argument(
+            "disable_prometheus_metrics_scraping",
+            action="store_true",
+            is_preview=True,
+            validator=validate_azure_monitor_logs_amp_controls_for_create,
+            help="Disable Prometheus metrics scraping for Azure Monitor Container Insights."
+        )
         c.argument(
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
@@ -1575,6 +1599,28 @@ def load_arguments(self, _):
             help="Disable Azure Monitor logs (Container Insights) for the cluster. Clears the "
                  "azureMonitorProfile.containerInsights profile. Preferred over the deprecated "
                  "'az aks disable-addons -a monitoring'."
+        )
+        c.argument(
+            "syslog_port",
+            type=int,
+            is_preview=True,
+            validator=validate_azure_monitor_logs_amp_controls_for_update,
+            help="Set the syslog host port for Azure Monitor Container Insights. This configures "
+                 "the host port only; use --enable-syslog to control syslog collection."
+        )
+        c.argument(
+            "enable_prometheus_metrics_scraping",
+            action="store_true",
+            is_preview=True,
+            validator=validate_azure_monitor_logs_amp_controls_for_update,
+            help="Enable Prometheus metrics scraping for Azure Monitor Container Insights."
+        )
+        c.argument(
+            "disable_prometheus_metrics_scraping",
+            action="store_true",
+            is_preview=True,
+            validator=validate_azure_monitor_logs_amp_controls_for_update,
+            help="Disable Prometheus metrics scraping for Azure Monitor Container Insights."
         )
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")

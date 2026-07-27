@@ -16,7 +16,9 @@ Pending
 21.0.0b14
 ++++++++
 * `az aks create/update`: `--enable-azure-monitor-logs` / `--disable-azure-monitor-logs` now configure the modern ``azureMonitorProfile.containerInsights`` profile instead of the legacy ``addonProfiles.omsagent`` addon. The containerInsights path always uses managed-identity (MSI/AAD) auth.
-* `az aks create/update`: Deprecate the ``monitoring`` addon (``--enable-addons monitoring`` / ``--disable-addons monitoring``) for Container Insights in favor of ``--enable-azure-monitor-logs`` / ``--disable-azure-monitor-logs``.
+* `az aks create/update`: Add ``--syslog-port`` and ``--enable/--disable-prometheus-metrics-scraping`` controls for the Container Insights Azure Monitor profile.
+* `az aks create/update`: Reject the legacy ``--enable-msi-auth-for-monitoring`` flag when used with ``--enable-azure-monitor-logs`` because the Azure Monitor profile is managed-identity only.
+* `az aks enable-addons`: Show guidance toward ``--enable-azure-monitor-logs`` for the legacy ``monitoring`` addon and warn when ``--enable-msi-auth-for-monitoring`` is explicitly supplied.
 
 21.0.0b13
 ++++++++
