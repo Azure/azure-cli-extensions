@@ -1721,12 +1721,6 @@ def get_kubernetes_distro(api_response: V1NodeList) -> str:  # Heuristic
                 return "talos"
             if any(key.startswith("rke2.io") for key in annotations):
                 return "rke2"
-            if any(
-                label.startswith("node-role.kubernetes.io") for label in labels
-            ) or any(
-                key.startswith("kubeadm.alpha.kubernetes.io") for key in annotations
-            ):
-                return "kubeadm"
             if any(label.startswith("run.tanzu.vmware.com") for label in labels):
                 return "tkg"
             if any(label.startswith("openebs.io") for label in labels):
@@ -1735,6 +1729,13 @@ def get_kubernetes_distro(api_response: V1NodeList) -> str:  # Heuristic
                 return "flatcar"
             if any(label.startswith("k0s.k0sproject.io") for label in labels):
                 return "k0s"
+            # Ensure kubeadm check is done last as it is a generic check and may match other distributions
+            if any(
+                label.startswith("node-role.kubernetes.io") for label in labels
+            ) or any(
+                key.startswith("kubeadm.alpha.kubernetes.io") for key in annotations
+            ):
+                return "kubeadm"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug(
