@@ -66,7 +66,7 @@ class Find(AAZCommand):
             options=["--source-data-store-type"],
             help="Gets or sets the type of the source data store.",
             required=True,
-            enum={"ArchiveStore": "ArchiveStore", "OperationalStore": "OperationalStore", "VaultStore": "VaultStore"},
+            enum={"ArchiveStore": "ArchiveStore", "OperationalStore": "OperationalStore"},
         )
         _args_schema.start_time = AAZStrArg(
             options=["--start-time"],
