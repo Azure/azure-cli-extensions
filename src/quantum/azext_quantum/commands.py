@@ -17,14 +17,15 @@ logger = logging.getLogger(__name__)
 def transform_targets(providers):
     def one(provider, target):
         return OrderedDict([
-            ('Provider', provider),
+            ('Provider', provider['id']),
+            ('Provider Status', provider['currentAvailability']),
             ('Target-id', target['id']),
             ('Current Availability', target['currentAvailability']),
             ('Average Queue Time (seconds)', target['averageQueueTime'])
         ])
 
     return [
-        one(provider['id'], target)
+        one(provider, target)
         for provider in providers
         for target in provider['targets']
     ]

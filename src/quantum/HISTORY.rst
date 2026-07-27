@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b19
++++++++++++++++
+* Added a ``Provider Status`` column to the ``az quantum target list`` table output showing the current availability of each provider account.
+
 1.0.0b18
 +++++++++++++++
 * Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.
