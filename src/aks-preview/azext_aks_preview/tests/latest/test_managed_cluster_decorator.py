@@ -584,7 +584,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         load_balancer_profile_2 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_i_pv6=20
+                count=10, count_ipv6=20
             ),
             outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPs(
                 public_i_ps=[
@@ -625,7 +625,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), None)
         load_balancer_profile = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_i_pv6=10
+                count_ipv6=10
             )
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
@@ -663,7 +663,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         load_balancer_profile_3 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_i_pv6=20
+                count=10, count_ipv6=20
             ),
             outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPs(
                 public_i_ps=[
@@ -10051,7 +10051,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_i_pv6=20
+                        count=10, count_ipv6=20
                     ),
                 )
             ),
@@ -10065,7 +10065,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=5, count_i_pv6=20
+                            count=5, count_ipv6=20
                         ),
                     )
                 )
@@ -10091,7 +10091,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_i_pv6=20
+                        count=10, count_ipv6=20
                     ),
                 )
             ),
@@ -10105,7 +10105,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=10, count_i_pv6=5
+                            count=10, count_ipv6=5
                         ),
                     )
                 )
@@ -10131,7 +10131,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_i_pv6=20
+                        count=10, count_ipv6=20
                     ),
                 )
             ),
@@ -10145,7 +10145,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=25, count_i_pv6=5
+                            count=25, count_ipv6=5
                         ),
                     )
                 )
@@ -10170,7 +10170,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=3, count_i_pv6=2
+                        count=3, count_ipv6=2
                     )
                 )
             ),
@@ -10232,7 +10232,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_load_balancer_profile_8 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_i_pv6=5
+                count=10, count_ipv6=5
             ),
         )
         ground_truth_network_profile_8 = self.models.ContainerServiceNetworkProfile(
@@ -16743,10 +16743,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16764,10 +16762,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16776,10 +16772,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16814,10 +16808,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16838,10 +16830,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16874,10 +16864,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_4 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16886,10 +16874,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_4 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16907,10 +16893,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_5 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16919,10 +16903,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_5 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
