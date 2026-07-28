@@ -16,7 +16,7 @@ from azure.cli.core.azclierror import ArgumentUsageError, RequiredArgumentMissin
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.mgmt.core.tools import is_valid_resource_id
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import AzureError
 
 logger = get_logger(__name__)
 
@@ -37,6 +37,10 @@ class MemberJoin(Join):
         # pre_operations runs; an empty value must reach our detection logic below.
         args_schema.member_location._required = False
         args_schema.member_location._fmt = AAZResourceLocationArgFormat()
+        # AAZResourceLocationArg defaults configured_default='location', so a user with
+        # `az configure --defaults location=...` would get that value and auto-detect would
+        # never run. Clear it so an unspecified --member-location stays unset.
+        args_schema.member_location._configured_default = None
         args_schema.member_location._help["short-summary"] = (
             "The geo-location where the member resource lives. Defaults to the location "
             "of the member cluster referenced by --member-resource-id."
@@ -88,8 +92,9 @@ class MemberJoin(Join):
         client = get_mgmt_service_client(self.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
         try:
             cluster = client.resources.get_by_id(resource_id, MANAGED_CLUSTER_API_VERSION)
-        except HttpResponseError as ex:
-            # Reading the cluster is best-effort: if it can't be reached (404/403/etc.),
+        except AzureError as ex:
+            # Reading the cluster is best-effort: if it can't be reached (404/403, or a
+            # connection/timeout failure such as ServiceRequestError/ServiceResponseError),
             # treat the location as unavailable so an explicitly provided --member-location
             # still works, and the auto-detect path surfaces the actionable
             # RequiredArgumentMissingError instead of a raw ARM error.

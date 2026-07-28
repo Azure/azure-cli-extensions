@@ -8,7 +8,7 @@ from types import SimpleNamespace
 from unittest import mock
 
 from azure.cli.core.azclierror import RequiredArgumentMissingError
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import HttpResponseError, ServiceRequestError
 
 from azext_appnet_preview.custom import MemberJoin
 
@@ -114,11 +114,35 @@ class MemberLocationResolutionTest(unittest.TestCase):
 
         self.assertIsNone(member._get_member_cluster_location(args))
 
+    def test_member_location_schema_is_optional_and_not_configured_defaulted(self):
+        schema = MemberJoin._build_arguments_schema()
+        ml = schema.member_location
+        self.assertFalse(ml._required)
+        # The resource-group location auto-fill and the 'location' configured default must
+        # both be cleared, otherwise an omitted --member-location would silently resolve to
+        # the RG location or `az configure --defaults location=...` and skip auto-detect.
+        self.assertIsNone(getattr(ml._fmt, "_resource_group_arg", None))
+        self.assertIsNone(ml._configured_default)
+
     @mock.patch("azext_appnet_preview.custom.has_value", side_effect=_has_value)
     @mock.patch("azext_appnet_preview.custom.is_valid_resource_id", return_value=True)
     @mock.patch("azext_appnet_preview.custom.get_mgmt_service_client")
     def test_arm_read_failure_returns_none(self, mock_client_factory, _mock_valid, _mock_has):
         mock_client_factory.return_value.resources.get_by_id.side_effect = HttpResponseError(message="not found")
+        member, args = _make_member(
+            location_arg=_FakeArg(None, has=False),
+            resource_id_arg=_FakeArg(VALID_ID),
+        )
+
+        self.assertIsNone(member._get_member_cluster_location(args))
+
+    @mock.patch("azext_appnet_preview.custom.has_value", side_effect=_has_value)
+    @mock.patch("azext_appnet_preview.custom.is_valid_resource_id", return_value=True)
+    @mock.patch("azext_appnet_preview.custom.get_mgmt_service_client")
+    def test_arm_transport_failure_returns_none(self, mock_client_factory, _mock_valid, _mock_has):
+        # ServiceRequestError subclasses AzureError but NOT HttpResponseError; connection
+        # and timeout failures must also be treated as location-unavailable.
+        mock_client_factory.return_value.resources.get_by_id.side_effect = ServiceRequestError(message="conn reset")
         member, args = _make_member(
             location_arg=_FakeArg(None, has=False),
             resource_id_arg=_FakeArg(VALID_ID),
