@@ -16,6 +16,7 @@ from azure.cli.core.azclierror import ArgumentUsageError, RequiredArgumentMissin
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.mgmt.core.tools import is_valid_resource_id
+from azure.core.exceptions import HttpResponseError
 
 logger = get_logger(__name__)
 
@@ -85,5 +86,13 @@ class MemberJoin(Join):
         if not is_valid_resource_id(resource_id):
             return None
         client = get_mgmt_service_client(self.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-        cluster = client.resources.get_by_id(resource_id, MANAGED_CLUSTER_API_VERSION)
+        try:
+            cluster = client.resources.get_by_id(resource_id, MANAGED_CLUSTER_API_VERSION)
+        except HttpResponseError as ex:
+            # Reading the cluster is best-effort: if it can't be reached (404/403/etc.),
+            # treat the location as unavailable so an explicitly provided --member-location
+            # still works, and the auto-detect path surfaces the actionable
+            # RequiredArgumentMissingError instead of a raw ARM error.
+            logger.debug("Could not read location from member cluster '%s': %s", resource_id, ex)
+            return None
         return cluster.location

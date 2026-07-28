@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from unittest import mock
 
 from azure.cli.core.azclierror import RequiredArgumentMissingError
+from azure.core.exceptions import HttpResponseError
 
 from azext_appnet_preview.custom import MemberJoin
 
@@ -112,6 +113,35 @@ class MemberLocationResolutionTest(unittest.TestCase):
         )
 
         self.assertIsNone(member._get_member_cluster_location(args))
+
+    @mock.patch("azext_appnet_preview.custom.has_value", side_effect=_has_value)
+    @mock.patch("azext_appnet_preview.custom.is_valid_resource_id", return_value=True)
+    @mock.patch("azext_appnet_preview.custom.get_mgmt_service_client")
+    def test_arm_read_failure_returns_none(self, mock_client_factory, _mock_valid, _mock_has):
+        mock_client_factory.return_value.resources.get_by_id.side_effect = HttpResponseError(message="not found")
+        member, args = _make_member(
+            location_arg=_FakeArg(None, has=False),
+            resource_id_arg=_FakeArg(VALID_ID),
+        )
+
+        self.assertIsNone(member._get_member_cluster_location(args))
+
+    @mock.patch("azext_appnet_preview.custom.has_value", side_effect=_has_value)
+    @mock.patch("azext_appnet_preview.custom.is_valid_resource_id", return_value=True)
+    @mock.patch("azext_appnet_preview.custom.get_mgmt_service_client")
+    def test_explicit_location_honored_when_cluster_unreadable(
+            self, mock_client_factory, _mock_valid, _mock_has):
+        # ARM read fails, but the user supplied --member-location explicitly: it must be
+        # honored without raising and without a spurious mismatch warning.
+        mock_client_factory.return_value.resources.get_by_id.side_effect = HttpResponseError(message="forbidden")
+        member, args = _make_member(
+            location_arg=_FakeArg("westus2"),
+            resource_id_arg=_FakeArg(VALID_ID),
+        )
+
+        member._resolve_member_location(args)
+
+        self.assertEqual(args.member_location.to_serialized_data(), "westus2")
 
 
 if __name__ == "__main__":
