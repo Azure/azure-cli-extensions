@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mission community community-endpoint handle-approval-deletion",
-)
 class HandleApprovalDeletion(AAZCommand):
     """Callback that triggers on approval deletion state change.
 

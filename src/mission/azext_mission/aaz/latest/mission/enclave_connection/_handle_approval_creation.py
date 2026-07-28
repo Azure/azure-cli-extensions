@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "mission enclave-connection handle-approval-creation",
-)
 class HandleApprovalCreation(AAZCommand):
     """Callback that triggers on approval state change.
     """
