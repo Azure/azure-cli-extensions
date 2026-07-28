@@ -25241,9 +25241,13 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="eastus2euap",
+        preserve_default_location=True,
     )
     def test_aks_alert_config_cmds(self, resource_group, resource_group_location):
+        # The alertConfigurations RP endpoint is only deployed to selected regions, so this
+        # test pins its location and opts out of the AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION
+        # override.
         # reset the count so that in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name('cliakstest', 16)
