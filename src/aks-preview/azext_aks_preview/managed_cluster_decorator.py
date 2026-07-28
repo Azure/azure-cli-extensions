@@ -7781,15 +7781,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                  self.context.get_enable_azure_monitor_metrics() or
                                  self.context.raw_param.get("disable_azuremonitormetrics") or
                                  self.context.get_disable_azure_monitor_metrics())
-        opentelemetry = (self.context.raw_param.get("enable_opentelemetry_metrics") or
-                         self.context.raw_param.get("enable_opentelemetry_logs") or
-                         self.context.raw_param.get("disable_opentelemetry_metrics") or
-                         self.context.raw_param.get("disable_opentelemetry_logs") or
-                         self.context.get_opentelemetry_metrics_port() is not None or
-                         self.context.get_opentelemetry_metrics_port_grpc() is not None or
-                         self.context.get_opentelemetry_logs_port() is not None or
-                         self.context.get_opentelemetry_logs_traces_port_grpc() is not None)
-        if azure_monitor_metrics or opentelemetry:
+        opentelemetry_metrics = (self.context.raw_param.get("enable_opentelemetry_metrics") or
+                                 self.context.raw_param.get("disable_opentelemetry_metrics") or
+                                 self.context.get_opentelemetry_metrics_port() is not None or
+                                 self.context.get_opentelemetry_metrics_port_grpc() is not None)
+        # NOTE: only Azure Monitor metrics and OpenTelemetry *metrics* may require the Prometheus
+        # artifacts (Azure Monitor Workspace, DCE, DCR, DCRA, Grafana link, recording rules) that
+        # ensure_azure_monitor_profile_prerequisites creates. OpenTelemetry *logs and traces* ride
+        # on the Container Insights pipeline and must NOT trigger Prometheus onboarding, otherwise
+        # a command that only sets an OTLP logs/traces port silently provisions an AMW.
+        if azure_monitor_metrics or opentelemetry_metrics:
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),
