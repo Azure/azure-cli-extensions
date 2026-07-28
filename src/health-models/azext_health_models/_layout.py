@@ -59,7 +59,7 @@ DEFAULT_NODE_HEIGHT = 81.0
 
 
 def layered_layout(nodes, edges, nodesep=DEFAULT_NODESEP, ranksep=DEFAULT_RANKSEP,
-                   x_offset=0.0, y_offset=0.0):
+                   x_offset=0.0, y_offset=0.0, priority=None):
     """Compute top-left {x, y} canvas positions for a directed graph using a layered,
     rank-based (Dagre-equivalent) layout: rank assignment -> in-rank ordering -> coordinate
     assignment, top-to-bottom, matching the Azure Portal Health Model Designer's "Arrange".
@@ -70,6 +70,8 @@ def layered_layout(nodes, edges, nodesep=DEFAULT_NODESEP, ranksep=DEFAULT_RANKSE
     :param ranksep: vertical space between ranks (portal default: 100).
     :param x_offset: added to every computed x (portal adapter's optional `xOffset`).
     :param y_offset: added to every computed y (portal adapter's optional `yOffset`).
+    :param priority: optional node ids in the left-to-right order they must appear in; see
+        LAYOUT.md. Unknown ids are ignored.
     :return: {node_id: {"x": float, "y": float}}. Empty input -> empty result (no-op), matching
         `AutoArrangeNodes`'s early return for zero nodes.
     """
@@ -94,7 +96,8 @@ def layered_layout(nodes, edges, nodesep=DEFAULT_NODESEP, ranksep=DEFAULT_RANKSE
     acyclic_edges = _remove_cycles(node_ids, adjacency)
     ranks = _assign_ranks(node_ids, acyclic_edges)
     max_rank = max(ranks.values()) if ranks else 0
-    rank_nodes = _order_ranks(node_ids, ranks, acyclic_edges, max_rank)
+    constraints = _priority_rank_constraints(node_ids, acyclic_edges, ranks, priority)
+    rank_nodes = _order_ranks(node_ids, ranks, acyclic_edges, max_rank, constraints)
     x_pos, y_pos = _assign_coordinates(
         rank_nodes, widths, heights, nodesep, ranksep, max_rank, acyclic_edges
     )
@@ -215,13 +218,127 @@ def _ordering_sort_key(medians, position, node_id):
 _ORDER_ITERATIONS = 4
 
 
-def _order_ranks(node_ids, ranks, acyclic_edges, max_rank):
+def _ancestors_including_self(node_id, parents):
+    """Every node with a path to `node_id` over the acyclic edge set, plus `node_id` itself."""
+    seen = {node_id}
+    queue = deque([node_id])
+    while queue:
+        current = queue.popleft()
+        for parent in parents.get(current, ()):
+            if parent not in seen:
+                seen.add(parent)
+                queue.append(parent)
+    return seen
+
+
+def _shortest_paths_from(sources, targets, children):
+    """Breadth-first shortest path from any node in `sources` to each node in `targets`.
+
+    Sources and children are visited in sorted id order: relationships arrive from the service
+    unordered, and without this the same model could arrange differently between runs.
+
+    :return: {target_id: [source_id, ..., target_id]}; unreachable targets are absent.
+    """
+    predecessor = {source: None for source in sorted(sources)}
+    queue = deque(predecessor)
+    remaining = set(targets)
+    remaining.difference_update(predecessor)
+    while queue and remaining:
+        current = queue.popleft()
+        for child in sorted(children.get(current, ())):
+            if child in predecessor:
+                continue
+            predecessor[child] = current
+            remaining.discard(child)
+            queue.append(child)
+
+    paths = {}
+    for target in targets:
+        if target not in predecessor:
+            continue
+        path = []
+        cursor = target
+        while cursor is not None:
+            path.append(cursor)
+            cursor = predecessor[cursor]
+        paths[target] = list(reversed(path))
+    return paths
+
+
+def _priority_rank_constraints(node_ids, acyclic_edges, ranks, priority):
+    """Turn a left-to-right `priority` node list into a per-rank relative-ordering constraint.
+
+    See LAYOUT.md "Priority ordering" for the model and worked examples.
+
+    :return: {rank: [node_id, ...]} in required left-to-right order; empty when fewer than two
+        distinct known priority ids were supplied.
+    """
+    known_ids = set(node_ids)
+    ordered_priority = []
+    for node_id in priority or ():
+        if node_id in known_ids and node_id not in ordered_priority:
+            ordered_priority.append(node_id)
+    if len(ordered_priority) < 2:
+        return {}
+
+    children = defaultdict(list)
+    parents = defaultdict(list)
+    for source, target in acyclic_edges:
+        children[source].append(target)
+        parents[target].append(source)
+
+    common = set.intersection(
+        *(_ancestors_including_self(node_id, parents) for node_id in ordered_priority)
+    )
+    if common:
+        ancestor = sorted(common, key=lambda node_id: (ranks[node_id], node_id))[-1]
+        sources = [ancestor]
+        boundary_rank = ranks[ancestor]
+    else:
+        # No common ancestor: a virtual super-root stands in, so every rank is eligible.
+        sources = [node_id for node_id in node_ids if ranks[node_id] == 0]
+        boundary_rank = -1
+
+    paths = _shortest_paths_from(sources, ordered_priority, children)
+
+    best_index = {}
+    for index, node_id in enumerate(ordered_priority):
+        for path_node in paths.get(node_id, ()):
+            if ranks[path_node] <= boundary_rank:
+                continue
+            if path_node not in best_index or index < best_index[path_node]:
+                best_index[path_node] = index
+
+    by_rank = defaultdict(list)
+    for path_node in sorted(best_index, key=lambda n: (best_index[n], n)):
+        by_rank[ranks[path_node]].append(path_node)
+    return {rank: members for rank, members in by_rank.items() if len(members) > 1}
+
+
+def _apply_rank_constraint(nodes_in_rank, ordered_ids):
+    """Rewrite the slots already occupied by `ordered_ids` so those nodes appear in that
+    left-to-right order, in place. Every other node keeps its own slot, which is what lets
+    unlisted nodes stay interleaved between listed ones.
+    """
+    present = [node_id for node_id in ordered_ids if node_id in nodes_in_rank]
+    if len(present) < 2:
+        return
+    slots = sorted(nodes_in_rank.index(node_id) for node_id in present)
+    for slot, node_id in zip(slots, present):
+        nodes_in_rank[slot] = node_id
+
+
+def _order_ranks(node_ids, ranks, acyclic_edges, max_rank, constraints=None):
     """Median-heuristic in-rank ordering: a bounded number of alternating downward/upward
     sweeps, each re-sorting a rank by the median position of its neighbors in the
     already-ordered adjacent rank (nodes without such a neighbor keep their prior relative
     position). This is the same class of crossing-reduction heuristic Dagre's ordering phase
     uses, simplified to a fixed iteration count for deterministic, bounded-time execution.
+
+    `constraints` (from `_priority_rank_constraints`) is re-applied after every sort so the
+    requested order survives all sweeps and is what the following ranks' medians see.
     """
+    constraints = constraints or {}
     parents = defaultdict(list)
     children = defaultdict(list)
     for source, target in acyclic_edges:
@@ -231,6 +348,9 @@ def _order_ranks(node_ids, ranks, acyclic_edges, max_rank):
     rank_nodes = defaultdict(list)
     for node_id in node_ids:
         rank_nodes[ranks[node_id]].append(node_id)
+
+    for current_rank, ordered_ids in constraints.items():
+        _apply_rank_constraint(rank_nodes[current_rank], ordered_ids)
 
     position = {}
     for nodes_in_rank in rank_nodes.values():
@@ -252,6 +372,8 @@ def _order_ranks(node_ids, ranks, acyclic_edges, max_rank):
                 medians[node_id] = _median(neighbor_positions)
 
             nodes_in_rank.sort(key=partial(_ordering_sort_key, medians, position))
+            if current_rank in constraints:
+                _apply_rank_constraint(nodes_in_rank, constraints[current_rank])
             for index, node_id in enumerate(nodes_in_rank):
                 position[node_id] = index
     return rank_nodes

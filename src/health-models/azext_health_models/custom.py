@@ -15,6 +15,7 @@ from collections import defaultdict
 from knack.log import get_logger
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.util import user_confirmation
 
 from ._layout import DEFAULT_NODE_HEIGHT, DEFAULT_NODE_WIDTH, DEFAULT_NODESEP, DEFAULT_RANKSEP, layered_layout
 from .aaz.latest.monitor.health_models.entity import List as _EntityList
@@ -105,7 +106,63 @@ def _anchor_subtree(positions, root_id, existing_root_position):
     }
 
 
-def health_model_arrange(cmd, resource_group, health_model_name, entity_name=None,
+def _updatable_name_pattern():
+    """The regex `entity update` enforces on `--entity-name`, read from the generated AAZ schema
+    so it cannot drift from the command this handler actually calls. Returns `None` if the
+    schema shape changes, in which case the caller treats every name as updatable and lets the
+    update call raise on its own.
+    """
+    try:
+        # pylint: disable=protected-access
+        return _EntityUpdate._build_arguments_schema().entity_name._fmt._compiled_pattern
+    except AttributeError:
+        return None
+
+
+_UPDATABLE_NAME_PATTERN = _updatable_name_pattern()
+
+
+def _partition_by_updatable_name(entity_names):
+    """Split entity names into those `entity update` will accept and those it will reject.
+
+    Discovery rules can create entities whose names contain characters the update API's own
+    argument pattern refuses (a private endpoint NIC's dotted name, for example). Without this
+    split, arrange would persist part of the model and then abort on the first such entity.
+
+    :return: (updatable, skipped), preserving input order.
+    """
+    if _UPDATABLE_NAME_PATTERN is None:
+        return list(entity_names), []
+
+    updatable, skipped = [], []
+    for name in entity_names:
+        (updatable if _UPDATABLE_NAME_PATTERN.match(name) else skipped).append(name)
+    return updatable, skipped
+
+
+def _validate_priority(priority, arranged_names, entity_name):
+    """Reject `--priority` values this arrange could never order: a repeated name, or a name
+    that is not among the entities being arranged.
+
+    :raises InvalidArgumentValueError: naming the offending value.
+    """
+    seen = set()
+    for name in priority:
+        if name in seen:
+            raise InvalidArgumentValueError(f"Entity '{name}' is listed more than once in '--priority'.")
+        seen.add(name)
+        if name not in arranged_names:
+            scope = (
+                f"the subtree scoped by '--entity-name {entity_name}'" if entity_name is not None
+                else "this health model"
+            )
+            raise InvalidArgumentValueError(
+                f"Priority entity '{name}' was not found in {scope}. Use "
+                "'az monitor health-models entity list' to see the available entity names."
+            )
+
+
+def health_model_arrange(cmd, resource_group, health_model_name, entity_name=None, priority=None, yes=False,
                          node_width=DEFAULT_NODE_WIDTH, node_height=DEFAULT_NODE_HEIGHT,
                          node_sep=DEFAULT_NODESEP, rank_sep=DEFAULT_RANKSEP):
     """Recompute and persist canvas positions for every entity in a health model, using an
@@ -119,6 +176,12 @@ def health_model_arrange(cmd, resource_group, health_model_name, entity_name=Non
     so the selected root's new position exactly matches its own pre-existing `canvasPosition`
     (or is left at the layout's native, un-translated result if it had none). Every entity
     outside the selection is left completely untouched - no computation, no update call.
+
+    If `priority` is given, those entities' branches are forced into that left-to-right order;
+    see LAYOUT.md.
+
+    Every entity that will be repositioned is listed before anything is persisted, and the
+    caller must confirm unless `yes` is set.
     """
     logger.warning(
         "The arrange command is experimental and may produce layouts that differ from the "
@@ -145,8 +208,36 @@ def health_model_arrange(cmd, resource_group, health_model_name, entity_name=Non
             for relationship in relationships
         ]
 
+    arranged_names = [entity["name"] for entity in entities_to_arrange]
+    if priority:
+        _validate_priority(priority, set(arranged_names), entity_name)
+
+    updatable_names, skipped_names = _partition_by_updatable_name(arranged_names)
+
+    if skipped_names:
+        logger.warning(
+            "%d %s cannot be repositioned because the entity update API rejects their names, "
+            "and will be left where they are:\n  %s",
+            len(skipped_names),
+            "entity" if len(skipped_names) == 1 else "entities",
+            "\n  ".join(skipped_names),
+        )
+
+    if not updatable_names:
+        return []
+
+    logger.warning(
+        "This arrange will update the canvas position of %d %s:\n  %s",
+        len(updatable_names),
+        "entity" if len(updatable_names) == 1 else "entities",
+        "\n  ".join(updatable_names),
+    )
+    user_confirmation("Do you want to continue?", yes=yes)
+
+    # Layout still runs over the whole selection, including skipped entities, so the entities
+    # that do get written are placed relative to the real graph rather than a pruned one.
     nodes = [{"id": entity["name"], "width": node_width, "height": node_height} for entity in entities_to_arrange]
-    positions = layered_layout(nodes, edges, nodesep=node_sep, ranksep=rank_sep)
+    positions = layered_layout(nodes, edges, nodesep=node_sep, ranksep=rank_sep, priority=priority)
 
     if entity_name is not None:
         existing_root_position = next(
@@ -155,9 +246,12 @@ def health_model_arrange(cmd, resource_group, health_model_name, entity_name=Non
         )
         positions = _anchor_subtree(positions, entity_name, existing_root_position)
 
+    skipped = set(skipped_names)
     results = []
     for entity in entities_to_arrange:
         current_entity_name = entity["name"]
+        if current_entity_name in skipped:
+            continue
         position = positions.get(current_entity_name)
         if position is None:
             # Defensive only: every entity was passed into `nodes` above, so `_layout` always

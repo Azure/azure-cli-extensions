@@ -72,7 +72,9 @@ class HealthModelScenarioTest(ScenarioTest):
         self.cmd('monitor health-models relationship create -g {rg} --health-model-name {model} '
                  '-n rel-mid-leaf --parent-entity-name {mid} --child-entity-name {leaf}')
 
-        self.cmd('monitor health-models arrange -g {rg} --health-model-name {model}')
+        # `--yes` skips the affected-entity confirmation prompt, which cannot be answered
+        # without a tty under test; it changes no request the cassette recorded.
+        self.cmd('monitor health-models arrange -g {rg} --health-model-name {model} --yes')
 
         root_position = self.cmd('monitor health-models entity show -g {rg} --health-model-name {model} '
                                  '-n {root}').get_output_in_json()['properties']['canvasPosition']
@@ -137,7 +139,7 @@ class HealthModelScenarioTest(ScenarioTest):
 
         # Baseline: full-model arrange positions every entity, including the unrelated
         # `outside` entity (which has no relationships at all).
-        self.cmd('monitor health-models arrange -g {rg} --health-model-name {model}')
+        self.cmd('monitor health-models arrange -g {rg} --health-model-name {model} --yes')
 
         def _position(entity_key):
             return self.cmd('monitor health-models entity show -g {rg} --health-model-name {model} '
@@ -148,7 +150,7 @@ class HealthModelScenarioTest(ScenarioTest):
         outside_before = _position('outside')
 
         # Scope the second arrange to `mid`'s own subtree (mid + leaf only).
-        self.cmd('monitor health-models arrange -g {rg} --health-model-name {model} --entity-name {mid}')
+        self.cmd('monitor health-models arrange -g {rg} --health-model-name {model} --entity-name {mid} --yes')
 
         root_after = _position('root')
         mid_after = _position('mid')

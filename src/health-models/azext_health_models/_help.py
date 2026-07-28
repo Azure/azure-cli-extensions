@@ -13,8 +13,9 @@ helps['monitor health-models arrange'] = """
     long-summary: |
         Experimental. Recomputes each entity's `canvasPosition` using a layered,
         top-to-bottom graph layout based on the Azure Portal Health Model Designer, then
-        persists the new positions immediately. Results may differ from the portal's Arrange
-        feature, and the CLI has no undo or revert command.
+        persists the new positions immediately. Every entity that will be repositioned is
+        listed first and the change must be confirmed unless `--yes` is passed. Results may
+        differ from the portal's Arrange feature, and the CLI has no undo or revert command.
     examples:
         - name: Arrange all entities in a health model using the portal's default spacing.
           text: |
@@ -25,4 +26,10 @@ helps['monitor health-models arrange'] = """
         - name: Arrange only an entity's subtree (itself plus its descendants), keeping its own position.
           text: |
             az monitor health-models arrange -g MyResourceGroup -n MyHealthModel --entity-name MyRootEntity
+        - name: Arrange without being prompted for confirmation.
+          text: |
+            az monitor health-models arrange -g MyResourceGroup -n MyHealthModel --yes
+        - name: Arrange, asking for three entities to be placed left to right in this order.
+          text: |
+            az monitor health-models arrange -g MyResourceGroup -n MyHealthModel --priority MyFrontend MyApi MyDatabase
 """

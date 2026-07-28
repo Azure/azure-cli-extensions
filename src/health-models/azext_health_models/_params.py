@@ -19,6 +19,16 @@ def load_arguments(self, _):
                         'ignored, the arranged subtree is anchored so this entity keeps its own existing '
                         'canvas position, and every entity outside the subtree is left completely '
                         'unchanged. Omit to arrange every entity in the health model (default).')
+        c.argument('priority', options_list=['--priority'], nargs='+',
+                   help='Space-separated entity names to place left to right in this order. '
+                        'Best effort, not a guarantee: the layout applies it at each level below '
+                        'the listed entities\' closest shared parent, along each entity\'s '
+                        'shortest path down from it, and leaves the rest to its own layout rules. '
+                        'Only the relative order is set, so entities you did not list keep their '
+                        'place and may still sit between the listed ones. Quote names that '
+                        'contain spaces. Omit to let the layout choose the order (default).')
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true',
+                   help='Do not prompt for confirmation.')
         c.argument('node_width', type=float,
                    help='Assumed entity node width (in canvas units) used for layout spacing. '
                         'Defaults to the Azure Portal Health Model Designer\'s exact, fixed '

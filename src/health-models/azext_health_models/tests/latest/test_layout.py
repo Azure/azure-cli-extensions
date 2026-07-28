@@ -320,5 +320,99 @@ class TestLayeredLayout(unittest.TestCase):
                 check(layered_layout(nodes, edges))
 
 
+# A -> {b1, bx, b2, b3} -> {E1, Ex, E2, E3}. `bx`/`Ex` are never listed in `priority`, so they
+# are what proves interleaving. Node/edge order is chosen so the UNCONSTRAINED layout settles on
+# the exact reverse of the order asserted below - the constrained assertions cannot pass
+# vacuously. See LAYOUT.md "Priority ordering".
+_PRIORITY_NODES = [_node(n) for n in ("A", "b1", "bx", "b2", "b3", "E1", "Ex", "E2", "E3")]
+_PRIORITY_EDGES = [
+    ("A", "b1"), ("A", "bx"), ("A", "b2"), ("A", "b3"),
+    ("b1", "E1"), ("bx", "Ex"), ("b2", "E2"), ("b3", "E3"),
+]
+
+
+def _left_to_right(positions, node_ids):
+    return sorted(node_ids, key=lambda node_id: positions[node_id]["x"])
+
+
+class TestLayeredLayoutPriority(unittest.TestCase):
+
+    def test_priority_reverses_relative_order_while_non_listed_entities_keep_their_slots(self):
+        baseline = layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES)
+        # Guard: a no-op implementation cannot pass the constrained assertions below.
+        self.assertEqual(_left_to_right(baseline, ("b1", "bx", "b2", "b3")), ["b1", "bx", "b2", "b3"])
+        self.assertEqual(_left_to_right(baseline, ("E1", "Ex", "E2", "E3")), ["E1", "Ex", "E2", "E3"])
+
+        positions = layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=["E3", "E2", "E1"])
+
+        self.assertLess(positions["E3"]["x"], positions["E2"]["x"])
+        self.assertLess(positions["E2"]["x"], positions["E1"]["x"])
+        self.assertLess(positions["b3"]["x"], positions["b2"]["x"])
+        self.assertLess(positions["b2"]["x"], positions["b1"]["x"])
+        # `bx`/`Ex` keep their own slot, so they still sit BETWEEN listed entities.
+        self.assertEqual(_left_to_right(positions, ("b1", "bx", "b2", "b3")), ["b3", "bx", "b2", "b1"])
+        self.assertEqual(_left_to_right(positions, ("E1", "Ex", "E2", "E3")), ["E3", "Ex", "E2", "E1"])
+
+    def test_priority_leaves_the_common_ancestor_rank_and_omitted_case_untouched(self):
+        baseline = layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES)
+        constrained = layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=["E3", "E2", "E1"])
+
+        # The common ancestor's own rank is never reordered.
+        self.assertAlmostEqual(constrained["A"]["x"], baseline["A"]["x"])
+        self.assertEqual(layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=None), baseline)
+        self.assertEqual(layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=[]), baseline)
+        self.assertEqual(layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=["E2"]), baseline)
+
+    def test_priority_orders_disconnected_entities_that_share_no_common_ancestor(self):
+        # No common ancestor exists, so the virtual-super-root fallback applies.
+        nodes = [_node(n) for n in ("r1", "r2", "P1", "P2")]
+        edges = [("r1", "P1"), ("r2", "P2")]
+
+        baseline = layered_layout(nodes, edges)
+        self.assertLess(baseline["r1"]["x"], baseline["r2"]["x"])
+
+        positions = layered_layout(nodes, edges, priority=["P2", "P1"])
+
+        self.assertLess(positions["P2"]["x"], positions["P1"]["x"])
+        self.assertLess(positions["r2"]["x"], positions["r1"]["x"])
+
+    def test_priority_between_an_ancestor_and_its_own_descendant_is_a_harmless_no_op(self):
+        # No rank below `A` holds two constrained nodes, so the layout must be unchanged.
+        positions = layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=["E1", "A"])
+
+        self.assertEqual(positions, layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES))
+
+    def test_priority_picks_the_same_path_regardless_of_relationship_input_order(self):
+        # `target` is reachable via either `hop_a` or `hop_b` - two equally short paths. With
+        # an unsorted traversal, permuting the edge list moves them between x=412 and x=262;
+        # asserting on the whole position dict is what makes this test discriminating.
+        nodes = [_node(n) for n in ("anc", "hop_a", "hop_b", "target", "other", "sibling")]
+        edges = [
+            ("anc", "hop_a"), ("anc", "hop_b"),
+            ("hop_a", "target"), ("hop_b", "target"),
+            ("anc", "other"), ("other", "sibling"),
+        ]
+        orderings = [edges, list(reversed(edges)), [edges[1], edges[0]] + edges[2:]]
+
+        layouts = [
+            layered_layout(nodes, ordering, priority=["sibling", "target"])
+            for ordering in orderings
+        ]
+
+        self.assertEqual(layouts[0], layouts[1])
+        self.assertEqual(layouts[0], layouts[2])
+        # Pin the ambiguous hops explicitly - they are what actually moves.
+        for layout in layouts[1:]:
+            self.assertEqual(layout["hop_a"]["x"], layouts[0]["hop_a"]["x"])
+            self.assertEqual(layout["hop_b"]["x"], layouts[0]["hop_b"]["x"])
+
+    def test_priority_ignores_ids_that_are_not_in_the_node_set(self):
+        # Rejecting unknown names is the command handler's job, not the layout's.
+        positions = layered_layout(_PRIORITY_NODES, _PRIORITY_EDGES, priority=["E3", "ghost", "E1"])
+
+        self.assertLess(positions["E3"]["x"], positions["E1"]["x"])
+        self.assertNotIn("ghost", positions)
+
+
 if __name__ == "__main__":
     unittest.main()

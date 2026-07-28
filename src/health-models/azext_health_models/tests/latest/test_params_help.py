@@ -78,6 +78,29 @@ class TestArrangeEntityNameArgument(unittest.TestCase):
         self.assertIn('unchanged', help_text)
 
 
+class TestArrangeConfirmationAndPriorityArguments(unittest.TestCase):
+
+    def test_yes_argument_is_the_standard_store_true_auto_approve_switch(self):
+        kwargs_by_arg = _arrange_argument_kwargs()
+        self.assertEqual(kwargs_by_arg['yes']['options_list'], ['--yes', '-y'])
+        self.assertEqual(kwargs_by_arg['yes']['action'], 'store_true')
+
+    def test_priority_argument_is_an_optional_multi_value_list(self):
+        kwargs_by_arg = _arrange_argument_kwargs()
+        self.assertEqual(kwargs_by_arg['priority']['nargs'], '+')
+        # Omitting it must preserve today's unconstrained layout, so it cannot be required.
+        self.assertNotIn('required', kwargs_by_arg['priority'])
+
+    def test_priority_help_documents_left_to_right_order_and_permitted_interleaving(self):
+        help_text = _arrange_argument_help()['priority'].lower()
+        self.assertIn('left', help_text)
+        self.assertIn('between', help_text)
+        # The layout applies the order where the listed entities' branches meet and leaves the
+        # rest to its own rules, so the help must not promise a guarantee.
+        self.assertIn('best effort', help_text)
+        self.assertNotIn('must appear', help_text)
+
+
 class TestArrangeNodeSizeHelpText(unittest.TestCase):
 
     def test_node_width_help_cites_the_portal_exact_fixed_200px_card_width(self):

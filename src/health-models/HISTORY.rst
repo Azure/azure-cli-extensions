@@ -6,7 +6,6 @@ Release History
 1.0.0b3
 ++++++
 * Adds ``monitor health-models arrange``: re-arranges and saves the entity positions.
-* Adds ``monitor health-models arrange --entity-name``: scope the arrange to a single entity's subtree (itself plus its descendants) instead of the whole model.
 
 1.0.0b2
 ++++++
