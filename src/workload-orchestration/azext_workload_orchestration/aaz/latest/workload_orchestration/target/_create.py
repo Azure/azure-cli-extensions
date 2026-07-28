@@ -187,13 +187,16 @@ class Create(AAZCommand):
         if not context_id:
             context_id = self._context_id_from_arg()
             if context_id:
-                # Cache the ARG-resolved id in CLI config for subsequent calls.
+                # Cache the ARG-resolved context (id, name, rg) in CLI config so
+                # subsequent commands skip the query and stay consistent with
+                # 'context set' / 'context use' / 'init'.
                 try:
-                    self.ctx.cli_ctx.config.set_value(
-                        'workload_orchestration', 'context_id', context_id
+                    from azext_workload_orchestration.common.utils import (
+                        set_current_context_config,
                     )
+                    set_current_context_config(self.ctx.cli_ctx, context_id)
                 except Exception as e:  # pylint: disable=broad-except
-                    logger.debug("Failed to cache context_id in config: %s", e)
+                    logger.debug("Failed to cache context in config: %s", e)
         if not context_id:
             raise CLIInternalError(
                 "No context-id was provided, and no default context is set. "

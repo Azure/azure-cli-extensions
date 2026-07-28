@@ -246,9 +246,6 @@ class Init(AAZCommand):
 
     def _create_context(self, args):
         """Create a Context resource by invoking `context create` in-process.
-
-        If the Context already exists, the existing resource is fetched and
-        returned instead of failing.
         """
         from azure.cli.core.azclierror import CLIInternalError
         from azext_workload_orchestration.common.utils import (
@@ -316,23 +313,16 @@ class Init(AAZCommand):
     def _set_current_context(self, result):
         """Set the created Context as the current context in CLI config.
 
-        Mirrors ``context set`` but writes via this command's own
-        ``cli_ctx.config`` so the value reliably persists — a nested in-process
-        ``invoke_cli_command`` to ``context set`` does not survive back to the
-        outer command's on-disk config.
         """
-        from azext_workload_orchestration.common.utils import _eprint
+        from azext_workload_orchestration.common.utils import (
+            set_current_context_config, _eprint,
+        )
 
         context_id = result.get("id") if isinstance(result, dict) else None
         if not context_id:
             return
 
-        parts = context_id.split("/")
-        if len(parts) != 9 or parts[6] != "Private.Edge" or parts[7] != "contexts":
-            return
-
-        config = self.ctx.cli_ctx.config
-        config.set_value("workload_orchestration", "context_id", context_id)
+        set_current_context_config(self.ctx.cli_ctx, context_id)
         _eprint(f"  └── Context set to current ✓\n")
 
 
