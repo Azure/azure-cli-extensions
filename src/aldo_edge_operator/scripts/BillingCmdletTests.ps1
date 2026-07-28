@@ -108,6 +108,22 @@ function Invoke-AzJson {
     }
 
     if ($exit -ne 0) {
+        $rawText = $raw | Out-String
+        if ($rawText -match "CERTIFICATE_VERIFY_FAILED|certificate verify failed|SSL: CERTIFICATE_VERIFY_FAILED") {
+            throw @"
+Command failed ($Description) due to TLS certificate trust.
+
+Action required:
+1) Export your enterprise/proxy root CA chain to a PEM file.
+2) Set one of these before running tests:
+   - `$env:REQUESTS_CA_BUNDLE = "C:\path\enterprise-ca-chain.pem"`
+   - az config set core.ca_bundle="C:\path\enterprise-ca-chain.pem"
+3) Re-run the script.
+
+Original output:
+$rawText
+"@
+        }
         throw "Command failed ($Description). ExitCode=$exit`n$($raw | Out-String)"
     }
 
