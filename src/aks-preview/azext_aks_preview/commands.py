@@ -219,7 +219,6 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
-        g.custom_command("bastion", "aks_bastion")
 
     # AKS maintenance configuration commands
     with self.command_group(
@@ -618,6 +617,15 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_identity_binding_delete")
         g.custom_show_command("show", "aks_identity_binding_show")
         g.custom_command("list", "aks_identity_binding_list")
+
+    # AKS bastion
+    with self.command_group(
+        "aks bastion", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_bastion_enable", supports_no_wait=True)
+        g.custom_command("disable", "aks_bastion_disable", supports_no_wait=True)
+        g.custom_command("update", "aks_bastion_update", supports_no_wait=True)
+        g.custom_command("tunnel", "aks_bastion_tunnel")
 
     # AKS jwt authenticator commands
     with self.command_group(
