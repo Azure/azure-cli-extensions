@@ -4973,6 +4973,126 @@ helps['aks jwtauthenticator show'] = """
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """
 
+helps['aks alert-config'] = """
+    type: group
+    short-summary: Commands to manage AKS-managed alert configurations for a cluster.
+    long-summary: Alert configurations let AKS create and manage alerts for important cluster
+                  events and conditions, delivering notifications through an Azure Monitor
+                  action group.
+"""
+
+helps['aks alert-config add'] = """
+    type: command
+    short-summary: Add an alert configuration to a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration (must be unique within the cluster).
+        - name: --mode
+          type: string
+          short-summary: How AKS manages alerts for the cluster.
+          long-summary: Use Managed to have AKS create, update and delete the alerts and send
+                        notifications to the configured action group. Use Disabled to turn
+                        alerting off.
+        - name: --action-group-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor action group to send notifications to.
+          long-summary: Optional. When omitted, the alert configuration is created without a
+                        notification target and no notifications are delivered.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Add a managed alert configuration that notifies an action group
+          text: az aks alert-config add -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Managed --action-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/actionGroups/myag
+        - name: Add an alert configuration with alerting disabled
+          text: az aks alert-config add -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Disabled
+"""
+
+helps['aks alert-config update'] = """
+    type: command
+    short-summary: Update an alert configuration in a managed cluster.
+    long-summary: Only the properties you specify are changed; the rest are preserved.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to update.
+        - name: --mode
+          type: string
+          short-summary: How AKS manages alerts for the cluster.
+        - name: --action-group-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor action group to send notifications to.
+          long-summary: Pass an empty string to remove the current notification target.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Turn off alerting without changing the notification target
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Disabled
+        - name: Point an existing alert configuration at a different action group
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --action-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/actionGroups/otherag
+        - name: Clear the notification target
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --action-group-id ""
+"""
+
+helps['aks alert-config delete'] = """
+    type: command
+    short-summary: Delete an alert configuration from a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to delete.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Delete an alert configuration
+          text: az aks alert-config delete -g MyResourceGroup --cluster-name MyCluster -n myalerts
+"""
+
+helps['aks alert-config list'] = """
+    type: command
+    short-summary: List the alert configurations of a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: List all alert configurations in a cluster
+          text: az aks alert-config list -g MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['aks alert-config show'] = """
+    type: command
+    short-summary: Show the details of an alert configuration.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to show.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Show an alert configuration
+          text: az aks alert-config show -g MyResourceGroup --cluster-name MyCluster -n myalerts
+"""
+
 helps['aks prepared-image-specification'] = """
     type: group
     short-summary: Commands to manage prepared image specifications.

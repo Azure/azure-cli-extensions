@@ -131,6 +131,10 @@ from azext_aks_preview.machine import (
     add_machine,
     update_machine,
 )
+from azext_aks_preview.alertconfiguration import (
+    aks_alert_config_add_internal,
+    aks_alert_config_update_internal,
+)
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
     aks_jwtauthenticator_update_internal,
@@ -6138,3 +6142,90 @@ def aks_prepared_image_specification_version_show(cmd, client, resource_group_na
 
 def aks_prepared_image_specification_version_list(cmd, client, resource_group_name, pis_name):
     return client.list_versions(resource_group_name, pis_name)
+
+
+# Alert configuration commands
+def aks_alert_config_add(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    existing_alert_config = None
+    try:
+        existing_alert_config = client.get(resource_group_name, cluster_name, name, headers=headers)
+    except ResourceNotFoundError:
+        pass
+
+    if existing_alert_config:
+        raise ClientRequestError(
+            f"Alert configuration '{name}' already exists. "
+            "Please use 'az aks alert-config update' to update it."
+        )
+
+    raw_parameters = locals()
+    return aks_alert_config_add_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_update(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    raw_parameters = locals()
+    return aks_alert_config_update_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_delete(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        cluster_name,
+        name,
+        headers=headers,
+    )
+
+
+def aks_alert_config_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
+
+
+def aks_alert_config_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.get(resource_group_name, cluster_name, name, headers=headers)

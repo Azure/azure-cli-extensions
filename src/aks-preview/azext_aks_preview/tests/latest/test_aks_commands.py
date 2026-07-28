@@ -25239,6 +25239,96 @@ spec:
             ],
         )
 
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_alert_config_cmds(self, resource_group, resource_group_location):
+        # reset the count so that in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name('cliakstest', 16)
+        alert_config_name = self.create_random_name('alert', 10)
+        action_group_name = self.create_random_name('cliag', 12)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'alert_config_name': alert_config_name,
+            'action_group_name': action_group_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        action_group = self.cmd(
+            'monitor action-group create --resource-group={resource_group} '
+            '--name={action_group_name} --short-name clitest'
+        ).get_output_in_json()
+        self.kwargs.update({'action_group_id': action_group['id']})
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--node-count 1 --enable-managed-identity --ssh-key-value={ssh_key_value} "
+        )
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        add_cmd = (
+            "aks alert-config add --resource-group={resource_group} --cluster-name={name} "
+            "--name={alert_config_name} --mode Managed --action-group-id={action_group_id} "
+        )
+        self.cmd(add_cmd, checks=[
+            self.check('name', '{alert_config_name}'),
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.mode', 'Managed'),
+            self.check('properties.notification.actionGroupId', '{action_group_id}'),
+        ])
+
+        self.cmd(
+            "aks alert-config show --resource-group={resource_group} --cluster-name={name} "
+            "--name={alert_config_name} ",
+            checks=[
+                self.check('name', '{alert_config_name}'),
+                self.check('properties.mode', 'Managed'),
+                self.check('properties.notification.actionGroupId', '{action_group_id}'),
+            ],
+        )
+
+        self.cmd(
+            "aks alert-config list --resource-group={resource_group} --cluster-name={name} ",
+            checks=[
+                self.check('length(@)', 1),
+                self.check('[0].name', '{alert_config_name}'),
+            ],
+        )
+
+        # Update only the mode; the action group must be preserved by read-modify-write.
+        self.cmd(
+            "aks alert-config update --resource-group={resource_group} --cluster-name={name} "
+            "--name={alert_config_name} --mode Disabled ",
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.mode', 'Disabled'),
+                self.check('properties.notification.actionGroupId', '{action_group_id}'),
+            ],
+        )
+
+        self.cmd(
+            "aks alert-config delete --resource-group={resource_group} --cluster-name={name} "
+            "--name={alert_config_name} --yes ",
+            checks=[self.is_empty()],
+        )
+
+        self.cmd(
+            "aks alert-config list --resource-group={resource_group} --cluster-name={name} ",
+            checks=[self.check('length(@)', 0)],
+        )
+
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @AllowLargeResponse(8192)
     def test_aks_list_vm_skus(self):
         # Basic call: should return a non-empty list of SKUs for a well-known region.
