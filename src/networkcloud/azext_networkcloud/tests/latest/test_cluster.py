@@ -746,6 +746,41 @@ def step_update_rotate_credential_secnario1(test, checks=None):
     )
 
 
+def setup_scenario13(test):
+    """Env setup_scenario13"""
+    pass
+
+
+def cleanup_scenario13(test):
+    """Env cleanup_scenario13"""
+    pass
+
+
+def call_scenario13(test):
+    """# Testcase: scenario13 cluster update with nullable properties set to null"""
+    setup_scenario13(test)
+    step_update_nullable_properties(test, checks=[])
+    cleanup_scenario13(test)
+
+
+def step_update_nullable_properties(test, checks=None):
+    """cluster update with nullable properties set to null"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate}"
+        " --analytics-output-settings null"
+        " --cluster-service-principal null"
+        " --command-output-settings null"
+        " --compute-deployment-threshold null"
+        " --runtime-protection null"
+        " --secret-archive-settings null"
+        " --update-strategy null"
+        " --vulnerability-scanning-settings null",
+        checks=checks,
+    )
+
+
 class ClusterScenarioTest(ScenarioTest):
     """Cluster scenario test"""
 
@@ -958,3 +993,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario12(self):
         """test scenario for Cluster Rotate Credential"""
         call_scenario12(self)
+
+    def test_cluster_scenario13(self):
+        """test scenario for Cluster update with nullable properties set to null"""
+        call_scenario13(self)
