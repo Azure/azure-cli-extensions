@@ -119,7 +119,8 @@ class IdentityBindingTestCases(ScenarioTest):
                 }
             },
         ]
-        _, allowed_subjects_file = tempfile.mkstemp(suffix=".json")
+        fd, allowed_subjects_file = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
         self.addCleanup(os.remove, allowed_subjects_file)
         with open(allowed_subjects_file, "w", encoding="utf-8") as f:
             json.dump(allowed_subjects, f)

@@ -4807,11 +4807,11 @@ helps['aks identity-binding create'] = """
           short-summary: Name of the managed Kubernetes cluster.
         - name: --name -n
           type: string
-          short-summary: Name of the identity binding to show.
+          short-summary: Name of the identity binding to create.
         - name: --managed-identity-resource-id
           type: string
           short-summary: The resource ID of the managed identity to use.
-        - name: --allowed-subjects-from-file
+        - name: --allowed-subjects-from-file -f
           type: string
           short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
           long-summary: |
@@ -4839,7 +4839,7 @@ helps['aks identity-binding update'] = """
         - name: --name -n
           type: string
           short-summary: Name of the identity binding to update.
-        - name: --allowed-subjects-from-file
+        - name: --allowed-subjects-from-file -f
           type: string
           short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
           long-summary: |
@@ -4864,7 +4864,7 @@ helps['aks identity-binding delete'] = """
           short-summary: Name of the managed Kubernetes cluster.
         - name: --name -n
           type: string
-          short-summary: Name of the identity binding to show.
+          short-summary: Name of the identity binding to delete.
 """
 
 helps['aks jwtauthenticator'] = """

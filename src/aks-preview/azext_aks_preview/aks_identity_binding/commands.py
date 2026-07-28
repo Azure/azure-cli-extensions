@@ -92,7 +92,7 @@ def aks_ib_cmd_update(
     resource_group_name: str,
     cluster_name: str,
     name: str,
-    allowed_subjects_from_file=None,
+    allowed_subjects_from_file: str,
     no_wait: bool = False,
 ):
     from azure.cli.core.util import sdk_no_wait
@@ -103,10 +103,12 @@ def aks_ib_cmd_update(
         identity_binding_name=name,
     )
 
-    if allowed_subjects_from_file is not None:
-        instance.properties.allowed_subjects = _parse_allowed_subjects_from_file(
-            allowed_subjects_from_file
-        )
+    # allowed_subjects_from_file is required for update (enforced at argument
+    # registration), so it is always provided here. It is the only mutable
+    # field today; requiring it avoids a no-op full-PUT.
+    instance.properties.allowed_subjects = _parse_allowed_subjects_from_file(
+        allowed_subjects_from_file
+    )
 
     return sdk_no_wait(
         no_wait,

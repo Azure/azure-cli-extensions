@@ -3668,14 +3668,19 @@ def load_arguments(self, _):
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
 
     # aks identity-binding commands
-    for scope in ['aks identity-binding create',
-                  'aks identity-binding update']:
+    # --allowed-subjects-from-file is optional on create (omitting it falls back
+    # to ClusterRole/ClusterRoleBinding authorization), but required on update
+    # since it is the only mutable field today -- requiring it avoids a no-op
+    # full-PUT that would needlessly re-provision the binding.
+    for scope, is_required in [('aks identity-binding create', False),
+                               ('aks identity-binding update', True)]:
         with self.argument_context(scope) as c:
             c.argument(
                 "allowed_subjects_from_file",
                 options_list=["--allowed-subjects-from-file", "-f"],
                 type=file_type,
                 completer=FilesCompleter(),
+                required=is_required,
                 help="Path to a JSON file containing an array of subjects authorized to use this "
                      "identity binding for token exchange. Each entry has a required "
                      "'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes "
