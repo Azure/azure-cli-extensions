@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2026-07-01"],
         ]
     }
 
@@ -95,6 +95,9 @@ class Update(AAZCommand):
             options=["--expiration"],
             arg_group="Properties",
             help="The date and time after which the users in this key set will be removed from the baseboard management controllers.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.user_list = AAZListArg(
             options=["--user-list"],
@@ -224,7 +227,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-07-01",
                     required=True,
                 ),
             }

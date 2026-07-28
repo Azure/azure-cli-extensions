@@ -12,11 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-21.0.0b11
+21.0.0b12
 +++++++++
 * `az aks create` and `az aks update`: Add `--opentelemetry-metrics-port-grpc` and `--opentelemetry-logs-traces-port-grpc` (preview) to configure the gRPC ports for OpenTelemetry metrics and logs/traces collection, in addition to the existing HTTP/protobuf ports.
 * `az aks create` and `az aks update`: Rename the OpenTelemetry parameters, keeping the previous names as deprecated aliases: `--opentelemetry-metrics-port` -> `--opentelemetry-metrics-port-http`, `--opentelemetry-logs-port` -> `--opentelemetry-logs-traces-port-http`, `--enable-opentelemetry-logs` -> `--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs` -> `--disable-opentelemetry-logs-traces`.
 * `az aks update`: Fix the OpenTelemetry logs and traces parameters (`--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs-traces`, `--opentelemetry-logs-traces-port-http`, `--opentelemetry-logs-traces-port-grpc`) incorrectly triggering Azure Monitor Workspace (Prometheus) onboarding. Only Azure Monitor metrics and OpenTelemetry metrics parameters do so now.
+
+21.0.0b11
+++++++++
+* Vendor new SDK and bump API version to `2026-05-02-preview`.
 
 21.0.0b10
 +++++++++

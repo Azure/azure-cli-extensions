@@ -10855,7 +10855,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check("networkProfile.ipFamilies", ["IPv4", "IPv6"]),
                 self.check(
-                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIPv6", 2
+                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIpv6", 2
                 ),
                 self.check(
                     "networkProfile.loadBalancerProfile.managedOutboundIPs.count", 1
@@ -10884,7 +10884,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check("networkProfile.ipFamilies", ["IPv4", "IPv6"]),
                 self.check(
-                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIPv6", 4
+                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIpv6", 4
                 ),
                 self.check(
                     "networkProfile.loadBalancerProfile.managedOutboundIPs.count", 1
@@ -23977,7 +23977,7 @@ spec:
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("schedulerProfile.schedulerInstanceProfiles.upstream.schedulerConfigMode", "ManagedByCRD"),
+                self.check("schedulerProfile.upstream.schedulerConfigMode", "ManagedByCRD"),
             ],
         )
 
@@ -24046,7 +24046,7 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("schedulerProfile.schedulerInstanceProfiles.upstream.schedulerConfigMode", "ManagedByCRD"),
+                self.check("schedulerProfile.upstream.schedulerConfigMode", "ManagedByCRD"),
             ],
         )
 
@@ -24117,7 +24117,7 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("schedulerProfile.schedulerInstanceProfiles.upstream.schedulerConfigMode", "Default"),
+                self.check("schedulerProfile.upstream.schedulerConfigMode", "Default"),
             ],
         )
 
