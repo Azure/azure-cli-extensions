@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b6
+++++++
+* ``az provisionedmachine create`` / ``install-os`` - Fixed AzureLinux OS provisioning: the resolved OS image version is now mapped to ``vsrVersion`` (previously ``osVersion``).
+
 1.0.0b5
 ++++++
 * ``az provisionedmachine ssh-cert-create`` - Create a short-lived SSH certificate for authenticating to a provisioned machine via Key Vault-signed certificates.

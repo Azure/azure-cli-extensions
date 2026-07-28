@@ -1049,3 +1049,78 @@ def _openssh_install_message(system):
         "Alternatively, pass --ssh-client-folder to point to a folder "
         "containing ssh-keygen."
     )
+
+
+OS_IMAGES_API_VERSION = "2026-05-01-preview"
+
+# Fallback region for OS image version discovery when the caller cannot
+# determine a location. Mirrors the ``provisionedmachine os-image list``
+# command, whose ``--location`` argument defaults to "eastus".
+DEFAULT_OS_IMAGE_LOCATION = "eastus"
+
+
+def resolve_latest_os_image_version(cli_ctx, subscription_id, os_image_type, location):
+    """Resolve the latest available OS image version by calling the os-image list API.
+
+    The API returns images sorted in descending order by version
+    (guaranteed by RP's GetNLatestRecipesAsync which uses
+    OrderByDescending(Version.Parse(FullSolutionVersion))).
+    So the first image is always the latest.
+
+    The returned value is the ``validatedSolutionRecipeVersion`` (the VSR
+    version) for both HCI and AzureLinux images, and must be assigned to the
+    request's ``vsrVersion`` field. The RP resolves ``solution-type`` case
+    insensitively, so the caller may pass the OS image type in any case.
+
+    :param cli_ctx: The CLI context used to issue the ARM request.
+    :param subscription_id: Subscription ID owning the location.
+    :param os_image_type: OS image type (e.g. ``HCI`` or ``AzureLinux``).
+    :param location: Azure region to query. When falsy, falls back to
+        :data:`DEFAULT_OS_IMAGE_LOCATION` ("eastus"), matching the
+        ``provisionedmachine os-image list`` command's default.
+    :returns: The latest validated solution recipe (VSR) version string.
+    :raises ResourceNotFoundError: If no images are found or the latest
+        version cannot be determined.
+    """
+    from azure.cli.core.util import send_raw_request
+    from azure.cli.core.azclierror import ResourceNotFoundError
+
+    if not location:
+        # Match `provisionedmachine os-image list`, whose --location defaults to eastus.
+        location = DEFAULT_OS_IMAGE_LOCATION
+
+    try:
+        os_images_url = (
+            f"/subscriptions/{subscription_id}"
+            f"/providers/Microsoft.AzureStackHCI/locations/{location}/osImages"
+            f"?api-version={OS_IMAGES_API_VERSION}&solution-type={os_image_type}"
+        )
+        response = send_raw_request(cli_ctx, "GET", os_images_url)
+        data = response.json()
+        images = data.get("value", [])
+
+        if not images:
+            raise ResourceNotFoundError(
+                f"No OS images found for type '{os_image_type}' in location '{location}'. "
+                f"Please specify --os-image-version explicitly."
+            )
+
+        # API returns images sorted descending by version — first item is the latest
+        latest_version = images[0].get("properties", {}).get("validatedSolutionRecipeVersion", "")
+
+        if not latest_version:
+            raise ResourceNotFoundError(
+                f"Could not determine latest version for '{os_image_type}'. "
+                f"Please specify --os-image-version explicitly."
+            )
+
+        logger.info("Auto-resolved latest %s version: %s", os_image_type, latest_version)
+        return latest_version
+
+    except ResourceNotFoundError:
+        raise
+    except Exception as e:
+        raise ResourceNotFoundError(
+            f"Error resolving latest OS image version: {str(e)}. "
+            f"Please specify --os-image-version explicitly."
+        )

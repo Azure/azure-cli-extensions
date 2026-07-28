@@ -273,61 +273,10 @@ class InstallOs(AAZCommand):
             )
 
     def _resolve_latest_version(self, os_image_type, location):
-        """Resolve the latest available OS image version by calling the os-image list API.
-
-        The API returns images sorted in descending order by version
-        (guaranteed by RP's GetNLatestRecipesAsync which uses
-        OrderByDescending(Version.Parse(FullSolutionVersion))).
-        So the first image is always the latest.
-        """
-        from azure.cli.core.util import send_raw_request
-        from azure.cli.core.azclierror import ResourceNotFoundError
-        import logging
-
-        logger = logging.getLogger(__name__)
-
-        if not location:
-            raise ResourceNotFoundError(
-                "Could not determine location of provisioned machine. "
-                "Please specify --os-image-version explicitly."
-            )
-
-        try:
-            # Call os-image list API to get available versions
-            os_images_url = (
-                f"/subscriptions/{self.ctx.subscription_id}"
-                f"/providers/Microsoft.AzureStackHCI/locations/{location}/osImages"
-                f"?api-version=2026-05-01-preview&solution-type={os_image_type}"
-            )
-            response = send_raw_request(self.ctx.cli_ctx, "GET", os_images_url)
-            data = response.json()
-            images = data.get("value", [])
-
-            if not images:
-                raise ResourceNotFoundError(
-                    f"No OS images found for type '{os_image_type}' in location '{location}'. "
-                    f"Please specify --os-image-version explicitly."
-                )
-
-            # API returns images sorted descending by version — first item is the latest
-            latest_version = images[0].get("properties", {}).get("validatedSolutionRecipeVersion", "")
-
-            if not latest_version:
-                raise ResourceNotFoundError(
-                    f"Could not determine latest version for '{os_image_type}'. "
-                    f"Please specify --os-image-version explicitly."
-                )
-
-            logger.info("Auto-resolved latest %s version: %s", os_image_type, latest_version)
-            return latest_version
-
-        except ResourceNotFoundError:
-            raise
-        except Exception as e:
-            raise ResourceNotFoundError(
-                f"Error resolving latest OS image version: {str(e)}. "
-                f"Please specify --os-image-version explicitly."
-            )
+        """Resolve the latest available OS image (VSR) version via the shared helper."""
+        from azext_provisionedmachine import provisioned_machine_utils as pm
+        return pm.resolve_latest_os_image_version(
+            self.ctx.cli_ctx, self.ctx.subscription_id, os_image_type, location)
 
     @staticmethod
     def _compare_versions(v1, v2):
@@ -698,14 +647,12 @@ class InstallOs(AAZCommand):
                 }
 
             elif os_image_type == "AzureLinux":
-                os_version = args.os_image_version.to_serialized_data() if has_value(args.os_image_version) else "3.0"
-
                 os_profile = {
                     "osName": "AzureLinux",
-                    "osType": "AzureLinux",
-                    "osVersion": os_version,
-                    "osImageLocation": "https://aka.ms/aep/sff/azurelinux/2604a"
+                    "osType": "AzureLinux"
                 }
+                if has_value(args.os_image_version):
+                    os_profile["vsrVersion"] = args.os_image_version.to_serialized_data()
 
                 user_details = [
                     {
