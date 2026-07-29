@@ -59,7 +59,7 @@ def test_containers_from_image(sample_directory: str, platform: str):
     with redirect_stdout(buffer):
         containers_from_image(
             image=f"confcom_test_{sample_directory.name}",
-            platform=platform,
+            aci_or_vn2=platform,
         )
 
     actual_container_def = json.loads(buffer.getvalue())

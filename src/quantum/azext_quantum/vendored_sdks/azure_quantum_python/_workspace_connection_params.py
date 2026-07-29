@@ -511,7 +511,7 @@ class WorkspaceConnectionParams:
         or defaults to a new DefaultAzureCredential.
         """
         return (self.credential
-                or DefaultAzureCredential(exclude_interactive_browser_credential=False))
+                or DefaultAzureCredential(exclude_interactive_browser_credential=False)) # CodeQL [SM05139] Only used as default fallback. Not used in Azure production service.
 
     def get_auth_policy(self) -> Any:
         """

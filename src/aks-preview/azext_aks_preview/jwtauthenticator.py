@@ -114,7 +114,10 @@ def construct_jwt_authenticator(cmd, raw_parameters):
 
     # Create JWT authenticator properties from config
     try:
-        properties = JWTAuthenticatorProperties.from_dict(config)
+        if hasattr(JWTAuthenticatorProperties, 'from_dict'):
+            properties = JWTAuthenticatorProperties.from_dict(config)
+        else:
+            properties = JWTAuthenticatorProperties(config)
     except AttributeError as e:
         raise InvalidArgumentValueError(
             f"JWT authenticator model does not support from_dict method: {str(e)}"

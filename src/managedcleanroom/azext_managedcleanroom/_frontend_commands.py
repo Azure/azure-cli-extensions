@@ -32,8 +32,8 @@ def load_frontend_command_table(loader, _):
     with loader.command_group('managedcleanroom frontend analytics', custom_command_type=frontend_custom) as g:
         g.custom_show_command('show', 'frontend_collaboration_analytics_show')
         g.custom_command(
-            'cleanroompolicy',
-            'frontend_collaboration_analytics_cleanroompolicy')
+            'skr-policy',
+            'frontend_collaboration_analytics_skr_policy')
 
     # OIDC commands
     with loader.command_group('managedcleanroom frontend oidc', custom_command_type=frontend_custom) as g:

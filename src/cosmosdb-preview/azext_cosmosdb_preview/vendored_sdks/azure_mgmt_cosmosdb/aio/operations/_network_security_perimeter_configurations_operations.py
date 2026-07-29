@@ -275,6 +275,7 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
 
         response_headers = {}
         response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+        response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 

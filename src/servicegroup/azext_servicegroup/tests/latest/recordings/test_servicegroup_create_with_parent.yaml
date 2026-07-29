@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: '{"properties": {"displayName": "Parent Group"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - service-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --display-name
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Management/serviceGroups/sg-par-000001?api-version=2024-02-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"InvalidRequest","message":"Invalid ServiceGroup create
+        request parameters. Parent in Properties of Request Body not provided"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '145'
+      content-type:
+      - application/json
+      date:
+      - Mon, 20 Apr 2026 21:49:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 00000000-0000-0000-0000-000000000000
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E402D6C29F2747B4A129E76BE86315B6 Ref B: BL2AA2030101033 Ref C: 2026-04-20T21:49:21Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

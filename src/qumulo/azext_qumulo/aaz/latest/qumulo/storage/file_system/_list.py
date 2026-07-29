@@ -22,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-19",
+        "version": "2026-04-16",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/qumulo.storage/filesystems", "2024-06-19"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems", "2024-06-19"],
+            ["mgmt-plane", "/subscriptions/{}/providers/qumulo.storage/filesystems", "2026-04-16"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems", "2026-04-16"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-19",
+                    "api-version", "2026-04-16",
                     required=True,
                 ),
             }
@@ -192,6 +192,7 @@ class List(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
@@ -225,6 +226,9 @@ class List(AAZCommand):
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
+            )
+            properties.performance_tier = AAZStrType(
+                serialized_name="performanceTier",
             )
             properties.private_i_ps = AAZListType(
                 serialized_name="privateIPs",
@@ -342,7 +346,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-19",
+                    "api-version", "2026-04-16",
                     required=True,
                 ),
             }
@@ -422,6 +426,7 @@ class List(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
@@ -455,6 +460,9 @@ class List(AAZCommand):
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
+            )
+            properties.performance_tier = AAZStrType(
+                serialized_name="performanceTier",
             )
             properties.private_i_ps = AAZListType(
                 serialized_name="privateIPs",

@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-03-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-04-30-preview"],
         ]
     }
 
@@ -65,6 +65,11 @@ class Create(AAZCommand):
             options=["--collaborators"],
             arg_group="Properties",
             help="Gets or sets the collaborators.",
+        )
+        _args_schema.resource_location = AAZStrArg(
+            options=["--resource-location"],
+            arg_group="Properties",
+            help="Gets or sets the resource location for the collaboration.",
         )
 
         collaborators = cls._args_schema.collaborators
@@ -194,7 +199,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -221,12 +226,13 @@ class Create(AAZCommand):
             )
             _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("collaborators", AAZListType, ".collaborators")
+                properties.set_prop("resourceLocation", AAZStrType, ".resource_location")
 
             collaborators = _builder.get(".properties.collaborators")
             if collaborators is not None:
@@ -273,7 +279,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -308,6 +314,9 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_location = AAZStrType(
+                serialized_name="resourceLocation",
             )
             properties.workloads = AAZListType(
                 flags={"read_only": True},

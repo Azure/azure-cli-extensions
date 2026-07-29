@@ -22,6 +22,7 @@ from typing import (
     Union,
 )
 from typing_extensions import Self
+# from azure.core.exceptions import HttpResponseError
 # from azure.core.paging import ItemPaged
 # from azure.quantum._client import WorkspaceClient
 from ._client import WorkspaceClient
@@ -450,11 +451,19 @@ class Workspace:
     #     :rtype: Job
     #     """
     #     client = self._get_jobs_client()
-    #     client.delete(
-    #         self.subscription_id,
-    #         self.resource_group,
-    #         self.name,
-    #         job.details.id)
+
+    #     try:
+    #         client.cancel(
+    #             self.subscription_id,
+    #             self.resource_group,
+    #             self.name,
+    #             job.details.id)
+    #     except HttpResponseError as e:
+    #         # because of historical behavior of the service, the 204 No Content response is returned when cancellation request is succeeded.
+    #         # while backend is not updated to return 200 according to a guideline, let's handle that here to align with typespecs
+    #         if e.status_code != 204:
+    #             raise
+
     #     details = client.get(
     #         self.subscription_id,
     #         self.resource_group,

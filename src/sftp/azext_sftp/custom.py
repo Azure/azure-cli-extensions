@@ -19,7 +19,7 @@ from . import file_utils
 logger = log.get_logger(__name__)
 
 
-def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
+def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None, yes=False):
     """Generate SSH certificate for SFTP authentication using Azure AD."""
     logger.debug("Starting SFTP certificate generation")
 
@@ -53,7 +53,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
 
     try:
         public_key_file, _, delete_keys = file_utils.check_or_create_public_private_files(
-            public_key_file, None, keys_folder, ssh_client_folder)
+            public_key_file, None, keys_folder, ssh_client_folder, yes_without_prompt=yes)
         cert_file, _ = file_utils.get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
     except Exception as e:
         logger.debug("Certificate generation failed: %s", str(e))
@@ -75,7 +75,7 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
 
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None,
                  public_key_file=None, sftp_args=None, ssh_client_folder=None,
-                 buffer_size=None, endpoint_suffix=None):
+                 buffer_size=None, endpoint_suffix=None, yes=False):
     """Connect to Azure Storage Account via SFTP with automatic certificate generation if needed."""
     logger.debug("Starting SFTP connection to storage account: %s", storage_account)
 
@@ -116,14 +116,14 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
     try:
         if auto_generate_cert:
             public_key_file, private_key_file, _ = file_utils.check_or_create_public_private_files(
-                None, None, credentials_folder, ssh_client_folder)
+                None, None, credentials_folder, ssh_client_folder, yes_without_prompt=yes)
             cert_file, user = file_utils.get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
         elif not cert_file:
             profile = Profile(cli_ctx=cmd.cli_ctx)
             profile.get_subscription()
 
             public_key_file, private_key_file, _ = file_utils.check_or_create_public_private_files(
-                public_key_file, private_key_file, None, ssh_client_folder)
+                public_key_file, private_key_file, None, ssh_client_folder, yes_without_prompt=yes)
             print_styled_text((Style.ACTION, "Generating certificate..."))
             cert_file, user = file_utils.get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
             delete_cert = True

@@ -202,7 +202,7 @@ class TestFrontendQuery(unittest.TestCase):
         """Test listing query execution history"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_document_id_runhistory_get.return_value = [
+        mock_client.collaboration.analytics_queries_document_id_runs_get.return_value = [
             {
                 "runId": "run-1",
                 "queryId": "test-query-123",
@@ -226,7 +226,7 @@ class TestFrontendQuery(unittest.TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["runId"], "run-1")
         self.assertEqual(result[1]["runId"], "run-2")
-        mock_client.collaboration.analytics_queries_document_id_runhistory_get.assert_called_once_with(
+        mock_client.collaboration.analytics_queries_document_id_runs_get.assert_called_once_with(
             "test-collab-123", "test-query-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -234,7 +234,7 @@ class TestFrontendQuery(unittest.TestCase):
         """Test showing specific query run details"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_jobid_get.return_value = {
+        mock_client.collaboration.analytics_runs_job_id_get.return_value = {
             "runId": "test-job-123",
             "queryId": "test-query-123",
             "status": "completed",
@@ -255,7 +255,7 @@ class TestFrontendQuery(unittest.TestCase):
         self.assertEqual(result["runId"], "test-job-123")
         self.assertEqual(result["queryId"], "test-query-123")
         self.assertEqual(result["status"], "completed")
-        mock_client.collaboration.analytics_queries_jobid_get.assert_called_once_with(
+        mock_client.collaboration.analytics_runs_job_id_get.assert_called_once_with(
             "test-collab-123", "test-job-123")
 
     # Query Publish with Parameters Tests
@@ -266,9 +266,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_publish_post.return_value = {
-            "queryId": "test-query-123",
-            "status": "published"
-        }
+            "queryId": "test-query-123", "status": "published"}
         mock_get_client.return_value = mock_client
 
         # Mock file reading for JSON segment files
@@ -290,8 +288,8 @@ class TestFrontendQuery(unittest.TestCase):
             "preConditions": "",
             "postFilters": ""
         }
-        
-        def mock_open_handler(filename, mode='r'):
+
+        def mock_open_handler(filename, mode='r', **kwargs):
             content = {
                 'segment1.json': json.dumps(segment_1),
                 'segment2.json': json.dumps(segment_2),
@@ -307,20 +305,24 @@ class TestFrontendQuery(unittest.TestCase):
                 collaboration_id="test-collab-123",
                 document_id="test-query-123",
                 body=None,
-                query_segment=["@segment1.json", "@segment2.json", "@segment3.json"],
+                query_segment=[
+                    "@segment1.json",
+                    "@segment2.json",
+                    "@segment3.json"],
                 execution_sequence=None,
                 input_datasets="dataset1:view1,dataset2:view2",
-                output_dataset="output-dataset:results"
-            )
+                output_dataset="output-dataset:results")
 
         # Verify
         self.assertEqual(result["queryId"], "test-query-123")
         self.assertEqual(result["status"], "published")
-        
+
         # Verify body construction - segments were parsed from JSON
         call_args = mock_client.collaboration.analytics_queries_document_id_publish_post.call_args
         body = call_args[0][2]
-        self.assertEqual(body["inputDatasets"], "dataset1:view1,dataset2:view2")
+        self.assertEqual(
+            body["inputDatasets"],
+            "dataset1:view1,dataset2:view2")
         self.assertEqual(body["outputDataset"], "output-dataset:results")
         self.assertEqual(len(body["queryData"]), 3)
         self.assertEqual(body["queryData"][0]["data"], "SELECT * FROM table1")
@@ -333,9 +335,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_publish_post.return_value = {
-            "queryId": "test-query-inline",
-            "status": "published"
-        }
+            "queryId": "test-query-inline", "status": "published"}
         mock_get_client.return_value = mock_client
 
         # Execute with inline SQL
@@ -352,7 +352,7 @@ class TestFrontendQuery(unittest.TestCase):
 
         # Verify
         self.assertEqual(result["status"], "published")
-        
+
         # Verify body construction
         call_args = mock_client.collaboration.analytics_queries_document_id_publish_post.call_args
         body = call_args[0][2]
@@ -364,7 +364,7 @@ class TestFrontendQuery(unittest.TestCase):
     def test_publish_query_mutual_exclusion(self, mock_get_client):
         """Test that body and parameters are mutually exclusive for query publish"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -378,13 +378,14 @@ class TestFrontendQuery(unittest.TestCase):
                 query_segment=["SELECT * FROM table1"]
             )
 
-        self.assertIn("Cannot use --body together with individual parameters", str(context.exception))
+        self.assertIn(
+            "Cannot use --body together with individual parameters", str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_query_segment_count_mismatch(self, mock_get_client):
         """Test validation when segment count doesn't match execution sequence count"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -401,13 +402,15 @@ class TestFrontendQuery(unittest.TestCase):
                 output_dataset="output-dataset:results"
             )
 
-        self.assertIn("must match execution sequence count", str(context.exception))
+        self.assertIn(
+            "must match execution sequence count", str(
+                context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_query_file_mode_rejects_exec_seq(self, mock_get_client):
         """Test that FILE mode raises error if --execution-sequence is provided"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -417,7 +420,7 @@ class TestFrontendQuery(unittest.TestCase):
             "preConditions": "",
             "postFilters": ""
         })
-        
+
         with patch('builtins.open', unittest.mock.mock_open(read_data=segment_json)):
             with self.assertRaises(CLIError) as context:
                 frontend_collaboration_query_publish(
@@ -431,13 +434,15 @@ class TestFrontendQuery(unittest.TestCase):
                     output_dataset="output-dataset:results"
                 )
 
-            self.assertIn("must not be provided when using @file.json", str(context.exception))
+            self.assertIn(
+                "must not be provided when using @file.json", str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_publish_query_inline_mode_requires_exec_seq(self, mock_get_client):
+    def test_publish_query_inline_mode_requires_exec_seq(
+            self, mock_get_client):
         """Test that INLINE mode requires --execution-sequence"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -459,29 +464,44 @@ class TestFrontendQuery(unittest.TestCase):
     def test_publish_query_disallows_mixed_segments(self, mock_get_client):
         """Test that mixing @file.json and inline segments raises error"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
-        with self.assertRaises(CLIError) as context:
-            frontend_collaboration_query_publish(
-                cmd=Mock(),
-                collaboration_id="test-collab-123",
-                document_id="test-query-123",
-                body=None,
-                query_segment=["@segment1.json", "SELECT * FROM table2"],  # Mixed
-                execution_sequence="1,2",
-                input_datasets="dataset1:view1",
-                output_dataset="output-dataset:results"
-            )
+        # Mock file content for segment1.json
+        segment_1 = {
+            "data": "SELECT * FROM table1",
+            "executionSequence": 1,
+            "preConditions": "",
+            "postFilters": ""
+        }
+        mock_file_content = json.dumps(segment_1)
 
-        self.assertIn("Cannot mix @file.json and inline SQL", str(context.exception))
+        with patch('builtins.open', unittest.mock.mock_open(read_data=mock_file_content)):
+            with self.assertRaises(CLIError) as context:
+                frontend_collaboration_query_publish(
+                    cmd=Mock(),
+                    collaboration_id="test-collab-123",
+                    document_id="test-query-123",
+                    body=None,
+                    query_segment=[
+                        "@segment1.json",
+                        "SELECT * FROM table2"],
+                    # Mixed
+                    execution_sequence="1,2",
+                    input_datasets="dataset1:view1",
+                    output_dataset="output-dataset:results"
+                )
+
+        self.assertIn("Cannot mix @file.json / JSON-dict and inline SQL",
+                      str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_publish_query_file_missing_execution_sequence(self, mock_get_client):
+    def test_publish_query_file_missing_execution_sequence(
+            self, mock_get_client):
         """Test that segment JSON file must contain executionSequence"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -491,7 +511,7 @@ class TestFrontendQuery(unittest.TestCase):
             "preConditions": "",
             "postFilters": ""
         })
-        
+
         with patch('builtins.open', unittest.mock.mock_open(read_data=segment_json)):
             with self.assertRaises(CLIError) as context:
                 frontend_collaboration_query_publish(
@@ -505,13 +525,15 @@ class TestFrontendQuery(unittest.TestCase):
                     output_dataset="output-dataset:results"
                 )
 
-            self.assertIn('must contain "executionSequence"', str(context.exception))
+            self.assertIn(
+                'must contain "executionSequence"', str(
+                    context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_query_invalid_dataset_format(self, mock_get_client):
         """Test validation of dataset ID:view format"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -542,9 +564,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
-            "runId": "generated-run-id-456",
-            "status": "running"
-        }
+            "runId": "generated-run-id-456", "status": "running"}
         mock_get_client.return_value = mock_client
 
         # Execute with parameters
@@ -561,7 +581,7 @@ class TestFrontendQuery(unittest.TestCase):
 
         # Verify
         self.assertEqual(result["runId"], "generated-run-id-456")
-        
+
         # Verify body was constructed with parameters
         call_args = mock_client.collaboration.analytics_queries_document_id_run_post.call_args
         body = call_args[1]["body"]
@@ -575,7 +595,7 @@ class TestFrontendQuery(unittest.TestCase):
     def test_run_query_mutual_exclusion(self, mock_get_client):
         """Test that body and parameters are mutually exclusive for query run"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -589,11 +609,13 @@ class TestFrontendQuery(unittest.TestCase):
                 dry_run=True
             )
 
-        self.assertIn("Cannot use --body together with individual parameters", str(context.exception))
+        self.assertIn(
+            "Cannot use --body together with individual parameters", str(context.exception))
 
     @patch('uuid.uuid4')
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_run_query_with_partial_parameters(self, mock_get_client, mock_uuid4):
+    def test_run_query_with_partial_parameters(
+            self, mock_get_client, mock_uuid4):
         """Test running a query with only some optional parameters"""
         # Mock UUID generation
         mock_uuid4.return_value = "generated-run-id-789"
@@ -601,9 +623,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
-            "runId": "generated-run-id-789",
-            "status": "running"
-        }
+            "runId": "generated-run-id-789", "status": "running"}
         mock_get_client.return_value = mock_client
 
         # Execute with only dry_run parameter
@@ -620,7 +640,7 @@ class TestFrontendQuery(unittest.TestCase):
 
         # Verify
         self.assertEqual(result["status"], "running")
-        
+
         # Verify only dry_run is in body (not False boolean values)
         call_args = mock_client.collaboration.analytics_queries_document_id_run_post.call_args
         body = call_args[1]["body"]

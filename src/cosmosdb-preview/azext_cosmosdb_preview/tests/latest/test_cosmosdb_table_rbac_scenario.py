@@ -81,7 +81,7 @@ class Cosmosdb_previewtableRbacScenarioTest(ScenarioTest):
 
 
         self.cmd(
-            'az cosmosdb create -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableTable')
+            'az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableTable')
             
         self.cmd(
             'az cosmosdb show --name {acc} --resource-group {rg}')        

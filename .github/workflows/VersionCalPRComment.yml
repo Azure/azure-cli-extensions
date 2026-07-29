@@ -2,7 +2,7 @@ name: Release Version Calculation
 
 on:
   workflow_dispatch:
-  pull_request_target:
+  pull_request:
       types: [opened, labeled, unlabeled, synchronize]
       branches:
         - main
@@ -114,7 +114,9 @@ jobs:
            python -m venv env
            chmod +x env/bin/activate
            source ./env/bin/activate
-           pip install azdev
+           # Pinned to the azdev commit that fixes `azdev extension add` losing egg-info under
+           # --no-build-isolation (Azure/azure-cli-dev-tools#554); switch to azdev==0.2.13 once released.
+           pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@bb196e370ef0c0c8fcb01ab2e73bf2db7b5821a2#egg=azdev"
            azdev --version
            cd ../
            azdev setup -c azure-cli -r azure-cli-extensions --debug
@@ -228,16 +230,16 @@ jobs:
         uses: andstor/file-existence-action@v3
         with:
           files: "./version_update.txt"
-      - name: Comment on the pull request
+      - name: Show version update notice
         if: steps.check_comment_file.outputs.files_exists == 'true'
-        uses: mshick/add-pr-comment@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          message-id: versioncommentbot
-          message-path: |
-            version_update.txt
-          message-failure: |
-            Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
+        run: |
+          echo "::group::Version update notice"
+          cat ./version_update.txt
+          echo "::endgroup::"
+      - name: Show version update fallback notice
+        if: steps.check_comment_file.outputs.files_exists != 'true'
+        run: |
+          echo "Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions."
       - name: Check add label file existence
         id: check_add_label_file
         uses: andstor/file-existence-action@v3

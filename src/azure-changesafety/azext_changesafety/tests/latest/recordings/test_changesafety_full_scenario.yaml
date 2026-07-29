@@ -1,0 +1,735 @@
+interactions:
+- request:
+    body: '{"properties": {"stages": [{"name": "Canary", "sequence": 1}, {"name":
+      "Production", "sequence": 2}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stagemap create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '102'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --stage-map-name --stages
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","name":"stgmap000001","type":"microsoft.changesafety/stagemaps","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:32.5030518Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:32.5030518Z"},"properties":{"parameters":null,"stages":[{"name":"Canary","sequence":1,"stageVariables":null,"nestedStageMap":null},{"name":"Production","sequence":2,"stageVariables":null,"nestedStageMap":null}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:32 GMT
+      etag:
+      - '"13002e04-0000-0600-0000-69c540750000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a7e57dab-9d6e-4683-b40c-3a7c197c5178
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82d08f6e-cd70-4f52-bea8-7861cc193f12
+      set-cookie:
+      - ARRAffinity=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      - ARRAffinitySameSite=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;SameSite=None;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/24a037d7-4d00-4332-b936-ae9efca9fe45
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 0B55D5A3068445E9A0A8803616A538E5 Ref B: BY1AA1072320023 Ref C: 2026-03-26T14:19:31Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stagemap show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --stage-map-name
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","name":"stgmap000001","type":"microsoft.changesafety/stagemaps","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:32.5030518Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:32.5030518Z"},"properties":{"parameters":null,"stages":[{"name":"Canary","sequence":1,"stageVariables":null,"nestedStageMap":null},{"name":"Production","sequence":2,"stageVariables":null,"nestedStageMap":null}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:33 GMT
+      etag:
+      - '"13002e04-0000-0600-0000-69c540750000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/4170e9f5-8919-4dfe-be3f-013be89ee62b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: CE37101B12B4435C944F30CB73570D36 Ref B: BY1AA1072318060 Ref C: 2026-03-26T14:19:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"anticipatedEndTime": "2026-03-26T22:19:34Z", "anticipatedStartTime":
+      "2026-03-26T14:19:34Z", "changeType": "AppDeployment", "rolloutType": "Normal",
+      "stageMap": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001"},
+      "changeDefinition": {"kind": "Targets", "name": "cr000002", "details": {"targets":
+      [{"subscriptionId": "$(az account show --query id -o tsv)"}]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety changerecord create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '452'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --change-type --rollout-type --stagemap-name --targets
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002","name":"cr000002","type":"microsoft.changesafety/changerecords","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:35.9326328Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:35.9326328Z"},"properties":{"changeType":"AppDeployment","rolloutType":"Normal","description":null,"stageMap":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","parameters":null},"parameters":null,"comments":null,"changeDefinition":{"name":"cr000002","kind":"Targets","details":{"targets":[{"subscriptionId":"$(az
+        account show --query id -o tsv)"}]}},"releaseLabel":null,"anticipatedStartTime":"2026-03-26T14:19:34Z","anticipatedEndTime":"2026-03-26T22:19:34Z","orchestrationTool":null,"links":null,"additionalData":null,"stageMapSnapshot":[{"key":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","value":{"properties":{"parameters":null,"stages":[{"name":"Canary","sequence":1,"stageVariables":null,"nestedStageMap":null},{"name":"Production","sequence":2,"stageVariables":null,"nestedStageMap":null}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","name":"stgmap000001","type":"microsoft.changesafety/stagemaps"}}],"status":"Initialized","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:36 GMT
+      etag:
+      - '"be00ee2c-0000-0600-0000-69c540780000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - be1f6bdb-c2d2-4a56-b91a-26997352ffc4
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82d08f6e-cd70-4f52-bea8-7861cc193f12
+      set-cookie:
+      - ARRAffinity=1ea7a9ff63e0057bc56a10baffd814c0021d084395fc359f67914cbb9b0aefb0;Path=/;HttpOnly;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      - ARRAffinitySameSite=1ea7a9ff63e0057bc56a10baffd814c0021d084395fc359f67914cbb9b0aefb0;Path=/;HttpOnly;SameSite=None;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/55a02208-d06e-448c-a4b3-de84e47999de
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: C374679E542148FDB4442620681D180C Ref B: BY1AA1072315042 Ref C: 2026-03-26T14:19:35Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety changerecord show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002","name":"cr000002","type":"microsoft.changesafety/changerecords","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:35.9326328Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:35.9326328Z"},"properties":{"changeType":"AppDeployment","rolloutType":"Normal","description":null,"stageMap":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","parameters":null},"parameters":null,"comments":null,"changeDefinition":{"name":"cr000002","kind":"Targets","details":{"targets":[{"subscriptionId":"$(az
+        account show --query id -o tsv)"}]}},"releaseLabel":null,"anticipatedStartTime":"2026-03-26T14:19:34Z","anticipatedEndTime":"2026-03-26T22:19:34Z","orchestrationTool":null,"links":null,"additionalData":null,"stageMapSnapshot":[{"key":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","value":{"properties":{"parameters":null,"stages":[{"name":"Canary","sequence":1,"stageVariables":null,"nestedStageMap":null},{"name":"Production","sequence":2,"stageVariables":null,"nestedStageMap":null}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","name":"stgmap000001","type":"microsoft.changesafety/stagemaps"}}],"status":"Initialized","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:37 GMT
+      etag:
+      - '"be00ee2c-0000-0600-0000-69c540780000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/303e8429-b63e-49cb-9d4d-5908ca264b0d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 90787F538CDE44D39E6550DCBEADB466 Ref B: BY1AA1072316054 Ref C: 2026-03-26T14:19:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety changerecord update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --rollout-type --comments
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002","name":"cr000002","type":"microsoft.changesafety/changerecords","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:35.9326328Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:35.9326328Z"},"properties":{"changeType":"AppDeployment","rolloutType":"Normal","description":null,"stageMap":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","parameters":null},"parameters":null,"comments":null,"changeDefinition":{"name":"cr000002","kind":"Targets","details":{"targets":[{"subscriptionId":"$(az
+        account show --query id -o tsv)"}]}},"releaseLabel":null,"anticipatedStartTime":"2026-03-26T14:19:34Z","anticipatedEndTime":"2026-03-26T22:19:34Z","orchestrationTool":null,"links":null,"additionalData":null,"stageMapSnapshot":[{"key":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","value":{"properties":{"parameters":null,"stages":[{"name":"Canary","sequence":1,"stageVariables":null,"nestedStageMap":null},{"name":"Production","sequence":2,"stageVariables":null,"nestedStageMap":null}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","name":"stgmap000001","type":"microsoft.changesafety/stagemaps"}}],"status":"Initialized","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:38 GMT
+      etag:
+      - '"be00ee2c-0000-0600-0000-69c540780000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/60564974-e89d-43b5-9d73-a3065d836579
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 0102C2E93A3645D3ACBBC681235400AD Ref B: BY1AA1072315040 Ref C: 2026-03-26T14:19:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"anticipatedEndTime": "2026-03-26T22:19:34Z", "anticipatedStartTime":
+      "2026-03-26T14:19:34Z", "changeDefinition": {"name": "cr000002", "kind": "Targets",
+      "details": {"targets": [{"subscriptionId": "$(az account show --query id -o
+      tsv)"}]}}, "changeType": "AppDeployment", "comments": "Escalated", "rolloutType":
+      "Emergency", "stageMap": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety changerecord update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '480'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --rollout-type --comments
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002","name":"cr000002","type":"microsoft.changesafety/changerecords","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:35.9326328Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:40.1874774Z"},"properties":{"changeType":"AppDeployment","rolloutType":"Emergency","description":null,"stageMap":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","parameters":null},"parameters":null,"comments":"Escalated","changeDefinition":{"name":"cr000002","kind":"Targets","details":{"targets":[{"subscriptionId":"$(az
+        account show --query id -o tsv)"}]}},"releaseLabel":null,"anticipatedStartTime":"2026-03-26T14:19:34Z","anticipatedEndTime":"2026-03-26T22:19:34Z","orchestrationTool":null,"links":null,"additionalData":null,"stageMapSnapshot":[{"key":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","value":{"properties":{"parameters":null,"stages":[{"name":"Canary","sequence":1,"stageVariables":null,"nestedStageMap":null},{"name":"Production","sequence":2,"stageVariables":null,"nestedStageMap":null}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001","name":"stgmap000001","type":"microsoft.changesafety/stagemaps"}}],"status":"Initialized","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1589'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:40 GMT
+      etag:
+      - '"be00452e-0000-0600-0000-69c5407c0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 21144885-216d-4ae2-9718-103ec9641e42
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82d08f6e-cd70-4f52-bea8-7861cc193f12
+      set-cookie:
+      - ARRAffinity=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      - ARRAffinitySameSite=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;SameSite=None;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/bf6e856f-5c69-435d-8e90-9e8f357f2200
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: CF0DBC365210404D859C1AE1ADA2CFB7 Ref B: BY1AA1072317052 Ref C: 2026-03-26T14:19:39Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"stageReference": "Canary", "status": "InProgress"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stageprogression create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --change-record-name -n --stage-reference --status
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003","name":"prog000003","type":"microsoft.changesafety/changerecords/stageprogressions","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:42.0055167Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:42.0055167Z"},"properties":{"stageReference":"Canary","sequence":1,"status":"InProgress","comments":null,"stageVariables":{},"links":null,"additionalData":null,"parameters":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '662'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:45 GMT
+      etag:
+      - '"45004c71-0000-0600-0000-69c540810000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 26460f82-1b31-4483-8e50-1b732b98305f
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82d08f6e-cd70-4f52-bea8-7861cc193f12
+      set-cookie:
+      - ARRAffinity=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      - ARRAffinitySameSite=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;SameSite=None;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/3bcd915b-4ebc-4b1e-99c2-b047f7d71ed5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: BB5F61E1513A4EF9908170F33B7C7B54 Ref B: BY1AA1072318034 Ref C: 2026-03-26T14:19:41Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stageprogression show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --change-record-name -n
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003","name":"prog000003","type":"microsoft.changesafety/changerecords/stageprogressions","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:42.0055167Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:42.0055167Z"},"properties":{"stageReference":"Canary","sequence":1,"status":"InProgress","comments":null,"stageVariables":{},"links":null,"additionalData":null,"parameters":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '662'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:46 GMT
+      etag:
+      - '"45004c71-0000-0600-0000-69c540810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/788f0b77-345d-4485-9a7e-d16765226b58
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: EC7DD6205E194667A453696D0ED35F97 Ref B: BY1AA1072320042 Ref C: 2026-03-26T14:19:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stageprogression update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --change-record-name -n --status --comments
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003","name":"prog000003","type":"microsoft.changesafety/changerecords/stageprogressions","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:42.0055167Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:42.0055167Z"},"properties":{"stageReference":"Canary","sequence":1,"status":"InProgress","comments":null,"stageVariables":{},"links":null,"additionalData":null,"parameters":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '662'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:47 GMT
+      etag:
+      - '"45004c71-0000-0600-0000-69c540810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/89cac6d0-856a-41cb-a57e-f8a6f8e16be9
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: CCE179A3AB5248B0B4C0ABAD8F8AA473 Ref B: BY1AA1072319029 Ref C: 2026-03-26T14:19:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"comments": "Canary passed", "stageReference": "Canary",
+      "stageVariables": {}, "status": "Completed"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stageprogression update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --change-record-name -n --status --comments
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003","name":"prog000003","type":"microsoft.changesafety/changerecords/stageprogressions","systemData":{"createdBy":"johndoe@example.com","createdByType":"User","createdAt":"2026-03-26T14:19:42.0055167Z","lastModifiedBy":"johndoe@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-03-26T14:19:50.6715652Z"},"properties":{"stageReference":"Canary","sequence":1,"status":"Completed","comments":"Canary
+        passed","stageVariables":{},"links":null,"additionalData":null,"parameters":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 26 Mar 2026 14:19:51 GMT
+      etag:
+      - '"4500d671-0000-0600-0000-69c540880000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 99d561c8-3f78-4c54-b951-f6dcb70fc8a2
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82d08f6e-cd70-4f52-bea8-7861cc193f12
+      set-cookie:
+      - ARRAffinity=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      - ARRAffinitySameSite=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;SameSite=None;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/93155982-b048-4486-b950-d49d7d85f740
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3372F996739B42F7A5BCE0F1C766D9F3 Ref B: SJC211051205017 Ref C: 2026-03-26T14:19:50Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stageprogression delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --change-record-name -n --yes
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/changeRecords/cr000002/stageProgressions/prog000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Mar 2026 14:19:55 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b531ebf1-e433-43e3-b42f-780ac57b4c2c
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82d08f6e-cd70-4f52-bea8-7861cc193f12
+      set-cookie:
+      - ARRAffinity=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      - ARRAffinitySameSite=56b3aeb8ceb3e4e4ccbd2e3533dba902a9668359b102c84068122d3622bab8b4;Path=/;HttpOnly;SameSite=None;Secure;Domain=canary.changecontrol.changesafety.msft.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/0f2f7723-7c9b-4eb8-b5ed-ca5846aa9d0c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 525AC15AB6ED4DD2BB106B13A8872F9C Ref B: BY1AA1072315025 Ref C: 2026-03-26T14:19:53Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - changesafety stagemap delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --stage-map-name --yes
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/stgmap000001?api-version=2026-01-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 26 Mar 2026 14:19:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=bfa18db0-78d5-4d4d-8796-642151886af4/eastus2euap/320cd609-17ce-4f60-a7e5-3503758a7d7b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 25F61E2985794A7E9300B71E30432C47 Ref B: BY1AA1072315042 Ref C: 2026-03-26T14:19:55Z'
+    status:
+      code: 200
+      message: OK
+version: 1

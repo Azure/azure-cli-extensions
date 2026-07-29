@@ -389,6 +389,27 @@ def check_is_azure_cli_core_editable_installed():
     return False
 
 
+def get_monitoring_addon_key(addon_profiles, monitoring_addon_name):
+    """Return the canonical key for the monitoring addon, normalizing non-standard casing.
+
+    The API response may return the monitoring addon key in any casing (e.g.
+    "omsagent", "omsAgent", "oMSaGent").  This helper performs a
+    case-insensitive lookup and, when a non-standard key is found, re-keys
+    addon_profiles in-place so that subsequent code always uses the canonical
+    monitoring_addon_name (lowercase) form.
+    """
+    if addon_profiles is None:
+        return monitoring_addon_name
+    if monitoring_addon_name in addon_profiles:
+        return monitoring_addon_name
+    target_lower = monitoring_addon_name.lower()
+    for key in list(addon_profiles):
+        if key.lower() == target_lower:
+            addon_profiles[monitoring_addon_name] = addon_profiles.pop(key)
+            return monitoring_addon_name
+    return monitoring_addon_name
+
+
 def check_is_monitoring_addon_enabled(addons, instance):
     is_monitoring_addon_enabled = False
     is_monitoring_addon = False
@@ -401,10 +422,11 @@ def check_is_monitoring_addon_enabled(addons, instance):
                     is_monitoring_addon = True
                     break
         addon_profiles = instance.addon_profiles or {}
+        monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         is_monitoring_addon_enabled = (
             is_monitoring_addon
-            and CONST_MONITORING_ADDON_NAME in addon_profiles
-            and addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+            and monitoring_addon_key in addon_profiles
+            and addon_profiles[monitoring_addon_key].enabled
         )
     except Exception as ex:  # pylint: disable=broad-except
         logger.debug("failed to check monitoring addon enabled: %s", ex)

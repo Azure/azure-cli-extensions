@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -60,6 +60,18 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Identity"
 
@@ -95,11 +107,6 @@ class Update(AAZCommand):
             help="As part of an update, the workload ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Workload services. (This is a Mandatory attribute).",
             nullable=True,
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
 
         infrastructure_express_route_connections = cls._args_schema.infrastructure_express_route_connections
         infrastructure_express_route_connections.Element = AAZObjectArg()
@@ -108,9 +115,6 @@ class Update(AAZCommand):
         workload_express_route_connections = cls._args_schema.workload_express_route_connections
         workload_express_route_connections.Element = AAZObjectArg()
         cls._build_args_express_route_connection_information_update(workload_express_route_connections.Element)
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_express_route_connection_information_update = None
@@ -221,7 +225,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -382,6 +386,10 @@ class Update(AAZCommand):
             properties.nfc_sku = AAZStrType(
                 serialized_name="nfcSku",
             )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -389,6 +397,9 @@ class Update(AAZCommand):
             properties.tenant_internet_gateway_ids = AAZListType(
                 serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
+            )
+            properties.vm_profile = AAZObjectType(
+                serialized_name="vmProfile",
             )
             properties.workload_express_route_connections = AAZListType(
                 serialized_name="workloadExpressRouteConnections",
@@ -420,6 +431,12 @@ class Update(AAZCommand):
             tenant_internet_gateway_ids = cls._schema_on_200.properties.tenant_internet_gateway_ids
             tenant_internet_gateway_ids.Element = AAZStrType(
                 nullable=True,
+            )
+
+            vm_profile = cls._schema_on_200.properties.vm_profile
+            vm_profile.vm_sku_name = AAZStrType(
+                serialized_name="vmSkuName",
+                flags={"required": True},
             )
 
             workload_express_route_connections = cls._schema_on_200.properties.workload_express_route_connections

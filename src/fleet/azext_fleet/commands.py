@@ -13,7 +13,8 @@ from azext_fleet._client_factory import (
     cf_auto_upgrade_profiles,
     cf_auto_upgrade_profile_operations,
     cf_gates,
-    cf_fleet_managed_namespaces
+    cf_fleet_managed_namespaces,
+    cf_cluster_mesh_profiles
 )
 
 
@@ -65,6 +66,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_fleet.vendored_sdks.operations._gates_operations#GatesOperations.{}",
         operation_group="gates",
         client_factory=cf_gates
+    )
+
+    cluster_mesh_profiles_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._cluster_mesh_profiles_operations#ClusterMeshProfilesOperations.{}",
+        operation_group="cluster_mesh_profiles",
+        client_factory=cf_cluster_mesh_profiles
     )
 
     # fleets command group
@@ -134,4 +141,14 @@ def load_command_table(self, _):
         g.custom_command("list", "list_managed_namespaces")
         g.custom_show_command("show", "show_managed_namespace")
         g.custom_command("get-credentials", "get_namespace_credentials")
+        g.wait_command("wait")
+
+    # cluster mesh profiles command group
+    with self.command_group("fleet clustermeshprofile", cluster_mesh_profiles_sdk, client_factory=cf_cluster_mesh_profiles, is_preview=True) as g:
+        g.custom_command("create", "create_cluster_mesh_profile", supports_no_wait=True)
+        g.custom_show_command("show", "show_cluster_mesh_profile")
+        g.custom_command("list", "list_cluster_mesh_profiles")
+        g.custom_command("delete", "delete_cluster_mesh_profile", supports_no_wait=True, confirmation=True)
+        g.custom_command("apply", "apply_cluster_mesh_profile", supports_no_wait=True)
+        g.custom_command("list-members", "list_cluster_mesh_profile_members")
         g.wait_command("wait")

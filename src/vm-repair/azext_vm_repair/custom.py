@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
+import shlex
 import timeit
 import traceback
 import requests
@@ -24,6 +25,7 @@ from .repair_utils import (
     _fetch_compatible_sku,
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
+    _validate_tags_for_command,
     _fetch_compatible_windows_os_urn,
     _fetch_matching_windows_os_urn,
     _fetch_run_script_map,
@@ -136,8 +138,21 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if sep:
             merged_tags[repair_key] = repair_value
 
+        # Validate tag keys and values before they are placed into the command string.
+        # Tag values can originate from the source VM (via --copy-tags) and are therefore
+        # untrusted. _validate_tags_for_command rejects double quotes, control characters and
+        # the cmd.exe expansion characters '%' and '!' (which cannot be safely escaped on a
+        # 'cmd /c' command line); every other character, including shell metacharacters such
+        # as & | < >, is preserved and passed through literally. See MSRC 115198 / VULN-185362.
+        _validate_tags_for_command(merged_tags)
+
         # Convert to CLI string for passing to az cli later.
-        tag_string = ' '.join(f'{k}={v}' for k, v in merged_tags.items())
+        # Each key=value token is quoted with shlex.quote so values containing spaces or
+        # shell metacharacters survive re-tokenization in _call_az_command as a single
+        # argument. Combined with the Windows cmd.exe quoting in _call_az_command, this
+        # prevents command injection through attacker-controlled source VM tags.
+        # See MSRC 115198 / VULN-185362.
+        tag_string = ' '.join(shlex.quote(f'{tag_key}={tag_value}') for tag_key, tag_value in merged_tags.items())
 
         # initializing the list of created resources.
         created_resources = []

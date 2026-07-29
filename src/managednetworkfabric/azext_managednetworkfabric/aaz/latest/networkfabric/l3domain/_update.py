@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -60,6 +60,18 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Identity"
 
@@ -101,8 +113,8 @@ class Update(AAZCommand):
             help="Connected Subnet RoutePolicy",
             nullable=True,
         )
-        _args_schema.export_policy_config = AAZObjectArg(
-            options=["--export-policy-config"],
+        _args_schema.export_policy_configuration = AAZObjectArg(
+            options=["--export-policy-config", "--export-policy-configuration"],
             arg_group="Properties",
             help="BMP Export Policy configuration.",
             nullable=True,
@@ -138,11 +150,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="IPv6 VRF Limit configuration.",
             nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         aggregate_route_configuration = cls._args_schema.aggregate_route_configuration
@@ -181,13 +188,13 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        export_policy_config = cls._args_schema.export_policy_config
-        export_policy_config.export_policies = AAZListArg(
+        export_policy_configuration = cls._args_schema.export_policy_configuration
+        export_policy_configuration.export_policies = AAZListArg(
             options=["export-policies"],
             help="Export Policy for the BGP Monitoring Protocol (BMP) Configuration.",
         )
 
-        export_policies = cls._args_schema.export_policy_config.export_policies
+        export_policies = cls._args_schema.export_policy_configuration.export_policies
         export_policies.Element = AAZStrArg(
             enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
         )
@@ -218,9 +225,6 @@ class Update(AAZCommand):
             options=["threshold"],
             help="Threshold for the routes.",
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_aggregate_route_update = None
@@ -352,7 +356,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -395,7 +399,7 @@ class Update(AAZCommand):
                 properties.set_prop("aggregateRouteConfiguration", AAZObjectType, ".aggregate_route_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
                 properties.set_prop("connectedSubnetRoutePolicy", AAZObjectType, ".connected_subnet_route_policy", typ_kwargs={"nullable": True})
-                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_config", typ_kwargs={"nullable": True})
+                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("redistributeConnectedSubnets", AAZStrType, ".redistribute_connected_subnets", typ_kwargs={"nullable": True})
                 properties.set_prop("redistributeStaticRoutes", AAZStrType, ".redistribute_static_routes", typ_kwargs={"nullable": True})
                 properties.set_prop("staticRouteRoutePolicy", AAZObjectType, ".static_route_route_policy", typ_kwargs={"nullable": True})

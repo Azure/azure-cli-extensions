@@ -15,6 +15,7 @@ from ._delete import *
 from ._deploy import *
 from ._inspect import *
 from ._list import *
+from ._rotate_credential import *
 from ._scan_runtime import *
 from ._show import *
 from ._update import *

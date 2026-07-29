@@ -172,7 +172,7 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         args_schema.pac_file = AAZStrArg(
             options=["--pac-file"],
             arg_group="Explicit Proxy",
-            help="SAS URL for PAC file.",
+            help="URL for PAC file.",
         )
         args_schema.m_public_ip._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
@@ -279,18 +279,20 @@ class AzureFirewallCreate(_AzureFirewallCreate):
                                        "subnet": subnet_id if has_value(subnet_id) else None,
                                        "public_ip_address": args.public_ip if has_value(args.public_ip) else None}]
 
-        if has_value(args.tier) and has_value(args.sku):
-            if tier.lower() == 'basic' and sku.lower() == 'azfw_vnet':
-                management_subnet_id = resource_id(
-                    subscription=get_subscription_id(self.cli_ctx),
-                    resource_group=args.resource_group,
-                    namespace='Microsoft.Network',
-                    type='virtualNetworks',
-                    name=args.vnet_name,
-                    child_type_1='subnets',
-                    child_name_1='AzureFirewallManagementSubnet'
-                )
-                args.mgmt_ip_conf_subnet = management_subnet_id
+        # A management IP configuration always requires the AzureFirewallManagementSubnet. It is created
+        # either implicitly for Basic tier or explicitly whenever the user passes --m-conf-name.
+        is_vnet_sku = not has_value(args.sku) or args.sku.to_serialized_data().lower() == 'azfw_vnet'
+        is_basic_tier = has_value(args.tier) and args.tier.to_serialized_data().lower() == 'basic'
+        if is_vnet_sku and (is_basic_tier or has_value(args.m_conf_name)):
+            args.mgmt_ip_conf_subnet = resource_id(
+                subscription=get_subscription_id(self.cli_ctx),
+                resource_group=args.resource_group,
+                namespace='Microsoft.Network',
+                type='virtualNetworks',
+                name=args.vnet_name,
+                child_type_1='subnets',
+                child_name_1='AzureFirewallManagementSubnet'
+            )
 
         if has_value(args.enable_explicit_proxy):
             args.additional_properties['Network.ExplicitProxy.EnableExplicitProxy'] = args.enable_explicit_proxy
@@ -890,11 +892,13 @@ class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
 class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity = AAZResourceIdArg(
+        args_schema.identity = AAZListArg(
             options=['--identity'],
-            help="Name or ID of the ManagedIdentity Resource.",
+            help="Name or Space-separated list of ManagedIdentity Resource IDs.",
+        )
+        args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
                          "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
@@ -913,7 +917,9 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         args = self.ctx.args
         if has_value(args.identity):
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
+            identities = []
+            identities.extend([identity_id.to_serialized_data() for identity_id in args.identity])
+            args.user_assigned_identities = {identity_id: {} for identity_id in identities}
 
         if has_value(args.dns_servers):
             if not has_value(args.enable_dns_proxy):
@@ -923,14 +929,16 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity = AAZResourceIdArg(
+        args_schema.identity = AAZListArg(
             options=['--identity'],
-            help="Name or ID of the ManagedIdentity Resource.",
+            help="Name or Space-separated list of ManagedIdentity Resource IDs.",
+        )
+        args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
-                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
+                "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
         args_schema.identity_type._registered = False
@@ -941,9 +949,12 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
 
     def pre_operations(self):
         args = self.ctx.args
+
         if has_value(args.identity):
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
+            identities = []
+            identities.extend([identity_id.to_serialized_data() for identity_id in args.identity])
+            args.user_assigned_identities = {identity_id: {} for identity_id in identities}
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None

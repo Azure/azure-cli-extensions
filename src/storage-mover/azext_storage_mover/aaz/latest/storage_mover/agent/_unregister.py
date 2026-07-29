@@ -13,19 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover agent unregister",
-    confirmation="WARNING: Deleting this agent will stop ongoing migrations on this agent. Job definitions that reference this agent can’t be started until their agent reference is updated to a working agent. Registering this agent again will result in a new identity and not fix existing job definitions. Note that the Azure ARC trust is not broken. The Hybrid Compute resource must be manually removed to invalidate the agent identity that may still be allowed access to target storage containers. \nAre you sure you want to delete this storage mover agent?",
+    confirmation="Are you sure you want to perform this operation?",
 )
 class Unregister(AAZCommand):
-    """Unregisters an Agent resource.
-
-    :example: agent unregister
-        az storage-mover agent unregister -g {rg} -n {agent_name} --storage-mover-name {mover_name}
+    """Unregisters an Agent resource
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2025-12-01"],
         ]
     }
 
@@ -60,6 +57,9 @@ class Unregister(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -153,7 +153,7 @@ class Unregister(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type, SDKProfile
+from azure.cli.core.profiles import register_resource_type
 
 # pylint: disable=unused-import
 from azext_fleet._help import helps
@@ -15,7 +15,7 @@ def register_fleet_resource_type():
     register_resource_type(
         "latest",
         CUSTOM_MGMT_FLEET,
-        SDKProfile("2026-02-01-preview"),
+        None,
     )
 
 

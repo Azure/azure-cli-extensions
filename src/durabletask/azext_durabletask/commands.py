@@ -29,6 +29,12 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["durabletask scheduler list"] = _SchedulerList(
             loader=self, table_transformer=scheduler_list_table_format)
         g.custom_command('attach', 'attach_scheduler')
+        g.custom_command('restart', 'restart_scheduler')
+
+    with self.command_group('durabletask scheduler identity'):
+        from .custom import AssignIdentity, RemoveIdentity
+        self.command_table["durabletask scheduler identity assign"] = AssignIdentity(loader=self)
+        self.command_table["durabletask scheduler identity remove"] = RemoveIdentity(loader=self)
 
     with self.command_group('durabletask taskhub'):
         from .aaz.latest.durabletask.taskhub import (

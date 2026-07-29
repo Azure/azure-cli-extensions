@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -60,6 +60,18 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Identity"
 
@@ -128,11 +140,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Network Tap Rules file URL.",
             nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         dynamic_match_configurations = cls._args_schema.dynamic_match_configurations
@@ -410,9 +417,6 @@ class Update(AAZCommand):
 
         vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
         vlans.Element = AAZStrArg()
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -496,7 +500,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -805,6 +809,10 @@ class Update(AAZCommand):
             )
             properties.network_fabric_ids = AAZListType(
                 serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
+            properties.network_tap_id = AAZStrType(
+                serialized_name="networkTapId",
                 flags={"read_only": True},
             )
             properties.network_tap_ids = AAZListType(

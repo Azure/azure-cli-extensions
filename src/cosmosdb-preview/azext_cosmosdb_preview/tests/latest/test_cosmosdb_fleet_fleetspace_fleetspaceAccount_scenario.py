@@ -96,7 +96,7 @@ class CosmosdbFleetScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb fleetspace list -g {rg} --fleet-name {fleet}')
 
         # Create Cosmos DB account dynamically
-        self.cmd('az cosmosdb create -g {rg} -n {acct} --locations regionName=westus2 failoverPriority=0 isZoneRedundant=False')
+        self.cmd('az cosmosdb create --disable-local-auth true -g {rg} -n {acct} --locations regionName=westus2 failoverPriority=0 isZoneRedundant=False')
 
         # Fleetspace Account
         self.cmd('az cosmosdb fleetspace account create -g {rg} --fleet-name {fleet} --fleetspace-name {fsp} --fleetspace-account-name {fspacct} --body @{fspacctbody}')

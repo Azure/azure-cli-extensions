@@ -53,13 +53,14 @@ def get_vm_size_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: di
 
     location = _get_location(cmd.cli_ctx, namespace)
     result = get_vm_sizes(cmd.cli_ctx, location)
-    return set(r.name for r in result) & set(c.value for c in ContainerServiceVMSizeTypes)
+    return set(r.get('name') for r in result) & set(c.value for c in ContainerServiceVMSizeTypes)
 
 
 def get_vm_sizes(cli_ctx, location):
-    from azext_aks_preview._client_factory import get_compute_client
-
-    return get_compute_client(cli_ctx).virtual_machine_sizes.list(location)
+    from azure.cli.command_modules.vm.operations.vm import VMListSizes
+    return VMListSizes(cli_ctx=cli_ctx)(command_args={
+        "location": location,
+    })
 
 
 def _get_location(cli_ctx, namespace):

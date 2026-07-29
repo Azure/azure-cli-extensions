@@ -6,12 +6,16 @@
 from .aaz.latest.durabletask.scheduler import Create as _SchedulerCreate
 from .aaz.latest.durabletask.scheduler import Update as _SchedulerUpdate
 from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow
+from .aaz.latest.durabletask.scheduler.identity import Assign as _IdentityAssign
+from .aaz.latest.durabletask.scheduler.identity import Remove as _IdentityRemove
 from .aaz.latest.durabletask.taskhub import Show as _TaskHubShow
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 from azure.core.exceptions import HttpResponseError
 
 import logging
 logger = logging.getLogger(__name__)
+
+API_VERSION = "2026-05-01-preview"
 
 RESOURCE_TYPE_MAP = {
     "microsoft.web/sites": "functionapp",
@@ -73,6 +77,36 @@ class UpdateScheduler(_SchedulerUpdate):
         capacity = sku.capacity.to_serialized_data()
         if capacity is None or capacity == 0:
             sku.capacity = None
+
+
+def _unset_unused_sku_capacity(scheduler_instance):
+    """Drop the sku capacity from the scheduler payload when unset or 0.
+
+    The identity assign/remove operations issue a full PUT of the scheduler.
+    Sending a sku capacity for a non-Dedicated SKU (e.g. Consumption) is
+    invalid, so the property must be removed when it is not applicable.
+    """
+    sku = scheduler_instance.properties.sku
+    capacity_field = getattr(sku, "capacity", None)
+    capacity = capacity_field.to_serialized_data() if capacity_field is not None else None
+    if capacity is None or capacity == 0:
+        sku.capacity = None
+
+
+class AssignIdentity(_IdentityAssign):
+    """Assign managed identities to a Durabletask scheduler."""
+
+    def post_instance_update(self, instance):
+        """Avoid sending sku capacity that does not apply to the scheduler's SKU."""
+        _unset_unused_sku_capacity(self.ctx.vars.instance)
+
+
+class RemoveIdentity(_IdentityRemove):
+    """Remove managed identities from a Durabletask scheduler."""
+
+    def post_instance_update(self, instance):
+        """Avoid sending sku capacity that does not apply to the scheduler's SKU."""
+        _unset_unused_sku_capacity(self.ctx.vars.instance)
 
 
 def _get_caller_object_id(cli_ctx):
@@ -543,3 +577,37 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
         result["identityResourceId"] = identity
         result["identityClientId"] = client_id
     return result
+
+
+def restart_scheduler(cmd, resource_group_name, scheduler_name):
+    """Restart a Durable Task scheduler by calling POST /restart on the resource."""
+    from azure.cli.core.util import send_raw_request
+
+    cli_ctx = cmd.cli_ctx
+
+    # Retrieve the scheduler to validate it exists and get its resource ID.
+    logger.info("Retrieving scheduler '%s' in resource group '%s'...",
+                scheduler_name, resource_group_name)
+    scheduler = _SchedulerShow(cli_ctx=cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "name": scheduler_name,
+    })
+    scheduler_id = scheduler.get("id")
+    if not scheduler_id:
+        raise ResourceNotFoundError(
+            f"Scheduler '{scheduler_name}' not found in resource group "
+            f"'{resource_group_name}'. Please verify the name and resource group."
+        )
+
+    arm_endpoint = cli_ctx.cloud.endpoints.resource_manager.rstrip('/')
+    url = f"{arm_endpoint}{scheduler_id}/restart?api-version={API_VERSION}"
+
+    logger.info("Restarting scheduler '%s'...", scheduler_name)
+    send_raw_request(cli_ctx, 'POST', url)
+    logger.info("Scheduler '%s' restart initiated successfully.", scheduler_name)
+
+    return {
+        "schedulerName": scheduler_name,
+        "resourceGroupName": resource_group_name,
+        "status": "Restart initiated",
+    }

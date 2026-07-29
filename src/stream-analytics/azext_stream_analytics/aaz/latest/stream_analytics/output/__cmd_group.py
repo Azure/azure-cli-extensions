@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "stream-analytics output",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Output
+    """Manage output with stream analytics.
     """
     pass
 

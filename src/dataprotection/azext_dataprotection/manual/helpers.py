@@ -56,7 +56,8 @@ datasource_map = {
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
-    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers"
+    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -324,6 +325,34 @@ def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_co
                                            'for fetching all vaulted containers.')
     raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
                                        'for given workload type.')
+
+
+def get_blob_autoprotection_config(datasource_type, exclusion_prefixes=None):
+    if datasource_type == "AzureDataLakeStorage":
+        object_type = "AdlsBlobBackupDatasourceParametersForAutoProtection"
+    else:
+        object_type = "BlobBackupDatasourceParametersForAutoProtection"
+
+    auto_protection_settings = {
+        "object_type": "BlobBackupRuleBasedAutoProtectionSettings",
+        "enabled": True
+    }
+
+    if exclusion_prefixes:
+        auto_protection_settings["rules"] = [
+            {
+                "object_type": "BlobBackupAutoProtectionRule",
+                "mode": "Exclude",
+                "type": "Prefix",
+                "pattern": prefix
+            }
+            for prefix in exclusion_prefixes
+        ]
+
+    return {
+        "object_type": object_type,
+        "auto_protection_settings": auto_protection_settings
+    }
 
 
 def get_datasource_auth_credentials_info(secret_store_type, secret_store_uri):
@@ -744,8 +773,59 @@ def get_backup_frequency_from_time_interval(repeating_time_intervals):
 
 
 def get_tagging_priority(name):
-    priorityMap = {"Default": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
+    priorityMap = {"Default": 99, "Default_OperationalStore": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
     return priorityMap[name]
+
+
+def validate_retention_rule_matches_mapped_store(name, default_retention_mapping, lifecycles, datasource_type):
+    """If `name` is one of the manifest's mapped default rule names (e.g. ``Default_OperationalStore``),
+    every lifecycle in ``lifecycles`` must have a ``sourceDataStore.dataStoreType`` matching the mapped
+    source store for that name. Raises ``InvalidArgumentValueError`` on mismatch.
+
+    Returns the list of mapped default rule names declared by the manifest so callers can also use it
+    for downstream "is this a default rule" checks.
+    """
+    mapped_default_names = list(default_retention_mapping.values()) if default_retention_mapping else []
+    if name in mapped_default_names:
+        for lc in lifecycles:
+            store = lc.get("sourceDataStore", {}).get("dataStoreType")
+            if store is None:
+                continue
+            expected_name = default_retention_mapping.get(store)
+            if expected_name is not None and expected_name != name:
+                reserved_stores = [s for s, n in default_retention_mapping.items() if n == name]
+                reserved_for = ", ".join(reserved_stores)
+                raise InvalidArgumentValueError(
+                    "Retention rule '" + name + "' is reserved for source store '" + reserved_for +
+                    "' on datasource type " + datasource_type + ". For source store '" + store +
+                    "' use --name " + expected_name + "."
+                )
+    return mapped_default_names
+
+
+def validate_exclusive_source_store_assignment(name, manifest, default_retention_mapping, lifecycles, datasource_type):
+    """For each source store declared as exclusive in
+    ``manifest.policySettings.exclusiveSourceDataStores`` (e.g. ``OperationalStore`` on AzureBlob),
+    only the manifest's mapped default rule for that store (e.g. ``Default_OperationalStore``) is
+    allowed to carry a lifecycle whose source store is that exclusive store. Any other rule name
+    paired with that exclusive store raises ``InvalidArgumentValueError``.
+    """
+    policy_settings = manifest.get("policySettings", {}) if manifest else {}
+    exclusive_stores = policy_settings.get("exclusiveSourceDataStores", []) or []
+    if not exclusive_stores:
+        return
+    for lc in lifecycles:
+        store = lc.get("sourceDataStore", {}).get("dataStoreType")
+        if store is None or store not in exclusive_stores:
+            continue
+        expected_name = default_retention_mapping.get(store) if default_retention_mapping else None
+        if expected_name is not None and expected_name != name:
+            raise InvalidArgumentValueError(
+                "Source store '" + store + "' on datasource type " + datasource_type +
+                " is exclusive: only the '" + expected_name + "' retention rule may carry an " +
+                store + " lifecycle. Use --name " + expected_name + " instead of --name " + name +
+                ", or remove the " + store + " lifecycle from --lifecycles."
+            )
 
 
 def truncate_id_using_scope(arm_id, scope):
@@ -922,6 +1002,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "Postgres flexible server"
         if datasource_type == 'AzureDatabaseForMySQL':
             helptext_dsname = "MySQL server"
+        if datasource_type == 'AzureCosmosDB':
+            helptext_dsname = "Cosmos DB account"
 
         return helptext_dsname
 
@@ -1028,7 +1110,14 @@ def convert_dict_keys_snake_to_camel(dictionary):
     return new_dictionary
 
 
+_SNAKE_TO_CAMEL_OVERRIDES = {
+    "resource_id": "resourceID",
+}
+
+
 def convert_string_snake_to_camel(string):
+    if string in _SNAKE_TO_CAMEL_OVERRIDES:
+        return _SNAKE_TO_CAMEL_OVERRIDES[string]
     new_string = re.sub(r'_([a-z])', lambda m: m.group(1).upper(), string)
     return new_string
 

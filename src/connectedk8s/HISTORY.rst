@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.11.1
++++++++
+* Added ARM64 support for Helm binary installation.
+* Handle removal of '--all' flag in Helm 4 to ensure compatibility.
+* Added Helm overrides support for Application Gateway for Containers (AGC).
+* Updated CSP version.
+* Updated CLIENT_PROXY_VERSION to 1.3.033892.
+* Updated pre-diagnostics version.
+
 1.11.0
 +++++
 * [Breaking Change] Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.

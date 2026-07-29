@@ -9,43 +9,46 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.0
-        (Darwin-22.3.0-x86_64-i386-64bit)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testFeed/discovery
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/dsvm-test/discovery
   response:
     body:
-      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
-        "testFeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
-        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "4f26493f-21d2-4726-92ea-1ddd550b1d27",
-        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
-        "https://cert-master.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
-        {"uri": "https://3b513a6b-f110-4e7f-9ce3-472b5aa28170.registry.master.privatelink.api.azureml-test.ms"}}}'
+      string: '{"registryId": "93595ad9-6099-4324-a067-a21a6c3fa6ba", "registryName":
+        "dsvm-test", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus", "regions": ["eastus"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "resourceGroup": "testrg", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-eastus.experiments.azureml.net/", "registryFqdns": {"eastus":
+        {"uri": "https://eastus.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        null, "isTradeRestricted": false}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus-02
       connection:
       - keep-alive
       content-length:
-      - '545'
+      - '515'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Feb 2023 22:33:46 GMT
+      - Tue, 19 May 2026 06:42:06 GMT
+      mise-correlation-id:
+      - 42470802-8066-4e8e-9898-6cac1377593f
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-eastus-02
       x-content-type-options:
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.124'
+      - '0.022'
     status:
       code: 200
       message: OK

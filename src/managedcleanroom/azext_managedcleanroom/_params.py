@@ -75,6 +75,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend analytics') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
+    # Analytics SKR policy context
+    with self.argument_context('managedcleanroom frontend analytics skr-policy') as c:
+        c.argument('dataset_id', options_list=['--dataset-id', '-d'],
+                   help='Dataset identifier for which to retrieve SKR policy')
+
     # OIDC context
     with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
         c.argument('collaboration_id', collaboration_id_type)
@@ -199,6 +204,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             'kek_maa_url',
             options_list=['--kek-maa-url'],
             help='MAA URL for KEK (CPK mode only)')
+        c.argument(
+            'subdirectory',
+            options_list=['--subdirectory'],
+            help='Optional subdirectory/prefix inside the storage container to mount.')
 
     # Dataset queries context
     with self.argument_context('managedcleanroom frontend analytics dataset queries') as c:

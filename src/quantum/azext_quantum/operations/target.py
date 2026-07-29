@@ -49,7 +49,7 @@ def set(cmd, target_id):
     return info
 
 
-def list(cmd, resource_group_name, workspace_name, location=None):
+def list(cmd, resource_group_name, workspace_name):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
     """

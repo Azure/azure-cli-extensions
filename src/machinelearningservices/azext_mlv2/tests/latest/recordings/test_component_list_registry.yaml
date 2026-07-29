@@ -9,43 +9,46 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
-        (Windows-10-10.0.22000-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testFeed/discovery
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/dsvm-test/discovery
   response:
     body:
-      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
-        "testFeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
-        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
-        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
-        "https://cert-master.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
-        {"uri": "https://3b513a6b-f110-4e7f-9ce3-472b5aa28170.registry.master.api.azureml-test.ms"}}}'
+      string: '{"registryId": "93595ad9-6099-4324-a067-a21a6c3fa6ba", "registryName":
+        "dsvm-test", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus", "regions": ["eastus"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "resourceGroup": "testrg", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-eastus.experiments.azureml.net/", "registryFqdns": {"eastus":
+        {"uri": "https://eastus.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        null, "isTradeRestricted": false}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus-01
       connection:
       - keep-alive
       content-length:
-      - '533'
+      - '515'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 30 Sep 2022 19:41:14 GMT
+      - Tue, 19 May 2026 06:41:58 GMT
+      mise-correlation-id:
+      - 28b415a0-b020-4aa6-aa0a-104b17cf68fc
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-eastus-02
       x-content-type-options:
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.260'
+      - '0.023'
     status:
       code: 200
       message: OK
@@ -59,53 +62,57 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
-        (Windows-10-10.0.22000-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://cert-master.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testFeed/components/000000000000000/versions?api-version=0000-00-00
+    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/components/000000000000000/versions?api-version=0000-00-00
   response:
     body:
-      string: '{"value": [{"id": "azureml://registries/testFeed/components/HelloWorldRegistry/versions/0.0.1",
-        "name": "0.0.1", "properties": {"description": null, "tags": {"tags1": "tags1"},
-        "properties": {"properties1": "properties1"}, "isArchived": false, "isAnonymous":
-        false, "componentSpec": {"name": "HelloWorldRegistry", "version": "0.0.1",
-        "display_name": "HelloWorldRegistry", "is_deterministic": "True", "type":
-        "command", "description": "A hello world component which reference a curated
-        environment.", "tags": {"tags1": "tags1"}, "code": "azureml://registries/testFeed/codes/HelloWorld/versions/1",
-        "environment": "azureml://registries/CuratedRegistry/environments/AzureML-minimal-ubuntu18.04-py37-cpu-inference/versions/34",
-        "resources": {"instance_count": "1"}, "command": "python helloworld.py", "$schema":
-        "http://azureml/sdk-2-0/CommandComponent.json"}}, "systemData": {"createdAt":
-        "2022-03-30T20:31:22.4704462+00:00", "createdBy": "Jun Qi", "createdByType":
-        "User", "lastModifiedAt": "2022-03-30T20:31:22.4704463+00:00", "lastModifiedBy":
-        "Jun Qi", "lastModifiedByType": "User"}}]}'
+      string: '{"value": [{"id": "azureml://registries/dsvm-test/components/helloworld_component_with_env/versions/0.0.1",
+        "name": "0.0.1", "type": "Microsoft.MachineLearningServices/registries/components/versions",
+        "properties": {"description": null, "tags": {"tag": "tagvalue", "owner": "sdkteam"},
+        "properties": {"client_component_hash": "a13fdcfd-df7b-41fe-7376-5b2a21cf8708"},
+        "isArchived": false, "isAnonymous": false, "componentSpec": {"$schema": "https://azuremlschemas.azureedge.net/development/commandComponent.schema.json",
+        "name": "helloworld_component_with_env", "version": "0.0.1", "display_name":
+        "CommandComponentBasic", "is_deterministic": "True", "type": "command", "description":
+        "This is the basic command component", "tags": {"tag": "tagvalue", "owner":
+        "sdkteam"}, "inputs": {"component_in_path": {"type": "uri_folder", "optional":
+        "False", "description": "A path"}, "component_in_number": {"type": "number",
+        "optional": "True", "default": "10.99", "description": "A number"}}, "outputs":
+        {"component_out_path": {"type": "uri_folder"}}, "environment": "azureml://registries/dsvm-test/environments/CliV2AnonymousEnvironment/versions/e88c3573a8596083d676d16ff8220f27f04d03450a49586ed91a6b573acb89bb",
+        "resources": {"instance_count": "1"}, "command": "echo Hello World & echo
+        $[[${{inputs.component_in_number}}]] & echo ${{inputs.component_in_path}}
+        & echo ${{outputs.component_out_path}} > ${{outputs.component_out_path}}/component_in_number"}},
+        "systemData": {"createdAt": "2026-05-19T05:32:37.9538001+00:00", "createdBy":
+        "Lava Kumar Repala", "createdByType": "User", "lastModifiedAt": "2026-05-19T06:23:48.515513+00:00",
+        "lastModifiedBy": "Lava Kumar Repala", "lastModifiedByType": "User"}}]}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus-01
       connection:
       - keep-alive
       content-length:
-      - '1086'
+      - '1700'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 30 Sep 2022 19:41:15 GMT
+      - Tue, 19 May 2026 06:41:59 GMT
+      mise-correlation-id:
+      - 329bab1b-de1d-4f4f-abc2-5c92c3fa8ec3
       request-context:
-      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
-      server-timing:
-      - traceparent;desc="00-4e779708114ba14bbcb161026182fa00-d46125ea59dfb105-00"
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-test-westus2-02
       x-content-type-options:
-      - nosniff
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.240'
+      - '0.255'
     status:
       code: 200
       message: OK

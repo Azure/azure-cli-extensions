@@ -5,18 +5,79 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.azclierror import ResourceNotFoundError
-from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core import get_default_cli
+from knack.log import get_logger
+from .vendored_sdks.containerregistry.v2025_06_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
 from .utility_functions import create_identity_properties
+from urllib.parse import urlparse
+
+logger = get_logger(__name__)
 
 
-def create_importpipeline(client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None, source_trigger_enabled=True):
+def _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri):
+    """Extract storage account resource ID from container URI.
+    Used for permission guidance messages
+    Expected format: https://<storage-account-name>.blob.core.windows.net/<container-name>
+    """
+    try:
+        # Parse the URI to get storage account name
+        parsed = urlparse(container_uri)
+        storage_account_name = parsed.hostname.split('.')[0]
+        return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}"
+    except Exception:  # pylint: disable=broad-exception-caught
+        return "<storage-account-resource-id>"
+
+
+def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri):
+    """Extract key vault resource ID from secret URI.
+    Used for permission guidance messages
+    Expected format: https://<keyvault-name>.vault.azure.net/secrets/<secret-name>
+    """
+    try:
+        parsed = urlparse(keyvault_secret_uri)
+        keyvault_name = parsed.hostname.split('.')[0]
+        return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.KeyVault/vaults/{keyvault_name}"
+    except Exception:  # pylint: disable=broad-exception-caught
+        return "<key-vault-resource-id>"
+
+
+def _display_permission_guidance(storage_access_mode, principal_id, subscription_id, resource_group_name, container_uri, keyvault_secret_uri=None):
+    """Display permission guidance for the managed identity."""
+
+    if storage_access_mode == 'ManagedIdentity':
+        storage_resource_id = _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri)
+        role = "Storage Blob Data Reader"
+
+        logger.warning("")
+        logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Storage Account Blob Container.", principal_id)
+        logger.warning("Please run:")
+        logger.warning("  az role assignment create --assignee \"%s\" --role \"%s\" --scope \"%s\"", principal_id, role, storage_resource_id)
+        logger.warning("Note: If the Storage Account is in a different resource group, update the --scope parameter accordingly.")
+        logger.warning("")
+    elif storage_access_mode == 'SasToken':
+        keyvault_resource_id = _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri)
+        role = "Key Vault Secrets User"
+
+        logger.warning("")
+        logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.", principal_id)
+        logger.warning("Please run:")
+        logger.warning("  az role assignment create --assignee \"%s\" --role \"%s\" --scope \"%s\"", principal_id, role, keyvault_resource_id)
+        logger.warning("Note: If the Key Vault is in a different resource group, update the --scope parameter accordingly.")
+        logger.warning("")
+
+
+def create_importpipeline(client, resource_group_name, registry_name, import_pipeline_name, storage_account_container_uri, storage_access_mode, keyvault_secret_uri=None, options=None, user_assigned_identity_resource_id=None, source_trigger_enabled=True):
     '''Create an import pipeline.'''
 
-    keyvault_secret_uri = keyvault_secret_uri.lower()
     storage_account_container_uri = storage_account_container_uri.lower()
+    if keyvault_secret_uri:
+        keyvault_secret_uri = keyvault_secret_uri.lower()
 
     identity_properties = create_identity_properties(user_assigned_identity_resource_id)
-    import_pipeline_source_properties = ImportPipelineSourceProperties(key_vault_uri=keyvault_secret_uri, uri=storage_account_container_uri)
+    import_pipeline_source_properties = ImportPipelineSourceProperties(storage_access_mode=storage_access_mode,
+                                                                       key_vault_uri=keyvault_secret_uri,
+                                                                       uri=storage_account_container_uri)
     source_trigger_status = "Enabled" if source_trigger_enabled else "Disabled"
 
     pipeline_source_trigger_properties = PipelineSourceTriggerProperties(status=source_trigger_status)
@@ -31,9 +92,39 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
                                          import_pipeline_name=import_pipeline_name,
                                          import_pipeline_create_parameters=import_pipeline)
 
-    return client.import_pipelines.get(resource_group_name=resource_group_name,
-                                       registry_name=registry_name,
-                                       import_pipeline_name=import_pipeline_name)
+    result = client.import_pipelines.get(resource_group_name=resource_group_name,
+                                         registry_name=registry_name,
+                                         import_pipeline_name=import_pipeline_name)
+
+    # Display permission guidance
+    pipeline_identity = result.identity
+    if pipeline_identity:
+        principal_id = None
+        # For system-assigned identity, principal_id is at the top level
+        if pipeline_identity.principal_id:
+            principal_id = pipeline_identity.principal_id
+        # For user-assigned identity, extract principal_id from userAssignedIdentities
+        elif pipeline_identity.user_assigned_identities:
+            # Azure support multiple. For our case, we only assign 1
+            # Get the first user-assigned identity
+            for identity_info in pipeline_identity.user_assigned_identities.values():
+                if identity_info and identity_info.principal_id:
+                    principal_id = identity_info.principal_id
+        else:
+            principal_id = None
+
+        if principal_id:
+            subscription_id = get_subscription_id(get_default_cli())
+            _display_permission_guidance(
+                storage_access_mode=storage_access_mode,
+                principal_id=principal_id,
+                subscription_id=subscription_id,
+                resource_group_name=resource_group_name,
+                container_uri=storage_account_container_uri,
+                keyvault_secret_uri=keyvault_secret_uri
+            )
+
+    return result
 
 
 def get_importpipeline(client, resource_group_name, registry_name, import_pipeline_name):

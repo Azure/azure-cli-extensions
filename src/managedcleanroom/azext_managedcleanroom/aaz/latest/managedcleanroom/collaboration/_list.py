@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-03-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cleanroom/collaborations", "2026-03-31-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations", "2026-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cleanroom/collaborations", "2026-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations", "2026-04-30-preview"],
         ]
     }
 
@@ -55,12 +55,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
-            self.CollaborationsListBySubscription(ctx=self.ctx)()
-        if condition_1:
             self.CollaborationsListByResourceGroup(ctx=self.ctx)()
+        if condition_1:
+            self.CollaborationsListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +76,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class CollaborationsListBySubscription(AAZHttpOperation):
+    class CollaborationsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +90,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                f"/subscriptions/{{subscriptionId}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations",
+                f"/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations",
                 **self.url_parameters
             )
 
@@ -106,6 +106,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -116,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -171,7 +175,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -206,6 +210,9 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_location = AAZStrType(
+                serialized_name="resourceLocation",
             )
             properties.workloads = AAZListType(
                 flags={"read_only": True},
@@ -300,7 +307,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class CollaborationsListByResourceGroup(AAZHttpOperation):
+    class CollaborationsListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -314,7 +321,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                f"/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations",
+                f"/subscriptions/{{subscriptionId}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations",
                 **self.url_parameters
             )
 
@@ -330,10 +337,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -344,7 +347,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -399,7 +402,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -434,6 +437,9 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_location = AAZStrType(
+                serialized_name="resourceLocation",
             )
             properties.workloads = AAZListType(
                 flags={"read_only": True},

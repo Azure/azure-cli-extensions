@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2025-07-15"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2026-01-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -272,6 +272,11 @@ class List(AAZCommand):
                 serialized_name="managementNetworkConfiguration",
                 flags={"required": True},
             )
+            properties.network_bootstrap_device_id = AAZStrType(
+                serialized_name="networkBootstrapDeviceId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
@@ -280,6 +285,10 @@ class List(AAZCommand):
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
                 flags={"required": True},
+            )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -297,6 +306,9 @@ class List(AAZCommand):
             properties.router_ids = AAZListType(
                 serialized_name="routerIds",
                 flags={"read_only": True},
+            )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
             )
             properties.secret_rotation_summary = AAZObjectType(
                 serialized_name="secretRotationSummary",
@@ -321,6 +333,9 @@ class List(AAZCommand):
             )
             properties.unique_rd_configuration = AAZObjectType(
                 serialized_name="uniqueRdConfiguration",
+            )
+            properties.upgrade_profile = AAZListType(
+                serialized_name="upgradeProfile",
             )
 
             active_commit_batches = cls._schema_on_200.value.Element.properties.active_commit_batches
@@ -391,6 +406,17 @@ class List(AAZCommand):
             router_ids = cls._schema_on_200.value.Element.properties.router_ids
             router_ids.Element = AAZStrType()
 
+            secret_archive_settings = cls._schema_on_200.value.Element.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+                flags={"required": True},
+            )
+
             secret_rotation_summary = cls._schema_on_200.value.Element.properties.secret_rotation_summary
             secret_rotation_summary.active_password_set_count = AAZIntType(
                 serialized_name="activePasswordSetCount",
@@ -405,16 +431,7 @@ class List(AAZCommand):
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
             )
-
-            storage_account_identity = cls._schema_on_200.value.Element.properties.storage_account_configuration.storage_account_identity
-            storage_account_identity.identity_type = AAZStrType(
-                serialized_name="identityType",
-                flags={"required": True},
-            )
-            storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-                nullable=True,
-            )
+            _ListHelper._build_schema_identity_selector_read(storage_account_configuration.storage_account_identity)
 
             terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -508,6 +525,30 @@ class List(AAZCommand):
 
             unique_rds = cls._schema_on_200.value.Element.properties.unique_rd_configuration.unique_rds
             unique_rds.Element = AAZStrType()
+
+            upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile
+            upgrade_profile.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.upgrade_profile.Element
+            _element.post_upgrade_profile = AAZObjectType(
+                serialized_name="postUpgradeProfile",
+            )
+            _element.pre_upgrade_profile = AAZObjectType(
+                serialized_name="preUpgradeProfile",
+            )
+
+            post_upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile.Element.post_upgrade_profile
+            post_upgrade_profile.max_exiting_maintenance_timeout_in_seconds = AAZIntType(
+                serialized_name="maxExitingMaintenanceTimeoutInSeconds",
+            )
+            post_upgrade_profile.mlag_reload_delay_timeout_in_seconds = AAZIntType(
+                serialized_name="mlagReloadDelayTimeoutInSeconds",
+            )
+
+            pre_upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile.Element.pre_upgrade_profile
+            pre_upgrade_profile.max_entering_maintenance_timeout_in_seconds = AAZIntType(
+                serialized_name="maxEnteringMaintenanceTimeoutInSeconds",
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -578,7 +619,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -735,6 +776,11 @@ class List(AAZCommand):
                 serialized_name="managementNetworkConfiguration",
                 flags={"required": True},
             )
+            properties.network_bootstrap_device_id = AAZStrType(
+                serialized_name="networkBootstrapDeviceId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
@@ -743,6 +789,10 @@ class List(AAZCommand):
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
                 flags={"required": True},
+            )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -760,6 +810,9 @@ class List(AAZCommand):
             properties.router_ids = AAZListType(
                 serialized_name="routerIds",
                 flags={"read_only": True},
+            )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
             )
             properties.secret_rotation_summary = AAZObjectType(
                 serialized_name="secretRotationSummary",
@@ -784,6 +837,9 @@ class List(AAZCommand):
             )
             properties.unique_rd_configuration = AAZObjectType(
                 serialized_name="uniqueRdConfiguration",
+            )
+            properties.upgrade_profile = AAZListType(
+                serialized_name="upgradeProfile",
             )
 
             active_commit_batches = cls._schema_on_200.value.Element.properties.active_commit_batches
@@ -854,6 +910,17 @@ class List(AAZCommand):
             router_ids = cls._schema_on_200.value.Element.properties.router_ids
             router_ids.Element = AAZStrType()
 
+            secret_archive_settings = cls._schema_on_200.value.Element.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+                flags={"required": True},
+            )
+
             secret_rotation_summary = cls._schema_on_200.value.Element.properties.secret_rotation_summary
             secret_rotation_summary.active_password_set_count = AAZIntType(
                 serialized_name="activePasswordSetCount",
@@ -868,16 +935,7 @@ class List(AAZCommand):
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
             )
-
-            storage_account_identity = cls._schema_on_200.value.Element.properties.storage_account_configuration.storage_account_identity
-            storage_account_identity.identity_type = AAZStrType(
-                serialized_name="identityType",
-                flags={"required": True},
-            )
-            storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-                nullable=True,
-            )
+            _ListHelper._build_schema_identity_selector_read(storage_account_configuration.storage_account_identity)
 
             terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -972,6 +1030,30 @@ class List(AAZCommand):
             unique_rds = cls._schema_on_200.value.Element.properties.unique_rd_configuration.unique_rds
             unique_rds.Element = AAZStrType()
 
+            upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile
+            upgrade_profile.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.upgrade_profile.Element
+            _element.post_upgrade_profile = AAZObjectType(
+                serialized_name="postUpgradeProfile",
+            )
+            _element.pre_upgrade_profile = AAZObjectType(
+                serialized_name="preUpgradeProfile",
+            )
+
+            post_upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile.Element.post_upgrade_profile
+            post_upgrade_profile.max_exiting_maintenance_timeout_in_seconds = AAZIntType(
+                serialized_name="maxExitingMaintenanceTimeoutInSeconds",
+            )
+            post_upgrade_profile.mlag_reload_delay_timeout_in_seconds = AAZIntType(
+                serialized_name="mlagReloadDelayTimeoutInSeconds",
+            )
+
+            pre_upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile.Element.pre_upgrade_profile
+            pre_upgrade_profile.max_entering_maintenance_timeout_in_seconds = AAZIntType(
+                serialized_name="maxEnteringMaintenanceTimeoutInSeconds",
+            )
+
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -1000,6 +1082,30 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_identity_selector_read = None
+
+    @classmethod
+    def _build_schema_identity_selector_read(cls, _schema):
+        if cls._schema_identity_selector_read is not None:
+            _schema.identity_type = cls._schema_identity_selector_read.identity_type
+            _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+            return
+
+        cls._schema_identity_selector_read = _schema_identity_selector_read = AAZObjectType()
+
+        identity_selector_read = _schema_identity_selector_read
+        identity_selector_read.identity_type = AAZStrType(
+            serialized_name="identityType",
+            flags={"required": True},
+        )
+        identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._schema_identity_selector_read.identity_type
+        _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
     _schema_vpn_configuration_properties_read = None
 

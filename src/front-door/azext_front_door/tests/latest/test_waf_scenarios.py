@@ -601,3 +601,47 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         result = self.cmd(cmd).get_output_in_json()
         exclusions = result
         self.assertEqual(len(exclusions), 0)
+
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
+    def test_waf_policy_managed_rules_exceptions(self, resource_group):
+        policyName = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {policyName} --mode prevention --sku Premium_AzureFrontDoor'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['name'], policyName)
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
+
+        type = "Microsoft_DefaultRuleSet"
+        version = "2.0"
+        action = "Block"
+        cmd = 'az network front-door waf-policy managed-rules add -g {resource_group} --policy-name {policyName} --type {type} --version {version} --action {action}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetType'], type)
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetVersion'], version)
+
+        cmd = 'az network front-door waf-policy managed-rules exception list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 0)
+
+        matchVariable = "RequestUri"
+        op = "Equals"
+        matchValue = "/login.php"
+        cmd = 'az network front-door waf-policy managed-rules exception add -g {resource_group} --policy-name {policyName} --match-variable {matchVariable} --match-values {matchValue} --value-match-operator {op} --scopes [0].rule-set-type={type} [0].rule-set-version={version}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['matchVariable'], matchVariable)
+        self.assertEqual(result['matchValues'][0], matchValue)
+        self.assertEqual(result['valueMatchOperator'], op)
+        self.assertEqual(result['scopes'][0]['ruleSetType'], type)
+        self.assertEqual(result['scopes'][0]['ruleSetVersion'], version)
+
+        cmd = 'az network front-door waf-policy managed-rules exception list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['matchVariable'], matchVariable)
+        self.assertEqual(result[0]['matchValues'][0], matchValue)
+
+        cmd = 'az network front-door waf-policy managed-rules exception remove -g {resource_group} --policy-name {policyName} --exception-index 0 --yes'.format(**locals())
+        self.cmd(cmd)
+
+        cmd = 'az network front-door waf-policy managed-rules exception list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 0)

@@ -25,7 +25,7 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
         })
 
         # create serverless capacity mode account
-        self.cmd('az cosmosdb create -n {acc1} -g {rg} --locations regionName="{loc}" --capacity-mode serverless')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc1} -g {rg} --locations regionName="{loc}" --capacity-mode serverless')
         self.cmd('az cosmosdb show -n {acc1} -g {rg}', checks=[
             self.check('capacityMode', "Serverless"),
         ])
@@ -35,7 +35,7 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb delete -n {acc1} -g {rg} --yes')
 
         # create serverless capacity mode account
-        self.cmd('az cosmosdb create -n {acc2} -g {rg} --locations regionName="{loc}" --capacity-mode Provisioned')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc2} -g {rg} --locations regionName="{loc}" --capacity-mode Provisioned')
         self.cmd('az cosmosdb show -n {acc2} -g {rg}', checks=[
             self.check('capacityMode', "Provisioned"),
         ])
@@ -45,7 +45,7 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb delete -n {acc2} -g {rg} --yes')
 
         # create default capacity mode account
-        self.cmd('az cosmosdb create -n {acc3} -g {rg} --locations regionName="{loc}"')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc3} -g {rg} --locations regionName="{loc}"')
         self.cmd('az cosmosdb show -n {acc3} -g {rg}', checks=[
             self.check('capacityMode', "Provisioned"),
         ])
@@ -68,7 +68,7 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
         })
 
         # create serverless capacity mode account
-        self.cmd('az cosmosdb create -n {acc1} -g {rg} --locations regionName="{loc}" --capacity-mode serverless')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc1} -g {rg} --locations regionName="{loc}" --capacity-mode serverless')
         self.cmd('az cosmosdb show -n {acc1} -g {rg}', checks=[
             self.check('capacityMode', "Serverless"),
         ])

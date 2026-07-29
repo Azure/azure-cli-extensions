@@ -192,7 +192,7 @@ def containers_from_vn2(
 
     container_defs = []
     for template_container, template_doc in template_containers:
-        image_container_def = container_from_image(template_container.get("image"), platform="vn2")
+        image_container_def = container_from_image(template_container.get("image"), aci_or_vn2="vn2")
 
         template_container_def = {
             "name": template_container.get("name"),

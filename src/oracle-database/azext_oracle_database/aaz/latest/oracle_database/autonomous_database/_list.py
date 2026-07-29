@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database list",
 )
 class List(AAZCommand):
-    """List AutonomousDatabase resources by subscription ID
+    """List Autonomous Database resources by subscription ID
 
-    :example: List Autonomous databases
+    :example: List Autonomous Databases
         az oracle-database autonomous-database list --resource-group <resource_group>
     """
 

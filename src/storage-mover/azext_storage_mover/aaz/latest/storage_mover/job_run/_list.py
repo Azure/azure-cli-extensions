@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "storage-mover job-run list",
 )
 class List(AAZCommand):
-    """Lists all Job Runs in a Job Definition.
-
-    :example: job-run list
-        az storage-mover job-run list -g {rg} --job-definition-name {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
+    """List all Job Runs in a Job Definition.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}/jobruns", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}/jobruns", "2025-12-01"],
         ]
     }
 
@@ -62,6 +59,9 @@ class List(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -139,7 +139,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -284,6 +284,10 @@ class List(AAZCommand):
                 serialized_name="scanStatus",
                 flags={"read_only": True},
             )
+            properties.scheduled_execution_time = AAZStrType(
+                serialized_name="scheduledExecutionTime",
+                flags={"read_only": True},
+            )
             properties.source_name = AAZStrType(
                 serialized_name="sourceName",
                 flags={"read_only": True},
@@ -311,11 +315,26 @@ class List(AAZCommand):
                 serialized_name="targetResourceId",
                 flags={"read_only": True},
             )
+            properties.trigger_type = AAZStrType(
+                serialized_name="triggerType",
+                flags={"read_only": True},
+            )
+            properties.warnings = AAZListType(
+                flags={"read_only": True},
+            )
 
             error = cls._schema_on_200.value.Element.properties.error
             error.code = AAZStrType()
             error.message = AAZStrType()
             error.target = AAZStrType()
+
+            warnings = cls._schema_on_200.value.Element.properties.warnings
+            warnings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.warnings.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
+            _element.target = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

@@ -14,7 +14,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_list,
     frontend_collaboration_show,
     frontend_collaboration_analytics_show,
-    frontend_collaboration_analytics_cleanroompolicy,
+    frontend_collaboration_analytics_skr_policy,
     frontend_collaboration_oidc_issuerinfo_show,
     frontend_collaboration_oidc_set_issuer_url,
     frontend_collaboration_oidc_keys_show,
@@ -128,28 +128,31 @@ class TestFrontendCollaboration(unittest.TestCase):
             "test-collab-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_show_analytics_cleanroom_policy(self, mock_get_client):
-        """Test showing cleanroom policy"""
+    def test_show_analytics_skr_policy(self, mock_get_client):
+        """Test showing SKR policy for a dataset"""
         # Mock policy response
         mock_policy = {
-            "policyId": "policy-123",
+            "policyId": "skr-policy-123",
+            "datasetId": "dataset-456",
             "rules": ["rule1", "rule2"]
         }
         mock_client = Mock()
-        mock_client.collaboration.analytics_cleanroompolicy_get.return_value = mock_policy
+        mock_client.collaboration.analytics_skr_policy_get.return_value = mock_policy
         mock_get_client.return_value = mock_client
 
         # Execute
-        result = frontend_collaboration_analytics_cleanroompolicy(
+        result = frontend_collaboration_analytics_skr_policy(
             cmd=Mock(),
-            collaboration_id="test-collab-123"
+            collaboration_id="test-collab-123",
+            dataset_id="dataset-456"
         )
 
         # Verify
-        self.assertEqual(result["policyId"], "policy-123")
+        self.assertEqual(result["policyId"], "skr-policy-123")
+        self.assertEqual(result["datasetId"], "dataset-456")
         self.assertEqual(len(result["rules"]), 2)
-        mock_client.collaboration.analytics_cleanroompolicy_get.assert_called_once_with(
-            "test-collab-123")
+        mock_client.collaboration.analytics_skr_policy_get.assert_called_once_with(
+            "test-collab-123", "dataset-456")
 
     # OIDC Tests
 

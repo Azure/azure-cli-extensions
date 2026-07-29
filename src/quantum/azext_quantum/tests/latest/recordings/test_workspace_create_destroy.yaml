@@ -16,7 +16,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -488,13 +488,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938","name":"e2e-test-w1806938","type":"microsoft.quantum/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:11.3821571Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:11.3821571Z"},"identity":{"principalId":"ef3daaca-ffbc-45b2-8f80-35dce2e69fc0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited"}],"apiKeyEnabled":REDACTED,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/57896692-ef43-4914-92e0-ce3a60287f6e*301390C3ABD389667C9D80EA1A1B7113DD097BF2C864495C218B350C60496E2B?api-version=2023-11-13-preview&t=638947857737885393&c=REDACTED&s=REDACTED&h=cTZXkz9sDMY_1Cho7jE0om5OTfOiVd3jmoga2lFuzHI
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/57896692-ef43-4914-92e0-ce3a60287f6e*301390C3ABD389667C9D80EA1A1B7113DD097BF2C864495C218B350C60496E2B?api-version=2025-12-15-preview&t=638947857737885393&c=REDACTED&s=REDACTED&h=cTZXkz9sDMY_1Cho7jE0om5OTfOiVd3jmoga2lFuzHI
       cache-control:
       - no-cache
       content-length:
@@ -559,7 +559,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938","name":"e2e-test-w1806938","type":"microsoft.quantum/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:11.3821571Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:11.3821571Z"},"identity":{"principalId":"ef3daaca-ffbc-45b2-8f80-35dce2e69fc0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited"}],"apiKeyEnabled":REDACTED,"provisioningState":"Accepted"}}'
@@ -605,7 +605,7 @@ interactions:
       User-Agent:
       - azsdk-python-quantum/0.0.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938/quotas?api-version=2024-10-01-preview
+    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938/quotas?api-version=2026-01-15-preview
   response:
     body:
       string: '{"value":[{"dimension":"ehqc","scope":"Subscription","providerId":"quantinuum","utilization":0.0,"holds":0.0,"limit":1000.0,"period":"Infinite"}],"nextLink":null}'
@@ -660,13 +660,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/7847c60e-15ce-484f-84e1-77d7e9c5d22a*301390C3ABD389667C9D80EA1A1B7113DD097BF2C864495C218B350C60496E2B?api-version=2023-11-13-preview&t=638947857888401413&c=REDACTED&s=REDACTED&h=VcZ-KYx-Ib1uTAYHDfFmHX2zXMePGAr7DDXDM57tKn8
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/7847c60e-15ce-484f-84e1-77d7e9c5d22a*301390C3ABD389667C9D80EA1A1B7113DD097BF2C864495C218B350C60496E2B?api-version=2025-12-15-preview&t=638947857888401413&c=REDACTED&s=REDACTED&h=VcZ-KYx-Ib1uTAYHDfFmHX2zXMePGAr7DDXDM57tKn8
       cache-control:
       - no-cache
       content-length:
@@ -680,7 +680,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/7847c60e-15ce-484f-84e1-77d7e9c5d22a*301390C3ABD389667C9D80EA1A1B7113DD097BF2C864495C218B350C60496E2B?api-version=2023-11-13-preview&t=638947857888557811&c=REDACTED&s=REDACTED&h=BbSD-zGZUUKMKlYA80E_0E0ITCbqYGpPP5QfklKVIz8
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/7847c60e-15ce-484f-84e1-77d7e9c5d22a*301390C3ABD389667C9D80EA1A1B7113DD097BF2C864495C218B350C60496E2B?api-version=2025-12-15-preview&t=638947857888557811&c=REDACTED&s=REDACTED&h=BbSD-zGZUUKMKlYA80E_0E0ITCbqYGpPP5QfklKVIz8
       pragma:
       - no-cache
       strict-transport-security:
@@ -719,7 +719,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w1806938","name":"e2e-test-w1806938","type":"microsoft.quantum/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:11.3821571Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:11.3821571Z"},"identity":{"principalId":"ef3daaca-ffbc-45b2-8f80-35dce2e69fc0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1","applicationName":"e2e-test-w1806938-quantinuum","provisioningState":"Launching"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited","applicationName":"e2e-test-w1806938-rigetti","provisioningState":"Launching"}],"provisioningState":"Deleting","usable":"No","apiKeyEnabled":REDACTED}}'
@@ -770,7 +770,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -1133,13 +1133,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078","name":"e2e-test-w7358078","type":"microsoft.quantum/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:33.9009467Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:33.9009467Z"},"identity":{"principalId":"d74f43f4-1367-4da7-8f90-52000aec5740","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1"}],"apiKeyEnabled":REDACTED,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/a2a879eb-2709-4900-9457-1ccbc12c2f2a*69990F26EF5B714853A71BCC34762E78D2A48FA183BE5965877DCFCF558AB0F3?api-version=2023-11-13-preview&t=638947857966980553&c=REDACTED&s=REDACTED&h=YjT5-f9H6aH3KtJbfvA0Cfo68OYV9oCac0YX6A8GJ-M
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/a2a879eb-2709-4900-9457-1ccbc12c2f2a*69990F26EF5B714853A71BCC34762E78D2A48FA183BE5965877DCFCF558AB0F3?api-version=2025-12-15-preview&t=638947857966980553&c=REDACTED&s=REDACTED&h=YjT5-f9H6aH3KtJbfvA0Cfo68OYV9oCac0YX6A8GJ-M
       cache-control:
       - no-cache
       content-length:
@@ -1206,13 +1206,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c8ec74b9-14aa-47cf-b8fd-6d45c5314845*69990F26EF5B714853A71BCC34762E78D2A48FA183BE5965877DCFCF558AB0F3?api-version=2023-11-13-preview&t=638947857982211451&c=REDACTED&s=REDACTED&h=UF3UaldttOO6FUgPdR4vsuPG6XcwY_EEpc9BbvLFeNU
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c8ec74b9-14aa-47cf-b8fd-6d45c5314845*69990F26EF5B714853A71BCC34762E78D2A48FA183BE5965877DCFCF558AB0F3?api-version=2025-12-15-preview&t=638947857982211451&c=REDACTED&s=REDACTED&h=UF3UaldttOO6FUgPdR4vsuPG6XcwY_EEpc9BbvLFeNU
       cache-control:
       - no-cache
       content-length:
@@ -1226,7 +1226,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c8ec74b9-14aa-47cf-b8fd-6d45c5314845*69990F26EF5B714853A71BCC34762E78D2A48FA183BE5965877DCFCF558AB0F3?api-version=2023-11-13-preview&t=638947857982211451&c=REDACTED&s=REDACTED&h=UF3UaldttOO6FUgPdR4vsuPG6XcwY_EEpc9BbvLFeNU
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c8ec74b9-14aa-47cf-b8fd-6d45c5314845*69990F26EF5B714853A71BCC34762E78D2A48FA183BE5965877DCFCF558AB0F3?api-version=2025-12-15-preview&t=638947857982211451&c=REDACTED&s=REDACTED&h=UF3UaldttOO6FUgPdR4vsuPG6XcwY_EEpc9BbvLFeNU
       pragma:
       - no-cache
       strict-transport-security:
@@ -1265,7 +1265,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7358078","name":"e2e-test-w7358078","type":"microsoft.quantum/workspaces","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:33.9009467Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:33.9009467Z"},"identity":{"principalId":"d74f43f4-1367-4da7-8f90-52000aec5740","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1"}],"apiKeyEnabled":REDACTED,"provisioningState":"Deleting"}}'
@@ -1316,7 +1316,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -1829,7 +1829,7 @@ interactions:
       {"description": "Kind of storage account"}}, "storageAccountDeploymentName":
       {"type": "string", "metadata": {"description": "Deployment name for role assignment
       operation"}}}, "functions": [], "variables": {}, "resources": [{"type": "Microsoft.Quantum/workspaces",
-      "apiVersion": "2019-11-04-preview", "name": "[parameters(''quantumWorkspaceName'')]",
+      "apiVersion": "2025-12-15-preview", "name": "[parameters(''quantumWorkspaceName'')]",
       "location": "[parameters(''location'')]", "tags": "[parameters(''tags'')]",
       "identity": {"type": "SystemAssigned"}, "properties": {"providers": "[parameters(''providers'')]",
       "storageAccount": "[parameters(''storageAccountId'')]"}}, {"apiVersion": "2019-10-01",
@@ -1847,11 +1847,11 @@ interactions:
       ["*"], "maxAgeInSeconds": 180}]}}}]}, {"apiVersion": "2020-04-01-preview", "name":
       "[concat(parameters(''storageAccountName''), ''/Microsoft.Authorization/'',
       guid(reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      ''2025-12-15-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
       "location": "[parameters(''storageAccountLocation'')]", "properties": {"roleDefinitionId":
       "[resourceId(''Microsoft.Authorization/roleDefinitions'', ''17d1049b-9a84-46fb-8f53-869881c3d3ab'')]",
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
+      ''2025-12-15-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
       {"quantumWorkspaceName": {"value": "e2e-test-w9645508"}, "location": {"value":
       "eastus"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "quantinuum",
@@ -1878,7 +1878,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9645508","name":"Microsoft.AzureQuantum-e2e-test-w9645508","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-36-45"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:36:46.5176733Z","duration":"PT0.0004248S","correlationId":"46e20d88-569f-4472-99fa-0ef345819fae","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-36-45","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9645508","name":"Microsoft.AzureQuantum-e2e-test-w9645508","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-36-45"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:36:46.5176733Z","duration":"PT0.0004248S","correlationId":"46e20d88-569f-4472-99fa-0ef345819fae","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-36-45","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9645508/operationStatuses/08584424178789510834?api-version=2024-11-01&t=638947858070478959&c=REDACTED&s=REDACTED&h=13uQ2y6g2WW1YC36CVmUgFxyow9jKdP8iVa12bYU1XE
@@ -2304,7 +2304,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9645508","name":"Microsoft.AzureQuantum-e2e-test-w9645508","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-36-45"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:40:52.9998508Z","duration":"PT4M6.4821775S","correlationId":"46e20d88-569f-4472-99fa-0ef345819fae","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-36-45","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/providers/Microsoft.Authorization/roleAssignments/7af88da0-334b-5c6c-9c9d-bad331b0e218"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9645508","name":"Microsoft.AzureQuantum-e2e-test-w9645508","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-36-45"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:40:52.9998508Z","duration":"PT4M6.4821775S","correlationId":"46e20d88-569f-4472-99fa-0ef345819fae","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-36-45","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/providers/Microsoft.Authorization/roleAssignments/7af88da0-334b-5c6c-9c9d-bad331b0e218"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -2350,13 +2350,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/472ec2fe-c5a4-4112-af76-3db79408253c*0E26B9528CFC530B232862F4C8FD6A16031FFD010EAFE78BFB0CFE568788A0CC?api-version=2023-11-13-preview&t=638947860576521450&c=REDACTED&s=REDACTED&h=a_b7NWwE-8MtgcJkVHxDgz5TdK0UMryJwx9CwscCrVY
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/472ec2fe-c5a4-4112-af76-3db79408253c*0E26B9528CFC530B232862F4C8FD6A16031FFD010EAFE78BFB0CFE568788A0CC?api-version=2025-12-15-preview&t=638947860576521450&c=REDACTED&s=REDACTED&h=a_b7NWwE-8MtgcJkVHxDgz5TdK0UMryJwx9CwscCrVY
       cache-control:
       - no-cache
       content-length:
@@ -2370,7 +2370,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/472ec2fe-c5a4-4112-af76-3db79408253c*0E26B9528CFC530B232862F4C8FD6A16031FFD010EAFE78BFB0CFE568788A0CC?api-version=2023-11-13-preview&t=638947860576677761&c=REDACTED&s=REDACTED&h=3834yMyaSaS31SclL0VLfn3LC6zoc13MRo0tnR-GthA
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/472ec2fe-c5a4-4112-af76-3db79408253c*0E26B9528CFC530B232862F4C8FD6A16031FFD010EAFE78BFB0CFE568788A0CC?api-version=2025-12-15-preview&t=638947860576677761&c=REDACTED&s=REDACTED&h=3834yMyaSaS31SclL0VLfn3LC6zoc13MRo0tnR-GthA
       pragma:
       - no-cache
       strict-transport-security:
@@ -2409,7 +2409,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9645508","name":"e2e-test-w9645508","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:48.0905757Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:48.0905757Z"},"identity":{"principalId":"0c2b60d9-df74-4465-8071-017152746e65","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1","applicationName":"e2e-test-w9645508-quantinuum","provisioningState":"Succeeded","resourceUsageId":"47d7225f-8fbc-4cc5-b9e4-664194830e4d"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited","applicationName":"e2e-test-w9645508-rigetti","provisioningState":"Succeeded","resourceUsageId":"65ce964f-ad0a-4783-a574-7e34231bf8c7"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w9645508.eastus.quantum.azure.com"}}'
@@ -2460,7 +2460,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -2865,7 +2865,7 @@ interactions:
       {"description": "Kind of storage account"}}, "storageAccountDeploymentName":
       {"type": "string", "metadata": {"description": "Deployment name for role assignment
       operation"}}}, "functions": [], "variables": {}, "resources": [{"type": "Microsoft.Quantum/workspaces",
-      "apiVersion": "2019-11-04-preview", "name": "[parameters(''quantumWorkspaceName'')]",
+      "apiVersion": "2025-12-15-preview", "name": "[parameters(''quantumWorkspaceName'')]",
       "location": "[parameters(''location'')]", "tags": "[parameters(''tags'')]",
       "identity": {"type": "SystemAssigned"}, "properties": {"providers": "[parameters(''providers'')]",
       "storageAccount": "[parameters(''storageAccountId'')]"}}, {"apiVersion": "2019-10-01",
@@ -2883,11 +2883,11 @@ interactions:
       ["*"], "maxAgeInSeconds": 180}]}}}]}, {"apiVersion": "2020-04-01-preview", "name":
       "[concat(parameters(''storageAccountName''), ''/Microsoft.Authorization/'',
       guid(reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      ''2025-12-15-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
       "location": "[parameters(''storageAccountLocation'')]", "properties": {"roleDefinitionId":
       "[resourceId(''Microsoft.Authorization/roleDefinitions'', ''17d1049b-9a84-46fb-8f53-869881c3d3ab'')]",
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
+      ''2025-12-15-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
       {"quantumWorkspaceName": {"value": "e2e-test-w8687865"}, "location": {"value":
       "eastus"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "quantinuum",
@@ -2913,7 +2913,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8687865","name":"Microsoft.AzureQuantum-e2e-test-w8687865","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-41-03"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:41:04.9168786Z","duration":"PT0.0005297S","correlationId":"d568de71-9d11-4d28-8927-fcaa781feff1","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-41-03","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8687865","name":"Microsoft.AzureQuantum-e2e-test-w8687865","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-41-03"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:41:04.9168786Z","duration":"PT0.0005297S","correlationId":"d568de71-9d11-4d28-8927-fcaa781feff1","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-41-03","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8687865/operationStatuses/08584424176205524792?api-version=2024-11-01&t=638947860653856308&c=REDACTED&s=REDACTED&h=UdKV59PLvoaU1AV3S9fAQFosyv8AG-cNjanb9XuD-Nw
@@ -3213,7 +3213,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8687865","name":"Microsoft.AzureQuantum-e2e-test-w8687865","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-41-03"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:43:34.4565004Z","duration":"PT2M29.5396218S","correlationId":"d568de71-9d11-4d28-8927-fcaa781feff1","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-41-03","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/providers/Microsoft.Authorization/roleAssignments/297f2fc2-6944-506c-a2c7-274ec4d096d6"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w8687865","name":"Microsoft.AzureQuantum-e2e-test-w8687865","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-41-03"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:43:34.4565004Z","duration":"PT2M29.5396218S","correlationId":"d568de71-9d11-4d28-8927-fcaa781feff1","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-41-03","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2/providers/Microsoft.Authorization/roleAssignments/297f2fc2-6944-506c-a2c7-274ec4d096d6"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -3259,13 +3259,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/221bf543-6a81-4177-a3ab-af65248700f6*5E9629EF25F81CCF14C420C61FB8516F79C9BB924544F8B2A97E6761A81252A3?api-version=2023-11-13-preview&t=638947862265968820&c=REDACTED&s=REDACTED&h=h8mPwN09SOi8w7A2a-xjZwcv1L6B8DRI0tUyoC6g3Tw
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/221bf543-6a81-4177-a3ab-af65248700f6*5E9629EF25F81CCF14C420C61FB8516F79C9BB924544F8B2A97E6761A81252A3?api-version=2025-12-15-preview&t=638947862265968820&c=REDACTED&s=REDACTED&h=h8mPwN09SOi8w7A2a-xjZwcv1L6B8DRI0tUyoC6g3Tw
       cache-control:
       - no-cache
       content-length:
@@ -3279,7 +3279,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/221bf543-6a81-4177-a3ab-af65248700f6*5E9629EF25F81CCF14C420C61FB8516F79C9BB924544F8B2A97E6761A81252A3?api-version=2023-11-13-preview&t=638947862266125060&c=REDACTED&s=REDACTED&h=v98w6SEI-yod4_W0-WvG4zYsBeh9wVQTSTC2dU6qGh4
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/221bf543-6a81-4177-a3ab-af65248700f6*5E9629EF25F81CCF14C420C61FB8516F79C9BB924544F8B2A97E6761A81252A3?api-version=2025-12-15-preview&t=638947862266125060&c=REDACTED&s=REDACTED&h=v98w6SEI-yod4_W0-WvG4zYsBeh9wVQTSTC2dU6qGh4
       pragma:
       - no-cache
       strict-transport-security:
@@ -3318,7 +3318,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w8687865","name":"e2e-test-w8687865","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:41:06.7147991Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:41:06.7147991Z"},"identity":{"principalId":"23dde31e-2efa-4bf2-9eff-ea5afc4b4673","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1","applicationName":"e2e-test-w8687865-quantinuum","provisioningState":"Succeeded","resourceUsageId":"227818ef-0b04-4c59-a679-a9b0ff1b3334"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w8687865.eastus.quantum.azure.com"}}'
@@ -3369,7 +3369,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -3774,7 +3774,7 @@ interactions:
       {"description": "Kind of storage account"}}, "storageAccountDeploymentName":
       {"type": "string", "metadata": {"description": "Deployment name for role assignment
       operation"}}}, "functions": [], "variables": {}, "resources": [{"type": "Microsoft.Quantum/workspaces",
-      "apiVersion": "2019-11-04-preview", "name": "[parameters(''quantumWorkspaceName'')]",
+      "apiVersion": "2025-12-15-preview", "name": "[parameters(''quantumWorkspaceName'')]",
       "location": "[parameters(''location'')]", "tags": "[parameters(''tags'')]",
       "identity": {"type": "SystemAssigned"}, "properties": {"providers": "[parameters(''providers'')]",
       "storageAccount": "[parameters(''storageAccountId'')]"}}, {"apiVersion": "2019-10-01",
@@ -3792,11 +3792,11 @@ interactions:
       ["*"], "maxAgeInSeconds": 180}]}}}]}, {"apiVersion": "2020-04-01-preview", "name":
       "[concat(parameters(''storageAccountName''), ''/Microsoft.Authorization/'',
       guid(reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      ''2025-12-15-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
       "location": "[parameters(''storageAccountLocation'')]", "properties": {"roleDefinitionId":
       "[resourceId(''Microsoft.Authorization/roleDefinitions'', ''17d1049b-9a84-46fb-8f53-869881c3d3ab'')]",
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
+      ''2025-12-15-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
       {"quantumWorkspaceName": {"value": "e2e-test-w4164481"}, "location": {"value":
       "eastus"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "quantinuum",
@@ -3822,7 +3822,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w4164481","name":"Microsoft.AzureQuantum-e2e-test-w4164481","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-43-51"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:43:53.2521286Z","duration":"PT0.0007484S","correlationId":"ca444d8a-81c9-48fb-b528-0174ffd6bebf","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-43-51","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w4164481","name":"Microsoft.AzureQuantum-e2e-test-w4164481","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-43-51"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:43:53.2521286Z","duration":"PT0.0007484S","correlationId":"ca444d8a-81c9-48fb-b528-0174ffd6bebf","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-43-51","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w4164481/operationStatuses/08584424174522102164?api-version=2024-11-01&t=638947862337052171&c=REDACTED&s=REDACTED&h=BY3nBs5lqLFEAO7J0xST6A6zu6oZqUSTNGjKSR6BQT0
@@ -4122,7 +4122,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w4164481","name":"Microsoft.AzureQuantum-e2e-test-w4164481","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-43-51"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:46:08.4512726Z","duration":"PT2M15.199144S","correlationId":"ca444d8a-81c9-48fb-b528-0174ffd6bebf","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-43-51","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/providers/Microsoft.Authorization/roleAssignments/639fbcc1-3d04-514d-ba5b-0991bfd03f95"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w4164481","name":"Microsoft.AzureQuantum-e2e-test-w4164481","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-43-51"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:46:08.4512726Z","duration":"PT2M15.199144S","correlationId":"ca444d8a-81c9-48fb-b528-0174ffd6bebf","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-43-51","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/providers/Microsoft.Authorization/roleAssignments/639fbcc1-3d04-514d-ba5b-0991bfd03f95"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -4168,13 +4168,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/8318fcee-f63c-495d-ace4-47ceb9aea306*6F9DACE44684B772CE4B530CC01C6FB30CED5D0865D338BF9562B798C294B62D?api-version=2023-11-13-preview&t=638947863978921700&c=REDACTED&s=REDACTED&h=SfH0bmGhhd3P1VgFkL_fISPOsp6RrzusLtkVr2CaOH8
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/8318fcee-f63c-495d-ace4-47ceb9aea306*6F9DACE44684B772CE4B530CC01C6FB30CED5D0865D338BF9562B798C294B62D?api-version=2025-12-15-preview&t=638947863978921700&c=REDACTED&s=REDACTED&h=SfH0bmGhhd3P1VgFkL_fISPOsp6RrzusLtkVr2CaOH8
       cache-control:
       - no-cache
       content-length:
@@ -4188,7 +4188,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/8318fcee-f63c-495d-ace4-47ceb9aea306*6F9DACE44684B772CE4B530CC01C6FB30CED5D0865D338BF9562B798C294B62D?api-version=2023-11-13-preview&t=638947863978921700&c=REDACTED&s=REDACTED&h=SfH0bmGhhd3P1VgFkL_fISPOsp6RrzusLtkVr2CaOH8
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/8318fcee-f63c-495d-ace4-47ceb9aea306*6F9DACE44684B772CE4B530CC01C6FB30CED5D0865D338BF9562B798C294B62D?api-version=2025-12-15-preview&t=638947863978921700&c=REDACTED&s=REDACTED&h=SfH0bmGhhd3P1VgFkL_fISPOsp6RrzusLtkVr2CaOH8
       pragma:
       - no-cache
       strict-transport-security:
@@ -4227,7 +4227,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w4164481","name":"e2e-test-w4164481","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:43:54.712976Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:43:54.712976Z"},"identity":{"principalId":"da067a5c-cc24-40cb-9dfd-feef1c2c415d","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1","applicationName":"e2e-test-w4164481-quantinuum","provisioningState":"Succeeded","resourceUsageId":"88549fb7-7382-4f47-81d1-728f240381b8"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w4164481.eastus.quantum.azure.com"}}'
@@ -4278,7 +4278,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -4683,7 +4683,7 @@ interactions:
       {"description": "Kind of storage account"}}, "storageAccountDeploymentName":
       {"type": "string", "metadata": {"description": "Deployment name for role assignment
       operation"}}}, "functions": [], "variables": {}, "resources": [{"type": "Microsoft.Quantum/workspaces",
-      "apiVersion": "2019-11-04-preview", "name": "[parameters(''quantumWorkspaceName'')]",
+      "apiVersion": "2025-12-15-preview", "name": "[parameters(''quantumWorkspaceName'')]",
       "location": "[parameters(''location'')]", "tags": "[parameters(''tags'')]",
       "identity": {"type": "SystemAssigned"}, "properties": {"providers": "[parameters(''providers'')]",
       "storageAccount": "[parameters(''storageAccountId'')]"}}, {"apiVersion": "2019-10-01",
@@ -4701,11 +4701,11 @@ interactions:
       ["*"], "maxAgeInSeconds": 180}]}}}]}, {"apiVersion": "2020-04-01-preview", "name":
       "[concat(parameters(''storageAccountName''), ''/Microsoft.Authorization/'',
       guid(reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+      ''2025-12-15-preview'', ''Full'').identity.principalId))]", "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
       "location": "[parameters(''storageAccountLocation'')]", "properties": {"roleDefinitionId":
       "[resourceId(''Microsoft.Authorization/roleDefinitions'', ''17d1049b-9a84-46fb-8f53-869881c3d3ab'')]",
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
-      ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
+      ''2025-12-15-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
       {"quantumWorkspaceName": {"value": "e2e-test-w7411829-53-char-name12345678901234567890123"},
       "location": {"value": "eastus"}, "tags": {"value": {}}, "providers": {"value":
@@ -4731,7 +4731,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","name":"Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-46-43"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:46:44.8203865Z","duration":"PT0.0003607S","correlationId":"ffbe8565-73fe-4888-9164-b57705978054","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-46-43","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","name":"Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-46-43"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2025-09-29T23:46:44.8203865Z","duration":"PT0.0003607S","correlationId":"ffbe8565-73fe-4888-9164-b57705978054","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-46-43","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}]}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901/operationStatuses/08584424172806444421?api-version=2024-11-01&t=638947864052734734&c=REDACTED&s=REDACTED&h=tckJWcDzuAj7cxDyT5qu6Zwzl5SwVbqjDU2WdfhxBpc
@@ -5031,7 +5031,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","name":"Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-46-43"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:49:02.3103127Z","duration":"PT2M17.4899262S","correlationId":"ffbe8565-73fe-4888-9164-b57705978054","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-46-43","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/providers/Microsoft.Authorization/roleAssignments/988cc4d5-e612-5e74-b826-31ca24629b13"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","name":"Microsoft.AzureQuantum-e2e-test-w7411829-53-char-name12345678901","type":"Microsoft.Resources/deployments","properties":{"templateHash":"1029235462670623033","parameters":{"quantumWorkspaceName":{"type":"String","value":"REDACTED"},"location":{"type":"String","value":"REDACTED"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"quantinuum","providerSku":"basic1"}]},"storageAccountName":{"type":"String","value":"qwe2etestsgrswus2"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},"storageAccountLocation":{"type":"String","value":"REDACTED"},"storageAccountSku":{"type":"String","value":"Standard_RAGRS"},"storageAccountKind":{"type":"String","value":"StorageV2"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Sep-2025-23-46-43"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2025-09-29T23:49:02.3103127Z","duration":"PT2M17.4899262S","correlationId":"ffbe8565-73fe-4888-9164-b57705978054","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"REDACTED"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","resourceType":"Microsoft.Quantum/workspaces","resourceName":"REDACTED","apiVersion":"2025-12-15-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Sep-2025-23-46-43","resourceType":"Microsoft.Resources/deployments","resourceName":"REDACTED"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2/providers/Microsoft.Authorization/roleAssignments/988cc4d5-e612-5e74-b826-31ca24629b13"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -5077,13 +5077,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c3513221-ac01-4eae-bc39-40ccd95221e7*1A312B2205E98FE6D2CE82FD970779B88D4DC902E08E32277843A485AD970FDB?api-version=2023-11-13-preview&t=638947865666899716&c=REDACTED&s=REDACTED&h=OE5cL3rrjDmXDRiWDJ5LywBp37Lz5s-hBisx8vxnl0o
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c3513221-ac01-4eae-bc39-40ccd95221e7*1A312B2205E98FE6D2CE82FD970779B88D4DC902E08E32277843A485AD970FDB?api-version=2025-12-15-preview&t=638947865666899716&c=REDACTED&s=REDACTED&h=OE5cL3rrjDmXDRiWDJ5LywBp37Lz5s-hBisx8vxnl0o
       cache-control:
       - no-cache
       content-length:
@@ -5097,7 +5097,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c3513221-ac01-4eae-bc39-40ccd95221e7*1A312B2205E98FE6D2CE82FD970779B88D4DC902E08E32277843A485AD970FDB?api-version=2023-11-13-preview&t=638947865667056532&c=REDACTED&s=REDACTED&h=ZM_kKuHDHU8QO9moHbhR3kxbNT1prbeWeBJHkLxbXRg
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/c3513221-ac01-4eae-bc39-40ccd95221e7*1A312B2205E98FE6D2CE82FD970779B88D4DC902E08E32277843A485AD970FDB?api-version=2025-12-15-preview&t=638947865667056532&c=REDACTED&s=REDACTED&h=ZM_kKuHDHU8QO9moHbhR3kxbNT1prbeWeBJHkLxbXRg
       pragma:
       - no-cache
       strict-transport-security:
@@ -5136,7 +5136,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7411829-53-char-name12345678901234567890123","name":"e2e-test-w7411829-53-char-name12345678901234567890123","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:46:46.2541716Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:46:46.2541716Z"},"identity":{"principalId":"e9a0eda9-e53f-4f40-b78d-361fc8a3188d","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1","applicationName":"e2e-test-w7411829-53-char-name12345678901234567890123-quantinuum","provisioningState":"Succeeded","resourceUsageId":"9f030f7b-fbc3-4cd8-be74-c543d2680d30"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestsgrswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w7411829-53-char-name12345678901234567890123.eastus.quantum.azure.com"}}'

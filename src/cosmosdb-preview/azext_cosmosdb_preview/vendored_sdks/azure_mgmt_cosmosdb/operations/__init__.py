@@ -13,55 +13,58 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ._patch import *  # pylint: disable=unused-wildcard-import
 
+from ._database_accounts_operations import DatabaseAccountsOperations  # type: ignore
+from ._operations import Operations  # type: ignore
+from ._cassandra_clusters_operations import CassandraClustersOperations  # type: ignore
+from ._fleet_operations import FleetOperations  # type: ignore
+from ._garnet_clusters_operations import GarnetClustersOperations  # type: ignore
+from ._locations_operations import LocationsOperations  # type: ignore
+from ._restorable_database_accounts_operations import RestorableDatabaseAccountsOperations  # type: ignore
+from ._restorable_gremlin_graphs_operations import RestorableGremlinGraphsOperations  # type: ignore
+from ._restorable_gremlin_databases_operations import RestorableGremlinDatabasesOperations  # type: ignore
+from ._restorable_gremlin_resources_operations import RestorableGremlinResourcesOperations  # type: ignore
+from ._restorable_mongodb_collections_operations import RestorableMongodbCollectionsOperations  # type: ignore
+from ._restorable_mongodb_databases_operations import RestorableMongodbDatabasesOperations  # type: ignore
+from ._restorable_mongodb_resources_operations import RestorableMongodbResourcesOperations  # type: ignore
+from ._restorable_sql_containers_operations import RestorableSqlContainersOperations  # type: ignore
+from ._restorable_sql_databases_operations import RestorableSqlDatabasesOperations  # type: ignore
+from ._restorable_sql_resources_operations import RestorableSqlResourcesOperations  # type: ignore
+from ._restorable_table_resources_operations import RestorableTableResourcesOperations  # type: ignore
+from ._restorable_tables_operations import RestorableTablesOperations  # type: ignore
+from ._soft_deleted_database_accounts_operations import SoftDeletedDatabaseAccountsOperations  # type: ignore
+from ._throughput_pools_operations import ThroughputPoolsOperations  # type: ignore
+from ._cassandra_data_centers_operations import CassandraDataCentersOperations  # type: ignore
 from ._cassandra_resources_operations import CassandraResourcesOperations  # type: ignore
 from ._chaos_fault_operations import ChaosFaultOperations  # type: ignore
 from ._copy_jobs_operations import CopyJobsOperations  # type: ignore
-from ._database_accounts_operations import DatabaseAccountsOperations  # type: ignore
-from ._operations import Operations  # type: ignore
-from ._database_operations import DatabaseOperations  # type: ignore
-from ._collection_operations import CollectionOperations  # type: ignore
-from ._collection_region_operations import CollectionRegionOperations  # type: ignore
-from ._database_account_region_operations import DatabaseAccountRegionOperations  # type: ignore
-from ._percentile_source_target_operations import PercentileSourceTargetOperations  # type: ignore
-from ._percentile_target_operations import PercentileTargetOperations  # type: ignore
-from ._percentile_operations import PercentileOperations  # type: ignore
-from ._collection_partition_region_operations import CollectionPartitionRegionOperations  # type: ignore
-from ._collection_partition_operations import CollectionPartitionOperations  # type: ignore
-from ._partition_key_range_id_operations import PartitionKeyRangeIdOperations  # type: ignore
-from ._partition_key_range_id_region_operations import PartitionKeyRangeIdRegionOperations  # type: ignore
-from ._graph_resources_operations import GraphResourcesOperations  # type: ignore
-from ._sql_resources_operations import SqlResourcesOperations  # type: ignore
-from ._mongo_db_resources_operations import MongoDBResourcesOperations  # type: ignore
-from ._table_resources_operations import TableResourcesOperations  # type: ignore
-from ._gremlin_resources_operations import GremlinResourcesOperations  # type: ignore
-from ._locations_operations import LocationsOperations  # type: ignore
 from ._data_transfer_jobs_operations import DataTransferJobsOperations  # type: ignore
-from ._fleet_operations import FleetOperations  # type: ignore
+from ._collection_operations import CollectionOperations  # type: ignore
+from ._partition_key_range_id_operations import PartitionKeyRangeIdOperations  # type: ignore
+from ._collection_partition_operations import CollectionPartitionOperations  # type: ignore
+from ._database_operations import DatabaseOperations  # type: ignore
+from ._graph_resources_operations import GraphResourcesOperations  # type: ignore
+from ._gremlin_resources_operations import GremlinResourcesOperations  # type: ignore
+from ._mongo_mi_resources_operations import MongoMIResourcesOperations  # type: ignore
+from ._mongo_db_resources_operations import MongoDBResourcesOperations  # type: ignore
+from ._network_security_perimeter_configurations_operations import NetworkSecurityPerimeterConfigurationsOperations  # type: ignore
+from ._notebook_workspaces_operations import NotebookWorkspacesOperations  # type: ignore
+from ._percentile_operations import PercentileOperations  # type: ignore
+from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations  # type: ignore
+from ._private_link_resources_operations import PrivateLinkResourcesOperations  # type: ignore
+from ._collection_region_operations import CollectionRegionOperations  # type: ignore
+from ._partition_key_range_id_region_operations import PartitionKeyRangeIdRegionOperations  # type: ignore
+from ._collection_partition_region_operations import CollectionPartitionRegionOperations  # type: ignore
+from ._database_account_region_operations import DatabaseAccountRegionOperations  # type: ignore
+from ._service_operations import ServiceOperations  # type: ignore
+from ._percentile_source_target_operations import PercentileSourceTargetOperations  # type: ignore
+from ._sql_resources_operations import SqlResourcesOperations  # type: ignore
+from ._table_resources_operations import TableResourcesOperations  # type: ignore
+from ._percentile_target_operations import PercentileTargetOperations  # type: ignore
 from ._fleet_analytics_operations import FleetAnalyticsOperations  # type: ignore
 from ._fleetspace_operations import FleetspaceOperations  # type: ignore
 from ._fleetspace_account_operations import FleetspaceAccountOperations  # type: ignore
-from ._garnet_clusters_operations import GarnetClustersOperations  # type: ignore
-from ._cassandra_clusters_operations import CassandraClustersOperations  # type: ignore
-from ._cassandra_data_centers_operations import CassandraDataCentersOperations  # type: ignore
-from ._mongo_mi_resources_operations import MongoMIResourcesOperations  # type: ignore
-from ._network_security_perimeter_configurations_operations import NetworkSecurityPerimeterConfigurationsOperations  # type: ignore
-from ._notebook_workspaces_operations import NotebookWorkspacesOperations  # type: ignore
-from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations  # type: ignore
-from ._private_link_resources_operations import PrivateLinkResourcesOperations  # type: ignore
-from ._restorable_database_accounts_operations import RestorableDatabaseAccountsOperations  # type: ignore
-from ._restorable_sql_databases_operations import RestorableSqlDatabasesOperations  # type: ignore
-from ._restorable_sql_containers_operations import RestorableSqlContainersOperations  # type: ignore
-from ._restorable_sql_resources_operations import RestorableSqlResourcesOperations  # type: ignore
-from ._restorable_mongodb_databases_operations import RestorableMongodbDatabasesOperations  # type: ignore
-from ._restorable_mongodb_collections_operations import RestorableMongodbCollectionsOperations  # type: ignore
-from ._restorable_mongodb_resources_operations import RestorableMongodbResourcesOperations  # type: ignore
-from ._restorable_gremlin_databases_operations import RestorableGremlinDatabasesOperations  # type: ignore
-from ._restorable_gremlin_graphs_operations import RestorableGremlinGraphsOperations  # type: ignore
-from ._restorable_gremlin_resources_operations import RestorableGremlinResourcesOperations  # type: ignore
-from ._restorable_tables_operations import RestorableTablesOperations  # type: ignore
-from ._restorable_table_resources_operations import RestorableTableResourcesOperations  # type: ignore
-from ._service_operations import ServiceOperations  # type: ignore
-from ._throughput_pools_operations import ThroughputPoolsOperations  # type: ignore
+from ._soft_deleted_sql_databases_operations import SoftDeletedSqlDatabasesOperations  # type: ignore
+from ._soft_deleted_sql_containers_operations import SoftDeletedSqlContainersOperations  # type: ignore
 from ._throughput_pool_operations import ThroughputPoolOperations  # type: ignore
 from ._throughput_pool_accounts_operations import ThroughputPoolAccountsOperations  # type: ignore
 from ._throughput_pool_account_operations import ThroughputPoolAccountOperations  # type: ignore
@@ -71,55 +74,58 @@ from ._patch import *
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
+    "DatabaseAccountsOperations",
+    "Operations",
+    "CassandraClustersOperations",
+    "FleetOperations",
+    "GarnetClustersOperations",
+    "LocationsOperations",
+    "RestorableDatabaseAccountsOperations",
+    "RestorableGremlinGraphsOperations",
+    "RestorableGremlinDatabasesOperations",
+    "RestorableGremlinResourcesOperations",
+    "RestorableMongodbCollectionsOperations",
+    "RestorableMongodbDatabasesOperations",
+    "RestorableMongodbResourcesOperations",
+    "RestorableSqlContainersOperations",
+    "RestorableSqlDatabasesOperations",
+    "RestorableSqlResourcesOperations",
+    "RestorableTableResourcesOperations",
+    "RestorableTablesOperations",
+    "SoftDeletedDatabaseAccountsOperations",
+    "ThroughputPoolsOperations",
+    "CassandraDataCentersOperations",
     "CassandraResourcesOperations",
     "ChaosFaultOperations",
     "CopyJobsOperations",
-    "DatabaseAccountsOperations",
-    "Operations",
-    "DatabaseOperations",
-    "CollectionOperations",
-    "CollectionRegionOperations",
-    "DatabaseAccountRegionOperations",
-    "PercentileSourceTargetOperations",
-    "PercentileTargetOperations",
-    "PercentileOperations",
-    "CollectionPartitionRegionOperations",
-    "CollectionPartitionOperations",
-    "PartitionKeyRangeIdOperations",
-    "PartitionKeyRangeIdRegionOperations",
-    "GraphResourcesOperations",
-    "SqlResourcesOperations",
-    "MongoDBResourcesOperations",
-    "TableResourcesOperations",
-    "GremlinResourcesOperations",
-    "LocationsOperations",
     "DataTransferJobsOperations",
-    "FleetOperations",
+    "CollectionOperations",
+    "PartitionKeyRangeIdOperations",
+    "CollectionPartitionOperations",
+    "DatabaseOperations",
+    "GraphResourcesOperations",
+    "GremlinResourcesOperations",
+    "MongoMIResourcesOperations",
+    "MongoDBResourcesOperations",
+    "NetworkSecurityPerimeterConfigurationsOperations",
+    "NotebookWorkspacesOperations",
+    "PercentileOperations",
+    "PrivateEndpointConnectionsOperations",
+    "PrivateLinkResourcesOperations",
+    "CollectionRegionOperations",
+    "PartitionKeyRangeIdRegionOperations",
+    "CollectionPartitionRegionOperations",
+    "DatabaseAccountRegionOperations",
+    "ServiceOperations",
+    "PercentileSourceTargetOperations",
+    "SqlResourcesOperations",
+    "TableResourcesOperations",
+    "PercentileTargetOperations",
     "FleetAnalyticsOperations",
     "FleetspaceOperations",
     "FleetspaceAccountOperations",
-    "GarnetClustersOperations",
-    "CassandraClustersOperations",
-    "CassandraDataCentersOperations",
-    "MongoMIResourcesOperations",
-    "NetworkSecurityPerimeterConfigurationsOperations",
-    "NotebookWorkspacesOperations",
-    "PrivateEndpointConnectionsOperations",
-    "PrivateLinkResourcesOperations",
-    "RestorableDatabaseAccountsOperations",
-    "RestorableSqlDatabasesOperations",
-    "RestorableSqlContainersOperations",
-    "RestorableSqlResourcesOperations",
-    "RestorableMongodbDatabasesOperations",
-    "RestorableMongodbCollectionsOperations",
-    "RestorableMongodbResourcesOperations",
-    "RestorableGremlinDatabasesOperations",
-    "RestorableGremlinGraphsOperations",
-    "RestorableGremlinResourcesOperations",
-    "RestorableTablesOperations",
-    "RestorableTableResourcesOperations",
-    "ServiceOperations",
-    "ThroughputPoolsOperations",
+    "SoftDeletedSqlDatabasesOperations",
+    "SoftDeletedSqlContainersOperations",
     "ThroughputPoolOperations",
     "ThroughputPoolAccountsOperations",
     "ThroughputPoolAccountOperations",

@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}", "2025-08-01"],
         ]
     }
 
@@ -67,7 +67,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]{3,24}$",
+                pattern="^[a-z][a-z0-9]{2,23}$",
                 max_length=24,
                 min_length=3,
             ),
@@ -143,7 +143,7 @@ class Update(AAZCommand):
         trigger.type = AAZStrArg(
             options=["type"],
             help="The trigger type of the storage task assignment execution",
-            enum={"OnSchedule": "OnSchedule", "RunOnce": "RunOnce"},
+            enum={"MockRun": "MockRun", "OnSchedule": "OnSchedule", "RunOnce": "RunOnce"},
         )
 
         parameters = cls._args_schema.execution_context.trigger.parameters
@@ -151,6 +151,9 @@ class Update(AAZCommand):
             options=["end-by"],
             help="When to end task execution. This is a required field when ExecutionTrigger.properties.type is 'OnSchedule'; this property should not be present when ExecutionTrigger.properties.type is 'RunOnce'",
             nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         parameters.interval = AAZIntArg(
             options=["interval"],
@@ -170,11 +173,17 @@ class Update(AAZCommand):
             options=["start-from"],
             help="When to start task execution. This is a required field when ExecutionTrigger.properties.type is 'OnSchedule'; this property should not be present when ExecutionTrigger.properties.type is 'RunOnce'",
             nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         parameters.start_on = AAZDateTimeArg(
             options=["start-on"],
             help="When to start task execution. This is an optional field when ExecutionTrigger.properties.type is 'RunOnce'; this property should not be present when ExecutionTrigger.properties.type is 'OnSchedule'",
             nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
 
         report = cls._args_schema.report
@@ -238,7 +247,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
@@ -266,7 +275,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
@@ -341,7 +350,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
@@ -369,7 +378,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
@@ -427,7 +436,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -494,6 +503,7 @@ class _UpdateHelper:
             _schema.id = cls._schema_storage_task_assignment_read.id
             _schema.name = cls._schema_storage_task_assignment_read.name
             _schema.properties = cls._schema_storage_task_assignment_read.properties
+            _schema.system_data = cls._schema_storage_task_assignment_read.system_data
             _schema.type = cls._schema_storage_task_assignment_read.type
             return
 
@@ -506,8 +516,10 @@ class _UpdateHelper:
         storage_task_assignment_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        storage_task_assignment_read.properties = AAZObjectType(
-            flags={"required": True},
+        storage_task_assignment_read.properties = AAZObjectType()
+        storage_task_assignment_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
         )
         storage_task_assignment_read.type = AAZStrType(
             flags={"read_only": True},
@@ -643,9 +655,30 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        system_data = _schema_storage_task_assignment_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
         _schema.id = cls._schema_storage_task_assignment_read.id
         _schema.name = cls._schema_storage_task_assignment_read.name
         _schema.properties = cls._schema_storage_task_assignment_read.properties
+        _schema.system_data = cls._schema_storage_task_assignment_read.system_data
         _schema.type = cls._schema_storage_task_assignment_read.type
 
 

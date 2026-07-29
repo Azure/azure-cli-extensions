@@ -50,8 +50,10 @@ class LLMConfigManager:
         """
         env_vars_list = []
         for _, model_config in self.model_list.items():
-            env_var = LLMProvider.to_env_vars(secret_name, model_config)
-            env_vars_list.append(env_var)
+            api_key = model_config.get("api_key")
+            if api_key and api_key.strip():
+                env_var = LLMProvider.to_env_vars(secret_name, model_config)
+                env_vars_list.append(env_var)
         return env_vars_list
 
 

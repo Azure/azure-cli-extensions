@@ -19,6 +19,7 @@ from azext_aks_preview.custom import (
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azext_aks_preview.tests.latest.test_vm_skus import _make_sku, _make_restriction
+from knack.util import CLIError
 
 
 class TestCustomCommand(unittest.TestCase):
@@ -55,21 +56,60 @@ class TestCustomCommand(unittest.TestCase):
         self.assertEqual(aks_stop(self.cmd, self.client, "rg", "name", False), None)
 
     def test_aks_scale_with_none_agent_pool_profiles(self):
-        """Test aks_scale handles None agent_pool_profiles gracefully"""
-        # Test case: automatic cluster with hosted system components, no agent pools
+        """Managed System Pool clusters return a useful error instead of len(None)."""
         mc = self.models.ManagedCluster(location="test_location")
-        mc.agent_pool_profiles = None  # This is the key scenario
+        mc.agent_pool_profiles = None
         mc.pod_identity_profile = None
+        self.client.get = Mock(return_value=mc)
+
+        with self.assertRaisesRegex(CLIError, "no scalable node pools"):
+            aks_scale(self.cmd, self.client, "rg", "name", 3, "nodepool1")
+
+    def test_aks_upgrade_node_image_only_skips_machines_mode_pool(self):
+        """Machines mode pools must be skipped during --node-image-only to avoid a known client-side error."""
+        machines_pool = self.models.ManagedClusterAgentPoolProfile(name="machinespool", mode="Machines", type="VirtualMachines")
+        vmss_pool = self.models.ManagedClusterAgentPoolProfile(name="nodepool1", mode="User", type="VirtualMachineScaleSets")
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.agent_pool_profiles = [machines_pool, vmss_pool]
+        mc.pod_identity_profile = None
+        mc.kubernetes_version = "1.24.0"
+        mc.provisioning_state = "Succeeded"
+        mc.max_agent_pools = 10
 
         self.client.get = Mock(return_value=mc)
 
-        # Should not raise NoneType error and should return without crashing
-        try:
-            result = aks_scale(self.cmd, self.client, "rg", "name", 3, "nodepool1")
-            # We expect this to complete without NoneType errors
-        except Exception as e:
-            # Should not be a NoneType error
-            self.assertNotIn("NoneType", str(type(e)))
+        with patch("azext_aks_preview.custom.cf_agent_pools") as mock_cf, \
+             patch("azext_aks_preview.custom._upgrade_single_nodepool_image_version") as mock_upgrade:
+            mock_agent_pool_client = Mock()
+            mock_cf.return_value = mock_agent_pool_client
+
+            aks_upgrade(self.cmd, self.client, "rg", "name", node_image_only=True, yes=True)
+
+            # Only the VMSS pool should be upgraded; the Machines mode pool must be skipped.
+            upgraded_pools = [call.args[4] for call in mock_upgrade.call_args_list]
+            self.assertNotIn("machinespool", upgraded_pools)
+            self.assertIn("nodepool1", upgraded_pools)
+
+    def test_aks_upgrade_kubernetes_version_skips_machines_mode_pool(self):
+        """Machines mode pools must be skipped during Kubernetes version upgrade to avoid a known client-side error."""
+        machines_pool = self.models.ManagedClusterAgentPoolProfile(name="machinespool", mode="Machines", type="VirtualMachines")
+        vmss_pool = self.models.ManagedClusterAgentPoolProfile(name="nodepool1", mode="User", type="VirtualMachineScaleSets")
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.agent_pool_profiles = [machines_pool, vmss_pool]
+        mc.pod_identity_profile = None
+        mc.kubernetes_version = "1.24.0"
+        mc.provisioning_state = "Succeeded"
+        mc.max_agent_pools = 10
+        mc.service_principal_profile = None
+
+        self.client.get = Mock(return_value=mc)
+        self.client.begin_create_or_update = Mock(return_value=None)
+
+        aks_upgrade(self.cmd, self.client, "rg", "name", kubernetes_version="1.25.0", yes=True)
+
+        # Machines mode pool must not have orchestrator_version set; VMSS pool must be upgraded.
+        self.assertIsNone(machines_pool.orchestrator_version)
+        self.assertEqual(vmss_pool.orchestrator_version, "1.25.0")
 
     def test_aks_upgrade_with_none_agent_pool_profiles(self):
         """Test aks_upgrade handles None agent_pool_profiles gracefully"""

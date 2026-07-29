@@ -390,7 +390,18 @@ helps['network front-door waf-policy rule'] = """
 
 helps['network front-door waf-policy rule create'] = """
     type: command
-    short-summary: Create a WAF policy custom rule. Use --defer and add a rule match-condition.
+    short-summary: Create a WAF policy custom rule.
+    long-summary: >
+        A custom rule must contain at least one match condition. Provide the initial match condition with
+        --match-variable, --operator, and --values when creating the rule, or add match conditions later with
+        az network front-door waf-policy rule match-condition add.
+    examples:
+      - name: Create a match custom rule with an initial match condition.
+        text: |
+            az network front-door waf-policy rule create -g MyResourceGroup --policy-name MyPolicy -n MyRule --priority 10 --rule-type MatchRule --action Block --match-variable RequestUri --operator Contains --values private
+      - name: Create a rate limit custom rule with an initial match condition.
+        text: |
+            az network front-door waf-policy rule create -g MyResourceGroup --policy-name MyPolicy -n MyRateLimitRule --priority 20 --rule-type RateLimitRule --action Log --rate-limit-duration 1 --rate-limit-threshold 100 --match-variable RemoteAddr --operator IPMatch --values 10.0.0.0/24
 """
 
 helps['network front-door waf-policy rule match-condition'] = """

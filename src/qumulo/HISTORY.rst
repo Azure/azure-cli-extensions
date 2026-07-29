@@ -3,6 +3,10 @@
 Release History
 ===============
 
+3.0.0
+++++++
+* API version updated to 2026-04-16
+
 2.0.1
 ++++++
 * Updated CLI Description
@@ -10,7 +14,6 @@ Release History
 2.0.0
 ++++++
 * Incorporated new cluster property values for cli refresh
-* API version updated to 2024-06-19
 
 1.0.0
 ++++++

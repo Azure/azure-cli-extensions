@@ -1,0 +1,426 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "Site for key testing", "displayName": "Test
+      Site", "siteAddress": {"city": "San Francisco", "country": "US", "postalCode":
+      "94107", "stateOrProvince": "CA", "streetAddress1": "16 TOWNSEND ST"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '226'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --site-name --resource-group --display-name --description --street-address1
+        --city --state-or-province --country --postal-code
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey","name":"TestSiteForKey","type":"microsoft.edge/sites","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-27T07:51:41.8163911Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-27T07:51:41.8163911Z"},"properties":{"description":"Site
+        for key testing","displayName":"Test Site","siteAddress":{"city":"San Francisco","country":"US","postalCode":"94107","stateOrProvince":"CA","streetAddress1":"16
+        TOWNSEND ST"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '666'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 May 2026 07:51:42 GMT
+      etag:
+      - '"f402c175-0000-0500-0000-6a16a28f0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b27e7277-4b30-474f-ac5f-567249e9d9bc
+      pragma:
+      - no-cache
+      servertime:
+      - 14 ms
+      set-cookie:
+      - ASLBSA=0003ad305beede9289fe376c05325bb7ce49d8ce4002a12c7a67dc721e75134503f5;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=0003ad305beede9289fe376c05325bb7ce49d8ce4002a12c7a67dc721e75134503f5;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20260527T075141Z-178644875c7m488jhC1IADs7yn00000004r0000000003abq
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/eastus/677e860e-2672-44e6-a6b1-2388fc54e6de
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: CFE7FB56D3994378A49AABBC21CCFA12 Ref B: PNQ231110909025 Ref C: 2026-05-27T07:51:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "properties": {"siteResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site key create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '215'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey?api-version=2026-04-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey","name":"TestSiteKey","type":"microsoft.edge/sitekeys","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-27T07:51:44.2597598Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-27T07:51:44.2597598Z"},"identity":{"principalId":"4f7f1749-cc9d-495f-bcd5-2257cad546ed","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"siteResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey","tokenExpiryDate":"2026-06-03T07:51:46.6738485+00:00","provisioningState":"Succeeded","generatedDate":"2026-05-27T07:51:46.6738608+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '874'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 May 2026 07:51:47 GMT
+      etag:
+      - '"f400a452-0000-0500-0000-6a16a2930000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1ce65b38-2203-4613-a123-03dca098febf
+      pragma:
+      - no-cache
+      servertime:
+      - 398 ms
+      set-cookie:
+      - ASLBSA=0003ad305beede9289fe376c05325bb7ce49d8ce4002a12c7a67dc721e75134503f5;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=0003ad305beede9289fe376c05325bb7ce49d8ce4002a12c7a67dc721e75134503f5;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20260527T075146Z-178644875c79xrvnhC1IADdqrn000000044g000000004dc6
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/eastus/6a051501-b74d-4fe9-9156-acdd575bb2cd
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2971B30C31164DC8881F73F0AD3C9F05 Ref B: PNQ231110908060 Ref C: 2026-05-27T07:51:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site key show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey?api-version=2026-04-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey","name":"TestSiteKey","type":"microsoft.edge/sitekeys","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-27T07:51:44.2597598Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-27T07:51:44.2597598Z"},"identity":{"principalId":"4f7f1749-cc9d-495f-bcd5-2257cad546ed","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"siteResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey","tokenExpiryDate":"2026-06-03T07:51:46.6738485Z","provisioningState":"Succeeded","generatedDate":"2026-05-27T07:51:46.6738608Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '864'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 May 2026 07:51:49 GMT
+      etag:
+      - '"f400a452-0000-0500-0000-6a16a2930000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/jioindiawest/7459e3e7-691c-416c-acd9-131a6dfe2cca
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5E392B32B419492C8BD51B853FD086A7 Ref B: PNQ231110906042 Ref C: 2026-05-27T07:51:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site key list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys?api-version=2026-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey","name":"TestSiteKey","type":"microsoft.edge/sitekeys","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-27T07:51:44.2597598Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-27T07:51:44.2597598Z"},"identity":{"principalId":"4f7f1749-cc9d-495f-bcd5-2257cad546ed","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"siteResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey","tokenExpiryDate":"2026-06-03T07:51:46.6738485Z","provisioningState":"Succeeded","generatedDate":"2026-05-27T07:51:46.6738608Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '876'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 May 2026 07:51:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/eastus/60913bb8-e238-4319-a798-4034952fd978
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E38F141CA06445CB82E4CAEE8B4FADD6 Ref B: PNQ231110906060 Ref C: 2026-05-27T07:51:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site key download
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group --file
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey/download?api-version=2026-04-01-preview
+  response:
+    body:
+      string: '{"tokenResponse":{"token":"REDACTED_FAKE_TOKEN_FOR_TESTING"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 May 2026 07:51:54 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 390bd998-6a2b-4823-aa64-fd8dd0347e1d
+      pragma:
+      - no-cache
+      servertime:
+      - 1593 ms
+      set-cookie:
+      - ASLBSA=0003f99cdea74435a18ddc57e043df1f0880764569171e459636bc352d293cca5fb6;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=0003f99cdea74435a18ddc57e043df1f0880764569171e459636bc352d293cca5fb6;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20260527T075152Z-174dcdcf66bw52cwhC1MAAmvws0000000hsg0000000047zw
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/centralindia/b6d45e4f-98bb-4e4f-8bfc-9c58a27438ec
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 77E3B9FF2A71497C9898E4BD05BAC222 Ref B: PNQ231110908040 Ref C: 2026-05-27T07:51:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site key delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/siteKeys/TestSiteKey?api-version=2026-04-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 27 May 2026 07:51:57 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7182627a-2f7e-424c-9de8-da64bf6f8b8f
+      pragma:
+      - no-cache
+      servertime:
+      - 1565 ms
+      set-cookie:
+      - ASLBSA=0003ad305beede9289fe376c05325bb7ce49d8ce4002a12c7a67dc721e75134503f5;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=0003ad305beede9289fe376c05325bb7ce49d8ce4002a12c7a67dc721e75134503f5;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20260527T075155Z-17449575585j6ls5hC1IAD2cg40000000pq00000000062qn
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/eastus/09f917ec-dceb-4264-800d-6f7fd2c1904c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 1C77114ACEAF46B1B5D55EA96107AA55 Ref B: PNQ231110909036 Ref C: 2026-05-27T07:51:55Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --site-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_site_key_000001/providers/Microsoft.Edge/sites/TestSiteForKey?api-version=2025-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 May 2026 07:51:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5da377f-161a-4b05-90fa-5f9f0f363a24/eastus/b20745d7-f2ad-4525-8a6c-9f439afed464
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 82C4202E7C8C4BF990BF7EF3FEC84F1D Ref B: PNQ231110907040 Ref C: 2026-05-27T07:51:58Z'
+    status:
+      code: 200
+      message: OK
+version: 1
