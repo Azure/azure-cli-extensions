@@ -4,14 +4,11 @@
 # --------------------------------------------------------------------------------------------
 import json
 from knack.util import CLIError
-from azure.cli.core.azclierror import (
-    UnknownError
-)
 from .constants import (
     RP_API, ClUSTER_RESOURCE_API, CLUSTER_RESOURCE_ID
 )
 from ..._client_factory import (
-    cf_resources, cf_resource_groups, cf_log_analytics)
+    cf_resources)
 from azure.core.exceptions import HttpResponseError
 from ... import consts
 

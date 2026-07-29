@@ -13,8 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity get-signal-recommendations",
+    is_preview=True,
 )
-class GetSignalRecommendation(AAZCommand):
+class GetSignalRecommendations(AAZCommand):
     """Get recommended signal configurations for a given Entity (only applicable for Entities representing Azure resources)
 
     :example: Entities_GetSignalRecommendations
@@ -180,17 +181,17 @@ class GetSignalRecommendation(AAZCommand):
 
             recommended_configurations = cls._schema_on_200.recommended_configurations
             recommended_configurations.Element = AAZObjectType()
-            _GetSignalRecommendationHelper._build_schema_signal_configuration_read(recommended_configurations.Element)
+            _GetSignalRecommendationsHelper._build_schema_signal_configuration_read(recommended_configurations.Element)
 
             recommended_signals = cls._schema_on_200.recommended_signals
             recommended_signals.Element = AAZObjectType()
-            _GetSignalRecommendationHelper._build_schema_signal_configuration_read(recommended_signals.Element)
+            _GetSignalRecommendationsHelper._build_schema_signal_configuration_read(recommended_signals.Element)
 
             return cls._schema_on_200
 
 
-class _GetSignalRecommendationHelper:
-    """Helper class for GetSignalRecommendation"""
+class _GetSignalRecommendationsHelper:
+    """Helper class for GetSignalRecommendations"""
 
     _schema_signal_configuration_read = None
 
@@ -283,4 +284,4 @@ class _GetSignalRecommendationHelper:
         _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
 
 
-__all__ = ["GetSignalRecommendation"]
+__all__ = ["GetSignalRecommendations"]

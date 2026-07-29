@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity get-signal-history",
+    is_preview=True,
 )
 class GetSignalHistory(AAZCommand):
     """Retrieve the time series history for a signal on an entity

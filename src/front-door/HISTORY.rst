@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.3.0
+++++++
+* Add `az network front-door waf-policy managed-rules exception` commands for managed rule set exceptions.
+
 2.2.0
 ++++++
 * Bump swagger version to 2025-11-01

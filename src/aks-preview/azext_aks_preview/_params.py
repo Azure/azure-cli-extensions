@@ -242,6 +242,8 @@ from azext_aks_preview._validators import (
     validate_duration_hours,
     validate_vm_set_type,
     validate_vnet_subnet_id,
+    validate_system_node_subnet_id,
+    validate_node_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
@@ -1312,6 +1314,17 @@ def load_arguments(self, _):
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
         c.argument(
+            "system_node_subnet_id",
+            validator=validate_system_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
+            "node_subnet_id",
+            options_list=["--node-subnet-id"],
+            validator=validate_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
             "control_plane_scaling_size",
             options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
             arg_type=get_enum_type(["H2", "H4", "H8"]),
@@ -1352,6 +1365,12 @@ def load_arguments(self, _):
                  "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",
+        )
+        c.argument(
+            "enable_on_demand_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable on-demand monitor for the cluster.",
         )
         # prepared image specification
         c.argument(
@@ -2017,6 +2036,18 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="Enable continuous control plane and addon monitor for the cluster.",
+        )
+        c.argument(
+            "enable_on_demand_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable on-demand monitor for the cluster.",
+        )
+        c.argument(
+            "disable_on_demand_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Disable on-demand monitor for the cluster.",
         )
         c.argument(
             "disable_continuous_control_plane_and_addon_monitor",
@@ -3638,6 +3669,27 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
+
+    # aks identity-binding commands
+    # --allowed-subjects-from-file is optional on create (omitting it falls back
+    # to ClusterRole/ClusterRoleBinding authorization), but required on update
+    # since it is the only mutable field today -- requiring it avoids a no-op
+    # full-PUT that would needlessly re-provision the binding.
+    for scope, is_required in [('aks identity-binding create', False),
+                               ('aks identity-binding update', True)]:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "allowed_subjects_from_file",
+                options_list=["--allowed-subjects-from-file", "-f"],
+                type=file_type,
+                completer=FilesCompleter(),
+                required=is_required,
+                help="Path to a JSON file containing an array of subjects authorized to use this "
+                     "identity binding for token exchange. Each entry has a required "
+                     "'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes "
+                     "label selector with 'matchLabels' (an array of \"key=value\" strings) and/or "
+                     "'matchExpressions'. Maximum 100 entries.",
+            )
 
     # aks list-vm-skus command
     with self.argument_context("aks list-vm-skus") as c:

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models identity remove",
+    is_preview=True,
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.

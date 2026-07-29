@@ -114,7 +114,9 @@ jobs:
            python -m venv env
            chmod +x env/bin/activate
            source ./env/bin/activate
-           pip install azdev
+           # Pinned to the azdev commit that fixes `azdev extension add` losing egg-info under
+           # --no-build-isolation (Azure/azure-cli-dev-tools#554); switch to azdev==0.2.13 once released.
+           pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@bb196e370ef0c0c8fcb01ab2e73bf2db7b5821a2#egg=azdev"
            azdev --version
            cd ../
            azdev setup -c azure-cli -r azure-cli-extensions --debug

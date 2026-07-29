@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models identity show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the details of managed identities.

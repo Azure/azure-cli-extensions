@@ -118,6 +118,7 @@ from azext_aks_preview.maintenancewindow import (
 )
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
+    aks_ib_cmd_update,
     aks_ib_cmd_delete,
     aks_ib_cmd_show,
     aks_ib_cmd_list,
@@ -1437,6 +1438,8 @@ def aks_create(
     # app routing istio
     enable_app_routing_istio=False,
     enable_hosted_system=False,
+    system_node_subnet_id=None,
+    node_subnet_id=None,
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
@@ -1444,6 +1447,7 @@ def aks_create(
     enable_backup=False,
     backup_strategy=None,
     backup_configuration_file=None,
+    enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
 ):
@@ -1705,6 +1709,8 @@ def aks_update(
     disable_application_load_balancer=False,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    enable_on_demand_monitor=False,
+    disable_on_demand_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
     # backup (delegates to the dataprotection extension)
     enable_backup=False,
@@ -1916,14 +1922,21 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
-    if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
+    agent_pool_profiles = instance.agent_pool_profiles or []
+    if not agent_pool_profiles:
+        raise CLIError(
+            "The cluster has no scalable node pools (this may be a Managed System Pool for "
+            "an Automatic cluster). Use az aks nodepool add/scale against a user node pool instead."
+        )
+
+    if len(agent_pool_profiles) > 1 and nodepool_name == "":
         raise CLIError(
             "There are more than one node pool in the cluster. "
             "Please specify nodepool name or use az aks nodepool command to scale node pool"
         )
 
-    for agent_profile in (instance.agent_pool_profiles or []):
-        if agent_profile.name == nodepool_name or (nodepool_name == "" and instance.agent_pool_profiles and len(instance.agent_pool_profiles) == 1):
+    for agent_profile in agent_pool_profiles:
+        if agent_profile.name == nodepool_name or (nodepool_name == "" and len(agent_pool_profiles) == 1):
             if agent_profile.enable_auto_scaling:
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
@@ -2643,19 +2656,24 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                 else None
             )
 
-            upgrade_channel_enabled = upgrade_channel and str(upgrade_channel).lower() != "none"
-            node_os_channel_enabled = node_os_upgrade_channel and str(node_os_upgrade_channel).lower() not in [
-                "none",
-                "unmanaged",
-            ]
+            upgrade_channel_value = getattr(upgrade_channel, "value", upgrade_channel)
+            node_os_upgrade_channel_value = getattr(node_os_upgrade_channel, "value", node_os_upgrade_channel)
+
+            upgrade_channel_enabled = (
+                upgrade_channel_value and str(upgrade_channel_value).lower() != "none"
+            )
+            node_os_channel_enabled = (
+                node_os_upgrade_channel_value and
+                str(node_os_upgrade_channel_value).lower() not in ["none", "unmanaged"]
+            )
 
             if upgrade_channel_enabled:
                 logger.warning(
                     "Auto-upgrade is enabled on cluster '%s' (upgradeChannel=%s, nodeOSUpgradeChannel=%s). "
                     "Rollback will not succeed until auto-upgrade is disabled. Please disable auto-upgrade to roll back the node pool.",
                     cluster_name,
-                    upgrade_channel or "none",
-                    node_os_upgrade_channel or "Unmanaged",
+                    upgrade_channel_value or "none",
+                    node_os_upgrade_channel_value or "Unmanaged",
                 )
             if node_os_channel_enabled:
                 logger.warning(
@@ -2663,7 +2681,7 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                     "The orchestrator version rollback will proceed, but the node image rollback "
                     "will not succeed. Please disable nodeOSUpgradeChannel if you want to roll back the node image.",
                     cluster_name,
-                    node_os_upgrade_channel,
+                    node_os_upgrade_channel_value,
                 )
         except Exception as ex:  # pylint: disable=broad-except
             logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
@@ -5930,6 +5948,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
 
 
 aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_update = aks_ib_cmd_update
 aks_identity_binding_delete = aks_ib_cmd_delete
 aks_identity_binding_show = aks_ib_cmd_show
 aks_identity_binding_list = aks_ib_cmd_list

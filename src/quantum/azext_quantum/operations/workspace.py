@@ -194,8 +194,14 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
+def _enum_to_value(value):
+    # ARM deployment parameters must use plain string values, not enum objects.
+    import enum
+    return value.value if isinstance(value, enum.Enum) else value
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
-           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None):
     """
     Create a new Azure Quantum workspace.
     """
@@ -215,6 +221,8 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         quantum_workspace.properties.api_key_enabled = True
+        if workspace_kind:
+            quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -244,9 +252,9 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if storage_account_list:
         for storage_account_info in storage_account_list:
             if storage_account_info.name == storage_account:
-                storage_account_sku = storage_account_info.sku.name
-                storage_account_sku_tier = storage_account_info.sku.tier
-                storage_account_kind = storage_account_info.kind
+                storage_account_sku = _enum_to_value(storage_account_info.sku.name)
+                storage_account_sku_tier = _enum_to_value(storage_account_info.sku.tier)
+                storage_account_kind = _enum_to_value(storage_account_info.kind)
                 storage_account_location = storage_account_info.location
                 # Preserve the existing account's setting to avoid breaking customers
                 # who rely on shared-key auth/connection strings for that account.
@@ -271,6 +279,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         'storageAccountAllowSharedKeyAccess': storage_account_allow_shared_key_access,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
+
+    if workspace_kind:
+        parameters['workspaceKind'] = workspace_kind
+
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
     deployment_properties = {

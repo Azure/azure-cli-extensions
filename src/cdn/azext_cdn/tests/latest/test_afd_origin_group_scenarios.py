@@ -11,30 +11,38 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
     def test_afd_origin_group_disable_probe(self, resource_group):
         profile_name = self.create_random_name(prefix='profile', length=16)
-        self.afd_profile_create_cmd(resource_group, profile_name)
+        self.afd_profile_create_cmd(resource_group, profile_name,
+                                    options="--identity '{\"type\":\"SystemAssigned\"}'")
 
         list_checks = [JMESPathCheck('length(@)', 0)]
         self.afd_origin_group_list_cmd(resource_group, profile_name, list_checks)
 
         origin_group_name = self.create_random_name(prefix='og', length=16)
         checks = [JMESPathCheck('name', origin_group_name),
+                  JMESPathCheck('authentication.type', 'SystemAssignedIdentity'),
+                  JMESPathCheck('authentication.scope', 'https://storage.azure.com/.default'),
+                  JMESPathCheck('authentication.tokenDestinationHeader', 'X-Azure-Authorization'),
                   JMESPathCheck('loadBalancingSettings.sampleSize', 4),
                   JMESPathCheck('loadBalancingSettings.successfulSamplesRequired', 3),
                   JMESPathCheck('loadBalancingSettings.additionalLatencyInMilliseconds', 50),
                   JMESPathCheck('healthProbeSettings.probePath', "/test1/azure.txt"),
-                  JMESPathCheck('healthProbeSettings.probeProtocol', "Http"),
+                  JMESPathCheck('healthProbeSettings.probeProtocol', "Https"),
                   JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                   JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                   JMESPathCheck('provisioningState', 'Succeeded')]
         self.afd_origin_group_create_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
-                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
+                                         "--probe-request-type GET --probe-protocol Https --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
                                          "--sample-size 4 --successful-samples-required 3 "
-                                         "--additional-latency-in-milliseconds 50",
+                                         "--additional-latency-in-milliseconds 50 "
+                                         "--authentication '{\"type\":\"SystemAssignedIdentity\",\"scope\":\"https://storage.azure.com/.default\",\"token-destination-header\":\"X-Azure-Authorization\"}'",
                                          checks=checks)
 
         update_checks = [JMESPathCheck('name', origin_group_name),
+                         JMESPathCheck('authentication.type', 'SystemAssignedIdentity'),
+                         JMESPathCheck('authentication.scope', 'https://storage.azure.com/.default'),
+                         JMESPathCheck('authentication.tokenDestinationHeader', 'Authorization'),
                          JMESPathCheck('loadBalancingSettings.sampleSize', 4),
                          JMESPathCheck('loadBalancingSettings.successfulSamplesRequired', 3),
                          JMESPathCheck('loadBalancingSettings.additionalLatencyInMilliseconds', 50),
@@ -43,7 +51,8 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = "--probe-request-type GET --probe-protocol Https"
+        options = "--probe-request-type GET --probe-protocol Https " \
+                        "--authentication '{\"type\":\"SystemAssignedIdentity\",\"scope\":\"https://storage.azure.com/.default\",\"token-destination-header\":\"Authorization\"}'"
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
@@ -68,11 +77,11 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         update_checks = [JMESPathCheck('name', origin_group_name),
                          JMESPathCheck('healthProbeSettings.probePath', "/test1/azure.txt"),
-                         JMESPathCheck('healthProbeSettings.probeProtocol', "Http"),
+                         JMESPathCheck('healthProbeSettings.probeProtocol', "Https"),
                          JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
                          JMESPathCheck('healthProbeSettings.probeRequestType', "GET"),
                          JMESPathCheck('provisioningState', 'Succeeded')]
-        options = "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt"
+        options = "--probe-request-type GET --probe-protocol Https --probe-interval-in-seconds 120 --probe-path /test1/azure.txt"
         self.afd_origin_group_update_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,

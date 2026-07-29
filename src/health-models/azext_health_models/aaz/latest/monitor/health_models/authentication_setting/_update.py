@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models authentication-setting update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a AuthenticationSetting
 
     :example: AuthenticationSettings_CreateOrUpdate
-        az monitor health-models authentication-setting update --resource-group myResourceGroup --health-model-name myHealthModel --authentication-setting-name myAuthSetting
+        az monitor health-models authentication-setting update --resource-group myResourceGroup --health-model-name myHealthModel --authentication-setting-name myAuthSetting --display-name myDisplayName
     """
 
     _aaz_info = {

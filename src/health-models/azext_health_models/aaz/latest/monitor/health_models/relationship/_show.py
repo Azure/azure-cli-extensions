@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models relationship show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a Relationship

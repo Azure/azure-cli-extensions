@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.0.0b5
++++++++++++++++
+* Change migrate command parameter name.
+
 3.0.0b4
 +++++++++++++++
 * Fix edge case bugs in az migrate local replication init & new commands.

@@ -6,7 +6,7 @@
 from codecs import open  # pylint: disable=redefined-builtin
 from setuptools import setup, find_packages
 
-VERSION = '1.0.0b1'
+VERSION = '1.0.0b2'
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
