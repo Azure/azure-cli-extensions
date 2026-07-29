@@ -4807,10 +4807,53 @@ helps['aks identity-binding create'] = """
           short-summary: Name of the managed Kubernetes cluster.
         - name: --name -n
           type: string
-          short-summary: Name of the identity binding to show.
+          short-summary: Name of the identity binding to create.
         - name: --managed-identity-resource-id
           type: string
           short-summary: The resource ID of the managed identity to use.
+        - name: --allowed-subjects-from-file -f
+          type: string
+          short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
+          long-summary: |
+              The file must contain a JSON array (max 100 entries). Each entry has a required
+              'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes label
+              selector supporting 'matchLabels' (an array of "key=value" strings) and/or
+              'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
+              specific namespaces by name. When omitted, authorization falls back to
+              ClusterRole/ClusterRoleBinding evaluation.
+    examples:
+        - name: Create an identity binding with allowed subjects targeting specific namespaces by name.
+          text: |-
+              az aks identity-binding create --resource-group myRG --cluster-name myCluster \\
+                --name my-identity-binding \\
+                --managed-identity-resource-id /subscriptions/.../userAssignedIdentities/myMI \\
+                --allowed-subjects-from-file allowed-subjects.json
+"""
+helps['aks identity-binding update'] = """
+    type: command
+    short-summary: Update an existing identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to update.
+        - name: --allowed-subjects-from-file -f
+          type: string
+          short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
+          long-summary: |
+              The file must contain a JSON array (max 100 entries). Each entry has a required
+              'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes label
+              selector supporting 'matchLabels' (an array of "key=value" strings) and/or
+              'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
+              specific namespaces by name. Providing this replaces the existing allowed subjects list.
+    examples:
+        - name: Update the allowed subjects on an existing identity binding.
+          text: |-
+              az aks identity-binding update --resource-group myRG --cluster-name myCluster \\
+                --name my-identity-binding \\
+                --allowed-subjects-from-file updated-subjects.json
 """
 helps['aks identity-binding delete'] = """
     type: command
@@ -4821,7 +4864,7 @@ helps['aks identity-binding delete'] = """
           short-summary: Name of the managed Kubernetes cluster.
         - name: --name -n
           type: string
-          short-summary: Name of the identity binding to show.
+          short-summary: Name of the identity binding to delete.
 """
 
 helps['aks jwtauthenticator'] = """

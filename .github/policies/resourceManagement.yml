@@ -255,9 +255,7 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - mbifeld
             - FumingZhang
-            - andyliuliming
             - Azure/act-observability-squad
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
@@ -1622,7 +1620,10 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - nazang
+            - JoshCZimmerman
+            - surajguptha
+            - ManishJayaswal
+            - brijrajsingh
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2475,6 +2476,17 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
+            label: Neon Postgre
+        then:
+        - mentionUsers:
+            mentionees:
+            - alluri02
+            replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
+            assignMentionees: False
+      - if:
+        - hasLabel:
+            label: Service Attention
+        - hasLabel:
             label: NetApp Files
         then:
         - mentionUsers:
@@ -2592,7 +2604,6 @@ configuration:
         - mentionUsers:
             mentionees:
             - cdnfdsuppgithub
-            - t-bzhan
             - gxue
             - TracyYaoYao
             - Azure/act-quality-productivity-squad
