@@ -25244,11 +25244,12 @@ spec:
         random_name_length=17, name_prefix="clitest", location="eastus2euap",
         preserve_default_location=True,
     )
-    # live_only: the AlertConfigurationPreview feature flag must be registered on the test
-    # subscription and the RP-side feature toggle must be active. Both are currently limited
-    # to eastus2euap/centraluseuap on allow-listed subscriptions, so this scenario cannot be
-    # recorded yet. A recording-based test will replace this once the feature is enabled more
-    # broadly.
+    # live_only: this scenario cannot be recorded yet.
+    #  1. The RP-side feature toggle and the AlertConfigurationPreview AFEC flag limit the
+    #     feature to eastus2euap/centraluseuap on allow-listed subscriptions.
+    #  2. The RP returns 202 for PUT alertConfigurations, but the swagger declares only
+    #     200/201 for that operation, so the generated SDK raises on the initial response.
+    #     Once the spec and RP agree and the SDK is re-vendored, drop this marker and record.
     @live_only()
     def test_aks_alert_config_cmds(self, resource_group, resource_group_location):
         # The alertConfigurations RP endpoint is only deployed to selected regions, so this
