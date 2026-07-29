@@ -1,5 +1,15 @@
-# Azure CLI Managedops Extension #
-This is an extension to Azure CLI to manage Managedops resources.
+# Azure ManagedOps extension
 
-## How to use ##
-Please add commands usage here.
+Configure Azure ManagedOps at subscription scope
+
+## Install
+
+```azurecli
+az extension add --name managedops
+```
+
+## Usage
+
+```azurecli
+az managedops managedops --help
+```
