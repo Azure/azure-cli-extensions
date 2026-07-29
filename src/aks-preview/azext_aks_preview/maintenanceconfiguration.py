@@ -42,12 +42,20 @@ def aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters):
 
 def getMaintenanceConfiguration(cmd, raw_parameters):
     config_file = raw_parameters.get("config_file")
+    maintenance_window_id = raw_parameters.get("maintenance_window_id")
+
+    if config_file is not None and maintenance_window_id is not None:
+        raise MutuallyExclusiveArgumentError(
+            "--maintenance-window-id cannot be combined with --config-file. To link a shared "
+            "MaintenanceWindow resource via a config file, set the maintenanceWindowId property "
+            "directly in the JSON instead."
+        )
+
     if config_file is not None:
         mcr = get_file_json(config_file)
         logger.info(mcr)
         return mcr
 
-    maintenance_window_id = raw_parameters.get("maintenance_window_id")
     if maintenance_window_id is not None:
         return constructSharedMaintenanceConfiguration(cmd, raw_parameters)
 
@@ -64,6 +72,11 @@ def getMaintenanceConfiguration(cmd, raw_parameters):
 
 def constructSharedMaintenanceConfiguration(cmd, raw_parameters):
     maintenance_window_id = raw_parameters.get("maintenance_window_id")
+    if not maintenance_window_id or not maintenance_window_id.strip():
+        raise InvalidArgumentValueError(
+            "--maintenance-window-id cannot be empty; provide the resource ID of a shared "
+            "MaintenanceWindow resource."
+        )
     inline_schedule_parameters = {
         "--weekday": raw_parameters.get("weekday"),
         "--start-hour": raw_parameters.get("start_hour"),

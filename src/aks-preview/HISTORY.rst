@@ -14,7 +14,7 @@ Pending
 
 21.0.0b12
 +++++++++
-* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. `--maintenance-window-id` cannot be combined with `--config-file` (set the `maintenanceWindowId` property in the JSON instead) and cannot be empty. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.
 
 21.0.0b11
 ++++++++

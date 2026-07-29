@@ -1748,7 +1748,7 @@ helps['aks maintenanceconfiguration add'] = """
     parameters:
         - name: --maintenance-window-id
           type: string
-          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Omit for no shared resource.
+          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Cannot be combined with --config-file (set the maintenanceWindowId property in the JSON instead). Omit for no shared resource.
         - name: --weekday
           type: string
           short-summary: A day in week on which maintenance is allowed. E.g. Monday. Applicable to default maintenance configuration only.
@@ -1889,7 +1889,7 @@ helps['aks maintenanceconfiguration update'] = """
     parameters:
         - name: --maintenance-window-id
           type: string
-          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Omit for no shared resource.
+          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Cannot be combined with --config-file (set the maintenanceWindowId property in the JSON instead). Omit for no shared resource.
         - name: --weekday
           type: string
           short-summary: A day in week on which maintenance is allowed. E.g. Monday. Applicable to default maintenance configuration only.

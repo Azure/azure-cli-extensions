@@ -2799,7 +2799,8 @@ def load_arguments(self, _):
                 help=(
                     "Resource ID of a shared MaintenanceWindow resource to link this maintenance "
                     "configuration to. When set, the schedule lives in the referenced MaintenanceWindow "
-                    "and inline schedule arguments cannot be used. Omit for no shared resource."
+                    "and inline schedule arguments cannot be used. Cannot be combined with --config-file "
+                    "(set the maintenanceWindowId property in the JSON instead). Omit for no shared resource."
                 ),
             )
 
