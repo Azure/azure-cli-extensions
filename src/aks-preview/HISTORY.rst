@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
 
 21.0.0b11
 ++++++++
