@@ -14,7 +14,7 @@ az extension add --name interconnect-block
 ##### Creates a new InterconnectBlock resource.
 ```
 az interconnect-block create --name training-icb-001 --resource-group ai-training-rg \
-    --location eastus --zone 1 --sku-name Standard_ND128isr_GB300_v6 --sku-capacity 36 \
+    --location eastus --zones 1 --sku-name Standard_ND128isr_GB300_v6 --sku-capacity 36 \
     --interconnect-group-id \
     "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/network-\
     rg/providers/Microsoft.Network/interconnectGroups/training-ig" --tags Environment=Production\
