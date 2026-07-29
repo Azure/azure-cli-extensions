@@ -227,8 +227,8 @@ def ensure_required_cli_extensions(extension_names=None):
     extensions = extension_names if extension_names is not None else REQUIRED_CLI_EXTENSIONS
     for ext in extensions:
         check_and_add_cli_extension(ext)
-        
 
+        
 def set_current_context_config(cli_ctx, context_id):
     """Persist the current Context to CLI config: id, name, and resource group.
 
