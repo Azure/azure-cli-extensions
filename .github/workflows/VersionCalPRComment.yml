@@ -174,7 +174,7 @@ jobs:
             cal_result
             !cal_result/**/*.md
   skip-version-cal:
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'skip-cal-version') || (contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) && github.event.label.name == 'release-version-block') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
