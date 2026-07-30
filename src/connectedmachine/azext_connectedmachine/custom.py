@@ -11,10 +11,17 @@
 # pylint: disable=unused-argument
 # pylint: disable=too-many-statements
 
+import time
+
 from .aaz.latest.connectedmachine.license_profile import Create as _ProfileCreate
 from .aaz.latest.connectedmachine.license_profile import Update as _ProfileUpdate
 from .aaz.latest.connectedmachine.license_profile import Show as _ProfileShow
 from .aaz.latest.connectedmachine.license_profile import Delete as _ProfileDelete
+from .aaz.latest.connectedmachine.run_command._create import Create as _RunCommandCreate
+from .aaz.latest.connectedmachine.run_command._update import Update as _RunCommandUpdate
+
+_RUN_COMMAND_TERMINAL_STATES = frozenset(['Succeeded', 'Failed', 'Canceled', 'Cancelled'])
+_RUN_COMMAND_POLL_SECONDS = 10
 
 
 # hide license_profile_name from user and always set it to be 'Default'
@@ -80,3 +87,64 @@ class ProfileDelete(_ProfileDelete):
     def pre_operations(self):
         args = self.ctx.args
         args.license_profile_name = "Default"
+
+
+def _get_run_command_provisioning_state(cmd_instance):
+    """Return the provisioningState string from the current instance, or None if unavailable."""
+    try:
+        result = cmd_instance.deserialize_output(cmd_instance.ctx.vars.instance, client_flatten=True)
+        return result.get('provisioningState') if result else None
+    except Exception:  # pylint: disable=broad-except
+        return None
+
+
+def _wait_for_run_command_terminal_state(cmd_instance):
+    """Poll the run-command resource until provisioningState reaches a terminal state.
+
+    The ARM async-operation for run-command create/update may complete (and the
+    LRO may return success) before the connected-machine agent finishes executing
+    the script.  When that happens the resource provisioningState is still
+    "Creating" or another non-terminal value.  This function issues GET requests
+    until the provisioningState is terminal (Succeeded / Failed / Canceled).
+    """
+    if cmd_instance.ctx.args.no_wait:
+        return
+    # Always issue an initial GET so that we have the actual resource state.
+    # The LRO response may carry only the async-operation status rather than
+    # the full resource body.
+    cmd_instance.MachineRunCommandsGet(ctx=cmd_instance.ctx)()
+    while True:
+        ps = _get_run_command_provisioning_state(cmd_instance)
+        if ps is None or ps in _RUN_COMMAND_TERMINAL_STATES:
+            break
+        time.sleep(_RUN_COMMAND_POLL_SECONDS)
+        cmd_instance.MachineRunCommandsGet(ctx=cmd_instance.ctx)()
+
+
+class RunCommandCreate(_RunCommandCreate):
+    """Override of run-command create to wait for a terminal provisioningState.
+
+    The ARM async operation for run-command create may complete before the
+    connected-machine agent finishes executing the script (when asyncExecution
+    is false).  Without this override the CLI returns as soon as the ARM LRO
+    reports success, leaving the resource in provisioningState "Creating".
+    This override polls the resource via GET until the provisioningState
+    reaches a terminal value (Succeeded / Failed / Canceled).
+    """
+
+    # Reuse the GET operation defined in the Update command.
+    MachineRunCommandsGet = _RunCommandUpdate.MachineRunCommandsGet
+
+    def post_operations(self):
+        _wait_for_run_command_terminal_state(self)
+
+
+class RunCommandUpdate(_RunCommandUpdate):
+    """Override of run-command update to wait for a terminal provisioningState.
+
+    Same reasoning as RunCommandCreate – the ARM LRO may report success before
+    the agent finishes re-running the script on the connected machine.
+    """
+
+    def post_operations(self):
+        _wait_for_run_command_terminal_state(self)
