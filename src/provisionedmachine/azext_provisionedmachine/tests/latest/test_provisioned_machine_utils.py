@@ -868,6 +868,30 @@ class TestKvSignDigest(unittest.TestCase):
             pm._kv_sign_digest(cmd, "myVault", "myDevice-ssh-ca", b"digest")
 
 
+class TestNormalizeRoleForCertificate(unittest.TestCase):
+    """Tests for normalize_role_for_certificate()."""
+
+    def test_admin_normalized(self):
+        self.assertEqual(pm.normalize_role_for_certificate("Provisioned Machine Admin"),
+                         "provisionedmachineadmin")
+
+    def test_contributor_normalized(self):
+        self.assertEqual(pm.normalize_role_for_certificate("Provisioned Machine Contributor"),
+                         "provisionedmachinecontributor")
+
+    def test_reader_normalized(self):
+        self.assertEqual(pm.normalize_role_for_certificate("Provisioned Machine Reader"),
+                         "provisionedmachinereader")
+
+    def test_already_normalized(self):
+        self.assertEqual(pm.normalize_role_for_certificate("provisionedmachineadmin"),
+                         "provisionedmachineadmin")
+
+    def test_mixed_case_with_spaces(self):
+        self.assertEqual(pm.normalize_role_for_certificate("Some Custom Role"),
+                         "somecustomrole")
+
+
 class TestExtractDeviceId(unittest.TestCase):
     """Tests for extract_device_id()."""
 
@@ -1125,7 +1149,7 @@ class TestSignCertificateMetadata(unittest.TestCase):
 
         metadata = {
             "username": "user",
-            "role": "Provisioned Machine Admin",
+            "role": "provisionedmachineadmin",
             "deviceId": "myDevice",
             "startTime": "2026-05-26T10:00:00Z",
             "endTime": "2026-05-26T14:00:00Z",

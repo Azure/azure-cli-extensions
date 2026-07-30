@@ -131,6 +131,10 @@ class SshCertCreate(AAZCommand):
             role = pm.resolve_user_role(cmd, resource_id)
             logger.info("Resolved role: %s", role)
 
+            # Normalize role for SSH certificate principal (no spaces, lowercase).
+            cert_role = pm.normalize_role_for_certificate(role)
+            logger.info("Normalized role for certificate: %s", cert_role)
+
             # Extract device ID from resource ID.
             device_id = pm.extract_device_id(resource_id)
             logger.info("Device ID: %s", device_id)
@@ -140,7 +144,7 @@ class SshCertCreate(AAZCommand):
 
             certificate_metadata = {
                 "username": username,
-                "role": role,
+                "role": cert_role,
                 "deviceId": device_id,
                 "startTime": start_time,
                 "endTime": end_time,
@@ -166,7 +170,7 @@ class SshCertCreate(AAZCommand):
             if cert_path:
                 shutil.copy2(tmp_cert_path, cert_path)
                 import oschmod  # pylint: disable=import-outside-toplevel
-                oschmod.set_mode(cert_path, 0o600)
+                oschmod.set_mode(cert_path, 0o644)
                 final_cert = os.path.abspath(cert_path)
 
             # Clean up temp files if user provided custom paths for both.

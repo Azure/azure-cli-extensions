@@ -116,7 +116,7 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
 
         metadata = mock_sign.call_args[0][2]
         self.assertEqual(metadata["username"], "user")
-        self.assertEqual(metadata["role"], "Provisioned Machine Contributor")
+        self.assertEqual(metadata["role"], "provisionedmachinecontributor")
         self.assertEqual(metadata["deviceId"], "myDevice")
         self.assertEqual(metadata["startTime"], "2026-05-26T10:00:00Z")
         self.assertEqual(metadata["endTime"], "2026-05-26T14:00:00Z")

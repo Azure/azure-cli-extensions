@@ -97,6 +97,17 @@ ROLE_PERMISSIONS = {
 # Input validation
 # ---------------------------------------------------------------------------
 
+def normalize_role_for_certificate(role):
+    """Normalize a role name for use as an SSH certificate principal.
+
+    OpenSSH principals typically do not contain spaces and are case-sensitive.
+    Devices expect normalized role names: all lowercase, no spaces.
+
+    E.g. ``Provisioned Machine Admin`` → ``provisionedmachineadmin``
+    """
+    return role.replace(" ", "").lower()
+
+
 def validate_resource_id(resource_id):
     """Validate that *resource_id* looks like a fully-qualified ARM resource ID."""
     if not resource_id or not _RESOURCE_ID_PATTERN.match(resource_id):
@@ -579,7 +590,7 @@ def sign_certificate_metadata(cmd, keyvault_name, metadata):
     with open(cert_path, "w", encoding="utf-8") as f:
         f.write(cert_line + "\n")
     import oschmod  # pylint: disable=import-outside-toplevel
-    oschmod.set_mode(cert_path, stat.S_IRUSR | stat.S_IWUSR)  # 0600
+    oschmod.set_mode(cert_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)  # 0644
 
     logger.info("Signed SSH certificate written to %s", cert_path)
     return {

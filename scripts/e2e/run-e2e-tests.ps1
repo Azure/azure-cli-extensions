@@ -576,7 +576,7 @@ if (Should-RunTest "2.5" -or (Should-RunTest "2.6") -or (Should-RunTest "2.7") -
 }
 
 Run-Test "2.5" "Reader role on Provisioned Machine" "Deactivate all, assign Reader, verify cert" `
-    "Isolate Reader role, ssh-cert-create" "Certificate generated with role=Provisioned Machine Reader" {
+    "Isolate Reader role, ssh-cert-create" "Certificate generated with role=provisionedmachinereader" {
     $readerDef = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
     if (-not $readerDef) { throw "Provisioned Machine Reader role not found" }
     
@@ -593,17 +593,17 @@ Run-Test "2.5" "Reader role on Provisioned Machine" "Deactivate all, assign Read
     if ($m.Success) {
         $j = $m.Value | ConvertFrom-Json
         $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
-        if ($certOut -match "role=Provisioned Machine Admin") { throw "Admin role still active! Priority conflict. Got: $certOut" }
-        if ($certOut -match "role=Provisioned Machine Contributor") { throw "Contributor role still active! Priority conflict. Got: $certOut" }
-        if ($certOut -notmatch "role=Provisioned Machine Reader") { throw "Cert does not have Reader role. Got: $certOut" }
+        if ($certOut -match "role=provisionedmachineadmin") { throw "Admin role still active! Priority conflict. Got: $certOut" }
+        if ($certOut -match "role=provisionedmachinecontributor") { throw "Contributor role still active! Priority conflict. Got: $certOut" }
+        if ($certOut -notmatch "role=provisionedmachinereader") { throw "Cert does not have Reader role. Got: $certOut" }
         Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
     }
     
-    "Certificate generated with role=Provisioned Machine Reader"
+    "Certificate generated with role=provisionedmachinereader"
 }
 
 Run-Test "2.6" "Contributor role on Provisioned Machine" "Deactivate all, assign Contributor, verify cert" `
-    "Isolate Contributor role, ssh-cert-create" "Certificate generated with role=Provisioned Machine Contributor" {
+    "Isolate Contributor role, ssh-cert-create" "Certificate generated with role=provisionedmachinecontributor" {
     $contribDef = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
     if (-not $contribDef) { throw "Provisioned Machine Contributor role not found" }
     
@@ -619,15 +619,15 @@ Run-Test "2.6" "Contributor role on Provisioned Machine" "Deactivate all, assign
     if ($m.Success) {
         $j = $m.Value | ConvertFrom-Json
         $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
-        if ($certOut -match "role=Provisioned Machine Admin") { throw "Admin role still active! Priority conflict. Got: $certOut" }
-        if ($certOut -notmatch "role=Provisioned Machine Contributor") { throw "Cert does not have Contributor role. Got: $certOut" }
+        if ($certOut -match "role=provisionedmachineadmin") { throw "Admin role still active! Priority conflict. Got: $certOut" }
+        if ($certOut -notmatch "role=provisionedmachinecontributor") { throw "Cert does not have Contributor role. Got: $certOut" }
         Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
     }
-    "Certificate generated with role=Provisioned Machine Contributor"
+    "Certificate generated with role=provisionedmachinecontributor"
 }
 
 Run-Test "2.7" "Admin role on Provisioned Machine" "Deactivate all, assign Admin, verify cert" `
-    "Isolate Admin role, ssh-cert-create" "Certificate generated with role=Provisioned Machine Admin" {
+    "Isolate Admin role, ssh-cert-create" "Certificate generated with role=provisionedmachineadmin" {
     $adminDef = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
     if (-not $adminDef) { throw "Provisioned Machine Admin role not found" }
     
@@ -643,16 +643,16 @@ Run-Test "2.7" "Admin role on Provisioned Machine" "Deactivate all, assign Admin
     if ($m.Success) {
         $j = $m.Value | ConvertFrom-Json
         $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
-        if ($certOut -notmatch "role=Provisioned Machine Admin") { throw "Cert does not have Admin role. Got: $certOut" }
+        if ($certOut -notmatch "role=provisionedmachineadmin") { throw "Cert does not have Admin role. Got: $certOut" }
         Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
     }
-    "Certificate generated with role=Provisioned Machine Admin"
+    "Certificate generated with role=provisionedmachineadmin"
 }
 
 # --- Role Priority Tests: multiple roles active simultaneously ---
 
 Run-Test "2.7a" "Priority: Admin wins over Reader+Contributor" "Activate Admin+Reader+KV, verify Admin in cert" `
-    "Admin > Contributor > Reader priority" "Certificate generated with role=Provisioned Machine Admin" {
+    "Admin > Contributor > Reader priority" "Certificate generated with role=provisionedmachineadmin" {
     $adminDef = az role definition list --name "Provisioned Machine Admin" --query "[0].id" -o tsv 2>$null
     $readerDef = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
     
@@ -694,14 +694,14 @@ Run-Test "2.7a" "Priority: Admin wins over Reader+Contributor" "Activate Admin+R
     if ($m.Success) {
         $j = $m.Value | ConvertFrom-Json
         $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
-        if ($certOut -notmatch "role=Provisioned Machine Admin") { throw "Expected Admin priority but got: $certOut" }
+        if ($certOut -notmatch "role=provisionedmachineadmin") { throw "Expected Admin priority but got: $certOut" }
         Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
     }
-    "Certificate generated with role=Provisioned Machine Admin"
+    "Certificate generated with role=provisionedmachineadmin"
 }
 
 Run-Test "2.7b" "Priority: Contributor wins over Reader" "Activate Contributor+Reader+KV, verify Contributor in cert" `
-    "Contributor > Reader priority" "Certificate generated with role=Provisioned Machine Contributor" {
+    "Contributor > Reader priority" "Certificate generated with role=provisionedmachinecontributor" {
     $contribDef = az role definition list --name "Provisioned Machine Contributor" --query "[0].id" -o tsv 2>$null
     $readerDef = az role definition list --name "Provisioned Machine Reader" --query "[0].id" -o tsv 2>$null
     
@@ -743,11 +743,11 @@ Run-Test "2.7b" "Priority: Contributor wins over Reader" "Activate Contributor+R
     if ($m.Success) {
         $j = $m.Value | ConvertFrom-Json
         $certOut = ssh-keygen -L -f $j.certificatePath 2>&1 | Out-String
-        if ($certOut -match "role=Provisioned Machine Admin") { throw "Admin should not be active! Got: $certOut" }
-        if ($certOut -notmatch "role=Provisioned Machine Contributor") { throw "Expected Contributor priority but got: $certOut" }
+        if ($certOut -match "role=provisionedmachineadmin") { throw "Admin should not be active! Got: $certOut" }
+        if ($certOut -notmatch "role=provisionedmachinecontributor") { throw "Expected Contributor priority but got: $certOut" }
         Remove-Item -Recurse -Force (Split-Path $j.privateKeyPath) -EA SilentlyContinue
     }
-    "Certificate generated with role=Provisioned Machine Contributor"
+    "Certificate generated with role=provisionedmachinecontributor"
 }
 
 Run-Test "2.8" "No role on Provisioned Machine" "User has no PM roles on resource" `
@@ -1067,13 +1067,13 @@ if ($pimOk) {
     }
 
     Run-Test "5.2" "Inspect generated certificate" "Verify principals and extensions" `
-        "ssh-keygen -L -f [cert]" "username=[alias] role=Provisioned Machine Admin permit-pty" {
+        "ssh-keygen -L -f [cert]" "username=[alias] role=provisionedmachineadmin permit-pty" {
         if (-not $script:certPath) { throw "No cert from 5.1" }
         $o = ssh-keygen -L -f $script:certPath 2>&1 | Out-String
         $e = @()
         if ($o -notmatch "ssh-rsa-cert-v01@openssh.com") { $e += "wrong type" }
         if ($o -notmatch "username=") { $e += "no username" }
-        if ($o -notmatch "role=Provisioned Machine Admin") { $e += "no role" }
+        if ($o -notmatch "role=provisionedmachineadmin") { $e += "no role" }
         if ($o -notmatch "permit-pty") { $e += "no permit-pty" }
         if ($o -notmatch "rsa-sha2-512") { $e += "wrong signing algo" }
         if ($e.Count -gt 0) {
