@@ -13,11 +13,8 @@ Pending
 +++++++
 
 21.0.0b12
-++++++++
-* Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
-
-21.0.0b12
 +++++++++
+* Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
 * Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 21.0.0b11
