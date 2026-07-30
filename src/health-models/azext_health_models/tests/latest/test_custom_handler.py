@@ -411,6 +411,7 @@ class TestHealthModelArrangeHandlerBoundary(unittest.TestCase):
     def test_health_model_arrange_handler_rejects_invalid_priority_before_any_update(self):
         cases = [
             ("unknown_name", {"priority": ["top", "ghost"]}, "ghost"),
+            ("unknown_name_needing_quoting", {"priority": ["top", "no such entity"]}, "no such entity"),
             ("outside_selected_subtree", {"entity_name": "middle", "priority": ["middle", "top"]}, "top"),
             ("duplicate_name", {"priority": ["top", "top"]}, "top"),
         ]
@@ -508,24 +509,6 @@ class TestHealthModelArrangeHandlerBoundary(unittest.TestCase):
         # resolved over the full graph without raising.
         updated = {call.kwargs["command_args"]["entity_name"] for call in update_op.call_args_list}
         self.assertEqual(updated, {"root", "7bac3c25-400d-57e7-85d1-9a4cd1c34400"})
-
-    def test_health_model_arrange_handler_rejects_an_unknown_priority_name_that_needs_quoting(self):
-        entities = [_entity("root"), _entity("child")]
-        relationships = [_relationship("rel-root-child", "root", "child")]
-
-        entity_list_class, _ = _fake_list_class(entities)
-        relationship_list_class, _ = _fake_list_class(relationships)
-        update_class, update_op, _ = _fake_update_class()
-        self._patch_aaz(entity_list_class, relationship_list_class, update_class)
-
-        with self.assertRaises(InvalidArgumentValueError) as raised:
-            health_model_arrange(
-                self.cmd, self.resource_group, self.health_model_name, yes=True,
-                priority=["root", "no such entity"],
-            )
-
-        self.assertIn("no such entity", str(raised.exception))
-        self.assertEqual(update_op.call_count, 0)
 
 
 if __name__ == "__main__":

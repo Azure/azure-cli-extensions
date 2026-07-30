@@ -5,7 +5,7 @@ Release History
 
 1.0.0b3
 ++++++
-* Adds ``monitor health-models arrange``: re-arranges and saves the entity positions.
+* Adds ``monitor health-models arrange``: rearranges and saves the entity positions.
 
 1.0.0b2
 ++++++

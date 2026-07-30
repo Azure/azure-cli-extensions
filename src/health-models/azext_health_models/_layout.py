@@ -74,12 +74,15 @@ def layered_layout(nodes, edges, nodesep=DEFAULT_NODESEP, ranksep=DEFAULT_RANKSE
         LAYOUT.md. Unknown ids are ignored.
     :return: {node_id: {"x": float, "y": float}}. Empty input -> empty result (no-op), matching
         `AutoArrangeNodes`'s early return for zero nodes.
+
+    Nodes and edges are sorted into a canonical id order first, so the result depends only on
+    the graph and not on the order the caller supplies them in.
     """
     node_list = list(nodes)
     if not node_list:
         return {}
 
-    node_ids = [n["id"] for n in node_list]
+    node_ids = sorted(n["id"] for n in node_list)
     widths = {n["id"]: n.get("width", DEFAULT_NODE_WIDTH) or 0.0 for n in node_list}
     heights = {n["id"]: n.get("height", DEFAULT_NODE_HEIGHT) or 0.0 for n in node_list}
     known_ids = set(node_ids)
@@ -92,6 +95,9 @@ def layered_layout(nodes, edges, nodesep=DEFAULT_NODESEP, ranksep=DEFAULT_RANKSE
         if source == target or source not in known_ids or target not in known_ids:
             continue
         adjacency[source].append(target)
+    # Edge order decides which edge of a cycle `_remove_cycles` reverses.
+    for targets in adjacency.values():
+        targets.sort()
 
     acyclic_edges = _remove_cycles(node_ids, adjacency)
     ranks = _assign_ranks(node_ids, acyclic_edges)
@@ -99,7 +105,7 @@ def layered_layout(nodes, edges, nodesep=DEFAULT_NODESEP, ranksep=DEFAULT_RANKSE
     constraints = _priority_rank_constraints(node_ids, acyclic_edges, ranks, priority)
     rank_nodes = _order_ranks(node_ids, ranks, acyclic_edges, max_rank, constraints)
     x_pos, y_pos = _assign_coordinates(
-        rank_nodes, widths, heights, nodesep, ranksep, max_rank, acyclic_edges
+        rank_nodes, widths, heights, nodesep, ranksep, max_rank, acyclic_edges, node_ids
     )
 
     # Dagre returns each node's center point; the portal's adapter converts to a top-left
@@ -382,7 +388,8 @@ def _order_ranks(node_ids, ranks, acyclic_edges, max_rank, constraints=None):
 _COORDINATE_ITERATIONS = 4
 
 
-def _assign_coordinates(rank_nodes, widths, heights, nodesep, ranksep, max_rank, acyclic_edges):
+def _assign_coordinates(rank_nodes, widths, heights, nodesep, ranksep, max_rank, acyclic_edges,
+                        node_ids):
     """Coordinate assignment: y is the cumulative rank offset (using each rank's tallest node,
     separated by ``ranksep``); x starts as a left-to-right packing within each rank (separated
     by ``nodesep``) and is then nudged towards the median x of each node's REAL parents/children
@@ -421,7 +428,7 @@ def _assign_coordinates(rank_nodes, widths, heights, nodesep, ranksep, max_rank,
     for source, target in acyclic_edges:
         children[source].append(target)
         parents[target].append(source)
-    component_of, _components = _connected_components(widths.keys(), acyclic_edges)
+    component_of, _components = _connected_components(node_ids, acyclic_edges)
 
     # Alignment below pulls each node toward the median x of its REAL parents/children in the
     # immediately adjacent rank (see `_neighbor_medians`) - real edge adjacency, not a
@@ -537,14 +544,15 @@ def _connected_components(node_ids, acyclic_edges):
     they happen to share a rank number - mirroring Dagre's own convention of laying out each
     disconnected component independently rather than centering them against each other.
 
-    :return: (component_of: {node_id: int}, components: [[node_id, ...], ...]); component ids
-        and member order are deterministic given a deterministic ``node_ids`` iteration order
-        (the caller passes ``widths.keys()``, which preserves the original node insertion order).
+    :return: (component_of: {node_id: int}, components: [[node_id, ...], ...]); deterministic
+        because the caller passes the canonically sorted ``node_ids``.
     """
     undirected = defaultdict(list)
     for source, target in acyclic_edges:
         undirected[source].append(target)
         undirected[target].append(source)
+    for neighbors in undirected.values():
+        neighbors.sort()
 
     component_of = {}
     components = []

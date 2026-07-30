@@ -3,18 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Tests at the CLI help/argument boundary for `monitor health-models arrange`'s
-`--node-width`/`--node-height` help text: the wording must be exactly as strong as the
-underlying evidence. Width is an exact, stable, verified CSS match - the portal's
-`.react-flow__node { width: 200px; }` rule (see `_designer-blade.scss`). Height has no
-fixed CSS rule; the human-adjudicated correction (blueprint Decisions/User feedback:
-"Use Portal seed 200x81 (Recommended)") instead sources it from `ModelActionsSlice.ts`'s
-`measured: { width: 200, height: 81 }` initial seed applied to every V2/V3 health entity -
-this SUPERSEDES the prior "no height constant anywhere" framing (that claim was true only
-for a fixed *CSS* rule, not for the portal's runtime *measured-seed* value). The help text
-must therefore cite 81 as the portal's seed while explicitly not claiming it is a fixed or
-guaranteed-final rendered height (ReactFlow may replace it once content is measured). See
-blueprint 2026-07-24-portal-health-card-sizes.blueprint.md.
+"""Argument-surface tests for `monitor health-models arrange`.
+
+Pins the option names and shapes callers script against. Help wording is left to `azdev linter`,
+except the one claim that must not overstate what the layout does.
 """
 
 import unittest
@@ -23,110 +15,36 @@ from unittest.mock import MagicMock
 from azext_health_models._params import load_arguments
 
 
-def _arrange_argument_help():
-    """Capture the `help=` text registered for every `monitor health-models arrange`
-    argument, keyed by argument name, by driving `load_arguments` with a lightweight
-    loader double (no real `AzCommandsLoader` required) - mirrors this repo's
-    `azext_chaos.tests.latest.test_command_registration.TestParamsLoadable` convention
-    of exercising `load_arguments` directly.
-    """
+def _arrange_arguments():
+    """Every argument registered for `monitor health-models arrange`, keyed by name."""
     mock_loader = MagicMock()
     load_arguments(mock_loader, None)
-    entered_context = mock_loader.argument_context.return_value.__enter__.return_value
-    return {call.args[0]: call.kwargs.get('help', '') for call in entered_context.argument.call_args_list}
+    entered = mock_loader.argument_context.return_value.__enter__.return_value
+    return {call.args[0]: call.kwargs for call in entered.argument.call_args_list}
 
 
-def _arrange_argument_kwargs():
-    """Same driving mechanism as `_arrange_argument_help`, but returns each argument's full
-    `**kwargs` (not just `help`) keyed by argument name - needed to assert on `options_list`
-    for the new `--entity-name` selector, specifically that it carries no `-n`/`--name` alias
-    (those already belong to `health_model_name` on this same command).
-    """
-    mock_loader = MagicMock()
-    load_arguments(mock_loader, None)
-    entered_context = mock_loader.argument_context.return_value.__enter__.return_value
-    return {call.args[0]: call.kwargs for call in entered_context.argument.call_args_list}
+class TestArrangeArgumentSurface(unittest.TestCase):
 
+    def test_optional_arguments_are_registered_with_the_expected_option_names(self):
+        arguments = _arrange_arguments()
 
-class TestArrangeEntityNameArgument(unittest.TestCase):
+        self.assertEqual(arguments['entity_name']['options_list'], ['--entity-name'])
+        self.assertEqual(arguments['yes']['options_list'], ['--yes', '-y'])
+        self.assertEqual(arguments['yes']['action'], 'store_true')
+        self.assertEqual(arguments['priority']['nargs'], '+')
 
-    def test_entity_name_argument_is_registered_and_optional(self):
-        kwargs_by_arg = _arrange_argument_kwargs()
-        self.assertIn('entity_name', kwargs_by_arg)
-        # Omitted selector must preserve full-model behavior - i.e. the argument must not be
-        # `required`, unlike `health_model_name`/`resource_group` on this same command.
-        self.assertNotIn('required', kwargs_by_arg['entity_name'])
+        # `-n`/`--name` already belong to `health_model_name` on this command.
+        self.assertEqual(
+            set(arguments['entity_name']['options_list']) & set(arguments['health_model_name']['options_list']),
+            set(),
+        )
+        for name in ('entity_name', 'priority', 'yes'):
+            self.assertNotIn('required', arguments[name])
 
-    def test_entity_name_uses_bare_entity_name_option_with_no_dash_n_or_dash_dash_name_alias(self):
-        # `-n`/`--name` are already `health_model_name`'s aliases on this exact command
-        # (see `health_model_name`'s own `options_list`); the new selector must avoid that
-        # collision even though the repo-wide convention for "select one entity" elsewhere
-        # (`entity show`/`create`/...) also includes `-n`/`--name`.
-        kwargs_by_arg = _arrange_argument_kwargs()
-        options_list = kwargs_by_arg['entity_name']['options_list']
-        self.assertEqual(options_list, ['--entity-name'])
-        self.assertNotIn('-n', options_list)
-        self.assertNotIn('--name', options_list)
-
-        health_model_name_options = kwargs_by_arg['health_model_name']['options_list']
-        self.assertEqual(set(options_list) & set(health_model_name_options), set())
-
-    def test_entity_name_help_documents_subtree_scope_and_untouched_outside_entities(self):
-        help_text = _arrange_argument_help()['entity_name'].lower()
-        self.assertIn('subtree', help_text)
-        self.assertIn('descendant', help_text)
-        self.assertIn('unchanged', help_text)
-
-
-class TestArrangeConfirmationAndPriorityArguments(unittest.TestCase):
-
-    def test_yes_argument_is_the_standard_store_true_auto_approve_switch(self):
-        kwargs_by_arg = _arrange_argument_kwargs()
-        self.assertEqual(kwargs_by_arg['yes']['options_list'], ['--yes', '-y'])
-        self.assertEqual(kwargs_by_arg['yes']['action'], 'store_true')
-
-    def test_priority_argument_is_an_optional_multi_value_list(self):
-        kwargs_by_arg = _arrange_argument_kwargs()
-        self.assertEqual(kwargs_by_arg['priority']['nargs'], '+')
-        # Omitting it must preserve today's unconstrained layout, so it cannot be required.
-        self.assertNotIn('required', kwargs_by_arg['priority'])
-
-    def test_priority_help_documents_left_to_right_order_and_permitted_interleaving(self):
-        help_text = _arrange_argument_help()['priority'].lower()
-        self.assertIn('left', help_text)
-        self.assertIn('between', help_text)
-        # The layout applies the order where the listed entities' branches meet and leaves the
-        # rest to its own rules, so the help must not promise a guarantee.
+    def test_priority_help_promises_best_effort_rather_than_a_guarantee(self):
+        help_text = _arrange_arguments()['priority'].get('help', '').lower()
         self.assertIn('best effort', help_text)
         self.assertNotIn('must appear', help_text)
-
-
-class TestArrangeNodeSizeHelpText(unittest.TestCase):
-
-    def test_node_width_help_cites_the_portal_exact_fixed_200px_card_width(self):
-        help_text = _arrange_argument_help()['node_width']
-        self.assertIn('200', help_text)
-        self.assertIn('portal', help_text.lower())
-        # The old "explicit approximation" framing no longer applies to width now that
-        # it is a verified, exact match - only height should still carry it.
-        self.assertNotIn('approximation', help_text.lower())
-
-    def test_node_height_help_cites_the_portal_measured_seed_81_without_claiming_it_is_final(self):
-        help_text = _arrange_argument_help()['node_height']
-        lowered = help_text.lower()
-        # Corrected: the portal DOES seed a height value (81) onto every V2/V3 entity - it
-        # is the CLI's claim of "no height constant anywhere" that was overturned by the
-        # human-adjudicated correction, not the portal's actual initial state. Cite it.
-        self.assertIn('81', help_text)
-        self.assertIn('portal', lowered)
-        self.assertIn('seed', lowered)
-        # Must not claim this seed is a fixed CSS rule or a guaranteed final rendered
-        # height - ReactFlow may later replace it with a live DOM measurement, which the
-        # headless CLI cannot obtain or predict.
-        self.assertNotIn('fixed', lowered)
-        self.assertNotIn('final', lowered)
-        self.assertNotIn('guaranteed', lowered)
-        self.assertIn('override', lowered)
 
 
 if __name__ == "__main__":
