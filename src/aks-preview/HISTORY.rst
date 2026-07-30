@@ -12,10 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b13
++++++++++
+* Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
 21.0.0b12
 +++++++++
 * Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
-* Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
 21.0.0b11
 ++++++++
