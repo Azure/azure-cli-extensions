@@ -105,8 +105,10 @@ already-ordered rank. A node with no such neighbour keeps its previous relative 
 The iteration count is fixed rather than run to convergence, which keeps the result deterministic
 and the runtime bounded.
 
-> This stage outputs a **list per rank**. That list order is the only lever on horizontal
-> ordering. Stage 5 never reorders, it assigns coordinates in list order.
+> This stage outputs a **list per rank**, and that list order is the main lever on horizontal
+> ordering. Stage 5 assigns coordinates in list order. The one thing that can still change the
+> left-to-right result is the final gap-enforcement pass, and only on a rank shared by two
+> disconnected components.
 
 ### 5. Assign coordinates
 
@@ -116,8 +118,12 @@ adjacent rank, while a forward sweep re-enforces the `nodesep` minimum gap so no
 or swap.
 
 `_normalize_rank_extents` finishes by aligning every rank of a connected component onto one shared
-centreline, which is the centred look the portal produces. It normalises each component on its
-own, so a disconnected component sharing a rank cannot skew another component's centre.
+centreline, which is the centred look the portal produces. The component's widest rank is the
+anchor, ties going to the lowest rank number. It normalises each component on its own, so a
+disconnected component sharing a rank cannot skew another component's centre. A one-rank
+component has nothing to align against and is left where the packing put it. Because two
+components can shift into each other, a last pass re-sorts each rank by x and re-enforces the
+`nodesep` gap.
 
 ## Worked example: a small tree
 
@@ -210,30 +216,30 @@ prior position only as a tie-break, so a constraint applied once would be overwr
 ```mermaid
 flowchart TD
     A["A"] --> b1["b1"]
-    A --> bx["bx"]
+    A --> b1x["b1x"]
     A --> b2["b2"]
     A --> b3["b3"]
     b1 --> E1["E1"]
-    bx --> Ex["Ex"]
+    b1x --> E1x["E1x"]
     b2 --> E2["E2"]
     b3 --> E3["E3"]
 ```
 
-Run `--priority E3 E2 E1`. `A` is the deepest common ancestor, and `bx`/`Ex` are not listed.
+Run `--priority E3 E2 E1`. `A` is the deepest common ancestor, and `b1x`/`E1x` are not listed.
 
 | Entity | x without `--priority` | x with `--priority E3 E2 E1` |
 |---|---:|---:|
 | `A` | 375.0 | 375.0 |
 | `b1` | 0.0 | 750.0 |
-| `bx` | 250.0 | **250.0** |
+| `b1x` | 250.0 | **250.0** |
 | `b2` | 500.0 | 500.0 |
 | `b3` | 750.0 | 0.0 |
 | `E1` | 0.0 | 750.0 |
-| `Ex` | 250.0 | **250.0** |
+| `E1x` | 250.0 | **250.0** |
 | `E2` | 500.0 | 500.0 |
 | `E3` | 750.0 | 0.0 |
 
-`b1`/`b3` and `E1`/`E3` swap. `bx`/`Ex` hold their slots and end up between listed entities. The
+`b1`/`b3` and `E1`/`E3` swap. `b1x`/`E1x` hold their slots and end up between listed entities. The
 ancestor `A` does not move.
 
 ### When the order does not come out as asked
@@ -246,7 +252,7 @@ ancestor `A` does not move.
 | Two listed entities share a path node | That node carries the lower priority index and appears once, so the two do not separate above the point where their paths split |
 | Listed entities in different components | A virtual super-root stands in and every rank becomes eligible |
 | Entity reachable by two equally short paths | The layout traverses sources and children in sorted name order, so the choice never depends on the order relationships arrived in |
-| Unknown name in `--priority` | `custom.py` raises `InvalidArgumentValueError` before anything is fetched or written. The layout itself ignores ids it does not know |
+| Unknown name in `--priority` | `custom.py` raises `InvalidArgumentValueError` before anything is written. The layout itself ignores ids it does not know |
 
 ## Entity names
 
@@ -292,7 +298,8 @@ size.
   models all produce a defined result rather than an error.
 - **Bounded work.** Fixed iteration counts, no recursion, no convergence loop. A 2000-node model
   lays out in about 20 ms.
-- **No side effects when omitted.** Leaving out `--priority` reproduces the previous layout.
+- **No side effects when omitted.** `--priority` changes nothing unless you pass at least two
+  names the model knows.
 
 ## What you cannot
 

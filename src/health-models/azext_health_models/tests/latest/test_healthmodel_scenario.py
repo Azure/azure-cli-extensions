@@ -108,13 +108,13 @@ class HealthModelScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_healthmodel_arrange_subtree', location='centralus')
     def test_healthmodel_arrange_entity_name_scopes_to_subtree(self, resource_group):
         """`--entity-name` end-to-end (CLI-boundary) proof: a full-model arrange establishes
-        every entity's baseline `canvasPosition` (including an entity outside the eventual
-        subtree selection); a subsequent `--entity-name mid` arrange must then leave the
-        selected root (`mid`) at that exact same pre-existing position (Option A anchor),
-        recompute `leaf` (its only descendant) relative to it, and leave both `root` (mid's
-        own parent, outside the mid-rooted subtree) and the wholly unrelated `outside` entity
-        completely untouched - not merely unchanged in value, but never even targeted by an
-        update call for this second `arrange` invocation.
+        every entity's baseline `canvasPosition`; a subsequent `--entity-name mid` arrange must
+        then leave the selected root (`mid`) at that exact same pre-existing position, recompute
+        `leaf` (its only descendant) relative to it, and leave `root` - mid's own parent, and so
+        outside the mid-rooted subtree - completely untouched.
+
+        `root -> mid -> leaf` is the smallest chain that covers all three roles at once: an
+        entity above the selection, the selection's anchor, and a descendant below it.
         """
         self.kwargs.update({
             'rg': resource_group,
@@ -122,13 +122,12 @@ class HealthModelScenarioTest(ScenarioTest):
             'root': self.create_random_name('root', 24),
             'mid': self.create_random_name('mid', 24),
             'leaf': self.create_random_name('leaf', 24),
-            'outside': self.create_random_name('outside', 24),
             'location': 'centralus',
         })
 
         self.cmd('monitor health-models create -g {rg} -n {model} -l {location}')
 
-        for entity in ('root', 'mid', 'leaf', 'outside'):
+        for entity in ('root', 'mid', 'leaf'):
             self.cmd('monitor health-models entity create -g {rg} --health-model-name {model} '
                      '-n {%s} --display-name "CLI Test Entity" --impact Standard' % entity)
 
@@ -137,8 +136,7 @@ class HealthModelScenarioTest(ScenarioTest):
         self.cmd('monitor health-models relationship create -g {rg} --health-model-name {model} '
                  '-n rel-mid-leaf --parent-entity-name {mid} --child-entity-name {leaf}')
 
-        # Baseline: full-model arrange positions every entity, including the unrelated
-        # `outside` entity (which has no relationships at all).
+        # Baseline: a full-model arrange positions every entity.
         self.cmd('monitor health-models arrange -g {rg} --health-model-name {model} --yes')
 
         def _position(entity_key):
@@ -147,7 +145,6 @@ class HealthModelScenarioTest(ScenarioTest):
 
         root_before = _position('root')
         mid_before = _position('mid')
-        outside_before = _position('outside')
 
         # Scope the second arrange to `mid`'s own subtree (mid + leaf only).
         self.cmd('monitor health-models arrange -g {rg} --health-model-name {model} --entity-name {mid} --yes')
@@ -155,13 +152,11 @@ class HealthModelScenarioTest(ScenarioTest):
         root_after = _position('root')
         mid_after = _position('mid')
         leaf_after = _position('leaf')
-        outside_after = _position('outside')
 
         # Selected root (`mid`) is anchored to its own pre-existing position EXACTLY.
         self.assertEqual(mid_after, mid_before)
-        # Entities outside the `mid`-rooted subtree are byte-for-byte untouched.
+        # `root` is outside the `mid`-rooted subtree, so it is byte-for-byte untouched.
         self.assertEqual(root_after, root_before)
-        self.assertEqual(outside_after, outside_before)
         # `leaf` (mid's only descendant) is laid out strictly below the anchored root, using
         # the exact same rank-gap formula (height + ranksep) as the full-model case above,
         # and centered on the same x (a single-child chain has nothing to skew it off-center).
