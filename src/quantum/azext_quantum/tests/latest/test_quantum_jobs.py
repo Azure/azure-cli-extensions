@@ -9,6 +9,7 @@ import pytest
 import random
 import time
 import unittest
+import unittest.mock
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -18,10 +19,12 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumen
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
 from ...operations.job import (
+    job_update,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
     _construct_orderby_expression,
+    ERROR_MSG_INVALID_PRIORITY_ARGUMENT,
     ERROR_MSG_INVALID_ORDER_ARGUMENT,
     ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
 
@@ -47,9 +50,39 @@ class QuantumJobsScenarioTest(ScenarioTest):
     def test_job_errors(self):
         issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
         issue_cmd_with_param_missing(self, "az quantum job delete", "az quantum job delete -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nDelete an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job update", "az quantum job update -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-name 'My new name'\nUpdate an Azure Quantum job by id.")
         issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_job_update(self, mock_workspace_info, mock_cf_jobs):
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+        info.endpoint = "endpoint"
+        client = mock_cf_jobs.return_value
+        client.get.return_value.as_dict.return_value = {"id": "job-id"}
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        # Calling with no updatable fields should raise.
+        with self.assertRaises(RequiredArgumentMissingError):
+            job_update(cmd, job_id, "rg", "ws")
+
+        # An invalid priority value should raise.
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            job_update(cmd, job_id, "rg", "ws", job_priority="NotAPriority")
+        self.assertEqual(str(context.exception), ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
+
+        # A valid update should build a merge-patch with only the provided fields
+        # and return the refreshed job.
+        result = job_update(cmd, job_id, "rg", "ws", job_name="New name", job_priority="High", job_tags=["a", "b"])
+        client.update.assert_called_once_with("sub", "rg", "ws", job_id, {"name": "New name", "priority": "High", "tags": ["a", "b"]})
+        client.get.assert_called_once_with("sub", "rg", "ws", job_id)
+        self.assertEqual(result, {"id": "job-id"})
 
     def test_transform_output(self):
         # Call with a good histogram

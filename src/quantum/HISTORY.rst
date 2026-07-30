@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b21
++++++++++++++++
+* Added the ``az quantum job update`` command to update a submitted job's name, priority, and tags.
+
 1.0.0b20
 +++++++++++++++
 * Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
