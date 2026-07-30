@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b19
++++++++++++++++
+* Added the ``az quantum job delete`` command to delete a job from an Azure Quantum workspace.
+
 1.0.0b18
 +++++++++++++++
 * Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.

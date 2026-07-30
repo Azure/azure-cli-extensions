@@ -6,6 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 from azext_horizondb._client_factory import (
     cf_horizondb_clusters,
+    cf_horizondb_parameter_groups,
     cf_horizondb_firewall_rules,
     cf_horizondb_private_endpoint_connections,
     cf_horizondb_private_link_resources)
@@ -22,8 +23,16 @@ def load_command_table(self, _):
         client_factory=cf_horizondb_clusters
     )
 
+    horizondb_parameter_groups_sdk = CliCommandType(
+        operations_tmpl='azext_horizondb.vendored_sdks.operations#HorizonDbParameterGroupsOperations.{}',
+        client_factory=cf_horizondb_parameter_groups
+    )
+
     custom_commands = CliCommandType(
         operations_tmpl='azext_horizondb.commands.custom_commands#{}')
+
+    parameter_group_commands = CliCommandType(
+        operations_tmpl='azext_horizondb.commands.parameter_group_commands#{}')
 
     firewall_rule_custom = CliCommandType(
         operations_tmpl='azext_horizondb.commands.firewall_rule_commands#{}',
@@ -46,6 +55,15 @@ def load_command_table(self, _):
         g.custom_command('update', 'horizondb_cluster_update', supports_no_wait=True)
         g.custom_command('delete', 'horizondb_cluster_delete')
         g.custom_command('list', 'horizondb_cluster_list')
+        g.show_command('show', 'get')
+
+    with self.command_group('horizondb parameter-group', horizondb_parameter_groups_sdk,
+                            custom_command_type=parameter_group_commands,
+                            client_factory=cf_horizondb_parameter_groups) as g:
+        g.custom_command('create', 'horizondb_parameter_group_create', supports_no_wait=True)
+        g.custom_command('delete', 'horizondb_parameter_group_delete', supports_no_wait=True)
+        g.custom_command('list', 'horizondb_parameter_group_list')
+        g.custom_command('list-connections', 'horizondb_parameter_group_list_connections')
         g.show_command('show', 'get')
 
     with self.command_group('horizondb firewall-rule', firewall_rule_custom,
