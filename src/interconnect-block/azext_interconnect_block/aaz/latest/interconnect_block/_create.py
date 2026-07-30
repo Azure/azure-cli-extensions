@@ -67,17 +67,17 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.placement_exclude_zones = AAZListArg(
-            options=["--placement-exclude-zones"],
+            options=["--exclude-zones", "--placement-exclude-zones"],
             arg_group="Placement",
             help="This property supplements the 'zonePlacementPolicy' property. If 'zonePlacementPolicy' is set to 'Any'/'Auto', availability zone selected by the system must not be present in the list of availability zones passed with 'excludeZones'. If 'excludeZones' is not provided, all availability zones in region will be considered for selection.",
         )
         _args_schema.placement_include_zones = AAZListArg(
-            options=["--placement-include-zones"],
+            options=["--include-zones", "--placement-include-zones"],
             arg_group="Placement",
             help="This property supplements the 'zonePlacementPolicy' property. If 'zonePlacementPolicy' is set to 'Any'/'Auto', availability zone selected by the system must be present in the list of availability zones passed with 'includeZones'. If 'includeZones' is not provided, all availability zones in region will be considered for selection.",
         )
         _args_schema.zone_placement_policy = AAZStrArg(
-            options=["--zone-placement-policy"],
+            options=["--placement-policy", "--zone-placement-policy"],
             arg_group="Placement",
             help="Specifies the policy for resource's placement in availability zone. Possible values are: **Any** (used for Virtual Machines), **Auto** (used for Virtual Machine Scale Sets) - An availability zone will be automatically picked by system as part of resource creation.",
             enum={"Any": "Any", "Auto": "Auto"},
