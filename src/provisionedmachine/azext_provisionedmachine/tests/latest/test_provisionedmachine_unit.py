@@ -600,5 +600,34 @@ class TestAutoResolveVersionLogic(unittest.TestCase):
         self.assertEqual(latest_version, "50.2605.0.3")
 
 
+class TestAzureLinuxPayloadMapping(unittest.TestCase):
+    """Regression guard for bug 38916585: the AzureLinux branch must map the
+    resolved version to ``vsrVersion`` (not ``osVersion``) and must NOT hardcode
+    an ``osImageLocation`` URL, otherwise the RP downloads a stale image."""
+
+    @staticmethod
+    def _read_source(module_filename):
+        pkg_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        path = os.path.join(pkg_root, "aaz", "latest", "provisionedmachine", module_filename)
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
+
+    def test_create_does_not_hardcode_stale_image_url(self):
+        source = self._read_source("_create.py")
+        self.assertNotIn("aep/sff/azurelinux/2604a", source)
+
+    def test_install_os_does_not_hardcode_stale_image_url(self):
+        source = self._read_source("_install_os.py")
+        self.assertNotIn("aep/sff/azurelinux/2604a", source)
+
+    def test_create_maps_resolved_version_to_vsr_version(self):
+        source = self._read_source("_create.py")
+        self.assertIn('"vsrVersion"', source)
+
+    def test_install_os_maps_resolved_version_to_vsr_version(self):
+        source = self._read_source("_install_os.py")
+        self.assertIn('"vsrVersion"', source)
+
+
 if __name__ == "__main__":
     unittest.main()

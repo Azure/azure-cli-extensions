@@ -1206,5 +1206,79 @@ class TestSignCertificateMetadata(unittest.TestCase):
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
+class TestResolveLatestOsImageVersion(unittest.TestCase):
+    """Tests for the shared resolve_latest_os_image_version helper."""
+
+    @staticmethod
+    def _response(payload):
+        resp = mock.Mock()
+        resp.json.return_value = payload
+        return resp
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_returns_validated_solution_recipe_version(self, mock_send):
+        mock_send.return_value = self._response({
+            "value": [
+                {"properties": {"validatedSolutionRecipeVersion": "50.2607.0.32"}},
+                {"properties": {"validatedSolutionRecipeVersion": "50.2604.0.10"}},
+            ]
+        })
+
+        result = pm.resolve_latest_os_image_version(
+            mock.Mock(), "sub-123", "AzureLinux", "eastus2euap")
+
+        self.assertEqual(result, "50.2607.0.32")
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_url_contains_subscription_location_and_solution_type(self, mock_send):
+        mock_send.return_value = self._response({
+            "value": [{"properties": {"validatedSolutionRecipeVersion": "12.2607.1003.50"}}]
+        })
+
+        pm.resolve_latest_os_image_version(mock.Mock(), "sub-123", "HCI", "eastus")
+
+        called_url = mock_send.call_args[0][2]
+        self.assertIn("/subscriptions/sub-123/", called_url)
+        self.assertIn("/locations/eastus/osImages", called_url)
+        self.assertIn("solution-type=HCI", called_url)
+        self.assertIn("api-version=" + pm.OS_IMAGES_API_VERSION, called_url)
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_missing_location_defaults_to_eastus(self, mock_send):
+        mock_send.return_value = self._response({
+            "value": [{"properties": {"validatedSolutionRecipeVersion": "50.2607.0.32"}}]
+        })
+
+        result = pm.resolve_latest_os_image_version(
+            mock.Mock(), "sub-123", "AzureLinux", "")
+
+        self.assertEqual(result, "50.2607.0.32")
+        called_url = mock_send.call_args[0][2]
+        self.assertIn("/locations/" + pm.DEFAULT_OS_IMAGE_LOCATION + "/osImages", called_url)
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_no_images_raises(self, mock_send):
+        mock_send.return_value = self._response({"value": []})
+
+        with self.assertRaises(azclierror.ResourceNotFoundError):
+            pm.resolve_latest_os_image_version(mock.Mock(), "sub-123", "AzureLinux", "eastus")
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_empty_version_raises(self, mock_send):
+        mock_send.return_value = self._response({
+            "value": [{"properties": {"validatedSolutionRecipeVersion": ""}}]
+        })
+
+        with self.assertRaises(azclierror.ResourceNotFoundError):
+            pm.resolve_latest_os_image_version(mock.Mock(), "sub-123", "AzureLinux", "eastus")
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_request_exception_wrapped_as_not_found(self, mock_send):
+        mock_send.side_effect = Exception("boom")
+
+        with self.assertRaises(azclierror.ResourceNotFoundError):
+            pm.resolve_latest_os_image_version(mock.Mock(), "sub-123", "AzureLinux", "eastus")
+
+
 if __name__ == '__main__':
     unittest.main()
