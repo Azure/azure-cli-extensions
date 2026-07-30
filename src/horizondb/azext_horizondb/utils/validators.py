@@ -74,6 +74,22 @@ def validate_replica_count(ns):
         raise CLIError('Replica count must be between 1 and 16, inclusive.')
 
 
+def validate_parameters(cmd, namespace):    # pylint: disable=unused-argument
+    if not namespace.parameters:
+        return
+
+    from azext_horizondb.vendored_sdks.models import ParameterProperties
+
+    parameter_list = []
+    for item in namespace.parameters:
+        if '=' not in item:
+            raise ArgumentUsageError("Parameter '{}' must be in the format name=value.".format(item))
+        name, value = item.split('=', 1)
+        parameter_list.append(ParameterProperties(name=name, value=value))
+
+    namespace.parameters = parameter_list
+
+
 def ip_address_validator(ns):
     if (ns.end_ip_address and not _validate_ranges_in_ip(ns.end_ip_address)) or \
        (ns.start_ip_address and not _validate_ranges_in_ip(ns.start_ip_address)):

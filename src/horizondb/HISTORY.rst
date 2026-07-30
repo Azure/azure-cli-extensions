@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b7
++++++++
+* Add `az horizondb parameter-group` commands to create, delete, list, show, and list connections for HorizonDB parameter groups.
+
 1.0.0b6
 +++++++
 * Add private endpoint connection commands: `az horizondb private-endpoint-connection list/show/approve/reject/delete`.

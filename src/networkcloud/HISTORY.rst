@@ -3,6 +3,11 @@
 Release History
 ===============
 
+5.0.1
+++++++++
+* Cluster `update` operation was fixed to allow nullable fields on properties.
+* This version of the CLI was regenerated using the newer aaz-dev tools.
+
 5.0.0
 ++++++++
 * This stable version supports NetworkCloud 2026-07-01 APIs.

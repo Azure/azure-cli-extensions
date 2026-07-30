@@ -156,6 +156,16 @@ helps['quantum job cancel'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
 """
 
+helps['quantum job delete'] = """
+    type: command
+    short-summary: Delete a job from an Azure Quantum workspace.
+    examples:
+      - name: Delete an Azure Quantum job by id.
+        text: |-
+            az quantum job delete -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.
