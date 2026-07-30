@@ -21,13 +21,13 @@ jobs:
           with:
             egress-policy: audit
         - name: Azure login
-          uses: azure/login@v2
+          uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5  # v2
           with:
             client-id: ${{ secrets.ADO_SP_ClientID }}
             tenant-id: ${{ secrets.ADO_SP_TenantID }}
             allow-no-subscriptions: true
         - name: Test Trigger ADO Pipeline and Wait for Completion
-          uses: azure/cli@v2
+          uses: azure/cli@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956  # v2
           env:
             ado-org: ${{secrets.ADO_ORGANIZATION}}
             ado-project: ${{secrets.ADO_PROJECT}}
