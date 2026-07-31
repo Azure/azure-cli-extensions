@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "interconnect block show",
-)
 class Show(AAZCommand):
     """Get information about an Interconnect Block.
 

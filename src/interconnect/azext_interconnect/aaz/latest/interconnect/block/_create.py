@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "interconnect block create",
-)
 class Create(AAZCommand):
     """Create an Interconnect Block. When updating an Interconnect Block, only tags and sku-capacity may be modified.
 

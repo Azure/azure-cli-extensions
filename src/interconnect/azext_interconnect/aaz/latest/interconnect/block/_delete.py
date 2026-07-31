@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "interconnect block delete",
-    confirmation="Are you sure you want to perform this operation?",
-)
 class Delete(AAZCommand):
     """Delete an Interconnect Block. The operation is only allowed when there are no virtual machines or VMSS VM instances associated with the Interconnect Block.
 

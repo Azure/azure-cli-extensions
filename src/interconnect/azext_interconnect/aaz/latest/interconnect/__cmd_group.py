@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "interconnect",
-)
 class __CMDGroup(AAZCommandGroup):
     """Manage Interconnect
     """
