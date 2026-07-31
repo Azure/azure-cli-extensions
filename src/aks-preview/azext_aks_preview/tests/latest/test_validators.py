@@ -2646,32 +2646,34 @@ class TestAzureMonitorLogsParameters(unittest.TestCase):
 
 class TestValidateSshKey(unittest.TestCase):
     def test_skip_for_automatic_sku(self):
-        # When --ssh-key-value is not provided (default None), Automatic SKU skips SSH
-        # handling without error.
+        # Default ssh_key_value (expanded like the CLI does) should be treated as
+        # "not explicitly provided" and skipped without error.
+        default_key = os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub"))
         namespace = SimpleNamespace(
             no_ssh_key=False,
             generate_ssh_keys=False,
-            ssh_key_value=None,
+            ssh_key_value=default_key,
             sku="automatic",
         )
         validators.validate_ssh_key(namespace)
-        self.assertIsNone(namespace.ssh_key_value)
+        self.assertEqual(namespace.ssh_key_value, default_key)
 
     def test_skip_for_automatic_sku_case_insensitive(self):
+        default_key = os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub"))
         namespace = SimpleNamespace(
             no_ssh_key=False,
             generate_ssh_keys=False,
-            ssh_key_value=None,
+            ssh_key_value=default_key,
             sku="Automatic",
         )
         validators.validate_ssh_key(namespace)
-        self.assertIsNone(namespace.ssh_key_value)
+        self.assertEqual(namespace.ssh_key_value, default_key)
 
     def test_automatic_sku_with_generate_ssh_keys_errors(self):
         namespace = SimpleNamespace(
             no_ssh_key=False,
             generate_ssh_keys=True,
-            ssh_key_value=None,
+            ssh_key_value="~/.ssh/id_rsa.pub",
             sku="automatic",
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
@@ -2682,18 +2684,6 @@ class TestValidateSshKey(unittest.TestCase):
             no_ssh_key=False,
             generate_ssh_keys=False,
             ssh_key_value="ssh-rsa AAAAB3NzaC1yc2Euser@host",
-            sku="automatic",
-        )
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            validators.validate_ssh_key(namespace)
-
-    def test_automatic_sku_with_default_path_ssh_key_value_errors(self):
-        # Even the default key path counts as an explicit --ssh-key-value now that the
-        # arg default is None.
-        namespace = SimpleNamespace(
-            no_ssh_key=False,
-            generate_ssh_keys=False,
-            ssh_key_value=os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub")),
             sku="automatic",
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
