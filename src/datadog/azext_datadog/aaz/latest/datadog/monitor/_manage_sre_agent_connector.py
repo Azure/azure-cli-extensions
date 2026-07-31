@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor refresh-set-password-link",
+    "datadog monitor manage-sre-agent-connector",
     is_preview=True,
 )
-class RefreshSetPasswordLink(AAZCommand):
-    """Refreshes the link used to set the password for the Datadog monitor resource and returns the latest link, ensuring secure access management.
+class ManageSreAgentConnector(AAZCommand):
+    """Manages Datadog MCP connectors to add/remove for the SRE Agent.
 
-    :example: Monitors_RefreshSetPasswordLink
-        az datadog monitor refresh-set-password-link --resource-group myResourceGroup --monitor-name myMonitor
+    :example: Monitors_ManageSreAgentConnectors
+        az datadog monitor manage-sre-agent-connector --monitor-name "myMonitor" --resource-group "myResourceGroup" --action "Add" --mcp-connector-resource-id-list "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Datadog/monitors/myMonitor/mcpConnectors/myConnector"
     """
 
     _aaz_info = {
         "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/refreshsetpasswordlink", "2025-12-26-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/managesreagentconnectors", "2025-12-26-preview"],
         ]
     }
 
@@ -46,7 +46,7 @@ class RefreshSetPasswordLink(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
+            options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -59,11 +59,38 @@ class RefreshSetPasswordLink(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Request"
+
+        _args_schema = cls._args_schema
+        _args_schema.action = AAZStrArg(
+            options=["--action"],
+            arg_group="Request",
+            help="Add/Remove action.",
+            required=True,
+            enum={"Add": "Add", "Remove": "Remove"},
+        )
+        _args_schema.mcp_connector_resource_id_list = AAZListArg(
+            options=["--mcp-connector-resource-id-list"],
+            arg_group="Request",
+            help="The list of ARM resource ID of the MCP connector integrated with SRE Agent resource.",
+            required=True,
+        )
+
+        mcp_connector_resource_id_list = cls._args_schema.mcp_connector_resource_id_list
+        mcp_connector_resource_id_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.mcp_connector_resource_id_list.Element
+        _element.mcp_connector_resource_id = AAZStrArg(
+            options=["mcp-connector-resource-id"],
+            help="The ARM resource ID of the MCP connector integrated with SRE Agent resource.",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsRefreshSetPasswordLink(ctx=self.ctx)()
+        self.MonitorsManageSreAgentConnectors(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +105,7 @@ class RefreshSetPasswordLink(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsRefreshSetPasswordLink(AAZHttpOperation):
+    class MonitorsManageSreAgentConnectors(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +119,7 @@ class RefreshSetPasswordLink(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/refreshSetPasswordLink",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/manageSreAgentConnectors",
                 **self.url_parameters
             )
 
@@ -136,10 +163,33 @@ class RefreshSetPasswordLink(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("mcpConnectorResourceIdList", AAZListType, ".mcp_connector_resource_id_list", typ_kwargs={"flags": {"required": True}})
+
+            mcp_connector_resource_id_list = _builder.get(".mcpConnectorResourceIdList")
+            if mcp_connector_resource_id_list is not None:
+                mcp_connector_resource_id_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".mcpConnectorResourceIdList[]")
+            if _elements is not None:
+                _elements.set_prop("mcpConnectorResourceId", AAZStrType, ".mcp_connector_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -159,15 +209,27 @@ class RefreshSetPasswordLink(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.set_password_link = AAZStrType(
-                serialized_name="setPasswordLink",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.mcp_connector_resource_id = AAZStrType(
+                serialized_name="mcpConnectorResourceId",
+                flags={"required": True},
             )
 
             return cls._schema_on_200
 
 
-class _RefreshSetPasswordLinkHelper:
-    """Helper class for RefreshSetPasswordLink"""
+class _ManageSreAgentConnectorHelper:
+    """Helper class for ManageSreAgentConnector"""
 
 
-__all__ = ["RefreshSetPasswordLink"]
+__all__ = ["ManageSreAgentConnector"]
