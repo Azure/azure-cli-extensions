@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.0.5
+++++++
+* Fixed autonomous database backup update and delete
+
+
 2.0.4
 ++++++
 * Fixed autonomous database update discriminator databaseType

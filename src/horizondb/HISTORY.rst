@@ -3,9 +3,13 @@
 Release History
 ===============
 
-1.0.0b7
+1.0.0b8
 +++++++
 * Add support for restoring HorizonDB clusters through `az horizondb restore`.
+
+1.0.0b7
++++++++
+* Add `az horizondb parameter-group` commands to create, delete, list, show, and list connections for HorizonDB parameter groups.
 
 1.0.0b6
 +++++++

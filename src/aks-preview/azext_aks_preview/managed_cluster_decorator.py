@@ -5546,13 +5546,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_enable_upstream_kubescheduler_user_configuration():
             if mc.scheduler_profile is None:
                 mc.scheduler_profile = self.models.SchedulerProfile()  # pylint: disable=no-member
-            if mc.scheduler_profile.scheduler_instance_profiles is None:
-                mc.scheduler_profile.scheduler_instance_profiles = (
-                    self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
-                )
-            if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
-            mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
+            if mc.scheduler_profile.upstream is None:
+                mc.scheduler_profile.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
+            mc.scheduler_profile.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
             )
 
@@ -8458,26 +8454,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_enable_upstream_kubescheduler_user_configuration():
             if mc.scheduler_profile is None:
                 mc.scheduler_profile = self.models.SchedulerProfile()  # pylint: disable=no-member
-            if mc.scheduler_profile.scheduler_instance_profiles is None:
-                mc.scheduler_profile.scheduler_instance_profiles = (
-                    self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
-                )
-            if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
-            mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
+            if mc.scheduler_profile.upstream is None:
+                mc.scheduler_profile.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
+            mc.scheduler_profile.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.MANAGED_BY_CRD  # pylint: disable=no-member
             )
 
         if self.context.get_disable_upstream_kubescheduler_user_configuration():
             if mc.scheduler_profile is None:
                 mc.scheduler_profile = self.models.SchedulerProfile()  # pylint: disable=no-member
-            if mc.scheduler_profile.scheduler_instance_profiles is None:
-                mc.scheduler_profile.scheduler_instance_profiles = (
-                    self.models.SchedulerProfileSchedulerInstanceProfiles()  # pylint: disable=no-member
-                )
-            if mc.scheduler_profile.scheduler_instance_profiles.upstream is None:
-                mc.scheduler_profile.scheduler_instance_profiles.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
-            mc.scheduler_profile.scheduler_instance_profiles.upstream.scheduler_config_mode = (
+            if mc.scheduler_profile.upstream is None:
+                mc.scheduler_profile.upstream = self.models.SchedulerInstanceProfile()  # pylint: disable=no-member
+            mc.scheduler_profile.upstream.scheduler_config_mode = (
                 self.models.SchedulerConfigMode.DEFAULT  # pylint: disable=no-member
             )
 
