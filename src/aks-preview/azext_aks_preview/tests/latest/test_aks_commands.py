@@ -59,6 +59,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--location {workspace_location} --query id -o tsv"
         ).output.strip()
 
+    def _create_azure_monitor_workspace(self, resource_group_location):
+        """Create a dedicated Azure Monitor workspace (Prometheus) for a test.
+
+        Without --azure-monitor-workspace-resource-id the metrics onboarding falls back to the
+        subscription's shared DefaultAzureMonitorWorkspace-<region>, which races when live tests
+        run in parallel.
+        """
+        amw_name = self.create_random_name("cliamw", 16)
+        amw_location = (
+            "eastus2" if resource_group_location.lower().endswith("euap") else resource_group_location
+        )
+        self.kwargs.update(
+            {
+                "amw_name": amw_name,
+                "amw_location": amw_location,
+            }
+        )
+        return self.cmd(
+            "monitor account create -g {resource_group} -n {amw_name} "
+            "--location {amw_location} --query id -o tsv"
+        ).output.strip()
+
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         supported_versions = self.cmd(
@@ -16562,16 +16584,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'node_vm_size': node_vm_size,
         })
+        # Use a dedicated workspace: without --workspace-resource-id the monitoring addon falls back
+        # to the subscription's shared default workspace, which conflicts when live tests run in parallel.
+        self.kwargs.update({
+            'workspace_resource_id': self._create_log_analytics_workspace(resource_group_location),
+        })
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-logs --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
+            '--enable-managed-identity --enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
+            '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
             '--output=json'
         )
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),
-            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check(
+                'addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID',
+                self.kwargs['workspace_resource_id'],
+                case_sensitive=False,
+            ),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 8080),
@@ -16597,6 +16629,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'node_vm_size': node_vm_size,
         })
+        # Use a dedicated workspace: without --workspace-resource-id the monitoring addon falls back
+        # to the subscription's shared default workspace, which conflicts when live tests run in parallel.
+        self.kwargs.update({
+            'workspace_resource_id': self._create_log_analytics_workspace(resource_group_location),
+        })
 
         # create: without enable-azure-monitor-logs
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
@@ -16608,12 +16645,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-monitor-logs with OpenTelemetry logs
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--enable-azure-monitor-logs --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=9090 --opentelemetry-logs-traces-port-grpc=9092 '
+            '--enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
+            '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=9090 --opentelemetry-logs-traces-port-grpc=9092 '
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.omsagent.enabled', True),
-            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check(
+                'addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID',
+                self.kwargs['workspace_resource_id'],
+                case_sensitive=False,
+            ),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.httpPort', 9090),
@@ -16800,10 +16842,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'node_vm_size': node_vm_size,
         })
+        # Use a dedicated Azure Monitor workspace: without --azure-monitor-workspace-resource-id
+        # metrics onboarding falls back to the shared default AMW, which races under parallelism.
+        self.kwargs.update({
+            'amw_resource_id': self._create_azure_monitor_workspace(resource_group_location),
+        })
 
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8080 --opentelemetry-metrics-port-grpc=8082 '
+            '--enable-managed-identity --enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8080 --opentelemetry-metrics-port-grpc=8082 '
             '--output=json'
         )
         self.cmd(create_cmd, checks=[
@@ -16849,6 +16897,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'node_vm_size': node_vm_size,
         })
+        # Use a dedicated Azure Monitor workspace: without --azure-monitor-workspace-resource-id
+        # metrics onboarding falls back to the shared default AMW, which races under parallelism.
+        self.kwargs.update({
+            'amw_resource_id': self._create_azure_monitor_workspace(resource_group_location),
+        })
 
         # create: without enable-azure-monitor-metrics
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
@@ -16860,7 +16913,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-monitor-metrics with OpenTelemetry metrics
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes '
-            '--enable-azure-monitor-metrics --enable-opentelemetry-metrics --opentelemetry-metrics-port-http=9090 '
+            '--enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} '
+            '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=9090 '
             '--output=json'
         )
 
@@ -16978,12 +17032,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'node_vm_size': node_vm_size,
         })
+        # Use dedicated workspaces: without explicit ids the monitoring addons fall back to the
+        # subscription's shared default workspaces, which conflict when live tests run in parallel.
+        self.kwargs.update({
+            'workspace_resource_id': self._create_log_analytics_workspace(resource_group_location),
+            'amw_resource_id': self._create_azure_monitor_workspace(resource_group_location),
+        })
 
         # Intentionally use the DEPRECATED flag names; they must still bind the same
         # destinations and configure OpenTelemetry on the new API surface.
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics '
+            '--enable-managed-identity --enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
+            '--enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
             '--output=json'
@@ -17157,11 +17218,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'node_vm_size': node_vm_size,
         })
+        # Use dedicated workspaces: without explicit ids the monitoring addons fall back to the
+        # subscription's shared default workspaces, which conflict when live tests run in parallel.
+        self.kwargs.update({
+            'workspace_resource_id': self._create_log_analytics_workspace(resource_group_location),
+            'amw_resource_id': self._create_azure_monitor_workspace(resource_group_location),
+        })
 
         # Phase 1: Create cluster with all monitoring features enabled
         create_cmd = (
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
-            '--enable-managed-identity --enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
+            '--enable-managed-identity --enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
+            '--enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} --enable-azure-monitor-app-monitoring '
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8081 --opentelemetry-metrics-port-grpc=8083 '
             '--enable-windows-recording-rules '
@@ -17187,7 +17255,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             # Azure Monitor logs checks
             self.check('addonProfiles.omsagent.enabled', True),
-            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check(
+                'addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID',
+                self.kwargs['workspace_resource_id'],
+                case_sensitive=False,
+            ),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             # Azure Monitor metrics checks
             self.check('azureMonitorProfile.metrics.enabled', True),
@@ -17363,7 +17435,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # Phase 7: Update - re-enable all monitoring features at once
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
-            '--enable-azure-monitor-logs --enable-azure-monitor-metrics --enable-azure-monitor-app-monitoring '
+            '--enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
+            '--enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} --enable-azure-monitor-app-monitoring '
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=7070 --opentelemetry-logs-traces-port-grpc=7072 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=7071 --opentelemetry-metrics-port-grpc=7073 '
             '--enable-windows-recording-rules '
@@ -17384,7 +17457,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             # All Azure Monitor features should be enabled
             self.check('addonProfiles.omsagent.enabled', True),
-            self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
+            self.check(
+                'addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID',
+                self.kwargs['workspace_resource_id'],
+                case_sensitive=False,
+            ),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             self.check('azureMonitorProfile.metrics.enabled', True),
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True),
