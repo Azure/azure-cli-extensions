@@ -2644,5 +2644,38 @@ class TestAzureMonitorLogsParameters(unittest.TestCase):
             validators.validate_opentelemetry_logs_dependencies(namespace)
 
 
+class TestValidateSshKey(unittest.TestCase):
+    def test_skip_for_automatic_sku(self):
+        # Automatic SKU should skip SSH key handling without generating/setting a key.
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=False,
+            ssh_key_value=None,
+            sku="automatic",
+        )
+        validators.validate_ssh_key(namespace)
+        self.assertIsNone(namespace.ssh_key_value)
+
+    def test_skip_for_automatic_sku_case_insensitive(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=False,
+            ssh_key_value=None,
+            sku="Automatic",
+        )
+        validators.validate_ssh_key(namespace)
+        self.assertIsNone(namespace.ssh_key_value)
+
+    def test_no_ssh_key_still_skips(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=True,
+            generate_ssh_keys=False,
+            ssh_key_value=None,
+            sku="base",
+        )
+        validators.validate_ssh_key(namespace)
+        self.assertIsNone(namespace.ssh_key_value)
+
+
 if __name__ == "__main__":
     unittest.main()

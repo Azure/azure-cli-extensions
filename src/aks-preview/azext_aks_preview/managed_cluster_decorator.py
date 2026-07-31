@@ -4373,7 +4373,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """Skip VM SSH configuration when the system pool is fully managed by AKS."""
         self._ensure_mc(mc)
 
-        if self.context.get_enable_hosted_system():
+        if (
+            self.context.get_enable_hosted_system() or
+            self.context.get_sku_name() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC
+        ):
             return mc
 
         return super().set_up_linux_profile(mc)
