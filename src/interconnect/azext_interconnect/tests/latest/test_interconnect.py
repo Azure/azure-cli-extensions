@@ -28,7 +28,7 @@ class InterconnectBlockScenario(ScenarioTest):
                  "--api-version 2026-01-01 --location {location} --properties '{ig_props}'")
 
         # create
-        self.cmd('interconnect block create -g {rg} -n {icb} --location {location} '
+        self.cmd('interconnect-block create -g {rg} -n {icb} --location {location} '
                  '--zone-placement-policy Any '
                  '--sku-name {sku} --sku-capacity 18 --interconnect-group-id {ig_id} '
                  '--tags env=test', checks=[
@@ -43,7 +43,7 @@ class InterconnectBlockScenario(ScenarioTest):
         ])
 
         # show
-        self.cmd('interconnect block show -g {rg} -n {icb}', checks=[
+        self.cmd('interconnect-block show -g {rg} -n {icb}', checks=[
             self.check('name', '{icb}'),
             self.check('sku.capacity', 18),
             self.check('placement.zonePlacementPolicy', 'Any'),
@@ -52,31 +52,31 @@ class InterconnectBlockScenario(ScenarioTest):
         ])
 
         # show with instance view (runtime details managed by the platform)
-        self.cmd('interconnect block show -g {rg} -n {icb} --expand instanceView', checks=[
+        self.cmd('interconnect-block show -g {rg} -n {icb} --expand instanceView', checks=[
             self.check('name', '{icb}'),
             self.check('sku.capacity', 18),
             self.exists('properties.instanceView'),
         ])
 
         # list (resource group scope)
-        self.cmd('interconnect block list -g {rg}', checks=[
+        self.cmd('interconnect-block list -g {rg}', checks=[
             self.check('length(@)', 1),
             self.check('[0].name', '{icb}'),
         ])
 
         # list (subscription scope) - separate API path; ensure our block is present
-        self.cmd('interconnect block list', checks=[
+        self.cmd('interconnect-block list', checks=[
             self.check("length([?name=='{icb}'])", 1),
         ])
 
         # update: only tags change
-        self.cmd('interconnect block update -g {rg} -n {icb} --sku-capacity 18 --tags env=prod', checks=[
+        self.cmd('interconnect-block update -g {rg} -n {icb} --sku-capacity 18 --tags env=prod', checks=[
             self.check('sku.capacity', 18),
             self.check('tags.env', 'prod'),
         ])
 
         # delete
-        self.cmd('interconnect block delete -g {rg} -n {icb} --yes')
-        self.cmd('interconnect block list -g {rg}', checks=[
+        self.cmd('interconnect-block delete -g {rg} -n {icb} --yes')
+        self.cmd('interconnect-block list -g {rg}', checks=[
             self.check('length(@)', 0),
         ])
