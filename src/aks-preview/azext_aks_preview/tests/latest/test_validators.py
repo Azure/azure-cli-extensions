@@ -2650,21 +2650,41 @@ class TestValidateSshKey(unittest.TestCase):
         namespace = SimpleNamespace(
             no_ssh_key=False,
             generate_ssh_keys=False,
-            ssh_key_value=None,
+            ssh_key_value="~/.ssh/id_rsa.pub",
             sku="automatic",
         )
         validators.validate_ssh_key(namespace)
-        self.assertIsNone(namespace.ssh_key_value)
+        self.assertEqual(namespace.ssh_key_value, "~/.ssh/id_rsa.pub")
 
     def test_skip_for_automatic_sku_case_insensitive(self):
         namespace = SimpleNamespace(
             no_ssh_key=False,
             generate_ssh_keys=False,
-            ssh_key_value=None,
+            ssh_key_value="~/.ssh/id_rsa.pub",
             sku="Automatic",
         )
         validators.validate_ssh_key(namespace)
-        self.assertIsNone(namespace.ssh_key_value)
+        self.assertEqual(namespace.ssh_key_value, "~/.ssh/id_rsa.pub")
+
+    def test_automatic_sku_with_generate_ssh_keys_errors(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=True,
+            ssh_key_value="~/.ssh/id_rsa.pub",
+            sku="automatic",
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_ssh_key(namespace)
+
+    def test_automatic_sku_with_explicit_ssh_key_value_errors(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=False,
+            ssh_key_value="ssh-rsa AAAAB3NzaC1yc2Euser@host",
+            sku="automatic",
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_ssh_key(namespace)
 
     def test_no_ssh_key_still_skips(self):
         namespace = SimpleNamespace(

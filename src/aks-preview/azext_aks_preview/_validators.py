@@ -46,6 +46,17 @@ def validate_ssh_key(namespace):
     # configuration. Skip reading/generating an SSH key so users don't need --no-ssh-key.
     if getattr(namespace, 'sku', None) is not None and \
             namespace.sku.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        # ssh_key_value defaults to "~/.ssh/id_rsa.pub"; only treat a non-default value
+        # as an explicit user request.
+        default_ssh_key_value = os.path.join("~", ".ssh", "id_rsa.pub")
+        explicit_ssh_key = (
+            namespace.ssh_key_value and namespace.ssh_key_value != default_ssh_key_value
+        )
+        if namespace.generate_ssh_keys or explicit_ssh_key:
+            raise MutuallyExclusiveArgumentError(
+                'SSH key configuration is not supported for the Automatic SKU. '
+                'Do not specify "--ssh-key-value" or "--generate-ssh-keys" when using "--sku automatic".'
+            )
         return
     string_or_file = (namespace.ssh_key_value or
                       os.path.join(os.path.expanduser('~'), '.ssh', 'id_rsa.pub'))
