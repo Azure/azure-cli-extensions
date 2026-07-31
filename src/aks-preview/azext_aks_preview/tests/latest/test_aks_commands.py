@@ -16594,6 +16594,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
             '--enable-managed-identity --enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
             '--output=json'
         )
         self.cmd(create_cmd, checks=[
@@ -16647,6 +16648,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--enable-azure-monitor-logs --workspace-resource-id={workspace_resource_id} '
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=9090 --opentelemetry-logs-traces-port-grpc=9092 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -16852,6 +16854,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} '
             '--enable-managed-identity --enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8080 --opentelemetry-metrics-port-grpc=8082 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
             '--output=json'
         )
         self.cmd(create_cmd, checks=[
@@ -16915,6 +16918,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes '
             '--enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=9090 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
             '--output=json'
         )
 
@@ -17047,6 +17051,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-azure-monitor-metrics --azure-monitor-workspace-resource-id={amw_resource_id} '
             '--enable-opentelemetry-logs --opentelemetry-logs-port=8080 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port=8081 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
             '--output=json'
         )
         self.cmd(create_cmd, checks=[
@@ -17233,6 +17238,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=8080 --opentelemetry-logs-traces-port-grpc=8082 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=8081 --opentelemetry-metrics-port-grpc=8083 '
             '--enable-windows-recording-rules '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
             '--output=json'
         )
         self.cmd(create_cmd, checks=[
@@ -17348,6 +17354,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=9090 --opentelemetry-logs-traces-port-grpc=9092 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=9091 --opentelemetry-metrics-port-grpc=9093 '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -17440,6 +17447,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http=7070 --opentelemetry-logs-traces-port-grpc=7072 '
             '--enable-opentelemetry-metrics --opentelemetry-metrics-port-http=7071 --opentelemetry-metrics-port-grpc=7073 '
             '--enable-windows-recording-rules '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview '
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
