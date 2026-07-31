@@ -641,7 +641,7 @@ def load_arguments(self, _):
             "ssh_key_value",
             required=False,
             type=file_type,
-            default=os.path.join("~", ".ssh", "id_rsa.pub"),
+            default=None,
             completer=FilesCompleter(),
             validator=validate_ssh_key,
         )
