@@ -7,51 +7,102 @@
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.core.exceptions import HttpResponseError
+
 
 class MongoDBScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_mongodb', location="eastus2")
-    def test_mongo_db(self, resource_group):
+    def test_mongo_db(self):
         self.kwargs.update({
-            'name': 'MongoDBCLITestOrg2',
-            'location': 'eastus2',
-            'subscription': '00000000-0000-0000-0000-000000000000',
-            'marketplace_subscription_id': '00000000-0000-0000-0000-000000000000',
-            'publisher_id': 'mongodb',
-            'offer_id': 'mongodb_atlas_azure_native_prod',
-            'plan_id': 'private_plan',
-            'plan_name': 'Pay as You Go (Free) (Private)',
-            'term_unit': 'P1M',
-            'term_id': 'gmz7xq9ge3py',
-            'user_first_name': 'dummy',
-            'user_last_name': 'dummy',
-            'user_email': 'test@example.com',
-            'organization-name': 'MongoDBCLITestOrg2',
-            'resource_group': 'cli-test-rg'
+            'name': 'mayAllTestsPass',
+            'resource_group': 'sharmaanuTest',
+            'project_name': 'myTestProject',
+            'cluster_name': 'myTestCluster',
         })
 
-        # Create MongoDB Atlas Organization
-        self.cmd(
-            'az mongo-db atlas organization create --resource-group {resource_group} --name {name} --location {location} --subscription {subscription} '
-            '--marketplace \'{{"subscription-id": "{marketplace_subscription_id}", '
-            '"offer-details": {{"publisher-id": "{publisher_id}", "offer-id": "{offer_id}", "plan-id": "{plan_id}", "plan-name": "{plan_name}", "term-unit": "{term_unit}", "term-id": "{term_id}"}}}}\' '
-            '--user \'{{"first-name": "{user_first_name}", "last-name": "{user_last_name}", "email-address": "{user_email}"}}\' '
-            '--partner-properties \'{{"organization-name": "{organization-name}"}}\' ',
-            checks=[
-                self.check('name', '{name}'),
-            ]
-        )
-
         # List MongoDB Atlas Organizations
-        self.cmd('az mongo-db atlas organization list --subscription {subscription} --resource-group {resource_group}',
+        self.cmd('az mongo-db atlas organization list --resource-group {resource_group}',
                  checks=[])
 
         # Show MongoDB Atlas Organization
-        self.cmd('az mongo-db atlas organization show --subscription {subscription} --resource-group {resource_group} --name {name}',
+        self.cmd('az mongo-db atlas organization show --resource-group {resource_group} --name {name}',
                  checks=[
                      self.check('name', '{name}'),
                  ])
-        
+
+        # --- Projects happy path ---
+
+        # Create Project
+        self.cmd(
+            'az mongo-db atlas organization project create --resource-group {resource_group} '
+            '--organization-name {name} --project-name {project_name}',
+            checks=[
+                self.check('name', '{project_name}'),
+            ]
+        )
+
+        # List Projects
+        self.cmd(
+            'az mongo-db atlas organization project list --resource-group {resource_group} '
+            '--organization-name {name}',
+            checks=[]
+        )
+
+        # Show Project
+        self.cmd(
+            'az mongo-db atlas organization project show --resource-group {resource_group} '
+            '--organization-name {name} --project-name {project_name}',
+            checks=[
+                self.check('name', '{project_name}'),
+            ]
+        )
+
+        # --- Clusters happy path ---
+
+        # Create Cluster
+        self.cmd(
+            'az mongo-db atlas organization project cluster create --resource-group {resource_group} '
+            '--organization-name {name} --project-name {project_name} '
+            '--cluster-name {cluster_name} --cluster-tier FREE --region-name eastus2',
+            checks=[
+                self.check('name', '{cluster_name}'),
+            ]
+        )
+
+        # List Clusters
+        self.cmd(
+            'az mongo-db atlas organization project cluster list --resource-group {resource_group} '
+            '--organization-name {name} --project-name {project_name}',
+            checks=[]
+        )
+
+        # Show Cluster
+        self.cmd(
+            'az mongo-db atlas organization project cluster show --resource-group {resource_group} '
+            '--organization-name {name} --project-name {project_name} '
+            '--cluster-name {cluster_name}',
+            checks=[
+                self.check('name', '{cluster_name}'),
+            ]
+        )
+
+        # Delete Cluster — expect MethodNotAllowed (405)
+        with self.assertRaises(HttpResponseError) as cm:
+            self.cmd(
+                'az mongo-db atlas organization project cluster delete --resource-group {resource_group} '
+                '--organization-name {name} --project-name {project_name} '
+                '--cluster-name {cluster_name} --yes'
+            )
+        self.assertEqual(cm.exception.status_code, 405)
+
+        # Delete Project — expect MethodNotAllowed (405)
+        with self.assertRaises(HttpResponseError) as cm:
+            self.cmd(
+                'az mongo-db atlas organization project delete --resource-group {resource_group} '
+                '--organization-name {name} --project-name {project_name} --yes'
+            )
+        self.assertEqual(cm.exception.status_code, 405)
+
         # Delete MongoDB Atlas Organization
-        self.cmd('az mongo-db atlas organization delete --subscription {subscription} --resource-group {resource_group} --name {name} --yes',
+        self.cmd('az mongo-db atlas organization delete --resource-group {resource_group} --name {name} --yes',
                  checks=[])
