@@ -8,8 +8,16 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
-
-
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group('interconnect-block'):
+        from .interconnect_block_custom import InterconnectBlockCreate
+        from .interconnect_block_custom import InterconnectBlockDelete
+        from .interconnect_block_custom import InterconnectBlockList
+        from .interconnect_block_custom import InterconnectBlockShow
+        from .interconnect_block_custom import InterconnectBlockUpdate
+
+        self.command_table['interconnect-block create'] = InterconnectBlockCreate(loader=self)
+        self.command_table['interconnect-block delete'] = InterconnectBlockDelete(loader=self)
+        self.command_table['interconnect-block list'] = InterconnectBlockList(loader=self)
+        self.command_table['interconnect-block show'] = InterconnectBlockShow(loader=self)
+        self.command_table['interconnect-block update'] = InterconnectBlockUpdate(loader=self)
