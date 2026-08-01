@@ -230,6 +230,9 @@ def create_connectedk8s(
 
     print(f"Step: {utils.get_utctimestring()}: Escape Proxy Settings, if passed in")
 
+    # Expand --proxy-skip-range service keywords (e.g. "Arc") before escaping.
+    no_proxy = expand_proxy_skip_range_keywords(cmd, no_proxy)
+
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
 
@@ -1321,6 +1324,45 @@ def escape_proxy_settings(proxy_setting: str | None) -> str:
     return proxy_setting
 
 
+def get_arc_proxy_skip_range_endpoints(cmd: CLICommand) -> list[str]:
+    # Arc private-link data-plane hosts to bypass the proxy. Leading-dot form matches
+    # every region; suffix is derived so it works across public and sovereign clouds.
+    cloud_based_domain = get_cloud_based_domain(cmd)
+    return [
+        endpoint.format(cloud_based_domain=cloud_based_domain)
+        for endpoint in consts.Arc_Private_Link_Endpoints
+    ]
+
+
+def expand_proxy_skip_range_keywords(cmd: CLICommand, no_proxy: str) -> str:
+    # Replace the "Arc" keyword (case-insensitive) with the Arc private-link endpoints,
+    # keeping all other entries in order; returns the value unchanged if no keyword.
+    if not no_proxy:
+        return no_proxy
+
+    entries = no_proxy.split(",")
+    if not any(
+        entry.strip().lower() == consts.Proxy_Skip_Range_Arc_Keyword
+        for entry in entries
+    ):
+        return no_proxy
+
+    expanded: list[str] = []
+    seen: set[str] = set()
+    for entry in entries:
+        stripped = entry.strip()
+        if stripped.lower() == consts.Proxy_Skip_Range_Arc_Keyword:
+            for endpoint in get_arc_proxy_skip_range_endpoints(cmd):
+                if endpoint.lower() not in seen:
+                    seen.add(endpoint.lower())
+                    expanded.append(endpoint)
+        elif stripped and stripped.lower() not in seen:
+            seen.add(stripped.lower())
+            expanded.append(stripped)
+
+    return ",".join(expanded)
+
+
 def check_kube_connection() -> str:
     print(f"Step: {utils.get_utctimestring()}: Checking Connectivity to Cluster")
     api_instance = kube_client.VersionApi()
@@ -1627,7 +1669,7 @@ def connected_cluster_exists(
     return True
 
 
-def get_default_config_dp_endpoint(cmd: CLICommand, location: str) -> str:
+def get_cloud_based_domain(cmd: CLICommand) -> str:
     active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
     # default for public, mc, ff clouds
     cloud_based_domain = active_directory_array[2]
@@ -1642,7 +1684,11 @@ def get_default_config_dp_endpoint(cmd: CLICommand, location: str) -> str:
             + "."
             + active_directory_array[4]
         )
+    return cloud_based_domain
 
+
+def get_default_config_dp_endpoint(cmd: CLICommand, location: str) -> str:
+    cloud_based_domain = get_cloud_based_domain(cmd)
     config_dp_endpoint = (
         f"https://{location}.dp.kubernetesconfiguration.azure.{cloud_based_domain}"
     )
@@ -2438,6 +2484,9 @@ def update_connected_cluster(
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
+
+    # Expand --proxy-skip-range service keywords (e.g. "Arc") before escaping.
+    no_proxy = expand_proxy_skip_range_keywords(cmd, no_proxy)
 
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
