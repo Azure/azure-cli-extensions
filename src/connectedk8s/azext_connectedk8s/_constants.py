@@ -247,6 +247,16 @@ Get_Kubernetes_Infra_Fault_Type = "kubernetes-get-infrastructure-error"
 No_Param_Error = "No parameters were specified with update command. Please run az connectedk8s update --help to check parameters available for update"
 Gateway_ArmId_Is_Invalid = "The provided Gateway ArmID in --gateway-resource-id  {} is invalid. Please provide a valid Gateway ArmID."
 EnableProxy_Conflict_Error = "Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters"
+
+# --proxy-skip-range keyword that expands to the Azure Arc private-link endpoints.
+Proxy_Skip_Range_Arc_Keyword = "arc"
+# Arc private-link endpoint host suffixes the "arc" keyword expands to.
+Arc_Private_Link_Endpoints = [
+    ".his.arc.azure.{cloud_based_domain}",
+    ".dp.kubernetesconfiguration.azure.{cloud_based_domain}",
+    ".guestconfiguration.azure.{cloud_based_domain}",
+]
+
 Manual_Upgrade_Called_In_Auto_Update_Enabled = (
     "Manual Upgrade was called while in auto_Update enabled mode"
 )
