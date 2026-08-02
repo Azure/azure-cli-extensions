@@ -14,15 +14,28 @@ class MongoDBScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     def test_mongo_db(self):
         self.kwargs.update({
-            'name': 'mayAllTestsPass',
+            'name': 'greenTestsRun',
             'resource_group': 'sharmaanuTest',
             'project_name': 'myTestProject',
             'cluster_name': 'myTestCluster',
+            'marketplace': '{"subscriptionId":"61641157-140c-4b97-b365-30ff76d9f82e","offerDetails":{"publisherId":"mongodb","offerId":"mongodb_atlas_azure_native_prod","planId":"private_plan","planName":"Pay as You Go (Free) (Private)","termUnit":"P1M","termId":"n7ja87drquhy"}}',
+            'user': '{"firstName":"Anuj","lastName":"Sharma","emailAddress":"sharmaanu@microsoft.com"}',
+            'partner_properties': '{"organizationName":"greenTestsRun"}',
         })
 
         # List MongoDB Atlas Organizations
         self.cmd('az mongo-db atlas organization list --resource-group {resource_group}',
                  checks=[])
+
+        # Create MongoDB Atlas Organization
+        self.cmd(
+            'az mongo-db atlas organization create --resource-group {resource_group} --name {name} '
+            '--location centralus --marketplace \'{marketplace}\' --user \'{user}\' '
+            '--partner-properties \'{partner_properties}\'',
+            checks=[
+                self.check('name', '{name}'),
+            ]
+        )
 
         # Show MongoDB Atlas Organization
         self.cmd('az mongo-db atlas organization show --resource-group {resource_group} --name {name}',
