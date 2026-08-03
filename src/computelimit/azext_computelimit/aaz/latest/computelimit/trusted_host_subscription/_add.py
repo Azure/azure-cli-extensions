@@ -19,6 +19,9 @@ class Add(AAZCommand):
 subscription can trust multiple host subscriptions; this only establishes trust and
 does not check the guest in to the host. Guest-to-host association is determined at
 check-in time, where a subscription can be a guest of at most one host per region.
+
+    :example: Add a trusted host subscription
+        az computelimit trusted-host-subscription add --location eastus --host-subscription-id 22222222-2222-2222-2222-222222222222
     """
 
     _aaz_info = {

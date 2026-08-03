@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a host subscription that the guest subscription trusts.
+
+    :example: Get a trusted host subscription
+        az computelimit trusted-host-subscription show --location eastus --host-subscription-id 22222222-2222-2222-2222-222222222222
     """
 
     _aaz_info = {

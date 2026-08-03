@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all host subscriptions that the guest subscription trusts in a location.
+
+    :example: List all trusted host subscriptions
+        az computelimit trusted-host-subscription list --location eastus
     """
 
     _aaz_info = {

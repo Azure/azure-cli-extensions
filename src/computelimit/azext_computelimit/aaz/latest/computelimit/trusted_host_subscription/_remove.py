@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Delete a host subscription from the guest subscription's list of trusted hosts.
+
+    :example: Remove a trusted host subscription
+        az computelimit trusted-host-subscription remove --location eastus --host-subscription-id 22222222-2222-2222-2222-222222222222
     """
 
     _aaz_info = {
