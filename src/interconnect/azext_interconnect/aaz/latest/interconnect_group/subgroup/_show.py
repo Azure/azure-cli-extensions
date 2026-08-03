@@ -45,7 +45,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.interconnect_group_name = AAZStrArg(
-            options=["--interconnect-group-name"],
+            options=["--group-name", "--interconnect-group-name"],
             help="The name of the interconnect group.",
             required=True,
             id_part="name",
