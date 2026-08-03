@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b13
+++++++++
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. `--maintenance-window-id` cannot be combined with `--config-file` (set the `maintenanceWindowId` property in the JSON instead) and cannot be empty. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.
+
 21.0.0b12
 ++++++++
 * Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
