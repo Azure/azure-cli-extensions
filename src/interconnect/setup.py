@@ -36,16 +36,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='interconnect-group',
+    name='interconnect',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools InterconnectGroup Extension.',
+    description='Microsoft Azure Command-Line Tools Interconnect Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/interconnect-group',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/interconnect',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_interconnect_group': ['azext_metadata.json']},
+    package_data={'azext_interconnect': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

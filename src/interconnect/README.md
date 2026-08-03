@@ -1,11 +1,11 @@
-# Azure CLI InterconnectGroup Extension #
-This is an extension to Azure CLI to manage InterconnectGroup resources.
+# Azure CLI Interconnect Extension #
+This is an extension to Azure CLI to manage Interconnect resources.
 
 ## How to use ##
 Install the extension:
 
 ```
-az extension add --name interconnect-group
+az extension add --name interconnect
 ```
 
 ### Manage interconnect groups ###

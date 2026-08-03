@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_interconnect_group._help import helps  # pylint: disable=unused-import
+from azext_interconnect._help import helps  # pylint: disable=unused-import
 
 
-class InterconnectGroupCommandsLoader(AzCommandsLoader):
+class InterconnectCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_interconnect_group.custom#{}')
+            operations_tmpl='azext_interconnect.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_interconnect_group.commands import load_command_table
+        from azext_interconnect.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class InterconnectGroupCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_interconnect_group._params import load_arguments
+        from azext_interconnect._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = InterconnectGroupCommandsLoader
+COMMAND_LOADER_CLS = InterconnectCommandsLoader
