@@ -12,27 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "datadog monitor show",
+    "datadog monitor link-saas",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Retrieves the properties and configuration details of a specific Datadog monitor resource, providing insight into its setup and status.
+class LinkSaas(AAZCommand):
+    """Links a new SaaS to the Datadog organization of the underlying monitor.
 
-    :example: Monitors_Get
-        az datadog monitor show --resource-group myResourceGroup --monitor-name myMonitor
+    :example: Monitors_LinkSaaS
+        az datadog monitor link-saas --monitor-name "myMonitor" --resource-group "myResourceGroup" --saas-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.SaaS/resources/mySaaSResource"
     """
 
     _aaz_info = {
         "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-12-26-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/linksaas", "2025-12-26-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -46,7 +47,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
+            options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
             id_part="name",
@@ -59,11 +60,20 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.saas_resource_id = AAZStrArg(
+            options=["--saas-resource-id"],
+            arg_group="Body",
+            help="SaaS resource id of marketplace saas subscription to be activated.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGet(ctx=self.ctx)()
+        yield self.DatadogMonitorResourcesLinkSaaS(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,27 +88,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsGet(AAZHttpOperation):
+    class DatadogMonitorResourcesLinkSaaS(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/linkSaaS",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -136,10 +162,24 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("saaSResourceId", AAZStrType, ".saas_resource_id")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -285,8 +325,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _LinkSaasHelper:
+    """Helper class for LinkSaas"""
 
 
-__all__ = ["Show"]
+__all__ = ["LinkSaas"]
