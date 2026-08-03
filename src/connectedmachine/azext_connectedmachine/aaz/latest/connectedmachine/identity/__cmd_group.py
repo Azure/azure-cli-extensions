@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "pinecone vector-db",
+    "connectedmachine identity",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Vector Db
+    """Manage Identity
     """
     pass
 
