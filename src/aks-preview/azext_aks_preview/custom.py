@@ -5972,16 +5972,86 @@ def aks_loadbalancer_rebalance_nodes(
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
 
-def aks_bastion_enable(cmd, client, resource_group_name, name, bastion_sku=None, bastion_public_ip=None, bastion_scale_units=None):
-    pass
+def aks_bastion_enable(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    no_wait=False,
+    aks_custom_headers=None,
+    bastion_sku=None,
+    bastion_public_ip=None,
+    bastion_scale_units=None,
+):
+    from azext_aks_preview.managedbastion import (
+        update_managed_bastion_profile,
+    )
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return update_managed_bastion_profile(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        no_wait=no_wait,
+        aks_custom_headers=headers,
+        enabled=True,
+        check_enabled=False,
+        bastion_sku=bastion_sku,
+        bastion_public_ip=bastion_public_ip,
+        bastion_scale_units=bastion_scale_units,
+    )
 
 
-def aks_bastion_disable(cmd, client, resource_group_name, name):
-    pass
+def aks_bastion_disable(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    no_wait=False,
+    aks_custom_headers=None,
+):
+    from azext_aks_preview.managedbastion import (
+        update_managed_bastion_profile,
+    )
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return update_managed_bastion_profile(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        no_wait=no_wait,
+        aks_custom_headers=headers,
+        enabled=False,
+        check_enabled=False,
+    )
 
 
-def aks_bastion_update(cmd, client, resource_group_name, name, bastion_sku=None, bastion_scale_units=None):
-    pass
+def aks_bastion_update(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    no_wait=False,
+    aks_custom_headers=None,
+    bastion_sku=None,
+    bastion_scale_units=None,
+):
+    from azext_aks_preview.managedbastion import (
+        update_managed_bastion_profile,
+    )
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return update_managed_bastion_profile(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        no_wait=no_wait,
+        aks_custom_headers=headers,
+        enabled=True,
+        check_enabled=True,
+        bastion_sku=bastion_sku,
+        bastion_scale_units=bastion_scale_units,
+    )
 
 
 def aks_bastion_tunnel(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, kubeconfig_path=None, yes=False):

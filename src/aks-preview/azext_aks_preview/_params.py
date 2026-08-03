@@ -3770,8 +3770,10 @@ def load_arguments(self, _):
             c.argument(
                 "bastion_scale_units",
                 options_list=["--bastion-scale-units"],
+                type=int,
                 help="Scale units for the Azure Bastion host.",
             )
+            c.argument("aks_custom_headers")
 
     for scope in ['aks bastion enable']:
         with self.argument_context(scope) as c:
