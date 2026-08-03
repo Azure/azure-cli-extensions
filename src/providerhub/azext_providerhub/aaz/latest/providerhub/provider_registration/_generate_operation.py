@@ -22,9 +22,9 @@ class GenerateOperation(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01-preview",
+        "version": "2026-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/generateoperations", "2024-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/generateoperations", "2026-02-01-preview"],
         ]
     }
 
@@ -113,7 +113,7 @@ class GenerateOperation(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01-preview",
+                    "api-version", "2026-02-01-preview",
                     required=True,
                 ),
             }
@@ -143,24 +143,31 @@ class GenerateOperation(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200 = AAZListType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.contents = AAZListType()
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.Element
+            _element.contents = AAZListType()
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            contents = cls._schema_on_200.contents
+            contents = cls._schema_on_200.Element.contents
             contents.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.contents.Element
+            _element = cls._schema_on_200.Element.contents.Element
             _element.action_type = AAZStrType(
                 serialized_name="actionType",
             )
@@ -175,7 +182,7 @@ class GenerateOperation(AAZCommand):
             )
             _element.origin = AAZStrType()
 
-            display = cls._schema_on_200.contents.Element.display
+            display = cls._schema_on_200.Element.contents.Element.display
             display.description = AAZStrType(
                 flags={"required": True},
             )
@@ -187,6 +194,26 @@ class GenerateOperation(AAZCommand):
             )
             display.resource = AAZStrType(
                 flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
