@@ -1,0 +1,494 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "properties": {"scope": "InfiniBand", "subgroupProfile":
+      {"scope": "VerticalConnect", "size": 18, "vmSize": "Standard_ND128isr_NDR_GB200_v6"}},
+      "tags": {"key1": "value1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '195'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --scope --subgroup-profile --tags
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002?api-version=2025-07-01
+  response:
+    body:
+      string: '{"name":"ig-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002","etag":"W/\"325a77f3-ab2d-402a-be54-5ff01b9c17ea\"","type":"Microsoft.Network/interconnectGroups","location":"eastus2","tags":{"key1":"value1"},"properties":{"provisioningState":"Succeeded","resourceGuid":"b9bab453-de25-4758-b33f-116764abad5e","scope":"InfiniBand","subgroupProfile":{"vmSize":"Standard_ND128isr_NDR_GB200_v6","scope":"VerticalConnect","size":18},"subgroups":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - bbbf4141-e27d-45f4-9e8e-0bddd9abe536
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/13f0888f-1f37-4edd-a6b6-8ebd2e576d31
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttle-levels:
+      - operationRatePct=0.1, operationConcurrencyPct=0.3, subscriptionWriteRatePct=0.9,
+        etc
+      x-msedge-ref:
+      - 'Ref A: F64A3539EDFF49A29513A9E1441B90F1 Ref B: SG2AA1070305025 Ref C: 2026-08-03T01:02:08Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002?api-version=2025-07-01
+  response:
+    body:
+      string: '{"name":"ig-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002","etag":"W/\"325a77f3-ab2d-402a-be54-5ff01b9c17ea\"","type":"Microsoft.Network/interconnectGroups","location":"eastus2","tags":{"key1":"value1"},"properties":{"provisioningState":"Succeeded","resourceGuid":"b9bab453-de25-4758-b33f-116764abad5e","scope":"InfiniBand","subgroupProfile":{"vmSize":"Standard_ND128isr_NDR_GB200_v6","scope":"VerticalConnect","size":18},"subgroups":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:16 GMT
+      etag:
+      - W/"325a77f3-ab2d-402a-be54-5ff01b9c17ea"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - fea0fcc0-2040-417b-843d-8221f171095f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-ms-throttle-levels:
+      - operationConcurrencyPct=0.5, subscriptionReadRatePct=0.2, etc
+      x-msedge-ref:
+      - 'Ref A: 64A3553A51BA4D3FBD1A8D3210050190 Ref B: SG2AA1070306042 Ref C: 2026-08-03T01:02:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups?api-version=2025-07-01
+  response:
+    body:
+      string: '{"value":[{"name":"ig-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002","etag":"W/\"325a77f3-ab2d-402a-be54-5ff01b9c17ea\"","type":"Microsoft.Network/interconnectGroups","location":"eastus2","tags":{"key1":"value1"},"properties":{"provisioningState":"Succeeded","resourceGuid":"b9bab453-de25-4758-b33f-116764abad5e","scope":"InfiniBand","subgroupProfile":{"vmSize":"Standard_ND128isr_NDR_GB200_v6","scope":"VerticalConnect","size":18},"subgroups":[]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 4979e439-8df9-4c44-a715-2cce06dd5720
+      x-ms-original-request-ids:
+      - 65d28648-a2fc-42e7-b425-2f17a86fd7c0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-ms-throttle-levels:
+      - operationConcurrencyPct=0.5, subscriptionReadRatePct=0.2, etc
+      x-msedge-ref:
+      - 'Ref A: CF25911CED8B474FB4D29261E024A04B Ref B: SG2AA1070303060 Ref C: 2026-08-03T01:02:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002?api-version=2025-07-01
+  response:
+    body:
+      string: '{"name":"ig-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002","etag":"W/\"325a77f3-ab2d-402a-be54-5ff01b9c17ea\"","type":"Microsoft.Network/interconnectGroups","location":"eastus2","tags":{"key1":"value1"},"properties":{"provisioningState":"Succeeded","resourceGuid":"b9bab453-de25-4758-b33f-116764abad5e","scope":"InfiniBand","subgroupProfile":{"vmSize":"Standard_ND128isr_NDR_GB200_v6","scope":"VerticalConnect","size":18},"subgroups":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:18 GMT
+      etag:
+      - W/"325a77f3-ab2d-402a-be54-5ff01b9c17ea"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 5183e11d-9e2f-4e3c-a542-e9a04fe3562b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-ms-throttle-levels:
+      - operationRatePct=0.1, operationConcurrencyPct=0.5, subscriptionReadRatePct=0.2,
+        etc
+      x-msedge-ref:
+      - 'Ref A: 4360E510941047488764F12B0CB82F54 Ref B: SG2AA1070303052 Ref C: 2026-08-03T01:02:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002",
+      "location": "eastus2", "properties": {"scope": "InfiniBand", "subgroupProfile":
+      {"scope": "VerticalConnect", "size": 18, "vmSize": "Standard_ND128isr_NDR_GB200_v6"}},
+      "tags": {"key1": "value1", "key2": "value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '381'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002?api-version=2025-07-01
+  response:
+    body:
+      string: '{"name":"ig-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002","etag":"W/\"106b210a-79ec-4c58-a185-503c96da6695\"","type":"Microsoft.Network/interconnectGroups","location":"eastus2","tags":{"key1":"value1","key2":"value2"},"properties":{"provisioningState":"Succeeded","resourceGuid":"b9bab453-de25-4758-b33f-116764abad5e","scope":"InfiniBand","subgroupProfile":{"vmSize":"Standard_ND128isr_NDR_GB200_v6","scope":"VerticalConnect","size":18},"subgroups":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '581'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 99b65989-f850-419f-9340-99b5abdf81ac
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/eastus2/09d686b1-547c-42e4-925a-80ff5ad9212b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttle-levels:
+      - operationRatePct=0.2, operationConcurrencyPct=0.3, subscriptionWriteRatePct=1.0,
+        etc
+      x-msedge-ref:
+      - 'Ref A: 89A166097E75470A9ED7B3F77952B6F0 Ref B: SG2AA1070301040 Ref C: 2026-08-03T01:02:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group get-node-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --interconnect-group-name
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002/nodeAvailability?api-version=2025-07-01
+  response:
+    body:
+      string: '{"subgroupsNodeAvailability":[]}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      cache-control:
+      - no-cache
+      content-length:
+      - '32'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operationResults/6962ca4c-b084-4fc7-8e12-ae90ba7722d5?api-version=2025-07-01&t=639213157423989546&c=MIIIJzCCBw-gAwIBAgIRAPkg2z-B9Jm_vrDg-qNrjwswDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA0MTAwNjUyMTdaFw0yNjEwMDUxMjUyMTdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxhFGHIBug-4Pg8y8wrt85aTDI_1ckzX8XYnsk6BmTh36sX4QX-zrgCccWt1yXC8y3lSRvEr66Pgoywj0gN60U0prO-Llj-OOWdlGOnbBFPBaBa2ogrj2ULknxSn8HyrgUsMa3zGCqoR_eDSq7R_O20UZDFBlonw8TSmqdLPA4fe1TarGVXDGoRxYv_BQE0sxI54JmyZ5uATcXoIBRqCEmrRFh6MO0V4rK5-sBO8yodyMdOweERdOFcDfLvM2WCaax5HnsjPSLMYy-XTD01vXM3XkKAJ6K30JxQ4_Wtn1IvN-b0R-eEdUMUdPKhH4RDL_8xL-ALqsnaG0cNZazOQr1QIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUdjmEGeQg6LiPic0f-L1KBD3vO0wwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzI5L2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS8yOS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzI5L2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzI5L2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAwpZthpdA-8D9zmLFa9DswaQjZpHoWrNOxcAkBHpasqPjLn8-Kn0Epr2tRtCqiDWEGx_u3n8ziMDqRxvNKiDUdDWhMl9QuodIY45vNfF6z92zdJEJ0m01EaNwji4O0BNu0Yy7zPa_L79KmbrFPHHQkexKO2qyHqYM0M22afvWFTacEIlhMIcL-Hq6afh-pfO3r2D3ZnFSmrZFt1A8qT0qTCXRaOqAM1Wk35M7k-idK2KawQ4Q9KnP0h62bPPhktf4Hi_Ax5-Ms7zxobTxMvoilvGVHYDeQ2zZDEoMmyNZ1gfzPjnGnV2BbMj3JEHIzWuKuw033HBrOIc8peAt8JKrH&s=p_wSSqZas8NlsS7c7t8z9SLUw2vxatSKfxS7K7Rjbp58jCfX7jFV4XK38xab7-ZbkVqxjpAAuwi8aKqg_56T5IW8LzVDJ9-gKNtFvqPYAYksVU3b59M6P9YmlJIh6YZlA3sK4z3RLm0zurDaoUXt1vA7Z8FxcyPLtcAvrmz8n0nTtaXH7NzHWai8zevyVZW-NC0Df6k9QAVc121zxpTvw4i-IXL56D9ShaO3p9ng6GcFJKDT4ZJdHrbY3Jn-56Ey_xf9GDvHcxtwfIUj0MJ-PqcWbknPVoRrUxEz_ft-SyZZ6nwBoQzmkRrAoec0FZsfoS8-izhZilQoxmOFrdUVkg&h=EngWNeDUnTYjUsw5m6ZWLMWWJ56WlcQPI29hibxEmv4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - f02ad571-99f5-4b49-a692-d881ff67c961
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/southeastasia/6a43b2a8-63bf-4485-ad55-3e150ce0b9bd
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttle-levels:
+      - operationConcurrencyPct=0.5, subscriptionWriteRatePct=1.1, etc
+      x-msedge-ref:
+      - 'Ref A: 17466553C9E24AA5B8402B3988D3CDB7 Ref B: SG2AA1040517025 Ref C: 2026-08-03T01:02:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group subgroup list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --interconnect-group-name
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002/subgroups?api-version=2025-07-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 48e7dcc0-2240-4342-b4ca-1bf2ac473ae9
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/eastus2/2097ba18-15e6-4277-8053-bc28eb8d77cf
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-ms-throttle-levels:
+      - operationConcurrencyPct=0.5, subscriptionReadRatePct=0.2, subscriptionListRatePct=0.1,
+        etc
+      x-msedge-ref:
+      - 'Ref A: 36FF06790D37450BA0DA78D45FF24EE0 Ref B: SG2AA1040520062 Ref C: 2026-08-03T01:02:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups/ig-000002?api-version=2025-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Mon, 03 Aug 2026 01:02:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 9ecef071-30fd-4333-9d30-8718a74694cb
+      x-ms-operation-identifier:
+      - tenantId=4f00b3b6-2940-4f2c-b037-94637c180d30,objectId=016c741f-3499-47a6-bdb0-6ef338078ddf/eastus2/bb747480-95ca-4984-8de1-a83be264e27c
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-ms-throttle-levels:
+      - operationRatePct=0.1, operationConcurrencyPct=0.3, subscriptionWriteRatePct=1.2,
+        etc
+      x-msedge-ref:
+      - 'Ref A: E73DE06BA6BE4C3DAF59BA8AE90C8682 Ref B: SG2AA1070304062 Ref C: 2026-08-03T01:02:24Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-group list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.89.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_group_000001/providers/Microsoft.Network/interconnectGroups?api-version=2025-07-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 01:02:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6A980953F48A406CA1BDB67744CC836A Ref B: SG2AA1070302034 Ref C: 2026-08-03T01:02:26Z'
+    status:
+      code: 200
+      message: OK
+version: 1
