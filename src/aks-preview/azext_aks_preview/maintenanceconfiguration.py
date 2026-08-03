@@ -42,10 +42,22 @@ def aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters):
 
 def getMaintenanceConfiguration(cmd, raw_parameters):
     config_file = raw_parameters.get("config_file")
+    maintenance_window_id = raw_parameters.get("maintenance_window_id")
+
+    if config_file is not None and maintenance_window_id is not None:
+        raise MutuallyExclusiveArgumentError(
+            "--maintenance-window-id cannot be combined with --config-file. To link a shared "
+            "MaintenanceWindow resource via a config file, set the maintenanceWindowId property "
+            "directly in the JSON instead."
+        )
+
     if config_file is not None:
         mcr = get_file_json(config_file)
         logger.info(mcr)
         return mcr
+
+    if maintenance_window_id is not None:
+        return constructSharedMaintenanceConfiguration(cmd, raw_parameters)
 
     config_name = raw_parameters.get("config_name")
     if config_name == CONST_DEFAULT_CONFIGURATION_NAME:
@@ -56,6 +68,45 @@ def getMaintenanceConfiguration(cmd, raw_parameters):
         "--config-name must be one of default, aksManagedAutoUpgradeSchedule or "
         f"aksManagedNodeOSUpgradeSchedule, not {config_name}"
     )
+
+
+def constructSharedMaintenanceConfiguration(cmd, raw_parameters):
+    maintenance_window_id = raw_parameters.get("maintenance_window_id")
+    if not maintenance_window_id or not maintenance_window_id.strip():
+        raise InvalidArgumentValueError(
+            "--maintenance-window-id cannot be empty; provide the resource ID of a shared "
+            "MaintenanceWindow resource."
+        )
+    inline_schedule_parameters = {
+        "--weekday": raw_parameters.get("weekday"),
+        "--start-hour": raw_parameters.get("start_hour"),
+        "--schedule-type": raw_parameters.get("schedule_type"),
+        "--interval-days": raw_parameters.get("interval_days"),
+        "--interval-weeks": raw_parameters.get("interval_weeks"),
+        "--interval-months": raw_parameters.get("interval_months"),
+        "--day-of-week": raw_parameters.get("day_of_week"),
+        "--day-of-month": raw_parameters.get("day_of_month"),
+        "--week-index": raw_parameters.get("week_index"),
+        "--duration": raw_parameters.get("duration_hours"),
+        "--utc-offset": raw_parameters.get("utc_offset"),
+        "--start-date": raw_parameters.get("start_date"),
+        "--start-time": raw_parameters.get("start_time"),
+    }
+    conflicting = [name for name, value in inline_schedule_parameters.items() if value is not None]
+    if conflicting:
+        raise MutuallyExclusiveArgumentError(
+            "--maintenance-window-id points to a shared MaintenanceWindow resource and cannot be "
+            "combined with inline schedule arguments: " + ", ".join(conflicting) + "."
+        )
+
+    MaintenanceConfiguration = cmd.get_models(
+        "MaintenanceConfiguration",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="maintenance_configurations"
+    )
+    result = MaintenanceConfiguration()
+    result.maintenance_window_id = maintenance_window_id
+    return result
 
 
 def constructDefaultMaintenanceConfiguration(cmd, raw_parameters):

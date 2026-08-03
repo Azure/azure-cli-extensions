@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b20
++++++++++++++++
+* Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
+
 1.0.0b19
 +++++++++++++++
 * Added the ``az quantum job delete`` command to delete a job from an Azure Quantum workspace.
