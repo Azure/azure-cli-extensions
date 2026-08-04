@@ -23,7 +23,10 @@ from azure.cli.command_modules.acs._consts import (
     AgentPoolDecoratorMode,
     DecoratorMode,
 )
-from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
+from azure.cli.command_modules.acs.agentpool_decorator import (
+    AKSAgentPoolParamDict,
+    AKSAgentPoolUpdateDecorator,
+)
 from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockCLI,
     MockClient,
@@ -34,6 +37,16 @@ from azure.cli.core.azclierror import CLIInternalError
 
 class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
     """Test class for the update_agentpool_profile_preview method."""
+
+    base_handles_vms_autoscaler = hasattr(
+        AKSAgentPoolUpdateDecorator, "update_auto_scaler_properties_vms"
+    )
+
+    def _assert_vms_autoscaler_update(self, update_method, agentpool, expected):
+        if expected and not self.base_handles_vms_autoscaler:
+            update_method.assert_called_once_with(agentpool)
+        else:
+            update_method.assert_not_called()
 
     def setUp(self):
         """Set up test fixtures."""
@@ -159,7 +172,9 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_vm_size.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
-        decorator.update_auto_scaler_properties_vms.assert_not_called()
+        self._assert_vms_autoscaler_update(
+            decorator.update_auto_scaler_properties_vms, agentpool, expected=True
+        )
         decorator.update_upgrade_strategy.assert_called_once_with(agentpool)
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
@@ -402,7 +417,9 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_vm_size.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
-        decorator.update_auto_scaler_properties_vms.assert_not_called()
+        self._assert_vms_autoscaler_update(
+            decorator.update_auto_scaler_properties_vms, agentpool, expected=True
+        )
         decorator.update_upgrade_strategy.assert_called_once_with(agentpool)
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
@@ -483,8 +500,9 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_crg",
             "update_prepared_image_specification",
         ]
+        if not self.base_handles_vms_autoscaler:
+            expected_order.insert(10, "update_auto_scaler_properties_vms")
         self.assertEqual(call_order, expected_order)
-        decorator.update_auto_scaler_properties_vms.assert_not_called()
 
     def test_update_agentpool_profile_preview_preserves_agentpool_reference(self):
         """Test that the method preserves agentpool object reference throughout the chain."""
@@ -618,7 +636,11 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                 else:
                     for method_name in update_methods:
                         getattr(decorator, method_name).assert_not_called()
-                decorator.update_auto_scaler_properties_vms.assert_not_called()
+                self._assert_vms_autoscaler_update(
+                    decorator.update_auto_scaler_properties_vms,
+                    agentpool,
+                    expected=case["expect_update_methods_called"],
+                )
 
 
 class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolProfilePreview):
