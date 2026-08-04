@@ -1192,35 +1192,8 @@ def validate_opentelemetry_logs_dependencies_for_update(namespace):
     # to the cluster's Azure Monitor profile
 
 
-def _merge_opentelemetry_deprecated_aliases(namespace):
-    """Merge deprecated OpenTelemetry alias dests into their current dests.
-
-    The old option names are registered as separate arguments (so the new names can carry the
-    preview tag while the old names carry the deprecation tag). This copies any value supplied via
-    a deprecated alias onto the current dest, so all downstream validation and decorator logic only
-    needs to read the current dests.
-    """
-    # (current_dest, deprecated_dest, is_flag)
-    pairs = [
-        ("opentelemetry_metrics_port", "opentelemetry_metrics_port_deprecated", False),
-        ("opentelemetry_logs_port", "opentelemetry_logs_port_deprecated", False),
-        ("enable_opentelemetry_logs", "enable_opentelemetry_logs_deprecated", True),
-        ("disable_opentelemetry_logs", "disable_opentelemetry_logs_deprecated", True),
-    ]
-    for current, deprecated, is_flag in pairs:
-        if not hasattr(namespace, deprecated):
-            continue
-        deprecated_value = getattr(namespace, deprecated)
-        if is_flag:
-            if deprecated_value:
-                setattr(namespace, current, True)
-        elif deprecated_value is not None and getattr(namespace, current, None) is None:
-            setattr(namespace, current, deprecated_value)
-
-
 def validate_azure_monitor_and_opentelemetry_for_create(namespace):
     """Main validator for Azure Monitor and OpenTelemetry configurations for create operations."""
-    _merge_opentelemetry_deprecated_aliases(namespace)
     # Run all OpenTelemetry-related validations
     validate_opentelemetry_ports(namespace)
     validate_opentelemetry_metrics_dependencies(namespace)
@@ -1229,7 +1202,6 @@ def validate_azure_monitor_and_opentelemetry_for_create(namespace):
 
 def validate_azure_monitor_and_opentelemetry_for_update(namespace):
     """Main validator for Azure Monitor and OpenTelemetry configurations for update operations."""
-    _merge_opentelemetry_deprecated_aliases(namespace)
     # Run all OpenTelemetry-related validations
     validate_opentelemetry_ports(namespace)
     validate_opentelemetry_metrics_dependencies_for_update(namespace)

@@ -2045,59 +2045,6 @@ class OpenTelemetryPortsNamespace:
         self.opentelemetry_logs_traces_port_grpc = opentelemetry_logs_traces_port_grpc
 
 
-class OpenTelemetryDeprecatedAliasNamespace:
-    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_metrics_port_deprecated=None,
-                 opentelemetry_logs_port=None, opentelemetry_logs_port_deprecated=None,
-                 enable_opentelemetry_logs=False, enable_opentelemetry_logs_deprecated=False,
-                 disable_opentelemetry_logs=False, disable_opentelemetry_logs_deprecated=False):
-        self.opentelemetry_metrics_port = opentelemetry_metrics_port
-        self.opentelemetry_metrics_port_deprecated = opentelemetry_metrics_port_deprecated
-        self.opentelemetry_logs_port = opentelemetry_logs_port
-        self.opentelemetry_logs_port_deprecated = opentelemetry_logs_port_deprecated
-        self.enable_opentelemetry_logs = enable_opentelemetry_logs
-        self.enable_opentelemetry_logs_deprecated = enable_opentelemetry_logs_deprecated
-        self.disable_opentelemetry_logs = disable_opentelemetry_logs
-        self.disable_opentelemetry_logs_deprecated = disable_opentelemetry_logs_deprecated
-
-
-class TestMergeOpenTelemetryDeprecatedAliases(unittest.TestCase):
-    def test_deprecated_port_merged_when_current_unset(self):
-        ns = OpenTelemetryDeprecatedAliasNamespace(opentelemetry_metrics_port_deprecated=8080)
-        validators._merge_opentelemetry_deprecated_aliases(ns)
-        self.assertEqual(ns.opentelemetry_metrics_port, 8080)
-
-    def test_current_port_takes_precedence_over_deprecated(self):
-        ns = OpenTelemetryDeprecatedAliasNamespace(
-            opentelemetry_metrics_port=9000,
-            opentelemetry_metrics_port_deprecated=8080,
-        )
-        validators._merge_opentelemetry_deprecated_aliases(ns)
-        self.assertEqual(ns.opentelemetry_metrics_port, 9000)
-
-    def test_deprecated_logs_port_merged(self):
-        ns = OpenTelemetryDeprecatedAliasNamespace(opentelemetry_logs_port_deprecated=4317)
-        validators._merge_opentelemetry_deprecated_aliases(ns)
-        self.assertEqual(ns.opentelemetry_logs_port, 4317)
-
-    def test_deprecated_enable_flag_merged(self):
-        ns = OpenTelemetryDeprecatedAliasNamespace(enable_opentelemetry_logs_deprecated=True)
-        validators._merge_opentelemetry_deprecated_aliases(ns)
-        self.assertTrue(ns.enable_opentelemetry_logs)
-
-    def test_deprecated_disable_flag_merged(self):
-        ns = OpenTelemetryDeprecatedAliasNamespace(disable_opentelemetry_logs_deprecated=True)
-        validators._merge_opentelemetry_deprecated_aliases(ns)
-        self.assertTrue(ns.disable_opentelemetry_logs)
-
-    def test_no_deprecated_values_leaves_current_unchanged(self):
-        ns = OpenTelemetryDeprecatedAliasNamespace()
-        validators._merge_opentelemetry_deprecated_aliases(ns)
-        self.assertIsNone(ns.opentelemetry_metrics_port)
-        self.assertIsNone(ns.opentelemetry_logs_port)
-        self.assertFalse(ns.enable_opentelemetry_logs)
-        self.assertFalse(ns.disable_opentelemetry_logs)
-
-
 class TestValidateOpenTelemetryPorts(unittest.TestCase):
     def test_no_ports_specified(self):
         namespace = OpenTelemetryPortsNamespace()
