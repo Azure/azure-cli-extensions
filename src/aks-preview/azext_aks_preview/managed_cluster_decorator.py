@@ -4377,7 +4377,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_sku_name() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        if (self.context.get_sku_name() or "").lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return mc
 
         return super().set_up_linux_profile(mc)
