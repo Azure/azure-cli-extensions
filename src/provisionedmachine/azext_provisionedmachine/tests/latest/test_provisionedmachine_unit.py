@@ -440,6 +440,25 @@ class TestOsImageListTableTransformer(unittest.TestCase):
         self.assertEqual(rows[0]["OsImageType"], "AzureLinux")
         self.assertEqual(rows[1]["OsImageType"], "AzureLinux")
 
+    def test_architecture_column_extracted_from_properties(self):
+        """Architecture comes from properties.architecture; a missing value defaults to empty."""
+        test_data = [
+            {
+                "properties": {
+                    "validatedSolutionRecipeVersion": "50.2607.0.8",
+                    "architecture": "arm64",
+                },
+                "_os_image_type": "AzureLinux",
+            },
+            {
+                "properties": {"validatedSolutionRecipeVersion": "50.2605.0.3"},
+                "_os_image_type": "HCI",
+            },
+        ]
+        rows = transform_os_image_list_table_output(test_data)
+        self.assertEqual(rows[0]["Architecture"], "arm64")
+        self.assertEqual(rows[1]["Architecture"], "")
+
     def test_non_list_input_returns_as_is(self):
         """Non-list input passes through unchanged."""
         result = transform_os_image_list_table_output("error string")

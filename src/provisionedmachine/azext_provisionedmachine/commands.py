@@ -86,6 +86,7 @@ def transform_os_image_list_table_output(result):
             rows.append({
                 "VsrVersion": props.get("validatedSolutionRecipeVersion", ""),
                 "OsImageType": item.get("_os_image_type", ""),
+                "Architecture": props.get("architecture", ""),
             })
 
     return rows

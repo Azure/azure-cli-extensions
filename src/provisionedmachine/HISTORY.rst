@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b7
+++++++
+* ``az provisionedmachine os-image list`` - Added an ``Architecture`` column to the table output, surfacing the CPU architecture (amd64/arm64) of each OS image.
+
 1.0.0b6
 ++++++
 * ``az provisionedmachine create`` / ``install-os`` - Fixed AzureLinux OS provisioning: the resolved OS image version is now mapped to ``vsrVersion`` (previously ``osVersion``).
