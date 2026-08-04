@@ -159,7 +159,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_vm_size.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
-        decorator.update_auto_scaler_properties_vms.assert_called_once_with(agentpool)
+        decorator.update_auto_scaler_properties_vms.assert_not_called()
         decorator.update_upgrade_strategy.assert_called_once_with(agentpool)
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
@@ -402,7 +402,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_vm_size.assert_called_once_with(agentpool)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
-        decorator.update_auto_scaler_properties_vms.assert_called_once_with(agentpool)
+        decorator.update_auto_scaler_properties_vms.assert_not_called()
         decorator.update_upgrade_strategy.assert_called_once_with(agentpool)
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
@@ -476,7 +476,6 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_ssh_access",
             "update_vm_size",
             "update_localdns_profile",
-            "update_auto_scaler_properties_vms",
             "update_upgrade_strategy",
             "update_blue_green_upgrade_settings",
             "update_gpu_profile",
@@ -485,6 +484,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_prepared_image_specification",
         ]
         self.assertEqual(call_order, expected_order)
+        decorator.update_auto_scaler_properties_vms.assert_not_called()
 
     def test_update_agentpool_profile_preview_preserves_agentpool_reference(self):
         """Test that the method preserves agentpool object reference throughout the chain."""
@@ -597,13 +597,14 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                 update_methods = [
                     'update_network_profile', 'update_artifact_streaming', 'update_managed_gpu',
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
-                    'update_ssh_access', 'update_vm_size', 'update_localdns_profile', 'update_auto_scaler_properties_vms', 
+                    'update_ssh_access', 'update_vm_size', 'update_localdns_profile',
                     'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile',
                     'update_gpu_mig_strategy', 'update_crg', 'update_prepared_image_specification'
                 ]
 
                 for method_name in update_methods:
                     setattr(decorator, method_name, Mock(return_value=agentpool))
+                decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
 
                 # Act
                 result = decorator.update_agentpool_profile_preview()
@@ -617,6 +618,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                 else:
                     for method_name in update_methods:
                         getattr(decorator, method_name).assert_not_called()
+                decorator.update_auto_scaler_properties_vms.assert_not_called()
 
 
 class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolProfilePreview):
