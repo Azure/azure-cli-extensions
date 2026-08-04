@@ -2156,8 +2156,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # update local DNS profile
         agentpool = self.update_localdns_profile(agentpool)
 
-        # update auto scaler related properties for vms pool
-        agentpool = self.update_auto_scaler_properties_vms(agentpool)
+        # Older CLI versions do not handle VMS autoscaler properties in the default update flow.
+        if not hasattr(AKSAgentPoolUpdateDecorator, "update_auto_scaler_properties_vms"):
+            agentpool = self.update_auto_scaler_properties_vms(agentpool)
 
         # update upgrade strategy
         agentpool = self.update_upgrade_strategy(agentpool)
@@ -2179,6 +2180,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    # TODO: Remove this override after azext.minCliCoreVersion is raised to the first
+    # Azure CLI release containing cf7097eb97 (expected 2.90.0).
     def update_auto_scaler_properties(self, agentpool: AgentPool) -> AgentPool:
         """Update auto scaler related properties for vmss Agentpool object.
 

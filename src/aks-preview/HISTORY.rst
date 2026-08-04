@@ -9,9 +9,14 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-21.0.0b13
+Pending
 +++++++
 * Skip SSH key generation/validation for `az aks create --sku automatic` so `--no-ssh-key` is no longer required for Automatic clusters.
+* `az aks nodepool update`: Avoid applying VirtualMachines autoscaler profile conversions twice with newer Azure CLI versions while preserving compatibility with older CLI versions.
+
+21.0.0b13
+++++++++
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. `--maintenance-window-id` cannot be combined with `--config-file` (set the `maintenanceWindowId` property in the JSON instead) and cannot be empty. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.
 
 21.0.0b12
 ++++++++
