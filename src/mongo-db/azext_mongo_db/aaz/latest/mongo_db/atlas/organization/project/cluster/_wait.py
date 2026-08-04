@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "mongo-db atlas organization wait",
+    "mongo-db atlas organization project cluster wait",
 )
 class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.
@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2026-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}/projects/{}/clusters/{}", "2026-03-01-preview"],
         ]
     }
 
@@ -40,14 +40,36 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.cluster_name = AAZStrArg(
+            options=["-n", "--name", "--cluster-name"],
+            help="Name of the MongoDB Atlas Cluster resource.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]*$",
+                max_length=64,
+                min_length=1,
+            ),
+        )
         _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
-            help="Name of the MongoDB Atlas Organization",
+            options=["--organization-name"],
+            help="Name of the Organization resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
+                min_length=1,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project-name"],
+            help="Name of the MongoDB Atlas Project resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.+$",
+                max_length=64,
                 min_length=1,
             ),
         )
@@ -58,7 +80,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.OrganizationsGet(ctx=self.ctx)()
+        self.ClustersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +95,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class OrganizationsGet(AAZHttpOperation):
+    class ClustersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +109,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/MongoDB.Atlas/organizations/{organizationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/MongoDB.Atlas/organizations/{organizationName}/projects/{projectName}/clusters/{clusterName}",
                 **self.url_parameters
             )
 
@@ -103,7 +125,15 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "organizationName", self.ctx.args.organization_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -157,10 +187,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZIdentityObjectType()
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -169,126 +195,39 @@ class Wait(AAZWaitCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
             properties = cls._schema_on_200.properties
-            properties.marketplace = AAZObjectType(
+            properties.backups = AAZBoolType(
+                nullable=True,
+                flags={"read_only": True},
+            )
+            properties.cluster_name = AAZStrType(
+                serialized_name="clusterName",
+                flags={"read_only": True},
+            )
+            properties.cluster_tier = AAZStrType(
+                serialized_name="clusterTier",
                 flags={"required": True},
             )
-            properties.partner_properties = AAZObjectType(
-                serialized_name="partnerProperties",
+            properties.mongo_db_version = AAZStrType(
+                serialized_name="mongoDbVersion",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user = AAZObjectType(
+            properties.region_name = AAZStrType(
+                serialized_name="regionName",
                 flags={"required": True},
             )
-
-            marketplace = cls._schema_on_200.properties.marketplace
-            marketplace.offer_details = AAZObjectType(
-                serialized_name="offerDetails",
-                flags={"required": True},
-            )
-            marketplace.subscription_id = AAZStrType(
-                serialized_name="subscriptionId",
-                flags={"required": True},
-            )
-            marketplace.subscription_status = AAZStrType(
-                serialized_name="subscriptionStatus",
+            properties.state = AAZStrType(
+                nullable=True,
                 flags={"read_only": True},
             )
-
-            offer_details = cls._schema_on_200.properties.marketplace.offer_details
-            offer_details.offer_id = AAZStrType(
-                serialized_name="offerId",
-                flags={"required": True},
-            )
-            offer_details.plan_id = AAZStrType(
-                serialized_name="planId",
-                flags={"required": True},
-            )
-            offer_details.plan_name = AAZStrType(
-                serialized_name="planName",
-            )
-            offer_details.publisher_id = AAZStrType(
-                serialized_name="publisherId",
-                flags={"required": True},
-            )
-            offer_details.term_id = AAZStrType(
-                serialized_name="termId",
-            )
-            offer_details.term_unit = AAZStrType(
-                serialized_name="termUnit",
-            )
-
-            partner_properties = cls._schema_on_200.properties.partner_properties
-            partner_properties.organization_id = AAZStrType(
-                serialized_name="organizationId",
-            )
-            partner_properties.organization_name = AAZStrType(
-                serialized_name="organizationName",
-                flags={"required": True},
-            )
-            partner_properties.redirect_url = AAZStrType(
-                serialized_name="redirectUrl",
-            )
-
-            user = cls._schema_on_200.properties.user
-            user.company_name = AAZStrType(
-                serialized_name="companyName",
-            )
-            user.email_address = AAZStrType(
-                serialized_name="emailAddress",
-                flags={"required": True},
-            )
-            user.first_name = AAZStrType(
-                serialized_name="firstName",
-                flags={"required": True},
-            )
-            user.last_name = AAZStrType(
-                serialized_name="lastName",
-                flags={"required": True},
-            )
-            user.phone_number = AAZStrType(
-                serialized_name="phoneNumber",
-            )
-            user.upn = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -309,9 +248,6 @@ class Wait(AAZWaitCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

@@ -8,16 +8,12 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "mongo-db atlas",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage Atlas
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._cluster_tier_region import *
+from ._create import *
+from ._delete import *
+from ._list import *
+from ._show import *
+from ._tier_limit_reached import *
+from ._update import *
+from ._wait import *
