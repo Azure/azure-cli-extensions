@@ -5,6 +5,7 @@
 
 import os
 import pty
+import random
 import semver
 import subprocess
 import tempfile
@@ -42,6 +43,193 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         super(AzureKubernetesServiceScenarioTest, self).__init__(
             method_name, recording_processors=[KeyReplacer()]
         )
+        self._retry_live_without_recording = (
+            self.is_live and
+            os.environ.get("AZURE_CLI_TEST_RETRY_PROVISIONING_CHECK") == "true"
+        )
+        if self._retry_live_without_recording:
+            # Poll/refetch requests make retry-enabled cassettes incompatible
+            # with normal replay, so runner validation must not save them.
+            self.disable_recording = True
+
+    def _save_recording_file(self, *args):
+        if self._retry_live_without_recording:
+            # Preparers temporarily override disable_recording. Mark the
+            # cassette clean before its context exits so none of that traffic
+            # can produce a partial, unreplayable recording.
+            self.cassette.dirty = False
+            if os.path.exists(self.temp_recording_file):
+                os.remove(self.temp_recording_file)
+            return
+        return super()._save_recording_file(*args)
+
+    def cmd(self, command, checks=None, expect_failure=False):
+        if (self.is_live and
+            os.environ.get("AZURE_CLI_TEST_RETRY_PROVISIONING_CHECK") == "true"):
+            if checks is None:
+                normalized_checks = []
+            elif isinstance(checks, (list, tuple)):
+                normalized_checks = checks
+            else:
+                normalized_checks = [checks]
+            return self._cmd_with_retry(command, normalized_checks, expect_failure)
+        return super().cmd(command, checks=checks, expect_failure=expect_failure)
+
+    @staticmethod
+    def _is_provisioning_state_check(check):
+        from azure.cli.testsdk.checkers import JMESPathCheck
+        return (
+            isinstance(check, JMESPathCheck) and
+            check._query == "provisioningState" and
+            check._expected_result == "Succeeded"
+        )
+
+    @staticmethod
+    def _should_retry_for_provisioning_state(result):
+        if not hasattr(result, "get_output_in_json"):
+            return False, None
+        data = result.get_output_in_json()
+        if not isinstance(data, dict) or "id" not in data:
+            return False, None
+        provisioning_state = data.get("provisioningState")
+        if not provisioning_state:
+            return False, None
+        if provisioning_state in {"Failed", "Canceled"}:
+            raise AssertionError(f"provisioningState is {provisioning_state}")
+        if provisioning_state == "Succeeded":
+            return False, None
+        return True, data["id"]
+
+    @staticmethod
+    def _is_transient_operation_conflict(ex):
+        message = str(ex)
+        return (
+            "Another operation is in progress" in message or
+            "Operation is not allowed because there's an in-progress" in message or
+            "in-progress PutExtensionAddonHandler.PUT operation" in message or
+            "is in Updating state, please wait for it to succeed" in message or
+            "ProvisioningState of extension: Updating" in message
+        )
+
+    def _execute_with_transient_conflict_retry(self, command, expect_failure):
+        from azure.cli.testsdk.base import execute
+        import logging
+
+        max_retries = max(1, int(os.environ.get("AZURE_CLI_TEST_OPERATION_MAX_RETRIES", "10")))
+        base_delay = float(os.environ.get("AZURE_CLI_TEST_OPERATION_BASE_DELAY", "5.0"))
+        max_delay = float(os.environ.get("AZURE_CLI_TEST_OPERATION_MAX_DELAY", "60.0"))
+
+        for attempt in range(max_retries):
+            try:
+                return execute(self.cli_ctx, command, expect_failure=expect_failure)
+            except (HttpResponseError, CLIError) as ex:
+                if (
+                    expect_failure or
+                    not self._is_transient_operation_conflict(ex) or
+                    attempt == max_retries - 1
+                ):
+                    raise
+                delay = min(base_delay * (2 ** attempt), max_delay) + random.uniform(0, 1)
+                logging.warning(
+                    "AKS operation is still in progress; retrying command in %.1f seconds (%d/%d)",
+                    delay,
+                    attempt + 1,
+                    max_retries,
+                )
+                time.sleep(delay)
+
+        raise AssertionError("unreachable")
+
+    def _refetch_settled_aks_result(self, resource_id, fallback_result):
+        from azure.cli.testsdk.base import execute
+
+        resource_parts = resource_id.strip("/").split("/")
+        normalized_parts = [part.lower() for part in resource_parts]
+        try:
+            resource_group = resource_parts[normalized_parts.index("resourcegroups") + 1]
+            cluster_index = normalized_parts.index("managedclusters")
+            cluster_name = resource_parts[cluster_index + 1]
+        except (ValueError, IndexError):
+            return fallback_result
+
+        remaining_parts = normalized_parts[cluster_index + 2:]
+        if not remaining_parts:
+            show_command = f"aks show --resource-group {resource_group} --name {cluster_name}"
+        elif len(remaining_parts) == 2 and remaining_parts[0] == "agentpools":
+            try:
+                nodepool_name = resource_parts[normalized_parts.index("agentpools") + 1]
+            except IndexError:
+                return fallback_result
+            show_command = (
+                f"aks nodepool show --resource-group {resource_group} "
+                f"--cluster-name {cluster_name} --name {nodepool_name}"
+            )
+        else:
+            return fallback_result
+
+        return execute(self.cli_ctx, show_command, expect_failure=False)
+
+    def _cmd_with_retry(self, command, checks, expect_failure):
+        from azure.cli.testsdk.base import execute
+        import logging
+
+        command = self._apply_kwargs(command)
+        result = self._execute_with_transient_conflict_retry(command, expect_failure)
+
+        provisioning_checks = [c for c in checks if self._is_provisioning_state_check(c)]
+        other_checks = [c for c in checks if not self._is_provisioning_state_check(c)]
+
+        if provisioning_checks:
+            should_retry, resource_id = self._should_retry_for_provisioning_state(result)
+            if should_retry:
+                initial_data = result.get_output_in_json()
+                initial_etag = initial_data.get("etag")
+                last_seen_etag = initial_etag
+                max_retries = max(1, int(os.environ.get("AZURE_CLI_TEST_PROVISIONING_MAX_RETRIES", "10")))
+                base_delay = float(os.environ.get("AZURE_CLI_TEST_PROVISIONING_BASE_DELAY", "2.0"))
+                max_delay = float(os.environ.get("AZURE_CLI_TEST_PROVISIONING_MAX_DELAY", "60.0"))
+
+                for attempt in range(max_retries):
+                    delay = min(base_delay * (2 ** attempt), max_delay) + random.uniform(0, 1)
+                    time.sleep(delay)
+                    poll_result = execute(
+                        self.cli_ctx,
+                        f"resource show --ids {resource_id}",
+                        expect_failure=False,
+                    )
+                    poll_data = poll_result.get_output_in_json()
+                    poll_properties = poll_data.get("properties") or {}
+                    current_provisioning_state = (
+                        poll_data.get("provisioningState") or
+                        poll_properties.get("provisioningState")
+                    )
+                    current_etag = poll_data.get("etag")
+
+                    if current_etag and last_seen_etag and current_etag != last_seen_etag:
+                        logging.warning("ETag changed during polling (external modification detected)")
+                    last_seen_etag = current_etag
+
+                    if current_provisioning_state == "Succeeded":
+                        result = self._refetch_settled_aks_result(resource_id, result)
+                        break
+                    if current_provisioning_state in {"Failed", "Canceled"}:
+                        raise AssertionError(
+                            f"provisioningState reached terminal failure: {current_provisioning_state}"
+                        )
+                else:
+                    final_etag_msg = ""
+                    if initial_etag and last_seen_etag:
+                        final_etag_msg = f" (initial etag: {initial_etag}, final: {last_seen_etag})"
+                    raise TimeoutError(
+                        f"provisioningState did not reach 'Succeeded' after {max_retries} retries. "
+                        f"Final state: {current_provisioning_state}{final_etag_msg}"
+                    )
+            result.assert_with_checks(provisioning_checks)
+
+        if other_checks:
+            result.assert_with_checks(other_checks)
+
+        return result
 
     def _create_log_analytics_workspace(self, resource_group_location):
         workspace_name = self.create_random_name("clilaw", 16)
