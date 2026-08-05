@@ -4,9 +4,7 @@ Release History
 ===============
 1.0.0b7
 ++++++
-* ``az provisionedmachine os-image list`` - Added an ``Architecture`` column to the table output, surfacing the CPU architecture (amd64/arm64) of each OS image.
-* ``az provisionedmachine os-image list`` - Added a ``SolutionType`` column to the table output, surfacing the OS family (HCI/AzureLinux) returned by the service.
-* ``az provisionedmachine os-image list`` - Added an optional ``--architecture`` filter (``amd64``/``arm64``) to list only OS images for a given CPU architecture.
+* ``az provisionedmachine os-image list`` - Added an optional ``--architecture`` filter (``amd64``/``arm64``) and new ``Architecture`` and ``SolutionType`` columns to the table output.
 
 1.0.0b6
 ++++++
