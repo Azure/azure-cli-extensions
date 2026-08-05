@@ -1,0 +1,380 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_input_sql_create_policy_violation","date":"2026-06-23T05:10:43Z","module":"stream-analytics"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '418'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 11ECDBF52D4847F399435444B8D87252 Ref B: SG2AA1040515025 Ref C: 2026-06-23T05:10:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - policy definition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97?api-version=2024-05-01
+  response:
+    body:
+      string: '{"properties":{"displayName":"Stream Analytics job should use managed
+        identity to authenticate endpoints","policyType":"BuiltIn","mode":"All","description":"Ensure
+        that Stream Analytics jobs only connect to endpoints using managed identity
+        authentication.","metadata":{"version":"1.0.0","category":"Stream Analytics"},"version":"1.0.0","parameters":{"effect":{"type":"String","metadata":{"displayName":"Effect","description":"The
+        desired effect of the policy."},"allowedValues":["Deny","Disabled","Audit"],"defaultValue":"Audit"}},"policyRule":{"if":{"anyOf":[{"allOf":[{"field":"type","equals":"Microsoft.StreamAnalytics/streamingjobs/outputs"},{"anyOf":[{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"Microsoft.Storage/Blob"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.Microsoft-Storage-Blob.authenticationMode","notEquals":"Msi"}]},{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"Microsoft.DataLake/Accounts"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.Microsoft-DataLake-Accounts.authenticationMode","notEquals":"Msi"}]},{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"PowerBI"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.PowerBI.authenticationMode","notEquals":"Msi"}]},{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"Microsoft.ServiceBus/Topic"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.Microsoft-ServiceBus-Topic.authenticationMode","notEquals":"Msi"}]},{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"Microsoft.ServiceBus/Queue"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.Microsoft-ServiceBus-Queue.authenticationMode","notEquals":"Msi"}]},{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"Microsoft.Sql/Server/Database"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.Microsoft-Sql-Server-Database.authenticationMode","notEquals":"Msi"}]},{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","equals":"Microsoft.EventHub/EventHub"},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.Microsoft-EventHub-EventHub.authenticationMode","notEquals":"Msi"}]},{"field":"Microsoft.StreamAnalytics/streamingjobs/outputs/datasource.type","notIn":["Microsoft.Storage/Blob","Microsoft.DataLake/Accounts","PowerBI","Microsoft.ServiceBus/Topic","Microsoft.ServiceBus/Queue","Microsoft.Sql/Server/Database","Microsoft.EventHub/EventHub"]}]}]},{"allOf":[{"field":"type","equals":"Microsoft.StreamAnalytics/streamingjobs/inputs"},{"anyOf":[{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/inputs/Stream.datasource.type","equals":"Microsoft.EventHub/EventHub"},{"field":"Microsoft.StreamAnalytics/streamingjobs/inputs/Stream.datasource.Microsoft-EventHub-EventHub.authenticationMode","notEquals":"Msi"}]},{"field":"Microsoft.StreamAnalytics/streamingjobs/inputs/Stream.datasource.type","notIn":["Microsoft.EventHub/EventHub"]}]}]},{"allOf":[{"field":"type","equals":"Microsoft.StreamAnalytics/streamingjobs/functions"},{"field":"Microsoft.StreamAnalytics/streamingjobs/functions[*].type","notIn":["Microsoft.StreamAnalytics/JavascriptUdf","Microsoft.StreamAnalytics/CLRUdf"]}]},{"allOf":[{"field":"type","equals":"Microsoft.StreamAnalytics/streamingjobs"},{"anyOf":[{"allOf":[{"field":"Microsoft.StreamAnalytics/streamingjobs/jobStorageAccount","exists":"true"},{"field":"Microsoft.StreamAnalytics/streamingjobs/jobStorageAccount.authenticationMode","notEquals":"Msi"}]}]}]}]},"then":{"effect":"[parameters(''effect'')]"}},"versions":["1.0.0"]},"id":"/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97","type":"Microsoft.Authorization/policyDefinitions","name":"ea6c4923-510a-4346-be26-1894919a5b97"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4024'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 92FF1C39685F422683D632EB216C0A66 Ref B: SG2AA1070306036 Ref C: 2026-06-23T05:10:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"displayName": "Deny ASA non-MI authentication", "enforcementMode":
+      "Default", "parameters": {"effect": {"value": "Deny"}}, "policyDefinitionId":
+      "/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - policy assignment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '255'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --display-name --policy --scope --params
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.Authorization/policyAssignments/deny-asa-mi?api-version=2024-05-01
+  response:
+    body:
+      string: '{"properties":{"displayName":"Deny ASA non-MI authentication","policyDefinitionId":"/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97","definitionVersion":"1.*.*","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","parameters":{"effect":{"value":"Deny"}},"metadata":{"createdBy":"73deb370-6e80-42b7-bab4-943c887d3e3c","createdOn":"2026-06-23T05:10:49.8454662Z","updatedBy":null,"updatedOn":null},"enforcementMode":"Default"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.Authorization/policyAssignments/deny-asa-mi","type":"Microsoft.Authorization/policyAssignments","name":"deny-asa-mi","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-23T05:10:49.6257765Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-23T05:10:49.6257765Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '991'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/southeastasia/4dd38254-c43e-49d8-bba1-25eda723fe7d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 1F34150683E9424193331D62EFB39539 Ref B: SG2AA1070306034 Ref C: 2026-06-23T05:10:49Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
+        --arrival-max-delay
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_input_sql_create_policy_violation","date":"2026-06-23T05:10:43Z","module":"stream-analytics"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '418'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C55096DF31B04A7A9BEA522B4053AF0A Ref B: SG2AA1070305054 Ref C: 2026-06-23T05:10:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"sku": {"name": "Standard"}, "eventsOutOfOrderPolicy":
+      "Drop", "outputErrorPolicy": "Drop", "eventsOutOfOrderMaxDelayInSeconds": 0,
+      "eventsLateArrivalMaxDelayInSeconds": 5, "dataLocale": "en-US"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics job create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '234'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
+        --arrival-max-delay
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job?api-version=2020-03-01
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job\",\r\n
+        \ \"name\": \"job\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs\",\r\n
+        \ \"location\": \"West US\",\r\n  \"properties\": {\r\n    \"sku\": {\r\n
+        \     \"name\": \"Standard\"\r\n    },\r\n    \"jobId\": \"fe29e1ac-a346-443d-b67c-bf46f4831d4b\",\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"jobState\": \"Created\",\r\n
+        \   \"eventsOutOfOrderPolicy\": \"Drop\",\r\n    \"outputErrorPolicy\": \"Drop\",\r\n
+        \   \"eventsOutOfOrderMaxDelayInSeconds\": 0,\r\n    \"eventsLateArrivalMaxDelayInSeconds\":
+        5,\r\n    \"dataLocale\": \"en-US\",\r\n    \"createdDate\": \"2026-06-23T05:10:52.777Z\",\r\n
+        \   \"compatibilityLevel\": \"1.0\",\r\n    \"jobStorageAccount\": null,\r\n
+        \   \"contentStoragePolicy\": \"SystemAccount\",\r\n    \"inputs\": [],\r\n
+        \   \"functions\": [],\r\n    \"outputs\": [],\r\n    \"jobType\": \"Cloud\",\r\n
+        \   \"cluster\": null\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '920'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:52 GMT
+      etag:
+      - eb080075-938e-4398-83f5-2f686919df2e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/453a9c40-d52a-4104-8db4-53d25b43be10
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: EB0D8A84E1D34798B97D6AED0F86AEF1 Ref B: SG2AA1070302060 Ref C: 2026-06-23T05:10:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "input", "properties": {"type": "Reference", "datasource": {"type":
+      "Microsoft.Sql/Server/Database", "properties": {"authenticationMode": "ConnectionString",
+      "database": "sql-db", "fullSnapshotQuery": "SELECT * from a", "password": "Password123!",
+      "refreshRate": "00:00:00", "refreshType": "Static", "server": "sql-server",
+      "user": "sql-user"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics input create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '355'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --job-name --properties
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/inputs/input?api-version=2021-10-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"RequestDisallowedByPolicy","target":"input","message":"Resource
+        ''input'' was disallowed by policy. Policy identifiers: ''[{\"policyAssignment\":{\"name\":\"Deny
+        ASA non-MI authentication\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.Authorization/policyAssignments/deny-asa-mi\"},\"policyDefinition\":{\"name\":\"Stream
+        Analytics job should use managed identity to authenticate endpoints\",\"id\":\"/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97\",\"version\":\"1.0.0\"}}]''.","additionalInfo":[{"type":"PolicyViolation","info":{"evaluationDetails":{"evaluatedExpressions":[{"result":"True","expressionKind":"Field","expression":"type","path":"type","expressionValue":"Microsoft.StreamAnalytics/streamingjobs/inputs","targetValue":"Microsoft.StreamAnalytics/streamingjobs/inputs","operator":"Equals"},{"result":"True","expressionKind":"Field","expression":"Microsoft.StreamAnalytics/streamingjobs/inputs/Stream.datasource.type","path":"properties.datasource.type","expressionValue":"Microsoft.Sql/Server/Database","targetValue":["Microsoft.EventHub/EventHub"],"operator":"NotIn"}]},"policyDefinitionId":"/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97","policyDefinitionName":"ea6c4923-510a-4346-be26-1894919a5b97","policyDefinitionDisplayName":"Stream
+        Analytics job should use managed identity to authenticate endpoints","policyDefinitionVersion":"1.0.0","policyDefinitionEffect":"Deny","policyAssignmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.Authorization/policyAssignments/deny-asa-mi","policyAssignmentName":"deny-asa-mi","policyAssignmentDisplayName":"Deny
+        ASA non-MI authentication","policyAssignmentScope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","policyAssignmentParameters":{"effect":"Deny"},"policyExemptionIds":[],"policyEnrollmentIds":[]}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2086'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 7609E10364A24284B258E5289E8F9BFC Ref B: SG2AA1070304054 Ref C: 2026-06-23T05:10:53Z'
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - policy assignment delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --scope
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.Authorization/policyAssignments/deny-asa-mi?api-version=2024-05-01
+  response:
+    body:
+      string: '{"properties":{"displayName":"Deny ASA non-MI authentication","policyDefinitionId":"/providers/Microsoft.Authorization/policyDefinitions/ea6c4923-510a-4346-be26-1894919a5b97","definitionVersion":"1.*.*","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","parameters":{"effect":{"value":"Deny"}},"metadata":{"createdBy":"73deb370-6e80-42b7-bab4-943c887d3e3c","createdOn":"2026-06-23T05:10:49.8454662Z","updatedBy":null,"updatedOn":null},"enforcementMode":"Default"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.Authorization/policyAssignments/deny-asa-mi","type":"Microsoft.Authorization/policyAssignments","name":"deny-asa-mi","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-23T05:10:49.6257765Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-23T05:10:49.6257765Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '991'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 23 Jun 2026 05:10:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=73deb370-6e80-42b7-bab4-943c887d3e3c/westus/47f33bb5-460f-45e1-8016-25d4acd568e4
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 5440EB5FC21F45A9871F9DB671392597 Ref B: SG2AA1070306031 Ref C: 2026-06-23T05:10:58Z'
+    status:
+      code: 200
+      message: OK
+version: 1

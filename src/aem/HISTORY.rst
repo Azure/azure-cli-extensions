@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.2
++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM, extensions, disks)
+
 1.0.1
 +++++
 * Remove DATA_COSMOS_TABLE and DATA_STORAGE references

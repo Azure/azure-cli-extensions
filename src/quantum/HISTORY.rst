@@ -3,6 +3,42 @@
 Release History
 ===============
 
+1.0.0b20
++++++++++++++++
+* Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
+
+1.0.0b19
++++++++++++++++
+* Added the ``az quantum job delete`` command to delete a job from an Azure Quantum workspace.
+
+1.0.0b18
++++++++++++++++
+* Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.
+
+1.0.0b17
++++++++++++++++
+* Fixed bug where Quantum workspace creation flow uses plain (JSON-serializable) primitive values instead of SDK enum objects in ARM-template deployment parameters, preventing serialization issues and test failures.
+
+1.0.0b16
++++++++++++++++
+* Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.
+
+1.0.0b15
++++++++++++++++
+* Fixed bug where workspace providers were appended to wrong property causing workspace creation to fail
+* Improved error handling for `az quantum workspace set` to provide a clear error message when a workspace is not yet fully provisioned
+
+1.0.0b14
++++++++++++++++
+* Updated control plane related commands to use latest API version 2025-12-15-preview
+* Updated data plane related commands to use latest API version 2026-01-15-preview
+* Fixed bug where storage variable is initialized and not used in job submission command
+
+1.0.0b13
++++++++++++++++
+* Updated workspace create command to support job submissions with disabled access keys on linked storage account
+* Updated new storage account to be v2 in workspace creation because of the retirement of General-Purpose v1 (GPv1) storage accounts on October 13, 2026
+
 1.0.0b12
 +++++++++++++++
 * Added support for Data Plane v2 including specifying priority parameter as part of job params when submitting a job

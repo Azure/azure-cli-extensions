@@ -5,15 +5,16 @@
 
 import os
 import subprocess
+import sys
 import tempfile
-from typing import BinaryIO, Optional
+from typing import Optional
 
 from azext_confcom import oras_proxy
 from azext_confcom.errors import eprint
 
 
 def oras_attach(
-    signed_fragment: BinaryIO,
+    signed_fragment_path: str,
     manifest_tag: str,
     platform: Optional[str] = None,
 ) -> None:
@@ -46,7 +47,7 @@ def oras_attach(
 
     cmd.extend([
         manifest_tag,
-        os.path.relpath(signed_fragment.name, start=os.getcwd()) + ":application/cose-x509+rego",
+        os.path.relpath(signed_fragment_path, start=os.getcwd()) + ":application/cose-x509+rego",
     ])
 
     subprocess.run(
@@ -57,23 +58,25 @@ def oras_attach(
 
 
 def fragment_attach(
-    signed_fragment: BinaryIO,
+    signed_fragment: Optional[str],
     manifest_tag: str,
     platform: Optional[str] = None,
 ) -> None:
 
-    if signed_fragment.name == "<stdin>":
+    if signed_fragment is None:
         with tempfile.NamedTemporaryFile(delete=True) as temp_signed_fragment:
-            temp_signed_fragment.write(signed_fragment.read())
+            temp_signed_fragment.write(sys.stdin.buffer.read())
             temp_signed_fragment.flush()
             oras_attach(
-                signed_fragment=temp_signed_fragment,
+                signed_fragment_path=temp_signed_fragment.name,
                 manifest_tag=manifest_tag,
                 platform=platform,
             )
     else:
+        if not os.path.isfile(signed_fragment):
+            eprint(f"Signed fragment file not found: {signed_fragment}")
         oras_attach(
-            signed_fragment=signed_fragment,
+            signed_fragment_path=signed_fragment,
             manifest_tag=manifest_tag,
             platform=platform,
         )

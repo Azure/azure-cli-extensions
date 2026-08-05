@@ -40,15 +40,16 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
     def test_private_link(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
+            'machine': 'LAPTOP-4GNU2K3H',
+            'rg': 'yao_test',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'westus2',
+            'location': 'eastus',
             'customScriptName': 'custom-' + rand_string,
+            'subscription': '00000000-0000-0000-0000-000000000000',
         })
 
         # Prepare network

@@ -19,7 +19,7 @@ class Cosmosdb_previewBurstCapacityScenarioTest(ScenarioTest):
         })
 
         # create burst capacity enabled account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-burst-capacity')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --enable-burst-capacity')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enableBurstCapacity', True),
         ])

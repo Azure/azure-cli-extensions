@@ -15,6 +15,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @register_command(
     "workload-orchestration target create",
 )
@@ -46,8 +47,6 @@ class Create(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        # define Arg Group ""
-
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,8 +61,6 @@ class Create(AAZCommand):
                 min_length=3,
             ),
         )
-
-        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.capabilities = AAZListArg(
@@ -118,13 +115,16 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
             required=True,
+        )
 
+        _args_schema.service_group = AAZStrArg(
+            options=["--service-group"],
+            arg_group="Common",
+            help="ServiceGroup name to auto-link this target to after creation.",
         )
 
         capabilities = cls._args_schema.capabilities
         capabilities.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.extended_location = AAZObjectArg(
@@ -170,30 +170,64 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-         # If context_id is not provided, try to get it from config
+        # Resolve context_id from CLI config if not provided
         if not self.ctx.args.context_id:
-            try:
-                # Attempt to retrieve the context_id from the config file
-                context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
-                if context_id:
-                    self.ctx.args.context_id = context_id
-                else:
-                    # This else block handles the case where the section exists, but the key is empty
-                    raise CLIInternalError(
-                        "No context-id was provided, and no default context is set. "
-                        "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
-                    )
-            except configparser.NoSectionError as e:
-                logger.debug("Config section 'workload_orchestration' not found: %s", e)
-                # This is the fix: catch the specific error when the [workload_orchestration] section is missing
+            self._resolve_context_id_from_config()
+
+    def _resolve_context_id_from_config(self):
+        """Resolve context_id from CLI config if not already set."""
+        try:
+            context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+            if context_id:
+                self.ctx.args.context_id = context_id
+            else:
                 raise CLIInternalError(
                     "No context-id was provided, and no default context is set. "
-                    "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                    "Please provide the --context-id argument "
+                    "or set a default context using 'az workload-orchestration context use'."
                 )
+        except configparser.NoSectionError as e:
+            logger.debug("Config section 'workload_orchestration' not found: %s", e)
+            raise CLIInternalError(
+                "No context-id was provided, and no default context is set. "
+                "Please provide the --context-id argument "
+                "or set a default context using 'az workload-orchestration context use'."
+            )
 
     @register_callback
     def post_operations(self):
-        pass
+        # --service-group: auto-link target to SG after creation
+        if hasattr(self.ctx.args, 'service_group') and self.ctx.args.service_group:
+            self._handle_service_group_link()
+
+    def _handle_service_group_link(self):
+        """Link the created target to a service group."""
+        from azext_workload_orchestration.common.target import (
+            link_target_to_service_group
+        )
+        from azext_workload_orchestration.common.utils import CmdProxy
+        sg_name = str(self.ctx.args.service_group)
+        # Get target ID from the response
+        target_id = None
+        if hasattr(self.ctx.vars, 'instance') and self.ctx.vars.instance:
+            target_id = self.ctx.vars.instance.get("id")
+
+        if not target_id:
+            # Construct it
+            sub_id = self.ctx.subscription_id
+            rg = str(self.ctx.args.resource_group)
+            name = str(self.ctx.args.target_name)
+            target_id = f"/subscriptions/{sub_id}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{name}"
+
+        import sys
+        print(f"Linking target to service-group '{sg_name}'...", file=sys.stderr)
+        try:
+            cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+            link_target_to_service_group(cmd_proxy, target_id, sg_name)
+            print("Service-group linked.", file=sys.stderr)
+        except Exception as exc:
+            logger.warning("Service group link failed (non-critical): %s", exc)
+            print(f"Service-group link failed (non-critical): {exc}", file=sys.stderr)
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

@@ -23,9 +23,9 @@ class Resume(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}/resume", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}/resume", "2026-04-30-preview"],
         ]
     }
 
@@ -141,7 +141,7 @@ class Resume(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -185,7 +185,7 @@ class Resume(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -201,13 +201,14 @@ class Resume(AAZCommand):
                 serialized_name="clusterEndpoint",
                 flags={"read_only": True},
             )
+            properties.collaboration_state = AAZStrType(
+                serialized_name="collaborationState",
+                flags={"read_only": True},
+            )
+            properties.collaborators = AAZListType()
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},
-            )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-                flags={"required": True},
             )
             properties.health = AAZObjectType(
                 flags={"read_only": True},
@@ -220,12 +221,29 @@ class Resume(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user_identity = AAZObjectType(
-                serialized_name="userIdentity",
-                flags={"required": True},
+            properties.resource_location = AAZStrType(
+                serialized_name="resourceLocation",
             )
             properties.workloads = AAZListType(
                 flags={"read_only": True},
+            )
+
+            collaborators = cls._schema_on_200.properties.collaborators
+            collaborators.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.collaborators.Element
+            _element.is_collaboration_owner = AAZBoolType(
+                serialized_name="isCollaborationOwner",
+                flags={"read_only": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+            )
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+            _element.user_identifier = AAZStrType(
+                serialized_name="userIdentifier",
             )
 
             health = cls._schema_on_200.properties.health
@@ -258,20 +276,6 @@ class Resume(AAZCommand):
 
             _element = cls._schema_on_200.properties.managed_on_behalf_of_configuration.mobo_broker_resources.Element
             _element.id = AAZStrType()
-
-            user_identity = cls._schema_on_200.properties.user_identity
-            user_identity.account_type = AAZStrType(
-                serialized_name="accountType",
-                flags={"required": True},
-            )
-            user_identity.object_id = AAZStrType(
-                serialized_name="objectId",
-                flags={"required": True},
-            )
-            user_identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"required": True},
-            )
 
             workloads = cls._schema_on_200.properties.workloads
             workloads.Element = AAZObjectType()

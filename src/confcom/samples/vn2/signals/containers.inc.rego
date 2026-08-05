@@ -9,108 +9,7 @@
       "33dca1b97992e2925a81c7b6cb158e32254de123fcf1b53ec6da811e9260a72e",
       "4863bc193bdbccac11219d75a165ddefa35c3981f9d978ba19b169e04e85fd30"
     ],
-    "env_rules": [
-      {
-        "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-        "strategy": "string",
-        "required": false
-      },
-      {
-        "strategy": "string",
-        "required": false,
-        "pattern": "TERM=xterm"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "(?i)(FABRIC)_.+=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "HOSTNAME=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "T(E)?MP=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "FabricPackageFileName=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "HostedServiceName=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "IDENTITY_API_VERSION=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "IDENTITY_HEADER=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "IDENTITY_SERVER_THUMBPRINT=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "azurecontainerinstance_restarted_by=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_SERVICE_HOST=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_SERVICE_PORT=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_SERVICE_PORT_[A-Z0-9_]+=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_PORT=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PROTO=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PORT=.+"
-      },
-      {
-        "strategy": "re2",
-        "required": false,
-        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_ADDR=.+"
-      },
-      {
-        "pattern": "APP_MODE=production",
-        "strategy": "string",
-        "required": false
-      }
-    ],
+    "platform": "linux/amd64",
     "mounts": [
       {
         "destination": "/etc/resolv.conf",
@@ -168,9 +67,111 @@
       "-c",
       "echo hello"
     ],
+    "env_rules": [
+      {
+        "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "strategy": "string",
+        "required": false
+      },
+      {
+        "pattern": "TERM=xterm",
+        "strategy": "string",
+        "required": false
+      },
+      {
+        "pattern": "(?i)(FABRIC)_.+=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "HOSTNAME=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "T(E)?MP=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "FabricPackageFileName=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "HostedServiceName=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "IDENTITY_API_VERSION=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "IDENTITY_HEADER=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "IDENTITY_SERVER_THUMBPRINT=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "azurecontainerinstance_restarted_by=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_SERVICE_HOST=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_SERVICE_PORT=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_SERVICE_PORT_[A-Z0-9_]+=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_PORT=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PROTO=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_PORT=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "[A-Z0-9_]+_PORT_[0-9]+_TCP_ADDR=.+",
+        "strategy": "re2",
+        "required": false
+      },
+      {
+        "pattern": "APP_MODE=production",
+        "strategy": "string",
+        "required": false
+      }
+    ],
+    "working_dir": "/",
     "signals": [
       3
-    ],
-    "working_dir": "/"
+    ]
   }
 ]

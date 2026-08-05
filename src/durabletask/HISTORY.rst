@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b8
++++++
+* Update ARM API version to `2026-05-01-preview` for task hub commands.
+* Add preview `az durabletask scheduler restart` command to restart a scheduler.
+* Add preview `az durabletask scheduler identity` commands to manage scheduler managed identities.
+* Add preview `az durabletask scheduler transparent-data-encryption` commands to manage transparent data encryption.
+* Add `--capabilities` support to `az durabletask taskhub create`.
+
 1.0.0b7
 +++++
 * Add experimental `az durabletask scheduler attach` command to attach a Durable Task scheduler to a Function App or Container App.

@@ -1,0 +1,196 @@
+interactions:
+- request:
+    body: '{"disasterRecoveryType": "Adg", "isReplicateAutomaticBackups": false}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database autonomous-database change-disaster-recovery-configuration
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --disaster-recovery-type --is-replicate-automatic-backups
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-26.5.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/ADBScrdrc2buoxjojjil/changeDisasterRecoveryConfiguration?api-version=2025-09-01
+  response:
+    body:
+      string: '{"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.0,"allocatedStorageSizeInTbs":0.0166015625,"whitelistedIps":null,"apexDetails":null,"autonomousDatabaseId":null,"autonomousMaintenanceScheduleType":"Regular","availableUpgradeVersions":null,"characterSet":"AL32UTF8","computeCount":3.0,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{"HIGH":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_high.adb.oraclecloud.com","MEDIUM":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_medium.adb.oraclecloud.com","LOW":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_low.adb.oraclecloud.com","TPURGENT":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_tpurgent.adb.oraclecloud.com","TP":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_tp.adb.oraclecloud.com"},"dedicated":null,"high":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_high.adb.oraclecloud.com","low":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_low.adb.oraclecloud.com","medium":"adb.eu-frankfurt-1.oraclecloud.com:1522/g65795d1a5ce1e9_dndadbstets_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"dndadbstets_high","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"dndadbstets_medium","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"dndadbstets_low","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"dndadbstets_tp","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"dndadbstets_tpurgent","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"High","displayName":"dndadbstets_high","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_high.adb.oraclecloud.com))(security=(ssl_server_cert_dn=\"CN=adwc.eucom-central-1.oraclecloud.com,
+        O=Oracle Corporation, L=Redwood City, ST=California, C=US\")))"},{"consumerGroup":"Medium","displayName":"dndadbstets_medium","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_medium.adb.oraclecloud.com))(security=(ssl_server_cert_dn=\"CN=adwc.eucom-central-1.oraclecloud.com,
+        O=Oracle Corporation, L=Redwood City, ST=California, C=US\")))"},{"consumerGroup":"Low","displayName":"dndadbstets_low","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_low.adb.oraclecloud.com))(security=(ssl_server_cert_dn=\"CN=adwc.eucom-central-1.oraclecloud.com,
+        O=Oracle Corporation, L=Redwood City, ST=California, C=US\")))"},{"consumerGroup":"Tp","displayName":"dndadbstets_tp","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_tp.adb.oraclecloud.com))(security=(ssl_server_cert_dn=\"CN=adwc.eucom-central-1.oraclecloud.com,
+        O=Oracle Corporation, L=Redwood City, ST=California, C=US\")))"},{"consumerGroup":"Tpurgent","displayName":"dndadbstets_tpurgent","hostFormat":"Fqdn","isRegional":null,"protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_dndadbstets_tpurgent.adb.oraclecloud.com))(security=(ssl_server_cert_dn=\"CN=adwc.eucom-central-1.oraclecloud.com,
+        O=Oracle Corporation, L=Redwood City, ST=California, C=US\")))"}]},"connectionUrls":{"apexUrl":"https://keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloudapps.com/odi/?sso=true","graphStudioUrl":"https://keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloudapps.com/graphstudio/?sso=true","machineLearningNotebookUrl":"https://keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloudapps.com/oml/?sso=true","mongoDbUrl":null,"ordsUrl":"https://keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloudapps.com/ords/sql-developer"},"cpuCoreCount":null,"customerContacts":null,"dataSafeStatus":null,"dataStorageSizeInGbs":2048,"dataStorageSizeInTbs":2,"databaseEdition":null,"dbVersion":"19c","dbWorkload":"LH","displayName":"ADBScrdrc2buoxjojjil","zone":null,"inMemoryAreaInGbs":null,"nextLongTermBackupTimeStamp":null,"longTermBackupSchedule":null,"isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":true,"peerDbIds":null,"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","timeDisasterRecoveryRoleChanged":null,"remoteDisasterRecoveryConfiguration":null,"localStandbyDb":null,"failedDataRecoveryInSeconds":null,"isMtlsConnectionRequired":false,"isPreview":null,"licenseModel":"LicenseIncluded","lifecycleDetails":null,"provisioningState":null,"localAdgAutoFailoverMaxDataLossLimit":null,"memoryPerOracleComputeUnitInGbs":null,"ncharacterSet":"AL16UTF16","ociUrl":null,"resourceAnchorId":null,"networkAnchorId":null,"openMode":"ReadWrite","operationsInsightsStatus":null,"permissionLevel":null,"privateEndpoint":"keh49omk.azure-germanywestcentral.adb.eu-frankfurt-1.oraclecloud.com","privateEndpointIp":"10.0.1.146","privateEndpointLabel":"keh49omk","provisionableCpus":null,"lifecycleState":"Standby","role":"Standby","scheduledOperations":null,"scheduledOperationsList":null,"serviceConsoleUrl":null,"sqlWebDeveloperUrl":null,"subnetId":null,"supportedRegionsToCloneTo":[],"timeCreated":"2026-07-07T08:41:07.752Z","timeDataGuardRoleChanged":"Tue
+        Jul 07 08:52:10 UTC 2026","timeDeletionOfFreeAutonomousDatabase":null,"timeLocalDataGuardEnabled":null,"timeMaintenanceBegin":"2026-07-12T01:00:00.000Z","timeMaintenanceEnd":"2026-07-12T03:00:00.000Z","timeOfLastFailover":null,"timeOfLastRefresh":null,"timeOfLastRefreshPoint":null,"timeOfLastSwitchover":null,"timeReclamationOfFreeAutonomousDatabase":null,"usedDataStorageSizeInGbs":null,"usedDataStorageSizeInTbs":null,"vnetId":null,"ocid":"ocid1.autonomousdatabase.oc1.eu-frankfurt-1.antheljsnirvylqaskbhimcg6jicduwho7beuoreeuasfuulqidm3sda53ba","backupRetentionPeriodInDays":40,"backupDestination":null},"location":null,"tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/ADBScrdrc2buoxjojjil","type":"Oracle.Database/autonomousDatabases","name":"ADBScrdrc2buoxjojjil","systemData":null}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/GERMANYWESTCENTRAL/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B?api-version=2025-09-01&t=639190387317344765&c=MIIHlDCCBnygAwIBAgIQZiYkoV_LM7Hwt06_u_DzJDANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDQxMDA4MTUzOVoXDTI2MTAwNTE0MTUzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDealc9e2xWlYn0dX5zgxycoyRECfCn-ACb8WxKGmsKAA5yFa8bggPwuauZjSPSntq3xw99b6CFXZ6EM34WjxaWokZKYj8bbRT14WzrQHemPN5KUaI3SFtZidaSdEAzhm7Ha1a74SG8rDZU8qVqbaoCPQk9Iblv0LucrVV5BAMOwvi-5j-7X9vehxsheuxPwrVmGy_WrXI_3Qflmizp5BND_I3p4BIRjEcaQw_EBd3dhAC52EO5bT3FKSdM6N5xgpZvtjHjxRG2WG_8Gh07OrI0Ib0mnTB1_HNhiEw3_VzdnINXV0_Fsm7HMV-qCCkY5pyJIZjVX7L7FFY0PGqcqUKdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSZIRQPs2If06iDFyiGbMnvIxenBzAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzQ2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS80Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAxSvsyw-aQGPuLg3sIv-zDLSqhHgP__v9DGyP7D16rJpNG1JcjpiXpbloqD9RW5Gc_hHWn5Kyr1pRABJrFa-jEt89-FiQdkToF-vvwJOXbryAgZYdS03uFzUGqARs3JMMqCHrVkx6hb9oOxh_3JdEemO_dbhApyOVTfloO4kIRsgJnHI_ImFt8xm3xa9ftB0ARfJAdN_1EHgB2NdOgTvaSljVOnQY6R40lh_Wl8-s3GIhHbNwQOECXegBxeVAUVN5nGxlD8TEqKc_mX-22kBMao71zBz3JWtCING4-QzwrWj9pxmanpqYqiVGf40ZbZZihRkte0KI9zvW53Y2Smcy7&s=m2IvXEs4kllFYPoKEC083y0askno2cYnu3-iGBZCvzZ8K_Vgaum8T_jZEsk1E0d-MdTXuZkp7qcHx_GzGDnYf3jSlvZYqax80zPQpjzlNiXrKtBV01yKF24r3srI6ThTtUCNL12cWkGETHPJG5ExIHRiPS2SnD-1SBHb62TpNZA-W52VyH1s_4XiVD6CB72vb_GsB_OrlYBSqrIe0piSzR72jLExULVBBWhkXUM08gfZZFojSTW7_spoGndXeNbmTI4JwXHQk_0uXteQPZEOUbH7It8V6CuS89KwM8ujMhlK8OU8BYqQUvXUxR_qa38FZWDuafyrF4FpqfpOwyJ1Tg&h=pa1eEsrjuJLj6p4tQgqtosMJlrvtvuONwT0k6TfEs4U
+      cache-control:
+      - no-cache
+      content-length:
+      - '9575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jul 2026 16:32:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/GERMANYWESTCENTRAL/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B?api-version=2025-09-01&t=639190387317344765&c=MIIHlDCCBnygAwIBAgIQZiYkoV_LM7Hwt06_u_DzJDANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDQxMDA4MTUzOVoXDTI2MTAwNTE0MTUzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDealc9e2xWlYn0dX5zgxycoyRECfCn-ACb8WxKGmsKAA5yFa8bggPwuauZjSPSntq3xw99b6CFXZ6EM34WjxaWokZKYj8bbRT14WzrQHemPN5KUaI3SFtZidaSdEAzhm7Ha1a74SG8rDZU8qVqbaoCPQk9Iblv0LucrVV5BAMOwvi-5j-7X9vehxsheuxPwrVmGy_WrXI_3Qflmizp5BND_I3p4BIRjEcaQw_EBd3dhAC52EO5bT3FKSdM6N5xgpZvtjHjxRG2WG_8Gh07OrI0Ib0mnTB1_HNhiEw3_VzdnINXV0_Fsm7HMV-qCCkY5pyJIZjVX7L7FFY0PGqcqUKdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSZIRQPs2If06iDFyiGbMnvIxenBzAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzQ2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS80Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAxSvsyw-aQGPuLg3sIv-zDLSqhHgP__v9DGyP7D16rJpNG1JcjpiXpbloqD9RW5Gc_hHWn5Kyr1pRABJrFa-jEt89-FiQdkToF-vvwJOXbryAgZYdS03uFzUGqARs3JMMqCHrVkx6hb9oOxh_3JdEemO_dbhApyOVTfloO4kIRsgJnHI_ImFt8xm3xa9ftB0ARfJAdN_1EHgB2NdOgTvaSljVOnQY6R40lh_Wl8-s3GIhHbNwQOECXegBxeVAUVN5nGxlD8TEqKc_mX-22kBMao71zBz3JWtCING4-QzwrWj9pxmanpqYqiVGf40ZbZZihRkte0KI9zvW53Y2Smcy7&s=m2IvXEs4kllFYPoKEC083y0askno2cYnu3-iGBZCvzZ8K_Vgaum8T_jZEsk1E0d-MdTXuZkp7qcHx_GzGDnYf3jSlvZYqax80zPQpjzlNiXrKtBV01yKF24r3srI6ThTtUCNL12cWkGETHPJG5ExIHRiPS2SnD-1SBHb62TpNZA-W52VyH1s_4XiVD6CB72vb_GsB_OrlYBSqrIe0piSzR72jLExULVBBWhkXUM08gfZZFojSTW7_spoGndXeNbmTI4JwXHQk_0uXteQPZEOUbH7It8V6CuS89KwM8ujMhlK8OU8BYqQUvXUxR_qa38FZWDuafyrF4FpqfpOwyJ1Tg&h=pa1eEsrjuJLj6p4tQgqtosMJlrvtvuONwT0k6TfEs4U
+      opc-request-id:
+      - oci-CBDCFC8934D421A-202607071632/8288A31B1F61FFF7092A4D6A465241BB/AE35D04E52AF76F14C99B1F92ADB8ED6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/eastus/232a3d74-7c6d-4aa3-bf92-898875611f68
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 651D34E2B66B47CAA9786A755F47E0DA Ref B: SJC211051201031 Ref C: 2026-07-07T16:32:08Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database autonomous-database change-disaster-recovery-configuration
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --disaster-recovery-type --is-replicate-automatic-backups
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-26.5.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/GERMANYWESTCENTRAL/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B?api-version=2025-09-01&t=639190387317344765&c=MIIHlDCCBnygAwIBAgIQZiYkoV_LM7Hwt06_u_DzJDANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDQxMDA4MTUzOVoXDTI2MTAwNTE0MTUzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDealc9e2xWlYn0dX5zgxycoyRECfCn-ACb8WxKGmsKAA5yFa8bggPwuauZjSPSntq3xw99b6CFXZ6EM34WjxaWokZKYj8bbRT14WzrQHemPN5KUaI3SFtZidaSdEAzhm7Ha1a74SG8rDZU8qVqbaoCPQk9Iblv0LucrVV5BAMOwvi-5j-7X9vehxsheuxPwrVmGy_WrXI_3Qflmizp5BND_I3p4BIRjEcaQw_EBd3dhAC52EO5bT3FKSdM6N5xgpZvtjHjxRG2WG_8Gh07OrI0Ib0mnTB1_HNhiEw3_VzdnINXV0_Fsm7HMV-qCCkY5pyJIZjVX7L7FFY0PGqcqUKdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSZIRQPs2If06iDFyiGbMnvIxenBzAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzQ2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS80Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAxSvsyw-aQGPuLg3sIv-zDLSqhHgP__v9DGyP7D16rJpNG1JcjpiXpbloqD9RW5Gc_hHWn5Kyr1pRABJrFa-jEt89-FiQdkToF-vvwJOXbryAgZYdS03uFzUGqARs3JMMqCHrVkx6hb9oOxh_3JdEemO_dbhApyOVTfloO4kIRsgJnHI_ImFt8xm3xa9ftB0ARfJAdN_1EHgB2NdOgTvaSljVOnQY6R40lh_Wl8-s3GIhHbNwQOECXegBxeVAUVN5nGxlD8TEqKc_mX-22kBMao71zBz3JWtCING4-QzwrWj9pxmanpqYqiVGf40ZbZZihRkte0KI9zvW53Y2Smcy7&s=m2IvXEs4kllFYPoKEC083y0askno2cYnu3-iGBZCvzZ8K_Vgaum8T_jZEsk1E0d-MdTXuZkp7qcHx_GzGDnYf3jSlvZYqax80zPQpjzlNiXrKtBV01yKF24r3srI6ThTtUCNL12cWkGETHPJG5ExIHRiPS2SnD-1SBHb62TpNZA-W52VyH1s_4XiVD6CB72vb_GsB_OrlYBSqrIe0piSzR72jLExULVBBWhkXUM08gfZZFojSTW7_spoGndXeNbmTI4JwXHQk_0uXteQPZEOUbH7It8V6CuS89KwM8ujMhlK8OU8BYqQUvXUxR_qa38FZWDuafyrF4FpqfpOwyJ1Tg&h=pa1eEsrjuJLj6p4tQgqtosMJlrvtvuONwT0k6TfEs4U
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/GERMANYWESTCENTRAL/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B","name":"e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/ADBScrdrc2buoxjojjil","status":"Accepted","startTime":"2026-07-07T16:32:09.0592582Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/germanywestcentral/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B?api-version=2025-09-01&t=639190387338998872&c=MIIHlDCCBnygAwIBAgIQdihCASSXG-dKfI_D-VVlqTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDcwNjE5MTk1OVoXDTI3MDEwMjAxMTk1OVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCzjzGCVexW-mQdIfXmvE0Vt_P4-9YdQhyjMqo7G6WcBLzwzBfqXK0uIcnMBRepVKLYh_mPxAV2P2GCfKEZbu_KmSa0zuX4fJ1qZo2za_48297xAhNszXRLP4zIi66J_gcILVC4uuA8KDZdsN34MmmaNato73BvNvXzzSHliKdZFig5HWRCYUHLudu_K-iZXTmHO1-u4BDHSY2xEcO2Wi5tGJ1AZ4fgyKCSxFulPoxqtClK1Ek6Mpa2sMjLT2pr-ffHy0NipMNi07iHdm9n4ZRkBw18gJOeF1ShpgcOAFrfLaag-2rp7W4nVBHuyY--Dtf50SIb-FsnYfuVqCBWB-FAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRXALftRFmjY1LQNbXJ0uYzMnCCqzAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDMvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzQzL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDMvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS80My9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAZrjmWibEuK6QF0t_B1WxpWLqYTQIVZbMw_NyEFtCc_8S5LYZrHcsmMsKZtXs7xqOJiF1TIettwqIw_qlbKRXIQohsTkAni2agjO-3qncnQkDsxz4WyJ0gXt7kfy-kEn9MQRaKjnnaXjhKb3sEpluTCbYgGO6F4Cx3q2vlJVPqlSdRys7ZivOGAtX1woiYL14Oc3MsaafYpdQVaWZ_pX3ZzF2UIq4udNkmPInHLdrIi5qfOi4nQy_XShbwqfvhz4mcqaooZQYbFX57jgSSBbrGsBLpe9SZYEOzi0p11hbbbKVre54QjlO8hGAiyPGTkW28VeoP4NXb9gdJ1-CKzw7l&s=FbEX_9gs4os2pcNYCL_nR-hlgLNe9b4iGLTVC5M8BggFTIqeGSpAyB_0Vzpz1C87J-66qsNt7O0mwAt2ln-KHTUwy50RFslriMxcRQ12_9tfbxKmEIMvulkBrRGrSocjtwHsjVjvdeDKqQ5OCBKO3Fq14FhnSFivYcFI3B2k4o2Bz62SQVfCUXa2k5Yv93KGWIt0s0e9sbQQHu-3B9Ka5gxdGG04-HU-BOR0NIloZ86bC3iZpHfmEAmrXNS9pvXNnIYUTZuWZboEWNs4RTt19FKX1w9p_tJIhWw5AMMvM5v2eIKCivwTW1WtnumpfVrEg_HSPDCQWYRFVMUKAfsvGg&h=bPuavs4LJaaerM8kEnO1q7-maDOuEU4wFz4QtHQt_jQ
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jul 2026 16:32:13 GMT
+      etag:
+      - '"20005342-0000-1500-0000-6a4d2a090000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/germanywestcentral/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B?api-version=2025-09-01&t=639190387339155051&c=MIIHlDCCBnygAwIBAgIQdihCASSXG-dKfI_D-VVlqTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDcwNjE5MTk1OVoXDTI3MDEwMjAxMTk1OVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCzjzGCVexW-mQdIfXmvE0Vt_P4-9YdQhyjMqo7G6WcBLzwzBfqXK0uIcnMBRepVKLYh_mPxAV2P2GCfKEZbu_KmSa0zuX4fJ1qZo2za_48297xAhNszXRLP4zIi66J_gcILVC4uuA8KDZdsN34MmmaNato73BvNvXzzSHliKdZFig5HWRCYUHLudu_K-iZXTmHO1-u4BDHSY2xEcO2Wi5tGJ1AZ4fgyKCSxFulPoxqtClK1Ek6Mpa2sMjLT2pr-ffHy0NipMNi07iHdm9n4ZRkBw18gJOeF1ShpgcOAFrfLaag-2rp7W4nVBHuyY--Dtf50SIb-FsnYfuVqCBWB-FAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRXALftRFmjY1LQNbXJ0uYzMnCCqzAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDMvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzQzL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDMvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS80My9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAZrjmWibEuK6QF0t_B1WxpWLqYTQIVZbMw_NyEFtCc_8S5LYZrHcsmMsKZtXs7xqOJiF1TIettwqIw_qlbKRXIQohsTkAni2agjO-3qncnQkDsxz4WyJ0gXt7kfy-kEn9MQRaKjnnaXjhKb3sEpluTCbYgGO6F4Cx3q2vlJVPqlSdRys7ZivOGAtX1woiYL14Oc3MsaafYpdQVaWZ_pX3ZzF2UIq4udNkmPInHLdrIi5qfOi4nQy_XShbwqfvhz4mcqaooZQYbFX57jgSSBbrGsBLpe9SZYEOzi0p11hbbbKVre54QjlO8hGAiyPGTkW28VeoP4NXb9gdJ1-CKzw7l&s=p03Th1jV31D0tXIyW9wgp4l2RDV0FUKFemOvycatvuotWrzmG34kpD_2KSxSHOd0L_Rq06sZh7TY9vzh5NyjflgcNF_YdzRFEeXaUQE4Uwgjuj7cdxYvW1o9PNHdlJmjiWBOLpv-1tqitOUq8Az6INiFU52zux2F1rM2SkOPcoDMP3E6M75pu9BWE8kD4PUP60CWxeVF4dBS1k49u__p7s8SH_UzjCzxAkZ91GeHlLGVpvye58ql6TIwJGbATe0BUcd-5YyigNd0r8RdwMFffTH6gw1xEHXqUEnyuOmRTleag--_UEvMI6AUdpK8A4BgnbvFrFgTVmbjTs0GUpaIWQ&h=04DR2kw_J4NvrZfeYYAB76FIkz4-9LbLJoyXT90oXCY
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westcentralus/e9625a55-2e08-45a5-a09c-35eb6e04f535
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: E75CAC67BEA045F8B2AC83D620401E02 Ref B: SJC211051203035 Ref C: 2026-07-07T16:32:13Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database autonomous-database change-disaster-recovery-configuration
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --disaster-recovery-type --is-replicate-automatic-backups
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-26.5.1-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/GERMANYWESTCENTRAL/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B?api-version=2025-09-01&t=639190387317344765&c=MIIHlDCCBnygAwIBAgIQZiYkoV_LM7Hwt06_u_DzJDANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDQxMDA4MTUzOVoXDTI2MTAwNTE0MTUzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDealc9e2xWlYn0dX5zgxycoyRECfCn-ACb8WxKGmsKAA5yFa8bggPwuauZjSPSntq3xw99b6CFXZ6EM34WjxaWokZKYj8bbRT14WzrQHemPN5KUaI3SFtZidaSdEAzhm7Ha1a74SG8rDZU8qVqbaoCPQk9Iblv0LucrVV5BAMOwvi-5j-7X9vehxsheuxPwrVmGy_WrXI_3Qflmizp5BND_I3p4BIRjEcaQw_EBd3dhAC52EO5bT3FKSdM6N5xgpZvtjHjxRG2WG_8Gh07OrI0Ib0mnTB1_HNhiEw3_VzdnINXV0_Fsm7HMV-qCCkY5pyJIZjVX7L7FFY0PGqcqUKdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSZIRQPs2If06iDFyiGbMnvIxenBzAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzQ2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNDYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS80Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAxSvsyw-aQGPuLg3sIv-zDLSqhHgP__v9DGyP7D16rJpNG1JcjpiXpbloqD9RW5Gc_hHWn5Kyr1pRABJrFa-jEt89-FiQdkToF-vvwJOXbryAgZYdS03uFzUGqARs3JMMqCHrVkx6hb9oOxh_3JdEemO_dbhApyOVTfloO4kIRsgJnHI_ImFt8xm3xa9ftB0ARfJAdN_1EHgB2NdOgTvaSljVOnQY6R40lh_Wl8-s3GIhHbNwQOECXegBxeVAUVN5nGxlD8TEqKc_mX-22kBMao71zBz3JWtCING4-QzwrWj9pxmanpqYqiVGf40ZbZZihRkte0KI9zvW53Y2Smcy7&s=m2IvXEs4kllFYPoKEC083y0askno2cYnu3-iGBZCvzZ8K_Vgaum8T_jZEsk1E0d-MdTXuZkp7qcHx_GzGDnYf3jSlvZYqax80zPQpjzlNiXrKtBV01yKF24r3srI6ThTtUCNL12cWkGETHPJG5ExIHRiPS2SnD-1SBHb62TpNZA-W52VyH1s_4XiVD6CB72vb_GsB_OrlYBSqrIe0piSzR72jLExULVBBWhkXUM08gfZZFojSTW7_spoGndXeNbmTI4JwXHQk_0uXteQPZEOUbH7It8V6CuS89KwM8ujMhlK8OU8BYqQUvXUxR_qa38FZWDuafyrF4FpqfpOwyJ1Tg&h=pa1eEsrjuJLj6p4tQgqtosMJlrvtvuONwT0k6TfEs4U
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/GERMANYWESTCENTRAL/operationStatuses/e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B","name":"e2e5873f-271d-4cf0-9c14-4bf2befa5da2*76F32F80E5896C53535493B6A74137246C530E07510563FA41CDEC70AA5E1F1B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/ADBScrdrc2buoxjojjil","status":"Failed","startTime":"2026-07-07T16:32:09.0592582Z","endTime":"2026-07-07T16:32:44.731036Z","percentComplete":0.0,"error":{"code":"CHANGE_CROSS_REGION_DISASTER_RECOVERY_CONFIGURATION_FAILED","message":"Operation
+        failed. Disaster recovery configuration is identical to the existing Disaster
+        Recovery Configuration"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '836'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 07 Jul 2026 16:32:45 GMT
+      etag:
+      - '"2000f243-0000-1500-0000-6a4d2a2c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/444ef303-b22a-44cf-9262-901148f7079d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 605BAE6650044D2A829C38D5E23FFDB8 Ref B: SJC211051201045 Ref C: 2026-07-07T16:32:44Z'
+    status:
+      code: 200
+      message: OK
+version: 1

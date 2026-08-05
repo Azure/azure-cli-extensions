@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networktaprules", "2025-07-15"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networktaprules", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules", "2026-01-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -248,6 +248,10 @@ class List(AAZCommand):
             )
             properties.network_fabric_ids = AAZListType(
                 serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
+            properties.network_tap_id = AAZStrType(
+                serialized_name="networkTapId",
                 flags={"read_only": True},
             )
             properties.network_tap_ids = AAZListType(
@@ -527,7 +531,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -660,6 +664,10 @@ class List(AAZCommand):
             )
             properties.network_fabric_ids = AAZListType(
                 serialized_name="networkFabricIds",
+                flags={"read_only": True},
+            )
+            properties.network_tap_id = AAZStrType(
+                serialized_name="networkTapId",
                 flags={"read_only": True},
             )
             properties.network_tap_ids = AAZListType(

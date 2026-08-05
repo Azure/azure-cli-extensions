@@ -111,3 +111,9 @@ def load_arguments(self, _):
             help="The mode decides how the agent is deployed.",
             default="cluster",
         )
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            action="store_true",
+            help="Do not prompt for confirmation.",
+        )

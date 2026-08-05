@@ -63,7 +63,7 @@ class ConnectionConstants:
     ARM_CREDENTIAL_SCOPE = "https://management.azure.com/.default"
 
     DEFAULT_ARG_API_VERSION = "2021-03-01"
-    DEFAULT_WORKSPACE_API_VERSION = "2025-11-01-preview"
+    DEFAULT_ARM_WORKSPACE_API_VERSION = "2025-12-15-preview"
 
     MSA_TENANT_ID = "9188040d-6c67-4c5b-b112-36a304b66dad"
 

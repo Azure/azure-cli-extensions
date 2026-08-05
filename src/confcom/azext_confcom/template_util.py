@@ -107,11 +107,6 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             with tarfile.open(tar_location) as tar_file:
                 # get all the info out of the tarfile
                 try:
-                    logger.info("using backwards compatibility tar file")
-                    image_info = os_util.map_image_from_tar_backwards_compatibility(
-                        image_name, tar_file, tar_location
-                    )
-                except IndexError:
                     logger.info("using docker formatted tar file")
                     image_info = os_util.map_image_from_tar(
                         image_name, tar_file, tar_location
@@ -130,7 +125,10 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         try:
             client = DockerClient().get_client()
             raw_image = client.images.get(image_name)
-            image_info = raw_image.attrs.get("Config")
+            image_info = {
+                "platform": "/".join([raw_image.attrs.get("Os"), raw_image.attrs.get("Architecture")]),
+                **raw_image.attrs.get("Config")
+            }
             message_queue.append(
                 f"Using local version of {image_name}. It may differ from the remote image"
             )
@@ -149,8 +147,18 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             # pull image to local daemon (if not in local
             # daemon)
             if not raw_image:
-                raw_image = client.images.pull(image_name)
-                image_info = raw_image.attrs.get("Config")
+                for platform in ["linux/amd64", "windows/amd64"]:
+                    try:
+                        raw_image = client.images.pull(image_name, platform=platform)
+                        break
+                    except (docker.errors.ImageNotFound, docker.errors.NotFound):
+                        continue
+                if raw_image is None:
+                    raise docker.errors.ImageNotFound(image_name)
+                image_info = {
+                    "platform": "/".join([raw_image.attrs.get("Os"), raw_image.attrs.get("Architecture")]),
+                    **raw_image.attrs.get("Config")
+                }
         except (docker.errors.ImageNotFound, docker.errors.NotFound):
             progress.close()
             eprint(

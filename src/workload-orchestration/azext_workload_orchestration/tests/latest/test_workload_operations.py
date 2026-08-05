@@ -13,7 +13,7 @@ import shutil
 import json
 
 # --- Module-level constants ---
-DEFAULT_RG = "ConfigManager-CloudTest-Playground-Portal-CLI"
+DEFAULT_RG = "audapure-ob-fresh"
 DEFAULT_VERSION = "1.0.0"
 DEFAULT_LOCATION = "eastus2euap"
 SCHEMA_FILE = os.path.join(os.path.dirname(__file__), "resources", "sharedschema.yaml")
@@ -21,7 +21,7 @@ CONTEXT_SUBSCRIPTION_ID = "973d15c6-6c57-447e-b9c6-6d79b5b784ab"
 CONTEXT_RG = "Mehoopany"
 CONTEXT_LOCATION = "eastus2euap"
 CONTEXT_NAME = "Mehoopany-Context"
-CONFIG_TEMPLATE_RESOURCE_GROUP = "ConfigManager-CloudTest-Playground-Portal-CLI"
+CONFIG_TEMPLATE_RESOURCE_GROUP = "audapure-ob-fresh"
 CONFIG_TEMPLATE_LOCATION = "eastus2euap"
 CONFIG_TEMPLATE_FILE = os.path.join(os.path.dirname(__file__), "resources", "hotmelt-config-template-hard.yaml")
 CONFIG_SET_FILE = os.path.join(os.path.dirname(__file__), "resources", "configset.yaml")

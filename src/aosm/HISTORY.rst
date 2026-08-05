@@ -2,6 +2,11 @@
 
 Release History
 ===============
+2.0.0b6
+++++++++
+* Updating genson dependency to 1.3.0 to fix update/install issues with azure cli version 2.84.0.
+* This version requires a minimum of 2.78.0 Azure core CLI. See install instructions: https://github.com/MicrosoftDocs/azure-docs-cli/blob/main/docs-ref-conceptual/Latest-version/install-azure-cli.md
+
 2.0.0b5
 ++++++++
 * Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/azure_storagev2/__init__.py` to fix the namespace package issue.

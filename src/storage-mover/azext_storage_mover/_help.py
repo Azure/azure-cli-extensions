@@ -135,6 +135,29 @@ examples:
         -n "endpoint_multi_cloud_connector" --description endpointMultiCloudConnectorDescUpdate
 """
 
+helps['storage-mover endpoint create-for-s3-with-hmac'] = """
+type: command
+short-summary: Creates an Endpoint resource for S3-compatible storage using HMAC credentials.
+examples:
+    - name: endpoint create-for-s3-with-hmac
+      text: >
+        az storage-mover endpoint create-for-s3-with-hmac -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_s3" --source-uri "https://s3.example.com/bucket" --source-type BACKBLAZE
+        --access-key-uri "https://keyvault.vault.azure.net/secrets/access-key"
+        --secret-key-uri "https://keyvault.vault.azure.net/secrets/secret-key"
+        --description endpointS3Desc
+"""
+
+helps['storage-mover endpoint update-for-s3-with-hmac'] = """
+type: command
+short-summary: Updates an Endpoint resource for S3-compatible storage using HMAC credentials.
+examples:
+    - name: endpoint update-for-s3-with-hmac
+      text: >
+        az storage-mover endpoint update-for-s3-with-hmac -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_s3" --description endpointS3DescUpdate
+"""
+
 helps['storage-mover endpoint identity assign'] = """
 type: command
 short-summary: Assigns a managed identity to an Endpoint resource.
@@ -143,4 +166,405 @@ examples:
       text: >
         az storage-mover endpoint identity assign -g "rg" --storage-mover-name "mover_name" -n "endpoint_nfs_file_share"
         --mi-system-assigned
+"""
+
+helps['storage-mover connection create'] = """
+type: command
+short-summary: Create a Connection resource.
+examples:
+    - name: connection create
+      text: >
+        az storage-mover connection create -g "rg" --storage-mover-name "mover_name"
+        -n "connection_name" --private-link-service-id "pls_resource_id"
+        --description "Connection description"
+"""
+
+helps['storage-mover connection update'] = """
+type: command
+short-summary: Update a Connection resource.
+examples:
+    - name: connection update
+      text: >
+        az storage-mover connection update -g "rg" --storage-mover-name "mover_name"
+        -n "connection_name" --description "Updated description"
+"""
+
+helps['storage-mover agent create'] = """
+type: command
+short-summary: Create an Agent resource.
+examples:
+    - name: agent create
+      text: >
+        az storage-mover agent create -g "rg" --storage-mover-name "mover_name"
+        -n "agent_name" --arc-resource-id "arc_resource_id"
+        --arc-vm-uuid "arc_vm_uuid" --description "Agent description"
+"""
+
+helps['storage-mover job-definition create'] = """
+type: command
+short-summary: Create a Job Definition resource with an optional schedule.
+examples:
+    - name: job-definition create with weekly schedule
+      text: >
+        az storage-mover job-definition create -g "rg" -n "job_definition"
+        --project-name "project_name" --storage-mover-name "mover_name"
+        --copy-mode Additive --source-name "source_endpoint" --target-name "target_endpoint"
+        --job-type CloudToCloud --source-subpath / --target-subpath /
+        --schedule "{frequency:Weekly,is-active:True,start-date:'2026-04-12T00:00:00Z',end-date:'2026-12-31T00:00:00Z',execution-time:{hour:9,minute:0},days-of-week:[Monday,Wednesday,Friday]}"
+"""
+
+helps['storage-mover create'] = """
+type: command
+short-summary: Create a top-level Storage Mover resource.
+examples:
+    - name: storage-mover create
+      text: >
+        az storage-mover create -g "rg" -n "mover_name" -l eastus2
+        --tags key1=value1 --description "Example Storage Mover"
+"""
+
+helps['storage-mover delete'] = """
+type: command
+short-summary: Delete a Storage Mover resource.
+examples:
+    - name: storage-mover delete
+      text: >
+        az storage-mover delete -g "rg" -n "mover_name" -y
+"""
+
+helps['storage-mover show'] = """
+type: command
+short-summary: Get a Storage Mover resource.
+examples:
+    - name: storage-mover show
+      text: >
+        az storage-mover show -g "rg" -n "mover_name"
+"""
+
+helps['storage-mover list'] = """
+type: command
+short-summary: List all Storage Movers in a resource group or subscription.
+examples:
+    - name: storage-mover list
+      text: >
+        az storage-mover list -g "rg"
+"""
+
+helps['storage-mover update'] = """
+type: command
+short-summary: Update a top-level Storage Mover resource.
+examples:
+    - name: storage-mover update
+      text: >
+        az storage-mover update -g "rg" -n "mover_name"
+        --tags key2=value2 --description "Updated description"
+"""
+
+helps['storage-mover wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition is met.
+examples:
+    - name: storage-mover wait
+      text: >
+        az storage-mover wait -g "rg" -n "mover_name" --created
+"""
+
+helps['storage-mover agent list'] = """
+type: command
+short-summary: List all Agents in a Storage Mover.
+examples:
+    - name: agent list
+      text: >
+        az storage-mover agent list -g "rg" --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover agent show'] = """
+type: command
+short-summary: Get an Agent resource.
+examples:
+    - name: agent show
+      text: >
+        az storage-mover agent show -g "rg" -n "agent_name"
+        --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover agent update'] = """
+type: command
+short-summary: Update an Agent resource.
+examples:
+    - name: agent update
+      text: >
+        az storage-mover agent update -g "rg" -n "agent_name"
+        --storage-mover-name "mover_name" --description "Updated agent"
+"""
+
+helps['storage-mover agent unregister'] = """
+type: command
+short-summary: Unregister an Agent resource.
+examples:
+    - name: agent unregister
+      text: >
+        az storage-mover agent unregister -g "rg" -n "agent_name"
+        --storage-mover-name "mover_name" -y
+"""
+
+helps['storage-mover agent wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition is met.
+examples:
+    - name: agent wait
+      text: >
+        az storage-mover agent wait -g "rg" -n "agent_name"
+        --storage-mover-name "mover_name" --created
+"""
+
+helps['storage-mover connection delete'] = """
+type: command
+short-summary: Delete a Connection resource.
+examples:
+    - name: connection delete
+      text: >
+        az storage-mover connection delete -g "rg" --storage-mover-name "mover_name"
+        -n "connection_name" -y
+"""
+
+helps['storage-mover connection list'] = """
+type: command
+short-summary: List all Connections in a Storage Mover.
+examples:
+    - name: connection list
+      text: >
+        az storage-mover connection list -g "rg" --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover connection show'] = """
+type: command
+short-summary: Get a Connection resource.
+examples:
+    - name: connection show
+      text: >
+        az storage-mover connection show -g "rg" --storage-mover-name "mover_name"
+        -n "connection_name"
+"""
+
+helps['storage-mover connection wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition is met.
+examples:
+    - name: connection wait
+      text: >
+        az storage-mover connection wait -g "rg" --storage-mover-name "mover_name"
+        -n "connection_name" --created
+"""
+
+helps['storage-mover endpoint delete'] = """
+type: command
+short-summary: Delete an Endpoint resource.
+examples:
+    - name: endpoint delete
+      text: >
+        az storage-mover endpoint delete -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_name" -y
+"""
+
+helps['storage-mover endpoint list'] = """
+type: command
+short-summary: List all Endpoints in a Storage Mover.
+examples:
+    - name: endpoint list
+      text: >
+        az storage-mover endpoint list -g "rg" --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover endpoint show'] = """
+type: command
+short-summary: Get an Endpoint resource.
+examples:
+    - name: endpoint show
+      text: >
+        az storage-mover endpoint show -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_name"
+"""
+
+helps['storage-mover endpoint wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition is met.
+examples:
+    - name: endpoint wait
+      text: >
+        az storage-mover endpoint wait -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_name" --created
+"""
+
+helps['storage-mover endpoint identity remove'] = """
+type: command
+short-summary: Remove managed identities from an Endpoint resource.
+examples:
+    - name: endpoint identity remove
+      text: >
+        az storage-mover endpoint identity remove -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_name" --mi-system-assigned
+"""
+
+helps['storage-mover endpoint identity show'] = """
+type: command
+short-summary: Show managed identity details of an Endpoint resource.
+examples:
+    - name: endpoint identity show
+      text: >
+        az storage-mover endpoint identity show -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_name"
+"""
+
+helps['storage-mover job-definition delete'] = """
+type: command
+short-summary: Delete a Job Definition resource.
+examples:
+    - name: job-definition delete
+      text: >
+        az storage-mover job-definition delete -g "rg" -n "job_definition"
+        --project-name "project_name" --storage-mover-name "mover_name" -y
+"""
+
+helps['storage-mover job-definition list'] = """
+type: command
+short-summary: List all Job Definitions in a Project.
+examples:
+    - name: job-definition list
+      text: >
+        az storage-mover job-definition list -g "rg" --project-name "project_name"
+        --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover job-definition show'] = """
+type: command
+short-summary: Get a Job Definition resource.
+examples:
+    - name: job-definition show
+      text: >
+        az storage-mover job-definition show -g "rg" -n "job_definition"
+        --project-name "project_name" --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover job-definition update'] = """
+type: command
+short-summary: Update a Job Definition resource.
+examples:
+    - name: job-definition update
+      text: >
+        az storage-mover job-definition update -g "rg" -n "job_definition"
+        --project-name "project_name" --storage-mover-name "mover_name"
+        --copy-mode Mirror --description "Updated description"
+"""
+
+helps['storage-mover job-definition start-job'] = """
+type: command
+short-summary: Start a new Job Run for a Job Definition.
+examples:
+    - name: job-definition start-job
+      text: >
+        az storage-mover job-definition start-job -g "rg"
+        --job-definition-name "job_definition" --project-name "project_name"
+        --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover job-definition stop-job'] = """
+type: command
+short-summary: Stop the active Job Run for a Job Definition.
+examples:
+    - name: job-definition stop-job
+      text: >
+        az storage-mover job-definition stop-job -g "rg"
+        --job-definition-name "job_definition" --project-name "project_name"
+        --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover job-definition wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition is met.
+examples:
+    - name: job-definition wait
+      text: >
+        az storage-mover job-definition wait -g "rg" -n "job_definition"
+        --project-name "project_name" --storage-mover-name "mover_name" --created
+"""
+
+helps['storage-mover job-run list'] = """
+type: command
+short-summary: List all Job Runs in a Job Definition.
+examples:
+    - name: job-run list
+      text: >
+        az storage-mover job-run list -g "rg" --job-definition-name "job_definition"
+        --project-name "project_name" --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover job-run show'] = """
+type: command
+short-summary: Get a Job Run resource.
+examples:
+    - name: job-run show
+      text: >
+        az storage-mover job-run show -n "job_run_name" -g "rg"
+        --job-definition-name "job_definition" --project-name "project_name"
+        --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover project create'] = """
+type: command
+short-summary: Create a Project resource.
+examples:
+    - name: project create
+      text: >
+        az storage-mover project create -g "rg" --storage-mover-name "mover_name"
+        -n "project_name" --description "Project description"
+"""
+
+helps['storage-mover project delete'] = """
+type: command
+short-summary: Delete a Project resource.
+examples:
+    - name: project delete
+      text: >
+        az storage-mover project delete -g "rg" --storage-mover-name "mover_name"
+        -n "project_name" -y
+"""
+
+helps['storage-mover project list'] = """
+type: command
+short-summary: List all Projects in a Storage Mover.
+examples:
+    - name: project list
+      text: >
+        az storage-mover project list -g "rg" --storage-mover-name "mover_name"
+"""
+
+helps['storage-mover project show'] = """
+type: command
+short-summary: Get a Project resource.
+examples:
+    - name: project show
+      text: >
+        az storage-mover project show -g "rg" --storage-mover-name "mover_name"
+        -n "project_name"
+"""
+
+helps['storage-mover project update'] = """
+type: command
+short-summary: Update a Project resource.
+examples:
+    - name: project update
+      text: >
+        az storage-mover project update -g "rg" --storage-mover-name "mover_name"
+        -n "project_name" --description "Updated description"
+"""
+
+helps['storage-mover project wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition is met.
+examples:
+    - name: project wait
+      text: >
+        az storage-mover project wait -g "rg" --storage-mover-name "mover_name"
+        -n "project_name" --created
 """

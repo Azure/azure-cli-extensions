@@ -51,19 +51,20 @@ def handle_target_os_type(cmd, op_info):
 
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
-    from azure.cli.core.commands import client_factory
-    from azure.cli.core import profiles
-    vm = None
+    from azure.cli.command_modules.vm.operations.vm import VMShow
     os_type = None
     # pylint: disable=broad-except
     try:
-        compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-        vm = compute_client.virtual_machines.get(resource_group_name, vm_name)
+        command_args = {
+            'resource_group': resource_group_name,
+            'vm_name': vm_name
+        }
+        vm = VMShow(cli_ctx=cmd.cli_ctx)(command_args=command_args)
     except Exception:
         return None
 
-    if vm and vm.storage_profile and vm.storage_profile.os_disk and vm.storage_profile.os_disk.os_type:
-        os_type = vm.storage_profile.os_disk.os_type
+    if vm and vm.get('storageProfile', {}).get('osDisk', {}).get('osType'):
+        os_type = vm['storageProfile']['osDisk']['osType']
 
     return os_type
 

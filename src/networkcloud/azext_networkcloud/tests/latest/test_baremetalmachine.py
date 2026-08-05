@@ -13,6 +13,12 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    expected_actual_message,
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import ResourceOutputChecker, get_value
 
 
 def setup_scenario1(test):
@@ -30,8 +36,8 @@ def call_scenario1(test, bmm_name="bmmScenario1"):
     setup_scenario1(test)
     step_show(test, bmm_name, checks=[])
     step_update(test, bmm_name, checks=[])
-    step_list_subscription(test, checks=[])
-    step_list_resource_group(test, checks=[])
+    step_list_subscription(test)
+    step_list_resource_group(test)
     cleanup_scenario1(test)
 
 
@@ -100,23 +106,54 @@ def call_scenario5(test, bmm_name="bmmScenario5"):
 
 def step_show(test, bmm_name, checks=None):
     """BareMetalMachine show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
+    if checks is not None:
+        test.cmd(
+            "az networkcloud baremetalmachine show --name {"
+            + bmm_name
+            + "} --resource-group {resourceGroup}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud baremetalmachine show --name {"
         + bmm_name
         + "} --resource-group {resourceGroup}"
+    ).get_output_in_json()
+    context = "BareMetalMachine show"
+
+    assert result.get("name") == test.kwargs[bmm_name], expected_actual_message(
+        context, "name", test.kwargs[bmm_name], result.get("name"), result
     )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert properties.get("machineDetails") == get_value(
+        test, "machineDetails"
+    ), properties_key_mismatch_message("machineDetails")
+
+    assert properties.get("bmcMacAddress") == get_value(
+        test, "bmcMacAddress"
+    ), properties_key_mismatch_message("bmcMacAddress")
+
+    assert properties.get("bootMacAddress") == get_value(
+        test, "bootMacAddress"
+    ), properties_key_mismatch_message("bootMacAddress")
+
+    assert properties.get("serialNumber") == get_value(
+        test, "serialNumber"
+    ), properties_key_mismatch_message("serialNumber")
 
 
 def step_update(test, bmm_name, checks=None):
     """BareMetalMachine update operation"""
     if checks is None:
-        checks = []
+        checks = ResourceOutputChecker().build_update_checks().get_checks()
     test.cmd(
         "az networkcloud baremetalmachine update --name {"
         + bmm_name
-        + "} --tags {tagsUpdate} --machine-details {machineDetails} --resource-group {resourceGroup}"
+        + "} --tags {tagsUpdate} --machine-details {machineDetails} --resource-group {resourceGroup}",
+        checks=checks,
     )
 
 
@@ -124,14 +161,17 @@ def step_list_subscription(test, checks=None):
     """BareMetalMachine list by subscription operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud baremetalmachine list --top 10")
+    test.cmd("az networkcloud baremetalmachine list --top 10", checks=checks)
 
 
 def step_list_resource_group(test, checks=None):
     """BareMetalMachine list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud baremetalmachine list --resource-group {resourceGroup}")
+    test.cmd(
+        "az networkcloud baremetalmachine list --resource-group {resourceGroup}",
+        checks=checks,
+    )
 
 
 def step_run_command(test, bmm_name, checks=None):
@@ -141,7 +181,8 @@ def step_run_command(test, bmm_name, checks=None):
     test.cmd(
         "az networkcloud baremetalmachine run-command --name {"
         + bmm_name
-        + "} --resource-group {resourceGroup} --arguments {runCommandArguments} --limit-time-seconds {limitTimeSeconds} --script {script}"
+        + "} --resource-group {resourceGroup} --arguments {runCommandArguments} --limit-time-seconds {limitTimeSeconds} --script {script}",
+        checks=checks,
     )
 
 
@@ -152,7 +193,8 @@ def step_run_data_extract(test, bmm_name, checks=None):
     test.cmd(
         "az networkcloud baremetalmachine run-data-extract --name {"
         + bmm_name
-        + "} --resource-group {resourceGroup} --limit-time-seconds {limitTimeSeconds} --commands {dataExtractCommands}"
+        + "} --resource-group {resourceGroup} --limit-time-seconds {limitTimeSeconds} --commands {dataExtractCommands}",
+        checks=checks,
     )
 
 
@@ -185,7 +227,8 @@ def step_cordon(test, bmm_name, checks=None):
     test.cmd(
         "az networkcloud baremetalmachine cordon --evacuate {cordonEvacuate} --name {"
         + bmm_name
-        + "} --resource-group {resourceGroup}"
+        + "} --resource-group {resourceGroup}",
+        checks=checks,
     )
 
 
@@ -196,7 +239,8 @@ def step_uncordon(test, bmm_name, checks=None):
     test.cmd(
         "az networkcloud baremetalmachine uncordon --name {"
         + bmm_name
-        + "} --resource-group {resourceGroup}"
+        + "} --resource-group {resourceGroup}",
+        checks=checks,
     )
 
 

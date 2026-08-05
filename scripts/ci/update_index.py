@@ -43,7 +43,11 @@ def main():
     ext_dir = tempfile.mkdtemp(dir=extensions_dir)
     whl_cache_dir = tempfile.mkdtemp()
     whl_cache = {}
-    ext_file = get_whl_from_url(whl_path, extension_name, whl_cache_dir, whl_cache)
+    # Download to the real wheel filename (ending in .whl): get_ext_metadata now
+    # reads metadata via pkginfo, which requires a .whl-named file. Passing the
+    # extension name (e.g. "ssh") produced an extension-less temp file that
+    # pkginfo rejects with "Not a known wheel archive format".
+    ext_file = get_whl_from_url(whl_path, whl_path.split('/')[-1], whl_cache_dir, whl_cache)
 
     with open('./src/index.json', 'r') as infile:
         curr_index = json.loads(infile.read())

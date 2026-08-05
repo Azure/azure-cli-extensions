@@ -12,11 +12,32 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseAdbsScenario(ScenarioTest):
+    def setUp(self):
+        # Proxy endpoints can rewrite ARM host/port during playback.
+        self.vcr.match_on = ['scheme', 'method', 'path', 'query']
+        super(OracleDatabaseAdbsScenario, self).setUp()
+
     # @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs(self, resource_group):
         subscription_id = self.get_subscription_id()
+        resource_group_name = 'PowerShellTestRg'
+        autonomous_database_name = self.create_random_name(prefix='ADBScli', length=20)
+        subnet_id = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_SUBNET_ID',
+            '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated'.format(
+                subscription_id, resource_group_name
+            )
+        )
+        vnet_id = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_VNET_ID',
+            '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworks/PSTestVnet'.format(
+                subscription_id, resource_group_name
+            )
+        )
+        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+
         self.cmd('az oracle-database autonomous-database version list --location eastus ')
         self.cmd('az oracle-database gi-version list --location eastus ')
         self.cmd('az oracle-database autonomous-database character-set list --location eastus ')
@@ -25,15 +46,28 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
         self.cmd('az oracle-database autonomous-database create --location eastus '
-                '--autonomousdatabasename ADBScliTest '
-                '--resource-group PowerShellTestRg '
-                '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated '
+                '--autonomousdatabasename {} '
+                '--resource-group {} '
+                '--subnet-id {} '
                 '--display-name ADBScli1Mih '
                 '--compute-model ECPU --compute-count 2 '
-                '--data-storage-size-in-gbs 32 --license-model BringYourOwnLicense '
-                '--db-workload OLTP --admin-password TestPass#2024# '
+                '--data-storage-size-in-tbs 1 --license-model BringYourOwnLicense '
+                '--db-workload DW --admin-password {} '
                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
-                '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet  --regular --no-wait ')
+                '--vnet-id {} --regular '.format(
+                    autonomous_database_name,
+                    resource_group_name,
+                    subnet_id,
+                    admin_password,
+                    vnet_id
+                ))
+        self.cmd('az oracle-database autonomous-database wait '
+                 '--resource-group {} '
+                 '--autonomousdatabasename {} '
+                 '--custom "properties.provisioningState == \'Succeeded\'" '
+                 '--interval 60 --timeout 7200 '.format(resource_group_name, autonomous_database_name))
+        self.cmd('az oracle-database autonomous-database show '
+                 '--name {} --resource-group {} '.format(autonomous_database_name, resource_group_name))
         self.cmd('az oracle-database autonomous-database delete '
-                '--autonomousdatabasename ADBScli '
-                '--resource-group PowerShellTestRg --yes --no-wait ')
+                '--autonomousdatabasename {} '
+                '--resource-group {} --yes --no-wait '.format(autonomous_database_name, resource_group_name))

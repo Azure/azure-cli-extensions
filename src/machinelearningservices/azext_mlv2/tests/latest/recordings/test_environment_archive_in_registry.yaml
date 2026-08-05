@@ -9,43 +9,49 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
-        (Windows-10-10.0.22621-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/dsvm-test/discovery
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/kchawla-reg/discovery
   response:
     body:
-      string: '{"registryId": "0b6229f6-570d-4378-aa08-158500c5638b", "registryName":
-        "dsvm-test", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
-        "eastus", "regions": ["eastus"], "subscriptionId": "b17253fa-f327-42d6-9686-f3e553e24763",
-        "resourceGroup": "dsvm_master", "workspaceName": null, "primaryRegionResourceProviderUri":
-        "https://cert-eastus.experiments.azureml.net/", "registryFqdns": {"eastus":
-        {"uri": "https://0b6229f6-570d-4378-aa08-158500c5638b.registry.eastus.privatelink.api.azureml.ms"}}}'
+      string: '{"registryId": "fc94ce00-c9bb-4361-8e70-25612d497721", "registryName":
+        "kchawla-reg", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus2", "regions": ["eastus2", "centraluseuap", "westcentralus", "ukwest"],
+        "subscriptionId": "00000000-0000-0000-0000-000000000000", "resourceGroup":
+        "kchawla-rg", "workspaceName": null, "primaryRegionResourceProviderUri": "https://cert-eastus2.experiments.azureml.net/",
+        "registryFqdns": {"eastus2": {"uri": "https://eastus2.api.azureml.ms"}, "centraluseuap":
+        {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri": "https://int.api.azureml-test.ms"},
+        "westcentralus": {"uri": "https://westcentralus.api.azureml.ms"}, "ukwest":
+        {"uri": "https://ukwest.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        null, "isTradeRestricted": false}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus-01
       connection:
       - keep-alive
       content-length:
-      - '511'
+      - '800'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Jan 2023 18:10:30 GMT
+      - Tue, 19 May 2026 06:58:49 GMT
+      mise-correlation-id:
+      - 3796b38f-cc63-48e4-954d-4cc4507d20b0
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-eastus-02
       x-content-type-options:
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.016'
+      - '0.408'
     status:
       code: 200
       message: OK
@@ -59,58 +65,60 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
-        (Windows-10-10.0.22621-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/environments/bani_env/versions/1?api-version=0000-00-00
+    uri: https://cert-eastus2.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/kchawla-reg/environments/kchawla-env/versions/1?api-version=0000-00-00
   response:
     body:
-      string: '{"id": "azureml://registries/dsvm-test/environments/bani_env/versions/1",
-        "name": "1", "type": "environments", "properties": {"description": null, "tags":
-        {}, "properties": {}, "isArchived": false, "isAnonymous": false, "environmentType":
-        "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+      string: '{"id": "azureml://registries/kchawla-reg/environments/kchawla-env/versions/1",
+        "name": "1", "type": "environments", "properties": {"description": "Environment
+        created in kchawla-reg registry.", "tags": {}, "properties": {"azureml.labels":
+        "default,latest,invisibleLatest"}, "isArchived": true, "isAnonymous": false,
+        "environmentType": "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest",
         "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
-        [\n    \"python=3.8\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
-        \"example-environment\"\n}", "osType": "Linux"}, "systemData": {"createdAt":
-        "2022-10-20T00:17:45.1351596+00:00", "createdBy": "Banibrata De", "createdByType":
-        "User", "lastModifiedAt": "2022-10-20T00:17:45.1351596+00:00", "lastModifiedBy":
-        "Banibrata De", "lastModifiedByType": "User"}}'
+        [\n    \"python=3.10\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"azure-ai-ml\",\n        \"azure-identity\",\n        \"mlflow\",\n        \"scikit-learn\",\n        \"pandas\",\n        \"numpy\"\n      ]\n    }\n  ],\n  \"name\":
+        \"kchawla-env\"\n}", "osType": "Linux", "stage": "Archived", "intellectualProperty":
+        null}, "systemData": {"createdAt": "2026-05-18T17:52:59.2719411+00:00", "createdBy":
+        "Kshitij Chawla", "createdByType": "User", "lastModifiedAt": "2026-05-18T17:52:59.2719411+00:00",
+        "lastModifiedBy": "Kshitij Chawla", "lastModifiedByType": "User"}}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus2-02
       connection:
       - keep-alive
       content-length:
-      - '884'
+      - '1078'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Jan 2023 18:10:31 GMT
+      - Tue, 19 May 2026 06:58:51 GMT
+      mise-correlation-id:
+      - f5aff430-91f7-4175-bc4f-8c3097ea23d3
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
-      server-timing:
-      - traceparent;desc="00-52e45b3de3d91229fba5b97b3c2f95ab-0c44822970b03eb5-00"
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-eastus-01
       x-content-type-options:
-      - nosniff
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.365'
+      - '0.600'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
-      true, "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
-      [\n    \"python=3.8\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
-      \"example-environment\"\n}", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+    body: '{"properties": {"description": "Environment created in kchawla-reg registry.",
+      "properties": {"azureml.labels": "default,latest,invisibleLatest"}, "tags":
+      {}, "isAnonymous": false, "isArchived": true, "condaFile": "{\n  \"channels\":
+      [\n    \"conda-forge\"\n  ],\n  \"dependencies\": [\n    \"python=3.10\",\n    \"pip\",\n    {\n      \"pip\":
+      [\n        \"azure-ai-ml\",\n        \"azure-identity\",\n        \"mlflow\",\n        \"scikit-learn\",\n        \"pandas\",\n        \"numpy\"\n      ]\n    }\n  ],\n  \"name\":
+      \"kchawla-env\"\n}", "image": "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest",
       "osType": "Linux"}}'
     headers:
       Accept:
@@ -120,18 +128,20 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '479'
+      - '635'
       Content-Type:
       - application/json
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.10.8
-        (Windows-10-10.0.22621-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: PUT
-    uri: https://cert-eastus.experiments.azureml.net/mferp/managementfrontend/subscriptions/b17253fa-f327-42d6-9686-f3e553e24763/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/dsvm-test/environments/bani_env/versions/1?api-version=0000-00-00
+    uri: https://cert-eastus2.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/kchawla-reg/environments/kchawla-env/versions/1?api-version=0000-00-00
   response:
     body:
       string: 'null'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus2-01
       connection:
       - keep-alive
       content-length:
@@ -139,15 +149,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 18 Jan 2023 18:10:32 GMT
+      - Tue, 19 May 2026 06:58:52 GMT
       location:
-      - https://eastus.api.azureml.ms/environment/v1.0/operations/dsvm-test_bani_env_1_a1c71f32-b443-431d-867f-68d0b66a8e58
+      - https://eastus2.api.azureml.ms/environment/v1.0/operations/kchawla-reg_kchawla-env_1_2c1fde67-ab6a-442a-b634-0ab237a166c0
+      mise-correlation-id:
+      - b6536b8a-c6ad-4910-a0d1-5e828313204b
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
-      x-aml-cluster:
-      - vienna-eastus-01
+      - max-age=31536000; includeSubDomains; preload
       x-content-type-options:
       - nosniff
       x-ms-async-operation-timeout:
@@ -155,7 +165,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '1.130'
+      - '1.108'
     status:
       code: 202
       message: Accepted

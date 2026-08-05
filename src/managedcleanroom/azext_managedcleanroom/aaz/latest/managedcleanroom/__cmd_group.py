@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "managedcleanroom",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Clean Room
+    """Manage Azure Confidential Clean Room
     """
     pass
 

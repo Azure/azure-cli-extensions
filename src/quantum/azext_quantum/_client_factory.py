@@ -9,7 +9,8 @@ import os
 from ._location_helper import normalize_location
 from .__init__ import CLI_REPORTED_VERSION
 from .vendored_sdks.azure_quantum_python._client import WorkspaceClient
-from .vendored_sdks.azure_mgmt_quantum import AzureQuantumManagementClient
+from .vendored_sdks.azure_mgmt_quantum import AzureQuantumMgmtClient
+from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations
 
 
 def is_env(name):
@@ -40,23 +41,19 @@ def get_appid():
 
 # Control Plane clients
 
-def cf_quantum_mgmt(cli_ctx, *_) -> AzureQuantumManagementClient:
+def cf_quantum_mgmt(cli_ctx, *_) -> AzureQuantumMgmtClient:
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    client = get_mgmt_service_client(cli_ctx, AzureQuantumManagementClient, base_url_bound=False)
+    client: AzureQuantumMgmtClient = get_mgmt_service_client(cli_ctx, AzureQuantumMgmtClient, base_url_bound=False)
     # Add user agent on the management client to include extension information
     client._config.user_agent_policy.add_user_agent(get_appid())
     return client
 
 
-def cf_workspaces(cli_ctx, *_):
+def cf_workspaces(cli_ctx, *_) -> WorkspacesOperations:
     return cf_quantum_mgmt(cli_ctx).workspaces
 
 
-def cf_workspace(cli_ctx, *_):
-    return cf_quantum_mgmt(cli_ctx).workspace
-
-
-def cf_offerings(cli_ctx, *_):
+def cf_offerings(cli_ctx, *_) -> OfferingsOperations:
     return cf_quantum_mgmt(cli_ctx).offerings
 
 

@@ -558,7 +558,7 @@ helps['migrate local start-migration'] = """
         Note: This command uses a preview API version
         and may experience breaking changes in future releases.
     parameters:
-        - name: --protected-item-id
+        - name: --target-object-id
           short-summary: Full ARM resource ID of the protected item to migrate.
           long-summary: >
             The complete ARM resource ID of the replicating server.
@@ -581,11 +581,11 @@ helps['migrate local start-migration'] = """
         - name: Start migration for a protected item
           text: |
             az migrate local start-migration \\
-                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
+                --target-object-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem"
         - name: Start migration and turn off source server
           text: |
             az migrate local start-migration \\
-                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --target-object-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
                 --turn-off-source-server
         - name: Start migration using short parameter names
           text: |
@@ -595,6 +595,6 @@ helps['migrate local start-migration'] = """
         - name: Start migration with specific subscription
           text: |
             az migrate local start-migration \\
-                --protected-item-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
+                --target-object-id "/subscriptions/xxxx/resourceGroups/myRG/providers/Microsoft.DataReplication/replicationVaults/myVault/protectedItems/myItem" \\
                 --subscription-id "12345678-1234-1234-1234-123456789012"
 """

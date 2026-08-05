@@ -1,0 +1,32 @@
+{
+  "fixtures": [
+    {
+      "name": "ssh",
+      "path": "src/ssh",
+      "kind": "baseline",
+      "requires_build_isolation_off": false,
+      "enabled": true
+    },
+    {
+      "name": "containerapp",
+      "path": "src/containerapp",
+      "kind": "self_import_setup",
+      "requires_build_isolation_off": true,
+      "enabled": true
+    },
+    {
+      "name": "account",
+      "path": "src/account",
+      "kind": "mid_complexity",
+      "requires_build_isolation_off": false,
+      "enabled": false
+    },
+    {
+      "name": "aks-preview",
+      "path": "src/aks-preview",
+      "kind": "large_extension",
+      "requires_build_isolation_off": false,
+      "enabled": false
+    }
+  ]
+}

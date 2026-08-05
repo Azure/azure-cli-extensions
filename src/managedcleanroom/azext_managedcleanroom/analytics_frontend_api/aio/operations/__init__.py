@@ -4,13 +4,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------
 # pylint: disable=wrong-import-position
-# flake8: noqa
-
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ._patch import *  # pylint: disable=unused-wildcard-import
+    from ._patch import *  # pylint: disable=unused-wildcard-import  # noqa: F403
 
 from ._operations import CollaborationOperations  # type: ignore
 

@@ -7,17 +7,20 @@ import time
 import uuid
 import os
 
-from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
+from azure.cli.core.commands import LongRunningOperation
 from azure.core.exceptions import HttpResponseError
-from azure.mgmt.compute.models import ResourceIdentityType
 from azure.mgmt.core.tools import parse_resource_id
 
 from knack.util import CLIError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
+IDENTITY_SYSTEM_ASSIGNED = "SystemAssigned"
+IDENTITY_USER_ASSIGNED = "UserAssigned"
+IDENTITY_SYSTEM_USER_ASSIGNED = "SystemAssigned, UserAssigned"
 
 LINUX = "linux"
 WINDOWS = "windows"
@@ -56,7 +59,6 @@ def set_aem(cmd, resource_group_name, vm_name, skip_storage_analytics=False,
             install_new_extension=False, set_access_to_individual_resources=False,
             proxy_uri=None, debug_extension=False):
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
-                             vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
                              storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE),
                              roles_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION),
                              skip_storage_analytics=skip_storage_analytics,
@@ -68,35 +70,36 @@ def set_aem(cmd, resource_group_name, vm_name, skip_storage_analytics=False,
 
 
 def delete_aem(cmd, resource_group_name, vm_name):
-    aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
-                             vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
-                             storage_client=None)
+    aem = EnhancedMonitoring(cmd, resource_group_name, vm_name)
     return aem.delete()
 
 
 def verify_aem(cmd, resource_group_name, vm_name, wait_time_in_minutes=15, skip_storage_check=False):
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
-                             vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
                              storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE),
                              roles_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION))
     aem.verify(skip_storage_check, wait_time_in_minutes)
 
 
 class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, cmd, resource_group, vm_name, vm_client,
-                 storage_client, roles_client=None, skip_storage_analytics=None,
+    def __init__(self, cmd, resource_group, vm_name,
+                 storage_client=None, roles_client=None, skip_storage_analytics=None,
                  install_new_extension=None,
                  set_access_to_individual_resources=None,
                  no_wait=False,
                  proxy_uri=None,
                  debug_extension=False):
-        self._vm_client = vm_client
         self._storage_client = storage_client
         self._roles_client = roles_client
         self._resource_group = resource_group
         self._cmd = cmd
-        self._vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
-        self._os_type = self._vm.storage_profile.os_disk.os_type.lower()
+        from azure.cli.command_modules.vm.operations.vm import VMShow
+        self._vm = VMShow(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": resource_group,
+            "vm_name": vm_name,
+            "expand": "instanceView",
+        })
+        self._os_type = self._vm.get('storageProfile', {}).get('osDisk', {}).get('osType', '').lower()
         if self._os_type != WINDOWS and self._os_type != LINUX:
             raise CLIError(
                 f'Operating system {self._os_type} not supported by '
@@ -139,25 +142,34 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         self._extension = aem_extension_info_v2[self._os_type]
 
         new_identity = None
-        if self._vm.identity is None:
+        vm_identity = self._vm.get('identity', {})
+        if vm_identity is None or vm_identity == {}:
             logger.info("VM has no identity, enabling system assigned")
-            new_identity = ResourceIdentityType.system_assigned
+            new_identity = IDENTITY_SYSTEM_ASSIGNED
 
-        elif self._vm.identity is not None and self._vm.identity.type == ResourceIdentityType.user_assigned:
+        elif vm_identity is not None and vm_identity.get('type') == IDENTITY_USER_ASSIGNED:
             logger.info("VM has user assigned identity, enabling user and system assigned")
-            new_identity = ResourceIdentityType.system_assigned_user_assigned
+            new_identity = IDENTITY_SYSTEM_USER_ASSIGNED
+
+        if vm_identity.get('type') == IDENTITY_USER_ASSIGNED or \
+                vm_identity.get('type') == IDENTITY_SYSTEM_USER_ASSIGNED:
+            user_assigned = list(vm_identity.get('userAssignedIdentities', {}).keys())
+        else:
+            user_assigned = []
 
         if new_identity is not None:
-            params_identity = {}
-            params_identity['type'] = new_identity
-            VirtualMachineUpdate = self._cmd.get_models('VirtualMachineUpdate',
-                                                        resource_type=ResourceType.MGMT_COMPUTE,
-                                                        operation_group='virtual_machines')
-            vm_patch = VirtualMachineUpdate()
-            vm_patch.identity = params_identity
-            poller = (self._vm_client.virtual_machines.
-                      begin_update(self._resource_group, self._vm.name, vm_patch))
-            self._vm = poller.result()
+            from azure.cli.command_modules.vm.operations.vm import VMPatch
+            command_args = {
+                'resource_group': self._resource_group,
+                'vm_name': self._vm['name'],
+            }
+            if new_identity == IDENTITY_SYSTEM_ASSIGNED or new_identity == IDENTITY_SYSTEM_USER_ASSIGNED:
+                command_args['mi_system_assigned'] = 'True'
+            if new_identity == IDENTITY_SYSTEM_USER_ASSIGNED:
+                command_args['mi_user_assigned'] = user_assigned
+
+            poller = VMPatch(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
+            self._vm = LongRunningOperation(self._cmd.cli_ctx)(poller)
 
         scopes = set()
         end_index = 5  # Scope is set to resource group
@@ -166,17 +178,18 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             end_index = 9  # Scope is set to resource
 
         # Add VM Scope or Resource Group scope
-        scopes.add("/".join(self._vm.id.split('/')[0:end_index]))
+        scopes.add("/".join(self._vm.get('id', '').split('/')[0:end_index]))
 
         # TODO: do we want to support unmanaged disks?
-        scopes.add("/".join(self._vm.storage_profile.os_disk.managed_disk.id.split('/')[0:end_index]))
-        for data_disk in self._vm.storage_profile.data_disks:
-            logger.info("Adding access to data disk %s", data_disk.managed_disk.id)
-            scopes.add("/".join(data_disk.managed_disk.id.split('/')[0:end_index]))
+        scopes.add("/".join(self._vm.get('storageProfile', {}).get('osDisk', {})
+                            .get('managedDisk', {}).get('id', '').split('/')[0:end_index]))
+        for data_disk in self._vm.get('storageProfile', {}).get('dataDisks', []):
+            logger.info("Adding access to data disk %s", data_disk.get('managedDisk', {}).get('id', ''))
+            scopes.add("/".join(data_disk.get('managedDisk', {}).get('id', '').split('/')[0:end_index]))
 
-        for nic in self._vm.network_profile.network_interfaces:
-            logger.info("Adding access to network interface %s", nic.id)
-            scopes.add("/".join(nic.id.split('/')[0:end_index]))
+        for nic in self._vm.get('networkProfile', {}).get('networkInterfaces', []):
+            logger.info("Adding access to network interface %s", nic.get('id', ''))
+            scopes.add("/".join(nic.get('id', '').split('/')[0:end_index]))
 
         self._create_role_assignments_for_scopes(scopes)
 
@@ -191,30 +204,30 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 'debug': '1'
             })
 
-        VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension',
-                                                       resource_type=ResourceType.MGMT_COMPUTE,
-                                                       operation_group='virtual_machine_extensions')
         existing_ext = self._get_aem_extension()
-        extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
-        existing_ext = VirtualMachineExtension(location=self._vm.location,
-                                               publisher=self._extension['publisher'],
-                                               type_properties_type=self._extension['name'],
-                                               type_handler_version=self._extension['version'],
-                                               settings={
-                                                   'system': 'SAP',
-                                                   'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
-                                               },
-                                               auto_upgrade_minor_version=True)
+        extension_instance_name = existing_ext['name'] if existing_ext else self._extension['name']
 
-        return sdk_no_wait(self._no_wait,
-                           self._vm_client.virtual_machine_extensions.begin_create_or_update,
-                           resource_group_name=self._resource_group,
-                           vm_name=self._vm.name,
-                           vm_extension_name=extension_instance_name,
-                           extension_parameters=existing_ext)
+        # Use AAZ VM Extension Create
+        from azure.cli.command_modules.vm.operations.vm_extension import VMExtensionCreate
+        command_args = {
+            'resource_group': self._resource_group,
+            'vm_extension_name': extension_instance_name,
+            'vm_name': self._vm.get('name'),
+            'location': self._vm.get('location'),
+            'auto_upgrade_minor_version': True,
+            'publisher': self._extension.get('publisher'),
+            'settings': {
+                'system': 'SAP',
+                'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
+            },
+            'type': self._extension.get('name'),
+            'type_handler_version': self._extension.get('version'),
+            'no_wait': self._no_wait
+        }
+        return VMExtensionCreate(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
 
     def _create_role_assignments_for_scopes(self, scopes):
-        vm_subscription = self._vm.id.split('/')[2]
+        vm_subscription = self._vm.get('id', '').split('/')[2]
         start_time = datetime.now()
         scopeIndex = 0
 
@@ -234,7 +247,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
 
                 existing_role_assignments = list(self._roles_client.role_assignments.list_for_scope(scope))
                 existing_role_assignment = next((x for x in existing_role_assignments
-                                                 if x.principal_id.lower() == self._vm.identity.principal_id.lower() and
+                                                 if (x.principal_id.lower() ==
+                                                     self._vm.get('identity', {}).get('principalId', '').lower()) and
                                                  x.role_definition_id.lower() == role_definition_id.lower() and
                                                  x.scope.lower() == scope.lower()), None)
 
@@ -246,7 +260,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 # TODO: do we want to support user assigned identity?
                 params_role_assignment = {
                     'role_definition_id': scope_role_id,
-                    'principal_id': self._vm.identity.principal_id
+                    'principal_id': self._vm.get('identity', {}).get('principalId', '')
                 }
                 try:
                     assignment_name = uuid.uuid4()
@@ -282,38 +296,42 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         self._extension = aem_extension_info[self._os_type]
 
         pub_cfg, pri_cfg = self._build_extension_cfgs(self._get_disk_info())
-        VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension',
-                                                       resource_type=ResourceType.MGMT_COMPUTE,
-                                                       operation_group='virtual_machine_extensions')
         existing_ext = self._get_aem_extension()
-        extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
-        existing_ext = VirtualMachineExtension(location=self._vm.location,
-                                               publisher=self._extension['publisher'],
-                                               type_properties_type=self._extension['name'],
-                                               protected_settings={
-                                                   'cfg': [{'key': k, 'value': pri_cfg[k]} for k in pri_cfg]
-                                               },
-                                               type_handler_version=self._extension['version'],
-                                               settings={
-                                                   'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
-                                               },
-                                               auto_upgrade_minor_version=True)
+        extension_instance_name = existing_ext['name'] if existing_ext else self._extension['name']
 
-        return sdk_no_wait(self._no_wait,
-                           self._vm_client.virtual_machine_extensions.begin_create_or_update,
-                           resource_group_name=self._resource_group,
-                           vm_name=self._vm.name,
-                           vm_extension_name=extension_instance_name,
-                           extension_parameters=existing_ext)
+        # Use AAZ VM Extension Create
+        from azure.cli.command_modules.vm.operations.vm_extension import VMExtensionCreate
+        command_args = {
+            'resource_group': self._resource_group,
+            'vm_extension_name': extension_instance_name,
+            'vm_name': self._vm.get('name'),
+            'location': self._vm.get('location'),
+            'auto_upgrade_minor_version': True,
+            'protected_settings': {
+                'cfg': [{'key': k, 'value': pri_cfg[k]} for k in pri_cfg]
+            },
+            'publisher': self._extension.get('publisher'),
+            'settings': {
+                'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
+            },
+            'type': self._extension.get('name'),
+            'type_handler_version': self._extension.get('version'),
+            'no_wait': self._no_wait
+        }
+        return VMExtensionCreate(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
 
     def delete(self):
         existing_ext = self._get_aem_extension()
         if not existing_ext:
             raise CLIError("VM Extension for SAP is not installed")
-        return sdk_no_wait(self._no_wait, self._vm_client.virtual_machine_extensions.begin_delete,
-                           resource_group_name=self._resource_group,
-                           vm_name=self._vm.name,
-                           vm_extension_name=existing_ext.name)
+        # Use AAZ VM Extension Delete
+        from azure.cli.command_modules.vm.aaz.latest.vm.extension import Delete as VMExtensionDelete
+        return VMExtensionDelete(cli_ctx=self._cmd.cli_ctx)(command_args={
+            'resource_group': self._resource_group,
+            'vm_extension_name': existing_ext['name'],
+            'vm_name': self._vm['name'],
+            'no_wait': self._no_wait
+        })
 
     def verify(self, skip_storage_check, wait_time_in_minutes):
         aem_ext = self._get_aem_extension()
@@ -333,9 +351,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         else:
             raise CLIError('VM Extension for SAP was not installed')
 
-        if ((not self._vm.identity) or
-                (self._vm.identity is None) or
-                (self._vm.identity.type == ResourceIdentityType.user_assigned)):
+        vm_identity = self._vm.get('identity')
+        if not vm_identity or vm_identity is None or vm_identity.get('type') == IDENTITY_USER_ASSIGNED:
             success = False
             logger.warning('VM Identity Check: %s', fail_word)
         else:
@@ -343,15 +360,15 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
 
         end_index_short = 5  # Scope is set to resource group
         end_index_long = 9  # Scope is set to resource
-        vm_subscription = self._vm.id.split('/')[2]
+        vm_subscription = self._vm.get('id', '').split('/')[2]
 
         resource_ids = set()
-        resource_ids.add(self._vm.id)
-        resource_ids.add(self._vm.storage_profile.os_disk.managed_disk.id)
-        for disk in self._vm.storage_profile.data_disks:
-            resource_ids.add(disk.managed_disk.id)
-        for nic in self._vm.network_profile.network_interfaces:
-            resource_ids.add(nic.id)
+        resource_ids.add(self._vm.get('id', ''))
+        resource_ids.add(self._vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id', ''))
+        for disk in self._vm.get('storageProfile', {}).get('dataDisks', []):
+            resource_ids.add(disk.get('managedDisk', {}).get('id', ''))
+        for nic in self._vm.get('networkProfile', {}).get('networkInterfaces', []):
+            resource_ids.add(nic.get('id', ''))
 
         tested_scopes_ok = set()
         tested_scopes_nok = set()
@@ -433,7 +450,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
     def _scope_check(self, scope, role_definition_id):
         existing_role_assignments = list(self._roles_client.role_assignments.list_for_scope(scope))
         existing_role_assignment = next((x for x in existing_role_assignments
-                                         if x.principal_id.lower() == self._vm.identity.principal_id.lower() and
+                                         if (x.principal_id.lower() ==
+                                             self._vm.get('identity', {}).get('principalId', '').lower()) and
                                          x.role_definition_id.lower() == role_definition_id.lower() and
                                          x.scope.lower() == scope.lower()), None)
 
@@ -487,8 +505,12 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         logger.warning('VM Extension for SAP public configuration check...')
         expected, _ = self._build_extension_cfgs(disk_info)
         expected.pop('wad.isenabled')
-        public_cfg = {x['key']: x['value'] for x in self._vm.resources[0].settings['cfg']}
-        diffs = {k: [expected[k], public_cfg.get(k, None)] for k in expected if expected[k] != public_cfg.get(k, None)}
+        public_cfg = {x.get('key', ''): x.get('value', '') for x in
+                      self._vm.get('resources', [{}])[0].get('settings', {}).get('cfg', [])}
+        diffs = {
+            k: [expected[k], public_cfg.get(k, None)]
+            for k in expected if expected[k] != public_cfg.get(k, None)
+        }
         if diffs:
             success = False
             for err in diffs:
@@ -500,7 +522,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             raise CLIError('Configuration Not OK.')
 
     def _build_extension_cfgs(self, disk_info):
-        vm_size = str(self._vm.hardware_profile.vm_size)
+        vm_size = str(self._vm.get('hardwareProfile', {}).get('vmSize', ''))
         pub_cfg = pri_cfg = {}
         vm_size_mapping = {
             'ExtraSmall': 'ExtraSmall (A0)',
@@ -627,17 +649,18 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         existing_ext_v2 = None
         existing_ext_v1 = None
 
-        if self._vm.resources:
+        resources = self._vm.get('resources', [])
+        if resources:
             name_v2 = aem_extension_info_v2[self._os_type]['name'].lower()
             pub_v2 = aem_extension_info_v2[self._os_type]['publisher'].lower()
             name_v1 = aem_extension_info[self._os_type]['name'].lower()
             pub_v1 = aem_extension_info[self._os_type]['publisher'].lower()
-            existing_ext_v2 = next((x for x in self._vm.resources
-                                    if x.type_properties_type.lower() == name_v2 and
-                                    x.publisher.lower() == pub_v2), None)
-            existing_ext_v1 = next((x for x in self._vm.resources
-                                    if x.type_properties_type.lower() == name_v1 and
-                                    x.publisher.lower() == pub_v1), None)
+            existing_ext_v2 = next((x for x in resources
+                                    if x.get('typePropertiesType', '').lower() == name_v2 and
+                                    x.get('publisher', '').lower() == pub_v2), None)
+            existing_ext_v1 = next((x for x in resources
+                                    if x.get('typePropertiesType', '').lower() == name_v1 and
+                                    x.get('publisher', '').lower() == pub_v1), None)
 
         if existing_ext_v2 is None:
             return existing_ext_v1
@@ -648,45 +671,60 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         if extension is None:
             return False
 
-        return (extension.type_properties_type.lower() == aem_extension_info_v2[self._os_type]['name'].lower() and
-                extension.publisher.lower() == aem_extension_info_v2[self._os_type]['publisher'].lower())
+        return ((extension.get('typePropertiesType', '').lower() ==
+                 aem_extension_info_v2.get(self._os_type, {}).get('name', '').lower()) and
+                (extension.get('publisher', '').lower() ==
+                 aem_extension_info_v2.get(self._os_type, {}).get('publisher', '').lower()))
 
     def _is_old_extension(self, extension):
         if extension is None:
             return False
 
-        return (extension.type_properties_type.lower() == aem_extension_info[self._os_type]['name'].lower() and
-                extension.publisher.lower() == aem_extension_info[self._os_type]['publisher'].lower())
+        return ((extension.get('typePropertiesType', '').lower() ==
+                 aem_extension_info.get(self._os_type, {}).get('name', '').lower()) and
+                (extension.get('publisher', '').lower() ==
+                 aem_extension_info.get(self._os_type, {}).get('publisher', '').lower()))
 
     def _get_disk_info(self):
         disks_info = {}
-        disks_info['managed_disk'] = bool(getattr(self._vm.storage_profile.os_disk, 'managed_disk', None))
+        os_disk = self._vm.get('storageProfile', {}).get('osDisk', {})
+        disks_info['managed_disk'] = bool(os_disk.get('managedDisk'))
         if disks_info['managed_disk']:
-            res_info = parse_resource_id(self._vm.storage_profile.os_disk.managed_disk.id)
-            disk = self._vm_client.disks.get(res_info['resource_group'], res_info['name'])
+            res_info = parse_resource_id(os_disk['managedDisk'].get('id'))
+            # Use AAZ Disk Show
+            from azure.cli.command_modules.vm.aaz.latest.disk import Show as DiskShow
+            command_args = {
+                'disk_name': res_info['name'],
+                'resource_group': res_info['resource_group']
+            }
+            disk = DiskShow(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
             disks_info['os_disk'] = {
-                'name': disk.name,
-                'size': disk.disk_size_gb,
-                'is_premium': disk.sku.tier.lower() == 'premium',
-                'caching': self._vm.storage_profile.os_disk.caching,
+                'name': disk.get('name'),
+                'size': disk.get('diskSizeGB'),
+                'is_premium': disk.get('sku', {}).get('tier', '').lower() == 'premium',
+                'caching': os_disk.get('caching'),
             }
             disks_info['data_disks'] = []
-            for data_disk in self._vm.storage_profile.data_disks:
-                res_info = parse_resource_id(data_disk.managed_disk.id)
-                disk = self._vm_client.disks.get(res_info['resource_group'], res_info['name'])
+            for data_disk in self._vm.get('storageProfile', {}).get('dataDisks', []):
+                res_info = parse_resource_id(data_disk.get('managedDisk', {}).get('id', ''))
+                disk = DiskShow(cli_ctx=self._cmd.cli_ctx)(command_args={
+                    'disk_name': res_info['name'],
+                    'resource_group': res_info['resource_group']
+                })
+                tier = disk.get('sku', {}).get('tier', '').lower()
                 disks_info['data_disks'].append({
-                    'name': disk.name,
-                    'size': disk.disk_size_gb,
-                    'is_premium': disk.sku.tier.lower() == 'premium',
-                    'is_ultra': disk.sku.tier.lower() == 'ultra',
-                    'caching': data_disk.caching,
-                    'lun': data_disk.lun,
-                    'iops': disk.disk_iops_read_write if disk.sku.tier.lower() == 'ultra' else 0,
-                    'tp': disk.disk_mbps_read_write if disk.sku.tier.lower() == 'ultra' else 0
+                    'name': disk.get('name'),
+                    'size': disk.get('diskSizeGB'),
+                    'is_premium': tier == 'premium',
+                    'is_ultra': tier == 'ultra',
+                    'caching': data_disk.get('caching'),
+                    'lun': data_disk.get('lun'),
+                    'iops': disk.get('diskIOPSReadWrite', 0) if tier == 'ultra' else 0,
+                    'tp': disk.get('diskMBpsReadWrite', 0) if tier == 'ultra' else 0
                 })
         else:
             storage_accounts = list(self._storage_client.storage_accounts.list())
-            blob_uri = self._vm.storage_profile.os_disk.vhd.uri
+            blob_uri = os_disk.get('vhd', {}).get('uri', '')
             parts = list(filter(None, blob_uri.split('/')))
             storage_account_name = parts[1].split('.')[0]
             disk_name, container_name = parts[-1], parts[-2]
@@ -698,7 +736,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 'account_name': storage_account_name,
                 'table_endpoint': storage_account.primary_endpoints.table,
                 'is_premium': storage_account.sku.tier.value.lower() == 'premium',
-                'caching': self._vm.storage_profile.os_disk.caching.value,
+                'caching': os_disk.get('caching', ''),
                 'key': key
             }
             if disks_info['os_disk']['is_premium']:
@@ -706,8 +744,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                                                                     disk_name, key)
 
             disks_info['data_disks'] = []
-            for data_disk in self._vm.storage_profile.data_disks:
-                blob_uri = data_disk.vhd.uri
+            for data_disk in self._vm['storageProfile'].get('dataDisks', []):
+                blob_uri = data_disk.get('vhd', {}).get('uri', '')
                 parts = list(filter(None, blob_uri.split('/')))
                 storage_account_name = parts[1].split('.')[0]
                 disk_name, container_name = parts[-1], parts[-2]
@@ -720,9 +758,9 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                     'account_name': storage_account_name,
                     'table_endpoint': storage_account.primary_endpoints.table,
                     'is_premium': is_premium,
-                    'caching': self._vm.storage_profile.os_disk.caching.value,
+                    'caching': os_disk.get('caching', ''),
                     'key': key,
-                    'lun': data_disk.lun
+                    'lun': data_disk.get('lun')
                 })
                 if is_premium:
                     disks_info['data_disks'][-1]['size'] = self._get_blob_size(storage_account.name, container_name,

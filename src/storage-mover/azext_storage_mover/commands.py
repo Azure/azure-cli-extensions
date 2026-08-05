@@ -23,6 +23,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         g.custom_command('create-for-smb', 'endpoint_create_for_smb')
         g.custom_command('create-for-multi-cloud-connector',
                          'endpoint_create_for_multi_cloud_connector')
+        g.custom_command('create-for-s3-with-hmac', 'endpoint_create_for_s3_with_hmac')
         g.custom_command('update-for-storage-container', 'endpoint_update_for_storage_container')
         g.custom_command('update-for-storage-smb-file-share',
                          'endpoint_update_for_storage_smb_file_share')
@@ -30,5 +31,6 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
                          'endpoint_update_for_storage_nfs_file_share')
         g.custom_command('update-for-multi-cloud-connector',
                          'endpoint_update_for_multi_cloud_connector')
+        g.custom_command('update-for-s3-with-hmac', 'endpoint_update_for_s3_with_hmac')
         g.custom_command('update-for-nfs', 'endpoint_update_for_nfs')
         g.custom_command('update-for-smb', 'endpoint_update_for_smb')

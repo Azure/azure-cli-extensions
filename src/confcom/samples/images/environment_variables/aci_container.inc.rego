@@ -2,18 +2,19 @@
   "id": "confcom_test_environment_variables",
   "name": "confcom_test_environment_variables",
   "layers": [
-    "8b4664979ffe3c5188efbbbb30e31716c03bfe880f15f455be0fc3beb4741de9"
+    "f1ba3e38cc8c3755648e05aa57ea155496e9a2e42fd2454932b6647bc93575b2"
   ],
+  "platform": "linux/amd64",
   "mounts": [
     {
       "destination": "/etc/resolv.conf",
+      "source": "sandbox:///tmp/atlas/resolvconf/.+",
+      "type": "bind",
       "options": [
         "rbind",
         "rshared",
         "rw"
-      ],
-      "source": "sandbox:///tmp/atlas/resolvconf/.+",
-      "type": "bind"
+      ]
     }
   ],
   "command": [
