@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "mongo-db atlas",
+    "mongo-db atlas organization project cluster",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Atlas
+    """Manage Cluster
     """
     pass
 

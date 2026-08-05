@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "mongo-db atlas organization delete",
+    "mongo-db atlas organization project delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a OrganizationResource
+    """Delete a Project
 
-    :example: Organizations_Delete_MaximumSet
-        az mongo-db atlas organization delete \\ --subscription {subscription} \\ --resource-group {resource_group} \\ --name MongoDBCLITestOrg2 \\ --yes
+    :example: Projects_Delete_MaximumSet
+        az mongo-db atlas organization project delete --resource-group rgopenapi --organization-name myOrganization --project-name myProject
     """
 
     _aaz_info = {
         "version": "2026-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2026-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}/projects/{}", "2026-03-01-preview"],
         ]
     }
 
@@ -47,13 +47,24 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
-            help="Name of the MongoDB Atlas Organization",
+            options=["--organization-name"],
+            help="Name of the Organization resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
                 max_length=50,
+                min_length=1,
+            ),
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["-n", "--name", "--project-name"],
+            help="Name of the MongoDB Atlas Project resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.+$",
+                max_length=64,
                 min_length=1,
             ),
         )
@@ -64,7 +75,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.OrganizationsDelete(ctx=self.ctx)()
+        yield self.ProjectsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +86,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class OrganizationsDelete(AAZHttpOperation):
+    class ProjectsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +125,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/MongoDB.Atlas/organizations/{organizationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/MongoDB.Atlas/organizations/{organizationName}/projects/{projectName}",
                 **self.url_parameters
             )
 
@@ -131,6 +142,10 @@ class Delete(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "organizationName", self.ctx.args.organization_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
