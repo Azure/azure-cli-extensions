@@ -493,6 +493,13 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             )
             return consts.Diagnostic_Check_Failed, storage_space_available
 
+        # If the job did not complete, partial results cannot be trusted -- treat as Incomplete.
+        # The container may have exited early, causing some checks to appear
+        # Passed/NotApplicable while later checks never actually executed.
+        if prediagnostic_job_execution_status == consts.Job_Status_Not_Completed:
+            send_prediagnostic_job_execution_error_telemetry()
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
+
         # All checks passed or not applicable
         return consts.Diagnostic_Check_Passed, storage_space_available
 
