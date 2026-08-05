@@ -1670,7 +1670,9 @@ def connected_cluster_exists(
 
 
 def get_cloud_based_domain(cmd: CLICommand) -> str:
-    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    active_directory_array = str(cmd.cli_ctx.cloud.endpoints.active_directory).split(
+        "."
+    )
     # default for public, mc, ff clouds
     cloud_based_domain = active_directory_array[2]
     # special cases for USSec/USNat clouds
@@ -4953,7 +4955,9 @@ def crd_cleanup_force_delete(
 ) -> None:
     print(f"Step: {utils.get_utctimestring()}: Deleting Arc CRDs")
 
-    active_directory_array = cmd.cli_ctx.cloud.endpoints.active_directory.split(".")
+    active_directory_array = str(cmd.cli_ctx.cloud.endpoints.active_directory).split(
+        "."
+    )
     # default for public, mc, ff clouds
     cloud_based_domain = active_directory_array[2]
     # special cases for USSec/USNat clouds
