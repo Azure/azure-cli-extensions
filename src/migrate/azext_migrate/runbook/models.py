@@ -10,6 +10,7 @@ from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     WAVE_ID_TEMPLATE,
     STEP_REF_BY_TYPE,
+    STEP_DEPENDENCY_MODE_STEP_GATE,
     STEP_ACTION_APPROVE,
     STEP_ACTION_COMPLETE,
 )
@@ -43,15 +44,17 @@ def wave_id(project_id, wave_name):
 def build_generate_body(wave_resource_id):
     """Build the CreateRunbook (PUT) body scoped to a wave.
 
-    The CreateRunbook write model binds the scope in PascalCase
-    (``ScopeType``/``WaveId``). The GET read model echoes the same
-    values in camelCase, but the create payload must use PascalCase.
+    The scope is a polymorphic type on the service; its discriminator
+    property (``scopeType``) is matched case-sensitively, so the payload
+    must use camelCase keys (``scopeType``/``waveId``) to bind to the
+    concrete wave scope. The GET read model echoes the same camelCase
+    values.
     """
     return {
         "properties": {
             "scope": {
-                "ScopeType": SCOPE_TYPE_WAVE,
-                "WaveId": wave_resource_id,
+                "scopeType": SCOPE_TYPE_WAVE,
+                "waveId": wave_resource_id,
             }
         }
     }
@@ -63,6 +66,26 @@ def build_update_body(description=None):
     if description is not None:
         properties["description"] = description
     return {"properties": properties}
+
+
+def _depends_on_refs(depends_on):
+    """Map CLI ``--depends-on`` entries to write-model dependency objects.
+
+    The AddStep/UpdateStep write model expects a list of polymorphic
+    ``RunbookStepDependency`` objects ``{"Mode": <int>, "stepId": <id>}``
+    (NOT bare strings, and NOT the GET read shape). ``Mode`` is the verbatim
+    discriminator (integer enum ordinal) and must appear first; a plain
+    ``--depends-on <stepId>`` maps to a step gate (``Mode`` 0). Entries that
+    are already dicts are passed through unchanged.
+    """
+    refs = []
+    for entry in depends_on or []:
+        if isinstance(entry, dict):
+            refs.append(entry)
+        else:
+            refs.append(
+                {"Mode": STEP_DEPENDENCY_MODE_STEP_GATE, "stepId": entry})
+    return refs
 
 
 def build_add_step_body(step_type, step_name, workstream_id,
@@ -81,7 +104,7 @@ def build_add_step_body(step_type, step_name, workstream_id,
         "description": step_description or "",
         "stepRef": STEP_REF_BY_TYPE.get(step_type, step_type),
         "migrationEntityIds": migration_entity_ids or [],
-        "dependsOn": depends_on or [],
+        "dependsOn": _depends_on_refs(depends_on),
     }
 
 
@@ -94,7 +117,7 @@ def build_update_step_body(step_id, step_name=None, step_description=None,
     if step_description is not None:
         body["description"] = step_description
     if depends_on is not None:
-        body["dependsOn"] = depends_on
+        body["dependsOn"] = _depends_on_refs(depends_on)
     return body
 
 

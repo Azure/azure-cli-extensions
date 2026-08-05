@@ -34,6 +34,17 @@ STEP_REF_BY_TYPE = {
     STEP_TYPE_APPROVAL: "common.approval",
 }
 
+# A step dependency in the AddStep/UpdateStep WRITE model (service
+# ``RunbookStepDependency``, a System.Text.Json polymorphic type) is an
+# object ``{"Mode": <int>, "stepId": <step-id>}``. ``Mode`` is the verbatim
+# (non-camelCased) discriminator carrying the integer enum ordinal and must
+# appear first: 0 = step gate, 1 = migration-entity gate. The CLI
+# ``--depends-on`` takes step ids only and maps each to a step gate.
+# NOTE: the GET (read) model is NOT symmetric — it emits
+# ``{"step": <id>, "mode": <string>}``; do not assume round-trip.
+STEP_DEPENDENCY_MODE_STEP_GATE = 0
+STEP_DEPENDENCY_MODE_ENTITY_GATE = 1
+
 
 class RunbookStatus(str, Enum):
     """Runbook lifecycle status values (GetRunbook properties.status)."""

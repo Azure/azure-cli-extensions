@@ -60,10 +60,15 @@ class Graph:
     """A layered DAG of runbook steps."""
 
     # pylint: disable=too-few-public-methods
-    def __init__(self, title, nodes, edges):
+    def __init__(self, title, nodes, edges, group_order=None):
         self.title = title
         self.nodes = nodes
         self.edges = edges
+        # Workstream groups in source-document order (a list of
+        # ``(name, group_id)`` pairs). The renderer orders swimlanes by this
+        # so the diagram matches the grid; ``nodes`` is separately sorted by
+        # dependency layer for column layout.
+        self.group_order = group_order or []
 
     @property
     def layer_count(self):
@@ -119,6 +124,8 @@ def _iter_steps(document):
 def _build_graph(document, title):
     nodes = []
     node_by_id = {}
+    group_order = []
+    seen_groups = set()
     for step, ws_name, ws_id in _iter_steps(document):
         node_id = _step_id(step)
         if not node_id or node_id in node_by_id:
@@ -128,6 +135,10 @@ def _build_graph(document, title):
             status=_step_status(step), ref=step.get('stepRef'))
         nodes.append(node)
         node_by_id[node_id] = node
+        group_key = ws_name or 'Ungrouped'
+        if group_key not in seen_groups:
+            seen_groups.add(group_key)
+            group_order.append((group_key, ws_id))
 
     edges = []
     dependencies = {node.id: [] for node in nodes}
@@ -145,7 +156,7 @@ def _build_graph(document, title):
             dependencies[node_id].append(dep_id)
 
     _assign_layers(nodes, node_by_id, dependencies)
-    return Graph(title, nodes, edges)
+    return Graph(title, nodes, edges, group_order=group_order)
 
 
 def _assign_layers(nodes, node_by_id, dependencies):

@@ -48,7 +48,13 @@ def _status_download_url(cmd, resource_id):
 
 
 def _fetch_status(cmd, resource_id):
-    """Download and parse the per-execution ``status.json`` via SAS."""
+    """Download and parse the per-execution ``status.json`` via SAS.
+
+    Raises :class:`CLIInternalError` when no status document exists yet
+    (for example a not-yet-run execution whose download archive contains
+    only the input parameters); the parameters blob is never returned as a
+    status document.
+    """
     return files.read_status_json(
         files.download_bytes(_status_download_url(cmd, resource_id)))
 

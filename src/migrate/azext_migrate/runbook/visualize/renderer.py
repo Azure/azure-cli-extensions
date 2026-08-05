@@ -96,16 +96,25 @@ def _status_class(status):
 
 
 def _workstream_order(graph):
-    """Group nodes into workstream swimlanes, preserving first appearance."""
-    order = []
+    """Group nodes into workstream swimlanes in source-document order.
+
+    Bands follow the runbook's workstream order (the same order the grid
+    uses) so the diagram is not reversed relative to the grid. Within a
+    band, nodes keep their layer-sorted order for column layout.
+    """
     by_ws = {}
     for node in graph.nodes:
-        name = node.group or 'Ungrouped'
-        if name not in by_ws:
-            by_ws[name] = []
-            order.append((name, node.group_id))
-        by_ws[name].append(node)
-    return [(name, ws_id, by_ws[name]) for name, ws_id in order]
+        by_ws.setdefault(node.group or 'Ungrouped', []).append(node)
+    ordered = []
+    for name, ws_id in graph.group_order:
+        nodes = by_ws.pop(name, None)
+        if nodes:
+            ordered.append((name, ws_id, nodes))
+    # Any group not present in the recorded order (defensive) keeps a stable
+    # first-appearance fallback.
+    for name, nodes in by_ws.items():
+        ordered.append((name, nodes[0].group_id, nodes))
+    return ordered
 
 
 def _layout(graph):

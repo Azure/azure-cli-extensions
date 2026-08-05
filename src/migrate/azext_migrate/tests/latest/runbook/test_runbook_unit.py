@@ -98,8 +98,8 @@ class RunbookModelTests(unittest.TestCase):
         self.assertEqual(
             body,
             {"properties": {"scope": {
-                "ScopeType": SCOPE_TYPE_WAVE,
-                "WaveId": "/waves/myWave"}}})
+                "scopeType": SCOPE_TYPE_WAVE,
+                "waveId": "/waves/myWave"}}})
 
     def test_build_update_body_empty(self):
         self.assertEqual(
@@ -449,6 +449,37 @@ class FilesTests(unittest.TestCase):
         spec = files.read_spec_json(zip_bytes)
         self.assertEqual(spec, {"runbookSpec": {"id": "r"}})
 
+    def test_read_status_json_raw_status_doc(self):
+        raw = json.dumps({"state": "InProgress"}).encode('utf-8')
+        self.assertEqual(
+            files.read_status_json(raw), {"state": "InProgress"})
+
+    def test_read_status_json_raw_rejects_parameters(self):
+        raw = json.dumps({"runbookInputs": {"schema": {}}}).encode('utf-8')
+        with self.assertRaises(CLIInternalError):
+            files.read_status_json(raw)
+
+    def test_read_status_json_zip_prefers_status_member(self):
+        zip_bytes = _make_zip({
+            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
+            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
+            "status.json": '{"workstreams": [{"steps": []}]}',
+        })
+        self.assertEqual(
+            files.read_status_json(zip_bytes),
+            {"workstreams": [{"steps": []}]})
+
+    def test_read_status_json_zip_inputs_only_raises(self):
+        # A not-yet-run execution archive (definition + parameters, no
+        # status) must not be mistaken for a status document.
+        zip_bytes = _make_zip({
+            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
+            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
+            "derived-input.json": '{"runbookInputs": {"schema": {}}}',
+        })
+        with self.assertRaises(CLIInternalError):
+            files.read_status_json(zip_bytes)
+
     def test_extract_definition_files_flattens_hostile_path(self):
         # Zip-slip is designed out: a member with a traversal path is
         # written by its base name, staying inside the destination.
@@ -677,7 +708,7 @@ class StepModelTests(unittest.TestCase):
             "description": "desc",
             "stepRef": "common.approval",
             "migrationEntityIds": ["e1", "e2"],
-            "dependsOn": ["s0"],
+            "dependsOn": [{"Mode": 0, "stepId": "s0"}],
         })
 
     def test_build_update_step_body_minimal(self):
@@ -691,7 +722,7 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "stepId": "s1", "displayName": "New",
             "description": "d",
-            "dependsOn": ["s0"]})
+            "dependsOn": [{"Mode": 0, "stepId": "s0"}]})
 
     def test_build_delete_step_body(self):
         self.assertEqual(
@@ -913,6 +944,21 @@ class ExecutionCommandTests(unittest.TestCase):
             result = execution_cmds.show(
                 mock.Mock(), RG, PROJECT, RUNBOOK, "e1", step_id="s2")
         self.assertEqual(result, {"id": "s2"})
+
+    def test_show_raises_for_inputs_only_archive(self):
+        # A not-yet-run execution's download archive contains only the input
+        # parameters (no status.json); show must raise rather than return the
+        # inputs blob as if it were a status document.
+        self.client.post_action.return_value = {"downloadUrl": "https://b/x"}
+        inputs_zip = _make_zip({
+            "user-inputs.json": '{"runbookInputs": {"schema": {}}}'})
+        with mock.patch.object(
+                execution_cmds.files, 'download_bytes',
+                return_value=inputs_zip):
+            with self.assertRaises(CLIInternalError):
+                execution_cmds.show(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1")
+        self.client.get.assert_not_called()
 
     def test_pause_posts_perform_action(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1706,6 +1752,28 @@ class VisualizeGridTests(unittest.TestCase):
             '<tspan class="svg-id"> workstream-1</tspan> (3)', html_text)
         self.assertIn('class="edge"', html_text)
         self.assertIn("vm.agentless.migration", html_text)
+
+    def test_diagram_swimlanes_follow_document_order(self):
+        # Even when dependency-layer/id sorting would reverse them, the
+        # diagram bands must follow the source workstream order so the
+        # diagram is not reversed relative to the grid. Here both steps are
+        # layer 0, and the second workstream's step id ('aaa') sorts before
+        # the first ('zzz'); band order must still be Setup then Cleanup.
+        document = {
+            "workstreams": [
+                {"id": "w0", "displayName": "Setup", "steps": [
+                    {"stepId": "zzz", "displayName": "Prepare"}]},
+                {"id": "w1", "displayName": "Cleanup", "steps": [
+                    {"stepId": "aaa", "displayName": "Cleanup step"}]},
+            ],
+        }
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph)
+        setup_at = html_text.find('Workstream: Setup')
+        cleanup_at = html_text.find('Workstream: Cleanup')
+        self.assertNotEqual(setup_at, -1)
+        self.assertNotEqual(cleanup_at, -1)
+        self.assertLess(setup_at, cleanup_at)
 
     def test_execution_grid_shows_progress_and_groups(self):
         view = visualize_viewmodel.build_execution_view(

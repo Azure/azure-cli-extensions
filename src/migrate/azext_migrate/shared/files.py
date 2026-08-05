@@ -106,6 +106,21 @@ def _looks_like_parameters(parsed):
         or 'schema' in parsed)
 
 
+def _looks_like_status(parsed):
+    """True when a parsed JSON document is an execution status document.
+
+    The per-execution download archive can also carry the definition
+    (wrapped in ``runbookSpec``) and the input parameters (``runbookInputs``
+    / ``schema`` / ``stepInputs``); neither is a status document. A status
+    document has a bare ``workstreams`` / ``steps`` / ``state`` shape, so it
+    is anything that is a dict and is not the definition wrapper or the
+    parameters file.
+    """
+    return (isinstance(parsed, dict)
+            and 'runbookSpec' not in parsed
+            and not _looks_like_parameters(parsed))
+
+
 def _classify_archive(zip_bytes):
     """Sort the GenerateDownloadUrl archive members by role.
 
@@ -179,30 +194,46 @@ def read_status_json(raw_bytes):
     """Return the parsed execution status document from a SAS download.
 
     The per-execution SAS blob may be either the raw ``status.json`` bytes
-    or a ZIP archive that contains it; both are handled. Raises when the
-    content is neither valid JSON nor a ZIP with a JSON member.
+    or a ZIP archive that contains it. A not-yet-run execution's download
+    archive ships only the input parameters (``runbookInputs``) and/or the
+    definition (``runbookSpec``); those are NOT a status document and are
+    rejected here so callers can fall back to the execution resource. Raises
+    :class:`CLIInternalError` when no status document is present.
     """
     if raw_bytes[:4] == b'PK\x03\x04':
         with zipfile.ZipFile(io.BytesIO(raw_bytes)) as archive:
-            member = None
+            _guard_archive(archive.infolist())
+            named = typed = None
             for info in archive.infolist():
                 if info.is_dir():
                     continue
-                name = info.filename.replace('\\', '/').lower()
-                if name.endswith(_STATUS_SUFFIX):
-                    member = info
+                base = os.path.basename(info.filename.replace('\\', '/'))
+                lower = base.lower()
+                if lower in _DERIVED_INPUTS_NAMES \
+                        or not lower.endswith('.json'):
+                    continue
+                try:
+                    parsed = json.loads(archive.read(info).decode('utf-8'))
+                except ValueError:
+                    continue
+                if not _looks_like_status(parsed):
+                    continue
+                if lower.endswith(_STATUS_SUFFIX):
+                    named = parsed
                     break
-            if member is None:
-                for info in archive.infolist():
-                    if not info.is_dir() \
-                            and info.filename.lower().endswith('.json'):
-                        member = info
-                        break
-            if member is None:
+                if typed is None:
+                    typed = parsed
+            status = named if named is not None else typed
+            if status is None:
                 raise CLIInternalError(
-                    'The downloaded archive did not contain a status file.')
-            return json.loads(archive.read(member).decode('utf-8'))
-    return json.loads(raw_bytes.decode('utf-8'))
+                    'The downloaded archive did not contain an execution '
+                    'status file.')
+            return status
+    parsed = json.loads(raw_bytes.decode('utf-8'))
+    if not _looks_like_status(parsed):
+        raise CLIInternalError(
+            'The download did not contain an execution status document.')
+    return parsed
 
 
 def read_json_file(path):

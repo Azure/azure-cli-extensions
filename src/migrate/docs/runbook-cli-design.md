@@ -35,7 +35,7 @@ The design references these but the **literal values must be read from the spec*
 | --- | --- | --- | --- |
 | `RUNBOOKS_API_VERSION` = `"2020-06-01-preview"` | `shared/constants.py` | `api-version=` in the spec YAMLs | **confirmed** |
 | Provider namespace + type-segment casing (`Microsoft.Migrate` / `migrateProjects` / `runbooks` / `executions`) | `shared/constants.py` | resource IDs + returned `type` in the spec YAMLs | **confirmed** — canonical ID `/subscriptions/{s}/resourceGroups/{rg}/providers/Microsoft.Migrate/migrateProjects/{p}/runbooks/{n}/executions/{e}` (camelCase `migrateProjects`). Note: existing `local`/replication code uses lowercase `migrateprojects` (`helpers/_server.py`); ARM path is case-insensitive so both work, but new runbook code pins this canonical casing for stable recordings + `id` parsing |
-| `ScopeType` value (`"Wave"`) + `WaveId` template | `runbook/constants.py`, `models.build_generate_body` | CreateRunbook body in spec | confirmed (§1.3.3) |
+| `scopeType` value (`"Wave"`) + `waveId` template | `runbook/constants.py`, `models.build_generate_body` | CreateRunbook body in spec | confirmed (§1.3.3) — scope is polymorphic; discriminator `scopeType` is matched **case-sensitively**, so the payload uses camelCase (`scopeType`/`waveId`), verified live against the service |
 | `RunbookExecutionAction` codes | `runbook/models.py` | service enum | confirmed (§1.3.2) |
 | `stepRef` values per step type | `runbook/models.py` | AddStep body in spec / service | **placeholder for now** — stub in `models.py` with `# TODO(confirm): stepRef per step type`; fill from spec/service before Phase 3 (`step add`) |
 | Runbook status terminal states (for `wait`/`--watch`/polling) | `runbook/constants.py` | GetRunbook `properties.status` enum | **confirmed** — `--watch` terminal set (`EXECUTION_TERMINAL_STATES`) derived from two authoritative service enums: `RunbookExecutionStatus` (execution ARM resource `properties.status`: Queued/InProgress/Completed/Failed/Pausing/Paused/Resuming/Cancelling/Cancelled) and `ExecutionState` (status.json node state: adds Succeeded/PartiallySucceeded/Skipped etc.). Terminal = Completed/Failed/Cancelled ∪ Succeeded/PartiallySucceeded/Skipped. Validated live |
@@ -142,7 +142,7 @@ Confirmed REST endpoints (all `https://management.azure.com{MigrateProjectResour
 
 **Runbook resource & sub-object actions** (`spec/Runbooks/`):
 
-- `PUT    .../runbooks/{n}` — CreateRunbook (`generate`); body `properties.scope = {ScopeType:Wave, WaveId}`
+- `PUT    .../runbooks/{n}` — CreateRunbook (`generate`); body `properties.scope = {scopeType:Wave, waveId}`
 - `GET    .../runbooks/{n}` — GetRunbook (`show`)
 - `GET    .../runbooks` — ListRunbooks (`list`)
 - `DELETE .../runbooks/{n}` — DeleteRunbook (`delete`)
@@ -181,8 +181,8 @@ Confirmed REST endpoints (all `https://management.azure.com{MigrateProjectResour
    `models.py` mirrors this one enum + body builders. **Nothing about these codes is open anymore** — a
    value change would be a one-line edit.
 3. **Start execution needs no scope.** `StartRunbookExecution` body is `{properties:{}}`; it only needs the
-   **runbook ARM id in the URL**. Scope (`{ScopeType:"Wave", WaveId}`) applies **only to `generate`**
-   (CreateRunbook). `WaveId` is derived as `{project_resource_id}/waves/{wave_name}` in
+   **runbook ARM id in the URL**. Scope (`{scopeType:"Wave", waveId}`) applies **only to `generate`**
+   (CreateRunbook). `waveId` is derived as `{project_resource_id}/waves/{wave_name}` in
    `models.build_generate_body`; the extra leading slash in the YAML example is an artifact, not part of the
    value. No casing/scope concern remains.
 4. **`GenerateDownloadUrl` returns a SAS URL to a blob, not the file.** Flow: `POST .../GenerateDownloadUrl`
@@ -738,7 +738,7 @@ Example: `az migrate runbook generate -g rg --project-name p -n rb --wave-name w
 2. **Validate** — `validators.validate_generate` (wave required, name pattern).
 3. **Resolve** — `arm_ids.runbook_id(project_id(sub, rg, p), 'rb')`.
 4. **Build** — `models.build_generate_body(wave_id)` →
-   `{"properties": {"scope": {"ScopeType": "Wave", "WaveId": ".../waves/w1"}}}`.
+   `{"properties": {"scope": {"scopeType": "Wave", "waveId": ".../waves/w1"}}}`.
 5. **Call** — `arm_client.put(runbook_id, body)` → `send_raw_request` (PUT).
 6. **LRO / `--no-wait`** — with `--no-wait` the command returns **immediately after the PUT is accepted**,
    emitting the **initial resource** (runbook in `Generating` state, incl. its ARM `id`/`name`) with **no
@@ -815,7 +815,7 @@ sibling folder for each future group) so tests never mix across features:
    `shared/test_errors_unit.py`, no network):**
    - `arm_ids` ID/`--ids` parsing round-trips.
    - `validators` accept/reject matrices for every "Argument constraints" block in the spec.
-   - `models` body builders (exact JSON shape incl. `ScopeType`/`WaveId`).
+   - `models` body builders (exact JSON shape incl. `scopeType`/`waveId`).
    - `transformers` table projections from sample JSON in `runbook/data/`.
    - `visualize/graph` DAG construction and `renderer` **HTML-escaping** (assert `<script>`/`<`/`&` in a
      malicious step name is encoded — the mandatory XSS guard from spec §5).
@@ -976,7 +976,7 @@ Target commands: `generate`, `show`, `list`, `delete`, `wait` (the ones with con
 Files touched/created:
 
 1. `shared/constants.py` + `runbook/constants.py` — provider `Microsoft.Migrate`, api-version registry and
-   project/runbook ID templates (shared); `ScopeType` value, runbook status enum, fault types (runbook).
+   project/runbook ID templates (shared); `scopeType` value, runbook status enum, fault types (runbook).
 2. `shared/arm_ids.py` — `project_id`, `runbook_id`, `resolve_ids` (+`--ids`), `with_api_version`.
 3. `shared/arm_client.py` — `get/get_or_none/list(paged)/put/delete` over `send_raw_request` (reusing
    existing `_utils` where it fits), routing through `errors`.
@@ -1025,7 +1025,7 @@ recording test green in playback; existing `migrate`/`migrate local` commands un
 | Utility duplication across subgroups (the stated concern) | Maintenance drift | **Single cross-feature `shared/` layer**; `cmds/*` hold logic only; lint rule: `shared/` never imports a feature package (§2.1) |
 | CLI-spec step params vs `AddStep` body mismatch (§1.3.5) | Wrong step payload | `models.py` mapping layer CLI args → REST body; confirm step-type/approval mapping |
 | `action` typed as int (PerformAction) vs string (Approve/Complete) | Serialization bug | Two explicit enums + two body builders in `models.py` |
-| WaveId construction wrong (generate only) | 400 from ARM on `generate` | `WaveId = {project_id}/waves/{wave}` built + normalized in `models`/`arm_ids`; unit-tested |
+| WaveId construction wrong (generate only) | 400 from ARM on `generate` | `waveId = {project_id}/waves/{wave}` built + normalized in `models`/`arm_ids`; unit-tested |
 | LRO shape unknown (async header vs status polling) | `--no-wait`/`wait` behavior | `polling.py` supports both `Azure-AsyncOperation`/`Location` headers and status-field polling; `wait` bound to `show` per spec §7 |
 | `GenerateDownloadUrl` returns a ZIP (not raw JSON) | Download commands break if treated as JSON | `files.py` downloads SAS then `zipfile`-extracts; unit-tested with a sample zip |
 | Recording secrets (SAS/tokens) leaking into YAML | Security | Mandatory scrubbers in test setUp; never log bodies in `arm_client` |
@@ -1087,7 +1087,7 @@ recording test green in playback; existing `migrate`/`migrate local` commands un
 
 | CLI command | Method | Endpoint (relative to `{MigrateProjectResourceId}`) | Notes |
 | --- | --- | --- | --- |
-| `runbook generate` | PUT | `/runbooks/{n}` | body `scope=Wave/WaveId`; `--no-wait` |
+| `runbook generate` | PUT | `/runbooks/{n}` | body `scope=Wave/waveId`; `--no-wait` |
 | `runbook generate` (re-run) | POST | `/runbooks/{n}/Regenerate` | no body |
 | `runbook show` | GET | `/runbooks/{n}` | |
 | `runbook list` | GET | `/runbooks` | client-side AND filter by wave/status |

@@ -337,6 +337,11 @@ Runbook execution started. Execution id: <execution-id>
 <execution object body>
 ```
 
+> **Implementation note (v1):** `execution start` is implemented as a POST
+> `execute` action on the parent runbook resource. The service creates and
+> names the new execution and returns its id; the CLI does **not** PUT a
+> client-generated execution id.
+
 ### 4.2 az migrate runbook execution pause
 
 Pauses an in-progress execution.
@@ -521,7 +526,9 @@ Runbook execution visualization saved to <file path>
 
 ## 6. Supporting az cli commands
 
-These are nice-to-have commands that improve the experience of using the runbook commands.
+> **Deferred — not taken in the first release (v1).** These are nice-to-have
+> commands that improve the experience of using the runbook commands. They are
+> tracked as to-do items for a later release (see [Section 9](#9-deferred-items-not-in-v1)).
 
 - `az migrate wave show`
 - `az migrate wave list`
@@ -547,7 +554,7 @@ az migrate runbook wait -g <rg> --project-name <project> -n <runbook-name> --cre
 
 Supported wait predicates follow the standard set: `--created`, `--deleted`, `--exists`, `--updated`, and `--custom <JMESPath>`, with `--interval` and `--timeout` to control polling.
 
-> Scoping note: surfacing `wait` is optional for v1. If `generate` and `execution start` are made synchronous (block until done) instead of supporting `--no-wait`, the `wait` command can be omitted and users can poll via `show` / `execution show`.
+> Scoping note: `az migrate runbook wait` **is implemented in v1** and paired with `--no-wait` on `generate` and `execution start`.
 
 ---
 
@@ -576,6 +583,25 @@ e.g. Refer az migrate runbook definition show
 
 7.We would be supporting -–watch optional parameter which will be blocking command to refesh status periodically. Any concern .with this pattern?
 [Update] - There is precedence of this in arc cli which is GA. 
+
+---
+
+## 9. Deferred items (not in v1)
+
+The following are intentionally **not taken in the first release** and are
+tracked as to-do items for a later release:
+
+- **`CustomScript` step type** and its associated `definition step add`
+  parameters `--run-mode <Once|PerEntity>` and
+  `--execution-target <Appliance|SourceVm|TargetVm>` (documented in
+  [Section 2.2](#22-az-migrate-runbook-definition-step-add)). v1 supports only
+  the `Manual` and `Approval` step types.
+- **Supporting `az migrate` commands** in [Section 6](#6-supporting-az-cli-commands):
+  `wave show/list`, `project show/list`, and
+  `workload show/list/update-target-settings`.
+
+> Delta note: `az migrate runbook wait` (Section 7) was originally optional but
+> **is implemented in v1**.
 
 ---
 
