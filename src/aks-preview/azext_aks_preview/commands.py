@@ -628,7 +628,3 @@ def load_command_table(self, _):
         self.command_table["aks safeguards delete"] = Delete(loader=self)
         self.command_table["aks safeguards list"] = List(loader=self)
         self.command_table["aks safeguards wait"] = Wait(loader=self)
-
-    # AI Manager (az aimanager) commands - vendored-SDK approach
-    from .aimanager.commands import load_command_table as _load_aimanager_commands
-    _load_aimanager_commands(self, _)

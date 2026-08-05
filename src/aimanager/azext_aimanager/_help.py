@@ -1,13 +1,10 @@
+# coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""Help definitions for the ``az aimanager`` command group.
 
-Import this module once (from the extension's ``_help.py``) so the strings get registered.
-"""
-
-from knack.help_files import helps
+from knack.help_files import helps  # pylint: disable=unused-import
 
 
 helps['aimanager'] = """
@@ -61,6 +58,11 @@ helps['aimanager list'] = """
           text: az aimanager list
 """
 
+helps['aimanager wait'] = """
+    type: command
+    short-summary: Wait for an AI Manager resource to reach a desired state.
+"""
+
 helps['aimanager namespace'] = """
     type: group
     short-summary: Manage namespaces within an AI Manager.
@@ -106,4 +108,9 @@ helps['aimanager namespace list'] = """
     examples:
         - name: List namespaces in an AI Manager
           text: az aimanager namespace list -m my-ai-manager -g myrg
+"""
+
+helps['aimanager namespace wait'] = """
+    type: command
+    short-summary: Wait for an AI Manager namespace to reach a desired state.
 """

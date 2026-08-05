@@ -4553,6 +4553,3 @@ helps['aks jwtauthenticator show'] = """
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """
-
-# AI Manager (az aimanager) command help - vendored-SDK approach
-from .aimanager import _help  # noqa: F401,E402
