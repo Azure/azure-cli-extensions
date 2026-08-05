@@ -90,13 +90,33 @@ class ArmClient:
         except ValueError:
             return None
 
-    def _poll_until_done(self, response, method, resource_id):
-        """Follow an Azure LRO to completion, returning the initial body.
+    def _finalize(self, result, final_get_id):
+        """Return the settled resource state after a successful LRO.
+
+        Standard Azure CLI behaviour is for create/update commands to
+        render the *final* resource (a GET issued once the operation
+        completes), not the initial 201/202 accepted body -- which still
+        shows ``provisioningState: InProgress``. ``final_get_id`` is the
+        resource to re-read; it is ``None`` for operations with nothing to
+        fetch (e.g. delete), in which case the initial body is returned
+        unchanged. If the follow-up GET 404s (resource gone), the initial
+        body is kept as a safe fallback.
+        """
+        if not final_get_id:
+            return result
+        refreshed = self.get_or_none(final_get_id)
+        return refreshed if refreshed is not None else result
+
+    def _poll_until_done(self, response, method, resource_id,
+                         final_get_id=None):
+        """Follow an Azure LRO to completion and return the final state.
 
         Create/delete on runbooks are long-running: they return 201/202
         with an Azure-AsyncOperation (or Location) header. Poll that URL
-        until the operation reaches a terminal state, then return the
-        original response body (the caller already has the resource repr).
+        until the operation reaches a terminal state. On success, when
+        ``final_get_id`` is set, re-read that resource so the caller sees
+        the settled representation (see :meth:`_finalize`); otherwise the
+        original response body is returned.
         """
         header_name = ('Azure-AsyncOperation'
                        if response.headers.get('Azure-AsyncOperation')
@@ -107,7 +127,7 @@ class ArmClient:
             logger.info(
                 "%s '%s' completed synchronously (HTTP %s).",
                 method, resource_id, response.status_code)
-            return result
+            return self._finalize(result, final_get_id)
         poll_url = _rewrite_poll_api_version(poll_url)
         op_ref = poll_url.split('?', 1)[0]
         delay = _poll_delay(response)
@@ -134,12 +154,12 @@ class ArmClient:
                 logger.warning(
                     "%s '%s' completed (elapsed %ss, %s poll(s)).",
                     method, resource_id, elapsed, attempt)
-                return result
+                return self._finalize(result, final_get_id)
             if norm == _TERMINAL_SUCCESS:
                 logger.warning(
                     "%s '%s' succeeded (elapsed %ss, %s poll(s)).",
                     method, resource_id, elapsed, attempt)
-                return result
+                return self._finalize(result, final_get_id)
             if norm in _TERMINAL_FAILURE:
                 errors.raise_for_async_operation(body)
             delay = _poll_delay(poll)
@@ -149,14 +169,16 @@ class ArmClient:
                 method, resource_id, status or '(none)', elapsed,
                 attempt, delay)
 
-    def _begin(self, method, resource_id, body=None, no_wait=False):
+    def _begin(self, method, resource_id, body=None, no_wait=False,
+               final_get_id=None):
         response = self._send(method, resource_id, body)
         if no_wait:
             logger.warning(
                 "%s '%s' accepted; --no-wait set, not polling for "
                 "completion.", method, resource_id)
             return self._json_or_none(response)
-        return self._poll_until_done(response, method, resource_id)
+        return self._poll_until_done(
+            response, method, resource_id, final_get_id)
 
     def get(self, resource_id):
         """GET a resource and return its JSON body."""
@@ -190,8 +212,14 @@ class ArmClient:
         return items
 
     def put(self, resource_id, body=None, no_wait=False):
-        """PUT (create/generate/start) a resource, awaiting any LRO."""
-        return self._begin('PUT', resource_id, body, no_wait)
+        """PUT (create/generate/start) a resource, awaiting any LRO.
+
+        On success the settled resource is re-read (a final GET on the same
+        id) so callers render the final state (e.g. ``provisioningState:
+        Succeeded``) rather than the initial accepted body.
+        """
+        return self._begin(
+            'PUT', resource_id, body, no_wait, final_get_id=resource_id)
 
     def patch(self, resource_id, body=None):
         """PATCH (update) a resource."""
@@ -202,11 +230,18 @@ class ArmClient:
         return self._begin('DELETE', resource_id, no_wait=no_wait)
 
     def post_action(self, resource_id, action_name, body=None,
-                    no_wait=False):
+                    no_wait=False, final_get=False):
         """POST {resourceId}/{action_name} with an optional JSON body.
 
         This is the workhorse for every action endpoint (AddStep,
         PerformAction, ProvideApproval, GenerateDownloadUrl, ...).
+
+        Set ``final_get=True`` only for actions whose settled state is the
+        parent resource itself (e.g. Regenerate), so the LRO result is a
+        fresh GET of ``resource_id`` rather than the initial InProgress body.
+        Most actions return their own payload (SAS URL, validation result)
+        or mutate state exposed elsewhere, so they leave this False.
         """
         action_id = f"{resource_id}/{action_name}"
-        return self._begin('POST', action_id, body, no_wait)
+        final_get_id = resource_id if final_get else None
+        return self._begin('POST', action_id, body, no_wait, final_get_id)

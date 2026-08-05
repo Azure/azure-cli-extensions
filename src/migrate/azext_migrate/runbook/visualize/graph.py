@@ -27,11 +27,13 @@ class Node:
 
     # pylint: disable=too-few-public-methods,too-many-arguments
     def __init__(self, node_id, name, node_type=NODE_TYPE_STEP,
-                 group=None, status=None, layer=0, ref=None):
+                 group=None, status=None, layer=0, ref=None,
+                 group_id=None):
         self.id = node_id
         self.name = name
         self.type = node_type
         self.group = group
+        self.group_id = group_id
         self.status = status
         self.layer = layer
         self.ref = ref
@@ -87,7 +89,7 @@ def _step_status(step):
 
 
 def _iter_steps(document):
-    """Yield ``(step, workstream_name)`` pairs from a definition/execution.
+    """Yield ``(step, workstream_name, workstream_id)`` triples.
 
     Handles both the ``workstreams[].steps[]`` shape and a flat
     ``steps[]`` shape, and unwraps an execution ``properties`` envelope.
@@ -103,32 +105,33 @@ def _iter_steps(document):
     for workstream in workstreams:
         if not isinstance(workstream, dict):
             continue
+        ws_id = workstream.get('id')
         ws_name = (workstream.get('displayName')
-                   or workstream.get('name') or workstream.get('id'))
+                   or workstream.get('name') or ws_id)
         for step in workstream.get('steps', []) or []:
             if isinstance(step, dict):
-                yield step, ws_name
+                yield step, ws_name, ws_id
     for step in root.get('steps', []) or []:
         if isinstance(step, dict):
-            yield step, None
+            yield step, None, None
 
 
 def _build_graph(document, title):
     nodes = []
     node_by_id = {}
-    for step, ws_name in _iter_steps(document):
+    for step, ws_name, ws_id in _iter_steps(document):
         node_id = _step_id(step)
         if not node_id or node_id in node_by_id:
             continue
         node = Node(
-            node_id, _step_name(step), group=ws_name,
+            node_id, _step_name(step), group=ws_name, group_id=ws_id,
             status=_step_status(step), ref=step.get('stepRef'))
         nodes.append(node)
         node_by_id[node_id] = node
 
     edges = []
     dependencies = {node.id: [] for node in nodes}
-    for step, _ in _iter_steps(document):
+    for step, _, _ in _iter_steps(document):
         node_id = _step_id(step)
         if node_id not in node_by_id:
             continue

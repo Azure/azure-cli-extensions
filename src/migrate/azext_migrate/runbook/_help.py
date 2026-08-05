@@ -132,26 +132,6 @@ helps['migrate runbook definition download'] = """
 """
 
 
-helps['migrate runbook definition visualize'] = """
-    type: command
-    short-summary: Render the runbook definition as a self-contained HTML graph.
-    long-summary: >
-        Produces a single, offline HTML file (no external/CDN references)
-        showing the workstreams, steps and their dependency DAG. Step and
-        workstream names are HTML-encoded to prevent script injection.
-    examples:
-        - name: Visualize a runbook definition into the current directory.
-          text: |
-            az migrate runbook definition visualize -g myRg \\
-              --project-name myProject -n myRunbook
-        - name: Visualize to a specific file and open it in the browser.
-          text: |
-            az migrate runbook definition visualize -g myRg \\
-              --project-name myProject -n myRunbook \\
-              --file ./runbook.html --open
-"""
-
-
 helps['migrate runbook definition step'] = """
     type: group
     short-summary: Manage individual steps in a runbook definition.
@@ -162,23 +142,25 @@ helps['migrate runbook definition step add'] = """
     type: command
     short-summary: Add a step to the runbook definition.
     examples:
-        - name: Add a manual step.
+        - name: Add a manual step to a workstream.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
-              --step-type Manual --step-name "Verify cutover"
-        - name: Add an approval step.
+              --step-type Manual --step-name "Verify cutover" \\
+              --workstream-id workstream-0
+        - name: Add an approval step that depends on another step.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Approval --step-name "Change approval" \\
-              --approval-type Full
-        - name: Add a custom-script step that runs once.
+              --workstream-id workstream-0 --depends-on step0
+        - name: Add a manual step scoped to specific migration entities.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
-              --step-type CustomScript --step-name "Run script" \\
-              --run-mode Once --execution-target Appliance
+              --step-type Manual --step-name "Post checks" \\
+              --workstream-id workstream-0 \\
+              --migration-entity-ids entity1 entity2
 """
 
 
@@ -216,13 +198,13 @@ helps['migrate runbook definition workstream split'] = """
     type: command
     short-summary: Split a workstream into two workstreams.
     examples:
-        - name: Move entities into a new workstream.
+        - name: Move steps into a new workstream.
           text: |
             az migrate runbook definition workstream split -g myRg \\
               --project-name myProject -n myRunbook \\
               --source-workstream-id ws1 \\
               --new-workstream-name "Database tier" \\
-              --entities-to-move entity1 entity2
+              --step-ids step1 step2
 """
 
 
@@ -329,109 +311,6 @@ helps['migrate runbook execution cancel'] = """
             az migrate runbook execution cancel -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
               --execution-id myExecution
-"""
-
-
-helps['migrate runbook execution visualize'] = """
-    type: command
-    short-summary: Render an execution's status as a self-contained HTML graph.
-    long-summary: >
-        Produces a single, offline HTML file (no external/CDN references)
-        showing the dependency DAG annotated with per-step status. Step and
-        workstream names are HTML-encoded to prevent script injection. Use
-        --watch to regenerate the snapshot on an interval until the execution
-        reaches a terminal state.
-    examples:
-        - name: Visualize an execution's current status.
-          text: |
-            az migrate runbook execution visualize -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution
-        - name: Visualize to a file, open it, and refresh until complete.
-          text: |
-            az migrate runbook execution visualize -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --file ./exec.html --open --watch
-"""
-
-
-helps['migrate runbook execution step'] = """
-    type: group
-    short-summary: Act on individual steps within a runbook execution.
-"""
-
-
-helps['migrate runbook execution step retry'] = """
-    type: command
-    short-summary: Retry a failed step in a runbook execution.
-    examples:
-        - name: Retry a failed step.
-          text: |
-            az migrate runbook execution step retry -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --step-id step1
-"""
-
-
-helps['migrate runbook execution step approve'] = """
-    type: command
-    short-summary: Approve an approval-type step during execution.
-    long-summary: >
-        For a Full approval step the whole step is approved. For a Partial
-        approval step, approve specific entities with --entities or every
-        ready entity with --all-ready.
-    examples:
-        - name: Approve a Full approval step.
-          text: |
-            az migrate runbook execution step approve -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --step-id step1
-        - name: Approve specific entities of a Partial approval step.
-          text: |
-            az migrate runbook execution step approve -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --step-id step1 \\
-              --entities entity1 entity2
-        - name: Approve every ready entity of a Partial approval step.
-          text: |
-            az migrate runbook execution step approve -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --step-id step1 --all-ready
-"""
-
-
-helps['migrate runbook execution step complete'] = """
-    type: command
-    short-summary: Mark a manual step as complete during execution.
-    examples:
-        - name: Complete a manual step with a comment.
-          text: |
-            az migrate runbook execution step complete -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --step-id step1 \\
-              --comment "Verified cutover manually"
-"""
-
-
-helps['migrate runbook parameter'] = """
-    type: group
-    short-summary: Manage the parameters file stored with a runbook.
-"""
-
-
-helps['migrate runbook parameter download'] = """
-    type: command
-    short-summary: Download the runbook parameters file.
-    examples:
-        - name: Download the parameters file to the current directory.
-          text: |
-            az migrate runbook parameter download -g myRg \\
-              --project-name myProject --runbook-name myRunbook
-        - name: Download the parameters file to a specific path.
-          text: |
-            az migrate runbook parameter download -g myRg \\
-              --project-name myProject --runbook-name myRunbook \\
-              --file ./params.json
 """
 
 

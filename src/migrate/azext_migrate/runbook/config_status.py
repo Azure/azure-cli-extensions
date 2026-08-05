@@ -23,7 +23,12 @@ The status is one of:
 * ``Configured``     — all required inputs have values (or none are required),
 * ``Partial (n/m)``  — some but not all required inputs have values,
 * ``NotConfigured``  — no required input has a value, and
-* ``Unknown``        — no parameters/schema available for the step (defensive).
+* ``Unknown``        — the step is not tracked in the parameters document
+  (``stepInputs`` has no entry for it), or no parameters are available.
+
+Steps that need no inputs (e.g. approval gates, cutover, cleanup) are emitted
+as ``stepInputs[stepId] = {}`` with no ``schema`` entry; because they are
+tracked and have no required inputs, they are :data:`CONFIGURED`.
 """
 
 CONFIGURED = 'Configured'
@@ -64,17 +69,26 @@ def compute(step, runbook_inputs):
 
     ``runbook_inputs`` is the ``runbookInputs`` object from the parameters
     document (with ``schema`` and ``stepInputs``). Returns :data:`UNKNOWN`
-    when the schema or inputs for the step are unavailable.
+    only when the step is not tracked under ``stepInputs`` (or no parameters
+    are available). A step tracked with an empty inputs object and no schema
+    entry has no required inputs and is therefore :data:`CONFIGURED`.
     """
     step = step or {}
     if not isinstance(runbook_inputs, dict):
         return UNKNOWN
     step_ref = step.get('stepRef')
     step_id = step.get('stepId') or step.get('id')
-    schema = (runbook_inputs.get('schema') or {}).get(step_ref)
+    # Presence under ``stepInputs`` (even as an empty object) is the signal
+    # that the parameters document tracks this step. A missing entry means
+    # the step is untracked -> Unknown.
     step_inputs = (runbook_inputs.get('stepInputs') or {}).get(step_id)
-    if not isinstance(schema, dict) or not isinstance(step_inputs, dict):
+    if not isinstance(step_inputs, dict):
         return UNKNOWN
+    # The schema entry may be absent for steps that need no inputs; treat a
+    # missing/invalid schema as "no required inputs".
+    schema = (runbook_inputs.get('schema') or {}).get(step_ref)
+    if not isinstance(schema, dict):
+        schema = {}
 
     required = [
         (field, meta) for field, meta in schema.items()

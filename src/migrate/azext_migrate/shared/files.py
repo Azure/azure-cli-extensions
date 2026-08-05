@@ -30,10 +30,11 @@ logger = get_logger(__name__)
 _MAX_TOTAL_UNCOMPRESSED = 256 * 1024 * 1024
 _MAX_MEMBERS = 1000
 
-# Keys the GenerateDownloadUrl response may use for the SAS URL, checked
-# both at the top level and under ``properties``.
+# Keys a GenerateDownloadUrl / GenerateInputUploadUrl response may use for
+# the SAS URL, checked both at the top level and under ``properties``.
 _SAS_URL_KEYS = (
-    'downloadUrl', 'downloadUri', 'sasUrl', 'sasUri', 'url', 'uri')
+    'uploadUrl', 'uploadUri', 'downloadUrl', 'downloadUri',
+    'sasUrl', 'sasUri', 'url', 'uri')
 
 # Derived/computed inputs the CLI must never surface or download. This
 # document shares the 'runbookInputs' shape with the user parameters, so it
@@ -41,9 +42,9 @@ _SAS_URL_KEYS = (
 _DERIVED_INPUTS_NAMES = ('derived-input.json', 'derived-inputs.json')
 
 # File name of the execution status document fetched via a per-execution
-# SAS download (GenerateDownloadUrl on the execution resource).
-# TODO(confirm): validate against a live per-execution SAS download; the
-# blob may be the raw status.json or a ZIP that contains it.
+# SAS download (GenerateDownloadUrl on the execution resource). Confirmed
+# against the live API: the blob may be either the raw status.json bytes or
+# a ZIP that contains it; read_status_json handles both.
 _STATUS_SUFFIX = 'status.json'
 
 
@@ -71,6 +72,24 @@ def download_bytes(url):
     # to be https; no ARM token is attached.
     with urlopen(request) as response:  # nosec B310
         return response.read()
+
+
+def upload_bytes(url, data):
+    """HTTP PUT raw bytes to a self-authorizing https blob SAS URL."""
+    if not isinstance(url, str) or not url.lower().startswith('https://'):
+        raise InvalidArgumentValueError(
+            'The upload URL must be an absolute https URL.')
+    request = Request(
+        url, data=data, method='PUT',
+        headers={'x-ms-blob-type': 'BlockBlob'})
+    # The URL is a pre-signed blob SAS returned by ARM and validated above
+    # to be https; no ARM token is attached. The SAS query string carries
+    # the signature, so only the blob path (before '?') is logged.
+    logger.debug(
+        'Uploading %d bytes to blob %s', len(data), url.split('?', 1)[0])
+    with urlopen(request) as response:  # nosec B310
+        logger.debug('Blob upload completed (HTTP %s).', response.status)
+        return None
 
 
 def _looks_like_spec(parsed):
@@ -191,9 +210,12 @@ def read_json_file(path):
 
     Enables offline rendering/testing of the visualize commands from
     definition/parameters/status JSON files without contacting the service.
+    The file is read as bytes so ``json.loads`` can auto-detect the encoding
+    (UTF-8/16/32, with or without a BOM); this tolerates files saved by
+    Windows PowerShell redirection, which default to UTF-16.
     """
-    with open(path, 'r', encoding='utf-8') as handle:
-        return json.load(handle)
+    with open(path, 'rb') as handle:
+        return json.loads(handle.read())
 
 
 def resolve_output_path(file, default_name):
@@ -201,12 +223,20 @@ def resolve_output_path(file, default_name):
 
     ``file`` may be ``None`` (write ``default_name`` into the current
     directory), a directory (write ``default_name`` inside it), or a full
-    file path. The result is always an absolute, normalized path.
+    file path. A value that names a not-yet-created directory -- one that
+    ends with a path separator or has no file extension -- is treated as a
+    directory so ``default_name`` is written inside it (rather than becoming
+    an extensionless output file). The result is always an absolute,
+    normalized path.
     """
     if not file:
         return os.path.join(os.getcwd(), default_name)
+    looks_like_dir = (
+        file.endswith(('/', '\\')) or os.path.splitext(file)[1] == '')
     target = os.path.abspath(file)
     if os.path.isdir(target):
+        return os.path.join(target, default_name)
+    if looks_like_dir and not os.path.isfile(target):
         return os.path.join(target, default_name)
     return target
 

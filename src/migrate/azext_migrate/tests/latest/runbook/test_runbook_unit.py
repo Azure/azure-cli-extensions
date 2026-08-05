@@ -44,13 +44,10 @@ from azext_migrate.runbook.visualize import viewmodel as visualize_viewmodel
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     RUNBOOK_STATUS_VALUES,
-    STEP_TYPE_APPROVAL,
-    STEP_TYPE_CUSTOM_SCRIPT,
 )
 from azext_migrate.runbook.models import ExecutionAction
 from azext_migrate.runbook.validators import (
     validate_generate,
-    validate_step_add,
     validate_step_approve,
     validate_step_complete,
 )
@@ -339,7 +336,7 @@ class RunbookUpdateRegenerateTests(unittest.TestCase):
             mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
         self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
-            self._runbook_id(), 'Regenerate', no_wait=True)
+            self._runbook_id(), 'Regenerate', no_wait=True, final_get=True)
 
 
 class RunbookDefinitionTransformerTests(unittest.TestCase):
@@ -358,7 +355,7 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         self.assertEqual([r["Step Id"] for r in rows], ["s1", "s2"])
         self.assertEqual([r["Workstream Id"] for r in rows], ["w1", "w2"])
         self.assertEqual(rows[0]["Step Name"], "Step One")
-        self.assertEqual(rows[0]["Depends On"], "b a")
+        self.assertEqual(rows[0]["Depends On"], "b\na")
         self.assertEqual(rows[0]["Configuration Status"], "Configured")
         self.assertEqual(rows[0]["Workloads"], 2)
         self.assertEqual(rows[0]["Applications"], "-")
@@ -384,7 +381,6 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
             "schema": {"vm.agentless.setup": {}},
             "stepInputs": {"vm.agentless.setup-1": {}}}}
         self.assertEqual(transformers.definition_table(params), [])
-
 
 
 class DefinitionProjectionTests(unittest.TestCase):
@@ -467,6 +463,37 @@ class FilesTests(unittest.TestCase):
                     os.path.commonpath([tmp, os.path.abspath(path)]), tmp)
             self.assertTrue(os.path.isfile(os.path.join(tmp, "evil.md")))
 
+    def test_extract_definition_files_round_trip(self):
+        zip_bytes = _make_zip({
+            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
+            "rb-x-input.json": '{"runbookInputs": {"a": 1}}',
+            "docs/readme.md": "# hello",
+        })
+        with tempfile.TemporaryDirectory() as tmp:
+            written = files.extract_definition_files(zip_bytes, tmp)
+            self.assertEqual(len(written), 3)
+            for path in written:
+                self.assertTrue(os.path.isfile(path))
+            self.assertEqual(
+                sorted(os.path.basename(p) for p in written),
+                ["rb-x-input.json", "rb-x-spec.json", "readme.md"])
+            with open(os.path.join(tmp, "readme.md")) as handle:
+                self.assertEqual(handle.read(), "# hello")
+
+    def test_extract_definition_files_flattens_paths(self):
+        zip_bytes = _make_zip({
+            "../evil-spec.json": '{"runbookSpec": {}}',
+            "../../notes.md": "# n",
+        })
+        with tempfile.TemporaryDirectory() as tmp:
+            written = files.extract_definition_files(zip_bytes, tmp)
+            self.assertEqual(len(written), 2)
+            for path in written:
+                self.assertTrue(os.path.isfile(path))
+                self.assertEqual(
+                    os.path.dirname(os.path.abspath(path)),
+                    os.path.abspath(tmp))
+
     def test_extract_parameters_file_by_content(self):
         zip_bytes = _make_zip({
             "runbook.json": '{"runbookSpec": {}}',
@@ -507,13 +534,13 @@ class FilesTests(unittest.TestCase):
         # regardless of member ordering or non-standard names.
         for members in (
                 {"runbook.json":
-                     '{"runbookSpec": {"workstreams": []}}',
+                 '{"runbookSpec": {"workstreams": []}}',
                  "user-inputs.json":
-                     '{"runbookInputs": {"schema": {}}}'},
+                 '{"runbookInputs": {"schema": {}}}'},
                 {"user-inputs.json":
-                     '{"runbookInputs": {"schema": {}}}',
+                 '{"runbookInputs": {"schema": {}}}',
                  "runbook.json":
-                     '{"runbookSpec": {"workstreams": []}}'}):
+                 '{"runbookSpec": {"workstreams": []}}'}):
             name, data = files.extract_parameters_file(_make_zip(members))
             self.assertEqual(name, "user-inputs.json")
             self.assertIn("runbookInputs", json.loads(data.decode()))
@@ -567,7 +594,6 @@ class FilesTests(unittest.TestCase):
                 os.path.exists(os.path.join(tmp, "user-inputs.json")))
             self.assertFalse(
                 os.path.exists(os.path.join(tmp, "derived-input.json")))
-
 
 
 class DefinitionCommandTests(unittest.TestCase):
@@ -628,29 +654,31 @@ class DefinitionCommandTests(unittest.TestCase):
 class StepModelTests(unittest.TestCase):
 
     def test_build_add_step_body_manual(self):
-        body = models.build_add_step_body("Manual", "Step 1")
-        self.assertEqual(body["stepName"], "Step 1")
-        self.assertEqual(body["displayName"], "Step 1")
-        self.assertEqual(body["stepRef"], "Manual")
-        self.assertEqual(body["migrationEntityIds"], [])
-        self.assertEqual(body["dependsOn"], [])
-        self.assertNotIn("approvalType", body)
+        body = models.build_add_step_body("Manual", "Step 1", "ws1")
+        self.assertEqual(body, {
+            "workstreamId": "ws1",
+            "stepName": "Step 1",
+            "displayName": "Step 1",
+            "description": "",
+            "stepRef": "custom.manual",
+            "migrationEntityIds": [],
+            "dependsOn": [],
+        })
 
     def test_build_add_step_body_approval(self):
         body = models.build_add_step_body(
-            "Approval", "Approve", approval_type="Full",
-            depends_on=["s0"], step_description="desc")
-        self.assertEqual(body["stepRef"], "Approval")
-        self.assertEqual(body["approvalType"], "Full")
-        self.assertEqual(body["dependsOn"], [{"Mode": 0, "stepId": "s0"}])
-        self.assertEqual(body["description"], "desc")
-
-    def test_build_add_step_body_custom_script(self):
-        body = models.build_add_step_body(
-            "CustomScript", "Run", run_mode="Once",
-            execution_target="Appliance")
-        self.assertEqual(body["runMode"], "Once")
-        self.assertEqual(body["executionTarget"], "Appliance")
+            "Approval", "Approve", "ws1",
+            depends_on=["s0"], step_description="desc",
+            migration_entity_ids=["e1", "e2"])
+        self.assertEqual(body, {
+            "workstreamId": "ws1",
+            "stepName": "Approve",
+            "displayName": "Approve",
+            "description": "desc",
+            "stepRef": "common.approval",
+            "migrationEntityIds": ["e1", "e2"],
+            "dependsOn": ["s0"],
+        })
 
     def test_build_update_step_body_minimal(self):
         self.assertEqual(
@@ -663,7 +691,7 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "stepId": "s1", "displayName": "New",
             "description": "d",
-            "dependsOn": [{"Mode": 0, "stepId": "s0"}]})
+            "dependsOn": ["s0"]})
 
     def test_build_delete_step_body(self):
         self.assertEqual(
@@ -674,8 +702,7 @@ class StepModelTests(unittest.TestCase):
             "ws1", "new", ["e1", "e2"])
         self.assertEqual(body, {
             "sourceWorkstreamId": "ws1",
-            "stepIds": [],
-            "migrationEntityIds": ["e1", "e2"],
+            "stepIds": ["e1", "e2"],
             "newWorkstreamName": "new"})
 
     def test_build_merge_workstreams_body(self):
@@ -684,47 +711,9 @@ class StepModelTests(unittest.TestCase):
             "workstreamId": ["w1", "w2"],
             "newWorkstreamName": "merged"})
 
-
-class StepValidatorTests(unittest.TestCase):
-
-    def _ns(self, **kwargs):
-        defaults = dict(
-            step_type=None, approval_type=None, run_mode=None,
-            execution_target=None)
-        defaults.update(kwargs)
-        return SimpleNamespace(**defaults)
-
-    def test_manual_ok(self):
-        validate_step_add(self._ns(step_type="Manual"))
-
-    def test_approval_requires_approval_type(self):
-        with self.assertRaises(RequiredArgumentMissingError):
-            validate_step_add(self._ns(step_type=STEP_TYPE_APPROVAL))
-
-    def test_approval_ok_with_type(self):
-        validate_step_add(self._ns(
-            step_type=STEP_TYPE_APPROVAL, approval_type="Full"))
-
-    def test_approval_type_rejected_for_manual(self):
-        with self.assertRaises(InvalidArgumentValueError):
-            validate_step_add(self._ns(
-                step_type="Manual", approval_type="Full"))
-
-    def test_run_mode_rejected_for_manual(self):
-        with self.assertRaises(InvalidArgumentValueError):
-            validate_step_add(self._ns(
-                step_type="Manual", run_mode="Once"))
-
-    def test_execution_target_rejected_for_approval(self):
-        with self.assertRaises(InvalidArgumentValueError):
-            validate_step_add(self._ns(
-                step_type=STEP_TYPE_APPROVAL, approval_type="Full",
-                execution_target="Appliance"))
-
-    def test_custom_script_ok(self):
-        validate_step_add(self._ns(
-            step_type=STEP_TYPE_CUSTOM_SCRIPT, run_mode="Once",
-            execution_target="Appliance"))
+    def test_build_merge_workstreams_body_omits_optional_name(self):
+        body = models.build_merge_workstreams_body(["w1", "w2"])
+        self.assertEqual(body, {"workstreamId": ["w1", "w2"]})
 
 
 class StepCommandTests(unittest.TestCase):
@@ -745,11 +734,11 @@ class StepCommandTests(unittest.TestCase):
     def test_add_posts_add_step(self):
         self.client.post_action.return_value = {"ok": True}
         result = step_cmds.add(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Step 1")
+            mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Step 1", "ws1")
         self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'AddStep',
-            models.build_add_step_body("Manual", "Step 1"))
+            models.build_add_step_body("Manual", "Step 1", "ws1"))
 
     def test_update_posts_update_step(self):
         self.client.post_action.return_value = {"ok": True}
@@ -842,7 +831,7 @@ class ExecutionTransformerTests(unittest.TestCase):
         }
         rows = transformers.execution_table(result)
         self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]["Id"], "s1")
+        self.assertEqual(rows[0]["Step Id"], "s1")
         self.assertEqual(rows[0]["Step Status"], "Running")
         self.assertEqual(rows[0]["Workload Progress"], "1/2")
 
@@ -857,7 +846,7 @@ class ExecutionTransformerTests(unittest.TestCase):
         }
         rows = transformers.execution_table(result)
         self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]["Id"], "s2")
+        self.assertEqual(rows[0]["Step Id"], "s2")
         self.assertEqual(rows[0]["Step Status"], "Succeeded")
 
 
@@ -876,21 +865,19 @@ class ExecutionCommandTests(unittest.TestCase):
         project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
         return arm_ids.runbook_id(project, RUNBOOK)
 
-    def test_start_puts_execution(self):
-        self.client.put.return_value = {"ok": True}
+    def test_start_posts_execute_action(self):
+        self.client.post_action.return_value = {"ok": True}
         result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
         self.assertEqual(result, {"ok": True})
-        self.client.put.assert_called_once()
-        args, kwargs = self.client.put.call_args
-        self.assertTrue(
-            args[0].startswith(self._runbook_id() + '/executions/'))
-        self.assertEqual(args[1], {"properties": {}})
-        self.assertFalse(kwargs.get('no_wait'))
+        self.client.post_action.assert_called_once_with(
+            self._runbook_id(), 'execute', {"properties": {}},
+            no_wait=False)
 
     def test_start_no_wait(self):
+        self.client.post_action.return_value = {"ok": True}
         execution_cmds.start(
             mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
-        _, kwargs = self.client.put.call_args
+        _, kwargs = self.client.post_action.call_args
         self.assertTrue(kwargs.get('no_wait'))
 
     def test_list_calls_executions_collection(self):
@@ -1161,20 +1148,22 @@ class ExecutionStatusParsingTests(unittest.TestCase):
 
     def test_execution_table_renders_without_crash(self):
         rows = transformers.execution_table(_STATUS_DOC)
-        by_id = {row['Id']: row for row in rows}
+        by_id = {row['Step Id']: row for row in rows}
         self.assertEqual(by_id['setup']['Step Status'], 'Completed')
         self.assertEqual(by_id['network']['Step Status'], 'Failed')
         self.assertEqual(by_id['cutover']['Step Status'], 'Blocked')
 
     def test_execution_table_formats_depends_on(self):
         rows = transformers.execution_table(_STATUS_DOC)
-        by_id = {row['Id']: row for row in rows}
-        self.assertEqual(by_id['dataSync']['Depends On'], 'setup network')
+        by_id = {row['Step Id']: row for row in rows}
+        self.assertEqual(
+            by_id['dataSync']['Depends On'],
+            'Web tier:Setup\nWeb tier:Network')
         self.assertEqual(by_id['setup']['Depends On'], '')
 
     def test_execution_table_workload_progress(self):
         rows = transformers.execution_table(_STATUS_DOC)
-        by_id = {row['Id']: row for row in rows}
+        by_id = {row['Step Id']: row for row in rows}
         self.assertEqual(
             by_id['dataSync']['Workload Progress'], '1/2 completed')
         self.assertIsNone(by_id['setup']['Workload Progress'])
@@ -1569,8 +1558,8 @@ class DefinitionTableRealShapeTests(unittest.TestCase):
         self.assertEqual(migration["Applications"], "-")
         self.assertEqual(migration["Configuration Status"], "Configured")
         self.assertIn(
-            "vm.agentless.prepareEntity-1", migration["Depends On"])
-        self.assertIn("common.approval-1", migration["Depends On"])
+            "waveapp:Prepare Entity", migration["Depends On"])
+        self.assertIn("waveapp:Approval Gate", migration["Depends On"])
 
 
 class VisualizeGridTests(unittest.TestCase):
@@ -1591,8 +1580,14 @@ class VisualizeGridTests(unittest.TestCase):
         graph = visualize_graph.build_definition_graph(
             _REAL_DEFINITION, title="Def")
         html_text = visualize_renderer.render(graph, view=view)
-        self.assertIn("Workstream: Initialization (1)", html_text)
-        self.assertIn("Workstream: waveapp (3)", html_text)
+        self.assertIn(
+            'Workstream: Initialization'
+            '<span class="id-badge" title="Workstream id">'
+            'workstream-0</span> (1)', html_text)
+        self.assertIn(
+            'Workstream: waveapp'
+            '<span class="id-badge" title="Workstream id">'
+            'workstream-1</span> (3)', html_text)
         self.assertIn("NotConfigured", html_text)
         self.assertIn('data-view="grid"', html_text)
         self.assertIn('data-view="diagram"', html_text)
@@ -1703,8 +1698,12 @@ class VisualizeGridTests(unittest.TestCase):
         # The SVG groups steps into labelled workstream bands and keeps
         # the dependency edges + per-step info (stepRef sub-label).
         self.assertIn('class="lane"', html_text)
-        self.assertIn("Workstream: Initialization (1)", html_text)
-        self.assertIn("Workstream: waveapp (3)", html_text)
+        self.assertIn(
+            'Workstream: Initialization'
+            '<tspan class="svg-id"> workstream-0</tspan> (1)', html_text)
+        self.assertIn(
+            'Workstream: waveapp'
+            '<tspan class="svg-id"> workstream-1</tspan> (3)', html_text)
         self.assertIn('class="edge"', html_text)
         self.assertIn("vm.agentless.migration", html_text)
 
@@ -1714,9 +1713,52 @@ class VisualizeGridTests(unittest.TestCase):
         graph = visualize_graph.build_execution_graph(
             _STATUS_DOC, title="Exec")
         html_text = visualize_renderer.render(graph, view=view)
-        self.assertIn("Workstream: Web tier (4)", html_text)
+        self.assertIn(
+            'Workstream: Web tier'
+            '<span class="id-badge" title="Workstream id">'
+            'ws1</span> (4)', html_text)
         self.assertIn("1/2 completed", html_text)
         self.assertNotIn("https://", html_text)
+
+
+class VisualizeWorkstreamIdTests(unittest.TestCase):
+    """The visualize output must surface the workstream id so users can
+    copy it into ``runbook split`` / ``runbook merge``."""
+
+    def _render(self, document):
+        from azext_migrate.runbook.visualize import (
+            graph as graph_mod,
+            renderer as renderer_mod,
+            viewmodel as viewmodel_mod,
+        )
+        graph = graph_mod.build_definition_graph(document)
+        view = viewmodel_mod.build_definition_view(document, 't')
+        return renderer_mod.render(graph, view)
+
+    def test_workstream_id_in_visualize_header(self):
+        document = {'workstreams': [{
+            'id': 'ws-abc123',
+            'displayName': 'Migration',
+            'steps': [{'id': 's1', 'displayName': 'Cutover',
+                       'configurationStatus': 'Configured'}],
+        }]}
+        html = self._render(document)
+        # Grid header shows the workstream id as a greyish badge.
+        self.assertIn(
+            '<span class="id-badge" title="Workstream id">ws-abc123</span>',
+            html)
+        # SVG band shows the same id as a muted tspan.
+        self.assertIn('<tspan class="svg-id"> ws-abc123</tspan>', html)
+
+    def test_workstream_id_and_name_are_html_escaped(self):
+        document = {'workstreams': [{
+            'id': '<script>x</script>',
+            'displayName': '<b>ws</b>',
+            'steps': [{'id': 's1', 'displayName': 'a'}],
+        }]}
+        html = self._render(document)
+        self.assertNotIn('<script>x</script>', html)
+        self.assertIn('&lt;script&gt;x&lt;/script&gt;', html)
 
 
 if __name__ == '__main__':

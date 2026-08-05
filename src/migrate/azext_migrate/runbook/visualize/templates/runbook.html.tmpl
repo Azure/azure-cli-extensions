@@ -74,6 +74,7 @@ $refresh<title>$title</title>
   .node rect { fill: var(--node); stroke: var(--edge); stroke-width: 1; }
   .node text { fill: var(--ink); font-size: 13px; }
   .node .sub { fill: var(--muted); font-size: 11px; }
+  .svg-id { fill: var(--muted); font-size: 10px; font-weight: 400; }
   .edge { stroke: #b3b0ad; stroke-width: 1.5; fill: none; }
   .empty { color: var(--muted); padding: 40px 0; text-align: center; }
   .status-Succeeded rect,
@@ -140,6 +141,12 @@ $refresh<title>$title</title>
   .row__ref {
     color: var(--muted); font-size: 11px; background: #f3f2f1;
     padding: 1px 6px; border-radius: 3px; white-space: nowrap;
+  }
+  .id-badge {
+    color: var(--muted); font-size: 10px; background: #ecebe9;
+    font-family: Consolas, "Courier New", monospace;
+    padding: 1px 6px; border-radius: 3px; margin-left: 6px;
+    white-space: nowrap; vertical-align: middle;
   }
   .col-count { text-align: right; color: var(--link); font-weight: 600; }
   .col-dep { color: var(--muted); }

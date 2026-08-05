@@ -7,6 +7,7 @@
 from collections import OrderedDict
 
 from azext_migrate.runbook import deps as dep_utils
+from azext_migrate.runbook.constants import ENTITY_COMPLETED_STATES
 
 # Placeholder shown for the "Applications" column, which the runbook
 # definition does not currently model (steps carry entities, not apps).
@@ -32,14 +33,15 @@ def _runbook_row(item):
 
 def definition_table(result):
     """Project a runbook definition into one step row per definition step."""
+    labels = dep_utils.build_dep_labels(result)
     rows = []
     if isinstance(result, dict) and result.get('workstreams') is not None:
         for workstream in result.get('workstreams') or []:
-            rows.extend(_step_rows(workstream))
+            rows.extend(_step_rows(workstream, labels))
     elif isinstance(result, dict) and result.get('steps') is not None:
-        rows.extend(_step_rows(result))
+        rows.extend(_step_rows(result, labels))
     elif isinstance(result, dict) and _looks_like_step(result):
-        rows.append(_step_row(result))
+        rows.append(_step_row(result, labels=labels))
     return rows
 
 
@@ -49,20 +51,20 @@ def _looks_like_step(step):
                ('stepId', 'id', 'displayName', 'stepName'))
 
 
-def _step_rows(workstream):
+def _step_rows(workstream, labels):
     workstream = workstream or {}
     workstream_id = workstream.get('id')
-    return [_step_row(step, workstream_id)
+    return [_step_row(step, workstream_id, labels)
             for step in workstream.get('steps', []) or []]
 
 
-def _step_row(step, workstream_id=None):
+def _step_row(step, workstream_id=None, labels=None):
     step = step or {}
     return OrderedDict([
         ('Workstream Id', workstream_id),
         ('Step Id', step.get('stepId') or step.get('id')),
         ('Step Name', step.get('displayName') or step.get('stepName')),
-        ('Depends On', ' '.join(dep_utils.merged_dep_ids(step))),
+        ('Depends On', '\n'.join(dep_utils.label_deps(step, labels or {}))),
         ('Configuration Status', step.get('configurationStatus')),
         ('Workloads', len(step.get('entities') or [])),
         ('Applications', _APPLICATIONS_PLACEHOLDER),
@@ -73,13 +75,14 @@ def execution_table(result):
     """Project a runbook execution status into one row per step."""
     rows = []
     status = _execution_status(result)
+    labels = dep_utils.build_dep_labels(status)
     if isinstance(status, dict) and status.get('workstreams') is not None:
         for workstream in status.get('workstreams') or []:
-            rows.extend(_exec_step_rows(workstream))
+            rows.extend(_exec_step_rows(workstream, labels))
     elif isinstance(status, dict) and status.get('steps') is not None:
-        rows.extend(_exec_step_rows(status))
+        rows.extend(_exec_step_rows(status, labels))
     elif isinstance(status, dict) and status:
-        rows.append(_exec_step_row(status))
+        rows.append(_exec_step_row(status, labels=labels))
     return rows
 
 
@@ -93,39 +96,24 @@ def _execution_status(result):
     return result or {}
 
 
-def _exec_step_rows(workstream):
+def _exec_step_rows(workstream, labels):
     workstream = workstream or {}
-    return [_exec_step_row(step)
+    workstream_id = workstream.get('id')
+    return [_exec_step_row(step, workstream_id, labels)
             for step in workstream.get('steps', []) or []]
 
 
-def _exec_step_row(step):
+def _exec_step_row(step, workstream_id=None, labels=None):
     step = step or {}
     return OrderedDict([
-        ('Id', step.get('id') or step.get('stepId')),
+        ('Workstream Id', workstream_id),
+        ('Step Id', step.get('id') or step.get('stepId')),
         ('Step Name', step.get('displayName') or step.get('stepName')),
         ('Step Status',
          step.get('status') or step.get('stepStatus') or step.get('state')),
-        ('Depends On', _format_depends_on(step.get('dependsOn'))),
+        ('Depends On', '\n'.join(dep_utils.label_deps(step, labels or {}))),
         ('Workload Progress', _workload_progress(step)),
     ])
-
-
-def _format_depends_on(deps):
-    """Render a step's ``dependsOn`` as a space-separated list of step ids.
-
-    Handles both the execution ``status.json`` shape (a list of objects
-    ``{"step": "<stepId>", "mode": ...}``) and a plain list of id strings.
-    """
-    if not deps:
-        return ''
-    ids = []
-    for dep in deps:
-        if isinstance(dep, dict):
-            ids.append(dep.get('step') or dep.get('stepId') or '')
-        elif dep:
-            ids.append(str(dep))
-    return ' '.join(dep_id for dep_id in ids if dep_id)
 
 
 def _workload_progress(step):
@@ -140,7 +128,9 @@ def _workload_progress(step):
     if not entities:
         return None
     total = len(entities)
-    completed = sum(
-        1 for entity in entities
-        if str((entity or {}).get('state', '')).lower() == 'completed')
+    completed = 0
+    for entity in entities:
+        value = (entity or {}).get('status') or (entity or {}).get('state')
+        if str(value or '').lower() in ENTITY_COMPLETED_STATES:
+            completed += 1
     return '%d/%d completed' % (completed, total)

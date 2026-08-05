@@ -52,6 +52,26 @@ Every non-trivial migrate change MUST end with a **10-point engineering review**
 - `python -m azdev style migrate`
 - `python -m azdev linter migrate` (the trailing `ERROR: invalid git repo: None` is harmless)
 
+## Tests move with the code — never leave a reconciliation gap
+
+Code and its tests are ONE change. A task is not done until the tests that cover the changed
+behavior are updated in the SAME change and the suite is green.
+
+- **Every code change updates its tests in lockstep.** If you change a contract (request body,
+  command signature, transformer columns, file/archive handling, action verb, call kwargs), update
+  the covering unit/scenario tests in the same edit. Never defer test updates to "later" or to a
+  separate reconciliation pass.
+- **Green-before-done.** Run the unit suite (see Verification gate) and confirm it passes before
+  declaring any change complete. A change that leaves failing tests is an unfinished change.
+- **Tests must load the source under `src/migrate/azext_migrate/`, not build artifacts.** Run
+  pytest with `cwd = src/migrate`. A stale `build/lib/azext_migrate` copy can shadow/merge with the
+  source package and mask source/test drift (a suite may appear to pass against the stale copy).
+  If collection counts look inflated or failures vanish inexplicably, delete `src/migrate/build/`
+  (a regenerable artifact) and clear `__pycache__`, then re-run against source.
+- **Root cause of drift:** code advanced while its tests were not updated in the same change. Do not
+  recreate that state. When source and tests disagree, the source is authoritative only because it
+  was reviewed — still confirm the current behavior is intended before aligning the test to it.
+
 ## Domain facts to preserve
 
 - Downloaded runbook archive members:

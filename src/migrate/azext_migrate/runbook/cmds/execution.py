@@ -6,7 +6,6 @@
 pause/resume/cancel)."""
 
 import time
-import uuid
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import CLIInternalError, ManualInterrupt
@@ -57,13 +56,21 @@ def _fetch_status(cmd, resource_id):
 def start(cmd, resource_group_name, project_name, runbook_name,
           no_wait=False):
     """Start a new execution of a runbook."""
-    execution = str(uuid.uuid4())
-    resource_id = _execution_resource_id(
-        cmd, resource_group_name, project_name, runbook_name, execution)
+    resource_id = _runbook_id(
+        cmd, resource_group_name, project_name, runbook_name)
     body = models.build_start_execution_body()
-    logger.warning(
-        "Runbook execution started. Execution id: %s", execution)
-    return ArmClient(cmd).put(resource_id, body, no_wait=no_wait)
+    result = ArmClient(cmd).post_action(
+        resource_id, 'execute', body, no_wait=no_wait)
+    execution_id = None
+    if isinstance(result, dict):
+        execution_id = result.get('name') or (
+            result.get('properties') or {}).get('executionId')
+    if execution_id:
+        logger.warning(
+            "Runbook execution started. Execution id: %s", execution_id)
+    else:
+        logger.warning("Runbook execution started.")
+    return result
 
 
 def list_(cmd, resource_group_name, project_name, runbook_name):

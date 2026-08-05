@@ -117,3 +117,4 @@ def load_runbook_command_table(self):
             custom_command_type=runbook_cmds,
             is_preview=True) as g:
         g.custom_command('download', 'parameter#download')
+        g.custom_command('upload', 'parameter#upload')

@@ -15,17 +15,10 @@ WAVE_ID_TEMPLATE = "{project_id}/waves/{wave_name}"
 # Step types accepted by ``definition step add``.
 STEP_TYPE_MANUAL = "Manual"
 STEP_TYPE_APPROVAL = "Approval"
-STEP_TYPE_CUSTOM_SCRIPT = "CustomScript"
 STEP_TYPE_VALUES = [
     STEP_TYPE_MANUAL,
     STEP_TYPE_APPROVAL,
-    STEP_TYPE_CUSTOM_SCRIPT,
 ]
-
-# Enumerations for the step parameter-sets.
-APPROVAL_TYPE_VALUES = ["Partial", "Full"]
-RUN_MODE_VALUES = ["Once", "PerEntity"]
-EXECUTION_TARGET_VALUES = ["Appliance", "SourceVm", "TargetVm"]
 
 # String action codes sent by the execution-step action endpoints.
 # ``PerformAction`` (retry) sends the integer ``ExecutionAction`` code,
@@ -34,13 +27,11 @@ EXECUTION_TARGET_VALUES = ["Appliance", "SourceVm", "TargetVm"]
 STEP_ACTION_APPROVE = "Approve"
 STEP_ACTION_COMPLETE = "Complete"
 
-# Opaque ``stepRef`` value the AddStep body binds per step type.
-# TODO(confirm): replace with the authoritative per-type refs from the
-# service spec; the current values mirror the step type as a stable stub.
+# ``stepRef`` value the AddStep body binds per step type. These correlate
+# the CLI step with the partner runbook step used for execution.
 STEP_REF_BY_TYPE = {
-    STEP_TYPE_MANUAL: STEP_TYPE_MANUAL,
-    STEP_TYPE_APPROVAL: STEP_TYPE_APPROVAL,
-    STEP_TYPE_CUSTOM_SCRIPT: STEP_TYPE_CUSTOM_SCRIPT,
+    STEP_TYPE_MANUAL: "custom.manual",
+    STEP_TYPE_APPROVAL: "common.approval",
 }
 
 
@@ -60,20 +51,80 @@ class RunbookStatus(str, Enum):
 RUNBOOK_STATUS_VALUES = [member.value for member in RunbookStatus]
 
 
+class RunbookExecutionStatus(str, Enum):
+    """Execution ARM resource status (GetRunbookExecution properties.status).
+
+    Source of truth: service enum ``RunbookExecutionStatus``
+    (Microsoft.Azure.Migrate.MgmtSvcs.Constants).
+    """
+
+    QUEUED = "Queued"
+    IN_PROGRESS = "InProgress"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
+    PAUSING = "Pausing"
+    PAUSED = "Paused"
+    RESUMING = "Resuming"
+    CANCELLING = "Cancelling"
+    CANCELLED = "Cancelled"
+
+
+class ExecutionState(str, Enum):
+    """Per-node state in the execution ``status.json`` document.
+
+    Source of truth: service enum ``ExecutionState``
+    (MigrationOrchestrator.Engine.Models.ExecutionStatus). Coordinator
+    nodes (runbook, workstream) use ``Completed``; steps report
+    ``Succeeded``/``PartiallySucceeded``.
+    """
+
+    NOT_STARTED = "NotStarted"
+    IN_PROGRESS = "InProgress"
+    AWAITING_USER_ACTION = "AwaitingUserAction"
+    COMPLETED = "Completed"
+    SUCCEEDED = "Succeeded"
+    PARTIALLY_SUCCEEDED = "PartiallySucceeded"
+    FAILED = "Failed"
+    CANCELLED = "Cancelled"
+    PAUSED = "Paused"
+    PAUSING = "Pausing"
+    RESUMING = "Resuming"
+    CANCELLING = "Cancelling"
+    SKIPPED = "Skipped"
+
+
 # Telemetry fault types for this feature.
 RUNBOOK_ARM_ERROR = "RUNBOOK_ARM_ERROR"
 RUNBOOK_VALIDATION_ERROR = "RUNBOOK_VALIDATION_ERROR"
 RUNBOOK_FILE_ERROR = "RUNBOOK_FILE_ERROR"
 RUNBOOK_VISUALIZE_ERROR = "RUNBOOK_VISUALIZE_ERROR"
 
-# Terminal execution states that stop a ``--watch`` polling loop.
-# TODO(confirm): reconcile with the service status.json enum; these
-# cover the observed/expected terminal states case-insensitively.
-EXECUTION_TERMINAL_STATES = frozenset({
-    "succeeded",
-    "executionsucceeded",
-    "completed",
-    "failed",
-    "canceled",
-    "cancelled",
+# Terminal execution states that stop a ``--watch`` polling loop, compared
+# case-insensitively. Sourced from the two authoritative service enums:
+#   * RunbookExecutionStatus (execution ARM resource properties.status) -->
+#     Completed / Failed / Cancelled.
+#   * ExecutionState (status.json node state) --> adds the step-level finals
+#     Succeeded / PartiallySucceeded / Skipped.
+# Confirmed against the live API.
+_EXECUTION_TERMINAL_MEMBERS = (
+    RunbookExecutionStatus.COMPLETED,
+    RunbookExecutionStatus.FAILED,
+    RunbookExecutionStatus.CANCELLED,
+    ExecutionState.COMPLETED,
+    ExecutionState.SUCCEEDED,
+    ExecutionState.PARTIALLY_SUCCEEDED,
+    ExecutionState.FAILED,
+    ExecutionState.CANCELLED,
+    ExecutionState.SKIPPED,
+)
+EXECUTION_TERMINAL_STATES = frozenset(
+    member.value.lower() for member in _EXECUTION_TERMINAL_MEMBERS)
+
+# Per-entity status values that count as successfully finished when
+# summarizing a step's workload progress ("n/m completed"). The status.json
+# schema reports entity success as ``Succeeded``; ``Completed`` is kept for
+# backward compatibility with the earlier ``state`` field.
+ENTITY_COMPLETED_STATES = frozenset({
+    ExecutionState.SUCCEEDED.value.lower(),
+    ExecutionState.COMPLETED.value.lower(),
 })

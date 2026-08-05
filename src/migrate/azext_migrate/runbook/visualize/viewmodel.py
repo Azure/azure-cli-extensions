@@ -11,6 +11,7 @@ unit-testable. The renderer turns this model into offline, XSS-escaped markup.
 """
 
 from azext_migrate.runbook import deps as dep_utils
+from azext_migrate.runbook.constants import ENTITY_COMPLETED_STATES
 
 KIND_DEFINITION = 'definition'
 KIND_EXECUTION = 'execution'
@@ -30,13 +31,13 @@ class StepRow:
 
     # pylint: disable=too-few-public-methods,too-many-arguments
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, step_id, name, deps_names=None, status=None,
+    def __init__(self, step_id, name, deps=None, status=None,
                  workloads=None, workload_progress=None, entities=None,
                  step_ref=None, entity_names=None, prereqs=None,
                  dep_details=None):
         self.id = step_id
         self.name = name
-        self.deps = deps_names or []
+        self.deps = deps or []
         self.status = status
         self.workloads = workloads
         self.workload_progress = workload_progress
@@ -53,9 +54,10 @@ class Workstream:
     """A named group of step rows."""
 
     # pylint: disable=too-few-public-methods
-    def __init__(self, name, steps):
+    def __init__(self, name, steps, ws_id=None):
         self.name = name
         self.steps = steps
+        self.id = ws_id
 
 
 class RunbookView:
@@ -99,35 +101,31 @@ def _step_name(step):
 
 
 def _iter_workstreams(root):
-    """Yield ``(name, [steps])`` pairs, covering grouped and flat shapes."""
+    """Yield ``(name, ws_id, [steps])`` triples, covering grouped/flat shapes."""
     workstreams = root.get('workstreams')
     if isinstance(workstreams, list) and workstreams:
         for workstream in workstreams:
             if not isinstance(workstream, dict):
                 continue
+            ws_id = workstream.get('id')
             name = (workstream.get('displayName') or workstream.get('name')
-                    or workstream.get('id') or 'Workstream')
+                    or ws_id or 'Workstream')
             steps = [s for s in workstream.get('steps') or []
                      if isinstance(s, dict)]
-            yield name, steps
+            yield name, ws_id, steps
         return
     flat = [s for s in root.get('steps') or [] if isinstance(s, dict)]
     if flat:
-        yield None, flat
+        yield None, None, flat
 
 
 def _step_name_map(root):
     """Map every step id to its display name (for dependency labels)."""
     names = {}
-    for _, steps in _iter_workstreams(root):
+    for _, _, steps in _iter_workstreams(root):
         for step in steps:
             names[_step_id(step)] = _step_name(step)
     return names
-
-
-def _dep_labels(step, id_to_name):
-    return [id_to_name.get(dep_id, dep_id)
-            for dep_id in dep_utils.merged_dep_ids(step)]
 
 
 def _entity_name_map(root):
@@ -161,10 +159,11 @@ def build_definition_view(document, title):
     """Build the grid view model for a runbook definition document."""
     root = _unwrap(document)
     id_to_name = _step_name_map(root)
+    dep_labels = dep_utils.build_dep_labels(root)
     entity_map = _entity_name_map(root)
     workstreams = []
     status_counts = {}
-    for name, steps in _iter_workstreams(root):
+    for name, ws_id, steps in _iter_workstreams(root):
         rows = []
         for step in steps:
             status = step.get('configurationStatus')
@@ -175,7 +174,7 @@ def build_definition_view(document, title):
             rows.append(StepRow(
                 step_id=_step_id(step),
                 name=_step_name(step),
-                deps_names=_dep_labels(step, id_to_name),
+                deps=dep_utils.label_deps(step, dep_labels),
                 status=status,
                 workloads=len(entity_ids),
                 step_ref=step.get('stepRef'),
@@ -183,7 +182,7 @@ def build_definition_view(document, title):
                               for eid in entity_ids],
                 prereqs=_dep_entries(step.get('prerequisite'), id_to_name),
                 dep_details=_dep_entries(step.get('dependsOn'), id_to_name)))
-        workstreams.append(Workstream(name, rows))
+        workstreams.append(Workstream(name, rows, ws_id))
 
     step_total = sum(len(ws.steps) for ws in workstreams)
     summary = [('Workstreams', len(workstreams)), ('Steps', step_total),
@@ -239,7 +238,8 @@ def _progress_text(step):
     completed = sum(
         1 for entity in entities
         if isinstance(entity, dict)
-        and str(_entity_status(entity) or '').lower() == 'completed')
+        and str(_entity_status(entity) or '').lower()
+        in ENTITY_COMPLETED_STATES)
     return '%d/%d completed' % (completed, len(entities))
 
 
@@ -251,10 +251,10 @@ def _exec_status(step):
 def build_execution_view(document, title):
     """Build the grid view model for a runbook execution status document."""
     root = _unwrap(document)
-    id_to_name = _step_name_map(root)
+    dep_labels = dep_utils.build_dep_labels(root)
     workstreams = []
     status_counts = {}
-    for name, steps in _iter_workstreams(root):
+    for name, ws_id, steps in _iter_workstreams(root):
         rows = []
         for step in steps:
             status = _exec_status(step)
@@ -271,15 +271,16 @@ def build_execution_view(document, title):
             rows.append(StepRow(
                 step_id=_step_id(step),
                 name=_step_name(step),
-                deps_names=_dep_labels(step, id_to_name),
+                deps=dep_utils.label_deps(step, dep_labels),
                 status=status,
                 workload_progress=_progress_text(step),
                 entities=entities))
-        workstreams.append(Workstream(name, rows))
+        workstreams.append(Workstream(name, rows, ws_id))
 
     summary = []
     overall = root.get('state') or root.get('status')
     if overall:
         summary.append(('State', overall))
     summary.extend(sorted(status_counts.items()))
-    return RunbookView(title, KIND_EXECUTION, workstreams, summary)
+    meta = [('Data source', 'status.json')]
+    return RunbookView(title, KIND_EXECUTION, workstreams, summary, meta=meta)

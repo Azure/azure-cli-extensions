@@ -65,56 +65,24 @@ def build_update_body(description=None):
     return {"properties": properties}
 
 
-# Service ``RunbookStepDependencyMode`` ordinal for a step-gate dependency
-# (enum member ``Step`` == 0), used as the System.Text.Json ``"Mode"``
-# polymorphic discriminator value on each ``dependsOn`` entry.
-_DEPENDENCY_MODE_STEP = 0
-
-
-def _depends_on_refs(depends_on):
-    """Normalize ``--depends-on`` step ids into service dependency objects.
-
-    The service models each ``dependsOn`` entry as a polymorphic
-    ``RunbookStepDependency`` that System.Text.Json discriminates on a
-    verbatim ``"Mode"`` property whose value is the integer enum ordinal
-    (``0`` = step gate). A ``--depends-on`` step id is a step-gate
-    dependency, serialized as ``{"Mode": 0, "stepId": "<id>"}`` with the
-    discriminator first. Entries already shaped as dicts pass through.
-    """
-    refs = []
-    for dep in depends_on or []:
-        if isinstance(dep, dict):
-            refs.append(dep)
-        elif dep:
-            refs.append({"Mode": _DEPENDENCY_MODE_STEP, "stepId": dep})
-    return refs
-
-
-def build_add_step_body(step_type, step_name, step_description=None,
-                        depends_on=None, approval_type=None,
-                        run_mode=None, execution_target=None):
+def build_add_step_body(step_type, step_name, workstream_id,
+                        step_description=None, depends_on=None,
+                        migration_entity_ids=None):
     """Build the AddStep POST body for a single definition step.
 
-    ``step_type`` selects the ``stepRef`` binding; the approval and
-    custom-script parameter-sets are absorbed as optional properties so
-    the same builder serves every step kind.
+    Mirrors the service ``RunbookStepAddRequest``. ``step_type`` selects
+    the ``stepRef`` binding (Approval -> ``common.approval``, Manual ->
+    ``custom.manual``); the step is added to ``workstream_id``.
     """
-    body = {
+    return {
+        "workstreamId": workstream_id,
         "stepName": step_name,
         "displayName": step_name,
+        "description": step_description or "",
         "stepRef": STEP_REF_BY_TYPE.get(step_type, step_type),
-        "migrationEntityIds": [],
-        "dependsOn": _depends_on_refs(depends_on),
+        "migrationEntityIds": migration_entity_ids or [],
+        "dependsOn": depends_on or [],
     }
-    if step_description is not None:
-        body["description"] = step_description
-    if approval_type is not None:
-        body["approvalType"] = approval_type
-    if run_mode is not None:
-        body["runMode"] = run_mode
-    if execution_target is not None:
-        body["executionTarget"] = execution_target
-    return body
 
 
 def build_update_step_body(step_id, step_name=None, step_description=None,
@@ -126,7 +94,7 @@ def build_update_step_body(step_id, step_name=None, step_description=None,
     if step_description is not None:
         body["description"] = step_description
     if depends_on is not None:
-        body["dependsOn"] = _depends_on_refs(depends_on)
+        body["dependsOn"] = depends_on
     return body
 
 
@@ -136,25 +104,33 @@ def build_delete_step_body(step_id):
 
 
 def build_split_workstream_body(source_workstream_id, new_workstream_name,
-                                entities_to_move):
-    """Build the SplitWorkstream POST body."""
+                                step_ids):
+    """Build the SplitWorkstream POST body.
+
+    ``step_ids`` are the steps moved from the source workstream into the
+    new one. Mirrors service ``RunbookWorkstreamSplitRequest``
+    (sourceWorkstreamId / stepIds / newWorkstreamName).
+    """
     return {
         "sourceWorkstreamId": source_workstream_id,
-        "stepIds": [],
-        "migrationEntityIds": entities_to_move or [],
+        "stepIds": step_ids or [],
         "newWorkstreamName": new_workstream_name,
     }
 
 
-def build_merge_workstreams_body(source_workstream_ids, new_workstream_name):
+def build_merge_workstreams_body(source_workstream_ids,
+                                 new_workstream_name=None):
     """Build the MergeWorkstreams POST body.
 
     ``source_workstream_ids`` serializes as the ``workstreamId`` array.
+    ``new_workstream_name`` is optional; when omitted the service defaults
+    it to the first workstream's name (service
+    ``RunbookWorkstreamsMergeRequest``).
     """
-    return {
-        "workstreamId": source_workstream_ids or [],
-        "newWorkstreamName": new_workstream_name,
-    }
+    body = {"workstreamId": source_workstream_ids or []}
+    if new_workstream_name:
+        body["newWorkstreamName"] = new_workstream_name
+    return body
 
 
 def build_start_execution_body():

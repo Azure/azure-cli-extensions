@@ -2,37 +2,28 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""Runbook parameters-file commands (download).
+"""Runbook parameters-file commands (download, upload).
 
 The parameters file is delivered inside the same SAS-protected ZIP that
 ``GenerateDownloadUrl`` returns for the runbook definition; the archive
 contains both the definition/spec document and the parameters document.
+Uploads use ``GenerateInputUploadUrl`` to obtain a SAS URL, PUT the file to
+blob storage, and then run ``ValidateInput`` on the runbook.
 """
 
 import os
 
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import (
+    CLIInternalError,
+    InvalidArgumentValueError,
+)
 
 from azext_migrate.shared import files
+from azext_migrate.shared.arm_client import ArmClient
 from azext_migrate.runbook.cmds.definition import _download_url, _runbook_id
 
 logger = get_logger(__name__)
-
-
-def _resolve_target(file, default_name):
-    """Resolve the ``--file`` argument to an absolute output path.
-
-    ``--file`` may be omitted (write ``default_name`` into the current
-    directory), an existing directory (write ``default_name`` into it), or
-    a full file path.
-    """
-    if not file:
-        return os.path.join(os.getcwd(), default_name)
-    target = os.path.abspath(file)
-    if os.path.isdir(target):
-        return os.path.join(target, default_name)
-    return target
 
 
 def download(cmd, resource_group_name, project_name, runbook_name,
@@ -46,7 +37,7 @@ def download(cmd, resource_group_name, project_name, runbook_name,
         raise CLIInternalError(
             'The downloaded archive did not contain a parameters file.')
     default_name, data = found
-    target = _resolve_target(file, default_name)
+    target = files.resolve_output_path(file, default_name)
     parent = os.path.dirname(target)
     if parent:
         os.makedirs(parent, exist_ok=True)
@@ -54,3 +45,27 @@ def download(cmd, resource_group_name, project_name, runbook_name,
         handle.write(data)
     logger.warning('Parameters file downloaded and saved to %s', target)
     return {'path': target}
+
+
+def _upload_url(cmd, resource_id):
+    body = ArmClient(cmd).post_action(resource_id, 'GenerateInputUploadUrl')
+    url = files.extract_sas_url(body)
+    if not url:
+        raise CLIInternalError(
+            'The service did not return a parameters upload URL.')
+    return url
+
+
+def upload(cmd, resource_group_name, project_name, runbook_name, file):
+    """Upload a parameters file and report its validation status."""
+    source = os.path.abspath(file)
+    if not os.path.isfile(source):
+        raise InvalidArgumentValueError(
+            'The parameters file was not found: {}'.format(source))
+    with open(source, 'rb') as handle:
+        data = handle.read()
+    resource_id = _runbook_id(
+        cmd, resource_group_name, project_name, runbook_name)
+    files.upload_bytes(_upload_url(cmd, resource_id), data)
+    logger.warning('Parameters file uploaded to Azure Migrate.')
+    return ArmClient(cmd).post_action(resource_id, 'ValidateInput')

@@ -61,7 +61,7 @@ class RunbookCrudScenarioTest(unittest.TestCase):
         put_id, put_body = self.client.put.call_args[0]
         self.assertEqual(put_id, RUNBOOK_ID)
         self.assertEqual(
-            put_body["properties"]["scope"]["WaveId"],
+            put_body["properties"]["scope"]["waveId"],
             f"{PROJECT_ID}/waves/{WAVE}")
 
         self.client.get.return_value = generated

@@ -38,7 +38,7 @@ The design references these but the **literal values must be read from the spec*
 | `ScopeType` value (`"Wave"`) + `WaveId` template | `runbook/constants.py`, `models.build_generate_body` | CreateRunbook body in spec | confirmed (§1.3.3) |
 | `RunbookExecutionAction` codes | `runbook/models.py` | service enum | confirmed (§1.3.2) |
 | `stepRef` values per step type | `runbook/models.py` | AddStep body in spec / service | **placeholder for now** — stub in `models.py` with `# TODO(confirm): stepRef per step type`; fill from spec/service before Phase 3 (`step add`) |
-| Runbook status terminal states (for `wait`/`--watch`/polling) | `runbook/constants.py` | GetRunbook `properties.status` enum | **CONFIRM from spec** |
+| Runbook status terminal states (for `wait`/`--watch`/polling) | `runbook/constants.py` | GetRunbook `properties.status` enum | **confirmed** — `--watch` terminal set (`EXECUTION_TERMINAL_STATES`) derived from two authoritative service enums: `RunbookExecutionStatus` (execution ARM resource `properties.status`: Queued/InProgress/Completed/Failed/Pausing/Paused/Resuming/Cancelling/Cancelled) and `ExecutionState` (status.json node state: adds Succeeded/PartiallySucceeded/Skipped etc.). Terminal = Completed/Failed/Cancelled ∪ Succeeded/PartiallySucceeded/Skipped. Validated live |
 
 Any row marked **CONFIRM** is a Phase-0 blocker for the module that needs it; if unavailable, stub the
 constant with a `# TODO(confirm): <source>` and gate the dependent live test with `@live_only()` until known.
@@ -150,8 +150,8 @@ Confirmed REST endpoints (all `https://management.azure.com{MigrateProjectResour
 - `POST   .../runbooks/{n}/AddStep` — body `{stepName, displayName, stepRef, migrationEntityIds, dependsOn[]}`
 - `POST   .../runbooks/{n}/UpdateStep` — body `{stepId, displayName, dependsOn[]}`
 - `POST   .../runbooks/{n}/DeleteStep` — body `{stepId}`
-- `POST   .../runbooks/{n}/SplitWorkstream` — body `{sourceWorkstreamId, stepIds[], migrationEntityIds[], newWorkstreamName}`
-- `POST   .../runbooks/{n}/MergeWorkstreams` — body `{workstreamId[], newWorkstreamName}`
+- `POST   .../runbooks/{n}/SplitWorkstream` — body `{sourceWorkstreamId, stepIds[], newWorkstreamName}` (moves the given steps into the new workstream; no `migrationEntityIds`)
+- `POST   .../runbooks/{n}/MergeWorkstreams` — body `{workstreamId[], newWorkstreamName?}` (`newWorkstreamName` optional — service defaults to the first workstream's name)
 - `POST   .../runbooks/{n}/GenerateDownloadUrl` — download definition/spec + parameters; returns a **SAS URL to a ZIP**
 
 **Execution resource & actions** (`spec/RunbookExecutions/`):
@@ -1100,8 +1100,8 @@ recording test green in playback; existing `migrate`/`migrate local` commands un
 | `definition step add` | POST | `/runbooks/{n}/AddStep` | body `{stepName, displayName, stepRef, migrationEntityIds, dependsOn}`; type-specific params (approval-type / run-mode+execution-target) mapped by `models.py` |
 | `definition step update` | POST | `/runbooks/{n}/UpdateStep` | body `{stepId, displayName, dependsOn, …}`; **same parameter-sets as `step add`** (approval-type / run-mode+execution-target) |
 | `definition step remove` | POST | `/runbooks/{n}/DeleteStep` | body `{stepId}`; confirmation |
-| `definition workstream split` | POST | `/runbooks/{n}/SplitWorkstream` | body `{sourceWorkstreamId, stepIds, migrationEntityIds, newWorkstreamName}` |
-| `definition workstream merge` | POST | `/runbooks/{n}/MergeWorkstreams` | body `{workstreamId[], newWorkstreamName}` |
+| `definition workstream split` | POST | `/runbooks/{n}/SplitWorkstream` | body `{sourceWorkstreamId, stepIds, newWorkstreamName}` (`--step-ids` moves steps into the new workstream) |
+| `definition workstream merge` | POST | `/runbooks/{n}/MergeWorkstreams` | body `{workstreamId[], newWorkstreamName?}` (`--new-workstream-name` optional; defaults to first) |
 | `parameter download` | POST | `/runbooks/{n}/GenerateDownloadUrl` | SAS URL → ZIP |
 | `parameter upload` | POST/PUT | upload API | contract TBD |
 | `execution start` | PUT | `/runbooks/{n}/executions/{id}` | body `{properties:{}}`; `--no-wait` |

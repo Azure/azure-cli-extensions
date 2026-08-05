@@ -10,14 +10,14 @@ from azext_migrate.shared.arm_client import ArmClient
 
 
 def add(cmd, resource_group_name, project_name, runbook_name, step_type,
-        step_name, step_description=None, depends_on=None,
-        approval_type=None, run_mode=None, execution_target=None):
+        step_name, workstream_id, step_description=None, depends_on=None,
+        migration_entity_ids=None):
     resource_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name)
     body = models.build_add_step_body(
-        step_type, step_name, step_description=step_description,
-        depends_on=depends_on, approval_type=approval_type,
-        run_mode=run_mode, execution_target=execution_target)
+        step_type, step_name, workstream_id,
+        step_description=step_description, depends_on=depends_on,
+        migration_entity_ids=migration_entity_ids)
     return ArmClient(cmd).post_action(resource_id, 'AddStep', body)
 
 

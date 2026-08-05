@@ -83,7 +83,7 @@ def regenerate(cmd, resource_group_name, project_name, runbook_name,
     project = _project_id(cmd, resource_group_name, project_name)
     resource_id = arm_ids.runbook_id(project, runbook_name)
     return ArmClient(cmd).post_action(
-        resource_id, 'Regenerate', no_wait=no_wait)
+        resource_id, 'Regenerate', no_wait=no_wait, final_get=True)
 
 
 def _provisioning_state(runbook):

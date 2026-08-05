@@ -11,17 +11,9 @@ from azure.cli.core.commands.parameters import (
 from azext_migrate.runbook.constants import (
     RUNBOOK_STATUS_VALUES,
     STEP_TYPE_VALUES,
-    APPROVAL_TYPE_VALUES,
-    RUN_MODE_VALUES,
-    EXECUTION_TARGET_VALUES,
 )
 from azext_migrate.runbook.validators import (
     validate_generate,
-    validate_step_add,
-    validate_step_approve,
-    validate_step_complete,
-    validate_definition_visualize,
-    validate_execution_visualize,
 )
 
 
@@ -80,36 +72,18 @@ def load_runbook_arguments(self, _):
                  '(default: current directory).')
 
     with self.argument_context(
-            'migrate runbook definition visualize') as c:
-        c.argument(
-            'file', options_list=['--file'],
-            help='Path to write the HTML file to. May be a file path or a '
-                 'directory (default: current directory).')
-        c.argument(
-            'open_file', options_list=['--open'], action='store_true',
-            help='Open the generated HTML file in the default browser.')
-        c.argument(
-            'from_file', options_list=['--from-file'],
-            validator=validate_definition_visualize,
-            help='Render a local runbook spec JSON file instead of '
-                 'downloading from the service (offline testing). When '
-                 'set, the resource group/project/runbook name are '
-                 'optional.')
-        c.argument(
-            'parameters_file', options_list=['--parameters-file'],
-            help='Optional local parameters JSON file used with '
-                 '--from-file to compute per-step configuration status.')
-
-    with self.argument_context(
             'migrate runbook definition step add') as c:
         c.argument(
             'step_type', options_list=['--step-type'], required=True,
             arg_type=get_enum_type(STEP_TYPE_VALUES),
-            validator=validate_step_add,
             help='Kind of step to add.')
         c.argument(
             'step_name', options_list=['--step-name'], required=True,
             help='Display name for the step.')
+        c.argument(
+            'workstream_id', options_list=['--workstream-id'],
+            required=True,
+            help='Id of the workstream to add the step to.')
         c.argument(
             'step_description', options_list=['--step-description'],
             help='Optional description for the step.')
@@ -117,18 +91,10 @@ def load_runbook_arguments(self, _):
             'depends_on', options_list=['--depends-on'], nargs='*',
             help='Space-separated step ids this step depends on.')
         c.argument(
-            'approval_type', options_list=['--approval-type'],
-            arg_type=get_enum_type(APPROVAL_TYPE_VALUES),
-            help='Approval mode (required when --step-type is Approval).')
-        c.argument(
-            'run_mode', options_list=['--run-mode'],
-            arg_type=get_enum_type(RUN_MODE_VALUES),
-            help='Run mode (only valid when --step-type is CustomScript).')
-        c.argument(
-            'execution_target', options_list=['--execution-target'],
-            arg_type=get_enum_type(EXECUTION_TARGET_VALUES),
-            help='Execution target (only valid when --step-type is '
-                 'CustomScript).')
+            'migration_entity_ids',
+            options_list=['--migration-entity-ids'], nargs='*',
+            help='Space-separated migration entity ids to associate '
+                 'with the step.')
 
     with self.argument_context(
             'migrate runbook definition step update') as c:
@@ -162,10 +128,10 @@ def load_runbook_arguments(self, _):
             options_list=['--new-workstream-name'], required=True,
             help='Display name for the new workstream.')
         c.argument(
-            'entities_to_move', options_list=['--entities-to-move'],
+            'step_ids', options_list=['--step-ids'],
             nargs='+', required=True,
-            help='Space-separated migration entity ids to move into the '
-                 'new workstream.')
+            help='Space-separated step ids to move into the new '
+                 'workstream.')
 
     with self.argument_context(
             'migrate runbook definition workstream merge') as c:
@@ -176,8 +142,9 @@ def load_runbook_arguments(self, _):
             help='Space-separated ids of the workstreams to merge.')
         c.argument(
             'new_workstream_name',
-            options_list=['--new-workstream-name'], required=True,
-            help='Display name for the merged workstream.')
+            options_list=['--new-workstream-name'], required=False,
+            help='Display name for the merged workstream. Defaults to the '
+                 'first workstream name if not provided.')
 
     with self.argument_context(
             'migrate runbook execution show') as c:
@@ -212,69 +179,6 @@ def load_runbook_arguments(self, _):
         c.argument(
             'execution_id', options_list=['--execution-id'], required=True,
             help='Id of the runbook execution.')
-
-    with self.argument_context(
-            'migrate runbook execution visualize') as c:
-        c.argument(
-            'execution_id', options_list=['--execution-id'],
-            validator=validate_execution_visualize,
-            help='Id of the runbook execution.')
-        c.argument(
-            'file', options_list=['--file'],
-            help='Path to write the HTML file to. May be a file path or a '
-                 'directory (default: current directory).')
-        c.argument(
-            'open_file', options_list=['--open'], action='store_true',
-            help='Open the generated HTML file in the default browser.')
-        c.argument(
-            'watch', options_list=['--watch'], action='store_true',
-            help='Regenerate the HTML snapshot on an interval until the '
-                 'execution reaches a terminal state.')
-        c.argument(
-            'interval', options_list=['--interval'], type=int,
-            help='Refresh interval in seconds for --watch (default: 5).')
-        c.argument(
-            'from_file', options_list=['--from-file'],
-            help='Render a local execution status JSON file instead of '
-                 'downloading from the service (offline testing). When '
-                 'set, the resource group/project/runbook/execution id '
-                 'are optional.')
-
-    with self.argument_context(
-            'migrate runbook execution step') as c:
-        c.argument(
-            'execution_id', options_list=['--execution-id'], required=True,
-            help='Id of the runbook execution.')
-        c.argument(
-            'step_id', options_list=['--step-id'], required=True,
-            help='Id of the step to act on.')
-
-    with self.argument_context(
-            'migrate runbook execution step approve') as c:
-        c.argument(
-            'entities', options_list=['--entities'], nargs='+',
-            validator=validate_step_approve,
-            help='Space-separated migration entity ids to approve '
-                 '(Partial approval steps only).')
-        c.argument(
-            'all_ready', options_list=['--all-ready'],
-            action='store_true',
-            help='Approve every currently ready entity (Partial approval '
-                 'steps only). Mutually exclusive with --entities.')
-
-    with self.argument_context(
-            'migrate runbook execution step complete') as c:
-        c.argument(
-            'comment', options_list=['--comment'], required=True,
-            validator=validate_step_complete,
-            help='Comment recording who/why the manual step was '
-                 'completed (required).')
-
-    with self.argument_context('migrate runbook parameter download') as c:
-        c.argument(
-            'file', options_list=['--file'],
-            help='Path to write the parameters file to. May be a file '
-                 'path or a directory (default: current directory).')
 
     with self.argument_context('migrate runbook wait') as c:
         c.argument(

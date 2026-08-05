@@ -58,14 +58,32 @@ _DEFINITION_LEGEND = (
     ('Unknown', '#8a8886'),
 )
 
-_PROGRESS_RE = re.compile(r'(\d+)\s*/\s*(\d+)')
-
 
 def _esc(value):
     """HTML-escape a possibly-``None`` user value (the XSS guard)."""
     if value is None:
         return ''
     return html.escape(str(value), quote=True)
+
+
+def _id_badge(value, title='id'):
+    """Render an id as a small, greyish, monospace inline badge (HTML).
+
+    Ids are surfaced so users can copy them into the CLI commands that
+    address workstreams/steps by id (e.g. ``workstream split``/``merge``).
+    Returns escaped markup, so callers must NOT re-escape it.
+    """
+    if not value:
+        return ''
+    return '<span class="id-badge" title="%s">%s</span>' % (
+        _esc(title), _esc(value))
+
+
+def _id_tspan(value):
+    """Render an id as a small, muted ``<tspan>`` inside an SVG text run."""
+    if not value:
+        return ''
+    return '<tspan class="svg-id"> %s</tspan>' % _esc(value)
 
 
 def _status_class(status):
@@ -85,9 +103,9 @@ def _workstream_order(graph):
         name = node.group or 'Ungrouped'
         if name not in by_ws:
             by_ws[name] = []
-            order.append(name)
+            order.append((name, node.group_id))
         by_ws[name].append(node)
-    return [(name, by_ws[name]) for name in order]
+    return [(name, ws_id, by_ws[name]) for name, ws_id in order]
 
 
 def _layout(graph):
@@ -103,7 +121,7 @@ def _layout(graph):
     width = _MARGIN * 2 + graph.layer_count * _NODE_W \
         + max(graph.layer_count - 1, 0) * _COL_GAP
     y = _MARGIN
-    for name, nodes in _workstream_order(graph):
+    for name, ws_id, nodes in _workstream_order(graph):
         band_top = y
         content_top = band_top + _BAND_LABEL_H
         rows_per_layer = {}
@@ -116,7 +134,7 @@ def _layout(graph):
             positions[node.id] = (node_x, node_y)
             max_rows = max(max_rows, row + 1)
         band_height = _BAND_LABEL_H + max_rows * (_NODE_H + _ROW_GAP)
-        bands.append((name, band_top, band_height, len(nodes)))
+        bands.append((name, ws_id, band_top, band_height, len(nodes)))
         y = band_top + band_height + _BAND_GAP
     height = y + _MARGIN - _BAND_GAP
     return positions, bands, width, height
@@ -131,13 +149,14 @@ def _svg(graph):
         '<svg width="%d" height="%d" viewBox="0 0 %d %d" role="img">'
         % (width, height, width, height)]
 
-    for name, top, band_height, count in bands:
+    for name, ws_id, top, band_height, count in bands:
         parts.append(
             '<g class="lane">'
             '<rect x="%d" y="%d" width="%d" height="%d" rx="8"/>'
-            '<text x="%d" y="%d">Workstream: %s (%d)</text></g>'
+            '<text x="%d" y="%d">Workstream: %s%s (%d)</text></g>'
             % (_MARGIN / 2, top, width - _MARGIN, band_height,
-               _MARGIN / 2 + 12, top + 16, _esc(name), count))
+               _MARGIN / 2 + 12, top + 16,
+               _esc(name or 'Ungrouped'), _id_tspan(ws_id), count))
 
     for edge in graph.edges:
         if edge.source not in positions or edge.target not in positions:
@@ -200,30 +219,22 @@ def _summary_cards(view):
     return '<div class="summary">%s</div>' % stats
 
 
-def _dep_cell(step):
-    if not step.deps:
-        return '<span class="v muted">-</span>'
-    chips = ''.join(
-        '<span class="chip">%s</span>' % _esc(dep) for dep in step.deps)
-    return '<span class="chips">%s</span>' % chips
+def _grid_row(kind, index, step):
+    """Render one step as a clickable grid row (portal-style).
 
-
-def _progress_bar(text):
-    match = _PROGRESS_RE.search(text or '')
-    if not match:
-        return ''
-    done, total = int(match.group(1)), int(match.group(2))
-    pct = int(round(100.0 * done / total)) if total else 0
-    return ('<div class="bar"><span style="width:%d%%"></span></div>'
-            % max(0, min(100, pct)))
-
-
-def _definition_row(index, step):
-    """Render one definition step as a clickable grid row (portal-style)."""
+    The status/last-column semantics differ by view kind: a definition row
+    shows its configuration status and entity count, while an execution row
+    shows its live step status and workload progress.
+    """
     ref = ('<span class="row__ref">%s</span>' % _esc(step.step_ref)
            if step.step_ref else '')
     dep = ', '.join(step.deps) if step.deps else '-'
-    status = step.status or 'Unknown'
+    if kind == viewmodel.KIND_EXECUTION:
+        status = step.status or 'NotStarted'
+        count = step.workload_progress or '-'
+    else:
+        status = step.status or 'Unknown'
+        count = step.workloads
     return (
         '<div class="row" role="button" tabindex="0" data-step="%d">'
         '<div class="col-step cell-step">'
@@ -233,8 +244,8 @@ def _definition_row(index, step):
         '<div class="col-dep">%s</div>'
         '<div class="col-count">%s</div>'
         '</div>'
-        % (index, _esc(step.name), ref, _status_class(status), _esc(status),
-           _esc(dep), _esc(step.workloads)))
+        % (index, _esc(step.name), ref,
+           _status_class(status), _esc(status), _esc(dep), _esc(count)))
 
 
 def _iter_indexed_steps(view):
@@ -246,24 +257,30 @@ def _iter_indexed_steps(view):
             index += 1
 
 
-def _definition_grid(view):
-    """Render the definition as a portal-style grid: header + rows."""
+def _portal_grid(view):
+    """Render the runbook as a portal-style grid: header + grouped rows."""
+    if view.kind == viewmodel.KIND_EXECUTION:
+        status_head, count_head = 'Step status', 'Workload progress'
+    else:
+        status_head, count_head = 'Configuration status', 'Entities'
     parts = [
         '<div class="grid__head">'
         '<div class="col-step">Steps</div>'
-        '<div class="col-status">Configuration status</div>'
+        '<div class="col-status">%s</div>'
         '<div class="col-dep">Step dependency</div>'
-        '<div class="col-count">Entities</div></div>']
+        '<div class="col-count">%s</div></div>' % (status_head, count_head)]
     index = 0
     for workstream in view.workstreams:
-        head = 'Workstream: %s (%d)' % (
-            _esc(workstream.name or 'Ungrouped'), len(workstream.steps))
+        head = 'Workstream: %s%s (%d)' % (
+            _esc(workstream.name or 'Ungrouped'),
+            _id_badge(workstream.id, 'Workstream id'),
+            len(workstream.steps))
         parts.append('<div class="group__head">%s</div>' % head)
         if not workstream.steps:
             parts.append('<div class="row row--empty">'
                          'No steps in this workstream.</div>')
         for step in workstream.steps:
-            parts.append(_definition_row(index, step))
+            parts.append(_grid_row(view.kind, index, step))
             index += 1
     return '<div class="grid">%s</div>' % ''.join(parts)
 
@@ -285,19 +302,35 @@ def _chip_field(label, values):
             % (_esc(label), body))
 
 
-def _detail_html(workstream_name, step):
+def _status_field(label, status, default):
+    """Render a labelled status pill field for the detail pane."""
+    return ('<div class="field"><div class="field__label">%s</div>'
+            '<div class="field__value"><span class="pill%s">%s</span></div>'
+            '</div>'
+            % (_esc(label), _status_class(status), _esc(status or default)))
+
+
+def _detail_html(workstream_name, step, kind):
     """Build the step detail-pane markup (shown in the side drawer)."""
-    entities = step.entity_names
-    body = (
-        _field('Step type', step.step_ref)
-        + _field('Step ID', step.id)
-        + ('<div class="field"><div class="field__label">Configuration '
-           'status</div><div class="field__value"><span class="pill%s">%s'
-           '</span></div></div>'
-           % (_status_class(step.status), _esc(step.status or 'Unknown')))
-        + _chip_field('Entities (%d)' % len(entities), entities)
-        + _chip_field('Pre-requisites', step.prereqs)
-        + _chip_field('Depends on', step.dep_details))
+    if kind == viewmodel.KIND_EXECUTION:
+        entities = ['%s (%s)' % (entity.name, entity.status)
+                    if entity.status else entity.name
+                    for entity in step.entities]
+        body = (
+            _field('Step ID', step.id)
+            + _status_field('Step status', step.status, 'NotStarted')
+            + _field('Workload progress', step.workload_progress)
+            + _chip_field('Entities (%d)' % len(entities), entities)
+            + _chip_field('Depends on', step.deps))
+    else:
+        entities = step.entity_names
+        body = (
+            _field('Step type', step.step_ref)
+            + _field('Step ID', step.id)
+            + _status_field('Configuration status', step.status, 'Unknown')
+            + _chip_field('Entities (%d)' % len(entities), entities)
+            + _chip_field('Pre-requisites', step.prereqs)
+            + _chip_field('Depends on', step.dep_details))
     return (
         '<section class="detail">'
         '<header class="detail__head">'
@@ -309,13 +342,13 @@ def _detail_html(workstream_name, step):
         % (_esc(step.name), _esc(workstream_name or 'Ungrouped'), body))
 
 
-def _definition_details(view):
+def _grid_details(view):
     """Emit hidden per-step detail blocks that the drawer clones on click."""
-    if view is None or view.kind != viewmodel.KIND_DEFINITION:
+    if view is None:
         return ''
     blocks = ''.join(
         '<div class="detail-src" id="detail-%d" hidden>%s</div>'
-        % (index, _detail_html(ws_name, step))
+        % (index, _detail_html(ws_name, step, view.kind))
         for index, ws_name, step in _iter_indexed_steps(view))
     return '<div id="detailData" hidden>%s</div>' % blocks
 
@@ -348,16 +381,43 @@ _HELP_CHIPS = (
 )
 
 
+# CLI cmdlet help chips shown above the execution grid.
+_EXEC_HELP_CHIPS = (
+    ('&#10073;&#10073;', 'Pause execution',
+     'Pauses the in-progress execution so it can be resumed later.',
+     'az migrate runbook execution pause --resource-group <rg> '
+     '--project-name <project> --runbook-name <name> '
+     '--execution-id <id>'),
+    ('&#9654;', 'Resume execution',
+     'Resumes a paused execution from where it left off.',
+     'az migrate runbook execution resume --resource-group <rg> '
+     '--project-name <project> --runbook-name <name> '
+     '--execution-id <id>'),
+    ('&#10005;', 'Cancel execution',
+     'Cancels an in-progress or paused execution.',
+     'az migrate runbook execution cancel --resource-group <rg> '
+     '--project-name <project> --runbook-name <name> '
+     '--execution-id <id>'),
+    ('&#8635;', 'Refresh this view',
+     'Regenerates the HTML from the latest execution status.',
+     'az migrate runbook execution visualize --resource-group <rg> '
+     '--project-name <project> --runbook-name <name> '
+     '--execution-id <id>'),
+)
+
+
 def _help_bar(view):
-    """Render the static CLI cmdlet help chips (definition only)."""
-    if view is None or view.kind != viewmodel.KIND_DEFINITION:
+    """Render the static CLI cmdlet help chips (kind-aware)."""
+    if view is None:
         return ''
+    chips_src = (_HELP_CHIPS if view.kind == viewmodel.KIND_DEFINITION
+                 else _EXEC_HELP_CHIPS)
     chips = ''.join(
         '<button type="button" class="how-chip" data-title="%s" '
         'data-desc="%s" data-cmd="%s">'
         '<span class="how-chip__ico">%s</span>%s</button>'
         % (_esc(title), _esc(desc), _esc(cmd), ico, _esc(title))
-        for ico, title, desc, cmd in _HELP_CHIPS)
+        for ico, title, desc, cmd in chips_src)
     return (
         '<div class="how-bar"><span class="how-bar__label">This is a '
         'read-only view &mdash; actions run from the Azure CLI. Pick one to '
@@ -366,7 +426,7 @@ def _help_bar(view):
 
 
 def _meta_block(view):
-    """Render the header metadata strip (definition only)."""
+    """Render the header metadata strip (any view that carries meta)."""
     if view is None or not view.meta:
         return ''
     fields = ''
@@ -379,55 +439,12 @@ def _meta_block(view):
     return '<div class="tab-meta">%s</div>' % fields
 
 
-def _execution_card(step):
-    rows = [
-        '<div class="row"><span class="k">Status</span>'
-        '<span class="pill%s">%s</span></div>'
-        % (_status_class(step.status), _esc(step.status or 'NotStarted')),
-        '<div class="row"><span class="k">Dependency</span>%s</div>'
-        % _dep_cell(step),
-    ]
-    if step.workload_progress:
-        rows.append(
-            '<div class="row"><span class="k">Progress</span>'
-            '<span class="v">%s</span></div>' % _esc(step.workload_progress))
-        progress_bar = _progress_bar(step.workload_progress)
-        if progress_bar:
-            rows.append(progress_bar)
-    if step.entities:
-        pills = ''.join(
-            '<span class="epill%s" title="%s">%s</span>'
-            % (_status_class(entity.status), _esc(entity.name),
-               _esc(entity.status or ''))
-            for entity in step.entities)
-        rows.append('<div class="entities">%s</div>' % pills)
-    return _card_shell(step, rows)
-
-
-def _card_shell(step, rows):
-    return (
-        '<div class="card">'
-        '<div class="card__title">%s</div>'
-        '<div class="card__id">%s</div>%s</div>'
-        % (_esc(step.name), _esc(step.id), ''.join(rows)))
-
-
 def _grid(view):
     if view is None:
         return ''
     if not view.workstreams or view.step_count == 0:
         return '<p class="empty">This runbook has no steps to display.</p>'
-    if view.kind == viewmodel.KIND_DEFINITION:
-        return _definition_grid(view)
-    groups = []
-    for workstream in view.workstreams:
-        head = 'Workstream: %s (%d)' % (
-            _esc(workstream.name or 'Ungrouped'), len(workstream.steps))
-        cards = ''.join(_execution_card(step) for step in workstream.steps)
-        groups.append(
-            '<section class="group"><h2 class="group__head">%s</h2>'
-            '<div class="cards">%s</div></section>' % (head, cards))
-    return ''.join(groups)
+    return _portal_grid(view)
 
 
 # ---------------------------------------------------------------------------
@@ -460,7 +477,7 @@ def render(graph, view=None, refresh_interval=None):
         generated=_esc(generated),
         meta=_meta_block(view),
         help=_help_bar(view),
-        details=_definition_details(view),
+        details=_grid_details(view),
         legend=_legend(graph, view),
         refresh=_refresh_meta(refresh_interval),
         summary_cards=_summary_cards(view),

@@ -10,16 +10,16 @@ from azext_migrate.shared.arm_client import ArmClient
 
 
 def split(cmd, resource_group_name, project_name, runbook_name,
-          source_workstream_id, new_workstream_name, entities_to_move):
+          source_workstream_id, new_workstream_name, step_ids):
     resource_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name)
     body = models.build_split_workstream_body(
-        source_workstream_id, new_workstream_name, entities_to_move)
+        source_workstream_id, new_workstream_name, step_ids)
     return ArmClient(cmd).post_action(resource_id, 'SplitWorkstream', body)
 
 
 def merge(cmd, resource_group_name, project_name, runbook_name,
-          source_workstream_ids, new_workstream_name):
+          source_workstream_ids, new_workstream_name=None):
     resource_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name)
     body = models.build_merge_workstreams_body(
