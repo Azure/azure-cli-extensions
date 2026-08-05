@@ -14,8 +14,10 @@ from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
 def register_aimanager_resource_type():
     # The vendored azure-mgmt-containerserviceaimanager SDK is a single-api (typespec)
     # package whose operation groups are instance attributes rather than client class
-    # properties. It is therefore registered with api_version=None (no SDKProfile), which
-    # lets cmd.get_models resolve models from `<vendored_sdks>.models` directly.
+    # properties, so an SDKProfile-based lookup cannot resolve them. It is therefore
+    # registered with api_version=None (no SDKProfile); the CustomResourceType import
+    # prefix points at the versioned package so cmd.get_models resolves models from
+    # `azext_aimanager.vendored_sdks.v2026_05_02_preview.models` directly.
     register_resource_type(
         "latest",
         CUSTOM_MGMT_AIMANAGER,

@@ -7,7 +7,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import CustomResourceType
 
 CUSTOM_MGMT_AIMANAGER = CustomResourceType(
-    'azext_aimanager.vendored_sdks',
+    'azext_aimanager.vendored_sdks.v2026_05_02_preview',
     'ContainerServiceAIManagerMgmtClient')
 
 
