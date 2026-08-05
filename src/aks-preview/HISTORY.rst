@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Skip SSH key generation/validation for `az aks create --sku automatic` so `--no-ssh-key` is no longer required for Automatic clusters.
 * `az aks nodepool update`: Avoid applying VirtualMachines autoscaler profile conversions twice with newer Azure CLI versions while preserving compatibility with older CLI versions.
 
 21.0.0b13
