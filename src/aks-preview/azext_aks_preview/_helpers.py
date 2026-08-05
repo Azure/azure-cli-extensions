@@ -56,15 +56,13 @@ def reset_agentpool_to_name_and_mode(agentpool, mode):
         agentpool.clear()
         agentpool["name"] = name
         agentpool["properties"] = properties
-        return agentpool
-    if isinstance(agentpool, MutableMapping):
+    elif isinstance(agentpool, MutableMapping):
         agentpool.clear()
         agentpool["name"] = name
         agentpool["mode"] = mode
-        return agentpool
-
-    agentpool.mode = mode
-    for attr in vars(agentpool):
+    else:
+        agentpool.mode = mode
+    for attr in list(vars(agentpool)):
         if attr not in ("name", "mode") and not attr.startswith("_") and hasattr(agentpool, attr):
             setattr(agentpool, attr, None)
     return agentpool
