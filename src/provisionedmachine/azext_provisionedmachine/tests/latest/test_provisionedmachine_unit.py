@@ -459,6 +459,23 @@ class TestOsImageListTableTransformer(unittest.TestCase):
         self.assertEqual(rows[0]["Architecture"], "arm64")
         self.assertEqual(rows[1]["Architecture"], "")
 
+    def test_solution_type_column_extracted_from_properties(self):
+        """SolutionType comes from properties.solutionType and does not affect OsImageType."""
+        test_data = [
+            {
+                "properties": {"solutionType": "HCI"},
+                "_os_image_type": "AzureLinux",
+            },
+            {
+                "properties": {"validatedSolutionRecipeVersion": "50.2605.0.3"},
+                "_os_image_type": "HCI",
+            },
+        ]
+        rows = transform_os_image_list_table_output(test_data)
+        self.assertEqual(rows[0]["SolutionType"], "HCI")
+        self.assertEqual(rows[0]["OsImageType"], "AzureLinux")
+        self.assertEqual(rows[1]["SolutionType"], "")
+
     def test_non_list_input_returns_as_is(self):
         """Non-list input passes through unchanged."""
         result = transform_os_image_list_table_output("error string")

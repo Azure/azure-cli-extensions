@@ -87,6 +87,7 @@ def transform_os_image_list_table_output(result):
                 "VsrVersion": props.get("validatedSolutionRecipeVersion", ""),
                 "OsImageType": item.get("_os_image_type", ""),
                 "Architecture": props.get("architecture", ""),
+                "SolutionType": props.get("solutionType", ""),
             })
 
     return rows
