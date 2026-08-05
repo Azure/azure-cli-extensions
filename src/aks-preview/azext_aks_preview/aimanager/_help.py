@@ -31,6 +31,8 @@ helps['aimanager update'] = """
     examples:
         - name: Update the tags of an AI Manager
           text: az aimanager update --name my-ai-manager -g myrg --tags env=prod team=alpha
+        - name: Update the delete policy of an AI Manager
+          text: az aimanager update --name my-ai-manager -g myrg --delete-policy Keep
 """
 
 helps['aimanager show'] = """

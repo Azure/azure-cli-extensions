@@ -14,14 +14,16 @@ def load_arguments(self, _):
                    help='The name of the AI Manager resource.',
                    completer=get_resource_name_completion_list('Microsoft.ContainerService/aiManagers'))
 
+    for scope in ['aimanager create', 'aimanager update']:
+        with self.argument_context(scope) as c:
+            c.argument('tags', arg_type=tags_type, help='The tags to set to the AI Manager.')
+            c.argument('delete_policy', arg_type=get_enum_type(['Keep', 'Delete']),
+                       help="Delete options of the AI Manager. Defaults to Delete.")
+            c.argument('aks_custom_headers')
+            c.argument('no_wait', help='Do not wait for the long-running operation to finish.')
+
     with self.argument_context('aimanager create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('tags', arg_type=tags_type)
-        c.argument('delete_policy', arg_type=get_enum_type(['Keep', 'Delete']),
-                   help="Delete options of the AI Manager. Defaults to Delete.")
-
-    with self.argument_context('aimanager update') as c:
-        c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('aimanager list') as c:
         c.ignore('ai_manager_name')
@@ -34,6 +36,8 @@ def load_arguments(self, _):
 
     for scope in ['aimanager namespace add', 'aimanager namespace update']:
         with self.argument_context(scope) as c:
-            c.argument('labels', tags_type, help='Labels applied to the Kubernetes namespace.')
-            c.argument('annotations', tags_type,
+            c.argument('labels', nargs='*', help='Labels applied to the Kubernetes namespace.')
+            c.argument('annotations', nargs='*',
                        help='Annotations applied to the Kubernetes namespace.')
+            c.argument('aks_custom_headers')
+            c.argument('no_wait', help='Do not wait for the long-running operation to finish.')
