@@ -4370,10 +4370,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         return mc
 
     def set_up_linux_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Skip VM SSH configuration when the system pool is fully managed by AKS."""
+        """Skip VM SSH configuration for the Automatic SKU.
+
+        Automatic clusters use a fully managed system node pool that rejects any SSH
+        key configuration, so we never attach a linux profile for them.
+        """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_hosted_system():
+        if (self.context.get_sku_name() or "").lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return mc
 
         return super().set_up_linux_profile(mc)

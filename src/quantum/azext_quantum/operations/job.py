@@ -452,6 +452,16 @@ def cancel(cmd, job_id, resource_group_name, workspace_name):
     return wait(cmd, job_id, info.resource_group, info.name)
 
 
+def delete(cmd, job_id, resource_group_name, workspace_name):
+    """
+    Delete a job from an Azure Quantum workspace.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+    client.delete(info.subscription, info.resource_group, info.name, job_id)
+    logger.warning("Deleted job %s.", job_id)
+
+
 def _get_job_output(job):
 
     import tempfile

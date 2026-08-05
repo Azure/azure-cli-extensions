@@ -118,6 +118,7 @@ from azext_aks_preview.maintenancewindow import (
 )
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
+    aks_ib_cmd_update,
     aks_ib_cmd_delete,
     aks_ib_cmd_show,
     aks_ib_cmd_list,
@@ -897,7 +898,8 @@ def aks_maintenanceconfiguration_add(
     duration_hours=None,
     utc_offset=None,
     start_date=None,
-    start_time=None
+    start_time=None,
+    maintenance_window_id=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
@@ -930,7 +932,8 @@ def aks_maintenanceconfiguration_update(
     duration_hours=None,
     utc_offset=None,
     start_date=None,
-    start_time=None
+    start_time=None,
+    maintenance_window_id=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
@@ -5947,6 +5950,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
 
 
 aks_identity_binding_create = aks_ib_cmd_create
+aks_identity_binding_update = aks_ib_cmd_update
 aks_identity_binding_delete = aks_ib_cmd_delete
 aks_identity_binding_show = aks_ib_cmd_show
 aks_identity_binding_list = aks_ib_cmd_list

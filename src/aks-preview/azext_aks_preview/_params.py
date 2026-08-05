@@ -2794,6 +2794,15 @@ def load_arguments(self, _):
                 validator=validate_start_time,
                 help="The start time of the maintenance window. e.g. 09:30.",
             )
+            c.argument(
+                "maintenance_window_id",
+                help=(
+                    "Resource ID of a shared MaintenanceWindow resource to link this maintenance "
+                    "configuration to. When set, the schedule lives in the referenced MaintenanceWindow "
+                    "and inline schedule arguments cannot be used. Cannot be combined with --config-file "
+                    "(set the maintenanceWindowId property in the JSON instead). Omit for no shared resource."
+                ),
+            )
 
     for scope in [
         "aks maintenanceconfiguration show",
@@ -3666,6 +3675,27 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
+
+    # aks identity-binding commands
+    # --allowed-subjects-from-file is optional on create (omitting it falls back
+    # to ClusterRole/ClusterRoleBinding authorization), but required on update
+    # since it is the only mutable field today -- requiring it avoids a no-op
+    # full-PUT that would needlessly re-provision the binding.
+    for scope, is_required in [('aks identity-binding create', False),
+                               ('aks identity-binding update', True)]:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "allowed_subjects_from_file",
+                options_list=["--allowed-subjects-from-file", "-f"],
+                type=file_type,
+                completer=FilesCompleter(),
+                required=is_required,
+                help="Path to a JSON file containing an array of subjects authorized to use this "
+                     "identity binding for token exchange. Each entry has a required "
+                     "'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes "
+                     "label selector with 'matchLabels' (an array of \"key=value\" strings) and/or "
+                     "'matchExpressions'. Maximum 100 entries.",
+            )
 
     # aks list-vm-skus command
     with self.argument_context("aks list-vm-skus") as c:
