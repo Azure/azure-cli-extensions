@@ -665,5 +665,36 @@ class TestAzureLinuxPayloadMapping(unittest.TestCase):
         self.assertIn('"vsrVersion"', source)
 
 
+class TestOsImageListArchitectureFilter(unittest.TestCase):
+    """The os-image list command must expose --architecture and forward it as a query parameter."""
+
+    @staticmethod
+    def _read_source():
+        pkg_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        path = os.path.join(pkg_root, "aaz", "latest", "provisionedmachine", "os_image", "_list.py")
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
+
+    def test_architecture_argument_is_declared(self):
+        source = self._read_source()
+        self.assertIn('_args_schema.architecture', source)
+        self.assertIn('"--architecture"', source)
+
+    def test_architecture_allows_amd64_and_arm64(self):
+        source = self._read_source()
+        self.assertIn('"amd64"', source)
+        self.assertIn('"arm64"', source)
+
+    def test_architecture_is_sent_as_query_parameter(self):
+        source = self._read_source()
+        self.assertIn('parameters["architecture"]', source)
+
+    def test_architecture_is_optional(self):
+        """The filter must not be required, so existing invocations keep working."""
+        source = self._read_source()
+        arch_block = source.split("_args_schema.architecture", 1)[1].split(")", 1)[0]
+        self.assertNotIn("required=True", arch_block)
+
+
 if __name__ == "__main__":
     unittest.main()

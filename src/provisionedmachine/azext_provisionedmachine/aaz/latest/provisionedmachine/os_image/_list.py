@@ -24,6 +24,9 @@ class List(AAZCommand):
 
     :example: List available HCI OS images in a specific region with table output
         az provisionedmachine os-image list --location australiaeast --os-image-type HCI -o table
+
+    :example: List arm64 AzureLinux OS images
+        az provisionedmachine os-image list --os-image-type AzureLinux --architecture arm64
     """
 
     _aaz_info = {
@@ -58,6 +61,11 @@ class List(AAZCommand):
             help="Type of OS image to list. Allowed values: HCI, AzureLinux.",
             enum={"HCI": "HCI", "AzureLinux": "AzureLinux"},
             required=True,
+        )
+        _args_schema.architecture = AAZStrArg(
+            options=["--architecture"],
+            help="Filter the results by CPU architecture. Only applied to AzureLinux images; ignored for other OS image types. Allowed values: amd64, arm64.",
+            enum={"amd64": "amd64", "arm64": "arm64"},
         )
         return cls._args_schema
 
@@ -138,6 +146,8 @@ class List(AAZCommand):
                 ),
                 "solution-type": os_image_type_lower,
             }
+            if has_value(self.ctx.args.architecture):
+                parameters["architecture"] = self.ctx.args.architecture.to_serialized_data()
             return parameters
 
         @property
