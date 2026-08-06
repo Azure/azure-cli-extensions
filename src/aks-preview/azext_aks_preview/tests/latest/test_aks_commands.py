@@ -16664,6 +16664,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.grpcPort', 9092),
         ])
 
+        # The monitoring cluster extension keeps provisioning after the update call returns.
+        # Without this wait the next update collides with it and fails with
+        # CreateOrUpdateExtensionFailed ("conflicting operation in progress").
+        wait_cmd = ' '.join([
+            'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+            '--interval 60', '--timeout 1800',
+        ])
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
+        ])
+
         # update: disable OpenTelemetry logs but keep Azure Monitor logs
         update_cmd = (
             'aks update --resource-group={resource_group} --name={name} --yes --output=json '
@@ -16674,6 +16685,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.omsagent.enabled', True),  # Still enabled
             self.check('addonProfiles.omsagent.config.useAADAuth', 'true'),
             self.check('azureMonitorProfile.appMonitoring.openTelemetryLogsAndTraces.enabled', False),
+        ])
+
+        self.cmd(wait_cmd, checks=[
+            self.is_empty(),
         ])
 
         # update: disable-azure-monitor-logs (should also disable OpenTelemetry logs)
