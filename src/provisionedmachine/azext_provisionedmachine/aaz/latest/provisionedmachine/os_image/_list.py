@@ -85,14 +85,6 @@ class List(AAZCommand):
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        
-        # Inject os_image_type from command args into each result item for table transformer
-        os_image_type = self.ctx.args.os_image_type.to_serialized_data()
-        if result and isinstance(result, list):
-            for item in result:
-                if isinstance(item, dict):
-                    item['_os_image_type'] = os_image_type
-        
         return result, next_link
 
     class OsImagesList(AAZHttpOperation):

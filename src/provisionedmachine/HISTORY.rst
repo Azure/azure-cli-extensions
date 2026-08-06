@@ -4,7 +4,7 @@ Release History
 ===============
 1.0.0b7
 ++++++
-* ``az provisionedmachine os-image list`` - Added an optional ``--architecture`` filter (``amd64``/``arm64``) and new ``Architecture`` and ``SolutionType`` columns to the table output.
+* ``az provisionedmachine os-image list`` - Added an optional ``--architecture`` filter (``amd64``/``arm64``) and a new ``Architecture`` column to the table output. The ``OsImageType`` column is now populated from the ``solutionType`` returned by the service.
 
 1.0.0b6
 ++++++

@@ -423,22 +423,25 @@ class TestOsImageListTableTransformer(unittest.TestCase):
         self.assertEqual(rows[1]["VsrVersion"], "50.2605.0.3")
         self.assertEqual(rows[2]["VsrVersion"], "50.2603.0.1")
 
-    def test_os_image_type_sourced_from_injected_field(self):
-        """OsImageType should come from the injected _os_image_type field."""
-        # Simulate the _output() method injecting _os_image_type
+    def test_os_image_type_sourced_from_response_solution_type(self):
+        """OsImageType should come from the response properties.solutionType field."""
         test_data = [
             {
-                "properties": {"validatedSolutionRecipeVersion": "50.2607.0.8"},
-                "_os_image_type": "AzureLinux"
+                "properties": {
+                    "validatedSolutionRecipeVersion": "50.2607.0.8",
+                    "solutionType": "AzureLinux",
+                }
             },
             {
-                "properties": {"validatedSolutionRecipeVersion": "50.2605.0.3"},
-                "_os_image_type": "AzureLinux"
+                "properties": {
+                    "validatedSolutionRecipeVersion": "50.2605.0.3",
+                    "solutionType": "HCI",
+                }
             }
         ]
         rows = transform_os_image_list_table_output(test_data)
         self.assertEqual(rows[0]["OsImageType"], "AzureLinux")
-        self.assertEqual(rows[1]["OsImageType"], "AzureLinux")
+        self.assertEqual(rows[1]["OsImageType"], "HCI")
 
     def test_architecture_column_extracted_from_properties(self):
         """Architecture comes from properties.architecture; a missing value defaults to empty."""
@@ -448,33 +451,14 @@ class TestOsImageListTableTransformer(unittest.TestCase):
                     "validatedSolutionRecipeVersion": "50.2607.0.8",
                     "architecture": "arm64",
                 },
-                "_os_image_type": "AzureLinux",
             },
             {
                 "properties": {"validatedSolutionRecipeVersion": "50.2605.0.3"},
-                "_os_image_type": "HCI",
             },
         ]
         rows = transform_os_image_list_table_output(test_data)
         self.assertEqual(rows[0]["Architecture"], "arm64")
         self.assertEqual(rows[1]["Architecture"], "")
-
-    def test_solution_type_column_extracted_from_properties(self):
-        """SolutionType comes from properties.solutionType and does not affect OsImageType."""
-        test_data = [
-            {
-                "properties": {"solutionType": "HCI"},
-                "_os_image_type": "AzureLinux",
-            },
-            {
-                "properties": {"validatedSolutionRecipeVersion": "50.2605.0.3"},
-                "_os_image_type": "HCI",
-            },
-        ]
-        rows = transform_os_image_list_table_output(test_data)
-        self.assertEqual(rows[0]["SolutionType"], "HCI")
-        self.assertEqual(rows[0]["OsImageType"], "AzureLinux")
-        self.assertEqual(rows[1]["SolutionType"], "")
 
     def test_non_list_input_returns_as_is(self):
         """Non-list input passes through unchanged."""
