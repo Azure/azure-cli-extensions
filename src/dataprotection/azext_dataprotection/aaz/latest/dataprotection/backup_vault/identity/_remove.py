@@ -16,18 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
-
-    :example: Remove System Identity
-        az az dataprotection backup-vault identity remove -g testRG -v testVault --system-assigned
-
-    :example: Remove User Assigned Identity
-        az az dataprotection backup-vault identity remove -g testRG -v testVault --user-assigned
     """
 
     _aaz_info = {
-        "version": "2025-01-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-01-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-07-01", "identity"],
         ]
     }
 
@@ -81,9 +75,9 @@ class Remove(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         self.BackupVaultsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.selectors.subresource.required())
+        self.pre_instance_update(self.ctx.selectors.subresource.get())
         self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.selectors.subresource.required())
+        self.post_instance_update(self.ctx.selectors.subresource.get())
         yield self.BackupVaultsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -104,7 +98,7 @@ class Remove(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.get(), client_flatten=True)
         return result
 
     class SubresourceSelector(AAZJsonSelector):
@@ -166,7 +160,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -213,7 +207,7 @@ class Remove(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -222,7 +216,7 @@ class Remove(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -265,7 +259,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -315,7 +309,7 @@ class Remove(AAZCommand):
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.selectors.subresource.required())
+            self._update_instance(self.ctx.selectors.subresource.get())
 
         def _update_instance(self, instance):
             _instance_value, _builder = self.new_content_builder(

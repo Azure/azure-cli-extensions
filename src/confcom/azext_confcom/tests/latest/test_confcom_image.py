@@ -89,10 +89,10 @@ class PolicyGeneratingImageSidecar(unittest.TestCase):
 class PolicyGeneratingImageInvalid(unittest.TestCase):
     def test_invalid_image_policy(self):
 
-        policy = load_policy_from_image_name(
-            "mcr.microsoft.com/aci/fake-image:master_20201210.2"
-        )
         with self.assertRaises(SystemExit) as exc_info:
+            policy = load_policy_from_image_name(
+                "mcr.microsoft.com/aci/fake-image:master_20201210.2"
+            )
             policy.populate_policy_content_for_all_images(individual_image=True)
         self.assertEqual(exc_info.exception.code, 1)
 

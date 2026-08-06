@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.4.3
+++++++
+* Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
+
 1.4.2
 ++++++
 * Bug fix for tunnel.

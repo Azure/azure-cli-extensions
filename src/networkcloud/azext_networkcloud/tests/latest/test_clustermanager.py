@@ -5,8 +5,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
-# customizations-custom-params={"clustermanager_create": ["--mi-system-assigned", "--mi-user-assigned"]}
-# customizations-custom-params={"clustermanager_update": ["--mi-system-assigned", "--mi-user-assigned"]}
+# customizations-custom-params={"clustermanager_create": ["--mi-system-assigned", "--mi-user-assigned"], "clustermanager_update": ["--mi-system-assigned", "--mi-user-assigned"]}
+# customizations-ignore-removed={"clustermanager_create": ["--identity"], "clustermanager_update": ["--identity"]}
 
 """
 ClusterManager test scenarios
@@ -16,6 +16,11 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -28,10 +33,10 @@ def cleanup_scenario1(test):
     pass
 
 
-def call_scenario1(test):
+def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(
+    step_create_scenario1(
         test,
         checks=[
             test.check("name", "{name}"),
@@ -49,6 +54,27 @@ def call_scenario1(test):
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def call_scenario1b(test):
+    """# Testcase: scenario1"""
+    setup_scenario1(test)
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+
     cleanup_scenario1(test)
 
 
@@ -131,7 +157,14 @@ def call_scenario5(test):
     cleanup_scenario1(test)
 
 
-def step_create(test, checks=None):
+def call_scenario6(test):
+    """# Testcase: scenario5"""
+    setup_scenario1(test)
+    step_update_relay_scenario1(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def step_create_scenario1(test, checks=None):
     """ClusterManager create operation"""
     if checks is None:
         checks = []
@@ -141,6 +174,21 @@ def step_create(test, checks=None):
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
         "--managed-resource-group-configuration name={mrg_name} "
+        "--analytics-workspace-id {analyticsWorkspaceId} ",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """ClusterManager create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager create --cluster-manager-name {name} "
+        "--location {location} --resource-group {rg} "
+        "--fabric-controller-id {fabricControllerId} "
+        "--tags {tags} "
+        "--mrg name={mrg_name} "
         "--analytics-workspace-id {analyticsWorkspaceId} ",
         checks=checks,
     )
@@ -222,6 +270,16 @@ def step_create_UA_SA_managedidentity(test, checks=None):
         ), f"Expected error message not found. Got: {error_message}"
 
 
+def step_update_relay_scenario1(test, checks=None):
+    """cluster action for update-relay-private-endpoint-connection"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager update-relay-private-endpoint-connection --name {name} --resource-group {rg} "
+        "--connection-state {connectionState} --description {description} --private-endpoint-id {endpoint}"
+    )
+
+
 def step_delete(test, checks=None):
     """ClusterManager delete operation"""
     if checks is None:
@@ -235,12 +293,39 @@ def step_delete(test, checks=None):
 
 def step_show(test, checks=None):
     """ClusterManager show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}",
-        checks=checks,
+    if checks is not None:
+        test.cmd(
+            "az networkcloud clustermanager show --name {name} "
+            "--resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}"
+    ).get_output_in_json()
+    context = "Clustermanager show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert properties.get("analyticsWorkspaceId") == get_value(
+        test, "analyticsWorkspaceId"
+    ), properties_key_mismatch_message("analyticsWorkspaceId")
+
+    assert properties.get("fabricControllerId") == get_value(
+        test, "fabricControllerId"
+    ), properties_key_mismatch_message("fabricControllerId")
+
+    assert properties.get("vmSize") == get_value(
+        test, "vmSize"
+    ), properties_key_mismatch_message("vmSize")
+
+    assert properties.get("availabilityZones") == get_value(
+        test, "availabilityZones"
+    ), properties_key_mismatch_message("availabilityZones")
 
 
 def step_list_resource_group(test, checks=None):
@@ -302,13 +387,27 @@ class ClusterManagerScenarioTest(ScenarioTest):
                 "availabilityZones": CONFIG.get(
                     "CLUSTER_MANAGER", "availability_zones"
                 ),
+                "connectionState": CONFIG.get(
+                    "CLUSTER_MANAGER", "update_relay_connection_state"
+                ),
+                "description": CONFIG.get(
+                    "CLUSTER_MANAGER", "update_relay_description"
+                ),
+                "endpoint": CONFIG.get(
+                    "CLUSTER_MANAGER", "update_relay_private_endpoint"
+                ),
             }
         )
 
     @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
-    def test_clustermanager_scenario1(self):
+    def test_clustermanager_scenario1a(self):
         """test scenario for ClusterManager CRUD operations"""
-        call_scenario1(self)
+        call_scenario1a(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_clustermanager_scenario1b(self):
+        """test scenario for ClusterManager create and update operations"""
+        call_scenario1b(self)
 
     @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
     def test_clustermanager_scenario2(self):
@@ -329,3 +428,8 @@ class ClusterManagerScenarioTest(ScenarioTest):
     def test_clustermanager_scenario5(self):
         """test scenario for ClusterManager CRUD operations using systemAssigned and user assigned managed identity. Checking for expected 400 bad request"""
         call_scenario5(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_clustermanager_scenario6(self):
+        """test scenario for ClusterManager UpdateRelayPEC"""
+        call_scenario6(self)

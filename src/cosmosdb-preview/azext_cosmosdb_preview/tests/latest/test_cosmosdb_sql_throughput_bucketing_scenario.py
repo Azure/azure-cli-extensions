@@ -4,17 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Cosmosdb_throughputBucketingTest(ScenarioTest):
 
+    # Runs against a pre-existing account with the feature flag enabled; not recordable in CI, so run live only.
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_thoughput_bucketing', location='australiaeast')
     def test_cosmosdb_sql_throughput_bucketing(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        throughput_buckets = '"[{\\"id\\": 1, \\"maxThroughputPercentage\\": 10 }, {\\"id\\": 2, \\"maxThroughputPercentage\\": 20 }]"'
+        throughput_buckets = '"[{\\"id\\": 1, \\"maxThroughputPercentage\\": 10 }, {\\"id\\": 2, \\"maxThroughputPercentage\\": 20, \\"isDefaultBucket\\": true }]"'
         empty_throughput_buckets = '"[]"'
 
         # This test needs to be run on the following account since it has the feature flag enabled
@@ -43,8 +45,10 @@ class Cosmosdb_throughputBucketingTest(ScenarioTest):
         assert len(actual_throughput_buckets) == 2
         assert actual_throughput_buckets[0]["id"] == 1
         assert actual_throughput_buckets[0]["maxThroughputPercentage"] == 10
+        assert actual_throughput_buckets[0].get("isDefaultBucket") is None
         assert actual_throughput_buckets[1]["id"] == 2
         assert actual_throughput_buckets[1]["maxThroughputPercentage"] == 20
+        assert actual_throughput_buckets[1]["isDefaultBucket"] == True
 
         # Test: Change throughput without specifying throughput buckets - buckets should be retained
         self.cmd('az cosmosdb sql container throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 4000')
@@ -56,8 +60,10 @@ class Cosmosdb_throughputBucketingTest(ScenarioTest):
         assert len(retained_throughput_buckets) == 2
         assert retained_throughput_buckets[0]["id"] == 1
         assert retained_throughput_buckets[0]["maxThroughputPercentage"] == 10
+        assert retained_throughput_buckets[0].get("isDefaultBucket") is None
         assert retained_throughput_buckets[1]["id"] == 2
         assert retained_throughput_buckets[1]["maxThroughputPercentage"] == 20
+        assert retained_throughput_buckets[1]["isDefaultBucket"] == True
 
         # Verify throughput was actually updated
         assert throughput_resource_json["resource"]["throughput"] == 4000

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* CLI refresh for swagger version 2024-04-24
+
 1.1.1
 ++++++
 * Update the CLI command documentation

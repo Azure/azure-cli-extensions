@@ -1,0 +1,21 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+
+def load_command_table(self, _):
+    # Azure Local Migration Commands
+    with self.command_group('migrate', is_preview=True) as g:
+        g.custom_command('get-discovered-server', 'get_discovered_server')
+
+    with self.command_group('migrate local replication', is_preview=True) as g:
+        g.custom_command('init', 'initialize_replication_infrastructure')
+        g.custom_command('new', 'new_local_server_replication')
+        g.custom_command('list', 'list_local_server_replications')
+        g.custom_command('get', 'get_local_server_replication')
+        g.custom_command('remove', 'remove_local_server_replication')
+        g.custom_command('get-job', 'get_local_replication_job')
+
+    with self.command_group('migrate local', is_preview=True) as g:
+        g.custom_command('start-migration', 'start_local_server_migration')

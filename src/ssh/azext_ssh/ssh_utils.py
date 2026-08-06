@@ -117,7 +117,7 @@ def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys
     connection_established = False
     t0 = time.time()
     service_config_delay_error = False
-    next_line = ssh_sub.stderr.readline()
+    next_line = _read_ssh_log_lines(ssh_sub)
     while next_line:
         log_list.append(next_line)
         if not next_line.startswith("debug1:") and \
@@ -139,10 +139,23 @@ def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys
             do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
                        op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
-        next_line = ssh_sub.stderr.readline()
+        next_line = _read_ssh_log_lines(ssh_sub)
 
     ssh_sub.wait()
     return service_config_delay_error
+
+
+def _read_ssh_log_lines(ssh_sub):
+    retries = 0
+    max_retries = 5
+
+    while retries < max_retries:
+        try:
+            return ssh_sub.stderr.readline()
+        except UnicodeDecodeError:
+            retries += 1
+
+    return None
 
 
 def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
@@ -251,14 +264,16 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
            (local_major > 8 or (local_major == 8 and local_minor >= 8)):
             logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
                            "Version incompatible with OpenSSH client version %d.%d. "
-                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           "Refer to \"Potentially-incompatible changes\" in "
+                           "https://www.openssh.org/txt/release-8.8 for more information.",
                            remote_major, remote_minor, local_major, local_minor)
 
         elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
              (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
             logger.warning("The OpenSSH client version %d.%d is too old. "
                            "Version incompatible with OpenSSH server version %d.%d in the target VM. "
-                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           "Refer to \"Potentially-incompatible changes\" in "
+                           "https://www.openssh.org/txt/release-8.8 for more information.",
                            local_major, local_minor, remote_major, remote_minor)
 
     regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: "

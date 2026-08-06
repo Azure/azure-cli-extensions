@@ -5,6 +5,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.msi import ManagedServiceIdentityClient
+from azure.mgmt.authorization import AuthorizationManagementClient
 from azure.cli.core.profiles import (
     CustomResourceType,
     ResourceType
@@ -15,7 +16,11 @@ CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerSe
 
 # container service clients
 def get_container_service_client(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_FLEET, subscription_id=subscription_id)
+    return get_mgmt_service_client(
+        cli_ctx,
+        CUSTOM_MGMT_FLEET,
+        subscription_id=subscription_id,
+    )
 
 
 def cf_fleets(cli_ctx, *_):
@@ -55,9 +60,17 @@ def cf_auto_upgrade_profile_operations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).auto_upgrade_profile_operations
 
 
+def cf_cluster_mesh_profiles(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).cluster_mesh_profiles
+
+
 def get_provider_client(cli_ctx):
     return get_mgmt_service_client(
         cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
+
+def get_role_assignments_client(cli_ctx):
+    return get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
 
 
 def get_msi_client(cli_ctx, subscription_id=None):

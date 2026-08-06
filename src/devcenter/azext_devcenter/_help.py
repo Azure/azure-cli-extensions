@@ -121,6 +121,22 @@ helps[
 """
 
 helps[
+    "devcenter dev pool align"
+] = """
+    type: command
+    short-summary: "Aligns all dev boxes in the pool with the current configuration."
+    examples:
+      - name: Align using dev center
+        text: |-
+               az devcenter dev pool align --dev-center-name "ContosoDevCenter" --name \
+"DevPool" --project-name "DevProject" --targets NetworkProperties HibernateSupport
+      - name: Align using endpoint
+        text: |-
+               az devcenter dev pool align --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --name \
+"DevPool" --project-name "DevProject" --targets NetworkProperties HibernateSupport
+"""
+
+helps[
     "devcenter dev schedule"
 ] = """
     type: group
@@ -421,11 +437,11 @@ helps[
       - name: Align using dev center
         text: |-
                az devcenter dev dev-box align --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
---project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --targets NetworkProperties HibernateSupport
       - name: Align using endpoint
         text: |-
                az devcenter dev dev-box align --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
---project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --targets NetworkProperties HibernateSupport
 """
 
 helps[
@@ -453,11 +469,29 @@ helps[
       - name: Set active hours using dev center
         text: |-
                az devcenter dev dev-box set-active-hours --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
---project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17" \
+--days-of-week Monday Tuesday Wednesday Thursday Friday
       - name: Set active hours using endpoint
         text: |-
                az devcenter dev dev-box set-active-hours --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
---project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --time-zone "America/Los_Angeles" --start-time-hour "9" --end-time-hour "17" \
+--days-of-week Monday Tuesday Wednesday Thursday Friday
+"""
+
+helps[
+    "devcenter dev dev-box schedule-delete"
+] = """
+    type: command
+    short-summary: "Creates an action to schedule the deletion of a dev box"
+    examples:
+      - name: Schedule delete using dev center
+        text: |-
+               az devcenter dev dev-box schedule-delete --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --delete-at "2027-12-31T23:59:00Z"
+      - name: Schedule delete using endpoint
+        text: |-
+               az devcenter dev dev-box schedule-delete --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --delete-at "2027-12-31T23:59:00Z"
 """
 
 helps[

@@ -10,7 +10,7 @@
 
 from azure.cli.core import AzCommandsLoader
 try:
-    from azext_attestation._help import helps  # pylint: disable=reimported
+    from azext_attestation._help import helps  # pylint: disable=unused-import
 except ImportError:
     pass
 

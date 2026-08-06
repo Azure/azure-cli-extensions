@@ -1,0 +1,42 @@
+name: advanced-deployment-template
+version: "2"
+description: Advanced deployment template with multiple endpoints for testing
+tags:
+  environment: development
+  team: ml-platform
+  cost-center: "12345"
+endpoints:
+  - name: primary
+    traffic: 80
+    deployment:
+      model:
+        name: advanced-model
+        version: "2"
+      environment:
+        name: advanced-env
+        version: "1"
+      instance_count: 3
+      instance_type: Standard_DS3_v2
+      code_configuration:
+        scoring_script: score.py
+        code: src/
+      scale_settings:
+        type: target_utilization
+        target_utilization_percentage: 70
+        min_instances: 1
+        max_instances: 10
+  - name: canary
+    traffic: 20
+    deployment:
+      model:
+        name: canary-model
+        version: "1"
+      environment:
+        name: canary-env
+        version: "1"
+      instance_count: 1
+      instance_type: Standard_DS2_v2
+      code_configuration:
+        scoring_script: score_canary.py
+      scale_settings:
+        type: default

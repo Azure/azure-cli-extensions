@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from pathlib import Path
+import tempfile
 import unittest
 import json
 import subprocess
@@ -22,6 +24,7 @@ from azext_confcom.custom import (
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
+SAMPLES_DIR = os.path.abspath(os.path.join(TEST_DIR, "..", "..", "..", "samples"))
 
 
 class PolicyGeneratingVirtualNode(unittest.TestCase):
@@ -338,17 +341,19 @@ spec:
         ports:
         - containerPort: 80
           name: web
-"""
+    """
     @classmethod
     def setUpClass(cls):
-        cls.key_dir_parent = os.path.join(TEST_DIR, '..', '..', '..', 'samples', 'certs')
+        cls.key_dir_parent = Path(tempfile.gettempdir(), "certchain")
+        cls.key_dir_parent.mkdir(parents=True, exist_ok=True)
         cls.key = os.path.join(cls.key_dir_parent, 'intermediateCA', 'private', 'ec_p384_private.pem')
         cls.chain = os.path.join(cls.key_dir_parent, 'intermediateCA', 'certs', 'www.contoso.com.chain.cert.pem')
         if not os.path.exists(cls.key) or not os.path.exists(cls.chain):
-            script_path = os.path.join(cls.key_dir_parent, 'create_certchain.sh')
+            script_path = os.path.join(SAMPLES_DIR, "certs", 'create_certchain.sh')
 
             arg_list = [
                 script_path,
+                cls.key_dir_parent.as_posix(),
             ]
             os.chmod(script_path, 0o755)
 
@@ -356,8 +361,7 @@ spec:
             item = subprocess.run(
                 arg_list,
                 check=False,
-                shell=True,
-                cwd=cls.key_dir_parent,
+                shell=False,
                 env=os.environ.copy(),
             )
 

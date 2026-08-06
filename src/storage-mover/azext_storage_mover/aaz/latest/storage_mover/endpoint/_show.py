@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "storage-mover endpoint show",
 )
 class Show(AAZCommand):
-    """Gets an Endpoint resource.
-
-    :example: endpoint show
-        az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}
+    """Get an Endpoint resource.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-12-01"],
         ]
     }
 
@@ -58,6 +55,9 @@ class Show(AAZCommand):
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
         return cls._args_schema
 
@@ -130,7 +130,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -195,6 +195,7 @@ class Show(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
@@ -212,6 +213,9 @@ class Show(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
+            properties.endpoint_kind = AAZStrType(
+                serialized_name="endpointKind",
+            )
             properties.endpoint_type = AAZStrType(
                 serialized_name="endpointType",
                 flags={"required": True},
@@ -270,6 +274,29 @@ class Show(AAZCommand):
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
+            )
+
+            disc_s3_with_hmac = cls._schema_on_200.properties.discriminate_by("endpoint_type", "S3WithHMAC")
+            disc_s3_with_hmac.credentials = AAZObjectType()
+            disc_s3_with_hmac.other_source_type_description = AAZStrType(
+                serialized_name="otherSourceTypeDescription",
+            )
+            disc_s3_with_hmac.source_type = AAZStrType(
+                serialized_name="sourceType",
+            )
+            disc_s3_with_hmac.source_uri = AAZStrType(
+                serialized_name="sourceUri",
+            )
+
+            credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "S3WithHMAC").credentials
+            credentials.access_key_uri = AAZStrType(
+                serialized_name="accessKeyUri",
+            )
+            credentials.secret_key_uri = AAZStrType(
+                serialized_name="secretKeyUri",
+            )
+            credentials.type = AAZStrType(
+                flags={"required": True},
             )
 
             disc_smb_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount")

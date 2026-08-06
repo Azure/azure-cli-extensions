@@ -20,6 +20,43 @@ def validate_client_certificates(ns):
         ns.client_certificates = get_certificates(ns.client_certificates)
 
 
+def validate_soft_delete_configuration(cmd, ns):
+    """ Builds the soft delete configuration from a JSON string or a JSON file. """
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    import os
+
+    if ns.soft_delete_configuration is None:
+        return
+
+    if os.path.exists(ns.soft_delete_configuration):
+        config = get_file_json(ns.soft_delete_configuration)
+    else:
+        config = shell_safe_json_parse(ns.soft_delete_configuration)
+
+    if not isinstance(config, dict):
+        raise InvalidArgumentValueError(
+            'Invalid soft delete configuration. A valid JSON object is expected, e.g. '
+            '\'{"softDeletionEnabled": true, "softDeleteRetentionPeriodInMinutes": 1440, '
+            '"minMinutesBeforePermanentDeletionAllowed": 60}\'.')
+
+    allowed_keys = {
+        'softDeletionEnabled',
+        'softDeleteRetentionPeriodInMinutes',
+        'minMinutesBeforePermanentDeletionAllowed'
+    }
+    unexpected_keys = set(config.keys()) - allowed_keys
+    if unexpected_keys:
+        raise InvalidArgumentValueError(
+            'Invalid soft delete configuration. Unexpected keys: {}. Allowed keys are: {}.'.format(
+                ', '.join(sorted(unexpected_keys)), ', '.join(sorted(allowed_keys))))
+
+    ns.soft_delete_configuration = SoftDeleteConfiguration(
+        soft_deletion_enabled=config.get('softDeletionEnabled'),
+        soft_delete_retention_period_in_minutes=config.get('softDeleteRetentionPeriodInMinutes'),
+        min_minutes_before_permanent_deletion_allowed=config.get('minMinutesBeforePermanentDeletionAllowed'))
+
+
 def validate_server_certificates(ns):
     """ Extracts multiple comma-separated certificates """
     if ns.server_certificates is not None:
@@ -452,7 +489,8 @@ def validate_fleetspace_body(cmd, ns):
         if not isinstance(tp_config, dict):
             raise InvalidArgumentValueError('Missing or invalid "throughputPoolConfiguration" in properties.')
 
-        for field in ['minThroughput', 'maxThroughput', 'serviceTier', 'dataRegions']:
+        # Check for minThroughput and maxThroughput in throughputPoolConfiguration
+        for field in ['minThroughput', 'maxThroughput']:
             if field not in tp_config:
                 raise InvalidArgumentValueError(f'Missing "{field}" in throughputPoolConfiguration.')
 
@@ -462,11 +500,14 @@ def validate_fleetspace_body(cmd, ns):
         if not isinstance(tp_config['maxThroughput'], int) or tp_config['maxThroughput'] <= 0:
             raise InvalidArgumentValueError('"maxThroughput" must be a positive integer.')
 
-        if not isinstance(tp_config['serviceTier'], str):
-            raise InvalidArgumentValueError('"serviceTier" must be a string.')
+        # Check for serviceTier and dataRegions at base properties level
+        if 'serviceTier' in props:
+            if not isinstance(props['serviceTier'], str):
+                raise InvalidArgumentValueError('"serviceTier" must be a string.')
 
-        if not isinstance(tp_config['dataRegions'], list) or not all(isinstance(r, str) for r in tp_config['dataRegions']):
-            raise InvalidArgumentValueError('"dataRegions" must be a list of strings.')
+        if 'dataRegions' in props:
+            if not isinstance(props['dataRegions'], list) or not all(isinstance(r, str) for r in props['dataRegions']):
+                raise InvalidArgumentValueError('"dataRegions" must be a list of strings.')
 
         ns.fleetspace_body = body
 

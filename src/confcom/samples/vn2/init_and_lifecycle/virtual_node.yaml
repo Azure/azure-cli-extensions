@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-lifecycle
+spec:
+  containers:
+    - name: app
+      image: mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2
+      command:
+        - /bin/sh
+      args:
+        - -c
+        - sleep 3600
+      livenessProbe:
+        exec:
+          command:
+            - cat
+            - /tmp/healthy
+      readinessProbe:
+        exec:
+          command:
+            - cat
+            - /tmp/ready
+      startupProbe:
+        exec:
+          command:
+            - cat
+            - /tmp/started
+      lifecycle:
+        postStart:
+          exec:
+            command:
+              - echo
+              - started
+        preStop:
+          exec:
+            command:
+              - echo
+              - stopping
+  initContainers:
+    - name: init-setup
+      image: mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2
+      command:
+        - /bin/sh
+      args:
+        - -c
+        - echo init

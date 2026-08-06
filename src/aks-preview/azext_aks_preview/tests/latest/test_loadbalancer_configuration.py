@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 
 from azure.cli.core.azclierror import (
+    BadRequestError,
     RequiredArgumentMissingError,
     ResourceNotFoundError,
 )
@@ -127,6 +128,98 @@ class TestLoadBalancerConfiguration(unittest.TestCase):
 
         # Call should raise ResourceNotFoundError
         with self.assertRaises(ResourceNotFoundError):
+            loadbalancerconfiguration.aks_loadbalancer_update_internal(
+                self.cmd, mock_client, test_params
+            )
+
+    def test_aks_loadbalancer_update_internal_change_primary_agent_pool(self):
+        # Mock the client and cmd
+        mock_client = MagicMock()
+
+        # Setup mock LoadBalancer list response with nodepool1 as primary
+        mock_lb = MagicMock()
+        mock_lb.name = "test_lb"
+        mock_lb.primary_agent_pool_name = "nodepool1"
+        mock_lb.allow_service_placement = True
+        mock_lb.service_label_selector = None
+        mock_lb.service_namespace_selector = None
+        mock_lb.node_selector = None
+        mock_client.list_by_managed_cluster.return_value = [mock_lb]
+
+        # Test parameters, change primary agent pool to nodepool2
+        test_params = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "name": "test_lb",
+            "primary_agent_pool_name": "nodepool2",
+        }
+
+        # Mock LB result
+        mock_lb_result = MagicMock()
+        mock_lb_result.name = "test_lb"
+
+        # Create the mock LoadBalancer model class and instance
+        mock_loadbalancer_class = MagicMock()
+        mock_config = MagicMock()
+        mock_loadbalancer_class.return_value = mock_config
+
+        # Mock wait_for_loadbalancer_provisioning_state and get_models
+        with patch(
+            "azext_aks_preview.loadbalancerconfiguration.wait_for_loadbalancer_provisioning_state"
+        ) as mock_wait, patch.object(
+            self.cmd, "get_models", return_value=mock_loadbalancer_class
+        ):
+            mock_wait.return_value = mock_lb_result
+
+            result = loadbalancerconfiguration.aks_loadbalancer_update_internal(
+                self.cmd, mock_client, test_params
+            )
+
+            # Assert the LoadBalancer was created with the new primary agent pool name
+            mock_loadbalancer_class.assert_called_with(
+                primary_agent_pool_name="nodepool2",
+                allow_service_placement=True,
+                service_label_selector=None,
+                service_namespace_selector=None,
+                node_selector=None,
+            )
+
+            # Assert client.create_or_update was called with correct parameters
+            mock_client.create_or_update.assert_called_once_with(
+                resource_group_name="test_rg",
+                resource_name="test_cluster",
+                load_balancer_name="test_lb",
+                parameters=mock_config,
+                headers={},
+            )
+
+            # Assert returned result is from mock_wait
+            self.assertEqual(result, mock_lb_result)
+
+    def test_aks_loadbalancer_update_internal_no_changes(self):
+        # Mock the client and cmd
+        mock_client = MagicMock()
+
+        # Setup mock LoadBalancer list response
+        mock_lb = MagicMock()
+        mock_lb.name = "test_lb"
+        mock_lb.primary_agent_pool_name = "nodepool1"
+        mock_lb.allow_service_placement = True
+        mock_lb.service_label_selector = None
+        mock_lb.service_namespace_selector = None
+        mock_lb.node_selector = None
+        mock_client.list_by_managed_cluster.return_value = [mock_lb]
+
+        # Test parameters, no changes
+        test_params = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "name": "test_lb",
+            "primary_agent_pool_name": "nodepool1",
+        }
+
+        # Call should raise BadRequestError (no changes requested)
+        with self.assertRaises(BadRequestError):
             loadbalancerconfiguration.aks_loadbalancer_update_internal(
                 self.cmd, mock_client, test_params
             )

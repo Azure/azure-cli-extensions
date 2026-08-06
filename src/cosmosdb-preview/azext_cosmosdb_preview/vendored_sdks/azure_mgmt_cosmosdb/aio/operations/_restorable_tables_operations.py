@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, AsyncIterable, Callable, Dict, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -31,7 +31,8 @@ from ...operations._restorable_tables_operations import build_list_request
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class RestorableTablesOperations:
@@ -61,7 +62,7 @@ class RestorableTablesOperations:
         start_time: Optional[str] = None,
         end_time: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncIterable["_models.RestorableTableGetResult"]:
+    ) -> AsyncItemPaged["_models.RestorableTableGetResult"]:
         """Show the event feed of all mutations done on all the Azure Cosmos DB Tables. This helps in
         scenario where table was accidentally deleted. This API requires
         'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/.../read' permission.
@@ -132,7 +133,7 @@ class RestorableTablesOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)

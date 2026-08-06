@@ -145,6 +145,8 @@ helps['fleet member list'] = """
     examples:
         - name: List all members for a given fleet.
           text: az fleet member list -g MyFleetResourceGroup -f MyFleetName
+        - name: List members filtered by a cluster mesh profile.
+          text: az fleet member list -g MyFleetResourceGroup -f MyFleetName --cluster-mesh-profile MyClusterMeshProfile
 """
 
 helps['fleet member show'] = """
@@ -205,41 +207,126 @@ helps['fleet updaterun create'] = """
             az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest --stages ./test/stages.json
 
                 The following JSON structure represents example contents of the parameter '--stages ./test/stages.json'.
-                A stages array is composed of one or more stages, each containing one or more groups.
+                A stages array is composed of one or more stages, each containing one or more groups and/or a memberSelector.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
+                Stages and groups can optionally include a 'memberSelector' to filter members by label. A 'memberSelector' contains a 'byLabel' property with a Kubernetes-style label selector string (e.g., "env=production"). When set on a group, it overrides name-based matching.
+                Stage memberSelector: pre-filters members for the entire stage. Only matching members are candidates for group-level matching.
+                Group memberSelector: selects members by label instead of matching by FleetMember.Group name. When set, overrides name-based matching.
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
-                {
-                    "stages": [
+                Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
+                Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
+                Group maxConcurrency: applies within a single group, and is additionally constrained by the stage limit (effective max is min(group cluster count, stage maxConcurrency)). Minimum is 1.
+                Stages and groups also have an optional 'maxAllowedFailures' string property.
+                Stage maxAllowedFailures: The maximum number of member (cluster) upgrade failures tolerated in this stage. Accepts a non-negative integer (e.g. '3') or a percentage (e.g. '25%'). Defaults to 0 if unset, meaning any failure fails the stage.
+                Group maxAllowedFailures: The maximum number of member (cluster) upgrade failures tolerated in this group. Accepts a non-negative integer (e.g. '3') or a percentage (e.g. '25%'). Defaults to 0 if unset, meaning any failure fails the group.
+                Value formats:
+                  Fixed count (e.g., 3)
+                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group).
+                  Examples: 0, 3, 25%, 100%
+
+                Example stages JSON, with optional properties maxConcurrency, maxAllowedFailures and before/after gates:
+               {
+                  "stages": [
+                    {
+                      "name": "stage1",
+                      "memberSelector": { "byLabel": "env=staging" },
+                      "maxConcurrency": "7%",
+                      "maxAllowedFailures": "50%",
+                      "beforeGates": [
                         {
-                            "name": "stage1",
-                            "groups": [
-                                {
-                                    "name": "group-a1"
-                                },
-                                {
-                                    "name": "group-a2"
-                                },
-                                {
-                                    "name": "group-a3"
-                                }
-                            ],
-                            "afterStageWaitInSeconds": 3600
+                          "displayName": "stage before gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "afterGates": [
+                        {
+                          "displayName": "stage after gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "name": "group-a1",
+                          "memberSelector": { "byLabel": "tier=frontend" },
+                          "maxConcurrency": "100%",
+                          "maxAllowedFailures": "5",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
                         {
-                            "name": "stage2",
-                            "groups": [
-                                {
-                                    "name": "group-b1"
-                                },
-                                {
-                                    "name": "group-b2"
-                                },
-                                {
-                                    "name": "group-b3"
-                                }
-                            ]
+                          "name": "group-a2",
+                          "memberSelector": { "byLabel": "tier=backend" },
+                          "maxConcurrency": "1",
+                          "maxAllowedFailures": "25%",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
-                    ]
+                        {
+                          "name": "group-a3",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
+                        }
+                      ],
+                      "afterStageWaitInSeconds": 3600
+                    },
+                    {
+                      "name": "stage2",
+                      "memberSelector": { "byLabel": "env=production" },
+                      "beforeGates": [
+                        {
+                          "displayName": "Wait until Friday evening",
+                          "type": "ScheduledStart",
+                          "scheduledStartConfiguration": {
+                            "startDay": "Friday",
+                            "startTime": "18:00",
+                            "utcOffset": "-05:00"
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "name": "group-b1"
+                        },
+                        {
+                          "name": "group-b2"
+                        },
+                        {
+                          "name": "group-b3"
+                        }
+                      ]
+                    }
+                  ]
                 }
 """
 
@@ -414,6 +501,10 @@ helps['fleet gate list'] = """
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName
         - name: List all gates, filtering on gate state. Valid values are ('Pending', 'Skipped', 'Completed').
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --state Pending
+        - name: List all gates, filtering on gate type. Valid values are ('Approval', 'ScheduledStart').
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --gate-type ScheduledStart
+        - name: List pending ScheduledStart gates.
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --gate-type ScheduledStart --state Pending
 """
 
 helps['fleet gate show'] = """
@@ -457,16 +548,26 @@ helps['fleet namespace create'] = """
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations key=value --labels key=value --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy AllowAll --egress-policy DenyAll --delete-policy Keep --adoption-policy Never
         - name: Create a fleet managed namespace on specific member clusters.
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
+        - name: Create a fleet managed namespace with a rollout update strategy.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-update-strategy MyUpdateStrategy
 """
 
 helps['fleet namespace update'] = """
     type: command
     short-summary: Updates a fleet managed namespace.
     examples:
-        - name: Updates a fleet managed namespace.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
         - name: Update tags for a fleet managed namespace.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production
+        - name: Update labels and annotations.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --labels "env=production team=devops" --annotations "owner=team-a"
+        - name: Update resource quotas.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi
+        - name: Update network and lifecycle policies.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --ingress-policy AllowAll --egress-policy DenyAll --adoption-policy IfIdentical --delete-policy Delete
+        - name: Update member cluster placement.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03
+        - name: Update with a rollout update strategy.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-update-strategy my-update-strategy
 """
 
 helps['fleet namespace list'] = """
@@ -522,4 +623,80 @@ helps['fleet namespace get-credentials'] = """
           text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member MyFleetMember
         - name: Save kubeconfig to a specific file.
           text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --file ~/my-namespace-config
+"""
+
+helps['fleet clustermeshprofile'] = """
+    type: group
+    short-summary: Commands to manage cluster mesh profiles.
+"""
+
+helps['fleet clustermeshprofile create'] = """
+    type: command
+    short-summary: Create or update a cluster mesh profile.
+    parameters:
+        - name: --member-selector --selector -s
+          type: string
+          short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
+    examples:
+        - name: Create a cluster mesh profile with a label selector.
+          text: az fleet clustermeshprofile create -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector "env=production"
+        - name: Create a cluster mesh profile without a selector (no members selected initially).
+          text: az fleet clustermeshprofile create -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile show'] = """
+    type: command
+    short-summary: Get a cluster mesh profile.
+    examples:
+        - name: Show the details of a cluster mesh profile.
+          text: az fleet clustermeshprofile show -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile list'] = """
+    type: command
+    short-summary: List all cluster mesh profiles for a fleet.
+    examples:
+        - name: List all cluster mesh profiles for a given fleet.
+          text: az fleet clustermeshprofile list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet clustermeshprofile delete'] = """
+    type: command
+    short-summary: Delete a cluster mesh profile. Members must be disconnected from the profile before it can be deleted.
+    examples:
+        - name: Delete a specific cluster mesh profile.
+          text: az fleet clustermeshprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile apply'] = """
+    type: command
+    short-summary: Apply the cluster mesh profile to selected fleet members.
+    examples:
+        - name: Apply a cluster mesh profile.
+          text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+        - name: Preview what changes would be made without actually applying.
+          text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --what-if --output table
+"""
+
+helps['fleet clustermeshprofile list-members'] = """
+    type: command
+    short-summary: List fleet members for a cluster mesh profile.
+    long-summary: |
+        Without --selector, lists members currently applied to the mesh profile.
+        With --selector, lists members that would match the profile's label selector (i.e. candidates for the next apply).
+    examples:
+        - name: List members currently applied to the mesh.
+          text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+        - name: List members that would match the profile's selector.
+          text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector
+"""
+
+helps['fleet clustermeshprofile wait'] = """
+    type: command
+    short-summary: Wait for a cluster mesh profile to reach a desired state.
+    examples:
+        - name: Wait for the cluster mesh profile to reach Connected state after apply.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "properties.status.state=='Connected'"
+        - name: Wait for the cluster mesh profile to be created.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
 """

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2025-10-01"],
         ]
     }
 
@@ -45,7 +45,6 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -195,6 +194,9 @@ class Show(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -202,6 +204,12 @@ class Show(AAZCommand):
             elasticity_profile.min_ready_capacity = AAZIntType(
                 serialized_name="minReadyCapacity",
             )
+            elasticity_profile.post_provisioning_delay = AAZStrType(
+                serialized_name="postProvisioningDelay",
+            )
+
+            dynamic_sizing = cls._schema_on_200.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

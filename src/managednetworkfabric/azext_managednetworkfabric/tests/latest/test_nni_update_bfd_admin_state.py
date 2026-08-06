@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+# from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 # """
 # NNI tests scenarios
@@ -29,36 +29,51 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 # def call_scenario1(test):
 #     """Testcase: scenario1"""
 #     setup_scenario(test)
-#     step_update_bfd_admin_state_nf_name(test, checks=[])
+#     step_update_bfd_admin_state_secnario1(test, checks=[])
 #     cleanup_scenario(test)
 
 
 # def call_scenario2(test):
-#     """Testcase: scenario2"""
+#     """Testcase: scenario1"""
 #     setup_scenario(test)
-#     step_update_bfd_admin_state_resource_name(test, checks=[])
+#     step_update_bfd_admin_state_secnario2(test, checks=[])
 #     cleanup_scenario(test)
 
 
-# def step_update_bfd_admin_state_nf_name(test, checks=None):
+# def call_scenario3(test):
+#     """Testcase: scenario1"""
+#     setup_scenario(test)
+#     step_update_bfd_admin_state_secnario3(test, checks=[])
+#     cleanup_scenario(test)
+
+
+# def step_update_bfd_admin_state_secnario1(test, checks=None):
 #     """nni run Update BFD Admin State operation"""
 #     if checks is None:
 #         checks = []
 #     test.cmd(
-#         "az networkfabric nni update-bfd-administrative-state --network-fabric-name {fabric} --nni-name {name}"
-#         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}",
-#         checks=checks,
+#         "az networkfabric nni update-bfd-administrative-state --fabric {fabric} --resource-name {name}"
+#         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}"
 #     )
 
 
-# def step_update_bfd_admin_state_resource_name(test, checks=None):
+# def step_update_bfd_admin_state_secnario2(test, checks=None):
 #     """nni run Update BFD Admin State operation"""
 #     if checks is None:
 #         checks = []
 #     test.cmd(
-#         "az networkfabric nni update-bfd-administrative-state --network-fabric-name {fabric} --resource-name {name}"
-#         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}",
-#         checks=checks,
+#         "az networkfabric nni update-bfd-administrative-state --fabric-name {fabric} --nni-name {name}"
+#         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}"
+#     )
+
+
+# def step_update_bfd_admin_state_secnario3(test, checks=None):
+#     """nni run Update BFD Admin State operation"""
+#     if checks is None:
+#         checks = []
+#     test.cmd(
+#         "az networkfabric nni update-bfd-administrative-state --network-fabric-name {fabric} --network-to-network-interconnect-name {name}"
+#         " --resource-group {rg} --administrative-state {administrativeState} --route-type {routeType}"
 #     )
 
 
@@ -82,6 +97,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 #         )
 
 #     @AllowLargeResponse()
-#     def test_GA_nni_UpdateBFDAdminState_scenario1(self):
+#     def test_GA_nni_update_bfd_admin_state_scenario1(self):
 #         """test scenario for NNI CRUD operations"""
 #         call_scenario1(self)

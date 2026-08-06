@@ -19,6 +19,15 @@ class AccessRuleDirection(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Applies to outbound network traffic from the secured resources"""
 
 
+class AllocationState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Allocation state of the cluster and data center resources."""
+
+    ACTIVE = "Active"
+    """Active implies the virtual machines of the cluster are allocated."""
+    DEALLOCATED = "Deallocated"
+    """Deallocated implies virtual machines and resources are deallocated."""
+
+
 class AnalyticalStorageSchemaType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes the types of schema for analytical storage."""
 
@@ -168,6 +177,8 @@ class ContinuousTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     CONTINUOUS7_DAYS = "Continuous7Days"
     CONTINUOUS30_DAYS = "Continuous30Days"
+    CONTINUOUS35_DAYS = "Continuous35Days"
+    """Continuous 35 Days backup tier."""
 
 
 class CopyJobMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -232,6 +243,7 @@ class DataTransferComponent(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     COSMOS_DB_MONGO_V_CORE = "CosmosDBMongoVCore"
     COSMOS_DB_SQL = "CosmosDBSql"
     AZURE_BLOB_STORAGE = "AzureBlobStorage"
+    BASE_COSMOS_DATA_TRANSFER_DATA_SOURCE_SINK = "BaseCosmosDataTransferDataSourceSink"
 
 
 class DataTransferJobMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -305,13 +317,37 @@ class FleetspacePropertiesFleetspaceApiKind(str, Enum, metaclass=CaseInsensitive
     NO_SQL = "NoSQL"
 
 
-class FleetspacePropertiesThroughputPoolConfigurationServiceTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class FleetspacePropertiesServiceTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Service Tier for the fleetspace. GeneralPurpose types refers to single write region accounts
     that can be added to this fleetspace, whereas BusinessCritical refers to multi write region.
     """
 
     GENERAL_PURPOSE = "GeneralPurpose"
     BUSINESS_CRITICAL = "BusinessCritical"
+
+
+class GarnetAuthenticationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The authentication method used for the Garnet cluster."""
+
+    ENTRA = "Entra"
+    """Microsoft Entra authentication."""
+
+
+class GarnetCacheProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The status of the resource at the time the operation was called."""
+
+    CREATING = "Creating"
+    """Creating"""
+    UPDATING = "Updating"
+    """Updating"""
+    DELETING = "Deleting"
+    """Deleting"""
+    SUCCEEDED = "Succeeded"
+    """Succeeded"""
+    FAILED = "Failed"
+    """Failed"""
+    CANCELED = "Canceled"
+    """Canceled"""
 
 
 class IndexingMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -428,13 +464,6 @@ class NodeState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     JOINING = "Joining"
     MOVING = "Moving"
     STOPPED = "Stopped"
-
-
-class NodeStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Indicates whether the node is functioning or not."""
-
-    UP = "Up"
-    DOWN = "Down"
 
 
 class NotebookWorkspaceName(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -573,6 +602,15 @@ class Severity(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ERROR = "Error"
 
 
+class SoftDeleteActionKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """SoftDeleteActionKind."""
+
+    RESTORE_SOFT_DELETED_RESOURCE = "RestoreSoftDeletedResource"
+    """Restores the soft-deleted resource to active/online state."""
+    PERMANENT_DELETE_RESOURCE = "PermanentDeleteResource"
+    """Permanently deletes the soft-deleted resource."""
+
+
 class SpatialType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Indicates the spatial type of index."""
 
@@ -661,6 +699,7 @@ class VectorDataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FLOAT32 = "float32"
     UINT8 = "uint8"
     INT8 = "int8"
+    FLOAT16 = "float16"
 
 
 class VectorIndexType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

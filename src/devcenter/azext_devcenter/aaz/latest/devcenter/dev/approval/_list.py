@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-08-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/approvals", "2025-04-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/approvals", "2025-08-01-preview"],
         ]
     }
 
@@ -162,7 +162,7 @@ class List(AAZCommand):
                     "top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }

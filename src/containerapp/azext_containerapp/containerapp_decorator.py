@@ -1787,7 +1787,12 @@ class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
             containerapps = [c for c in containerapps if CONNECTED_ENVIRONMENT_RESOURCE_TYPE in c["properties"]["environmentId"]]
         if self.get_argument_environment_type() == MANAGED_ENVIRONMENT_TYPE:
             containerapps = [c for c in containerapps if MANAGED_ENVIRONMENT_RESOURCE_TYPE in c["properties"]["environmentId"]]
+        if self.get_argument_kind():
+            containerapps = [c for c in containerapps if c.get("kind") == self.get_argument_kind()]
         return containerapps
+
+    def get_argument_kind(self):
+        return self.get_param("kind")
 
     def get_environment_client(self):
         env = self.get_argument_managed_env()

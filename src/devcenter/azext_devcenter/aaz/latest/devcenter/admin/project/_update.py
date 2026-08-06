@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -136,10 +136,10 @@ class Update(AAZCommand):
             help="Description of the project.",
             nullable=True,
         )
-        _args_schema.dev_box_auto_delete_settings = AAZObjectArg(
-            options=["-d", "--dev-box-auto-delete-settings"],
+        _args_schema.dev_box_schedule_delete_settings = AAZObjectArg(
+            options=["-d", "--dev-box-schedule-delete-settings"],
             arg_group="Properties",
-            help="Dev Box Auto Delete settings.",
+            help="Dev Box Schedule Delete settings.",
             nullable=True,
         )
         _args_schema.display_name = AAZStrArg(
@@ -209,19 +209,19 @@ class Update(AAZCommand):
             enum={"systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
         )
 
-        dev_box_auto_delete_settings = cls._args_schema.dev_box_auto_delete_settings
-        dev_box_auto_delete_settings.delete_mode = AAZStrArg(
+        dev_box_schedule_delete_settings = cls._args_schema.dev_box_schedule_delete_settings
+        dev_box_schedule_delete_settings.delete_mode = AAZStrArg(
             options=["delete-mode"],
             help="Indicates the delete mode for Dev Boxes within this project.",
             nullable=True,
             enum={"Auto": "Auto", "Manual": "Manual"},
         )
-        dev_box_auto_delete_settings.grace_period = AAZStrArg(
+        dev_box_schedule_delete_settings.grace_period = AAZStrArg(
             options=["grace-period"],
             help="ISO8601 duration required for the dev box to be marked for deletion prior to it being deleted. ISO8601 format PT[n]H[n]M[n]S.",
             nullable=True,
         )
-        dev_box_auto_delete_settings.inactive_threshold = AAZStrArg(
+        dev_box_schedule_delete_settings.inactive_threshold = AAZStrArg(
             options=["inactive-threshold"],
             help="ISO8601 duration required for the dev box to not be inactive prior to it being scheduled for deletion.  ISO8601 format PT[n]H[n]M[n]S.",
             nullable=True,
@@ -330,7 +330,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -429,7 +429,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -506,7 +506,7 @@ class Update(AAZCommand):
                 properties.set_prop("catalogSettings", AAZObjectType)
                 properties.set_prop("customizationSettings", AAZObjectType, ".customization_settings")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("devBoxAutoDeleteSettings", AAZObjectType, ".dev_box_auto_delete_settings")
+                properties.set_prop("devBoxScheduleDeleteSettings", AAZObjectType, ".dev_box_schedule_delete_settings")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
                 properties.set_prop("serverlessGpuSessionsSettings", AAZObjectType, ".serverless_gpu_sessions_settings")
@@ -538,11 +538,11 @@ class Update(AAZCommand):
                 _elements.set_prop("identityResourceId", AAZStrType, ".identity_resource_id")
                 _elements.set_prop("identityType", AAZStrType, ".identity_type")
 
-            dev_box_auto_delete_settings = _builder.get(".properties.devBoxAutoDeleteSettings")
-            if dev_box_auto_delete_settings is not None:
-                dev_box_auto_delete_settings.set_prop("deleteMode", AAZStrType, ".delete_mode")
-                dev_box_auto_delete_settings.set_prop("gracePeriod", AAZStrType, ".grace_period")
-                dev_box_auto_delete_settings.set_prop("inactiveThreshold", AAZStrType, ".inactive_threshold")
+            dev_box_schedule_delete_settings = _builder.get(".properties.devBoxScheduleDeleteSettings")
+            if dev_box_schedule_delete_settings is not None:
+                dev_box_schedule_delete_settings.set_prop("deleteMode", AAZStrType, ".delete_mode")
+                dev_box_schedule_delete_settings.set_prop("gracePeriod", AAZStrType, ".grace_period")
+                dev_box_schedule_delete_settings.set_prop("inactiveThreshold", AAZStrType, ".inactive_threshold")
 
             serverless_gpu_sessions_settings = _builder.get(".properties.serverlessGpuSessionsSettings")
             if serverless_gpu_sessions_settings is not None:
@@ -641,6 +641,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_project_read.properties
+        properties.assigned_groups = AAZListType(
+            serialized_name="assignedGroups",
+        )
         properties.azure_ai_services_settings = AAZObjectType(
             serialized_name="azureAiServicesSettings",
         )
@@ -651,8 +654,8 @@ class _UpdateHelper:
             serialized_name="customizationSettings",
         )
         properties.description = AAZStrType()
-        properties.dev_box_auto_delete_settings = AAZObjectType(
-            serialized_name="devBoxAutoDeleteSettings",
+        properties.dev_box_schedule_delete_settings = AAZObjectType(
+            serialized_name="devBoxScheduleDeleteSettings",
         )
         properties.dev_center_id = AAZStrType(
             serialized_name="devCenterId",
@@ -677,6 +680,15 @@ class _UpdateHelper:
         properties.workspace_storage_settings = AAZObjectType(
             serialized_name="workspaceStorageSettings",
         )
+
+        assigned_groups = _schema_project_read.properties.assigned_groups
+        assigned_groups.Element = AAZObjectType()
+
+        _element = _schema_project_read.properties.assigned_groups.Element
+        _element.object_id = AAZStrType(
+            serialized_name="objectId",
+        )
+        _element.scope = AAZStrType()
 
         azure_ai_services_settings = _schema_project_read.properties.azure_ai_services_settings
         azure_ai_services_settings.azure_ai_services_mode = AAZStrType(
@@ -708,14 +720,17 @@ class _UpdateHelper:
             serialized_name="identityType",
         )
 
-        dev_box_auto_delete_settings = _schema_project_read.properties.dev_box_auto_delete_settings
-        dev_box_auto_delete_settings.delete_mode = AAZStrType(
+        dev_box_schedule_delete_settings = _schema_project_read.properties.dev_box_schedule_delete_settings
+        dev_box_schedule_delete_settings.cancel_on_connect = AAZStrType(
+            serialized_name="cancelOnConnect",
+        )
+        dev_box_schedule_delete_settings.delete_mode = AAZStrType(
             serialized_name="deleteMode",
         )
-        dev_box_auto_delete_settings.grace_period = AAZStrType(
+        dev_box_schedule_delete_settings.grace_period = AAZStrType(
             serialized_name="gracePeriod",
         )
-        dev_box_auto_delete_settings.inactive_threshold = AAZStrType(
+        dev_box_schedule_delete_settings.inactive_threshold = AAZStrType(
             serialized_name="inactiveThreshold",
         )
 

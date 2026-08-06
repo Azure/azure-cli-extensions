@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError as CLIError
 
 
 @register_command(
@@ -41,8 +42,6 @@ class Create(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        # define Arg Group ""
-
         _args_schema = cls._args_schema
         _args_schema.context_name = AAZStrArg(
             options=["-n", "--name", "--context-name"],
@@ -57,8 +56,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.capabilities = AAZListArg(
@@ -109,8 +106,6 @@ class Create(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Resource"
-
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",
@@ -128,6 +123,14 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # Custom arg: --site-id (not sent to ARM, used in post_operations)
+        _args_schema.site_id = AAZStrArg(
+            options=["--site-id"],
+            arg_group="Common",
+            help="ARM resource ID of a Site to auto-create a site reference after context creation.",
+        )
+
         return cls._args_schema
 
     def _execute_operations(self):
@@ -141,7 +144,53 @@ class Create(AAZCommand):
 
     @register_callback
     def post_operations(self):
-        pass
+        if hasattr(self.ctx.args, 'site_id') and self.ctx.args.site_id:
+            self._create_site_reference()
+
+    def _create_site_reference(self):
+        """Auto-create a site reference linking the site to this context.
+
+        Reference name format: <siteName>-<7-char sha256 of lowercased site ARM ID>.
+        7-char hash matches the BVT/Git convention (BVT: ContextExtension.cs
+        GenerateTestSuffix → SHA256[..7]). Hash suffix guarantees uniqueness
+        even when sites share simple names across different scopes (RG / SG).
+        """
+        import hashlib
+        import logging
+        import re
+        import sys
+        logger = logging.getLogger(__name__)
+
+        site_id = str(self.ctx.args.site_id)
+        context_name = str(self.ctx.args.context_name)
+        rg = str(self.ctx.args.resource_group)
+
+        # Extract site name from ARM ID for the reference name
+        site_name = site_id.rstrip("/").split("/")[-1]
+        # 7-char hex of sha256(lower(site_arm_id)) — matches BVT (Git-style short hash)
+        hash_suffix = hashlib.sha256(site_id.lower().encode("utf-8")).hexdigest()[:7]
+        # Site-reference resource name must satisfy ^[a-zA-Z0-9-]{3,24}$, so the
+        # site-name portion is capped at 16 chars (24 - 1 dash - 7 hash). Strip
+        # any trailing dashes that result from truncation to keep the join clean.
+        sanitized_site = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:16].rstrip("-")
+        ref_name = f"{sanitized_site}-{hash_suffix}"
+
+        try:
+            from azext_workload_orchestration.common.utils import invoke_cli_command, CmdProxy
+            cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+            invoke_cli_command(cmd_proxy, [
+                "workload-orchestration", "context", "site-reference", "create",
+                "-g", rg,
+                "--context-name", context_name,
+                "--site-reference-name", ref_name,
+                "--site-id", site_id,
+            ])
+            print(f"Site reference '{ref_name}' linked to context '{context_name}'.", file=sys.stderr)
+        except Exception as exc:
+            logger.warning("Site reference creation failed: %s", exc)
+            raise CLIError(
+                f"Context created successfully, but site reference creation failed: {exc}"
+            )
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

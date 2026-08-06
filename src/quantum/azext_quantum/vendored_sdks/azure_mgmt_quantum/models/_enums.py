@@ -10,6 +10,19 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class ActionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Enum. Indicates the action type. "Internal" refers to actions that are for internal only APIs."""
+
+    INTERNAL = "Internal"
+
+
+class CheckNameAvailabilityReason(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The reason why the given name is not available."""
+
+    INVALID = "Invalid"
+    ALREADY_EXISTS = "AlreadyExists"
+
+
 class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of identity that created the resource."""
 
@@ -20,44 +33,86 @@ class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class KeyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """KeyType."""
+    """The API key type."""
 
     PRIMARY = "Primary"
+    """The primary API key."""
     SECONDARY = "Secondary"
+    """The secondary API key."""
 
 
-class ProvisioningStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Provisioning status field."""
+class ManagedServiceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of managed service identity (where both SystemAssigned and UserAssigned types are
+    allowed).
+    """
 
-    SUCCEEDED = "Succeeded"
-    PROVIDER_LAUNCHING = "ProviderLaunching"
-    PROVIDER_UPDATING = "ProviderUpdating"
-    PROVIDER_DELETING = "ProviderDeleting"
-    PROVIDER_PROVISIONING = "ProviderProvisioning"
-    FAILED = "Failed"
-
-
-class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The identity type."""
-
-    SYSTEM_ASSIGNED = "SystemAssigned"
     NONE = "None"
+    SYSTEM_ASSIGNED = "SystemAssigned"
+    USER_ASSIGNED = "UserAssigned"
+    SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned,UserAssigned"
 
 
-class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+class Origin(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
+    logs UX. Default value is "user,system".
+    """
+
+    USER = "user"
+    SYSTEM = "system"
+    USER_SYSTEM = "user,system"
+
+
+class ProviderStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Provisioning status field."""
 
     SUCCEEDED = "Succeeded"
+    """The provider is successfully provisioned."""
     LAUNCHING = "Launching"
+    """The provider is starting provisioning."""
     UPDATING = "Updating"
+    """The provider is updating."""
     DELETING = "Deleting"
+    """The provider is deleting."""
     DELETED = "Deleted"
+    """The provider is deleted."""
     FAILED = "Failed"
+    """The provider is failed."""
 
 
 class UsableStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Whether the current workspace is ready to accept Jobs."""
 
     YES = "Yes"
+    """The workspace is usable and can accept jobs."""
     NO = "No"
+    """The workspace is not usable and cannot accept jobs."""
     PARTIAL = "Partial"
+    """The workspace is partially usable."""
+
+
+class WorkspaceKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The workspace type."""
+
+    V1 = "V1"
+    """The workspace is a general-purpose workspace."""
+    V2 = "V2"
+    """The workspace is a V2 workspace."""
+
+
+class WorkspaceProvisioningStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The Workspace provisioning status."""
+
+    SUCCEEDED = "Succeeded"
+    """The Workspace provisioning is succeeded."""
+    FAILED = "Failed"
+    """The Workspace provisioning failed."""
+    CANCELED = "Canceled"
+    """Resource creation was canceled."""
+    PROVIDER_LAUNCHING = "ProviderLaunching"
+    """The Workspace is currently starting to provision a provider."""
+    PROVIDER_UPDATING = "ProviderUpdating"
+    """The Workspace is currently updating a provider."""
+    PROVIDER_DELETING = "ProviderDeleting"
+    """The Workspace is currently deleting a provider."""
+    PROVIDER_PROVISIONING = "ProviderProvisioning"
+    """The Workspace is currently provisioning a provider."""

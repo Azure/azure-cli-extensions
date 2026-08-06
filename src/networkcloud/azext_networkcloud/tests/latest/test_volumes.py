@@ -13,6 +13,11 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -25,15 +30,22 @@ def cleanup_scenario1(test):
     pass
 
 
-def call_scenario1(test):
+def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
+    step_create_scenario1(test, checks=[])
     step_update(test, checks=[])
     step_show(test, checks=[])
     step_list_by_resource_group(test)
     step_list_by_subscription(test)
     step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def call_scenario1b(test):
+    """# Testcase: scenario1"""
+    setup_scenario1(test)
+    step_create_scenario2(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -56,7 +68,7 @@ def call_scenario2(test):
     cleanup_scenario2(test)
 
 
-def step_create(test, checks=None):
+def step_create_scenario1(test, checks=None):
     """Volume create operation"""
     if checks is None:
         checks = []
@@ -65,6 +77,18 @@ def step_create(test, checks=None):
         "--name {name} --location {location} "
         '--extended-location name={extendedLocation} type="CustomLocation" '
         "--size {size} --tags {tags}"
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Volume create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud volume create --resource-group {resourceGroup} "
+        "--volume-name {name} --location {location} "
+        '--extended-location name={extendedLocation} type="CustomLocation" '
+        "--size-mib {size} --tags {tags}"
     )
 
 
@@ -93,12 +117,31 @@ def step_update(test, checks=None):
 
 def step_show(test, checks=None):
     """Volume show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud volume show --resource-group {resourceGroup} " "--name {name}",
-        checks=checks,
+    if checks is not None:
+        test.cmd(
+            "az networkcloud volume show --resource-group {resourceGroup} "
+            "--name {name}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud volume show --resource-group {resourceGroup} " "--name {name}"
+    ).get_output_in_json()
+    context = "Volumes show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert properties.get("size") == get_value(
+        test, "size"
+    ), properties_key_mismatch_message("size")
+
+    assert properties.get("storageApplianceId") == get_value(
+        test, "storageApplianceId"
+    ), properties_key_mismatch_message("storageApplianceId")
 
 
 @AllowLargeResponse
@@ -147,9 +190,13 @@ class VolumeScenarioTest(ScenarioTest):
             }
         )
 
-    def test_volume_scenario1(self):
+    def test_volume_scenario1a(self):
         """test scenario for volume CRUD operations"""
-        call_scenario1(self)
+        call_scenario1a(self)
+
+    def test_volume_scenario1b(self):
+        """test scenario for volume create operations"""
+        call_scenario1b(self)
 
     def test_volume_scenario2(self):
         """test scenario for volume CRUD operations with storage appliance"""

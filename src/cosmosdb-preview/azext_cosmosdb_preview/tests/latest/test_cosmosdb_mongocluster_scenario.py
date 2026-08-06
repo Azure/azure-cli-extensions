@@ -6,7 +6,7 @@
 import os
 from unittest import mock
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
@@ -14,7 +14,9 @@ class MongoClusterScenarioTest(ScenarioTest):
 
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
-    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_crud', location='eastus')
+    # Requires M40 + HA tier availability/quota; not recordable in CI, so run live only.
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_crud', location='westcentralus')
     def test_cosmosdb_mongocluster_crud(self, resource_group):
         admin_login = self.create_random_name(prefix='cli', length=8)
         cluster_name = self.create_random_name(prefix='cli', length=10)
@@ -23,7 +25,7 @@ class MongoClusterScenarioTest(ScenarioTest):
             'c': cluster_name,
             'rg': resource_group,
             'c_new': cluster2_name,
-            'loc': 'eastus',
+            'loc': 'westcentralus',
             'admin_user': admin_login,
             'admin_password': 'Cli1@asvrct',
             'server_version': '5.0',
@@ -38,7 +40,7 @@ class MongoClusterScenarioTest(ScenarioTest):
         cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}',
             checks=[
                 self.check('name', cluster_name),
-                self.check('location', 'eastus'),
+                self.check('location', 'westcentralus'),
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.administratorLogin', admin_login),
                 self.check('properties.serverVersion', '5.0'),
@@ -62,7 +64,7 @@ class MongoClusterScenarioTest(ScenarioTest):
         cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c_new} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}',
             checks=[
                 self.check('name', cluster2_name),
-                self.check('location', 'eastus'),
+                self.check('location', 'westcentralus'),
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.administratorLogin', admin_login),
                 self.check('properties.serverVersion', '5.0'),
@@ -80,7 +82,7 @@ class MongoClusterScenarioTest(ScenarioTest):
         cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb}',
             checks=[
                 self.check('name', cluster2_name),
-                self.check('location', 'eastus'),
+                self.check('location', 'westcentralus'),
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.administratorLogin', admin_login),
                 self.check('properties.serverVersion', '5.0'),
@@ -103,13 +105,15 @@ class MongoClusterScenarioTest(ScenarioTest):
 
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
-    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_firewall', location='eastus')
+    # Requires M40 + HA tier availability/quota; not recordable in CI, so run live only.
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_firewall', location='westcentralus')
     def test_cosmosdb_mongocluster_firewall(self, resource_group):
         rule_name = self.create_random_name(prefix='cli', length=10)
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
             'rg': resource_group,
-            'loc': 'eastus',
+            'loc': 'westcentralus',
             'admin_user': self.create_random_name(prefix='cli', length=8),
             'admin_password': 'Cli1@asvrct',
             'server_version': '5.0',

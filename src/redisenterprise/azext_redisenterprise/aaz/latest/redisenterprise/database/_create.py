@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-05-01-preview",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2025-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2025-07-01"],
         ]
     }
 
@@ -94,6 +94,7 @@ class Create(AAZCommand):
             options=["--access-keys-auth", "--access-keys-authentication"],
             arg_group="Properties",
             help="Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.",
+            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.client_protocol = AAZStrArg(
@@ -257,7 +258,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-01-preview",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }

@@ -23,13 +23,13 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
 
         super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
                          recording_patches, replay_patches, random_config_dir)
-        cmd = ['azdev', 'extension', 'add', 'connectedk8s']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'add', 'k8s-extension']
-        run(cmd, check=True)
-        # Wait for extensions to be installed
-        # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
-        sleep(120)
+        # cmd = ['azdev', 'extension', 'add', 'connectedk8s']
+        # run(cmd, check=True)
+        # cmd = ['azdev', 'extension', 'add', 'k8s-extension']
+        # run(cmd, check=True)
+        # # Wait for extensions to be installed
+        # # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
+        # sleep(120)
 
     # If the process contains create_extension, it contains _generate_log_analytics_if_not_provided, which cause playback failed.
     # If the process contains create custom location, it will use a random name, which will cause playback failed too.

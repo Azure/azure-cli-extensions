@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2025-09-01"],
         ]
     }
 
@@ -308,7 +308,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -339,7 +339,295 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cloud_exadata_infrastructure_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.zones = AAZListType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.activated_storage_count = AAZIntType(
+                serialized_name="activatedStorageCount",
+                flags={"read_only": True},
+            )
+            properties.additional_storage_count = AAZIntType(
+                serialized_name="additionalStorageCount",
+                flags={"read_only": True},
+            )
+            properties.available_storage_size_in_gbs = AAZIntType(
+                serialized_name="availableStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.compute_count = AAZIntType(
+                serialized_name="computeCount",
+            )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
+            )
+            properties.cpu_count = AAZIntType(
+                serialized_name="cpuCount",
+                flags={"read_only": True},
+            )
+            properties.customer_contacts = AAZListType(
+                serialized_name="customerContacts",
+            )
+            properties.data_storage_size_in_tbs = AAZFloatType(
+                serialized_name="dataStorageSizeInTbs",
+                flags={"read_only": True},
+            )
+            properties.database_server_type = AAZStrType(
+                serialized_name="databaseServerType",
+            )
+            properties.db_node_storage_size_in_gbs = AAZIntType(
+                serialized_name="dbNodeStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.db_server_version = AAZStrType(
+                serialized_name="dbServerVersion",
+                flags={"read_only": True},
+            )
+            properties.defined_file_system_configuration = AAZListType(
+                serialized_name="definedFileSystemConfiguration",
+                flags={"read_only": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"required": True},
+            )
+            properties.estimated_patching_time = AAZObjectType(
+                serialized_name="estimatedPatchingTime",
+                flags={"read_only": True},
+            )
+            properties.exascale_config = AAZObjectType(
+                serialized_name="exascaleConfig",
+                flags={"read_only": True},
+            )
+            properties.last_maintenance_run_id = AAZStrType(
+                serialized_name="lastMaintenanceRunId",
+                flags={"read_only": True},
+            )
+            properties.lifecycle_details = AAZStrType(
+                serialized_name="lifecycleDetails",
+                flags={"read_only": True},
+            )
+            properties.lifecycle_state = AAZStrType(
+                serialized_name="lifecycleState",
+                flags={"read_only": True},
+            )
+            properties.maintenance_window = AAZObjectType(
+                serialized_name="maintenanceWindow",
+            )
+            properties.max_cpu_count = AAZIntType(
+                serialized_name="maxCpuCount",
+                flags={"read_only": True},
+            )
+            properties.max_data_storage_in_tbs = AAZFloatType(
+                serialized_name="maxDataStorageInTbs",
+                flags={"read_only": True},
+            )
+            properties.max_db_node_storage_size_in_gbs = AAZIntType(
+                serialized_name="maxDbNodeStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.max_memory_in_gbs = AAZIntType(
+                serialized_name="maxMemoryInGbs",
+                flags={"read_only": True},
+            )
+            properties.memory_size_in_gbs = AAZIntType(
+                serialized_name="memorySizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.monthly_db_server_version = AAZStrType(
+                serialized_name="monthlyDbServerVersion",
+                flags={"read_only": True},
+            )
+            properties.monthly_storage_server_version = AAZStrType(
+                serialized_name="monthlyStorageServerVersion",
+                flags={"read_only": True},
+            )
+            properties.next_maintenance_run_id = AAZStrType(
+                serialized_name="nextMaintenanceRunId",
+                flags={"read_only": True},
+            )
+            properties.oci_url = AAZStrType(
+                serialized_name="ociUrl",
+                flags={"read_only": True},
+            )
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.shape = AAZStrType(
+                flags={"required": True},
+            )
+            properties.storage_count = AAZIntType(
+                serialized_name="storageCount",
+            )
+            properties.storage_server_type = AAZStrType(
+                serialized_name="storageServerType",
+            )
+            properties.storage_server_version = AAZStrType(
+                serialized_name="storageServerVersion",
+                flags={"read_only": True},
+            )
+            properties.time_created = AAZStrType(
+                serialized_name="timeCreated",
+                flags={"read_only": True},
+            )
+            properties.total_storage_size_in_gbs = AAZIntType(
+                serialized_name="totalStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+
+            customer_contacts = cls._schema_on_200.properties.customer_contacts
+            customer_contacts.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.customer_contacts.Element
+            _element.email = AAZStrType(
+                flags={"required": True},
+            )
+
+            defined_file_system_configuration = cls._schema_on_200.properties.defined_file_system_configuration
+            defined_file_system_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.defined_file_system_configuration.Element
+            _element.is_backup_partition = AAZBoolType(
+                serialized_name="isBackupPartition",
+            )
+            _element.is_resizable = AAZBoolType(
+                serialized_name="isResizable",
+            )
+            _element.min_size_gb = AAZIntType(
+                serialized_name="minSizeGb",
+            )
+            _element.mount_point = AAZStrType(
+                serialized_name="mountPoint",
+            )
+
+            estimated_patching_time = cls._schema_on_200.properties.estimated_patching_time
+            estimated_patching_time.estimated_db_server_patching_time = AAZIntType(
+                serialized_name="estimatedDbServerPatchingTime",
+                flags={"read_only": True},
+            )
+            estimated_patching_time.estimated_network_switches_patching_time = AAZIntType(
+                serialized_name="estimatedNetworkSwitchesPatchingTime",
+                flags={"read_only": True},
+            )
+            estimated_patching_time.estimated_storage_server_patching_time = AAZIntType(
+                serialized_name="estimatedStorageServerPatchingTime",
+                flags={"read_only": True},
+            )
+            estimated_patching_time.total_estimated_patching_time = AAZIntType(
+                serialized_name="totalEstimatedPatchingTime",
+                flags={"read_only": True},
+            )
+
+            exascale_config = cls._schema_on_200.properties.exascale_config
+            exascale_config.available_storage_in_gbs = AAZIntType(
+                serialized_name="availableStorageInGbs",
+            )
+            exascale_config.total_storage_in_gbs = AAZIntType(
+                serialized_name="totalStorageInGbs",
+                flags={"required": True},
+            )
+
+            maintenance_window = cls._schema_on_200.properties.maintenance_window
+            maintenance_window.custom_action_timeout_in_mins = AAZIntType(
+                serialized_name="customActionTimeoutInMins",
+            )
+            maintenance_window.days_of_week = AAZListType(
+                serialized_name="daysOfWeek",
+            )
+            maintenance_window.hours_of_day = AAZListType(
+                serialized_name="hoursOfDay",
+            )
+            maintenance_window.is_custom_action_timeout_enabled = AAZBoolType(
+                serialized_name="isCustomActionTimeoutEnabled",
+            )
+            maintenance_window.is_monthly_patching_enabled = AAZBoolType(
+                serialized_name="isMonthlyPatchingEnabled",
+            )
+            maintenance_window.lead_time_in_weeks = AAZIntType(
+                serialized_name="leadTimeInWeeks",
+            )
+            maintenance_window.months = AAZListType()
+            maintenance_window.patching_mode = AAZStrType(
+                serialized_name="patchingMode",
+            )
+            maintenance_window.preference = AAZStrType()
+            maintenance_window.weeks_of_month = AAZListType(
+                serialized_name="weeksOfMonth",
+            )
+
+            days_of_week = cls._schema_on_200.properties.maintenance_window.days_of_week
+            days_of_week.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.maintenance_window.days_of_week.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            hours_of_day = cls._schema_on_200.properties.maintenance_window.hours_of_day
+            hours_of_day.Element = AAZIntType()
+
+            months = cls._schema_on_200.properties.maintenance_window.months
+            months.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.maintenance_window.months.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            weeks_of_month = cls._schema_on_200.properties.maintenance_window.weeks_of_month
+            weeks_of_month.Element = AAZIntType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 
@@ -407,7 +695,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -450,7 +738,295 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_cloud_exadata_infrastructure_read(cls._schema_on_200_201)
+
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.zones = AAZListType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200_201.properties
+            properties.activated_storage_count = AAZIntType(
+                serialized_name="activatedStorageCount",
+                flags={"read_only": True},
+            )
+            properties.additional_storage_count = AAZIntType(
+                serialized_name="additionalStorageCount",
+                flags={"read_only": True},
+            )
+            properties.available_storage_size_in_gbs = AAZIntType(
+                serialized_name="availableStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.compute_count = AAZIntType(
+                serialized_name="computeCount",
+            )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
+            )
+            properties.cpu_count = AAZIntType(
+                serialized_name="cpuCount",
+                flags={"read_only": True},
+            )
+            properties.customer_contacts = AAZListType(
+                serialized_name="customerContacts",
+            )
+            properties.data_storage_size_in_tbs = AAZFloatType(
+                serialized_name="dataStorageSizeInTbs",
+                flags={"read_only": True},
+            )
+            properties.database_server_type = AAZStrType(
+                serialized_name="databaseServerType",
+            )
+            properties.db_node_storage_size_in_gbs = AAZIntType(
+                serialized_name="dbNodeStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.db_server_version = AAZStrType(
+                serialized_name="dbServerVersion",
+                flags={"read_only": True},
+            )
+            properties.defined_file_system_configuration = AAZListType(
+                serialized_name="definedFileSystemConfiguration",
+                flags={"read_only": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"required": True},
+            )
+            properties.estimated_patching_time = AAZObjectType(
+                serialized_name="estimatedPatchingTime",
+                flags={"read_only": True},
+            )
+            properties.exascale_config = AAZObjectType(
+                serialized_name="exascaleConfig",
+                flags={"read_only": True},
+            )
+            properties.last_maintenance_run_id = AAZStrType(
+                serialized_name="lastMaintenanceRunId",
+                flags={"read_only": True},
+            )
+            properties.lifecycle_details = AAZStrType(
+                serialized_name="lifecycleDetails",
+                flags={"read_only": True},
+            )
+            properties.lifecycle_state = AAZStrType(
+                serialized_name="lifecycleState",
+                flags={"read_only": True},
+            )
+            properties.maintenance_window = AAZObjectType(
+                serialized_name="maintenanceWindow",
+            )
+            properties.max_cpu_count = AAZIntType(
+                serialized_name="maxCpuCount",
+                flags={"read_only": True},
+            )
+            properties.max_data_storage_in_tbs = AAZFloatType(
+                serialized_name="maxDataStorageInTbs",
+                flags={"read_only": True},
+            )
+            properties.max_db_node_storage_size_in_gbs = AAZIntType(
+                serialized_name="maxDbNodeStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.max_memory_in_gbs = AAZIntType(
+                serialized_name="maxMemoryInGbs",
+                flags={"read_only": True},
+            )
+            properties.memory_size_in_gbs = AAZIntType(
+                serialized_name="memorySizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.monthly_db_server_version = AAZStrType(
+                serialized_name="monthlyDbServerVersion",
+                flags={"read_only": True},
+            )
+            properties.monthly_storage_server_version = AAZStrType(
+                serialized_name="monthlyStorageServerVersion",
+                flags={"read_only": True},
+            )
+            properties.next_maintenance_run_id = AAZStrType(
+                serialized_name="nextMaintenanceRunId",
+                flags={"read_only": True},
+            )
+            properties.oci_url = AAZStrType(
+                serialized_name="ociUrl",
+                flags={"read_only": True},
+            )
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.shape = AAZStrType(
+                flags={"required": True},
+            )
+            properties.storage_count = AAZIntType(
+                serialized_name="storageCount",
+            )
+            properties.storage_server_type = AAZStrType(
+                serialized_name="storageServerType",
+            )
+            properties.storage_server_version = AAZStrType(
+                serialized_name="storageServerVersion",
+                flags={"read_only": True},
+            )
+            properties.time_created = AAZStrType(
+                serialized_name="timeCreated",
+                flags={"read_only": True},
+            )
+            properties.total_storage_size_in_gbs = AAZIntType(
+                serialized_name="totalStorageSizeInGbs",
+                flags={"read_only": True},
+            )
+
+            customer_contacts = cls._schema_on_200_201.properties.customer_contacts
+            customer_contacts.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.customer_contacts.Element
+            _element.email = AAZStrType(
+                flags={"required": True},
+            )
+
+            defined_file_system_configuration = cls._schema_on_200_201.properties.defined_file_system_configuration
+            defined_file_system_configuration.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.defined_file_system_configuration.Element
+            _element.is_backup_partition = AAZBoolType(
+                serialized_name="isBackupPartition",
+            )
+            _element.is_resizable = AAZBoolType(
+                serialized_name="isResizable",
+            )
+            _element.min_size_gb = AAZIntType(
+                serialized_name="minSizeGb",
+            )
+            _element.mount_point = AAZStrType(
+                serialized_name="mountPoint",
+            )
+
+            estimated_patching_time = cls._schema_on_200_201.properties.estimated_patching_time
+            estimated_patching_time.estimated_db_server_patching_time = AAZIntType(
+                serialized_name="estimatedDbServerPatchingTime",
+                flags={"read_only": True},
+            )
+            estimated_patching_time.estimated_network_switches_patching_time = AAZIntType(
+                serialized_name="estimatedNetworkSwitchesPatchingTime",
+                flags={"read_only": True},
+            )
+            estimated_patching_time.estimated_storage_server_patching_time = AAZIntType(
+                serialized_name="estimatedStorageServerPatchingTime",
+                flags={"read_only": True},
+            )
+            estimated_patching_time.total_estimated_patching_time = AAZIntType(
+                serialized_name="totalEstimatedPatchingTime",
+                flags={"read_only": True},
+            )
+
+            exascale_config = cls._schema_on_200_201.properties.exascale_config
+            exascale_config.available_storage_in_gbs = AAZIntType(
+                serialized_name="availableStorageInGbs",
+            )
+            exascale_config.total_storage_in_gbs = AAZIntType(
+                serialized_name="totalStorageInGbs",
+                flags={"required": True},
+            )
+
+            maintenance_window = cls._schema_on_200_201.properties.maintenance_window
+            maintenance_window.custom_action_timeout_in_mins = AAZIntType(
+                serialized_name="customActionTimeoutInMins",
+            )
+            maintenance_window.days_of_week = AAZListType(
+                serialized_name="daysOfWeek",
+            )
+            maintenance_window.hours_of_day = AAZListType(
+                serialized_name="hoursOfDay",
+            )
+            maintenance_window.is_custom_action_timeout_enabled = AAZBoolType(
+                serialized_name="isCustomActionTimeoutEnabled",
+            )
+            maintenance_window.is_monthly_patching_enabled = AAZBoolType(
+                serialized_name="isMonthlyPatchingEnabled",
+            )
+            maintenance_window.lead_time_in_weeks = AAZIntType(
+                serialized_name="leadTimeInWeeks",
+            )
+            maintenance_window.months = AAZListType()
+            maintenance_window.patching_mode = AAZStrType(
+                serialized_name="patchingMode",
+            )
+            maintenance_window.preference = AAZStrType()
+            maintenance_window.weeks_of_month = AAZListType(
+                serialized_name="weeksOfMonth",
+            )
+
+            days_of_week = cls._schema_on_200_201.properties.maintenance_window.days_of_week
+            days_of_week.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.maintenance_window.days_of_week.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            hours_of_day = cls._schema_on_200_201.properties.maintenance_window.hours_of_day
+            hours_of_day.Element = AAZIntType()
+
+            months = cls._schema_on_200_201.properties.maintenance_window.months
+            months.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.maintenance_window.months.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            weeks_of_month = cls._schema_on_200_201.properties.maintenance_window.weeks_of_month
+            weeks_of_month.Element = AAZIntType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200_201.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200_201
 
@@ -465,7 +1041,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones", typ_kwargs={"flags": {"required": True}})
 
@@ -543,273 +1119,6 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_cloud_exadata_infrastructure_read = None
-
-    @classmethod
-    def _build_schema_cloud_exadata_infrastructure_read(cls, _schema):
-        if cls._schema_cloud_exadata_infrastructure_read is not None:
-            _schema.id = cls._schema_cloud_exadata_infrastructure_read.id
-            _schema.location = cls._schema_cloud_exadata_infrastructure_read.location
-            _schema.name = cls._schema_cloud_exadata_infrastructure_read.name
-            _schema.properties = cls._schema_cloud_exadata_infrastructure_read.properties
-            _schema.system_data = cls._schema_cloud_exadata_infrastructure_read.system_data
-            _schema.tags = cls._schema_cloud_exadata_infrastructure_read.tags
-            _schema.type = cls._schema_cloud_exadata_infrastructure_read.type
-            _schema.zones = cls._schema_cloud_exadata_infrastructure_read.zones
-            return
-
-        cls._schema_cloud_exadata_infrastructure_read = _schema_cloud_exadata_infrastructure_read = AAZObjectType()
-
-        cloud_exadata_infrastructure_read = _schema_cloud_exadata_infrastructure_read
-        cloud_exadata_infrastructure_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_exadata_infrastructure_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        cloud_exadata_infrastructure_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_exadata_infrastructure_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        cloud_exadata_infrastructure_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cloud_exadata_infrastructure_read.tags = AAZDictType()
-        cloud_exadata_infrastructure_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_exadata_infrastructure_read.zones = AAZListType(
-            flags={"required": True},
-        )
-
-        properties = _schema_cloud_exadata_infrastructure_read.properties
-        properties.activated_storage_count = AAZIntType(
-            serialized_name="activatedStorageCount",
-            flags={"read_only": True},
-        )
-        properties.additional_storage_count = AAZIntType(
-            serialized_name="additionalStorageCount",
-            flags={"read_only": True},
-        )
-        properties.available_storage_size_in_gbs = AAZIntType(
-            serialized_name="availableStorageSizeInGbs",
-            flags={"read_only": True},
-        )
-        properties.compute_count = AAZIntType(
-            serialized_name="computeCount",
-        )
-        properties.cpu_count = AAZIntType(
-            serialized_name="cpuCount",
-            flags={"read_only": True},
-        )
-        properties.customer_contacts = AAZListType(
-            serialized_name="customerContacts",
-        )
-        properties.data_storage_size_in_tbs = AAZFloatType(
-            serialized_name="dataStorageSizeInTbs",
-            flags={"read_only": True},
-        )
-        properties.db_node_storage_size_in_gbs = AAZIntType(
-            serialized_name="dbNodeStorageSizeInGbs",
-            flags={"read_only": True},
-        )
-        properties.db_server_version = AAZStrType(
-            serialized_name="dbServerVersion",
-            flags={"read_only": True},
-        )
-        properties.display_name = AAZStrType(
-            serialized_name="displayName",
-            flags={"required": True},
-        )
-        properties.estimated_patching_time = AAZObjectType(
-            serialized_name="estimatedPatchingTime",
-        )
-        properties.last_maintenance_run_id = AAZStrType(
-            serialized_name="lastMaintenanceRunId",
-        )
-        properties.lifecycle_details = AAZStrType(
-            serialized_name="lifecycleDetails",
-            flags={"read_only": True},
-        )
-        properties.lifecycle_state = AAZStrType(
-            serialized_name="lifecycleState",
-        )
-        properties.maintenance_window = AAZObjectType(
-            serialized_name="maintenanceWindow",
-        )
-        properties.max_cpu_count = AAZIntType(
-            serialized_name="maxCpuCount",
-            flags={"read_only": True},
-        )
-        properties.max_data_storage_in_tbs = AAZFloatType(
-            serialized_name="maxDataStorageInTbs",
-            flags={"read_only": True},
-        )
-        properties.max_db_node_storage_size_in_gbs = AAZIntType(
-            serialized_name="maxDbNodeStorageSizeInGbs",
-            flags={"read_only": True},
-        )
-        properties.max_memory_in_gbs = AAZIntType(
-            serialized_name="maxMemoryInGbs",
-            flags={"read_only": True},
-        )
-        properties.memory_size_in_gbs = AAZIntType(
-            serialized_name="memorySizeInGbs",
-            flags={"read_only": True},
-        )
-        properties.monthly_db_server_version = AAZStrType(
-            serialized_name="monthlyDbServerVersion",
-            flags={"read_only": True},
-        )
-        properties.monthly_storage_server_version = AAZStrType(
-            serialized_name="monthlyStorageServerVersion",
-            flags={"read_only": True},
-        )
-        properties.next_maintenance_run_id = AAZStrType(
-            serialized_name="nextMaintenanceRunId",
-        )
-        properties.oci_url = AAZStrType(
-            serialized_name="ociUrl",
-            flags={"read_only": True},
-        )
-        properties.ocid = AAZStrType()
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.shape = AAZStrType(
-            flags={"required": True},
-        )
-        properties.storage_count = AAZIntType(
-            serialized_name="storageCount",
-        )
-        properties.storage_server_version = AAZStrType(
-            serialized_name="storageServerVersion",
-            flags={"read_only": True},
-        )
-        properties.time_created = AAZStrType(
-            serialized_name="timeCreated",
-            flags={"read_only": True},
-        )
-        properties.total_storage_size_in_gbs = AAZIntType(
-            serialized_name="totalStorageSizeInGbs",
-            flags={"read_only": True},
-        )
-
-        customer_contacts = _schema_cloud_exadata_infrastructure_read.properties.customer_contacts
-        customer_contacts.Element = AAZObjectType()
-
-        _element = _schema_cloud_exadata_infrastructure_read.properties.customer_contacts.Element
-        _element.email = AAZStrType(
-            flags={"required": True},
-        )
-
-        estimated_patching_time = _schema_cloud_exadata_infrastructure_read.properties.estimated_patching_time
-        estimated_patching_time.estimated_db_server_patching_time = AAZIntType(
-            serialized_name="estimatedDbServerPatchingTime",
-            flags={"read_only": True},
-        )
-        estimated_patching_time.estimated_network_switches_patching_time = AAZIntType(
-            serialized_name="estimatedNetworkSwitchesPatchingTime",
-            flags={"read_only": True},
-        )
-        estimated_patching_time.estimated_storage_server_patching_time = AAZIntType(
-            serialized_name="estimatedStorageServerPatchingTime",
-            flags={"read_only": True},
-        )
-        estimated_patching_time.total_estimated_patching_time = AAZIntType(
-            serialized_name="totalEstimatedPatchingTime",
-            flags={"read_only": True},
-        )
-
-        maintenance_window = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window
-        maintenance_window.custom_action_timeout_in_mins = AAZIntType(
-            serialized_name="customActionTimeoutInMins",
-        )
-        maintenance_window.days_of_week = AAZListType(
-            serialized_name="daysOfWeek",
-        )
-        maintenance_window.hours_of_day = AAZListType(
-            serialized_name="hoursOfDay",
-        )
-        maintenance_window.is_custom_action_timeout_enabled = AAZBoolType(
-            serialized_name="isCustomActionTimeoutEnabled",
-        )
-        maintenance_window.is_monthly_patching_enabled = AAZBoolType(
-            serialized_name="isMonthlyPatchingEnabled",
-        )
-        maintenance_window.lead_time_in_weeks = AAZIntType(
-            serialized_name="leadTimeInWeeks",
-        )
-        maintenance_window.months = AAZListType()
-        maintenance_window.patching_mode = AAZStrType(
-            serialized_name="patchingMode",
-        )
-        maintenance_window.preference = AAZStrType()
-        maintenance_window.weeks_of_month = AAZListType(
-            serialized_name="weeksOfMonth",
-        )
-
-        days_of_week = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window.days_of_week
-        days_of_week.Element = AAZObjectType()
-
-        _element = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window.days_of_week.Element
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-
-        hours_of_day = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window.hours_of_day
-        hours_of_day.Element = AAZIntType()
-
-        months = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window.months
-        months.Element = AAZObjectType()
-
-        _element = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window.months.Element
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-
-        weeks_of_month = _schema_cloud_exadata_infrastructure_read.properties.maintenance_window.weeks_of_month
-        weeks_of_month.Element = AAZIntType()
-
-        system_data = _schema_cloud_exadata_infrastructure_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_cloud_exadata_infrastructure_read.tags
-        tags.Element = AAZStrType()
-
-        zones = _schema_cloud_exadata_infrastructure_read.zones
-        zones.Element = AAZStrType()
-
-        _schema.id = cls._schema_cloud_exadata_infrastructure_read.id
-        _schema.location = cls._schema_cloud_exadata_infrastructure_read.location
-        _schema.name = cls._schema_cloud_exadata_infrastructure_read.name
-        _schema.properties = cls._schema_cloud_exadata_infrastructure_read.properties
-        _schema.system_data = cls._schema_cloud_exadata_infrastructure_read.system_data
-        _schema.tags = cls._schema_cloud_exadata_infrastructure_read.tags
-        _schema.type = cls._schema_cloud_exadata_infrastructure_read.type
-        _schema.zones = cls._schema_cloud_exadata_infrastructure_read.zones
 
 
 __all__ = ["Update"]

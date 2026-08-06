@@ -7,41 +7,47 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, cast
+from typing_extensions import Self
 
 from azure.core.pipeline import policies
 from azure.core.rest import HttpRequest, HttpResponse
+from azure.core.settings import settings
 from azure.mgmt.core import ARMPipelineClient
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
+from azure.mgmt.core.tools import get_arm_endpoints
 
 from . import models as _models
-from ._configuration import AzureQuantumManagementClientConfiguration
-from ._serialization import Deserializer, Serializer
-from .operations import OfferingsOperations, Operations, WorkspaceOperations, WorkspacesOperations
+from ._configuration import AzureQuantumMgmtClientConfiguration
+from ._utils.serialization import Deserializer, Serializer
+from .operations import OfferingsOperations, Operations, SuiteOffersOperations, WorkspacesOperations
 
 if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core import AzureClouds
     from azure.core.credentials import TokenCredential
 
 
-class AzureQuantumManagementClient:  # pylint: disable=client-accepts-api-version-keyword
-    """AzureQuantumManagementClient.
+class AzureQuantumMgmtClient:
+    """Microsoft.Quantum Resource Provider Management API.
 
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.quantum.operations.Operations
     :ivar workspaces: WorkspacesOperations operations
     :vartype workspaces: azure.mgmt.quantum.operations.WorkspacesOperations
     :ivar offerings: OfferingsOperations operations
     :vartype offerings: azure.mgmt.quantum.operations.OfferingsOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.quantum.operations.Operations
-    :ivar workspace: WorkspaceOperations operations
-    :vartype workspace: azure.mgmt.quantum.operations.WorkspaceOperations
+    :ivar suite_offers: SuiteOffersOperations operations
+    :vartype suite_offers: azure.mgmt.quantum.operations.SuiteOffersOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription. The value must be an UUID. Required.
     :type subscription_id: str
-    :param endpoint: Service URL. Default value is "https://management.azure.com".
+    :param endpoint: Service URL. Default value is None.
     :type endpoint: str
-    :keyword api_version: Api Version. Default value is "2023-11-13-preview". Note that overriding
+    :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
+     None.
+    :paramtype cloud_setting: ~azure.core.AzureClouds
+    :keyword api_version: Api Version. Default value is "2025-12-15-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -52,12 +58,24 @@ class AzureQuantumManagementClient:  # pylint: disable=client-accepts-api-versio
         self,
         credential: "TokenCredential",
         subscription_id: str,
-        endpoint: str = "https://management.azure.com",
+        endpoint: Optional[str] = None,
+        *,
+        cloud_setting: Optional["AzureClouds"] = None,
         **kwargs: Any
     ) -> None:
-        self._config = AzureQuantumManagementClientConfiguration(
-            credential=credential, subscription_id=subscription_id, **kwargs
+        _cloud = cloud_setting or settings.current.azure_cloud  # type: ignore
+        _endpoints = get_arm_endpoints(_cloud)
+        if not endpoint:
+            endpoint = _endpoints["resource_manager"]
+        credential_scopes = kwargs.pop("credential_scopes", _endpoints["credential_scopes"])
+        self._config = AzureQuantumMgmtClientConfiguration(
+            credential=credential,
+            subscription_id=subscription_id,
+            cloud_setting=cloud_setting,
+            credential_scopes=credential_scopes,
+            **kwargs
         )
+
         _policies = kwargs.pop("policies", None)
         if _policies is None:
             _policies = [
@@ -76,17 +94,17 @@ class AzureQuantumManagementClient:  # pylint: disable=client-accepts-api-versio
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        self._client: ARMPipelineClient = ARMPipelineClient(base_url=endpoint, policies=_policies, **kwargs)
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, endpoint), policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models._models.__dict__.items() if isinstance(v, type)}
-        client_models.update({k: v for k, v in _models.__dict__.items() if isinstance(v, type)})
+        client_models |= {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
+        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
         self.workspaces = WorkspacesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.offerings = OfferingsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
-        self.workspace = WorkspaceOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.suite_offers = SuiteOffersOperations(self._client, self._config, self._serialize, self._deserialize)
 
     def send_request(self, request: HttpRequest, *, stream: bool = False, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.
@@ -113,7 +131,7 @@ class AzureQuantumManagementClient:  # pylint: disable=client-accepts-api-versio
     def close(self) -> None:
         self._client.close()
 
-    def __enter__(self) -> "AzureQuantumManagementClient":
+    def __enter__(self) -> Self:
         self._client.__enter__()
         return self
 

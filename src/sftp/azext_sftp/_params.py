@@ -16,6 +16,8 @@ def load_arguments(self, _):
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Folder path that contains ssh executables (ssh-keygen, ssh). '
                    'Default to ssh executables in your PATH or C:\\Windows\\System32\\OpenSSH on Windows.')
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true',
+                   help='Do not prompt for confirmation when overwriting an existing SSH key pair.')
 
     with self.argument_context('sftp connect') as c:
         c.argument('storage_account', options_list=['--storage-account', '-s'],
@@ -40,3 +42,13 @@ def load_arguments(self, _):
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Path to folder containing SSH client executables (ssh, sftp, ssh-keygen). '
                    'Default: Uses executables from PATH or C:\\Windows\\System32\\OpenSSH on Windows.')
+        c.argument('buffer_size', options_list=['--buffer-size'],
+                   help='Buffer size in bytes for SFTP file transfers. '
+                   'Default: 262144 (256 KB).',
+                   type=int)
+        c.argument('endpoint_suffix', options_list=['--endpoint-suffix'],
+                   help='Custom storage account endpoint suffix. '
+                   'Default: Uses endpoint based on Azure environment '
+                   '(e.g., blob.core.windows.net).')
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true',
+                   help='Do not prompt for confirmation when overwriting an existing SSH key pair.')

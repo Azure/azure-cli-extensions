@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Updated default value of identity argument in monitor create command.
+
 1.0.2
 ++++++
 * Updated CLI command descriptions.

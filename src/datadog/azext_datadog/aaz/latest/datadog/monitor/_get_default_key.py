@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor get-default-key",
+    is_preview=True,
 )
 class GetDefaultKey(AAZCommand):
     """Fetches the default Datadog API key associated with your monitor resource, which is used for authenticating and sending telemetry data from Azure to Datadog.
@@ -22,9 +23,9 @@ class GetDefaultKey(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/getdefaultkey", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/getdefaultkey", "2025-12-26-preview"],
         ]
     }
 
@@ -49,6 +50,11 @@ class GetDefaultKey(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +126,7 @@ class GetDefaultKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }

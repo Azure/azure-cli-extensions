@@ -13,16 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "vmware private-cloud create",
-    confirmation="LEGAL TERMS\n\nAzure VMware Solution (\"AVS\") is an Azure Service licensed to you as part of your Azure subscription and subject to the terms and conditions of the agreement under which you obtained your Azure subscription (https://azure.microsoft.com/support/legal/). The following additional terms also apply to your use of AVS:\n\nDATA RETENTION. AVS does not currently support retention or extraction of data stored in AVS Clusters. Once an AVS Cluster is deleted, the data cannot be recovered as it terminates all running workloads, components, and destroys all Cluster data and configuration settings, including public IP addresses.\n\nPROFESSIONAL SERVICES DATA TRANSFER TO VMWARE. In the event that you contact Microsoft for technical support relating to Azure VMware Solution and Microsoft must engage VMware for assistance with the issue, Microsoft will transfer the Professional Services Data and the Personal Data contained in the support case to VMware. The transfer is made subject to the terms of the Support Transfer Agreement between VMware and Microsoft, which establishes Microsoft and VMware as independent processors of the Professional Services Data. Before any transfer of Professional Services Data to VMware will occur, Microsoft will obtain and record consent from you for the transfer.\n\nVMWARE DATA PROCESSING AGREEMENT. Once Professional Services Data is transferred to VMware (pursuant to the above section), the processing of Professional Services Data, including the Personal Data contained the support case, by VMware as an independent processor will be governed by the VMware Data Processing Agreement for Microsoft AVS Customers Transferred for L3 Support (the \"VMware Data Processing Agreement\") between you and VMware (located at https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/privacy/vmware-data-processing-agreement.pdf). You also give authorization to allow your representative(s) who request technical support for Azure VMware Solution to provide consent on your behalf to Microsoft for the transfer of the Professional Services Data to VMware.\n\nACCEPTANCE OF LEGAL TERMS. By continuing, you agree to the above additional Legal Terms for AVS. If you are an individual accepting these terms on behalf of an entity, you also represent that you have the legal authority to enter into these additional terms on that entity's behalf.\n\nDo you agree to the above additional terms for AVS?",
+    confirmation="LEGAL TERMS\n\nAzure VMware Solution (\"AVS\") is an Azure Service licensed to you as part of your Azure subscription and subject to the terms and conditions of the agreement under which you obtained your Azure subscription (https://azure.microsoft.com/support/legal/). The following additional terms also apply to your use of AVS:n\nDATA RETENTION. AVS does not currently support retention or extraction of data stored in AVS Clusters. Once an AVS Cluster is deleted, the data cannot be recovered as it terminates all running workloads, components, and destroys all Cluster data and configuration settings, including public IP addresses.\n\nPROFESSIONAL SERVICES DATA TRANSFER TO VMWARE. In the event that you contact Microsoft for technical support relating to Azure VMware Solution and Microsoft must engage VMware for assistance with the issue, Microsoft will transfer the Professional Services Data and the Personal Data contained in the support case to VMware. The transfer is made subject to the terms of the Support Transfer Agreement between VMware and Microsoft, which establishes Microsoft and VMware as independent processors of the Professional Services Data. Before any transfer of Professional Services Data to VMware will occur, Microsoft will obtain and record consent from you for the transfer.\n\nVMWARE DATA PROCESSING AGREEMENT. Once Professional Services Data is transferred to VMware (pursuant to the above section), the processing of Professional Services Data, including the Personal Data contained the support case, by VMware as an independent processor will be governed by the VMware Data Processing Agreement for Microsoft AVS Customers Transferred for L3 Support (the \"VMware Data Processing Agreement\") between you and VMware (located at https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/privacy/vmware-data-processing-agreement.pdf). You also give authorization to allow your representative(s) who request technical support for Azure VMware Solution to provide consent on your behalf to Microsoft for the transfer of the Professional Services Data to VMware.\n\nACCEPTANCE OF LEGAL TERMS. By continuing, you agree to the above additional Legal Terms for AVS. If you are an individual accepting these terms on behalf of an entity, you also represent that you have the legal authority to enter into these additional terms on that entity's behalf.\n\nDo you agree to the above additional terms for AVS?",
 )
 class Create(AAZCommand):
     """Create a private cloud
     """
 
     _aaz_info = {
-        "version": "2024-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2024-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2025-09-01"],
         ]
     }
 
@@ -151,6 +151,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The block of addresses should be unique across VNet in your subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22",
         )
+        _args_schema.vcf_license = AAZObjectArg(
+            options=["--vcf-license"],
+            arg_group="Properties",
+            help="The private cloud license",
+        )
         _args_schema.virtual_network_id = AAZResourceIdArg(
             options=["--virtual-network-id"],
             arg_group="Properties",
@@ -159,6 +164,66 @@ class Create(AAZCommand):
 
         extended_network_blocks = cls._args_schema.extended_network_blocks
         extended_network_blocks.Element = AAZStrArg()
+
+        vcf_license = cls._args_schema.vcf_license
+        vcf_license.vcf5 = AAZObjectArg(
+            options=["vcf5"],
+        )
+
+        vcf5 = cls._args_schema.vcf_license.vcf5
+        vcf5.contract_number = AAZStrArg(
+            options=["contract-number"],
+            help="The Broadcom contract number associated with the license.",
+        )
+        vcf5.site_id = AAZStrArg(
+            options=["site-id"],
+            help="The Broadcom site ID associated with the license.",
+        )
+        vcf5.cores = AAZIntArg(
+            options=["cores"],
+            help="Number of cores included in the license",
+            required=True,
+        )
+        vcf5.end_date = AAZDateTimeArg(
+            options=["end-date"],
+            help="UTC datetime when the license expires",
+            required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        vcf5.labels = AAZListArg(
+            options=["labels"],
+            help="Additional labels passed through for license reporting.",
+        )
+        vcf5.license_key = AAZPasswordArg(
+            options=["license-key"],
+            help="License key",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
+        )
+
+        labels = cls._args_schema.vcf_license.vcf5.labels
+        labels.Element = AAZObjectArg()
+
+        _element = cls._args_schema.vcf_license.vcf5.labels.Element
+        _element.key = AAZStrArg(
+            options=["key"],
+            help="The key of the label.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        _element.value = AAZStrArg(
+            options=["value"],
+            help="The value of the label.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
 
         # define Arg Group "Sku"
 
@@ -252,7 +317,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -296,6 +361,7 @@ class Create(AAZCommand):
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkBlock", AAZStrType, ".network_block", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("vcfLicense", AAZObjectType, ".vcf_license")
                 properties.set_prop("virtualNetworkId", AAZStrType, ".virtual_network_id")
 
             availability = _builder.get(".properties.availability")
@@ -311,6 +377,29 @@ class Create(AAZCommand):
             management_cluster = _builder.get(".properties.managementCluster")
             if management_cluster is not None:
                 management_cluster.set_prop("clusterSize", AAZIntType, ".cluster_size")
+
+            vcf_license = _builder.get(".properties.vcfLicense")
+            if vcf_license is not None:
+                vcf_license.set_const("kind", "vcf5", AAZStrType, ".vcf5", typ_kwargs={"flags": {"required": True}})
+                vcf_license.discriminate_by("kind", "vcf5")
+
+            disc_vcf5 = _builder.get(".properties.vcfLicense{kind:vcf5}")
+            if disc_vcf5 is not None:
+                disc_vcf5.set_prop("broadcomContractNumber", AAZStrType, ".vcf5.contract_number")
+                disc_vcf5.set_prop("broadcomSiteId", AAZStrType, ".vcf5.site_id")
+                disc_vcf5.set_prop("cores", AAZIntType, ".vcf5.cores", typ_kwargs={"flags": {"required": True}})
+                disc_vcf5.set_prop("endDate", AAZStrType, ".vcf5.end_date", typ_kwargs={"flags": {"required": True}})
+                disc_vcf5.set_prop("labels", AAZListType, ".vcf5.labels")
+                disc_vcf5.set_prop("licenseKey", AAZStrType, ".vcf5.license_key", typ_kwargs={"flags": {"secret": True}})
+
+            labels = _builder.get(".properties.vcfLicense{kind:vcf5}.labels")
+            if labels is not None:
+                labels.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.vcfLicense{kind:vcf5}.labels[]")
+            if _elements is not None:
+                _elements.set_prop("key", AAZStrType, ".key", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
             sku = _builder.get(".sku")
             if sku is not None:
@@ -449,6 +538,9 @@ class Create(AAZCommand):
                 serialized_name="vcenterPassword",
                 flags={"secret": True},
             )
+            properties.vcf_license = AAZObjectType(
+                serialized_name="vcfLicense",
+            )
             properties.virtual_network_id = AAZStrType(
                 serialized_name="virtualNetworkId",
             )
@@ -568,6 +660,46 @@ class Create(AAZCommand):
 
             hosts = cls._schema_on_200_201.properties.management_cluster.hosts
             hosts.Element = AAZStrType()
+
+            vcf_license = cls._schema_on_200_201.properties.vcf_license
+            vcf_license.kind = AAZStrType(
+                flags={"required": True},
+            )
+            vcf_license.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            disc_vcf5 = cls._schema_on_200_201.properties.vcf_license.discriminate_by("kind", "vcf5")
+            disc_vcf5.broadcom_contract_number = AAZStrType(
+                serialized_name="broadcomContractNumber",
+            )
+            disc_vcf5.broadcom_site_id = AAZStrType(
+                serialized_name="broadcomSiteId",
+            )
+            disc_vcf5.cores = AAZIntType(
+                flags={"required": True},
+            )
+            disc_vcf5.end_date = AAZStrType(
+                serialized_name="endDate",
+                flags={"required": True},
+            )
+            disc_vcf5.labels = AAZListType()
+            disc_vcf5.license_key = AAZStrType(
+                serialized_name="licenseKey",
+                flags={"secret": True},
+            )
+
+            labels = cls._schema_on_200_201.properties.vcf_license.discriminate_by("kind", "vcf5").labels
+            labels.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.vcf_license.discriminate_by("kind", "vcf5").labels.Element
+            _element.key = AAZStrType(
+                flags={"required": True},
+            )
+            _element.value = AAZStrType(
+                flags={"required": True},
+            )
 
             sku = cls._schema_on_200_201.sku
             sku.capacity = AAZIntType()

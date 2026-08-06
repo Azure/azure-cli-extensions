@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor list-linked-resource",
+    is_preview=True,
 )
 class ListLinkedResource(AAZCommand):
     """Lists all Azure resources that are linked to the same Datadog organization as the specified monitor resource, helping you understand the scope of integration.
@@ -22,9 +23,9 @@ class ListLinkedResource(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listlinkedresources", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listlinkedresources", "2025-12-26-preview"],
         ]
     }
 
@@ -49,6 +50,11 @@ class ListLinkedResource(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -121,7 +127,7 @@ class ListLinkedResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -157,13 +163,16 @@ class ListLinkedResource(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
             _element.id = AAZStrType()
+            _element.location = AAZStrType()
 
             return cls._schema_on_200
 

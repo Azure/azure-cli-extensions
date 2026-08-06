@@ -4,6 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 
+import json
+import os
+import tempfile
+
 from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
@@ -98,6 +102,46 @@ class IdentityBindingTestCases(ScenarioTest):
         show_identity_binding_cmd = ("aks identity-binding show --resource-group {resource_group} --cluster-name {aks_name} "
                                      "-n {identity_binding_name} -o json")
         self.cmd(show_identity_binding_cmd, checks=identity_binding_checks)
+
+        # update the identity binding with an allowed subjects list loaded from a file
+        allowed_subjects = [
+            {
+                "namespaceSelector": {
+                    "matchLabels": ["kubernetes.io/metadata.name=team-a"]
+                }
+            },
+            {
+                "namespaceSelector": {
+                    "matchLabels": ["team=backend"]
+                },
+                "serviceAccountSelector": {
+                    "matchLabels": ["app=my-workload"]
+                }
+            },
+        ]
+        fd, allowed_subjects_file = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        self.addCleanup(os.remove, allowed_subjects_file)
+        with open(allowed_subjects_file, "w", encoding="utf-8") as f:
+            json.dump(allowed_subjects, f)
+        self.kwargs.update({"allowed_subjects_file": allowed_subjects_file})
+
+        update_identity_binding_cmd = (
+            "aks identity-binding update --resource-group {resource_group} --cluster-name {aks_name} "
+            "-n {identity_binding_name} --allowed-subjects-from-file \"{allowed_subjects_file}\" -o json"
+        )
+        self.cmd(update_identity_binding_cmd, checks=[
+            self.check("properties.provisioningState", "Succeeded"),
+            self.check("length(properties.allowedSubjects)", 2),
+            self.check(
+                "properties.allowedSubjects[0].namespaceSelector.matchLabels[0]",
+                "kubernetes.io/metadata.name=team-a",
+            ),
+            self.check(
+                "properties.allowedSubjects[1].serviceAccountSelector.matchLabels[0]",
+                "app=my-workload",
+            ),
+        ])
 
         delete_identity_binding_cmd = ("aks identity-binding delete --resource-group {resource_group} --cluster-name {aks_name} "
                                        "-n {identity_binding_name} -o json")

@@ -1,0 +1,185 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"adminPassword": "TesT##1234", "computeCount":
+      4, "computeModel": "OCPU", "databaseEdition": "EnterpriseEdition", "dbSystemOptions":
+      {"storageManagement": "LVM"}, "dbVersion": "19.27.0.0", "displayName": "BaseDbWhitelisMih",
+      "hostname": "basedbNew", "initialDataStorageSizeInGb": 256, "licenseModel":
+      "LicenseIncluded", "networkAnchorId": "/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest",
+      "nodeCount": 1, "pdbName": "pdbNameSep05", "resourceAnchorId": "/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/resourceAnchors/AzureCliTestRA",
+      "shape": "VM.Standard.E5.Flex", "source": "None", "sshPublicKeys": ["ssh-rsa
+      AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
+      generated-by-azure"]}, "zones": ["1"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database db-system create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1369'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --zones --database-edition --admin-password
+        --resource-anchor-id --network-anchor-id --hostname --shape --display-name
+        --node-count --initial-data-storage-size-in-gb --compute-model --compute-count
+        --db-version --pdb-name --db-system-options --ssh-public-keys --no-wait
+      User-Agent:
+      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/dbSystems/AzureCliSdkNewDdT?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/dbSystems/AzureCliSdkNewDdT","name":"AzureCliSdkNewDdT","type":"oracle.database/dbsystems","location":"eastus","zones":["1"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-12-03T22:20:36.9709745Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-12-03T22:20:36.9709745Z"},"properties":{"source":"None","provisioningState":"Accepted","ociUrl":"https://cloud.oracle.com/dbaas/dbsystems/ocid1.dbsystem.oc1.iad.anuwcljr2edokzyarm7fwcjw7zgmirayg7r6wmmfxhpu2xwkwij3zqgpzmwa?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaao3rjdbq7sge6kfngahqcum6frw4bnjvsjdy2dfnzrubj6cevnkuq","resourceAnchorId":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourcegroups/azurecli/providers/oracle.database/resourceanchors/azureclitestra","networkAnchorId":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest","clusterName":null,"dataStorageSizeInGbs":256,"dbSystemOptions":{"storageManagement":"LVM"},"diskRedundancy":"High","domain":"ocidelegated.ociazureclivne.oraclevcn.com","gridImageOcid":null,"hostname":"basedbnew","ocid":"ocid1.dbsystem.oc1.iad.anuwcljr2edokzyarm7fwcjw7zgmirayg7r6wmmfxhpu2xwkwij3zqgpzmwa","licenseModel":"LicenseIncluded","lifecycleDetails":null,"lifecycleState":"Provisioning","listenerPort":1521,"memorySizeInGbs":64,"nodeCount":1,"scanDnsName":null,"scanIps":null,"shape":"VM.Standard.E5.Flex","sshPublicKeys":["ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
+        generated-by-azure"],"storageVolumePerformanceMode":"HighPerformance","timeZone":"UTC","version":null,"displayName":"AzureCliSdkNewDdT","computeModel":"OCPU","computeCount":4,"databaseEdition":"EnterpriseEdition","adminPassword":null,"dbVersion":"19.27.0.0"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/providers/Oracle.Database/locations/EASTUS/operationStatuses/9ce72702-23e8-4402-80b2-a2fe2e24caca*5EFBE1946C300220DB87C6D238BD2F2E0A521ABBD4DD35815F6A60205B7B3594?api-version=2025-09-01&t=639003972480022151&c=MIIHhzCCBm-gAwIBAgITfAlY2NhYWz_rkiYT0gAACVjY2DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDE5MDMwMTUzWhcNMjYwNDE3MDMwMTUzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALb7q8LgkqS_7Sa915WSEvu_LerzErVZMTTkw7KXLAdnIWMjvrOw1RefK_Xe_cFp1_e2xVZM1Zog0tE-_XlllqRwZapoZJTL14Kmh7C0GvefEv-5GdvOnMy695cBHvQJTv1mqxiuvsmhJdB5__zphMuTvy0lF2K1ceor52XBk_VLEQtBcMhz8UUKVZ2KboqO1b56fjCSzbjn-sv5cQ7zx0_GZYADJbddS7dvpIwmb3QZzHcEcbAec_ouQ-YyxmKTpGa17K6DB_CoquSZ2A0TRHJqBpgeGjL0b652ekPbj9oy-sOOusDnwfN95QPWCJFjmNz1aKdnUhXmx8FU134pOkUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSi0lU0HWkl1SHwyRBzQPtbjPmHfTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACdnVC4tNlyw3EyuiJTFX5692Q_SgsQB7SjH2__G8q1XVJ0GiNSI4NKXoC8rVoxrLDL28sgifuyaEjoA9IYoahBs9l6DzxOxA0fDaBOTteaFuniOzVtW6WubmshP_yDd1pFPJydCOEtgKApCNY8y5eo8GzdatHpMEID7E2ZDrxTnq7PtzLXpoeF0A5W6qhqGypYabh7ugJ5-R8hb1iOlFYy2yvCrBaAW9wwnUPpO3DQRyoxnbzomyTIbrxEJuuaalADYKnu7GVtfL43Srrrx_HEfhy1rsf0ZK9CmJ64NOTHXIRG0kYIl5LhwZVZSEDqBPTAAy9oAm1i5D1jbVw2FPF8&s=Cr9FqdFIfb9IukbmD0cUEEmNEvoPWoUOPSS5MbNEay0j0ZybNkweSG2tNprgo6KrCa_qTpjfHRw2L9LxpdetZypR2W_5yOjNupjRC2KheyLaKoSA_YzDUFvTMcOpvj00LYalRpzsDRo8rH1V1Vzg7oko6d7vlqgRji5UfxHaYgLosVy-KO79jafQ8dPKDTktofKQyjcvdiFTMyMdw67NvTnLsQpB11LEmDB0L0yziowc51XhQVbOIvm6_2TTg8NR3sx_5DDrV4_HyJcP7Ip3Q8RFxA7gPdBsWCc03EWH_uo967vskUp5n5VJBuUn9JsaRFx2T83Zwyli4rL2BihWuA&h=6mc-m1SJhr8GH5rOAK-fL0a4d_E8WjsVj6FmBQ4PrvU
+      cache-control:
+      - no-cache
+      content-length:
+      - '2456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Dec 2025 22:20:47 GMT
+      etag:
+      - '"3a12b030-0000-0100-0000-6930b7bf0000"'
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-8B3D75C63A7912B-202512032220/9EF46A307B23ED6FB5B7306949414480/1643DFADF41DB392C2B2DDE6D195BD86
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/eastus/f94f7338-c1d7-4d75-b32a-86d0199aca9a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 633E9EFC67C849DD938B84B522C20706 Ref B: SJC211051205049 Ref C: 2025-12-03T22:20:35Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database db-system show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/dbSystems/AzureCliSdkNewDdT?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/dbSystems/AzureCliSdkNewDdT","name":"AzureCliSdkNewDdT","type":"oracle.database/dbsystems","location":"eastus","zones":["1"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-12-03T22:20:36.9709745Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-12-03T22:20:36.9709745Z"},"properties":{"source":"None","provisioningState":"Accepted","ociUrl":"https://cloud.oracle.com/dbaas/dbsystems/ocid1.dbsystem.oc1.iad.anuwcljr2edokzyarm7fwcjw7zgmirayg7r6wmmfxhpu2xwkwij3zqgpzmwa?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaao3rjdbq7sge6kfngahqcum6frw4bnjvsjdy2dfnzrubj6cevnkuq","resourceAnchorId":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourcegroups/azurecli/providers/oracle.database/resourceanchors/azureclitestra","networkAnchorId":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest","clusterName":null,"dataStorageSizeInGbs":256,"dbSystemOptions":{"storageManagement":"LVM"},"diskRedundancy":"High","domain":"ocidelegated.ociazureclivne.oraclevcn.com","gridImageOcid":null,"hostname":"basedbnew","ocid":"ocid1.dbsystem.oc1.iad.anuwcljr2edokzyarm7fwcjw7zgmirayg7r6wmmfxhpu2xwkwij3zqgpzmwa","licenseModel":"LicenseIncluded","lifecycleDetails":null,"lifecycleState":"Provisioning","listenerPort":1521,"memorySizeInGbs":64,"nodeCount":1,"scanDnsName":null,"scanIps":null,"shape":"VM.Standard.E5.Flex","sshPublicKeys":["ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
+        generated-by-azure"],"storageVolumePerformanceMode":"HighPerformance","timeZone":"UTC","version":null,"displayName":"AzureCliSdkNewDdT","computeModel":"OCPU","computeCount":4,"databaseEdition":"EnterpriseEdition","adminPassword":null,"dbVersion":"19.27.0.0"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Dec 2025 22:20:48 GMT
+      etag:
+      - '"3a12b030-0000-0100-0000-6930b7bf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 50B4AFCAB0C7416EAE442CC03FA3625A Ref B: SJC211051203037 Ref C: 2025-12-03T22:20:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database db-system list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-15.7.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/dbSystems?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/dbSystems/AzureCliSdkNewDdT","name":"AzureCliSdkNewDdT","type":"oracle.database/dbsystems","location":"eastus","zones":["1"],"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2025-12-03T22:20:36.9709745Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2025-12-03T22:20:36.9709745Z"},"properties":{"source":"None","provisioningState":"Accepted","ociUrl":"https://cloud.oracle.com/dbaas/dbsystems/ocid1.dbsystem.oc1.iad.anuwcljr2edokzyarm7fwcjw7zgmirayg7r6wmmfxhpu2xwkwij3zqgpzmwa?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaao3rjdbq7sge6kfngahqcum6frw4bnjvsjdy2dfnzrubj6cevnkuq","resourceAnchorId":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourcegroups/azurecli/providers/oracle.database/resourceanchors/azureclitestra","networkAnchorId":"/subscriptions/fd42b73d-5f28-4a23-ae7c-ca08c625fe07/resourceGroups/AzureCli/providers/Oracle.Database/networkAnchors/AzureCliTest","dataStorageSizeInGbs":256,"dbSystemOptions":{"storageManagement":"LVM"},"diskRedundancy":"High","domain":"ocidelegated.ociazureclivne.oraclevcn.com","hostname":"basedbnew","ocid":"ocid1.dbsystem.oc1.iad.anuwcljr2edokzyarm7fwcjw7zgmirayg7r6wmmfxhpu2xwkwij3zqgpzmwa","licenseModel":"LicenseIncluded","lifecycleState":"Provisioning","listenerPort":1521,"memorySizeInGbs":64,"nodeCount":1,"shape":"VM.Standard.E5.Flex","sshPublicKeys":["ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJDAu814QnRaYFbuFswJX1IdpFAa8yVk4sneI3Q+QLoTyE4W5GR5f6TR5FqA03zxp41chkvjLysnc+EYJmjXQIbvrsEfaUenGu2AbYE3szBK9v+8iUy8JLgjoGuuxTU3BNCvMlTd00yw/qrOYbEDU9ZBnZVY/0nv2E03AzGUUObZJ8IUgNRUmNdWVFQiVUcmkRRM+XsIEUpuh0S6YJLLweZd+H50Y1mhKWXnZZH8Ed/5EmkSr7cO5WEKU2O/KSbavybkjUVWi6dcQMfwmNLBH9aByqAW8QvcZkZDvxLmimLnm3Jd/QDVvGesjyLbUrWfpbsaDXs+DgjTlFlxyqLPYMON5cfSg8wBj3Y176yWxwmrPnkro8X1Y93poSDQZb9SU68DsTrgVa6FoXWPkbUXz/nZX9GkTwE1Nhy2EPL4J+J50ZUZWG0bK25dFTKrzimLn1Qmvrx3so9qDId9LWbpYI6cJYxDTkGdGpuaHqDqGAi+5HeeXxx3/zO8pErPxy20=
+        generated-by-azure"],"storageVolumePerformanceMode":"HighPerformance","timeZone":"UTC","displayName":"AzureCliSdkNewDdT","computeModel":"OCPU","computeCount":4,"databaseEdition":"EnterpriseEdition","dbVersion":"19.27.0.0"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2334'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Dec 2025 22:20:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 76fb9fe8-85fc-414e-b5e7-48a6c3742319
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 19F274036F534194B3F297C554B87553 Ref B: SJC211051204019 Ref C: 2025-12-03T22:20:49Z'
+    status:
+      code: 200
+      message: OK
+version: 1

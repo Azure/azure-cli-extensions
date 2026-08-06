@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-05-01",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/dnsresolverpolicies/{}/dnssecurityrules/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -140,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-01",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -203,10 +203,12 @@ class Show(AAZCommand):
             )
             properties.dns_resolver_domain_lists = AAZListType(
                 serialized_name="dnsResolverDomainLists",
-                flags={"required": True},
             )
             properties.dns_security_rule_state = AAZStrType(
                 serialized_name="dnsSecurityRuleState",
+            )
+            properties.managed_domain_lists = AAZListType(
+                serialized_name="managedDomainLists",
             )
             properties.priority = AAZIntType(
                 flags={"required": True},
@@ -228,6 +230,9 @@ class Show(AAZCommand):
             _element.id = AAZStrType(
                 flags={"required": True},
             )
+
+            managed_domain_lists = cls._schema_on_200.properties.managed_domain_lists
+            managed_domain_lists.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

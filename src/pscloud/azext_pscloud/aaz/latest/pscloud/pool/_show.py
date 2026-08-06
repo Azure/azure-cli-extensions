@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a storage pool

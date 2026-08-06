@@ -8,13 +8,15 @@ import unittest
 
 from knack.util import CLIError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
 
 
 class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
 
+    # This needs a custom subscription. Will be generalized in next release.
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_copy', location='eastus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_copy_nosql(self, resource_group):
@@ -38,7 +40,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
             'loc': 'eastus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc}')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job
@@ -79,7 +81,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb identity assign -n {acc} -g {rg}')
         self.cmd('az cosmosdb update -n {acc} -g {rg} --default-identity="SystemAssignedIdentity"')
 
-        self.cmd('az cosmosdb create -n {remote_acc} -g {rg} --locations regionName={loc}')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {remote_acc} -g {rg} --locations regionName={loc}')
         self.cmd('az cosmosdb show -n {remote_acc} -g {rg}').get_output_in_json()
 
         # Cross Account Copy Job
@@ -130,7 +132,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
             'loc': 'eastus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableMongo --kind MongoDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableMongo --kind MongoDB')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job
@@ -186,7 +188,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
             'loc': 'eastus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableMongo --kind MongoDB')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableMongo --kind MongoDB')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job
@@ -217,7 +219,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
             'loc': 'eastus'
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableCassandra')
+        self.cmd('az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableCassandra')
         self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job

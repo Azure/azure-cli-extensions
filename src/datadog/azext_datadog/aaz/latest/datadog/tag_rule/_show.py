@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog tag-rule show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Retrieves the details of the tag rules for a specific Datadog monitor resource, providing insight into its setup and status.
@@ -22,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules/{}", "2025-12-26-preview"],
         ]
     }
 
@@ -49,6 +50,11 @@ class Show(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -130,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -179,6 +185,13 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.agent_rules = AAZObjectType(
+                serialized_name="agentRules",
+            )
+            properties.automuting = AAZBoolType()
+            properties.custom_metrics = AAZBoolType(
+                serialized_name="customMetrics",
+            )
             properties.log_rules = AAZObjectType(
                 serialized_name="logRules",
             )
@@ -189,6 +202,18 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            agent_rules = cls._schema_on_200.properties.agent_rules
+            agent_rules.enable_agent_monitoring = AAZBoolType(
+                serialized_name="enableAgentMonitoring",
+            )
+            agent_rules.filtering_tags = AAZListType(
+                serialized_name="filteringTags",
+            )
+
+            filtering_tags = cls._schema_on_200.properties.agent_rules.filtering_tags
+            filtering_tags.Element = AAZObjectType()
+            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             log_rules = cls._schema_on_200.properties.log_rules
             log_rules.filtering_tags = AAZListType(

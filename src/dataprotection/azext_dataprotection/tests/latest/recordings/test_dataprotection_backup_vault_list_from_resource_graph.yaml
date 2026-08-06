@@ -20,21 +20,21 @@ interactions:
       ParameterSetName:
       - --vault-id
       User-Agent:
-      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-persistent-bi-donotdelete","name":"clitest-bkp-vault-persistent-bi-donotdelete","type":"microsoft.dataprotection/backupvaults","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"centraluseuap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"provisioningState":"Succeeded","bcdrSecurityLevel":"Poor","securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}},"secureScore":"None","isVaultProtectedByResourceGuard":false,"replicatedRegions":[],"storageSettings":[{"type":"LocallyRedundant","datastoreType":"VaultStore"}]},"tags":{"Owner":"vpatel","Purpose":"Testing","MABUsed":"yes"},"identity":{"principalId":"9d390201-843e-44d8-ab2c-fef15f3de22d","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"zones":null,"extendedLocation":null}],"facets":[],"resultTruncated":"false"}'
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-persistent-bi-donotdelete","name":"clitest-bkp-vault-persistent-bi-donotdelete","type":"microsoft.dataprotection/backupvaults","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"centraluseuap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"provisioningState":"Succeeded","bcdrSecurityLevel":"Poor","securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}},"isVaultProtectedByResourceGuard":false,"secureScore":"None","regionOfChoiceSettings":{"status":"Enabled"},"replicatedRegions":[],"storageSettings":[{"type":"LocallyRedundant","datastoreType":"VaultStore"}]},"tags":null,"identity":{"principalId":"9d390201-843e-44d8-ab2c-fef15f3de22d","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"zones":null,"extendedLocation":null}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1134'
+      - '1130'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 11 Mar 2025 08:34:54 GMT
+      - Tue, 19 May 2026 05:06:31 GMT
       expires:
       - '-1'
       pragma:
@@ -45,16 +45,20 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-incomplete-scopes-state:
+      - 'True'
+      x-ms-operation-identifier:
+      - ''
       x-ms-ratelimit-remaining-tenant-resource-requests:
       - '14'
       x-ms-resource-graph-request-duration:
-      - '0:00:00:00.3519148'
+      - '0:00:00:00.2751699'
       x-ms-user-quota-remaining:
       - '14'
       x-ms-user-quota-resets-after:
-      - 00:00:04
+      - 00:00:05
       x-msedge-ref:
-      - 'Ref A: B4175960EBE9463982317E6B4916F7F3 Ref B: MAA201060514035 Ref C: 2025-03-11T08:34:54Z'
+      - 'Ref A: 7A13077F4CEF4E5CA9D02486B9EA0167 Ref B: SN4AA2022302009 Ref C: 2026-05-19T05:06:31Z'
     status:
       code: 200
       message: OK

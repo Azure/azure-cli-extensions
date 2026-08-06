@@ -25,7 +25,8 @@ class StandbypoolScenario(ScenarioTest):
             "maxReadyCapacity": 3,
             "minReadyCapacity": 3,
             "virtual_machine_state": "Running",
-            'template': os.path.join(TEST_DIR, 'CreateVMOTemplate.json')
+            'template': os.path.join(TEST_DIR, 'CreateVMOTemplate.json'),
+            'sub': self.get_subscription_id()
         })
         
         self.cmd(
@@ -39,12 +40,15 @@ class StandbypoolScenario(ScenarioTest):
             '--max-ready-capacity {maxReadyCapacity} '
             '--min-ready-capacity {minReadyCapacity} '
             '--vm-state {virtual_machine_state} '
-            '--vmss-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmss_name}',
+            '--dynamic-sizing-enabled True '
+            '--post-provisioning-delay PT2S '
+            '--vmss-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmss_name}',
             checks=[
                 JMESPathCheck('name', self.kwargs.get('standby_pool_name', '')),
                 JMESPathCheck('provisioningState', 'Succeeded'),
                 JMESPathCheck('elasticityProfile.maxReadyCapacity', self.kwargs.get('maxReadyCapacity', 0)),
-
+                JMESPathCheck('elasticityProfile.dynamicSizing.enabled', True),
+                JMESPathCheck('elasticityProfile.postProvisioningDelay', 'PT2S'),
             ]
         )
 
@@ -55,6 +59,8 @@ class StandbypoolScenario(ScenarioTest):
                 JMESPathCheck('name', self.kwargs.get('standby_pool_name', '')),
                 JMESPathCheck('virtualMachineState', self.kwargs.get('virtual_machine_state', '')),
                 JMESPathCheck('elasticityProfile.maxReadyCapacity', self.kwargs.get('maxReadyCapacity', 0)),
+                JMESPathCheck('elasticityProfile.dynamicSizing.enabled', True),
+                JMESPathCheck('elasticityProfile.postProvisioningDelay', 'PT2S'),
                 JMESPathCheck('provisioningState', 'Succeeded'),
             ]
         )
@@ -97,7 +103,8 @@ class StandbypoolScenario(ScenarioTest):
             "location": "centralindia",
             "standby_pool_name": "cgname",
             "container_profile_name":  "testCGP",
-            'template': os.path.join(TEST_DIR, 'CreateContainerGroupProfileTemplate.json')
+            'template': os.path.join(TEST_DIR, 'CreateContainerGroupProfileTemplate.json'),
+            'sub': self.get_subscription_id()
         })
         self.cmd(
             'az network vnet create --name {vnet_name} --resource-group {rg} '
@@ -116,14 +123,16 @@ class StandbypoolScenario(ScenarioTest):
         self.cmd(
             'az standby-container-group-pool create '
             '--resource-group {rg} --name {standby_pool_name} '
-            '--container-profile-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.ContainerInstance/containerGroupProfiles/{container_profile_name} '
+            '--container-profile-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerInstance/containerGroupProfiles/{container_profile_name} '
             '--profile-revision 1 '
             '--subnet-ids [0].id=' + subnetId + ' '
             '--max-ready-capacity 1 --location {location} '
+            '--dynamic-sizing-enabled True '
             '--zones [1]',
             checks=[
                 JMESPathCheck('name', self.kwargs.get('standby_pool_name', '')),
                 JMESPathCheck('provisioningState', 'Succeeded'),
+                JMESPathCheck('elasticityProfile.dynamicSizing.enabled', True),
             ]
         )
 
@@ -133,6 +142,7 @@ class StandbypoolScenario(ScenarioTest):
             checks=[
                 JMESPathCheck('name', self.kwargs.get('standby_pool_name', '')),
                 JMESPathCheck('provisioningState', 'Succeeded'),
+                JMESPathCheck('elasticityProfile.dynamicSizing.enabled', True),
             ]
         )
 

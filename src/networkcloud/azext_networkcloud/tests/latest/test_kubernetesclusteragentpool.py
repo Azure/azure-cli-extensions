@@ -4,6 +4,9 @@
 #
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
+#
+# customizations-ignore-removed={"kubernetescluster_agentpool_create": ["--ssh-public-keys"], "kubernetescluster_agentpool_update": ["--ssh-public-keys"]}
+# customizations-custom-params={"kubernetescluster_agentpool_create":["--ssh-key-values"], "kubernetescluster_agentpool_update":["--ssh-key-values"]}
 
 """
 Kubernetescluster agentpool tests scenarios
@@ -12,6 +15,11 @@ Kubernetescluster agentpool tests scenarios
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value, show_properties
 
 
 def setup_scenario1(test):
@@ -24,14 +32,22 @@ def cleanup_scenario1(test):
     pass
 
 
-def call_scenario1(test):
+def call_scenario1a(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test)
-    step_update(test)
+    step_create_scenario1(test)
+    step_update_scenario1(test)
     step_show(test)
     step_list(test)
     step_delete(test)
+    cleanup_scenario1(test)
+
+
+def call_scenario1b(test):
+    """# Testcase: scenario1"""
+    setup_scenario1(test)
+    step_create_scenario2(test)
+    step_update_scenario2(test)
     cleanup_scenario1(test)
 
 
@@ -52,7 +68,7 @@ def call_scenario2(test):
     cleanup_scenario2(test)
 
 
-def step_create(test, checks=None):
+def step_create_scenario1(test, checks=None):
     """Kubernetescluster agentpool create operation"""
     if checks is None:
         checks = []
@@ -61,7 +77,7 @@ def step_create(test, checks=None):
         "--kubernetes-cluster-name {clusterName} --resource-group {rg} "
         "--location {location} "
         "--extended-location name={extendedLocation} type={extendedLocationType} "
-        "--admin-username={adminUsername} "
+        "--admin-username {adminUsername} "
         "--ssh-key-values {sshKey} "
         "--count {count} --mode {mode} --vm-sku-name {vmSkuName} "
         "--agent-options {agentOptions} --labels {labels} --taints {taints} "
@@ -72,7 +88,27 @@ def step_create(test, checks=None):
     )
 
 
-def step_update(test, checks=None):
+def step_create_scenario2(test, checks=None):
+    """Kubernetescluster agentpool create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster agentpool create --agent-pool-name {name} "
+        "--kc-name {clusterName} --resource-group {rg} "
+        "--location {location} "
+        "--extended-location name={extendedLocation} type={extendedLocationType} "
+        "--admin-username {adminUsername} "
+        "--count {count} --mode {mode} --vm-sku-name {vmSkuName} "
+        "--agent-options {agentOptions} --labels {labels} --taints {taints} "
+        "--attached-net-config l3-networks={l3Networks} "
+        "--availability-zones {availabilityZones} "
+        "--upgrade-settings max-surge={maxSurge} "
+        "--ssh-key-values {sshKey} "
+        "--tags {tags}"
+    )
+
+
+def step_update_scenario1(test, checks=None):
     """Kubernetescluster agentpool update operation"""
     if checks is None:
         checks = []
@@ -83,14 +119,57 @@ def step_update(test, checks=None):
     )
 
 
-def step_show(test, checks=None):
-    """Kubernetescluster agentpool show operation"""
+def step_update_scenario2(test, checks=None):
+    """Kubernetescluster agentpool update operation"""
     if checks is None:
         checks = []
     test.cmd(
+        "az networkcloud kubernetescluster agentpool update --agent-pool-name {name} "
+        "--kc-name {clusterName} --resource-group {rg} "
+        "--ssh-key-values {sshKey} "
+        "--count {count} "
+        "--upgrade-settings max-surge={maxSurge} "
+        "--tags {tagsUpdate}"
+    )
+
+
+def step_show(test, checks=None):
+    """Kubernetescluster agentpool show operation"""
+    if checks is not None:
+        test.cmd(
+            "az networkcloud kubernetescluster agentpool show --name {name} "
+            "--kubernetes-cluster-name {clusterName} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud kubernetescluster agentpool show --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Kubernetesclusteragentpool show"
+
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert result.get("administratorConfiguration", {}).get(
+        "adminUsername"
+    ) == get_value(test, "adminUsername"), properties_key_mismatch_message(
+        "adminUsername"
+    )
+
+    assert str(result.get("count")) == get_value(
+        test, "count"
+    ), properties_key_mismatch_message("count")
+
+    assert result.get("mode") == get_value(
+        test, "mode"
+    ), properties_key_mismatch_message("mode")
+
+    assert result.get("vmSkuName") == get_value(
+        test, "vmSkuName"
+    ), properties_key_mismatch_message("vmSkuName")
 
 
 def step_list(test, checks=None):
@@ -170,9 +249,13 @@ class KubernetesClusterAgentPoolScenarioTest(ScenarioTest):
             }
         )
 
-    def test_kubernetesclusteragentpool_scenario(self):
+    def test_kubernetesclusteragentpool_scenario1a(self):
         """test scenario for kubernetes cluster agentpool CRUD operations"""
-        call_scenario1(self)
+        call_scenario1a(self)
+
+    def test_kubernetesclusteragentpool_scenario1b(self):
+        """test scenario for kubernetes cluster agentpool create and update operations"""
+        call_scenario1b(self)
 
     def test_kubernetesclusteragentpool_scenario2(self):
         """test scenario for kubernetes cluster agentpool administrator credentials update operations"""

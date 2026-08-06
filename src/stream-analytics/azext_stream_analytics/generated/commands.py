@@ -15,7 +15,6 @@
 from azure.cli.core.commands import CliCommandType
 from azext_stream_analytics.generated._client_factory import (
     cf_streaming_job,
-    cf_input,
     cf_transformation,
     cf_function,
     cf_subscription,
@@ -43,8 +42,7 @@ stream_analytics_function = CliCommandType(
 stream_analytics_input = CliCommandType(
     operations_tmpl=(
         'azext_stream_analytics.vendored_sdks.streamanalytics.operations._inputs_operations#InputsOperations.{}'
-    ),
-    client_factory=cf_input,
+    )
 )
 
 
@@ -99,7 +97,7 @@ def load_command_table(self, _):
         g.custom_command('test', 'stream_analytics_function_test', supports_no_wait=True)
         g.custom_wait_command('wait', 'stream_analytics_function_show')
 
-    with self.command_group('stream-analytics input', stream_analytics_input, client_factory=cf_input) as g:
+    with self.command_group('stream-analytics input', stream_analytics_input) as g:
         g.custom_command('list', 'stream_analytics_input_list')
         g.custom_show_command('show', 'stream_analytics_input_show')
         g.custom_command('create', 'stream_analytics_input_create')

@@ -52,7 +52,7 @@ def validate_create(cmd, namespace):
     else:
         namespace.copy_disk_name = namespace.vm_name + '-DiskCopy-' + timestamp
 
-    # Check copy resouce group name
+    # Check copy resource group name
     if namespace.repair_group_name:
         if namespace.repair_group_name == namespace.resource_group_name:
             raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
@@ -91,9 +91,6 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
-    # Prompt input for public ip usage
-    if (not namespace.associate_public_ip) and (not namespace.yes):
-        _prompt_public_ip(namespace)
 
 
 def validate_restore(cmd, namespace):
@@ -181,6 +178,7 @@ def validate_run(cmd, namespace):
 
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
+    # pylint: disable=protected-access
     if namespace._subscription:
         # setting subscription Id
         try:
@@ -189,7 +187,7 @@ def validate_reset_nic(cmd, namespace):
             _call_az_command(set_sub_command)
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
-            raise CLIError('Unexpected error occured while setting the subscription..')
+            raise CLIError('Unexpected error occurred while setting the subscription..')
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 
@@ -235,8 +233,10 @@ def _prompt_public_ip(namespace):
     except NoTTYException:
         raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
+
 def _return_public_ip_name(namespace):
     return namespace.repair_vm_name + "PublicIP"
+
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
@@ -430,7 +430,7 @@ def validate_repair_and_restore(cmd, namespace):
 
     validate_vm_username(namespace.repair_username, is_linux)
     validate_vm_password(namespace.repair_password, is_linux)
-    
+
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
     # Validate repair run command

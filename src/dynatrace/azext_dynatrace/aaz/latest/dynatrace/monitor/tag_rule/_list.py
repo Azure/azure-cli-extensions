@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules", "2024-04-24"],
         ]
     }
 
@@ -49,6 +49,9 @@ class List(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -121,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -191,6 +194,7 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.value.Element.properties.log_rules
@@ -214,6 +218,9 @@ class List(AAZCommand):
             metric_rules = cls._schema_on_200.value.Element.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
+            )
+            metric_rules.sending_metrics = AAZStrType(
+                serialized_name="sendingMetrics",
             )
 
             filtering_tags = cls._schema_on_200.value.Element.properties.metric_rules.filtering_tags

@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Upgrade(AAZCommand):
     """Upgrade the Elastic monitor resource to a newer version, ensuring optimal observability and performance.
 
-    :example: Monitor upgrade
-        az elastic monitor upgrade -g rg --monitor-name monitor --version 8.0.0
+    :example: Monitor_Upgrade
+        az elastic monitor upgrade --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/upgrade", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/upgrade", "2025-06-01"],
         ]
     }
 
@@ -32,8 +32,7 @@ class Upgrade(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -137,7 +136,7 @@ class Upgrade(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

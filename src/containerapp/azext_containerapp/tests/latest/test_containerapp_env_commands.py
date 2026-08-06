@@ -15,7 +15,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import SubnetPreparer
-from .utils import create_vent_subnet
+from .utils import create_vnet_subnet
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -179,6 +179,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
+    @live_only()
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_msi_custom_domains(self, resource_group):
         location = TEST_LOCATION
@@ -415,7 +416,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
                 JMESPathCheck('[0].name', containerapp_cert_name),
                 JMESPathCheck('[0].id', containerapp_cert_id),
             ])
-    
+
 
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -459,7 +460,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        sub_id1 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id1 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         default_env_name = self.create_random_name(prefix='containerapp-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -j -s {}'.format(resource_group, default_env_name, logs_workspace_id, logs_workspace_key, sub_id1), checks=[
@@ -468,7 +469,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', True),
         ])
 
-        sub_id2 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id2 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         default_env_name2 = self.create_random_name(prefix='containerapp-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -j false -s {}'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key, sub_id2),checks=[
@@ -478,7 +479,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        sub_id3 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id3 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -s {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key, sub_id3))
 
@@ -799,7 +800,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
-        sub_id1 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id1 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         self.cmd(
             'containerapp env create -g {} -n {} --logs-destination none -s {}'.format(resource_group, env_name, sub_id1))
@@ -823,7 +824,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
                  ])
 
         self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
-        sub_id2 = create_vent_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
+        sub_id2 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         enabled_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled --logs-destination none -s {}'.format(
@@ -833,6 +834,65 @@ class ContainerappEnvScenarioTest(ScenarioTest):
                  ])
 
         self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, enabled_env_name))
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_environment_mode(self, resource_group):
+        # Scenario: Test environment mode functionality for Container App environments
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        # Scenario 1: Create an environment with explicit WorkloadProfiles mode
+        env_name_wp = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --environment-mode WorkloadProfiles --logs-destination none'.format(resource_group, env_name_wp))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name_wp)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name_wp)).get_output_in_json()
+        
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name_wp), checks=[
+            JMESPathCheck('properties.environmentMode', 'WorkloadProfiles'),
+        ])
+
+        # Scenario 2: Test that environment mode defaults to WorkloadProfiles when no argument is provided
+        # TODO: Enable this test once the RP has rolled out to fix default environment mode bug
+        # default_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        # self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, default_env_name))
+
+        # containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, default_env_name)).get_output_in_json()
+
+        # while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        #     time.sleep(5)
+        #     containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, default_env_name)).get_output_in_json()
+        
+        # self.cmd('containerapp env show -g {} -n {}'.format(resource_group, default_env_name), checks=[
+        #     JMESPathCheck('properties.environmentMode', 'WorkloadProfiles'),
+        # ])
+
+        # self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, default_env_name))
+
+        # Scenario 3: Create an environment with ConsumptionOnly mode
+        env_name_consumption = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --environment-mode ConsumptionOnly --logs-destination none'.format(resource_group, env_name_consumption))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name_consumption)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name_consumption)).get_output_in_json()
+        
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name_consumption), checks=[
+            JMESPathCheck('properties.environmentMode', 'ConsumptionOnly'),
+        ])
+
+        # Cleanup
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name_consumption))
+
+        # self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, default_env_name))
+
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name_wp))
 
 
 class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):

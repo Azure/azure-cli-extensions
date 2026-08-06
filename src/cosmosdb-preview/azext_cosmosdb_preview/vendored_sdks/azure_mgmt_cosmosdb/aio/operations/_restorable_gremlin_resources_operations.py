@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, AsyncIterable, Callable, Dict, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -31,7 +31,8 @@ from ...operations._restorable_gremlin_resources_operations import build_list_re
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class RestorableGremlinResourcesOperations:
@@ -61,7 +62,7 @@ class RestorableGremlinResourcesOperations:
         restore_location: Optional[str] = None,
         restore_timestamp_in_utc: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncIterable["_models.RestorableGremlinResourcesGetResult"]:
+    ) -> AsyncItemPaged["_models.RestorableGremlinResourcesGetResult"]:
         """Return a list of gremlin database and graphs combo that exist on the account at the given
         timestamp and location. This helps in scenarios to validate what resources exist at given
         timestamp and location. This API requires
@@ -135,7 +136,7 @@ class RestorableGremlinResourcesOperations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "automation runtime-environment package list",
 )
 class List(AAZCommand):
-    """List the a list of Packages
+    """List the a list of Packages.
 
     :example: List packages in Runtime Environment
         az automation runtime-environment package list -g rg --automation-account-name myAutomationAccount --runtime-environment-name rt
     """
 
     _aaz_info = {
-        "version": "2023-05-15-preview",
+        "version": "2024-10-23",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/runtimeenvironments/{}/packages", "2023-05-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/runtimeenvironments/{}/packages", "2024-10-23"],
         ]
     }
 
@@ -133,7 +133,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-15-preview",
+                    "api-version", "2024-10-23",
                     required=True,
                 ),
             }

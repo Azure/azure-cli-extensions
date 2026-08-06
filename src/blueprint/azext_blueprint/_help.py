@@ -12,6 +12,13 @@ from knack.help_files import helps  # pylint: disable=unused-import
 helps['blueprint'] = """
     type: group
     short-summary: Commands to manage blueprint.
+    long-summary: |
+        Azure Blueprints is being retired on 31 January 2027. Phased restrictions begin 31 July 2026:
+        no new definitions/versions (31 Jul 2026), no definition edits or new assignments (31 Oct 2026),
+        no assignment edits (31 Dec 2026). When the service retires on 31 January 2027 these commands
+        will stop functioning, and they will be removed from the Azure CLI in a future release. Migrate
+        your definitions to Azure Template Specs and your assignments to Azure Deployment Stacks. See
+        https://aka.ms/AzureBlueprintsRetirement for the full timeline and migration guidance.
 """
 
 helps['blueprint create'] = """

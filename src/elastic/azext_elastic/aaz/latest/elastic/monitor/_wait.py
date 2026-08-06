@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2025-06-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }
@@ -156,6 +156,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -191,6 +192,9 @@ class Wait(AAZWaitCommand):
             properties.generate_api_key = AAZBoolType(
                 serialized_name="generateApiKey",
             )
+            properties.hosting_type = AAZStrType(
+                serialized_name="hostingType",
+            )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
                 flags={"read_only": True},
@@ -204,6 +208,9 @@ class Wait(AAZWaitCommand):
             )
             properties.plan_details = AAZObjectType(
                 serialized_name="planDetails",
+            )
+            properties.project_details = AAZObjectType(
+                serialized_name="projectDetails",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -288,6 +295,14 @@ class Wait(AAZWaitCommand):
             )
             plan_details.term_id = AAZStrType(
                 serialized_name="termID",
+            )
+
+            project_details = cls._schema_on_200.properties.project_details
+            project_details.configuration_type = AAZStrType(
+                serialized_name="configurationType",
+            )
+            project_details.project_type = AAZStrType(
+                serialized_name="projectType",
             )
 
             sku = cls._schema_on_200.sku

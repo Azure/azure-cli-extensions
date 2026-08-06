@@ -10,6 +10,7 @@ For more information on how to use this service, run the following CLI commands:
 
 ` az durabletask scheduler -h `
 ` az durabletask taskhub -h `
+` az durabletask retention-policy -h `
 
 You can create a scheduler with the following command:
 ` az durabletask scheduler create -g "<resource-group-name>" -n "<scheduler-name>"`
@@ -34,3 +35,12 @@ Show information on a single taskhub:
 
 Delete a taskhub:
 ` az durabletask taskhub delete -g <resource-group-name> -s <scheduler-name> -n <task-hub-name> `
+
+Create a retention policy for a particular scheduler:
+` az durabletask retention-policy create -g <resource-group-name> --scheduler-name <scheduler-name> --default-days 30 `
+
+Show a retention policy for a particular scheduler:
+` az durabletask retention-policy show -g <resource-group-name> --scheduler-name <scheduler-name> `
+
+Delete a retention policy for a particular scheduler:
+` az durabletask retention-policy delete -g <resource-group-name> --scheduler-name <scheduler-name> `

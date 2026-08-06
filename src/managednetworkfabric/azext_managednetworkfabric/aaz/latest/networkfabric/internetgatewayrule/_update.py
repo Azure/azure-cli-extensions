@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgatewayrules/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgatewayrules/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -58,12 +58,12 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Properties",
+            arg_group="Body",
             help="Resource tags.",
         )
 
@@ -152,7 +152,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "storage-mover job-definition",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Job Definition resource, which contains configuration for a single unit of managed data transfer.
+    """Manage Job Definition
     """
     pass
 

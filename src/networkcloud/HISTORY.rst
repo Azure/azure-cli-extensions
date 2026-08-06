@@ -2,9 +2,34 @@
 
 Release History
 ===============
+
+5.0.1
+++++++++
+* Cluster `update` operation was fixed to allow nullable fields on properties.
+* This version of the CLI was regenerated using the newer aaz-dev tools.
+
+5.0.0
+++++++++
+* This stable version supports NetworkCloud 2026-07-01 APIs.
+
+5.0.0b2
+++++++++
+* This preview version supports NetworkCloud 2026-05-01-preview APIs.
+
+5.0.0b1
+++++++++
+* This preview version supports NetworkCloud 2026-01-01-preview APIs.
+* Adds `kubernetesversion` resource to support `create`, `update`, `show`, `list`, and `delete` commands.
+* Adds `clustermanager update-relay-private-endpoint-connection` command.
+* Adds `cluster inspect` command.
+
 4.0.0
 ++++++++
 * This stable version supports NetworkCloud 2025-09-01 APIs.
+
+4.0.0b2
+++++++++
+* Fixing zip/slip vulnerability in our custom_operations code.
 
 4.0.0b1
 ++++++++

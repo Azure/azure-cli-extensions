@@ -63,6 +63,6 @@ class GA_DeviceRebootGracefulNoZTPScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Reboot_GracefulNoZTP_scenario1(self):
+    def test_GA_device_reboot_graceful_noztp_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)

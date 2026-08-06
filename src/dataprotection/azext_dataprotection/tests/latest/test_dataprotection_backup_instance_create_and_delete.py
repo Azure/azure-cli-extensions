@@ -8,7 +8,7 @@
 
 import unittest
 from random import randint
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion
 
@@ -48,7 +48,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
     def setUp(test):
         super().setUp()
         test.kwargs.update({
-            'location': 'centraluseuap',
+            'location': 'eastus',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-donotdelete',
         })
@@ -56,13 +56,17 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_create_backup_delete_disk(test):
         test.kwargs.update({
+            'subscriptionId': '59e574f1-e278-4b66-875b-e3e4fe74ad88',
+            'originalSubscriptionId': test.cmd('az account show --query id -o tsv').output.strip(),
             'dataSourceType': "AzureDisk",
             'permissionsScope': "Resource",
-            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy',
+            'policyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy',
             'diskName': 'clitest-disk-donotdelete',
-            'diskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete',
+            'diskId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete',
             'policyRuleName': "BackupHourly"
         })
+        test.addCleanup(lambda: test.cmd('az account set --subscription "{originalSubscriptionId}"'))
+        test.cmd('az account set --subscription "{subscriptionId}"')
         backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fa1"
         backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
                                         '-l "{location}" --policy-id "{policyId}" --datasource-id "{diskId}" --snapshot-rg "{rg}" --tags Owner=dppclitest Purpose=Testing').get_output_in_json()
@@ -86,10 +90,11 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
         track_job_to_completion(test)
 
-    @unittest.skip("Temporary skip to allow AKS hotfix through")
     @AllowLargeResponse()
+    @live_only()
     def test_dataprotection_backup_instance_create_and_delete_blob(test):
         test.kwargs.update({
+            'location': 'centraluseuap',
             'dataSourceType': "AzureBlob",
             'permissionsScope': "Resource",
             'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy',
@@ -137,3 +142,75 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
             container_name = container['name']
             test.kwargs.update({"containerName": container_name})
             test.cmd('storage container delete --name "{containerName}" --account-name "{storageAccountName}" --auth-mode login')
+
+    @AllowLargeResponse()
+    @live_only()
+    def test_dataprotection_backup_instance_create_and_delete_adls(test):
+        test.kwargs.update({
+            'dataSourceType': 'AzureDataLakeStorage',
+            'permissionsScope': 'Resource',
+            'rg': 'dataprotectionclitest-rg',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.DataProtection/backupVaults/blobclivault/backupPolicies/adlsblobpolicy',
+            'storageAccountName': 'createbkpadlsclitestsa',
+            'storageAccountId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionclitest-rg/providers/Microsoft.Storage/storageAccounts/createbkpadlsclitestsa',
+            'policyRuleName': 'BackupWeekly',
+            'new_container_name': 'testcontainer',
+            'vaultName': 'blobclivault',
+            'location': 'eastus'
+        })
+
+        backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type "{dataSourceType}" '
+                                      '--include-all-containers --storage-account-rg "{rg}" --storage-account-name "{storageAccountName}"').get_output_in_json()
+        print(backup_config_json)
+        test.kwargs.update({
+            "backupConfig": backup_config_json
+        })
+
+        backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fa1"
+        backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
+                                        '-l "{location}" --policy-id "{policyId}" --datasource-id "{storageAccountId}" --snapshot-rg "{rg}" --tags Owner=dppclitest Purpose=Testing '
+                                        '--backup-config "{backupConfig}" ').get_output_in_json()
+        backup_instance_json["backup_instance_name"] = test.kwargs['storageAccountName'] + "-" + test.kwargs['storageAccountName'] + "-" + backup_instance_guid
+        test.kwargs.update({
+            "backupInstance": backup_instance_json,
+            "backupInstanceName": backup_instance_json["backup_instance_name"]
+        })
+
+        # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
+        # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type "{dataSourceType}" --operation Backup --permissions-scope "{permissionsScope}" '
+        #          '-g "{rg}" --vault-name "{vaultName}" --backup-instance "{backupInstance}" --yes')
+        # import time
+        # time.sleep(30)
+
+        backup_instance_validate_create(test)
+
+        # Uncomment if second policy for ADLS is not present
+        # # Create a new policy for update testing
+        # new_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type "{dataSourceType}"').get_output_in_json()
+        # # Modify the policy (e.g., change retention duration)
+        # new_policy_json['policyRules'][1]['lifecycles'][0]['deleteAfter']['duration'] = 'P14D'  # Change from P7D to P14D
+        # test.kwargs.update({"newPolicy": new_policy_json})
+        
+        # test.cmd('az dataprotection backup-policy create -n "adlspolicy-updated" --policy "{newPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+        #     test.check('properties.datasourceTypes[0]', "Microsoft.Storage/storageAccounts/adlsBlobServices")
+        # ])
+        
+        # # Get the new policy ID
+        new_policy_id = test.cmd('az dataprotection backup-policy show -n "adlspolicy-updated" -g "{rg}" --vault-name "{vaultName}" --query id -o tsv').output
+        test.kwargs.update({"newPolicyId": new_policy_id.strip()})
+        
+        # Update the backup instance with the new policy
+        test.cmd('az dataprotection backup-instance update-policy -g "{rg}" --vault-name "{vaultName}" '
+                '--backup-instance-name "{backupInstanceName}" --policy-id "{newPolicyId}"', checks=[
+            test.exists('properties.policyInfo.policyId'),
+            test.check_pattern('properties.policyInfo.policyId', '.*adlspolicy-updated.*')
+        ])
+        
+        import time
+        time.sleep(180)
+
+        # Trigger ad-hoc backup for vaulted blob. Ad-hoc backup job may fail as backup-instance will get deleted before backup completes.,
+        # but the test will pass as the job is triggered successfully.
+        adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
+                                         '-n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}" --rule-name "{policyRuleName}"').get_output_in_json()
+        test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})

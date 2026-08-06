@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get protection policy with specified name within a resource group.
+
+    :example: Get Policy
+        az network front-door waf-policy show --resource-group rg1 --policy-name Policy1
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-11-01"],
         ]
     }
 
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }
@@ -273,16 +276,84 @@ class Show(AAZCommand):
             transforms.Element = AAZStrType()
 
             frontend_endpoint_links = cls._schema_on_200.properties.frontend_endpoint_links
-            frontend_endpoint_links.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            frontend_endpoint_links.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.frontend_endpoint_links.Element
             _element.id = AAZStrType()
 
             managed_rules = cls._schema_on_200.properties.managed_rules
+            managed_rules.exceptions_list = AAZObjectType(
+                serialized_name="exceptionsList",
+            )
             managed_rules.managed_rule_sets = AAZListType(
                 serialized_name="managedRuleSets",
+            )
+
+            exceptions_list = cls._schema_on_200.properties.managed_rules.exceptions_list
+            exceptions_list.exceptions = AAZListType()
+
+            exceptions = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions
+            exceptions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element
+            _element.match_values = AAZListType(
+                serialized_name="matchValues",
+                flags={"required": True},
+            )
+            _element.match_variable = AAZStrType(
+                serialized_name="matchVariable",
+                flags={"required": True},
+            )
+            _element.scopes = AAZListType(
+                flags={"required": True},
+            )
+            _element.selector = AAZStrType()
+            _element.selector_match_operator = AAZStrType(
+                serialized_name="selectorMatchOperator",
+            )
+            _element.value_match_operator = AAZStrType(
+                serialized_name="valueMatchOperator",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.match_values
+            match_values.Element = AAZStrType()
+
+            scopes = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.scopes
+            scopes.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element
+            _element.rule_group_scopes = AAZListType(
+                serialized_name="ruleGroupScopes",
+            )
+            _element.rule_set_type = AAZStrType(
+                serialized_name="ruleSetType",
+                flags={"required": True},
+            )
+            _element.rule_set_version = AAZStrType(
+                serialized_name="ruleSetVersion",
+                flags={"required": True},
+            )
+
+            rule_group_scopes = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes
+            rule_group_scopes.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element
+            _element.rule_group_name = AAZStrType(
+                serialized_name="ruleGroupName",
+                flags={"required": True},
+            )
+            _element.rule_scopes = AAZListType(
+                serialized_name="ruleScopes",
+            )
+
+            rule_scopes = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element.rule_scopes
+            rule_scopes.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element.rule_scopes.Element
+            _element.rule_id = AAZStrType(
+                serialized_name="ruleId",
+                flags={"required": True},
             )
 
             managed_rule_sets = cls._schema_on_200.properties.managed_rules.managed_rule_sets
@@ -337,6 +408,7 @@ class Show(AAZCommand):
                 serialized_name="ruleId",
                 flags={"required": True},
             )
+            _element.sensitivity = AAZStrType()
 
             exclusions = cls._schema_on_200.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
             exclusions.Element = AAZObjectType()
@@ -392,17 +464,13 @@ class Show(AAZCommand):
             _element.state = AAZStrType()
 
             routing_rule_links = cls._schema_on_200.properties.routing_rule_links
-            routing_rule_links.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            routing_rule_links.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.routing_rule_links.Element
             _element.id = AAZStrType()
 
             security_policy_links = cls._schema_on_200.properties.security_policy_links
-            security_policy_links.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            security_policy_links.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.security_policy_links.Element
             _element.id = AAZStrType()

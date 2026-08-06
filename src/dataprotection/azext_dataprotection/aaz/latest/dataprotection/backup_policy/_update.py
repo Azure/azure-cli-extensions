@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backuppolicies/{}", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backuppolicies/{}", "2025-07-01"],
         ]
     }
 
@@ -276,6 +276,9 @@ class Update(AAZCommand):
         schedule_times = cls._args_schema.policy.policy_rules.Element.azure_backup_rule.trigger.schedule_based_trigger_context.tagging_criteria.Element.criteria.Element.schedule_based_backup_criteria.schedule_times
         schedule_times.Element = AAZDateTimeArg(
             nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
 
         weeks_of_the_month = cls._args_schema.policy.policy_rules.Element.azure_backup_rule.trigger.schedule_based_trigger_context.tagging_criteria.Element.criteria.Element.schedule_based_backup_criteria.weeks_of_the_month
@@ -305,6 +308,7 @@ class Update(AAZCommand):
         )
         _element.source_data_store = AAZObjectArg(
             options=["source-data-store"],
+            help="DataStoreInfo base",
         )
         cls._build_args_data_store_info_base_update(_element.source_data_store)
         _element.target_data_store_copy_settings = AAZListArg(
@@ -313,14 +317,13 @@ class Update(AAZCommand):
         )
 
         delete_after = cls._args_schema.policy.policy_rules.Element.azure_retention_rule.lifecycles.Element.delete_after
+        delete_after.absolute_delete_option = AAZObjectArg(
+            options=["absolute-delete-option"],
+            blank={},
+        )
         delete_after.duration = AAZStrArg(
             options=["duration"],
             help="Duration of deletion after given timespan",
-        )
-        delete_after.object_type = AAZStrArg(
-            options=["object-type"],
-            help="Type of the specific object - used for deserializing",
-            enum={"AbsoluteDeleteOption": "AbsoluteDeleteOption"},
         )
 
         target_data_store_copy_settings = cls._args_schema.policy.policy_rules.Element.azure_retention_rule.lifecycles.Element.target_data_store_copy_settings
@@ -340,8 +343,16 @@ class Update(AAZCommand):
         cls._build_args_data_store_info_base_update(_element.data_store)
 
         copy_after = cls._args_schema.policy.policy_rules.Element.azure_retention_rule.lifecycles.Element.target_data_store_copy_settings.Element.copy_after
+        copy_after.copy_on_expiry_option = AAZObjectArg(
+            options=["copy-on-expiry-option"],
+            blank={},
+        )
         copy_after.custom_copy_option = AAZObjectArg(
             options=["custom-copy-option"],
+        )
+        copy_after.immediate_copy_option = AAZObjectArg(
+            options=["immediate-copy-option"],
+            blank={},
         )
 
         custom_copy_option = cls._args_schema.policy.policy_rules.Element.azure_retention_rule.lifecycles.Element.target_data_store_copy_settings.Element.copy_after.custom_copy_option
@@ -484,7 +495,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -571,7 +582,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -777,7 +788,8 @@ class Update(AAZCommand):
             delete_after = _builder.get(".properties{objectType:BackupPolicy}.policyRules[]{objectType:AzureRetentionRule}.lifecycles[].deleteAfter")
             if delete_after is not None:
                 delete_after.set_prop("duration", AAZStrType, ".duration", typ_kwargs={"flags": {"required": True}})
-                delete_after.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
+                delete_after.set_const("objectType", "AbsoluteDeleteOption", AAZStrType, ".absolute_delete_option", typ_kwargs={"flags": {"required": True}})
+                delete_after.discriminate_by("objectType", "AbsoluteDeleteOption")
 
             target_data_store_copy_settings = _builder.get(".properties{objectType:BackupPolicy}.policyRules[]{objectType:AzureRetentionRule}.lifecycles[].targetDataStoreCopySettings")
             if target_data_store_copy_settings is not None:
@@ -790,8 +802,12 @@ class Update(AAZCommand):
 
             copy_after = _builder.get(".properties{objectType:BackupPolicy}.policyRules[]{objectType:AzureRetentionRule}.lifecycles[].targetDataStoreCopySettings[].copyAfter")
             if copy_after is not None:
+                copy_after.set_const("objectType", "CopyOnExpiryOption", AAZStrType, ".copy_on_expiry_option", typ_kwargs={"flags": {"required": True}})
                 copy_after.set_const("objectType", "CustomCopyOption", AAZStrType, ".custom_copy_option", typ_kwargs={"flags": {"required": True}})
+                copy_after.set_const("objectType", "ImmediateCopyOption", AAZStrType, ".immediate_copy_option", typ_kwargs={"flags": {"required": True}})
+                copy_after.discriminate_by("objectType", "CopyOnExpiryOption")
                 copy_after.discriminate_by("objectType", "CustomCopyOption")
+                copy_after.discriminate_by("objectType", "ImmediateCopyOption")
 
             disc_custom_copy_option = _builder.get(".properties{objectType:BackupPolicy}.policyRules[]{objectType:AzureRetentionRule}.lifecycles[].targetDataStoreCopySettings[].copyAfter{objectType:CustomCopyOption}")
             if disc_custom_copy_option is not None:

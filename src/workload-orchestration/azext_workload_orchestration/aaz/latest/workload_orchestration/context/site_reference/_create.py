@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azext_workload_orchestration.aaz.latest.workload_orchestration._resource_validator import ValidateResourceExists
 
 
 @register_command(
@@ -78,6 +79,8 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        if has_value(self.ctx.args.site_id):
+            ValidateResourceExists(ctx=self.ctx, resource_id=self.ctx.args.site_id, resource_label="Site")()
         yield self.SiteReferencesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 

@@ -7,7 +7,9 @@ from typing import Tuple
 
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
+    CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+    CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
@@ -140,13 +142,13 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
         extension_type = extension.extension_type.lower()
         if extension_type != CONST_ACSTOR_V1_K8S_EXTENSION_NAME:
             return_val = False
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         return_val = False
 
     return return_val
 
 
-def get_extension_installed_and_cluster_configs(
+def get_extension_installed_and_cluster_configs_v1(
     cmd,
     resource_group,
     cluster_name,
@@ -237,7 +239,7 @@ def get_extension_installed_and_cluster_configs(
                         is_ephemeralDisk_nvme_enabled = True
                         break
 
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         is_extension_installed = False
 
     return (
@@ -249,6 +251,56 @@ def get_extension_installed_and_cluster_configs(
         resource_cpu_value,
         ephemeral_disk_volume_type,
         perf_tier
+    )
+
+
+def get_extension_installed_and_cluster_configs(
+    cmd,
+    resource_group,
+    cluster_name
+) -> Tuple[bool, bool, bool]:
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    is_extension_installed = False
+    is_ephemeral_disk_enabled = False
+    is_elastic_san_enabled = False
+
+    try:
+        extension = k8s_extension_custom_mod.show_k8s_extension(
+            client,
+            resource_group,
+            cluster_name,
+            CONST_ACSTOR_EXT_INSTALLATION_NAME,
+            "managedClusters",
+        )
+
+        extension_type = extension.extension_type.lower()
+        is_extension_installed = extension_type == CONST_ACSTOR_K8S_EXTENSION_NAME
+        config_settings = extension.configuration_settings
+
+        if is_extension_installed and config_settings is not None:
+            is_ephemeral_disk_enabled = (
+                config_settings.get("csiDriverConfigs.local-csi-driver.enabled", "False") == "True"
+            )
+            is_elastic_san_enabled = (
+                config_settings.get("csiDriverConfigs.azuresan-csi-driver.enabled", "False") == "True"
+            )
+
+    except Exception:  # pylint: disable=broad-except
+        is_extension_installed = False
+
+    return (
+        is_extension_installed,
+        is_ephemeral_disk_enabled,
+        is_elastic_san_enabled,
+    )
+
+
+def should_delete_extension(storage_options_to_remove) -> bool:
+    return (
+        storage_options_to_remove in [True, CONST_ACSTOR_ALL] or
+        (isinstance(storage_options_to_remove, list) and CONST_ACSTOR_ALL in storage_options_to_remove)
     )
 
 
@@ -476,18 +528,18 @@ def check_if_new_storagepool_creation_required(
 def generate_vm_sku_cache_for_region(cli_ctx, location=None):
     result = _get_vm_sku_details(cli_ctx, location)
     for vm_data in result:
-        sku_name = vm_data.name.lower()
-        capabilities = vm_data.capabilities
+        sku_name = vm_data.get('name', '').lower()
+        capabilities = vm_data.get('capabilities', [])
         cpu_value = -1
         nvme_enabled = False
         for entry in capabilities:
-            if entry.name == 'vCPUs' and cpu_value == -1:
-                cpu_value = int(entry.value)
+            if entry.get('name') == 'vCPUs' and cpu_value == -1:
+                cpu_value = int(entry.get('value'))
 
-            if entry.name == 'vCPUsAvailable':
-                cpu_value = int(entry.value)
+            if entry.get('name') == 'vCPUsAvailable':
+                cpu_value = int(entry.get('value'))
 
-            if entry.name == 'NvmeDiskSizeInMiB':
+            if entry.get('name') == 'NvmeDiskSizeInMiB':
                 nvme_enabled = True
 
             vm_sku_details_cache[sku_name] = (cpu_value, nvme_enabled)
@@ -600,9 +652,9 @@ def _get_vm_sku_details(cli_ctx, location=None):
                 return True
         return False
 
-    from azext_aks_preview._client_factory import get_compute_client
-    result = get_compute_client(cli_ctx).resource_skus.list()
-    result = [x for x in result if x.resource_type.lower() == 'virtualmachines']
+    from azure.cli.command_modules.vm.aaz.latest.vm import ListSkus as VMListSkus
+    result = VMListSkus(cli_ctx=cli_ctx)(command_args={})
+    result = [x for x in result if x.get('resourceType', '').lower() == 'virtualmachines']
     if location:
-        result = [r for r in result if _is_vm_in_required_location(location, r.locations)]
+        result = [r for r in result if _is_vm_in_required_location(location, r.get('locations', []))]
     return result

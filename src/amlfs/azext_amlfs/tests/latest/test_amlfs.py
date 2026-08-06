@@ -16,11 +16,15 @@ class AmlfsScenario(ScenarioTest):
             'vnet': self.create_random_name('vnet', 10),
             'subnet': self.create_random_name('subnet', 15),
             'amlfs': self.create_random_name('sys', 10),
-            'id_name': self.create_random_name('id', 10)
+            'id_name': self.create_random_name('id', 10),
+            'nat_pip': self.create_random_name('natpip', 12),
+            'nat_gw': self.create_random_name('natgw', 11),
         })
         identity_id = self.cmd('identity create -g {rg} -n {id_name} ').get_output_in_json()['id']
         self.cmd('network vnet create -n {vnet} -g {rg} --address-prefix 20.0.0.0/24')
-        subnet_id = self.cmd('network vnet subnet create -n {subnet} -g {rg} --address-prefix 20.0.0.0/24 --vnet-name {vnet}').get_output_in_json()['id']
+        self.cmd('network public-ip create -n {nat_pip} -g {rg} --sku Standard --allocation-method Static --ip-tags "FirstPartyUsage=/NonProd"')
+        self.cmd('network nat gateway create -n {nat_gw} -g {rg} --public-ip-addresses {nat_pip}')
+        subnet_id = self.cmd('network vnet subnet create -n {subnet} -g {rg} --address-prefix 20.0.0.0/24 --vnet-name {vnet} --default-outbound-access false --nat-gateway {nat_gw}').get_output_in_json()['id']
         self.kwargs.update({
             'identity_id': identity_id,
             'subnet_id': subnet_id

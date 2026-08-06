@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new Qumulo file system storage resource.
+
+    :example: FileSystems_CreateOrUpdate_MaximumSet
+        az qumulo storage file-system create -g <resource-group> -n <file-system-name> --marketplace-details "{offerId:<offerId>,planId:<planId>,publisherId:<publisherId>}" --storage-sku <Hot|Cold> --user-details "{email:user@example.com}" --delegated-subnet-id /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<vnet>/subnets/<subnet> --admin-password <password> --availability-zone <zone> --tags "{}" --location <location>
     """
 
     _aaz_info = {
-        "version": "2024-06-19",
+        "version": "2026-04-16",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2024-06-19"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2026-04-16"],
         ]
     }
 
@@ -76,10 +79,13 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.admin_password = AAZStrArg(
+        _args_schema.admin_password = AAZPasswordArg(
             options=["--admin-password"],
             arg_group="Properties",
             help="Initial administrator password of the resource",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.availability_zone = AAZStrArg(
             options=["--availability-zone"],
@@ -89,7 +95,7 @@ class Create(AAZCommand):
         _args_schema.cluster_login_url = AAZStrArg(
             options=["--cluster-login-url"],
             arg_group="Properties",
-            help="File system Id of the resource",
+            help="Cluster login URL of the resource",
         )
         _args_schema.delegated_subnet_id = AAZStrArg(
             options=["--delegated-subnet-id"],
@@ -100,6 +106,11 @@ class Create(AAZCommand):
             options=["--marketplace-details"],
             arg_group="Properties",
             help="Marketplace details",
+        )
+        _args_schema.performance_tier = AAZStrArg(
+            options=["--performance-tier"],
+            arg_group="Properties",
+            help="Pre-Provisioned Performance of the Resource",
         )
         _args_schema.private_ips = AAZListArg(
             options=["--private-ips"],
@@ -253,7 +264,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-19",
+                    "api-version", "2026-04-16",
                     required=True,
                 ),
             }
@@ -299,6 +310,7 @@ class Create(AAZCommand):
                 properties.set_prop("clusterLoginUrl", AAZStrType, ".cluster_login_url")
                 properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("performanceTier", AAZStrType, ".performance_tier")
                 properties.set_prop("privateIPs", AAZListType, ".private_ips")
                 properties.set_prop("storageSku", AAZStrType, ".storage_sku", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("userDetails", AAZObjectType, ".user_details", typ_kwargs={"flags": {"required": True}})
@@ -379,6 +391,7 @@ class Create(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
@@ -412,6 +425,9 @@ class Create(AAZCommand):
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
+            )
+            properties.performance_tier = AAZStrType(
+                serialized_name="performanceTier",
             )
             properties.private_i_ps = AAZListType(
                 serialized_name="privateIPs",

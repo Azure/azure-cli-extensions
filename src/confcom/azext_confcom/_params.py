@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import json
 from knack.arguments import CLIArgumentType
+from argcomplete.completers import FilesCompleter
 from azext_confcom._validators import (
     validate_params_file,
     validate_diff,
@@ -43,6 +45,40 @@ def load_arguments(self, _):
         c.argument("tags", tags_type)
         c.argument("confcom_name", confcom_name_type, options_list=["--name", "-n"])
 
+    with self.argument_context("confcom fragment attach") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=str,
+            default=None,
+            completer=FilesCompleter(),
+            help="Path to signed fragment to attach (reads from stdin if not provided)",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            type=str,
+            help="The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.",
+        )
+    with self.argument_context("confcom fragment push") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=str,
+            default=None,
+            completer=FilesCompleter(),
+            help="Path to signed fragment to push (reads from stdin if not provided)",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
+
     with self.argument_context("confcom acipolicygen") as c:
         c.argument(
             "input_path",
@@ -78,6 +114,17 @@ def load_arguments(self, _):
             required=False,
             help="Image Name",
             validator=validate_aci_source
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="linux/amd64",
+            help="Target platform for policy generation. Defaults to linux/amd64. "
+                 "Note: Docker Desktop must be running in the matching container mode "
+                 "(Linux containers for linux/amd64, Windows containers for windows/amd64) "
+                 "to produce correct layer hashes.",
+            choices=["linux/amd64", "windows/amd64"],
         )
         c.argument(
             "tar_mapping_location",
@@ -197,6 +244,14 @@ def load_arguments(self, _):
             options_list=("--exclude-default-fragments", "-e"),
             required=False,
             help="Exclude default fragments in the generated policy",
+        )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            type=json.loads,
+            required=False,
+            help='Container definitions to include in the policy'
         )
 
     with self.argument_context("confcom acifragmentgen") as c:
@@ -345,6 +400,21 @@ def load_arguments(self, _):
             help="Path to JSON file to write fragment import information. This is used with --generate-import. If not specified, the import statement will print to the console",
             validator=validate_fragment_json,
         )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            required=False,
+            type=json.loads,
+            help='Container definitions to include in the policy'
+        )
+        c.argument(
+            "out_signed_fragment",
+            action="store_true",
+            default=False,
+            required=False,
+            help="Emit only the signed fragment bytes",
+        )
 
     with self.argument_context("confcom katapolicygen") as c:
         c.argument(
@@ -416,4 +486,93 @@ def load_arguments(self, _):
             required=False,
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
+        )
+
+    with self.argument_context("confcom containers from_image") as c:
+        c.positional(
+            "image",
+            type=str,
+            help="Image to create container definition from",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom containers from_vn2") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "container_name",
+            options_list=['--name', "-n"],
+            required=False,
+            type=str,
+            help='The name of the container in the template to use. If omitted, all containers are returned.'
+        )
+
+    with self.argument_context("confcom containers from_radius") as c:
+        c.positional(
+            "template",
+            type=str,
+            completer=FilesCompleter(),
+            help="Radius Bicep template to create container definition from",
+        )
+        c.argument(
+            "parameters",
+            options_list=['--parameters', '-p'],
+            action='append',
+            nargs='+',
+            completer=FilesCompleter(),
+            required=False,
+            default=[],
+            help='The parameters for the radius template'
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='The index of the container definition in the template to use'
+        )
+        c.argument(
+            "platform",
+            options_list=["--platform"],
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for (aci or vn2)",
+        )
+
+    with self.argument_context("confcom radius policy_insert") as c:
+        c.positional(
+            "policy_file",
+            nargs='?',
+            type=str,
+            default=None,
+            completer=FilesCompleter(),
+            help="Path to policy file to insert (reads from stdin if not provided)",
+        )
+        c.argument(
+            "template_path",
+            options_list=['--template', '-t'],
+            required=True,
+            type=str,
+            completer=FilesCompleter(),
+            help='Path to Radius Bicep template to update with the policy',
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='Index of the container in the template to update (0-based). Defaults to 0.'
         )

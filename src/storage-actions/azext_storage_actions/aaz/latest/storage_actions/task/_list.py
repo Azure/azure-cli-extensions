@@ -248,7 +248,7 @@ class List(AAZCommand):
 
             operations = cls._schema_on_200.value.Element.properties.action["else"].operations
             operations.Element = AAZObjectType()
-            _ListHelper._build_schema_storage_task_operation_read(operations.Element)
+            _ListHelper._build_schema_storagetaskoperation_read(operations.Element)
 
             if_ = cls._schema_on_200.value.Element.properties.action["if"]
             if_.condition = AAZStrType(
@@ -260,7 +260,7 @@ class List(AAZCommand):
 
             operations = cls._schema_on_200.value.Element.properties.action["if"].operations
             operations.Element = AAZObjectType()
-            _ListHelper._build_schema_storage_task_operation_read(operations.Element)
+            _ListHelper._build_schema_storagetaskoperation_read(operations.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -467,7 +467,7 @@ class List(AAZCommand):
 
             operations = cls._schema_on_200.value.Element.properties.action["else"].operations
             operations.Element = AAZObjectType()
-            _ListHelper._build_schema_storage_task_operation_read(operations.Element)
+            _ListHelper._build_schema_storagetaskoperation_read(operations.Element)
 
             if_ = cls._schema_on_200.value.Element.properties.action["if"]
             if_.condition = AAZStrType(
@@ -479,7 +479,7 @@ class List(AAZCommand):
 
             operations = cls._schema_on_200.value.Element.properties.action["if"].operations
             operations.Element = AAZObjectType()
-            _ListHelper._build_schema_storage_task_operation_read(operations.Element)
+            _ListHelper._build_schema_storagetaskoperation_read(operations.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -510,38 +510,38 @@ class List(AAZCommand):
 class _ListHelper:
     """Helper class for List"""
 
-    _schema_storage_task_operation_read = None
+    _schema_storagetaskoperation_read = None
 
     @classmethod
-    def _build_schema_storage_task_operation_read(cls, _schema):
-        if cls._schema_storage_task_operation_read is not None:
-            _schema.name = cls._schema_storage_task_operation_read.name
-            _schema.on_failure = cls._schema_storage_task_operation_read.on_failure
-            _schema.on_success = cls._schema_storage_task_operation_read.on_success
-            _schema.parameters = cls._schema_storage_task_operation_read.parameters
+    def _build_schema_storagetaskoperation_read(cls, _schema):
+        if cls._schema_storagetaskoperation_read is not None:
+            _schema.name = cls._schema_storagetaskoperation_read.name
+            _schema.on_failure = cls._schema_storagetaskoperation_read.on_failure
+            _schema.on_success = cls._schema_storagetaskoperation_read.on_success
+            _schema.parameters = cls._schema_storagetaskoperation_read.parameters
             return
 
-        cls._schema_storage_task_operation_read = _schema_storage_task_operation_read = AAZObjectType()
+        cls._schema_storagetaskoperation_read = _schema_storagetaskoperation_read = AAZObjectType()
 
-        storage_task_operation_read = _schema_storage_task_operation_read
-        storage_task_operation_read.name = AAZStrType(
+        storagetaskoperation_read = _schema_storagetaskoperation_read
+        storagetaskoperation_read.name = AAZStrType(
             flags={"required": True},
         )
-        storage_task_operation_read.on_failure = AAZStrType(
+        storagetaskoperation_read.on_failure = AAZStrType(
             serialized_name="onFailure",
         )
-        storage_task_operation_read.on_success = AAZStrType(
+        storagetaskoperation_read.on_success = AAZStrType(
             serialized_name="onSuccess",
         )
-        storage_task_operation_read.parameters = AAZDictType()
+        storagetaskoperation_read.parameters = AAZDictType()
 
-        parameters = _schema_storage_task_operation_read.parameters
+        parameters = _schema_storagetaskoperation_read.parameters
         parameters.Element = AAZStrType()
 
-        _schema.name = cls._schema_storage_task_operation_read.name
-        _schema.on_failure = cls._schema_storage_task_operation_read.on_failure
-        _schema.on_success = cls._schema_storage_task_operation_read.on_success
-        _schema.parameters = cls._schema_storage_task_operation_read.parameters
+        _schema.name = cls._schema_storagetaskoperation_read.name
+        _schema.on_failure = cls._schema_storagetaskoperation_read.on_failure
+        _schema.on_success = cls._schema_storagetaskoperation_read.on_success
+        _schema.parameters = cls._schema_storagetaskoperation_read.parameters
 
 
 __all__ = ["List"]

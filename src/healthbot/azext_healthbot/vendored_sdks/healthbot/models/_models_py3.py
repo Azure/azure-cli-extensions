@@ -455,8 +455,7 @@ class Sku(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param name: Required. The name of the HealthBot SKU. Possible values include: "F0", "S1",
-     "C0".
+    :param name: Required. The name of the HealthBot SKU. Possible values include: "F0", "C0", "C1", "PES".
     :type name: str or ~azure.mgmt.healthbot.models.SkuName
     """
 

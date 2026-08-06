@@ -119,7 +119,7 @@ class GA_DeviceRoScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Ro_scenario1(self):
+    def test_GA_device_ro_scenario1(self):
         """test scenario for Device CRUD operations - valid JSON"""
         call_scenario1(self)
 
@@ -138,7 +138,7 @@ class GA_DeviceRoScenarioTest2(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Ro_scenario2(self):
+    def test_GA_device_ro_scenario2(self):
         """test scenario for Device CRUD operations - invalid JSON"""
         call_scenario2(self)
 
@@ -157,6 +157,6 @@ class GA_DeviceRoScenarioTest3(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Ro_scenario3(self):
+    def test_GA_device_ro_scenario3(self):
         """test scenario for Device CRUD operations - invalid JSON"""
         call_scenario3(self)

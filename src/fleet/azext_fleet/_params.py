@@ -26,7 +26,7 @@ from azext_fleet._validators import (
     validate_targets,
     validate_update_strategy_id,
     validate_labels,
-    validate_enable_vnet_integration
+    validate_enable_vnet_integration,
 )
 
 labels_type = CLIArgumentType(
@@ -65,6 +65,7 @@ def load_arguments(self, _):
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+        c.ignore('skip_kubelogin_conversion')  # Internal parameter, not exposed to users
 
     with self.argument_context('fleet member') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet member name.')
@@ -88,6 +89,10 @@ def load_arguments(self, _):
             options_list=['--member-labels', '--labels'],
             help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
         )
+
+    with self.argument_context('fleet member list') as c:
+        c.argument('cluster_mesh_profile', options_list=['--cluster-mesh-profile'],
+                   help='Filter members by cluster mesh profile name.')
 
     with self.argument_context('fleet updaterun') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the update run.')
@@ -123,7 +128,7 @@ def load_arguments(self, _):
     with self.argument_context('fleet autoupgradeprofile create') as c:
         c.argument('update_strategy_id', validator=validate_update_strategy_id,
                    help='The resource ID of the update strategy that the auto upgrade profile should follow.')
-        c.argument('channel', options_list=['--channel', '-c'], arg_type=get_enum_type(['Stable', 'Rapid', 'NodeImage', 'TargetKubernetesVersion']),
+        c.argument('channel', options_list=['--channel', '-c'], arg_type=get_enum_type(['Stable', 'Rapid', 'NodeImage', 'TargetKubernetesVersion', 'SecurityPatch']),
                    help='The auto upgrade channel type.')
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded.')
@@ -134,7 +139,7 @@ def load_arguments(self, _):
                 'This is the target Kubernetes version for auto-upgrade. The format must be "{major version}.{minor version}". '
                 'For example, "1.30". By default, this is empty. '
                 'If the upgrade channel is set to TargetKubernetesVersion, this field must not be empty. '
-                'If the upgrade channel is Rapid, Stable, or NodeImage, this field must be empty.'
+                'If the upgrade channel is Rapid, Stable, NodeImage, or SecurityPatch, this field must be empty.'
             )
         )
         c.argument('disabled', action='store_true',
@@ -155,6 +160,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('state_filter', options_list=['--state-filter', '--state'], help='Apply a filter on gate state. Valid values are: Pending, Skipped, Completed')
+        c.argument('gate_type', options_list=['--gate-type'], help='Apply a filter on gate type. Valid values are: Approval, ScheduledStart')
 
     with self.argument_context('fleet gate show') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
@@ -195,9 +201,22 @@ def load_arguments(self, _):
         c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
         c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
         c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument('rollout_update_strategy', options_list=['--rollout-update-strategy', '--rus'], help='Name of an existing cluster staged update strategy. When specified, rollout strategy is automatically set to External; otherwise defaults to RollingUpdate.', is_preview=True)
 
     with self.argument_context('fleet namespace update') as c:
         c.argument('tags', tags_type)
+        c.argument('labels', labels_type, help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('annotations', labels_type, help='Space-separated annotations in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('cpu_requests', help='CPU requests for the namespace. Example: 1000m')
+        c.argument('cpu_limits', help='CPU limits for the namespace. Example: 1000m')
+        c.argument('memory_requests', help='Memory requests for the namespace. Example: 500Mi')
+        c.argument('memory_limits', help='Memory limits for the namespace. Example: 500Mi')
+        c.argument('ingress_policy', help='Ingress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('egress_policy', help='Egress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']))
+        c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']))
+        c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument('rollout_update_strategy', options_list=['--rollout-update-strategy', '--rus'], help='Name of the cluster update strategy. When specified, rollout strategy is automatically set to External; otherwise defaults to RollingUpdate.', is_preview=True)
 
     with self.argument_context('fleet namespace get-credentials') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
@@ -206,3 +225,24 @@ def load_arguments(self, _):
         c.argument('overwrite_existing', help='Overwrite any existing cluster entry with the same name.')
         c.argument('path', options_list=['--file'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+
+    with self.argument_context('fleet clustermeshprofile') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Specify name for the cluster mesh profile.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
+
+    with self.argument_context('fleet clustermeshprofile wait') as c:
+        c.argument('cluster_mesh_profile_name', options_list=['--cluster-mesh-profile-name', '--name', '-n'],
+                   help='Specify name for the cluster mesh profile.')
+
+    with self.argument_context('fleet clustermeshprofile create') as c:
+        c.argument('member_selector', options_list=['--member-selector', '--selector', '-s'],
+                   help='Kubernetes-style label selector for selecting Fleet members, e.g. "env=production".')
+
+    with self.argument_context('fleet clustermeshprofile apply') as c:
+        c.argument('what_if', action='store_true', options_list=['--what-if'],
+                   help='Show what changes would be made by the apply operation without actually performing it.')
+
+    with self.argument_context('fleet clustermeshprofile list-members') as c:
+        c.argument('selector', action='store_true', options_list=['--selector'],
+                   help='Filter by the profile\'s label selector (members that would match after apply) '
+                        'instead of currently applied members.')

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-08-01-preview",
         "resources": [
-            ["data-plane:microsoft.devcenter", "/projects/{}/pools/{}", "2025-04-01-preview"],
+            ["data-plane:microsoft.devcenter", "/projects/{}/pools/{}", "2025-08-01-preview"],
         ]
     }
 
@@ -147,7 +147,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-08-01-preview",
                     required=True,
                 ),
             }
@@ -211,6 +211,9 @@ class Show(AAZCommand):
             _schema_on_200.os_type = AAZStrType(
                 serialized_name="osType",
             )
+            _schema_on_200.single_sign_on_status = AAZStrType(
+                serialized_name="singleSignOnStatus",
+            )
             _schema_on_200.stop_on_disconnect = AAZObjectType(
                 serialized_name="stopOnDisconnect",
             )
@@ -229,6 +232,12 @@ class Show(AAZCommand):
                 serialized_name="autoStartEnableStatus",
                 flags={"required": True},
             )
+            active_hours_configuration.days_of_week_limit = AAZIntType(
+                serialized_name="daysOfWeekLimit",
+            )
+            active_hours_configuration.default_days_of_week = AAZListType(
+                serialized_name="defaultDaysOfWeek",
+            )
             active_hours_configuration.default_end_time_hour = AAZIntType(
                 serialized_name="defaultEndTimeHour",
             )
@@ -242,6 +251,9 @@ class Show(AAZCommand):
                 serialized_name="keepAwakeEnableStatus",
                 flags={"required": True},
             )
+
+            default_days_of_week = cls._schema_on_200.active_hours_configuration.default_days_of_week
+            default_days_of_week.Element = AAZStrType()
 
             hardware_profile = cls._schema_on_200.hardware_profile
             hardware_profile.memory_gb = AAZIntType(

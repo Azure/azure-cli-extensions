@@ -17,7 +17,7 @@ except ImportError:
 
 # Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "2.0.0b3"
+VERSION = "2.0.0b6"
 
 
 # The full list of classifiers is available at
@@ -35,8 +35,8 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "oras==0.1.30",
-    "jinja2==3.1.4",
-    "genson==1.2.2",
+    "jinja2==3.1.6",
+    "genson==1.3.0",
     "ruamel.yaml==0.18.6",
 ]
 

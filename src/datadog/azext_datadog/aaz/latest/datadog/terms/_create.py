@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog terms create",
-    is_experimental=True,
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a new marketplace agreement for Datadog services in your Azure subscription, enabling you to subscribe to Datadog services through Azure Marketplace.
@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/agreements/default", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.datadog/agreements/default", "2025-12-26-preview"],
         ]
     }
 
@@ -81,6 +81,9 @@ class Create(AAZCommand):
             options=["--retrieve-datetime"],
             arg_group="Properties",
             help="Date and time in UTC of when the terms were accepted. This is empty if Accepted is false.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.signature = AAZStrArg(
             options=["--signature"],
@@ -146,7 +149,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }

@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, Dict, IO, Iterable, Iterator, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, IO, Iterator, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import PipelineClient
@@ -36,7 +36,8 @@ from .._configuration import CosmosDBManagementClientConfiguration
 from .._utils.serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
@@ -46,7 +47,7 @@ def build_list_request(subscription_id: str, **kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -70,7 +71,7 @@ def build_list_by_resource_group_request(resource_group_name: str, subscription_
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -100,7 +101,7 @@ def build_get_request(resource_group_name: str, fleet_name: str, subscription_id
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -133,7 +134,7 @@ def build_create_request(resource_group_name: str, fleet_name: str, subscription
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -169,7 +170,7 @@ def build_update_request(resource_group_name: str, fleet_name: str, subscription
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -205,7 +206,7 @@ def build_delete_request(resource_group_name: str, fleet_name: str, subscription
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-04-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -246,7 +247,7 @@ class FleetOperations:
 
     models = _models
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
         self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: CosmosDBManagementClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
@@ -254,7 +255,7 @@ class FleetOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> Iterable["_models.FleetResource"]:
+    def list(self, **kwargs: Any) -> ItemPaged["_models.FleetResource"]:
         """Lists all the fleets under the subscription.
 
         :return: An iterator like instance of either FleetResource or the result of cls(response)
@@ -321,7 +322,10 @@ class FleetOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated2, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -329,7 +333,7 @@ class FleetOperations:
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> Iterable["_models.FleetResource"]:
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> ItemPaged["_models.FleetResource"]:
         """Lists all the fleets under the specified subscription and resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -400,7 +404,10 @@ class FleetOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated2, pipeline_response)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -453,7 +460,10 @@ class FleetOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated2, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("FleetResource", pipeline_response.http_response)
@@ -580,7 +590,10 @@ class FleetOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated2, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("FleetResource", pipeline_response.http_response)
@@ -595,7 +608,7 @@ class FleetOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        body: Optional[_models.FleetResourceUpdate] = None,
+        body: _models.FleetResourceUpdate,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -607,7 +620,7 @@ class FleetOperations:
         :type resource_group_name: str
         :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
         :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Default value is None.
+        :param body: The parameters to provide for the current fleet. Required.
         :type body: ~azure.mgmt.cosmosdb.models.FleetResourceUpdate
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
@@ -622,7 +635,7 @@ class FleetOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        body: Optional[IO[bytes]] = None,
+        body: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -634,7 +647,7 @@ class FleetOperations:
         :type resource_group_name: str
         :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
         :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Default value is None.
+        :param body: The parameters to provide for the current fleet. Required.
         :type body: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
@@ -649,7 +662,7 @@ class FleetOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        body: Optional[Union[_models.FleetResourceUpdate, IO[bytes]]] = None,
+        body: Union[_models.FleetResourceUpdate, IO[bytes]],
         **kwargs: Any
     ) -> _models.FleetResource:
         """Updates the properties of an existing Azure Cosmos DB Fleet.
@@ -660,7 +673,7 @@ class FleetOperations:
         :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
         :type fleet_name: str
         :param body: The parameters to provide for the current fleet. Is either a FleetResourceUpdate
-         type or a IO[bytes] type. Default value is None.
+         type or a IO[bytes] type. Required.
         :type body: ~azure.mgmt.cosmosdb.models.FleetResourceUpdate or IO[bytes]
         :return: FleetResource or the result of cls(response)
         :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
@@ -687,10 +700,7 @@ class FleetOperations:
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            if body is not None:
-                _json = self._serialize.body(body, "FleetResourceUpdate")
-            else:
-                _json = None
+            _json = self._serialize.body(body, "FleetResourceUpdate")
 
         _request = build_update_request(
             resource_group_name=resource_group_name,
@@ -714,7 +724,10 @@ class FleetOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated2, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("FleetResource", pipeline_response.http_response)
@@ -763,15 +776,19 @@ class FleetOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated2, pipeline_response)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("azure-AsyncOperation")
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
             )
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 

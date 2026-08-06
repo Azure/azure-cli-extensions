@@ -7,9 +7,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-import pkg_resources
+
+import os
 
 REQUIREMENTS = []
-with open("azext_mlv2/manual/requirements.txt", "rt") as fd:
-    REQUIREMENTS = [str(requirement) for requirement in pkg_resources.parse_requirements(fd)]
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_requirements_path = os.path.join(_current_dir, 'requirements.txt')
+with open(_requirements_path, "rt") as fd:
+    REQUIREMENTS = [line.strip() for line in fd if line.strip() and not line.strip().startswith('#')]
 DEPENDENCIES = REQUIREMENTS

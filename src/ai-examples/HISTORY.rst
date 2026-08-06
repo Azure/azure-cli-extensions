@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.6
+++++++
+* Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
+
 0.2.5
 ++++++
 * Send appropriate User ID hash

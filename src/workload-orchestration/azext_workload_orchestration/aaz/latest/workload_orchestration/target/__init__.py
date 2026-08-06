@@ -20,6 +20,7 @@ from ._review_solution_version import *
 from ._update_external_validation_status import *
 from ._show import *
 from ._uninstall import *
+from ._unstage import *
 from ._update import *
 from ._wait import *
 from ._solution_instance_list import *

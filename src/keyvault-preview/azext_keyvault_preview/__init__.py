@@ -14,7 +14,7 @@ class KeyVaultCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from ._client_factory import keyvault_mgmt_client_factory
-        from azure.cli.command_modules.keyvault._command_type import KeyVaultCommandGroup, KeyVaultArgumentContext
+        from azure.cli.command_modules.keyvault._command_type import KeyVaultCommandGroup
 
         register_resource_type('latest', CUSTOM_MGMT_KEYVAULT, '2021-12-01-preview')
 
@@ -27,8 +27,7 @@ class KeyVaultCommandsLoader(AzCommandsLoader):
             cli_ctx=cli_ctx,
             resource_type=CUSTOM_MGMT_KEYVAULT,
             custom_command_type=keyvault_custom,
-            command_group_cls=KeyVaultCommandGroup,
-            argument_context_cls=KeyVaultArgumentContext)
+            command_group_cls=KeyVaultCommandGroup)
 
     def load_command_table(self, args):
         from .commands import load_command_table

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "elastic elastic-version list",
 )
 class List(AAZCommand):
-    """List a list of available versions for a region.
+    """List a list of all available Elastic versions for a specified region, helping you choose the best version for your deployment.
 
     :example: ElasticVersions_List
         az elastic elastic-version list --region myregion
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/elasticversions", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/elasticversions", "2025-06-01"],
         ]
     }
 
@@ -114,7 +114,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-06-01",
                     required=True,
                 ),
             }

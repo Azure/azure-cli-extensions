@@ -25,9 +25,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2024-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2025-09-01"],
         ]
     }
 
@@ -48,12 +48,6 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.x_ms_access_soft_deleted_resources = AAZStrArg(
-            options=["--soft-deleted-only", "--access-soft-deleted-resources", "--x-ms-access-soft-deleted-resources"],
-            help="Optional, returns only soft deleted volume groups if set to true. If set to false or if not specified, returns only active volume groups.",
-            is_preview=True,
-            enum={"false": "false", "true": "true"},
-        )
         _args_schema.elastic_san_name = AAZStrArg(
             options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
@@ -101,7 +95,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumeGroups",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups",
                 **self.url_parameters
             )
 
@@ -135,7 +129,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -144,9 +138,6 @@ class List(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
-                **self.serialize_header_param(
-                    "x-ms-access-soft-deleted-resources", self.ctx.args.x_ms_access_soft_deleted_resources,
-                ),
                 **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
@@ -173,9 +164,10 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -230,9 +222,6 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.delete_retention_policy = AAZObjectType(
-                serialized_name="deleteRetentionPolicy",
-            )
             properties.encryption = AAZStrType()
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
@@ -253,14 +242,6 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
-            )
-
-            delete_retention_policy = cls._schema_on_200.value.Element.properties.delete_retention_policy
-            delete_retention_policy.policy_state = AAZStrType(
-                serialized_name="policyState",
-            )
-            delete_retention_policy.retention_period_days = AAZIntType(
-                serialized_name="retentionPeriodDays",
             )
 
             encryption_properties = cls._schema_on_200.value.Element.properties.encryption_properties

@@ -176,7 +176,7 @@ class Create(AAZCommand):
             options=["email-address"],
             help="User Email",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         user_info.first_name = AAZStrArg(
@@ -208,6 +208,7 @@ class Create(AAZCommand):
             options=["--identity"],
             arg_group="Resource",
             help="The managed service identities assigned to this resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
+            default={"type": "SystemAssigned"},
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",

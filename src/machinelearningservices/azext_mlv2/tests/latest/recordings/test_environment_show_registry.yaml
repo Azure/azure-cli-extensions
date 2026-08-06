@@ -9,43 +9,49 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
-        (Windows-10-10.0.22000-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testfeed/discovery
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/kchawla-reg/discovery
   response:
     body:
-      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
-        "testfeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
-        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
-        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
-        "https://cert-master.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
-        {"uri": "https://3b513a6b-f110-4e7f-9ce3-472b5aa28170.registry.master.api.azureml-test.ms"}}}'
+      string: '{"registryId": "fc94ce00-c9bb-4361-8e70-25612d497721", "registryName":
+        "kchawla-reg", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus2", "regions": ["eastus2", "centraluseuap", "westcentralus", "ukwest"],
+        "subscriptionId": "00000000-0000-0000-0000-000000000000", "resourceGroup":
+        "kchawla-rg", "workspaceName": null, "primaryRegionResourceProviderUri": "https://cert-eastus2.experiments.azureml.net/",
+        "registryFqdns": {"eastus2": {"uri": "https://eastus2.api.azureml.ms"}, "centraluseuap":
+        {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri": "https://int.api.azureml-test.ms"},
+        "westcentralus": {"uri": "https://westcentralus.api.azureml.ms"}, "ukwest":
+        {"uri": "https://ukwest.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        null, "isTradeRestricted": false}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus-02
       connection:
       - keep-alive
       content-length:
-      - '533'
+      - '800'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 30 Sep 2022 19:58:32 GMT
+      - Tue, 19 May 2026 09:01:17 GMT
+      mise-correlation-id:
+      - 5187a1e4-c48d-4c63-b80f-994ab6a4a7ad
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-eastus-01
       x-content-type-options:
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.410'
+      - '0.021'
     status:
       code: 200
       message: OK
@@ -59,48 +65,50 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.7.9
-        (Windows-10-10.0.22000-SP0)
+      - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
+        (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://cert-master.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testfeed/environments/000000000000000/versions/93435847-704b-4280-83f3-f735d8b5eff7?api-version=0000-00-00
+    uri: https://cert-eastus2.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/kchawla-reg/environments/kchawla-env/versions/1?api-version=0000-00-00
   response:
     body:
-      string: '{"id": "azureml://registries/testFeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7",
-        "name": "93435847-704b-4280-83f3-f735d8b5eff7", "type": "environments", "properties":
-        {"description": null, "tags": {}, "properties": {}, "isArchived": false, "isAnonymous":
-        false, "environmentType": "UserCreated", "image": "feedmaster2.azurecr.io/4c99f460-20cd-4821-8745-202aa7555604_93435847-704b-4280-83f3-f735d8b5eff7_77dee692-909e-5f30-b67a-2839dc0d3240",
-        "condaFile": "", "osType": "Linux"}, "systemData": {"createdAt": "2022-05-31T10:31:32.103706+00:00",
-        "createdBy": "9f98f508-7785-400f-bd4e-20ff81af69fd", "createdByType": "Application",
-        "lastModifiedAt": "2022-05-31T10:31:32.103706+00:00", "lastModifiedBy": "9f98f508-7785-400f-bd4e-20ff81af69fd",
-        "lastModifiedByType": "Application"}}'
+      string: '{"id": "azureml://registries/kchawla-reg/environments/kchawla-env/versions/1",
+        "name": "1", "type": "environments", "properties": {"description": "Environment
+        created in kchawla-reg registry.", "tags": {}, "properties": {"azureml.labels":
+        "default,latest,invisibleLatest"}, "isArchived": true, "isAnonymous": false,
+        "environmentType": "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.10\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"azure-ai-ml\",\n        \"azure-identity\",\n        \"mlflow\",\n        \"scikit-learn\",\n        \"pandas\",\n        \"numpy\"\n      ]\n    }\n  ],\n  \"name\":
+        \"kchawla-env\"\n}", "osType": "Linux", "stage": "Archived", "intellectualProperty":
+        null}, "systemData": {"createdAt": "2026-05-18T17:52:59.2719411+00:00", "createdBy":
+        "Kshitij Chawla", "createdByType": "User", "lastModifiedAt": "2026-05-18T17:52:59.2719411+00:00",
+        "lastModifiedBy": "Kshitij Chawla", "lastModifiedByType": "User"}}'
     headers:
+      azureml-served-by-cluster:
+      - vienna-eastus2-02
       connection:
       - keep-alive
       content-length:
-      - '832'
+      - '1078'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 30 Sep 2022 19:58:35 GMT
+      - Tue, 19 May 2026 09:01:19 GMT
+      mise-correlation-id:
+      - 32b86488-c3c4-42f8-a231-90ed28ee23dd
       request-context:
-      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
-      server-timing:
-      - traceparent;desc="00-ddb5afa8fc74991350f02072d8fe66fa-8a0c5951224b5baa-00"
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
-      - max-age=15724800; includeSubDomains; preload
+      - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aml-cluster:
-      - vienna-test-westus2-01
       x-content-type-options:
-      - nosniff
       - nosniff
       x-ms-response-type:
       - standard
       x-request-time:
-      - '2.394'
+      - '0.521'
     status:
       code: 200
       message: OK

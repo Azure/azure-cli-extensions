@@ -22,9 +22,9 @@ class ListReport(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}/reports", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}/reports", "2025-08-01"],
         ]
     }
 
@@ -63,7 +63,7 @@ class ListReport(AAZCommand):
             help="The name of the storage task assignment within the specified resource group. Storage task assignment names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]{3,24}$",
+                pattern="^[a-z][a-z0-9]{2,23}$",
                 max_length=24,
                 min_length=3,
             ),
@@ -120,7 +120,7 @@ class ListReport(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
@@ -154,7 +154,7 @@ class ListReport(AAZCommand):
                     "$maxpagesize", self.ctx.args.maxpagesize,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
@@ -189,7 +189,6 @@ class ListReport(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
@@ -206,6 +205,10 @@ class ListReport(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -266,6 +269,26 @@ class ListReport(AAZCommand):
             properties.task_version = AAZStrType(
                 serialized_name="taskVersion",
                 flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200

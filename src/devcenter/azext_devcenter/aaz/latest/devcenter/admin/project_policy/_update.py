@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/projectpolicies/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -124,6 +124,56 @@ class Update(AAZCommand):
         )
         return cls._args_schema
 
+    _args_feature_state_update = None
+
+    @classmethod
+    def _build_args_feature_state_update(cls, _schema):
+        if cls._args_feature_state_update is not None:
+            _schema.default_status = cls._args_feature_state_update.default_status
+            _schema.default_values = cls._args_feature_state_update.default_values
+            _schema.status_modifiable = cls._args_feature_state_update.status_modifiable
+            _schema.values_modifiable = cls._args_feature_state_update.values_modifiable
+            return
+
+        cls._args_feature_state_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        feature_state_update = cls._args_feature_state_update
+        feature_state_update.default_status = AAZStrArg(
+            options=["default-status"],
+            help="Indicates the default status of the feature.",
+            nullable=True,
+            enum={"AutoDeploy": "AutoDeploy", "Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        feature_state_update.default_values = AAZDictArg(
+            options=["default-values"],
+            help="The default values of the feature",
+            nullable=True,
+        )
+        feature_state_update.status_modifiable = AAZStrArg(
+            options=["status-modifiable"],
+            help="Indicates whether the feature's status, Enabled or Disabled, is configurable at the Project scope.",
+            nullable=True,
+            enum={"Modifiable": "Modifiable", "NotModifiable": "NotModifiable"},
+        )
+        feature_state_update.values_modifiable = AAZStrArg(
+            options=["values-modifiable"],
+            help="Indicates whether the feature values are configurable at the Project scope.",
+            nullable=True,
+            enum={"Modifiable": "Modifiable", "NotModifiable": "NotModifiable"},
+        )
+
+        default_values = cls._args_feature_state_update.default_values
+        default_values.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        _schema.default_status = cls._args_feature_state_update.default_status
+        _schema.default_values = cls._args_feature_state_update.default_values
+        _schema.status_modifiable = cls._args_feature_state_update.status_modifiable
+        _schema.values_modifiable = cls._args_feature_state_update.values_modifiable
+
     def _execute_operations(self):
         self.pre_operations()
         self.ProjectPoliciesGet(ctx=self.ctx)()
@@ -206,7 +256,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -309,7 +359,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -403,6 +453,54 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
+    @classmethod
+    def _build_schema_feature_state_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("defaultStatus", AAZStrType, ".default_status")
+        _builder.set_prop("defaultValues", AAZDictType, ".default_values")
+        _builder.set_prop("statusModifiable", AAZStrType, ".status_modifiable")
+        _builder.set_prop("valuesModifiable", AAZStrType, ".values_modifiable")
+
+        default_values = _builder.get(".defaultValues")
+        if default_values is not None:
+            default_values.set_elements(AAZStrType, ".")
+
+    _schema_feature_state_read = None
+
+    @classmethod
+    def _build_schema_feature_state_read(cls, _schema):
+        if cls._schema_feature_state_read is not None:
+            _schema.default_status = cls._schema_feature_state_read.default_status
+            _schema.default_values = cls._schema_feature_state_read.default_values
+            _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+            _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
+            return
+
+        cls._schema_feature_state_read = _schema_feature_state_read = AAZObjectType()
+
+        feature_state_read = _schema_feature_state_read
+        feature_state_read.default_status = AAZStrType(
+            serialized_name="defaultStatus",
+        )
+        feature_state_read.default_values = AAZDictType(
+            serialized_name="defaultValues",
+        )
+        feature_state_read.status_modifiable = AAZStrType(
+            serialized_name="statusModifiable",
+        )
+        feature_state_read.values_modifiable = AAZStrType(
+            serialized_name="valuesModifiable",
+        )
+
+        default_values = _schema_feature_state_read.default_values
+        default_values.Element = AAZStrType()
+
+        _schema.default_status = cls._schema_feature_state_read.default_status
+        _schema.default_values = cls._schema_feature_state_read.default_values
+        _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+        _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
+
     _schema_project_policy_read = None
 
     @classmethod
@@ -436,6 +534,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_project_policy_read.properties
+        properties.configuration_policies = AAZObjectType(
+            serialized_name="configurationPolicies",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
@@ -444,6 +545,44 @@ class _UpdateHelper:
             serialized_name="resourcePolicies",
         )
         properties.scopes = AAZListType()
+
+        configuration_policies = _schema_project_policy_read.properties.configuration_policies
+        configuration_policies.azure_ai_services_feature_status = AAZObjectType(
+            serialized_name="azureAiServicesFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.azure_ai_services_feature_status)
+        configuration_policies.dev_box_limits_feature_status = AAZObjectType(
+            serialized_name="devBoxLimitsFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.dev_box_limits_feature_status)
+        configuration_policies.dev_box_schedule_delete_feature_status = AAZObjectType(
+            serialized_name="devBoxScheduleDeleteFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.dev_box_schedule_delete_feature_status)
+        configuration_policies.dev_box_tunnel_feature_status = AAZObjectType(
+            serialized_name="devBoxTunnelFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.dev_box_tunnel_feature_status)
+        configuration_policies.display_name_feature_status = AAZObjectType(
+            serialized_name="displayNameFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.display_name_feature_status)
+        configuration_policies.project_catalog_feature_status = AAZObjectType(
+            serialized_name="projectCatalogFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.project_catalog_feature_status)
+        configuration_policies.serverless_gpu_sessions_feature_status = AAZObjectType(
+            serialized_name="serverlessGpuSessionsFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.serverless_gpu_sessions_feature_status)
+        configuration_policies.user_customizations_feature_status = AAZObjectType(
+            serialized_name="userCustomizationsFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.user_customizations_feature_status)
+        configuration_policies.workspace_storage_feature_status = AAZObjectType(
+            serialized_name="workspaceStorageFeatureStatus",
+        )
+        cls._build_schema_feature_state_read(configuration_policies.workspace_storage_feature_status)
 
         resource_policies = _schema_project_policy_read.properties.resource_policies
         resource_policies.Element = AAZObjectType()

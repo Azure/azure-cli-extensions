@@ -1,0 +1,656 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications?api-version=2026-02-02-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jun 2026 19:03:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3DF08F9984984320BEB9E087B3CED8F4 Ref B: SJC211051205031 Ref C: 2026-06-09T19:03:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --version --container-images
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_aks_pis_crud","date":"2026-06-09T19:03:31Z","module":"github.com"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '358'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jun 2026 19:03:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F40991CD330249D0B1DBC8F7F2C8A3A3 Ref B: BY1AA1072315036 Ref C: 2026-06-09T19:03:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"containerImages": ["busybox"],
+      "version": "v1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --version --container-images
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002?api-version=2026-02-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002\",\n
+        \"name\": \"pis000002\",\n \"type\": \"Microsoft.ContainerService/preparedImageSpecifications\",\n
+        \"location\": \"eastus2euap\",\n \"eTag\": \"\",\n \"properties\": {\n  \"containerImages\":
+        [\n   \"busybox\"\n  ],\n  \"version\": \"v1\",\n  \"provisioningState\":
+        \"Succeeded\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '414'
+      content-type:
+      - application/json
+      date:
+      - Tue, 09 Jun 2026 19:03:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f6cddbb1-351b-4ff8-b158-e8e5a5e6984d/eastus2euap/c0776c87-0dcc-49c1-ae4f-8effa17c6af2
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B9FD87F82CA9473E951A3DA58DAEAC03 Ref B: BY1AA1072316023 Ref C: 2026-06-09T19:03:33Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --version --container-images
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_aks_pis_crud","date":"2026-06-09T19:03:31Z","module":"github.com"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '358'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jun 2026 19:03:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 1F6D0B075C88479286D2B8DEEB4C1F79 Ref B: SJC211051205033 Ref C: 2026-06-09T19:03:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"containerImages": ["busybox"],
+      "version": "v2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --version --container-images
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002?api-version=2026-02-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002\",\n
+        \"name\": \"pis000002\",\n \"type\": \"Microsoft.ContainerService/preparedImageSpecifications\",\n
+        \"location\": \"eastus2euap\",\n \"eTag\": \"5129dd79-e800-42be-a2f3-118a370eb495\",\n
+        \"properties\": {\n  \"containerImages\": [\n   \"busybox\"\n  ],\n  \"version\":
+        \"v2\",\n  \"provisioningState\": \"Succeeded\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json
+      date:
+      - Tue, 09 Jun 2026 19:03:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f6cddbb1-351b-4ff8-b158-e8e5a5e6984d/eastus2euap/ce6062ce-decc-4ddc-a770-11933a3d4f18
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5695D0A49C90448898E08F5B78A51EC3 Ref B: SJC211051204045 Ref C: 2026-06-09T19:03:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002?api-version=2026-02-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002\",\n
+        \"name\": \"pis000002\",\n \"type\": \"Microsoft.ContainerService/preparedImageSpecifications\",\n
+        \"location\": \"eastus2euap\",\n \"eTag\": \"226f600b-9839-41f5-a5f4-ae6354888f48\",\n
+        \"properties\": {\n  \"containerImages\": [\n   \"busybox\"\n  ],\n  \"version\":
+        \"v2\",\n  \"provisioningState\": \"Succeeded\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json
+      date:
+      - Tue, 09 Jun 2026 19:03:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 97901B0D69E84F11AACB2A966BC8176A Ref B: BY1AA1072316062 Ref C: 2026-06-09T19:03:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification version show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --pis-name -n
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002/versions/v1?api-version=2026-02-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002/versions/v1\",\n
+        \"name\": \"v1\",\n \"type\": \"Microsoft.ContainerService/preparedImageSpecifications/versions\",\n
+        \"properties\": {\n  \"containerImages\": [\n   \"busybox\"\n  ],\n  \"version\":
+        \"v1\",\n  \"provisioningState\": \"Succeeded\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json
+      date:
+      - Tue, 09 Jun 2026 19:03:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f6cddbb1-351b-4ff8-b158-e8e5a5e6984d/westus3/5f08745b-3792-446a-9d62-4265bdf3f182
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 36ACEAB9993D42BE91ACFF4FD39AD3A5 Ref B: BY1AA1072320031 Ref C: 2026-06-09T19:03:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification version delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --pis-name -n -y
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002/versions/v1?api-version=2026-02-02-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 09 Jun 2026 19:03:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f6cddbb1-351b-4ff8-b158-e8e5a5e6984d/eastus2euap/64be85a3-715e-48cc-9c6c-2bcdec899e60
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 14DD31321FF64AA6B581FFA7B329A061 Ref B: BY1AA1072315025 Ref C: 2026-06-09T19:03:36Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications?api-version=2026-02-02-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002","name":"pis000002","type":"Microsoft.ContainerService/preparedImageSpecifications","location":"eastus2euap","eTag":"226f600b-9839-41f5-a5f4-ae6354888f48","properties":{"containerImages":["busybox"],"version":"v2","provisioningState":"Succeeded"}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications?api-version=2026-02-02-preview&%24skiptoken=5ZDRSsMwFIbfJeCu1qWrmesKQ4oMERyInXe9OUtOu1CbZCdpdY69u3FX4isI5%2brw8%2fHxnZnBz%2fCsTedZcWabstq9VdnmrXxhBTuE4HzBeQ8GWuzRhBl8DYQzaXvuh72XpF3Q1nieowTVyFWi5nCbCASR7HMhklStmnyJQi1lzgm9HUjiI9nBeS7fdUAf4HQ8HBfi2J24IztqheT5Vkuy3jZh9mBNAG2QKqRRS4wjdEConvooVTmUutESrhr3N5nwnXY726FZz9NlupiA08kYkVFznaXZXZJmPxcpo8aPyZ85u0wZUF%2b2LWELAdUVFVuUr1s2vcbaAnVI8XWuf%2feqWVH%2fx2I1u7DLNw%3d%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1026'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jun 2026 19:03:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 8b274fe5-a4c8-4ec2-8f0d-9642cc3e1c88
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9A4856D6B1EF466E9E25837021B6DF37 Ref B: BY1AA1072320060 Ref C: 2026-06-09T19:03:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications?api-version=2026-02-02-preview&$skiptoken=5ZDRSsMwFIbfJeCu1qWrmesKQ4oMERyInXe9OUtOu1CbZCdpdY69u3FX4isI5%2Brw8/HxnZnBz/CsTedZcWabstq9VdnmrXxhBTuE4HzBeQ8GWuzRhBl8DYQzaXvuh72XpF3Q1nieowTVyFWi5nCbCASR7HMhklStmnyJQi1lzgm9HUjiI9nBeS7fdUAf4HQ8HBfi2J24IztqheT5Vkuy3jZh9mBNAG2QKqRRS4wjdEConvooVTmUutESrhr3N5nwnXY726FZz9NlupiA08kYkVFznaXZXZJmPxcpo8aPyZ85u0wZUF%2B2LWELAdUVFVuUr1s2vcbaAnVI8XWuf/eqWVH/x2I1u7DLNw%3D%3D
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jun 2026 19:03:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 9080f128-342a-44c4-90f8-c307498003de
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 2CEB0CF6DC354C839C6E70F00E4C6872 Ref B: SJC211051203049 Ref C: 2026-06-09T19:03:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"k": "v"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002?api-version=2026-02-02-preview
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002\",\n
+        \"name\": \"pis000002\",\n \"type\": \"Microsoft.ContainerService/preparedImageSpecifications\",\n
+        \"location\": \"eastus2euap\",\n \"tags\": {\n  \"k\": \"v\"\n },\n \"eTag\":
+        \"226f600b-9839-41f5-a5f4-ae6354888f48\",\n \"properties\": {\n  \"containerImages\":
+        [\n   \"busybox\"\n  ],\n  \"version\": \"v2\",\n  \"provisioningState\":
+        \"Succeeded\"\n }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '476'
+      content-type:
+      - application/json
+      date:
+      - Tue, 09 Jun 2026 19:03:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f6cddbb1-351b-4ff8-b158-e8e5a5e6984d/eastus2euap/fda23fed-5eb0-40e1-bb4b-9841009ca4d6
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: BF5CC2776A2049838384DB5A57B50ACB Ref B: BY1AA1072320029 Ref C: 2026-06-09T19:03:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications/pis000002?api-version=2026-02-02-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Tue, 09 Jun 2026 19:03:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f6cddbb1-351b-4ff8-b158-e8e5a5e6984d/westus/92b71c70-89e8-40b6-a7f6-b5943e61a657
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 27DAFB8139E049BE813F5B9C4B605B3F Ref B: BY1AA1072317054 Ref C: 2026-06-09T19:03:38Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks prepared-image-specification list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.12.3 (Linux-6.17.0-1018-azure-x86_64-with-glibc2.39)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/preparedImageSpecifications?api-version=2026-02-02-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jun 2026 19:03:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DD2788937FED48B8845543D1BAFE3A0F Ref B: SJC211051205049 Ref C: 2026-06-09T19:03:41Z'
+    status:
+      code: 200
+      message: OK
+version: 1

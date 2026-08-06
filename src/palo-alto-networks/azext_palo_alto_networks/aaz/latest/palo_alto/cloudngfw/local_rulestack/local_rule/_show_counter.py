@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack local-rule show-counter",
 )
 class ShowCounter(AAZCommand):
-    """Get counters
+    """Retrieve counters for the local rules associated with a Palo Alto Networks local rulestack.
 
     :example: Get counters
         az palo-alto cloudngfw local-rulestack local-rule get-counter -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/getcounters", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/getcounters", "2025-10-08"],
         ]
     }
 
@@ -137,7 +137,7 @@ class ShowCounter(AAZCommand):
                     "firewallName", self.ctx.args.firewall_name,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

@@ -127,6 +127,11 @@ helps['vmware private-cloud disable-cmk-encryption'] = """
     short-summary: Disable a Customer Managed Keys Encryption from a private cloud.
 """
 
+helps['vmware private-cloud delete-vcf-license'] = """
+    type: command
+    short-summary: Delete the VCF license from a private cloud.
+"""
+
 helps['vmware private-cloud identity'] = """
     type: group
     short-summary: Commands for Managed Identity in a private cloud.

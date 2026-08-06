@@ -2,6 +2,15 @@
 
 Release History
 ===============
+
+1.0.0b3
++++++
+* Update blueprint deprecation message
+
+1.0.0b2
++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
 1.0.0b1
 +++++
 * Deprecate blueprint commands
