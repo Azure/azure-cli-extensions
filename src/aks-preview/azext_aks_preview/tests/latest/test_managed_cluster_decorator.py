@@ -6366,7 +6366,24 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertIs(dec_mc_1, mc_1)
         self.assertIsNone(dec_mc_1.linux_profile)
 
-    def test_set_up_network_profile_preview(self):
+    def test_set_up_linux_profile_automatic_sku_skips_ssh_key(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "sku": "automatic",
+                "ssh_key_value": "unused-for-managed-system-pool",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        dec_mc_1 = dec_1.set_up_linux_profile(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.linux_profile)
+
         # custom value
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,

@@ -108,6 +108,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWS2025,
@@ -337,6 +338,7 @@ node_os_skus_create = [
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
@@ -354,6 +356,7 @@ node_os_skus_update = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
@@ -2876,6 +2879,15 @@ def load_arguments(self, _):
                 "start_time",
                 validator=validate_start_time,
                 help="The start time of the maintenance window. e.g. 09:30.",
+            )
+            c.argument(
+                "maintenance_window_id",
+                help=(
+                    "Resource ID of a shared MaintenanceWindow resource to link this maintenance "
+                    "configuration to. When set, the schedule lives in the referenced MaintenanceWindow "
+                    "and inline schedule arguments cannot be used. Cannot be combined with --config-file "
+                    "(set the maintenanceWindowId property in the JSON instead). Omit for no shared resource."
+                ),
             )
 
     for scope in [

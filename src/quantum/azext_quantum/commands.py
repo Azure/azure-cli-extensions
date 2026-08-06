@@ -136,6 +136,10 @@ def load_command_table(self, _):
         w.command('keys regenerate', 'regenerate_keys')
         w.command('update', 'enable_keys')
 
+    with self.command_group('quantum workspace user', workspace_ops) as u:
+        u.command('create', 'add_user', validator=validate_workspace_info)
+        u.command('delete', 'remove_user', validator=validate_workspace_info, confirmation=True)
+
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
         t.show_command('show', 'target_show', validator=validate_target_info)
