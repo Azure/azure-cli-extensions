@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Fix Azure/azure-cli-extensions#10007: az costmanagement export: Update Exports API version from ``2020-06-01`` to ``2025-03-01`` to support exports created via the Azure portal and newer API versions
+
 1.0.0
 ++++++
 * Remove ADAL dependencies
