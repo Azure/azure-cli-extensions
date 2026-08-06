@@ -102,6 +102,19 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
 
+        # --ids addresses the cluster by its full ARM resource id.
+        cluster_id = self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg}'
+        ).get_output_in_json()['id']
+        self.kwargs['cluster_id'] = cluster_id
+        self.cmd(
+            'documentdb mongocluster show --ids {cluster_id}',
+            checks=[
+                self.check('name', '{cluster}'),
+                self.check('resourceGroup', '{rg}'),
+            ],
+        )
+
         # The cluster shows up in the resource-group listing.
         self.cmd(
             'documentdb mongocluster list -g {rg}',
@@ -258,9 +271,19 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
 
+        # 'identity list' returns the cluster's identity block (both identities).
+        self.cmd(
+            'documentdb mongocluster identity list -n {cluster} -g {rg}',
+            checks=[
+                self.check('type', 'UserAssigned'),
+                self.check('length(userAssignedIdentities)', 2),
+            ],
+        )
+
         # Remove the second identity; it is no longer listed afterwards.
+        # 'identity remove' now prompts for confirmation, so --yes is required.
         self._cmd_retry(
-            'documentdb mongocluster identity remove -n {cluster} -g {rg} --user-assigned {mi2_id}',
+            'documentdb mongocluster identity remove -n {cluster} -g {rg} --user-assigned {mi2_id} --yes',
             checks=[self.not_exists('userAssignedIdentities."{mi2_id}"')],
         )
 
@@ -454,6 +477,15 @@ class DocumentdbScenario(ScenarioTest):
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.replica.role', 'GeoAsyncReplica'),
             ],
+        )
+
+        # A --source-cluster that does not match the replica's actual source is
+        # rejected by the guard before any switchover is attempted.
+        self.cmd(
+            'documentdb mongocluster replica promote -n {replica} -g {rg} '
+            '--source-cluster wrong-source-cluster --mode Switchover '
+            '--promote-option Forced --yes',
+            expect_failure=True,
         )
 
         # Promote the replica to primary with a forced switchover. The former
