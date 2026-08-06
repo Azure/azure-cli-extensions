@@ -7,7 +7,7 @@
 This script is used to run azdev linter and azdev style on extensions.
 
 It's only working on ADO by default. If want to run locally,
-please update the target branch/commit to find diff in function find_modified_files_against_master_branch()
+please update the target branch in find_modified_files_against_master_branch() in util.py.
 """
 import json
 import logging
@@ -18,7 +18,7 @@ from subprocess import CalledProcessError, check_call, check_output
 
 import service_name
 from packaging.version import Version
-from util import get_ext_metadata
+from util import get_ext_metadata, find_modified_files_against_master_branch
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -117,30 +117,6 @@ class AzdevExtensionHelper:
             raise ValueError(f"The name {metadata['name']} in setup.py "
                              f"is not the same as the extension name {extension_name}! \n"
                              f"Please fix the name in setup.py!")
-
-
-def find_modified_files_against_master_branch():
-    """
-    Find modified files from src/ only.
-    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
-    Deleted files don't count in diff.
-    """
-    ado_pr_target_branch = 'origin/' + os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
-
-    separator_line()
-    logger.info('pull request target branch: %s', ado_pr_target_branch)
-
-    cmd = 'git --no-pager diff --name-only --diff-filter=ACMRT {} -- src/'.format(ado_pr_target_branch)
-    files = check_output(cmd.split()).decode('utf-8').split('\n')
-    files = [f for f in files if len(f) > 0]
-
-    if files:
-        logger.info('modified files:')
-        separator_line()
-        for f in files:
-            logger.info(f)
-
-    return files
 
 
 def contain_index_json(files):
