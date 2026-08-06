@@ -3301,20 +3301,19 @@ def aks_machine_add(
         )
 
     raw_parameters = locals().copy()
-    if vm_size is None:
-        agentpool = cf_agent_pools(cmd.cli_ctx).get(resource_group_name, cluster_name, nodepool_name)
-        if agentpool.type_properties_type == CONST_FLEX_NODES:
-            validate_flexnodes_options(
-                cmd,
-                raw_parameters,
-                {
-                    "kubernetes_version": "--kubernetes-version",
-                    "labels": "--labels",
-                    "max_pods": "--max-pods",
-                    "node_taints": "--node-taints",
-                },
-            )
-            return add_flexnode_machine(cmd, client, raw_parameters, no_wait)
+    agentpool = cf_agent_pools(cmd.cli_ctx).get(resource_group_name, cluster_name, nodepool_name)
+    if agentpool.type_properties_type == CONST_FLEX_NODES:
+        validate_flexnodes_options(
+            cmd,
+            raw_parameters,
+            {
+                "kubernetes_version": "--kubernetes-version",
+                "labels": "--labels",
+                "max_pods": "--max-pods",
+                "node_taints": "--node-taints",
+            },
+        )
+        return add_flexnode_machine(cmd, client, raw_parameters, no_wait)
 
     supplied_options = get_user_supplied_argument_options(cmd)
     flexnode_only_options = [

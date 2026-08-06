@@ -448,10 +448,10 @@ class TestAksFlexNodeMachine(unittest.TestCase):
         flex_pool = self.models.UnifiedAgentPoolModel(type_properties_type=CONST_FLEX_NODES)
         with patch("azext_aks_preview.custom.cf_agent_pools") as mock_cf, patch(
             "azext_aks_preview._helpers.get_user_supplied_argument_options",
-            return_value={"zones": "--zones"},
+            return_value={"vm_size": "--vm-size", "zones": "--zones"},
         ):
             mock_cf.return_value.get.return_value = flex_pool
-            with self.assertRaisesRegex(InvalidArgumentValueError, "--zones"):
+            with self.assertRaisesRegex(InvalidArgumentValueError, "--vm-size, --zones"):
                 aks_machine_add(
                     self.cmd,
                     self.client,
@@ -460,6 +460,7 @@ class TestAksFlexNodeMachine(unittest.TestCase):
                     "flexpool",
                     machine_name="flexnode01",
                     kubernetes_version="1.35.5",
+                    vm_size="Standard_D4s_v3",
                     zones=["1"],
                 )
 
