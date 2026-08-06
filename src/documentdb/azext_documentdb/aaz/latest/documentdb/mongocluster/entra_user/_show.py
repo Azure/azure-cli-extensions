@@ -12,13 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster user show",
+    "documentdb mongocluster entra-user show",
+    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get the defintion of a Mongo cluster user.
+    """Get the definition of a Microsoft Entra ID user on a mongo cluster.
 
-    :example: Get a user.
-        az documentdb mongocluster user show -n alice@contoso.com --cluster-name MyCluster -g MyResourceGroup
+    :example: Get an Entra ID user by object ID.
+        az documentdb mongocluster user show --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {
@@ -58,9 +59,9 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.user_name = AAZStrArg(
-            options=["-n", "--name", "--user-name"],
-            help="The name of the mongo cluster user.",
+        _args_schema.object_id = AAZStrArg(
+            options=["-n", "--name", "--object-id"],
+            help="Object ID (client ID) of the Microsoft Entra principal. Provide the GUID of the service principal or user, not a friendly name or UPN.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -130,7 +131,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "userName", self.ctx.args.user_name,
+                    "userName", self.ctx.args.object_id,
                     required=True,
                 ),
             }

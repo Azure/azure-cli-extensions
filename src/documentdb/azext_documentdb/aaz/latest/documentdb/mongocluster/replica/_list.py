@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster replica list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the replicas for the mongo cluster.
 
     :example: List replicas of a cluster.
-        az documentdb mongocluster replica list --cluster-name MyCluster -g MyResourceGroup
+        az documentdb mongocluster replica list --parent-cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {
@@ -45,9 +46,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the mongo cluster.",
+        _args_schema.parent_cluster_name = AAZStrArg(
+            options=["--parent-cluster-name"],
+            help="The name of the parent mongo cluster.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
@@ -108,7 +109,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "mongoClusterName", self.ctx.args.cluster_name,
+                    "mongoClusterName", self.ctx.args.parent_cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -12,14 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster user delete",
+    "documentdb mongocluster entra-user remove",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
-class Delete(AAZCommand):
-    """Delete a mongo cluster user.
+class Remove(AAZCommand):
+    """Remove a Microsoft Entra ID principal's access from a mongo cluster.
 
-    :example: Delete a user.
-        az documentdb mongocluster user delete -n alice@contoso.com --cluster-name MyCluster -g MyResourceGroup
+    :example: Remove an Entra ID user's access by object ID.
+        az documentdb mongocluster entra-user remove --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {
@@ -60,9 +61,9 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.user_name = AAZStrArg(
-            options=["-n", "--name", "--user-name"],
-            help="The name of the mongo cluster user.",
+        _args_schema.object_id = AAZStrArg(
+            options=["-n", "--name", "--object-id"],
+            help="Object ID (client ID) of the Microsoft Entra principal. Provide the GUID of the service principal or user, not a friendly name or UPN.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -153,7 +154,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "userName", self.ctx.args.user_name,
+                    "userName", self.ctx.args.object_id,
                     required=True,
                 ),
             }
@@ -176,8 +177,8 @@ class Delete(AAZCommand):
             pass
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _RemoveHelper:
+    """Helper class for Remove"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Remove"]

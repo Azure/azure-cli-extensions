@@ -1,7 +1,7 @@
 # Azure CLI DocumentDB Extension #
 
-This is an extension to Azure CLI to manage **Azure Cosmos DB for MongoDB (vCore)**
-clusters — the `Microsoft.DocumentDB/mongoClusters` resource — under the
+This is an extension to Azure CLI to manage **Azure DocumentDB**
+clusters (the `Microsoft.DocumentDB/mongoClusters` resource) under the
 `az documentdb mongocluster` command group.
 
 ## How to install ##
@@ -12,7 +12,7 @@ az extension add --name documentdb
 
 ## Background ##
 
-DocumentDB (Mongo vCore) is a fully managed, MongoDB-compatible database service.
+Azure DocumentDB is a fully managed, MongoDB-compatible database service.
 This extension exposes the management-plane operations for mongo clusters and their
 sub-resources: IP firewall rules, Microsoft Entra-backed database users, user-assigned
 managed identity, cross-region read replicas, and point-in-time restore.
@@ -23,7 +23,7 @@ managed identity, cross-region read replicas, and point-in-time restore.
 |--|--|
 | `az documentdb mongocluster` | Create and manage mongo clusters |
 | `az documentdb mongocluster firewall-rule` | Manage IP firewall rules (public access) |
-| `az documentdb mongocluster user` | Manage Microsoft Entra-backed database users |
+| `az documentdb mongocluster entra-user` | Manage Microsoft Entra ID database users |
 | `az documentdb mongocluster identity` | Manage the cluster's user-assigned managed identity |
 | `az documentdb mongocluster replica` | List, create, and promote cross-region read replicas |
 
@@ -60,11 +60,12 @@ az documentdb mongocluster firewall-rule create -n AllowMyIp --cluster-name MyCl
 az documentdb mongocluster firewall-rule list --cluster-name MyCluster -g MyResourceGroup
 ```
 
-### Microsoft Entra-backed users
+### Microsoft Entra ID users
 
 ```bash
-az documentdb mongocluster user create -n alice --cluster-name MyCluster -g MyResourceGroup \
-    --type User --role db=admin role=root
+# The user is identified by its Microsoft Entra object (client) ID, not a friendly name.
+az documentdb mongocluster entra-user assign --object-id 11111111-1111-1111-1111-111111111111 \
+    --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
 ```
 
 ### Managed identity (user-assigned)
@@ -79,11 +80,11 @@ az documentdb mongocluster identity show -n MyCluster -g MyResourceGroup
 
 ```bash
 # List the parent cluster's replicas
-az documentdb mongocluster replica list --cluster-name MyCluster -g MyResourceGroup
+az documentdb mongocluster replica list --parent-cluster-name MyCluster -g MyResourceGroup
 
-# Create a cross-region GeoReplica (the source must have the GeoReplicas preview feature enabled)
+# Create a cross-region GeoReplica (the parent must have the GeoReplicas preview feature enabled)
 az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup -l centralus \
-    --source-cluster MyCluster --source-location eastus2
+    --parent-cluster-name MyCluster --parent-location eastus2
 
 # Promote a replica to primary
 az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup
@@ -93,6 +94,6 @@ az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup
 
 ```bash
 az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
-    --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
+    --parent-cluster-name MyCluster --restore-time "2026-06-30T10:00:00Z" \
     --admin-user dbadmin --admin-password MyP@ssw0rd123!
 ```

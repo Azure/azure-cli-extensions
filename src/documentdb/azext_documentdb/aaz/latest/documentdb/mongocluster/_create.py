@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.
@@ -63,7 +64,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.admin_password = AAZPasswordArg(
-            options=["-p", "--admin-password"],
+            options=["-p", "--password", "--admin-password"],
             arg_group="Administrator",
             help="The administrator password.",
             required=True,
