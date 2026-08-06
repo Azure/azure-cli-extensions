@@ -11,8 +11,16 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+21.0.0b14
++++++++++
 * Skip SSH key generation/validation for `az aks create --sku automatic` so `--no-ssh-key` is no longer required for Automatic clusters.
 * `az aks nodepool update`: Avoid applying VirtualMachines autoscaler profile conversions twice with newer Azure CLI versions while preserving compatibility with older CLI versions.
+* `az aks nodepool add`: Add preview support for creating FlexNodes pools with `--vm-set-type FlexNodes`.
+* `az aks nodepool get-bootstrap-data`: Add preview support for retrieving FlexNodes bootstrap data.
+* `az aks nodepool update`: Add preview support for updating FlexNodes labels, taints, and `maxUnavailable`.
+* `az aks nodepool upgrade`: Add Kubernetes version upgrade support for FlexNodes pools. Node image-only upgrades are not supported.
+* `az aks machine add/update` and `az aks nodepool delete-machines`: Add FlexNode machine lifecycle support.
 
 21.0.0b13
 ++++++++

@@ -37,6 +37,7 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_MANAGEMENT_MODE_MANAGED,
+    CONST_FLEX_NODES,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
 )
@@ -1037,6 +1038,30 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_4.attach_agentpool(agentpool_4)
         self.assertEqual(ctx_4.get_vm_sizes(), ["Standard_D4s_v3"])
 
+    def common_get_vm_set_type(self):
+        ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "vm_set_type": "flexnodes",
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx.get_vm_set_type(), CONST_FLEX_NODES)
+
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx = AKSPreviewAgentPoolContext(
+                self.cmd,
+                AKSAgentPoolParamDict({"vm_set_type": "FutureVMSetType"}),
+                self.models,
+                DecoratorMode.CREATE,
+                self.agentpool_decorator_mode,
+            )
+            ctx.get_vm_set_type()
+
     def common_get_upgrade_strategy(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -1391,6 +1416,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_vm_sizes(self):
         self.common_get_vm_sizes()
 
+    def test_get_vm_set_type(self):
+        self.common_get_vm_set_type()
+
     def test_get_upgrade_strategy(self):
         self.common_get_upgrade_strategy()
 
@@ -1487,6 +1515,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_vm_sizes(self):
         self.common_get_vm_sizes()
+
+    def test_get_vm_set_type(self):
+        self.common_get_vm_set_type()
 
     def test_get_upgrade_strategy(self):
         self.common_get_upgrade_strategy()
@@ -2497,6 +2528,87 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
         dec_1.context.raw_param.print_usage_statistics()
+
+    def test_construct_agentpool_profile_preview_with_flexnodes(self):
+        import inspect
+
+        from azext_aks_preview.custom import aks_agentpool_add
+
+        raw_param_dict = {
+            name: parameter.default
+            for name, parameter in inspect.signature(aks_agentpool_add).parameters.items()
+            if parameter.default is not parameter.empty
+        }
+        raw_param_dict.update({
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "flexpool",
+            "vm_set_type": CONST_FLEX_NODES,
+            "kubernetes_version": "1.32",
+            "mode": CONST_NODEPOOL_MODE_USER,
+            "max_pods": 110,
+            "labels": {"app": "flex"},
+            "node_taints": "dedicated=flex:NoSchedule",
+            "max_unavailable": "30%",
+        })
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        with patch(
+            "azext_aks_preview.agentpool_decorator.cf_agent_pools",
+            return_value=Mock(list=Mock(return_value=[])),
+        ):
+            agentpool = dec.construct_agentpool_profile_preview()
+
+        self.assertEqual(
+            agentpool.as_dict(),
+            {
+                "name": "flexpool",
+                "properties": {
+                    "orchestratorVersion": "1.32",
+                    "maxPods": 110,
+                    "nodeLabels": {"app": "flex"},
+                    "nodeTaints": ["dedicated=flex:NoSchedule"],
+                    "upgradeSettings": {"maxUnavailable": "30%"},
+                    "type": CONST_FLEX_NODES,
+                    "mode": CONST_NODEPOOL_MODE_USER,
+                },
+            },
+        )
+
+    def test_construct_flexnodes_rejects_explicit_unsupported_options(self):
+        raw_param_dict = {
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "flexpool",
+            "vm_set_type": CONST_FLEX_NODES,
+            "enable_encryption_at_host": True,
+            "max_surge": "50%",
+        }
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        with patch(
+            "azext_aks_preview._helpers.get_user_supplied_argument_options",
+            return_value={
+                "enable_encryption_at_host": "--enable-encryption-at-host",
+                "max_surge": "--max-surge",
+            },
+        ), self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "--enable-encryption-at-host, --max-surge",
+        ):
+            dec.construct_agentpool_profile_preview()
 
     def test_set_up_blue_green_upgrade_settings(self):
         self.common_set_up_blue_green_upgrade_settings()
