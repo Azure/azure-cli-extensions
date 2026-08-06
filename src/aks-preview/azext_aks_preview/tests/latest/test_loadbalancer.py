@@ -119,7 +119,7 @@ class TestLoadBalancer(unittest.TestCase):
         )
 
         self.assertEqual(result.managed_outbound_i_ps.count, 1)
-        self.assertEqual(result.managed_outbound_i_ps.count_i_pv6, 2)
+        self.assertEqual(result.managed_outbound_i_ps.count_ipv6, 2)
 
     def test_configure_load_balancer_profile_error(self):
         managed_outbound_ip_count = 5
