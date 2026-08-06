@@ -3,6 +3,15 @@
 Release History
 ===============
 
+6.0.0b1
+++++++++
+* This stable version supports NetworkCloud 2026-08-01-preview APIs.
+
+5.1.0
+++++++++
+* Adds new resource `accessbridge` commands `list`, `show`, `update`, `create`, and `delete`.
+* Adds confirmation for `delete` command on `virtualmachine console` resource.
+
 5.0.1
 ++++++++
 * Cluster `update` operation was fixed to allow nullable fields on properties.

@@ -14,6 +14,7 @@ from azure.cli.core.aaz import *
 @register_command(
     "networkcloud virtualmachine console delete",
     is_preview=True,
+    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete the provided virtual machine console.
@@ -23,9 +24,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -167,7 +168,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }

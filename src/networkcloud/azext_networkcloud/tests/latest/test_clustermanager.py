@@ -286,7 +286,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud clustermanager delete --name {name} "
-        "--resource-group {rg} -y",
+        "--resource-group {rg} --yes",
         checks=checks,
     )
 
