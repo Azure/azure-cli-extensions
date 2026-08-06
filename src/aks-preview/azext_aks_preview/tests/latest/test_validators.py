@@ -1972,6 +1972,132 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
 
+class TestValidateEnableDistributedCache(unittest.TestCase):
+    def test_enable_distributed_cache(self):
+        acstor_validator.validate_enable_distributed_cache_params(
+            acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+            False, None, None, None, None, None, None, None,
+        )
+
+    def test_enable_when_already_installed(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_cache_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+                True, None, None, None, None, None, None, None,
+            )
+        err = (
+            'Cannot enable distributed cache as it is already enabled on the cluster.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_combined_with_other_type(self):
+        other_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE, other_type]
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_cache_params(
+                storage_types, False, None, None, None, None, None, None, None,
+            )
+        err = (
+            f"'{acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE}' cannot be combined with other storage "
+            f"options ('{other_type}'). Distributed cache is enabled independently. "
+            f"Please run --enable-azure-container-storage {acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE} "
+            "on its own."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_storage_pool_name(self):
+        storage_pool_name = "valid-name"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_cache_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+                False, storage_pool_name, None, None, None, None, None, None,
+            )
+        err = (
+            '--storage-pool-name cannot be used with '
+            '--enable-azure-container-storage distributedcache. '
+            'Distributed cache does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_container_storage_version(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_cache_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+                False, None, None, None, None, None, None, "1",
+            )
+        err = (
+            '--container-storage-version cannot be used with '
+            '--enable-azure-container-storage distributedcache. '
+            'Distributed cache does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateDisableDistributedCache(unittest.TestCase):
+    def test_disable_distributed_cache(self):
+        acstor_validator.validate_disable_distributed_cache_params(
+            acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+            True, None, None, None, None, None,
+        )
+
+    def test_disable_when_not_installed(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_cache_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+                False, None, None, None, None, None,
+            )
+        err = (
+            'Cannot disable distributed cache as it could not be found on the cluster.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_combined_with_other_type(self):
+        other_type = acstor_consts.CONST_ACSTOR_ALL
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE, other_type]
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_cache_params(
+                storage_types, True, None, None, None, None, None,
+            )
+        err = (
+            f"'{acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE}' cannot be combined with other storage "
+            f"options ('{other_type}'). Distributed cache is disabled independently. "
+            f"Please run --disable-azure-container-storage {acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE} "
+            "on its own."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_storage_pool_name(self):
+        storage_pool_name = "valid-name"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_cache_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+                True, storage_pool_name, None, None, None, None,
+            )
+        err = (
+            '--storage-pool-name cannot be used with '
+            '--disable-azure-container-storage distributedcache. '
+            'Distributed cache does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_container_storage_version(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_cache_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+                True, None, None, None, None, "1",
+            )
+        err = (
+            '--container-storage-version cannot be used with '
+            '--disable-azure-container-storage distributedcache. '
+            'Distributed cache does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
 class GatewayPrefixSizeSpace:
     def __init__(self, gateway_prefix_size=None, mode=None):
         self.gateway_prefix_size = gateway_prefix_size
