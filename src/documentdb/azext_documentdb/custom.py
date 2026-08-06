@@ -128,6 +128,20 @@ class ResetPassword(_MongoClusterUpdate):
         password._help["short-summary"] = "The new administrator password."
         return args_schema
 
+    def pre_operations(self):
+        # The update runs as an HTTP PATCH that only sends the properties provided.
+        # The service requires the administrator login to be included whenever the
+        # password is updated, so resolve the cluster's existing administrator user
+        # name and include it in the request.
+        args = self.ctx.args
+        cluster_id = _resolve_cluster_id(self.ctx, args.cluster_name.to_serialized_data())
+        resource = _get_cluster_resource(self.cli_ctx, cluster_id)
+        administrator = (resource.properties or {}).get("administrator") or {}
+        user_name = administrator.get("userName")
+        if user_name:
+            args.admin_user = user_name
+
+
 
 @register_command("documentdb mongocluster replica create")
 class ReplicaCreate(_MongoClusterCreate):
