@@ -65,7 +65,8 @@ def start(cmd, resource_group_name, project_name, runbook_name,
     resource_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name)
     body = models.build_start_execution_body()
-    result = ArmClient(cmd).post_action(
+    client = ArmClient(cmd)
+    result = client.post_action(
         resource_id, 'execute', body, no_wait=no_wait)
     execution_id = None
     if isinstance(result, dict):
@@ -76,7 +77,11 @@ def start(cmd, resource_group_name, project_name, runbook_name,
             "Runbook execution started. Execution id: %s", execution_id)
     else:
         logger.warning("Runbook execution started.")
-    return result
+    if no_wait or not execution_id:
+        return result
+    # Re-read the execution child resource so callers render the latest
+    # status instead of the initial (stale) accepted response body.
+    return client.get(arm_ids.execution_id(resource_id, execution_id))
 
 
 def list_(cmd, resource_group_name, project_name, runbook_name):

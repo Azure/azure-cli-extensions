@@ -9,6 +9,7 @@ from azext_migrate.runbook.transformers import (
     runbook_table,
     definition_table,
     execution_table,
+    executions_table,
 )
 
 
@@ -90,7 +91,7 @@ def load_runbook_command_table(self):
             table_transformer=execution_table)
         g.custom_command(
             'list', 'execution#list_',
-            table_transformer=execution_table)
+            table_transformer=executions_table)
         g.custom_command('pause', 'execution#pause')
         g.custom_command('resume', 'execution#resume')
         g.custom_command(
@@ -102,19 +103,6 @@ def load_runbook_command_table(self):
             'migrate runbook execution step',
             custom_command_type=runbook_cmds,
             is_preview=True) as g:
-        g.custom_command(
-            'retry', 'execution_step#retry',
-            table_transformer=execution_table)
-        g.custom_command(
-            'approve', 'execution_step#approve',
-            table_transformer=execution_table)
-        g.custom_command(
-            'complete', 'execution_step#complete',
-            table_transformer=execution_table)
-
-    with self.command_group(
-            'migrate runbook parameter',
-            custom_command_type=runbook_cmds,
-            is_preview=True) as g:
-        g.custom_command('download', 'parameter#download')
-        g.custom_command('upload', 'parameter#upload')
+        g.custom_command('retry', 'execution_step#retry')
+        g.custom_command('approve', 'execution_step#approve')
+        g.custom_command('complete', 'execution_step#complete')

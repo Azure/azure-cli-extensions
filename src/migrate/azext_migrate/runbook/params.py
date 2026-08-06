@@ -204,3 +204,83 @@ def load_runbook_arguments(self, _):
         c.argument(
             'timeout', options_list=['--timeout'], type=int,
             help='Maximum wait time in seconds (default: 3600).')
+
+    with self.argument_context(
+            'migrate runbook definition visualize') as c:
+        c.argument(
+            'file', options_list=['--file'],
+            help='Output path for the generated HTML file '
+                 '(default: current directory).')
+        c.argument(
+            'open_file', options_list=['--open'], action='store_true',
+            help='Open the generated HTML file in the default browser.')
+        c.argument(
+            'from_file', options_list=['--from-file'],
+            help='Render from a local runbook definition JSON file '
+                 'instead of fetching from the service.')
+        c.argument(
+            'parameters_file', options_list=['--parameters-file'],
+            help='Optional local parameters JSON file to merge when '
+                 'rendering from --from-file.')
+
+    with self.argument_context(
+            'migrate runbook execution visualize') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'],
+            help='Id of the runbook execution to visualize.')
+        c.argument(
+            'file', options_list=['--file'],
+            help='Output path for the generated HTML file '
+                 '(default: current directory).')
+        c.argument(
+            'open_file', options_list=['--open'], action='store_true',
+            help='Open the generated HTML file in the default browser.')
+        c.argument(
+            'from_file', options_list=['--from-file'],
+            help='Render from a local execution status JSON file '
+                 'instead of fetching from the service.')
+        c.argument(
+            'watch', options_list=['--watch'], action='store_true',
+            help='Regenerate the HTML snapshot on an interval until the '
+                 'execution reaches a terminal state.')
+        c.argument(
+            'interval', options_list=['--interval'], type=int,
+            help='Refresh interval in seconds for --watch (default: 5).')
+
+    with self.argument_context(
+            'migrate runbook execution step retry') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'], required=True,
+            help='Id of the runbook execution.')
+        c.argument(
+            'step_id', options_list=['--step-id'], required=True,
+            help='Id of the step to retry.')
+
+    with self.argument_context(
+            'migrate runbook execution step approve') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'], required=True,
+            help='Id of the runbook execution.')
+        c.argument(
+            'step_id', options_list=['--step-id'], required=True,
+            help='Id of the approval step to approve.')
+        c.argument(
+            'entities', options_list=['--entities'], nargs='*',
+            help='Space-separated entity ids to approve (partial approval '
+                 'steps only).')
+        c.argument(
+            'all_ready', options_list=['--all-ready'], action='store_true',
+            help='Approve every currently ready entity (partial approval '
+                 'steps only).')
+
+    with self.argument_context(
+            'migrate runbook execution step complete') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'], required=True,
+            help='Id of the runbook execution.')
+        c.argument(
+            'step_id', options_list=['--step-id'], required=True,
+            help='Id of the manual step to complete.')
+        c.argument(
+            'comment', options_list=['--comment'], required=True,
+            help='Comment recording who/why the step was completed.')

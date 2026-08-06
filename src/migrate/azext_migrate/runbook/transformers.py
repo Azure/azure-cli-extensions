@@ -71,6 +71,24 @@ def _step_row(step, workstream_id=None, labels=None):
     ])
 
 
+def executions_table(result):
+    """Project a list of runbook executions into one row per execution."""
+    items = result if isinstance(result, list) else [result]
+    return [_execution_row(item) for item in items if item]
+
+
+def _execution_row(item):
+    item = item or {}
+    props = item.get('properties', {}) if isinstance(item, dict) else {}
+    return OrderedDict([
+        ('Name', item.get('name')),
+        ('Status', props.get('status') or props.get('state')),
+        ('ProvisioningState', props.get('provisioningState')),
+        ('StartTime', props.get('startTime') or props.get('jobStartTime')),
+        ('EndTime', props.get('endTime')),
+    ])
+
+
 def execution_table(result):
     """Project a runbook execution status into one row per step."""
     rows = []

@@ -881,6 +881,35 @@ class ExecutionTransformerTests(unittest.TestCase):
         self.assertEqual(rows[0]["Step Status"], "Succeeded")
 
 
+class ExecutionsListTransformerTests(unittest.TestCase):
+
+    def test_lists_one_row_per_execution(self):
+        result = [
+            {"name": "e1", "properties": {
+                "status": "Completed",
+                "provisioningState": "Succeeded",
+                "startTime": "2026-01-01T10:00:00Z",
+                "endTime": "2026-01-01T10:05:00Z"}},
+            {"name": "e2", "properties": {"status": "InProgress"}},
+        ]
+        rows = transformers.executions_table(result)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]["Name"], "e1")
+        self.assertEqual(rows[0]["Status"], "Completed")
+        self.assertEqual(rows[0]["ProvisioningState"], "Succeeded")
+        self.assertEqual(rows[0]["StartTime"], "2026-01-01T10:00:00Z")
+        self.assertEqual(rows[0]["EndTime"], "2026-01-01T10:05:00Z")
+        self.assertEqual(rows[1]["Name"], "e2")
+        self.assertEqual(rows[1]["Status"], "InProgress")
+
+    def test_single_execution_dict(self):
+        rows = transformers.executions_table(
+            {"name": "e9", "properties": {"state": "Queued"}})
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["Name"], "e9")
+        self.assertEqual(rows[0]["Status"], "Queued")
+
+
 class ExecutionCommandTests(unittest.TestCase):
 
     def setUp(self):
@@ -910,6 +939,24 @@ class ExecutionCommandTests(unittest.TestCase):
             mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
         _, kwargs = self.client.post_action.call_args
         self.assertTrue(kwargs.get('no_wait'))
+
+    def test_start_final_get_reads_execution(self):
+        # After the execute action settles, start re-reads the created
+        # execution resource so the caller sees the latest status rather
+        # than the initial (stale) accepted body.
+        self.client.post_action.return_value = {"name": "e5"}
+        fresh = {"name": "e5", "properties": {"status": "InProgress"}}
+        self.client.get.return_value = fresh
+        result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
+        self.assertEqual(result, fresh)
+        self.client.get.assert_called_once_with(
+            arm_ids.execution_id(self._runbook_id(), "e5"))
+
+    def test_start_no_wait_skips_final_get(self):
+        self.client.post_action.return_value = {"name": "e5"}
+        execution_cmds.start(
+            mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
+        self.client.get.assert_not_called()
 
     def test_list_calls_executions_collection(self):
         self.client.list.return_value = []
@@ -1827,6 +1874,52 @@ class VisualizeWorkstreamIdTests(unittest.TestCase):
         html = self._render(document)
         self.assertNotIn('<script>x</script>', html)
         self.assertIn('&lt;script&gt;x&lt;/script&gt;', html)
+
+
+class _RecordingGroup:
+    """Minimal stand-in for an Azure CLI command group context manager."""
+
+    def __init__(self, name, recorded):
+        self._name = name
+        self._recorded = recorded
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_args):
+        return False
+
+    def custom_command(self, name, *_args, **_kwargs):
+        self._recorded.append('%s %s' % (self._name, name))
+
+    def custom_show_command(self, name, *_args, **_kwargs):
+        self._recorded.append('%s %s' % (self._name, name))
+
+
+class _RecordingLoader:
+    def __init__(self):
+        self.recorded = []
+
+    def command_group(self, name, **_kwargs):
+        return _RecordingGroup(name, self.recorded)
+
+
+class CommandRegistrationTests(unittest.TestCase):
+    def _registered_commands(self):
+        from azext_migrate.runbook import commands as runbook_commands
+        loader = _RecordingLoader()
+        runbook_commands.load_runbook_command_table(loader)
+        return loader.recorded
+
+    def test_visualize_and_step_commands_registered(self):
+        commands = self._registered_commands()
+        for expected in (
+                'migrate runbook definition visualize',
+                'migrate runbook execution visualize',
+                'migrate runbook execution step retry',
+                'migrate runbook execution step approve',
+                'migrate runbook execution step complete'):
+            self.assertIn(expected, commands)
 
 
 if __name__ == '__main__':

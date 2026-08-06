@@ -132,6 +132,21 @@ helps['migrate runbook definition download'] = """
 """
 
 
+helps['migrate runbook definition visualize'] = """
+    type: command
+    short-summary: Render the runbook definition as a self-contained HTML page.
+    examples:
+        - name: Visualize a runbook definition and open it in the browser.
+          text: |
+            az migrate runbook definition visualize -g myRg \\
+              --project-name myProject -n myRunbook --open
+        - name: Visualize from a local definition file.
+          text: |
+            az migrate runbook definition visualize \\
+              --from-file ./definition.json --file ./definition.html
+"""
+
+
 helps['migrate runbook definition step'] = """
     type: group
     short-summary: Manage individual steps in a runbook definition.
@@ -326,4 +341,70 @@ helps['migrate runbook wait'] = """
           text: |
             az migrate runbook wait -g myRg --project-name myProject \\
               -n myRunbook --created
+"""
+
+
+helps['migrate runbook execution visualize'] = """
+    type: command
+    short-summary: Render an execution's status as a self-contained HTML graph.
+    examples:
+        - name: Visualize an execution's status and open it in the browser.
+          text: |
+            az migrate runbook execution visualize -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --open
+        - name: Regenerate the snapshot on an interval until it completes.
+          text: |
+            az migrate runbook execution visualize -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --watch
+"""
+
+
+helps['migrate runbook execution step'] = """
+    type: group
+    short-summary: Act on a single step within a runbook execution.
+"""
+
+
+helps['migrate runbook execution step retry'] = """
+    type: command
+    short-summary: Restart the execution of a failed step.
+    examples:
+        - name: Retry a failed step.
+          text: |
+            az migrate runbook execution step retry -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --step-id step1
+"""
+
+
+helps['migrate runbook execution step approve'] = """
+    type: command
+    short-summary: Provide approval for an approval-type step during execution.
+    examples:
+        - name: Approve a Full approval step.
+          text: |
+            az migrate runbook execution step approve -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --step-id step1
+        - name: Approve specific ready entities for a Partial approval step.
+          text: |
+            az migrate runbook execution step approve -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --step-id step1 \\
+              --entities vm1 vm2
+"""
+
+
+helps['migrate runbook execution step complete'] = """
+    type: command
+    short-summary: Mark a manual step as complete during execution.
+    examples:
+        - name: Complete a manual step with a comment.
+          text: |
+            az migrate runbook execution step complete -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --step-id step1 \\
+              --comment "Verified manually"
 """
