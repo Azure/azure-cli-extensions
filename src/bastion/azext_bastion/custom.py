@@ -104,10 +104,10 @@ SSH_EXTENSION_VERSION = "0.1.3"
 
 def _test_extension(extension_name):
     from azure.cli.core.extension import (get_extension)
-    from packaging.version import Version
+    from packaging.version import Version as parse_version
 
     ext = get_extension(extension_name)
-    if Version(ext.version) < Version(SSH_EXTENSION_VERSION):
+    if parse_version(ext.version) < parse_version(SSH_EXTENSION_VERSION):
         raise ValidationError(f"SSH Extension (version >= {SSH_EXTENSION_VERSION}) must be installed")
 
 
