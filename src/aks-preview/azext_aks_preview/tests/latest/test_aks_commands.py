@@ -2802,20 +2802,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+        preserve_default_location=True,
     )
     def test_aks_flexnodes_supported_operations(self, resource_group, resource_group_location):
         """Exercise the supported FlexNodes pool lifecycle without joining an external machine."""
         for feature_name in ("AKSFlexNodePreview", "PutMachinePreview"):
-            feature_state = self.cmd(
-                "feature show --namespace Microsoft.ContainerService "
-                f"--name {feature_name} --query properties.state -o tsv"
-            ).output.strip()
-            self.assertEqual(
-                feature_state.lower(),
-                "registered",
-                f"The test subscription must register Microsoft.ContainerService/{feature_name}.",
+            self.cmd(
+                "feature register --namespace Microsoft.ContainerService "
+                f"--name {feature_name}"
             )
+            while True:
+                feature_state = self.cmd(
+                    "feature show --namespace Microsoft.ContainerService "
+                    f"--name {feature_name} --query properties.state -o tsv"
+                ).output.strip()
+                if feature_state.lower() == "registered":
+                    break
+                time.sleep(30)
+
+        # Propagate the feature registrations to the resource provider.
+        self.cmd("provider register --namespace Microsoft.ContainerService")
 
         create_version, upgrade_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)

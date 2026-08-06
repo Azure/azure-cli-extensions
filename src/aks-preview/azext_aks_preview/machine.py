@@ -29,6 +29,9 @@ def parse_key_value_list(pairs):
 
 def construct_flexnode_machine(cmd, raw_parameters, existed_machine=None):
     """Construct the minimal Machine payload supported by FlexNodes."""
+    if raw_parameters.get("machine_name") is None:
+        raise RequiredArgumentMissingError("Please specify --machine-name.")
+
     MachineKubernetesProfile = cmd.get_models(
         "MachineKubernetesProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,

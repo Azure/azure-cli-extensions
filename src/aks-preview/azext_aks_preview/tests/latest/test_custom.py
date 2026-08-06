@@ -26,7 +26,11 @@ from azext_aks_preview.custom import (
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode
-from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    ClientRequestError,
+    InvalidArgumentValueError,
+    RequiredArgumentMissingError,
+)
 from azure.core.exceptions import ResourceNotFoundError
 from azext_aks_preview.tests.latest.test_vm_skus import _make_sku, _make_restriction
 from knack.util import CLIError
@@ -443,6 +447,25 @@ class TestAksFlexNodeMachine(unittest.TestCase):
                 }
             },
         )
+
+    def test_add_flexnode_machine_requires_machine_name(self):
+        flex_pool = self.models.UnifiedAgentPoolModel(type_properties_type=CONST_FLEX_NODES)
+        with patch("azext_aks_preview.custom.cf_agent_pools") as mock_cf:
+            mock_cf.return_value.get.return_value = flex_pool
+            with self.assertRaisesRegex(
+                RequiredArgumentMissingError,
+                "Please specify --machine-name",
+            ):
+                aks_machine_add(
+                    self.cmd,
+                    self.client,
+                    "rg",
+                    "cluster",
+                    "flexpool",
+                    kubernetes_version="1.35.5",
+                )
+
+        self.client.begin_create_or_update.assert_not_called()
 
     def test_add_flexnode_machine_rejects_unsupported_options(self):
         flex_pool = self.models.UnifiedAgentPoolModel(type_properties_type=CONST_FLEX_NODES)
