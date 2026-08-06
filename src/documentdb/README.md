@@ -23,7 +23,7 @@ managed identity, cross-region read replicas, and point-in-time restore.
 |--|--|
 | `az documentdb mongocluster` | Create and manage mongo clusters |
 | `az documentdb mongocluster firewall-rule` | Manage IP firewall rules (public access) |
-| `az documentdb mongocluster entra-user` | Manage Microsoft Entra ID database users |
+| `az documentdb mongocluster microsoft-entra-user` | Manage Microsoft Entra ID database users |
 | `az documentdb mongocluster identity` | Manage the cluster's user-assigned managed identity |
 | `az documentdb mongocluster replica` | List, create, and promote cross-region read replicas |
 
@@ -64,7 +64,7 @@ az documentdb mongocluster firewall-rule list --cluster-name MyCluster -g MyReso
 
 ```bash
 # The user is identified by its Microsoft Entra object (client) ID, not a friendly name.
-az documentdb mongocluster entra-user assign --object-id 11111111-1111-1111-1111-111111111111 \
+az documentdb mongocluster microsoft-entra-user assign --object-id 11111111-1111-1111-1111-111111111111 \
     --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
 ```
 
@@ -79,21 +79,23 @@ az documentdb mongocluster identity show -n MyCluster -g MyResourceGroup
 ### Replicas (cross-region)
 
 ```bash
-# List the parent cluster's replicas
-az documentdb mongocluster replica list --parent-cluster-name MyCluster -g MyResourceGroup
+# List the source cluster's replicas
+az documentdb mongocluster replica list --source-cluster MyCluster -g MyResourceGroup
 
-# Create a cross-region GeoReplica (the parent must have the GeoReplicas preview feature enabled)
+# Create a cross-region GeoReplica (the source must have the GeoReplicas preview feature enabled).
+# --source-cluster accepts the source cluster name or its full ARM resource ID; the source
+# location is resolved automatically.
 az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup -l centralus \
-    --parent-cluster-name MyCluster --parent-location eastus2
+    --source-cluster MyCluster
 
-# Promote a replica to primary
-az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup
+# Promote a replica to primary (--source-cluster guards against promoting the wrong replica)
+az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --source-cluster MyCluster
 ```
 
 ### Point-in-time restore
 
 ```bash
 az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
-    --parent-cluster-name MyCluster --restore-time "2026-06-30T10:00:00Z" \
+    --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
     --admin-user dbadmin --admin-password MyP@ssw0rd123!
 ```
