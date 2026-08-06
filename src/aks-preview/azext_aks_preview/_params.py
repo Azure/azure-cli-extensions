@@ -301,17 +301,16 @@ class _SizedDeprecated(Deprecated):
 
 
 def _deprecate_option(c, target, redirect):
-    """Deprecate a single option name and keep it compatible with is_preview."""
-    return _SizedDeprecated(
-        c.command_loader.cli_ctx,
-        target=target,
-        redirect=redirect,
-        object_type="option",
-        message_func=lambda self: (
-            "Option '{}' has been deprecated and will be removed in a future release. "
-            "Use '{}' instead.".format(self.target, self.redirect)
-        ),
-    )
+    """Deprecate a single option name and keep it compatible with is_preview.
+
+    Builds the Deprecated object through c.deprecate() so that the message, the object type
+    and the applicability checks stay identical to every other deprecated option, then only
+    adds the __len__ behaviour that knack needs for the preview tag.
+    """
+    deprecated = c.deprecate(target=target, redirect=redirect)
+    if deprecated is not None:
+        deprecated.__class__ = _SizedDeprecated
+    return deprecated
 
 
 # candidates for enumeration
