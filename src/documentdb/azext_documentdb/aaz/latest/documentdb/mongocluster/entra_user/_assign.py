@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster entra-user assign",
+    "documentdb mongocluster microsoft-entra-user assign",
     is_preview=True,
 )
 class Assign(AAZCommand):
     """Grant a Microsoft Entra ID principal access to a mongo cluster by assigning it database roles.
 
     :example: Assign admin access to an Entra ID user (or service principal) by object ID.
-        az documentdb mongocluster entra-user assign --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
+        az documentdb mongocluster microsoft-entra-user assign --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
     """
 
     _aaz_info = {

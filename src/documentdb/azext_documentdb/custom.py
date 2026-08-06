@@ -13,7 +13,6 @@ from azure.cli.core.aaz import register_command, AAZStrArg, AAZObjectType, AAZSt
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Create as _MongoClusterCreate
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Update as _MongoClusterUpdate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Assign as _UserAssign
-from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Update as _UserUpdate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.replica import Promote as _ReplicaPromote
 
 logger = get_logger(__name__)
@@ -34,6 +33,18 @@ def _resolve_cluster_id(ctx, name_or_id):
         type="mongoClusters",
         name=name_or_id,
     )
+
+
+def _get_cluster_resource(cli_ctx, cluster_id):
+    """GET a mongo cluster by full ARM ID and return the raw resource.
+
+    The returned object exposes ``location`` and ``properties`` (a dict), which are used
+    to derive a replica's source location and to read an existing replica's source id.
+    """
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import ResourceType
+    client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+    return client.resources.get_by_id(cluster_id, "2026-06-01")
 
 
 def _keep_only_args(args_schema, keep):
@@ -91,16 +102,6 @@ class UserAssign(_UserAssign):
         _build_identity_provider(self.ctx.args)
 
 
-class UserUpdate(_UserUpdate):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        return _add_principal_type_arg(args_schema)
-
-    def pre_operations(self):
-        _build_identity_provider(self.ctx.args)
-
-
 @register_command("documentdb mongocluster reset-password")
 class ResetPassword(_MongoClusterUpdate):
     """Reset the administrator password of a mongo cluster.
@@ -130,14 +131,16 @@ class ResetPassword(_MongoClusterUpdate):
 
 @register_command("documentdb mongocluster replica create")
 class ReplicaCreate(_MongoClusterCreate):
-    """Create a cross-region read replica of an existing mongo cluster.
+    """Create a read replica of an existing mongo cluster.
 
     The source cluster must have the "GeoReplicas" preview feature enabled. The replica
-    is provisioned as a new mongo cluster in the target region and inherits its
-    configuration (compute, storage, sharding) from the source cluster.
+    is provisioned as a new mongo cluster and inherits its configuration (compute,
+    storage, sharding) from the source cluster. A replica in the same region as the
+    source is created as an in-region ``AsyncReplica``; a replica in a different region
+    is created as a cross-region ``GeoAsyncReplica``.
 
-    :example: Create a replica of a cluster in another region.
-        az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --parent-cluster-name MySourceCluster --parent-location eastus2
+    :example: Create a replica of a cluster.
+        az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup --location centralus --source-cluster MySourceCluster
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -149,26 +152,27 @@ class ReplicaCreate(_MongoClusterCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(args_schema, {"cluster_name", "resource_group", "location"})
-        args_schema.parent_cluster = AAZStrArg(
-            options=["--parent-cluster-name"],
+        args_schema.source_cluster = AAZStrArg(
+            options=["--source-cluster"],
             arg_group="Replica",
             required=True,
-            help="Name or resource ID of the parent (primary) mongo cluster to replicate "
+            help="Name or resource ID of the source (primary) mongo cluster to replicate "
                  "from. If a name is given, the current subscription and resource group are "
-                 "assumed.",
+                 "assumed. Provide a full ARM ID for a source in another resource group or "
+                 "subscription.",
         )
-        args_schema.parent_location = AAZStrArg(
-            options=["--parent-location"],
-            arg_group="Replica",
-            required=True,
-            help="The Azure region of the parent cluster (for example: eastus2).",
-        )
+        # Internal-only: the source location is derived from the source cluster (not
+        # exposed as an argument) and populated in pre_operations.
+        args_schema.source_location = AAZStrArg()
+        args_schema.source_location._registered = False
+        args_schema.source_location._required = False
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
-        args.parent_cluster = _resolve_cluster_id(
-            self.ctx, args.parent_cluster.to_serialized_data())
+        source_id = _resolve_cluster_id(self.ctx, args.source_cluster.to_serialized_data())
+        args.source_cluster = source_id
+        args.source_location = _get_cluster_resource(self.cli_ctx, source_id).location
 
     class MongoClustersCreateOrUpdate(_MongoClusterCreate.MongoClustersCreateOrUpdate):
 
@@ -192,10 +196,10 @@ class ReplicaCreate(_MongoClusterCreate):
             replica_parameters = _builder.get(".properties.replicaParameters")
             if replica_parameters is not None:
                 replica_parameters.set_prop(
-                    "sourceResourceId", AAZStrType, ".parent_cluster",
+                    "sourceResourceId", AAZStrType, ".source_cluster",
                     typ_kwargs={"flags": {"required": True}})
                 replica_parameters.set_prop(
-                    "sourceLocation", AAZStrType, ".parent_location",
+                    "sourceLocation", AAZStrType, ".source_location",
                     typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
@@ -209,7 +213,7 @@ class Restore(_MongoClusterCreate):
     cluster at the requested point in time.
 
     :example: Restore a cluster to a point in time.
-        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --parent-cluster-name MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -225,11 +229,11 @@ class Restore(_MongoClusterCreate):
             {"cluster_name", "resource_group", "location", "admin_user", "admin_password"})
         args_schema.admin_user._required = True
         args_schema.admin_password._required = True
-        args_schema.parent_cluster = AAZStrArg(
-            options=["--parent-cluster-name"],
+        args_schema.source_cluster = AAZStrArg(
+            options=["--source-cluster"],
             arg_group="Restore",
             required=True,
-            help="Name or resource ID of the parent mongo cluster to restore from. If a "
+            help="Name or resource ID of the source mongo cluster to restore from. If a "
                  "name is given, the current subscription and resource group are assumed.",
         )
         args_schema.restore_time = AAZStrArg(
@@ -243,8 +247,8 @@ class Restore(_MongoClusterCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        args.parent_cluster = _resolve_cluster_id(
-            self.ctx, args.parent_cluster.to_serialized_data())
+        args.source_cluster = _resolve_cluster_id(
+            self.ctx, args.source_cluster.to_serialized_data())
 
     class MongoClustersCreateOrUpdate(_MongoClusterCreate.MongoClustersCreateOrUpdate):
 
@@ -276,7 +280,7 @@ class Restore(_MongoClusterCreate):
             restore_parameters = _builder.get(".properties.restoreParameters")
             if restore_parameters is not None:
                 restore_parameters.set_prop(
-                    "sourceResourceId", AAZStrType, ".parent_cluster",
+                    "sourceResourceId", AAZStrType, ".source_cluster",
                     typ_kwargs={"flags": {"required": True}})
                 restore_parameters.set_prop(
                     "pointInTimeUTC", AAZStrType, ".restore_time")
@@ -288,14 +292,50 @@ class ReplicaPromote(_ReplicaPromote):
     """Promote a replica mongo cluster to a primary role.
 
     :example: Promote a replica to primary.
-        az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --mode Switchover --promote-option Forced
+        az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --source-cluster MySourceCluster --mode Switchover --promote-option Forced
     """
 
-    # ``promote`` already exists as a generated command, so this wrapper only
-    # needs to override the request body. It is swapped in over the generated
-    # command through ``commands.py`` (which runs after the generated table is
-    # loaded), exactly like the ``user create``/``user update`` overrides, so it
-    # deliberately does not re-register the command name.
+    # ``promote`` already exists as a generated command, so this wrapper adds a
+    # ``--source-cluster`` safety check and overrides the request body. It is swapped
+    # in over the generated command through ``commands.py`` (which runs after the
+    # generated table is loaded), so it deliberately does not re-register the name.
+    _arguments_schema = None
+    _args_schema = None
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.source_cluster = AAZStrArg(
+            options=["--source-cluster"],
+            arg_group="Replica",
+            required=True,
+            help="Name or resource ID of the expected source (primary) cluster of this "
+                 "replica. Promotion only proceeds if it matches the replica's actual "
+                 "source cluster; otherwise the operation fails.",
+        )
+        return args_schema
+
+    def pre_operations(self):
+        from azure.mgmt.core.tools import resource_id
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        args = self.ctx.args
+        expected_source = _resolve_cluster_id(
+            self.ctx, args.source_cluster.to_serialized_data())
+        replica_id = resource_id(
+            subscription=self.ctx.subscription_id,
+            resource_group=args.resource_group.to_serialized_data(),
+            namespace="Microsoft.DocumentDB",
+            type="mongoClusters",
+            name=args.name.to_serialized_data(),
+        )
+        replica = _get_cluster_resource(self.cli_ctx, replica_id)
+        actual_source = (replica.properties or {}).get("replica", {}).get("sourceResourceId")
+        if not actual_source or actual_source.lower() != expected_source.lower():
+            raise InvalidArgumentValueError(
+                "The replica's actual source cluster '{}' does not match the provided "
+                "--source-cluster '{}'. Promotion aborted.".format(
+                    actual_source, expected_source))
+
     class MongoClustersPromote(_ReplicaPromote.MongoClustersPromote):
 
         def __call__(self, *args, **kwargs):

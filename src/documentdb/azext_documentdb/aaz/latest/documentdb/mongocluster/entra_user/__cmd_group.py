@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "documentdb mongocluster entra-user",
+    "documentdb mongocluster microsoft-entra-user",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):

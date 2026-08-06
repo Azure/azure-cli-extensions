@@ -9,32 +9,32 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from ._show import _ShowHelper
 
 
 @register_command(
-    "documentdb mongocluster microsoft-entra-user remove",
+    "documentdb mongocluster identity list",
     is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
 )
-class Remove(AAZCommand):
-    """Remove a Microsoft Entra ID principal's access from a mongo cluster.
+class List(AAZCommand):
+    """List the managed identities assigned to a mongo cluster.
 
-    :example: Remove an Entra ID user's access by object ID.
-        az documentdb mongocluster microsoft-entra-user remove --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup
+    :example: List managed identities.
+        az documentdb mongocluster identity list -n MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {
         "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-06-01", "identity"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -48,10 +48,9 @@ class Remove(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-n", "--name", "--cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
                 max_length=40,
@@ -61,22 +60,11 @@ class Remove(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.object_id = AAZStrArg(
-            options=["-n", "--name", "--object-id"],
-            help="Object ID (client ID) of the Microsoft Entra principal. Provide the GUID of the service principal or user, not a friendly name or UPN.",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\\-]*",
-                max_length=63,
-                min_length=1,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.UsersDelete(ctx=self.ctx)()
+        self.MongoClustersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,52 +75,42 @@ class Remove(AAZCommand):
     def post_operations(self):
         pass
 
-    class UsersDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
+        return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
+
+    class MongoClustersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/users/{userName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "GET"
 
         @property
         def error_format(self):
@@ -153,10 +131,6 @@ class Remove(AAZCommand):
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
-                **self.serialize_url_param(
-                    "userName", self.ctx.args.object_id,
-                    required=True,
-                ),
             }
             return parameters
 
@@ -170,15 +144,34 @@ class Remove(AAZCommand):
             }
             return parameters
 
-        def on_204(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
 
-        def on_200_201(self, session):
-            pass
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _ShowHelper._build_schema_mongo_cluster_read(cls._schema_on_200)
+
+            return cls._schema_on_200
 
 
-class _RemoveHelper:
-    """Helper class for Remove"""
-
-
-__all__ = ["Remove"]
+__all__ = ["List"]

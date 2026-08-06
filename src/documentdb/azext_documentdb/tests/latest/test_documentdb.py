@@ -195,7 +195,7 @@ class DocumentdbScenario(ScenarioTest):
 
         # Grant a Microsoft Entra principal data-plane access (custom --type wrapper).
         self._cmd_retry(
-            'documentdb mongocluster entra-user assign -n {user_oid} --cluster-name {cluster} -g {rg} '
+            'documentdb mongocluster microsoft-entra-user assign -n {user_oid} --cluster-name {cluster} -g {rg} '
             '--type User --role db=admin role=root',
             checks=[
                 self.check('name', '{user_oid}'),
@@ -204,17 +204,17 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
         self.cmd(
-            'documentdb mongocluster entra-user show -n {user_oid} --cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster microsoft-entra-user show -n {user_oid} --cluster-name {cluster} -g {rg}',
             checks=[self.check('name', '{user_oid}')],
         )
         self.cmd(
-            'documentdb mongocluster entra-user list --cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster microsoft-entra-user list --cluster-name {cluster} -g {rg}',
             checks=[self.check("length([?name=='{user_oid}'])", 1)],
         )
         # Note: the service does not support updating an existing Microsoft Entra ID
         # user, so only assign/show/list/remove are exercised here.
         self._cmd_retry(
-            'documentdb mongocluster entra-user remove -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
+            'documentdb mongocluster microsoft-entra-user remove -n {user_oid} --cluster-name {cluster} -g {rg} --yes'
         )
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
@@ -284,7 +284,7 @@ class DocumentdbScenario(ScenarioTest):
         # configuration and admin credentials, so no password is passed here.
         self._cmd_retry(
             'documentdb mongocluster replica create -n {replica} -g {rg} '
-            '--location {replica_loc} --parent-cluster-name {cluster} --parent-location {loc}',
+            '--location {replica_loc} --source-cluster {cluster}',
             checks=[
                 self.check('name', '{replica}'),
                 self.check('properties.provisioningState', 'Succeeded'),
@@ -292,7 +292,7 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
         self.cmd(
-            'documentdb mongocluster replica list --parent-cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster replica list --source-cluster {cluster} -g {rg}',
             checks=[self.check("length([?name=='{replica}'])", 1)],
         )
         self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
@@ -323,7 +323,7 @@ class DocumentdbScenario(ScenarioTest):
         self.kwargs['restore_time'] = earliest or '2026-01-01T00:00:00Z'
         self._cmd_retry(
             'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
-            '--parent-cluster-name {cluster} --restore-time {restore_time} '
+            '--source-cluster {cluster} --restore-time {restore_time} '
             '--admin-user {admin} --password {password}',
             checks=[
                 self.check('name', '{restored}'),
@@ -448,7 +448,7 @@ class DocumentdbScenario(ScenarioTest):
         self._create_cluster(extra='--preview-features GeoReplicas ')
         self._cmd_retry(
             'documentdb mongocluster replica create -n {replica} -g {rg} '
-            '--location {replica_loc} --parent-cluster-name {cluster} --parent-location {loc}',
+            '--location {replica_loc} --source-cluster {cluster}',
             checks=[
                 self.check('name', '{replica}'),
                 self.check('properties.provisioningState', 'Succeeded'),
@@ -460,7 +460,7 @@ class DocumentdbScenario(ScenarioTest):
         # replica settles into the primary role once the operation completes.
         self._cmd_retry(
             'documentdb mongocluster replica promote -n {replica} -g {rg} '
-            '--mode Switchover --promote-option Forced'
+            '--source-cluster {cluster} --mode Switchover --promote-option Forced --yes'
         )
         self.cmd(
             'documentdb mongocluster wait -n {replica} -g {rg} '
@@ -514,12 +514,12 @@ class DocumentdbScenario(ScenarioTest):
             expect_failure=True,
         )
         self.cmd(
-            'documentdb mongocluster entra-user show -n missing-user '
+            'documentdb mongocluster microsoft-entra-user show -n missing-user '
             '--cluster-name {cluster} -g {rg}',
             expect_failure=True,
         )
         self.cmd(
-            'documentdb mongocluster replica list --parent-cluster-name {cluster} -g {rg}',
+            'documentdb mongocluster replica list --source-cluster {cluster} -g {rg}',
             expect_failure=True,
         )
 
