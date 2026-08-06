@@ -748,7 +748,7 @@ def get_storage_account_info(storage_account_url, scf):
 
     if storage_account_url is not None:
         storage_account, storage_account_resource_group = parse_storage_account_url(storage_account_url, scf)
-        if storage_account is not None:
+        if storage_account is not None and storage_account_resource_group is not None:
             sa_result = scf.storage_accounts.get_properties(storage_account_resource_group, storage_account)
             if (sa_result is not None and
                     sa_result.network_rule_set is not None and
