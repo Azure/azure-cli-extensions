@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Fix invalid API version used in managed environment client: use valid preview API version consistently
 
 1.3.0b4
 ++++++
