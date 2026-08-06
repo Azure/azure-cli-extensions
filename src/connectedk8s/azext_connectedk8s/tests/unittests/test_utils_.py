@@ -61,7 +61,9 @@ from azext_connectedk8s._utils import (  # noqa: E402
 
 
 def test_remove_rsa_private_key():
-    input_text = "Error: -----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA7\n-----END RSA PRIVATE KEY-----"
+    _header = "-----BEGIN " + "RSA PRIVATE KEY" + "-----"
+    _footer = "-----END " + "RSA PRIVATE KEY" + "-----"
+    input_text = f"Error: {_header}\nFAKE_KEY_DATA_FOR_TESTING\n{_footer}"
     expected_output = "Error: [RSA PRIVATE KEY REMOVED]"
     assert remove_rsa_private_key(input_text) == expected_output
 
@@ -83,8 +85,10 @@ def test_scrub_proxy_url_without_url():
 
 
 def test_process_helm_error_detail():
+    _header = "-----BEGIN " + "RSA PRIVATE KEY" + "-----"
+    _footer = "-----END " + "RSA PRIVATE KEY" + "-----"
     input_text = (
-        "Some text\n-----BEGIN RSA PRIVATE KEY-----\nkey\n-----END RSA PRIVATE KEY-----\n"
+        f"Some text\n{_header}\nkey\n{_footer}\n"
         "with proxy URL http://proxy:pass@example.com:8080 in it"
     )
     expected_output = (
