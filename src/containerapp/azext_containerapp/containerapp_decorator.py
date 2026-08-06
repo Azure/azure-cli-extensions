@@ -69,7 +69,8 @@ from ._decorator_utils import (create_deserializer,
                                infer_runtime_option
                                )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
-    env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector
+    env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector, \
+    is_acr_registry
 from ._validators import validate_create, validate_runtime
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
@@ -400,7 +401,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
             if self.get_argument_registry_server():
                 if (not self.get_argument_registry_pass() or not self.get_argument_registry_user()) and not self.get_argument_registry_identity():
-                    if ACR_IMAGE_SUFFIX not in self.get_argument_registry_server():
+                    if not is_acr_registry(self.get_argument_registry_server()):
                         raise RequiredArgumentMissingError(
                             'Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
                     logger.warning(
@@ -737,7 +738,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_up_system_assigned_identity_as_default_if_using_acr(self):
         registry_server = self.get_argument_registry_server()
         if registry_server is not None:
-            if ACR_IMAGE_SUFFIX not in registry_server:
+            if not is_acr_registry(registry_server):
                 return
 
             if self.get_argument_registry_identity() is None and self.get_argument_registry_user() is None and self.get_argument_registry_pass() is None:
@@ -950,7 +951,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
         if self.get_argument_registry_server() is not None and \
-                ACR_IMAGE_SUFFIX in self.get_argument_registry_server() and \
+                is_acr_registry(self.get_argument_registry_server()) and \
                 self.get_argument_registry_user() is None and \
                 self.get_argument_registry_pass() is None and \
                 self.get_argument_no_wait():
@@ -1500,7 +1501,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def set_up_system_assigned_identity_as_default_if_using_acr(self):
         registry_server = self.get_argument_registry_server()
         if registry_server is not None:
-            if ACR_IMAGE_SUFFIX not in registry_server:
+            if not is_acr_registry(registry_server):
                 return
 
             if self.get_argument_registry_identity() is None and self.get_argument_registry_user() is None and self.get_argument_registry_pass() is None:
@@ -1563,7 +1564,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 raise MutuallyExclusiveArgumentError("Cannot use --source with --yaml together. Can either deploy from a local directory or provide a yaml file")
             # Check if an ACR registry is associated with the container app
             existing_registries = safe_get(self.containerapp_def, "properties", "configuration", "registries", default=[])
-            existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
+            existing_registries = [r for r in existing_registries if is_acr_registry(r["server"])]
             if existing_registries and len(existing_registries) > 0:
                 registry_server = existing_registries[0]["server"]
                 self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=registry_server)

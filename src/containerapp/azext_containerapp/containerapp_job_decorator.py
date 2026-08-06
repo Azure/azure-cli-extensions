@@ -47,7 +47,7 @@ from ._models import (
     ContainerResources as ContainerResourcesModel,
     Container as ContainerModel,
     ScaleRule as ScaleRuleModel)
-from ._utils import is_registry_msi_system_environment, env_has_managed_identity
+from ._utils import is_registry_msi_system_environment, env_has_managed_identity, is_acr_registry
 from ._validators import validate_create
 
 logger = get_logger(__name__)
@@ -391,7 +391,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
 
             if self.get_argument_registry_server():
                 if not self.get_argument_registry_pass or not self.get_argument_registry_user():
-                    if ACR_IMAGE_SUFFIX not in self.get_argument_registry_server():
+                    if not is_acr_registry(self.get_argument_registry_server()):
                         raise RequiredArgumentMissingError(
                             'Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
                     logger.warning(
