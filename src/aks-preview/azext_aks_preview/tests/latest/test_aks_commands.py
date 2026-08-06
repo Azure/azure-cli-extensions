@@ -25244,12 +25244,12 @@ spec:
         random_name_length=17, name_prefix="clitest", location="eastus2euap",
         preserve_default_location=True,
     )
-    # live_only: this scenario cannot be recorded yet.
-    #  1. The RP-side feature toggle and the AlertConfigurationPreview AFEC flag limit the
-    #     feature to eastus2euap/centraluseuap on allow-listed subscriptions.
-    #  2. The RP returns 202 for PUT alertConfigurations, but the swagger declares only
-    #     200/201 for that operation, so the generated SDK raises on the initial response.
-    #     Once the spec and RP agree and the SDK is re-vendored, drop this marker and record.
+    # live_only: this scenario has no recording yet, so it would otherwise try to run live in
+    # CI. The RP contract issue that previously blocked recording is fixed (PUT now returns
+    # 201 on create and 200 on update, with the resource body and Azure-AsyncOperation
+    # header), and the feature is enabled in eastus2euap. Recording still requires an
+    # environment that can install azure-cli-testsdk. Once the cassette is added, drop this
+    # marker.
     @live_only()
     def test_aks_alert_config_cmds(self, resource_group, resource_group_location):
         # The alertConfigurations RP endpoint is only deployed to selected regions, so this
