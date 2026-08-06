@@ -61,6 +61,11 @@ def construct_flexnode_machine(cmd, raw_parameters, existed_machine=None):
         raw_taints = raw_parameters.get("node_taints")
         node_taints = [x.strip() for x in (raw_taints.split(",") if raw_taints else [])]
 
+    # maxPods is create-only for FlexNode Machines; preserve it on update.
+    max_pods = raw_parameters.get("max_pods")
+    if existing_kubernetes is not None:
+        max_pods = existing_kubernetes.max_pods
+
     kubernetes = MachineKubernetesProfile(
         node_labels=labels,
         node_taints=node_taints,
@@ -71,11 +76,7 @@ def construct_flexnode_machine(cmd, raw_parameters, existed_machine=None):
             if existing_kubernetes is not None
             else None
         ),
-        max_pods=(
-            existing_kubernetes.max_pods
-            if existing_kubernetes is not None
-            else raw_parameters.get("max_pods")
-        ),
+        max_pods=max_pods,
     )
     return Machine(properties=MachineProperties(kubernetes=kubernetes))
 
