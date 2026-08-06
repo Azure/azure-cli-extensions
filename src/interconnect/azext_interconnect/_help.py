@@ -9,8 +9,3 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
-
-helps['interconnect-block'] = """
-    type: group
-    short-summary: Manage Interconnect Block.
-"""
