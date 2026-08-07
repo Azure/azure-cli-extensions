@@ -217,11 +217,14 @@ helps['quantum target clear'] = """
 
 helps['quantum target list'] = """
     type: command
-    short-summary: Get the list of providers and their targets in an Azure Quantum workspace.
+    short-summary: Get the list of targets and their status in an Azure Quantum workspace or provider account.
     examples:
-      - name: Get the list of targets available in a Azure Quantum workspaces
+      - name: Get the list of targets available in an Azure Quantum workspace
         text: |-
             az quantum target list -g MyResourceGroup -w MyWorkspace
+      - name: Get the list of targets available in a provider account (no workspace required)
+        text: |-
+            az quantum target list -p MyProviderId
 """
 
 helps['quantum target set'] = """
