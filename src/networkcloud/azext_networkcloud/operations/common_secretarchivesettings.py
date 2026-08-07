@@ -26,13 +26,10 @@ class SecretArchiveSettings:
 
     @classmethod
     def pre_operations_update(cls, args):
-        if (
-            args.secret_archive_settings is None
-            or args.secret_archive_settings._data is None
-        ):
-            return
-
         if has_value(args.secret_archive_settings):
+            # skip validation when the value is explicitly set to null
+            if args.secret_archive_settings._data is None:
+                return
             if not has_value(args.secret_archive_settings.vault_uri):
                 raise RequiredArgumentMissingError(
                     "Key Vault URI is missing for secret archive settings."
