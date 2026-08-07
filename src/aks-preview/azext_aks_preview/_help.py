@@ -287,7 +287,7 @@ helps['aks create'] = f"""
           short-summary: The ID of a PPG.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -1746,6 +1746,9 @@ helps['aks maintenanceconfiguration add'] = """
     type: command
     short-summary: Add a maintenance configuration in managed Kubernetes cluster.
     parameters:
+        - name: --maintenance-window-id
+          type: string
+          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Cannot be combined with --config-file (set the maintenanceWindowId property in the JSON instead). Omit for no shared resource.
         - name: --weekday
           type: string
           short-summary: A day in week on which maintenance is allowed. E.g. Monday. Applicable to default maintenance configuration only.
@@ -1846,6 +1849,10 @@ helps['aks maintenanceconfiguration add'] = """
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months, and this configuration will be effective from 2023-01-16.
+        - name: Link a maintenance configuration to a shared MaintenanceWindow resource.
+          text: |
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --maintenance-window-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/maintenanceWindows/myWindow
+              The schedule lives in the referenced MaintenanceWindow resource and is shared across configurations. Inline schedule arguments cannot be combined with --maintenance-window-id.
         - name: Add aksManagedAutoUpgradeSchedule maintenance configuration with json file.
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --config-file ./test.json
@@ -1880,6 +1887,9 @@ helps['aks maintenanceconfiguration update'] = """
     type: command
     short-summary: Update a maintenance configuration of a managed Kubernetes cluster.
     parameters:
+        - name: --maintenance-window-id
+          type: string
+          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Cannot be combined with --config-file (set the maintenanceWindowId property in the JSON instead). Omit for no shared resource.
         - name: --weekday
           type: string
           short-summary: A day in week on which maintenance is allowed. E.g. Monday. Applicable to default maintenance configuration only.
@@ -1980,6 +1990,10 @@ helps['aks maintenanceconfiguration update'] = """
           text: |
             az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months. This configuration will be effective from 2023-01-16.
+        - name: Link a maintenance configuration to a shared MaintenanceWindow resource.
+          text: |
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --maintenance-window-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/maintenanceWindows/myWindow
+              The schedule lives in the referenced MaintenanceWindow resource and is shared across configurations. Inline schedule arguments cannot be combined with --maintenance-window-id.
         - name: Update aksManagedAutoUpgradeSchedule maintenance configuration with json file.
           text: |
             az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --config-file ./test.json
@@ -2399,7 +2413,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
