@@ -36,6 +36,11 @@ class Python312CompatTests(unittest.TestCase):
          "the 'asynchat' module was removed in Python 3.12; use asyncio"),
         (re.compile(r'\bfrom\s+distutils\b|\bimport\s+distutils\b'),
          "'distutils' was removed in Python 3.12; use the 'packaging' library"),
+        (re.compile(r'\bpkgutil\.(?:get_loader|find_loader|ImpImporter)\b'),
+         'pkgutil.get_loader/find_loader/ImpImporter are deprecated in Python 3.12 and '
+         'removed in 3.14; use importlib.util (e.g. importlib.util.find_spec)'),
+        (re.compile(r'\bplatform\.dist\s*\('),
+         "platform.dist() was removed in Python 3.8; use the 'distro' library"),
     ]
 
     def _iter_source_files(self):

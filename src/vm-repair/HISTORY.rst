@@ -4,7 +4,7 @@ Release History
 
 2.2.2
 ++++++
-Replacing deprecated ``datetime.utcnow()`` with timezone-aware ``datetime.now(timezone.utc)`` for Python 3.12+ forward compatibility. ``datetime.utcnow()`` is deprecated as of Python 3.12 and scheduled for removal in a future release. The generated timestamps (used for repair VM, copied disk, and repair resource group names) are unchanged.
+Replacing deprecated ``datetime.utcnow()`` with timezone-aware ``datetime.now(timezone.utc)`` for Python 3.12+ forward compatibility. ``datetime.utcnow()`` is deprecated as of Python 3.12 and scheduled for removal in a future release. The generated timestamps (used for repair VM, copied disk, and repair resource group names) are unchanged. Also replacing ``pkgutil.get_loader()``/``loader.load_module()`` (deprecated in Python 3.12, removed in Python 3.14) with ``importlib.util.find_spec()`` when locating the bundled driver scripts, and extending the static Python 3.12+ compatibility guard to cover these APIs.
 
 2.2.1
 ++++++
