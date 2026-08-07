@@ -12,21 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkcloud virtualmachine console delete",
-    is_preview=True,
+    "networkcloud accessbridge delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the provided virtual machine console.
+    """Delete the specified access bridge.
 
-    :example: Delete virtual machine console
-        az networkcloud virtualmachine console delete --resource-group "resourceGroupName" --virtual-machine-name "virtualMachineName"
+    :example: Delete access bridge
+        az networkcloud accessbridge delete --resource-group resourceGroupName --access-bridge-name Bastion
     """
 
     _aaz_info = {
         "version": "2026-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/accessbridges/{}", "2026-07-01"],
         ]
     }
 
@@ -55,32 +54,21 @@ class Delete(AAZCommand):
             options=["--if-none-match"],
             help="Set to '*' to allow a new record set to be created, but to prevent updating an existing resource. Other values will result in error from server as they are not supported.",
         )
-        _args_schema.console_name = AAZStrArg(
-            options=["-n", "--name", "--console-name"],
-            help="The name of the virtual machine console.",
+        _args_schema.access_bridge_name = AAZStrArg(
+            options=["-n", "--name", "--access-bridge-name"],
+            help="The name of the access bridge.",
             required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^default$",
-            ),
+            id_part="name",
+            enum={"Bastion": "Bastion", "PrivateVault": "PrivateVault", "StorageDashboard": "StorageDashboard"},
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.virtual_machine_name = AAZStrArg(
-            options=["--virtual-machine-name"],
-            help="The name of the virtual machine.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
-            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ConsolesDelete(ctx=self.ctx)()
+        yield self.AccessBridgesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -91,7 +79,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ConsolesDelete(AAZHttpOperation):
+    class AccessBridgesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -130,7 +118,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/virtualMachines/{virtualMachineName}/consoles/{consoleName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/accessBridges/{accessBridgeName}",
                 **self.url_parameters
             )
 
@@ -146,7 +134,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "consoleName", self.ctx.args.console_name,
+                    "accessBridgeName", self.ctx.args.access_bridge_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -155,10 +143,6 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "virtualMachineName", self.ctx.args.virtual_machine_name,
                     required=True,
                 ),
             }
