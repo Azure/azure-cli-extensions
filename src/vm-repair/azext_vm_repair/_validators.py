@@ -10,7 +10,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 
-from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from azure.cli.command_modules.vm.custom import get_vm_by_aaz, _is_linux_os_aaz
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
@@ -37,7 +37,7 @@ def validate_create(cmd, namespace):
 
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    is_linux = _is_linux_os(source_vm)
+    is_linux = _is_linux_os_aaz(source_vm)
 
     # Check repair vm name
     if namespace.repair_vm_name:
@@ -108,17 +108,17 @@ def validate_restore(cmd, namespace):
 
     repair_vm_id = parse_resource_id(namespace.repair_vm_id)
     # Check if data disk exists on repair VM
-    repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
-    data_disks = repair_vm.storage_profile.data_disks
+    repair_vm = get_vm_by_aaz(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
+    data_disks = repair_vm.get('storageProfile', {}).get('dataDisks')
     if not data_disks:
         raise CLIError('No data disks found on repair VM: {}'.format(repair_vm_id['name']))
 
     # Populate disk name
     if not namespace.disk_name:
-        namespace.disk_name = data_disks[0].name
-        logger.info('Disk-name not given. Defaulting to the first data disk attached to the repair VM: %s', data_disks[0].name)
+        namespace.disk_name = data_disks[0].get('name')
+        logger.info('Disk-name not given. Defaulting to the first data disk attached to the repair VM: %s', data_disks[0].get('name'))
     else:  # check disk name
-        if not [disk for disk in data_disks if disk.name == namespace.disk_name]:
+        if not [disk for disk in data_disks if disk.get('name') == namespace.disk_name]:
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
 
 
@@ -136,7 +136,7 @@ def validate_run(cmd, namespace):
         raise CLIError('Cannot continue with both the run-id and the custom-run-file. Please specify just one.')
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    is_linux = _is_linux_os(source_vm)
+    is_linux = _is_linux_os_aaz(source_vm)
 
     if namespace.custom_script_file:
         # Check if file extension is correct
@@ -170,7 +170,7 @@ def validate_run(cmd, namespace):
 
     # If not run_on_repair, repair_vm = source_vm. Scripts directly run on source VM.
     if not namespace.run_on_repair:
-        namespace.repair_vm_id = source_vm.id
+        namespace.repair_vm_id = source_vm.get('id')
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
@@ -263,7 +263,7 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
     resource_not_found_error = 'ResourceNotFound'
     source_vm = None
     try:
-        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
     except HttpResponseError as httpError:
         logger.debug(httpError)
         if httpError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
@@ -393,7 +393,7 @@ def validate_repair_and_restore(cmd, namespace):
 
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    is_linux = _is_linux_os(source_vm)
+    is_linux = _is_linux_os_aaz(source_vm)
 
     # Check repair vm name
     namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
@@ -435,4 +435,4 @@ def validate_repair_and_restore(cmd, namespace):
     namespace.associate_public_ip = False
     # Validate repair run command
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    is_linux = _is_linux_os(source_vm)
+    is_linux = _is_linux_os_aaz(source_vm)
