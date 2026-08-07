@@ -634,11 +634,17 @@ def validate_addon(namespace):
 
 
 def validate_addons(namespace):
-    if not hasattr(namespace, 'addons'):
+    addons = getattr(namespace, 'addons', None)
+    if addons is None:
+        addons = getattr(namespace, 'enable_addons', None)
+    if not addons:
         return
-    addons = namespace.addons
-    addon_args = addons.split(',')
+    addon_args = addons.split(',') if isinstance(addons, str) else list(addons)
     _recognize_addons(addon_args)
+    if 'monitoring' in addon_args:
+        _show_monitoring_addon_legacy_info()
+        if getattr(namespace, 'enable_msi_auth_for_monitoring', None) is not None:
+            _warn_legacy_msi_auth_flag_deprecated()
 
 
 def validate_pod_identity_pod_labels(namespace):
@@ -1219,15 +1225,50 @@ def validate_azure_monitor_and_opentelemetry_for_update(namespace):
     validate_opentelemetry_logs_dependencies_for_update(namespace)
 
 
+def _show_monitoring_addon_legacy_info():
+    """Point legacy monitoring-addon users to the strategic AMP onboarding command."""
+    logger.warning(
+        "The 'monitoring' addon is the legacy Container Insights onboarding path. "
+        "Use '--enable-azure-monitor-logs' / '--disable-azure-monitor-logs' to configure "
+        "the Azure Monitor profile."
+    )
+
+
+def _warn_legacy_msi_auth_flag_deprecated():
+    """Warn when the legacy monitoring addon explicitly selects an authentication mode."""
+    logger.warning(
+        "'--enable-msi-auth-for-monitoring' is deprecated on the legacy monitoring-addon path. "
+        "Managed-identity authentication through '--enable-azure-monitor-logs' is recommended."
+    )
+
+
 def validate_azure_monitor_logs_and_enable_addons(namespace):
     """Validate that enable_azure_monitor_logs and enable_addons don't conflict."""
+    enable_addons = getattr(namespace, 'enable_addons', None)
     if hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs:
-        if hasattr(namespace, 'enable_addons') and namespace.enable_addons:
-            if 'monitoring' in namespace.enable_addons:
-                raise ArgumentUsageError(
-                    "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
-                    "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
-                )
+        if enable_addons and 'monitoring' in enable_addons:
+            raise ArgumentUsageError(
+                "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
+                "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
+            )
+        # The containerInsights path is always MSI/AAD; legacy (non-MSI) auth cannot be expressed.
+        _validate_monitor_logs_requires_msi_auth(namespace)
+
+
+def _validate_monitor_logs_requires_msi_auth(namespace):
+    """--enable-azure-monitor-logs uses the containerInsights path, which is always MSI/AAD auth.
+
+    Auth selection has no representation on that surface, so reject any explicit use of the legacy
+    auth-selection flag alongside it.
+    """
+    disable_msi_auth = getattr(namespace, 'disable_msi_auth_for_monitoring', None)
+    enable_msi_auth = getattr(namespace, 'enable_msi_auth_for_monitoring', None)
+    if disable_msi_auth or enable_msi_auth is not None:
+        raise ArgumentUsageError(
+            "'--enable-azure-monitor-logs' onboards Container Insights via the azureMonitorProfile, "
+            "which always uses managed-identity (MSI/AAD) authentication. Do not combine it with "
+            "'--enable-msi-auth-for-monitoring'."
+        )
 
 
 def validate_azure_monitor_logs_enable_disable(namespace):
@@ -1238,6 +1279,58 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+    if hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs:
+        _validate_monitor_logs_requires_msi_auth(namespace)
+
+
+def _validate_azure_monitor_logs_amp_controls(namespace):
+    """Validate static relationships for AMP-only Container Insights controls."""
+    syslog_port = getattr(namespace, 'syslog_port', None)
+    enable_prometheus_scraping = getattr(namespace, 'enable_prometheus_metrics_scraping', False)
+    disable_prometheus_scraping = getattr(namespace, 'disable_prometheus_metrics_scraping', False)
+
+    if syslog_port is not None and not 1 <= syslog_port <= 65535:
+        raise InvalidArgumentValueError("--syslog-port must be an integer between 1 and 65535.")
+
+    if enable_prometheus_scraping and disable_prometheus_scraping:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both '--enable-prometheus-metrics-scraping' and "
+            "'--disable-prometheus-metrics-scraping'."
+        )
+
+    amp_controls_requested = (
+        syslog_port is not None or
+        enable_prometheus_scraping or
+        disable_prometheus_scraping
+    )
+    if amp_controls_requested and getattr(namespace, 'disable_azure_monitor_logs', False):
+        raise MutuallyExclusiveArgumentError(
+            "Azure Monitor logs AMP controls cannot be combined with '--disable-azure-monitor-logs'."
+        )
+
+
+def validate_azure_monitor_logs_amp_controls_for_create(namespace):
+    """Validate AMP-only controls on create, where monitoring must be enabled in the same command."""
+    _validate_azure_monitor_logs_amp_controls(namespace)
+    amp_controls_requested = (
+        getattr(namespace, 'syslog_port', None) is not None or
+        getattr(namespace, 'enable_prometheus_metrics_scraping', False) or
+        getattr(namespace, 'disable_prometheus_metrics_scraping', False)
+    )
+    if amp_controls_requested and not getattr(namespace, 'enable_azure_monitor_logs', False):
+        raise RequiredArgumentMissingError(
+            "'--syslog-port' and Prometheus-scraping controls require "
+            "'--enable-azure-monitor-logs' on cluster create."
+        )
+
+
+def validate_azure_monitor_logs_amp_controls_for_update(namespace):
+    """Validate static AMP-control relationships on update.
+
+    Whether monitoring is already enabled is validated against the fetched cluster in the update
+    decorator.
+    """
+    _validate_azure_monitor_logs_amp_controls(namespace)
 
 
 def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
