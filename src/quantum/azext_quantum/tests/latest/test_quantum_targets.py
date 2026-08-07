@@ -75,3 +75,75 @@ class QuantumTargetsScenarioTest(ScenarioTest):
         assert test_returned_provider == test_expected_provider
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+
+
+class QuantumTargetListProviderAccountTest(unittest.TestCase):
+    """Unit tests (no Azure required) for the provider-account target listing support."""
+
+    def test_transform_targets_provider_account_shape(self):
+        from ...commands import transform_targets
+
+        # Data-plane provider-account status uses the same shape as the workspace providers list.
+        providers = [
+            {
+                'id': 'atom-boulder',
+                'currentAvailability': 'Available',
+                'targets': [
+                    {'id': 'atom.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 42}
+                ]
+            }
+        ]
+        rows = transform_targets(providers)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['Provider'], 'atom-boulder')
+        self.assertEqual(rows[0]['Target-id'], 'atom.qpu')
+        self.assertEqual(rows[0]['Current Availability'], 'Available')
+        self.assertEqual(rows[0]['Average Queue Time (seconds)'], 42)
+
+    def test_target_list_provider_and_workspace_are_mutually_exclusive(self):
+        from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
+        from ..._validators import validate_target_list_info
+
+        cmd = self._fake_cmd(default_workspace=None)
+        namespace = self._fake_namespace(provider_id='atom-boulder', workspace_name='MyWorkspace')
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validate_target_list_info(cmd, namespace)
+
+    def test_target_list_provider_ignores_configured_default_workspace(self):
+        from ..._validators import validate_target_list_info
+
+        # A saved default workspace must not conflict with an explicit --provider-id.
+        cmd = self._fake_cmd(default_workspace='MyDefaultWorkspace')
+        namespace = self._fake_namespace(provider_id='atom-boulder', workspace_name='MyDefaultWorkspace')
+        # Should not raise.
+        validate_target_list_info(cmd, namespace)
+
+    @staticmethod
+    def _fake_cmd(default_workspace):
+        class _Config:
+            defaults_section_name = 'defaults'
+
+            def get(self, _section, _key, default=None):
+                return default_workspace if default_workspace is not None else default
+
+        class _Ctx:
+            config = _Config()
+
+        class _Cmd:
+            cli_ctx = _Ctx()
+
+        return _Cmd()
+
+    @staticmethod
+    def _fake_namespace(**kwargs):
+        class _Namespace:
+            pass
+
+        namespace = _Namespace()
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -9,7 +9,7 @@ import logging
 
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
-from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_provider_and_sku_info
+from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_provider_and_sku_info, validate_target_list_info
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +141,7 @@ def load_command_table(self, _):
         u.command('delete', 'remove_user', validator=validate_workspace_info, confirmation=True)
 
     with self.command_group('quantum target', target_ops) as t:
-        t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
+        t.command('list', 'list', validator=validate_target_list_info, table_transformer=transform_targets)
         t.show_command('show', 'target_show', validator=validate_target_info)
         t.command('set', 'set', validator=validate_target_info)
         t.command('clear', 'clear')

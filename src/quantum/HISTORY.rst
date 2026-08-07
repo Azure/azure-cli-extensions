@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b21
++++++++++++++++
+* Added the ``--provider-id/-p`` parameter to ``az quantum target list`` to list targets and their status from a provider account, without requiring a workspace.
+
 1.0.0b20
 +++++++++++++++
 * Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
