@@ -142,7 +142,6 @@ class ResetPassword(_MongoClusterUpdate):
             args.admin_user = user_name
 
 
-
 @register_command("documentdb mongocluster replica create")
 class ReplicaCreate(_MongoClusterCreate):
     """Create a read replica of an existing mongo cluster.
