@@ -4837,6 +4837,9 @@ helps['aks bastion enable'] = """
 type: command
 short-summary: Enable managed Azure Bastion host for a managed Kubernetes cluster.
 parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
   - name: --bastion-sku -s
     type: string
     short-summary: Specify the SKU of the managed Azure Bastion host.
@@ -4862,6 +4865,10 @@ examples:
 helps['aks bastion disable'] = """
 type: command
 short-summary: Disable managed Azure Bastion host for a managed Kubernetes cluster.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 examples:
   - name: Disable managed Azure Bastion host for a managed Kubernetes cluster.
     text: az aks bastion disable --name MyManagedCluster --resource-group MyResourceGroup
@@ -4872,6 +4879,9 @@ helps['aks bastion update'] = """
 type: command
 short-summary: Update managed Azure Bastion host for a managed Kubernetes cluster.
 parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
   - name: --bastion-sku -s
     type: string
     short-summary: Specify the SKU of the managed Azure Bastion host.
@@ -4909,9 +4919,9 @@ helps['aks bastion tunnel'] = """
           long-summary: If specified, uses this kubeconfig file at its original location instead of fetching credentials from Azure.
     examples:
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
-          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+          text: az aks bastion tunnel -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
         - name: Connect using an existing kubeconfig file.
-          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --kubeconfig-path ~/.kube/config
+          text: az aks bastion tunnel -g MyResourceGroup --name MyManagedCluster --kubeconfig-path ~/.kube/config
 """
 
 helps['aks identity-binding'] = """

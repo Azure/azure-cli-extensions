@@ -5995,7 +5995,7 @@ def aks_bastion_enable(
         no_wait=no_wait,
         aks_custom_headers=headers,
         enabled=True,
-        check_enabled=False,
+        enabling=True,
         bastion_sku=bastion_sku,
         bastion_public_ip=bastion_public_ip,
         bastion_scale_units=bastion_scale_units,
@@ -6021,8 +6021,7 @@ def aks_bastion_disable(
         name,
         no_wait=no_wait,
         aks_custom_headers=headers,
-        enabled=False,
-        check_enabled=False,
+        enabled=False
     )
 
 
@@ -6048,7 +6047,7 @@ def aks_bastion_update(
         no_wait=no_wait,
         aks_custom_headers=headers,
         enabled=True,
-        check_enabled=True,
+        require_enabled=True,
         bastion_sku=bastion_sku,
         bastion_scale_units=bastion_scale_units,
     )
@@ -6082,6 +6081,12 @@ def aks_bastion_tunnel(cmd, client, resource_group_name, name, bastion=None, por
         mc = client.get(resource_group_name, name)
         mc_id = mc.id
         nrg = mc.node_resource_group
+
+        # Use managed bastion if not explicitly provided
+        if not bastion and mc.network_profile and mc.network_profile.bastion_profile and mc.network_profile.bastion_profile.enabled:
+            logger.info("using managed bastion with id: %s", mc.network_profile.bastion_profile.bastion_id)
+            bastion = mc.network_profile.bastion_profile.bastion_id
+
         bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg], subscription_id)
         port = aks_bastion_get_local_port(port)
 

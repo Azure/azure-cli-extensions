@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.log import get_logger
-import json
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -20,7 +19,8 @@ def update_managed_bastion_profile(
     no_wait=False,
     aks_custom_headers=None,
     enabled=False,
-    check_enabled=False,
+    require_enabled=False,
+    enabling=False,
     bastion_sku=None,
     bastion_public_ip=None,
     bastion_scale_units=None
@@ -46,8 +46,10 @@ def update_managed_bastion_profile(
     if bastion_profile is None:
         bastion_profile = BastionProfile()
 
-    if check_enabled and not bastion_profile.enabled:
-        raise CLIError("Bastion is not enabled, please use `az aks bastion enable` to enable it first.")
+    if enabling and bastion_profile.enabled:
+        raise CLIError('Bastion is already enabled, please use "az aks bastion update" to update it.')
+    if require_enabled and not bastion_profile.enabled:
+        raise CLIError('Bastion is not enabled, please use "az aks bastion enable" to enable it first.')
 
     bastion_profile.enabled = enabled
     if bastion_sku is not None:
@@ -60,8 +62,6 @@ def update_managed_bastion_profile(
     network_profile.bastion_profile = bastion_profile
     instance.network_profile = network_profile
 
-    print(json.dumps(instance.network_profile.bastion_profile.as_dict(), indent=4))
-
     result = sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -71,4 +71,3 @@ def update_managed_bastion_profile(
         headers=aks_custom_headers)
 
     return result
-
