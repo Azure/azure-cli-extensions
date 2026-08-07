@@ -17,6 +17,22 @@ Release History
 * Fix pre-onboarding diagnostic checks incorrectly grading a NotCompleted job as Passed when partial container output is present.
 * Updated clusterdiagnosticchecks image to 1.36.1.
 
+1.11.1
++++++++
+* Added ARM64 support for Helm binary installation.
+* Handle removal of '--all' flag in Helm 4 to ensure compatibility.
+* Added Helm overrides support for Application Gateway for Containers (AGC).
+* Updated CSP version.
+* Updated CLIENT_PROXY_VERSION to 1.3.033892.
+* Updated pre-diagnostics version.
+
+1.11.0
++++++
+* [Breaking Change] Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+* Update cluster diagnostics image to comply with Pod Security Standards-Restricted level( Updated image version:1.31.2).
+* Add endpoint overrides for Azure Government cloud environments
+* Update Proxy Image to 1.3.032281
+
 1.10.13
 +++++
 * Added telemetry for pre-onboarding diagnostic results, including diagnostics execution failures.
