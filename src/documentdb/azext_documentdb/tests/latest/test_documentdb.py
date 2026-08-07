@@ -50,8 +50,8 @@ class DocumentdbScenario(ScenarioTest):
     def _create_cluster(self, extra=''):
         """Create the shared base cluster and block until it is provisioned.
 
-        ``extra`` appends scenario-specific create flags (for example Entra auth or
-        the GeoReplicas preview feature).
+        ``extra`` appends scenario-specific create flags (for example Entra auth
+        or a user-assigned identity).
         """
         self._cmd_retry(
             'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
@@ -300,8 +300,7 @@ class DocumentdbScenario(ScenarioTest):
             'replica_loc': 'westus2',
         })
 
-        # The source cluster needs the GeoReplicas preview feature at create time.
-        self._create_cluster(extra='--preview-features GeoReplicas ')
+        self._create_cluster()
 
         # Create a cross-region read replica. A replica inherits the source
         # configuration and admin credentials, so no password is passed here.
@@ -466,9 +465,9 @@ class DocumentdbScenario(ScenarioTest):
             'replica_loc': 'westus2',
         })
 
-        # A source cluster with the GeoReplicas preview feature and a cross-region
-        # replica are the starting topology for a promote.
-        self._create_cluster(extra='--preview-features GeoReplicas ')
+        # A source cluster and a cross-region replica are the starting topology
+        # for a promote.
+        self._create_cluster()
         self._cmd_retry(
             'documentdb mongocluster replica create -n {replica} -g {rg} '
             '--location {replica_loc} --source-cluster {cluster}',
@@ -511,7 +510,97 @@ class DocumentdbScenario(ScenarioTest):
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
         self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
 
-    # ---- test 9: negative cases (validation + service rejections) ----
+    # ---- test 9: additional cluster properties (create + update coverage) ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_props', location='eastus2')
+    def test_documentdb_mongocluster_properties(self, resource_group):
+        self._base_kwargs()
+
+        # Create a cluster exercising the additional create-time properties:
+        # server version, public network access, tags, the allowed authentication
+        # modes, and the preview-features switch. GeoReplicas is currently the
+        # only preview feature; it is set here purely to cover the
+        # --preview-features parameter and is unrelated to whether a geo-replica
+        # can later be created. The data API can only be toggled after the cluster
+        # is provisioned, so it is exercised via updates below.
+        self._cmd_retry(
+            'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
+            '--admin-user {admin} --password {password} '
+            '--tier M30 --storage-size 128 --storage-type PremiumSSDv2 '
+            '--shard-count 1 --high-availability Disabled '
+            '--server-version 7.0 --public-network-access Enabled '
+            '--auth-allowed-modes NativeAuth MicrosoftEntraID '
+            '--preview-features GeoReplicas --tags env=prod team=cli',
+            checks=[
+                self.check('name', '{cluster}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.serverVersion', '7.0'),
+                self.check('properties.publicNetworkAccess', 'Enabled'),
+                self.check('length(properties.authConfig.allowedModes)', 2),
+                self.check('properties.previewFeatures[0]', 'GeoReplicas'),
+                self.check('tags.env', 'prod'),
+                self.check('tags.team', 'cli'),
+            ],
+        )
+
+        # Enable the Mongo data API (only permitted once the cluster is
+        # provisioned and while public network access is enabled). Enabling the
+        # data API keeps the cluster in an ``Updating`` state while the data API
+        # endpoint provisions, so wait for it to settle before the next update.
+        self._cmd_retry(
+            'documentdb mongocluster update -n {cluster} -g {rg} --data-api-mode Enabled',
+            checks=[self.check('properties.dataApi.mode', 'Enabled')],
+        )
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'"'
+        )
+
+        # Disable the data API and public network access and change tags. The
+        # service only allows the network bypass mode to be enabled once public
+        # network access is disabled, so this is the first step toward that.
+        self._cmd_retry(
+            'documentdb mongocluster update -n {cluster} -g {rg} '
+            '--data-api-mode Disabled --public-network-access Disabled --tags env=dev',
+            checks=[
+                self.check('properties.dataApi.mode', 'Disabled'),
+                self.check('properties.publicNetworkAccess', 'Disabled'),
+                self.check('tags.env', 'dev'),
+            ],
+        )
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'"'
+        )
+
+        # Restrict authentication to Microsoft Entra ID only. The network bypass
+        # mode also requires native authentication to be disabled.
+        self._cmd_retry(
+            'documentdb mongocluster update -n {cluster} -g {rg} '
+            '--auth-allowed-modes MicrosoftEntraID',
+            checks=[
+                self.check('length(properties.authConfig.allowedModes)', 1),
+                self.check('properties.authConfig.allowedModes[0]', 'MicrosoftEntraID'),
+            ],
+        )
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'"'
+        )
+
+        # Enable the Azure Cosmos DB network bypass mode. This is an update-only
+        # property and its prerequisites (public network access disabled, Entra
+        # ID-only auth) are now satisfied.
+        self._cmd_retry(
+            'documentdb mongocluster update -n {cluster} -g {rg} '
+            '--network-bypass-mode AzureCosmosDB',
+            checks=[self.check('properties.networkBypassMode', 'AzureCosmosDB')],
+        )
+
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 10: negative cases (validation + service rejections) ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_neg', location='eastus2')
