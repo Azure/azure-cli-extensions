@@ -96,6 +96,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('workspace_name', workspace_name_type)
         c.argument('target_id', target_id_type)
 
+    with self.argument_context('quantum suite-offers target list') as c:
+        c.argument('provider_id', provider_id_type, required=True)
+
     with self.argument_context('quantum target show') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('target_id', target_id_type, required=False)

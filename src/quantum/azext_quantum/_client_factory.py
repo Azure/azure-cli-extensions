@@ -6,11 +6,12 @@
 # pylint: disable=line-too-long,protected-access
 
 import os
+from azure.core.rest import HttpRequest
 from ._location_helper import normalize_location
 from .__init__ import CLI_REPORTED_VERSION
 from .vendored_sdks.azure_quantum_python._client import WorkspaceClient
 from .vendored_sdks.azure_mgmt_quantum import AzureQuantumMgmtClient
-from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations
+from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations, SuiteOffersOperations
 
 
 def is_env(name):
@@ -26,6 +27,16 @@ def base_url(location):
     if is_env('dogfood'):
         return f"https://{normalized_location}.quantum-test.azure.com/"
     return f"https://{normalized_location}.quantum.azure.com/"
+
+
+def base_url_v2(location):
+    # Suite offers are a V2 concept whose data plane is served from a
+    # '-v2'-suffixed regional host (for example, 'westus-v2.quantum.azure.com'). An explicit
+    # AZURE_QUANTUM_BASEURL override is honored verbatim.
+    url = base_url(location)
+    if 'AZURE_QUANTUM_BASEURL' in os.environ:
+        return url
+    return url.replace('.quantum', '-v2.quantum', 1)
 
 
 def _get_data_credentials(cli_ctx, subscription_id=None):
@@ -57,6 +68,10 @@ def cf_offerings(cli_ctx, *_) -> OfferingsOperations:
     return cf_quantum_mgmt(cli_ctx).offerings
 
 
+def cf_suite_offers(cli_ctx, *_) -> SuiteOffersOperations:
+    return cf_quantum_mgmt(cli_ctx).suite_offers
+
+
 # Data Plane clients
 
 def cf_quantum(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None) -> WorkspaceClient:
@@ -79,6 +94,23 @@ def cf_jobs(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpo
 
 def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.quotas
+
+
+def cf_suite_offer_status(cli_ctx, subscription: str, location: str, provider_id: str):
+    """
+    Fetch the suite offer status from the regional data plane, using the
+    generated WorkspaceClient's authenticated pipeline via a custom request.
+    """
+    creds = _get_data_credentials(cli_ctx, subscription)
+    client = WorkspaceClient(base_url_v2(location), creds)
+    request = HttpRequest(
+        method="GET",
+        url=f"/subscriptions/{subscription}/providers/Microsoft.Quantum/suiteoffers/{provider_id}/providerStatus",
+        params={"api-version": client._config.api_version},
+    )
+    response = client.send_request(request)
+    response.raise_for_status()
+    return response.json()
 
 
 # Helper clients

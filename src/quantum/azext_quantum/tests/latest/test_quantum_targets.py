@@ -75,3 +75,63 @@ class QuantumTargetsScenarioTest(ScenarioTest):
         assert test_returned_provider == test_expected_provider
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+
+
+class QuantumSuiteOffersTargetListTest(unittest.TestCase):
+    """Unit tests (no Azure required) for the suite offer target listing support."""
+
+    def test_transform_targets_suite_offer_shape(self):
+        from ...commands import transform_targets
+
+        # Data-plane suite offer status uses the same shape as the workspace providers list.
+        providers = [
+            {
+                'id': 'atom-boulder',
+                'currentAvailability': 'Available',
+                'targets': [
+                    {'id': 'atom.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 42}
+                ]
+            }
+        ]
+        rows = transform_targets(providers)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['Provider'], 'atom-boulder')
+        self.assertEqual(rows[0]['Target-id'], 'atom.qpu')
+        self.assertEqual(rows[0]['Current Availability'], 'Available')
+        self.assertEqual(rows[0]['Average Queue Time (seconds)'], 42)
+
+    def test_list_targets_normalizes_value_wrapper(self):
+        from unittest import mock
+        from ...operations import suiteoffers
+
+        status = {'value': [{'id': 'atom-boulder', 'currentAvailability': 'Available', 'targets': []}]}
+        with mock.patch.object(suiteoffers, 'cf_suite_offer_status', return_value=status), \
+                mock.patch.object(suiteoffers, '_get_suite_offer_location', return_value='westus'), \
+                mock.patch('azure.cli.core.commands.client_factory.get_subscription_id', return_value='sub'):
+            result = suiteoffers.list_targets(self._fake_cmd(), provider_id='atom-boulder')
+        self.assertEqual(result, status['value'])
+
+    def test_list_targets_wraps_single_object(self):
+        from unittest import mock
+        from ...operations import suiteoffers
+
+        status = {'id': 'atom-boulder', 'currentAvailability': 'Available', 'targets': []}
+        with mock.patch.object(suiteoffers, 'cf_suite_offer_status', return_value=status), \
+                mock.patch.object(suiteoffers, '_get_suite_offer_location', return_value='westus'), \
+                mock.patch('azure.cli.core.commands.client_factory.get_subscription_id', return_value='sub'):
+            result = suiteoffers.list_targets(self._fake_cmd(), provider_id='atom-boulder')
+        self.assertEqual(result, [status])
+
+    @staticmethod
+    def _fake_cmd():
+        class _Ctx:
+            pass
+
+        class _Cmd:
+            cli_ctx = _Ctx()
+
+        return _Cmd()
+
+
+if __name__ == '__main__':
+    unittest.main()
