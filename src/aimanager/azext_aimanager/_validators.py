@@ -8,7 +8,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 
 def validate_ai_manager_name(namespace):
     if namespace.ai_manager_name is not None and not namespace.ai_manager_name.strip():
-        raise InvalidArgumentValueError("--name/-n is not a valid AI Manager name.")
+        raise InvalidArgumentValueError("AI Manager name must not be empty.")
 
 
 def validate_namespace_name(namespace):
