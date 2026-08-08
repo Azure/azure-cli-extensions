@@ -285,6 +285,34 @@ from .action import (
 )
 
 from knack.arguments import CLIArgumentType
+from knack.deprecation import Deprecated
+
+
+class _SizedDeprecated(Deprecated):
+    """A Deprecated option that reports a length.
+
+    knack computes the preview target with sorted(options_list, key=len). A plain Deprecated
+    has no __len__, so combining is_preview=True with a deprecated option name raises
+    TypeError. Reporting the length of the option name keeps both status tags usable and
+    makes the longest (current) option name the preview target.
+    """
+
+    def __len__(self):
+        return len(self.target)
+
+
+def _deprecate_option(c, target, redirect):
+    """Deprecate a single option name and keep it compatible with is_preview.
+
+    Builds the Deprecated object through c.deprecate() so that the message, the object type
+    and the applicability checks stay identical to every other deprecated option, then only
+    adds the __len__ behaviour that knack needs for the preview tag.
+    """
+    deprecated = c.deprecate(target=target, redirect=redirect)
+    if deprecated is not None:
+        deprecated.__class__ = _SizedDeprecated
+    return deprecated
+
 
 # candidates for enumeration
 # consts for AgentPool
@@ -1164,9 +1192,19 @@ def load_arguments(self, _):
                    validator=validate_azure_monitor_and_opentelemetry_for_create
                    )
         c.argument("opentelemetry_metrics_port",
+                   options_list=[
+                       "--opentelemetry-metrics-port-http",
+                       _deprecate_option(c, "--opentelemetry-metrics-port", "--opentelemetry-metrics-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry metrics collection"
+                   help="HTTP/protobuf port for OpenTelemetry metrics collection"
+                   )
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
@@ -1174,20 +1212,37 @@ def load_arguments(self, _):
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
-                   options_list=["--enable-opentelemetry-logs"],
+                   options_list=[
+                       "--enable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--enable-opentelemetry-logs", "--enable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Enable OpenTelemetry logs collection"
+                   help="Enable OpenTelemetry logs and traces collection"
                    )
         c.argument("opentelemetry_logs_port",
+                   options_list=[
+                       "--opentelemetry-logs-traces-port-http",
+                       _deprecate_option(c, "--opentelemetry-logs-port", "--opentelemetry-logs-traces-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry logs collection"
+                   help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
+                   )
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
                    )
         c.argument("disable_opentelemetry_logs",
+                   options_list=[
+                       "--disable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--disable-opentelemetry-logs", "--disable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Disable OpenTelemetry logs collection"
+                   help="Disable OpenTelemetry logs and traces collection"
                    )
         c.argument("enable_cost_analysis",
                    action="store_true"
@@ -1768,9 +1823,19 @@ def load_arguments(self, _):
                    validator=validate_azure_monitor_and_opentelemetry_for_update
                    )
         c.argument("opentelemetry_metrics_port",
+                   options_list=[
+                       "--opentelemetry-metrics-port-http",
+                       _deprecate_option(c, "--opentelemetry-metrics-port", "--opentelemetry-metrics-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry metrics collection"
+                   help="HTTP/protobuf port for OpenTelemetry metrics collection"
+                   )
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
@@ -1778,19 +1843,37 @@ def load_arguments(self, _):
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
+                   options_list=[
+                       "--enable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--enable-opentelemetry-logs", "--enable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Enable OpenTelemetry logs collection"
+                   help="Enable OpenTelemetry logs and traces collection"
                    )
         c.argument("opentelemetry_logs_port",
+                   options_list=[
+                       "--opentelemetry-logs-traces-port-http",
+                       _deprecate_option(c, "--opentelemetry-logs-port", "--opentelemetry-logs-traces-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry logs collection"
+                   help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
+                   )
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
                    )
         c.argument("disable_opentelemetry_logs",
+                   options_list=[
+                       "--disable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--disable-opentelemetry-logs", "--disable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Disable OpenTelemetry logs collection"
+                   help="Disable OpenTelemetry logs and traces collection"
                    )
         c.argument(
             "enable_vpa",
