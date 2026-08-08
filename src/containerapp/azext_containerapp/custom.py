@@ -3624,7 +3624,8 @@ def list_maintenance_config(cmd, resource_group_name, env_name):
     return r
 
 
-def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, debug_command=None):
+def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None, debug_command=None,
+                       custom_debug_image_name=None, custom_debug_image_entrypoint_command=None):
     logger.warning("Connecting...")
     if debug_command is not None:
         raw_parameters = {
@@ -3633,7 +3634,9 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
             'revision_name': revision,
             'replica_name': replica,
             'container_name': container,
-            'command': debug_command
+            'command': debug_command,
+            'custom_debug_image_name': custom_debug_image_name,
+            'custom_debug_image_entrypoint_command': custom_debug_image_entrypoint_command,
         }
         debug_command_decorator = ContainerAppDebugCommandDecorator(
             cmd=cmd,

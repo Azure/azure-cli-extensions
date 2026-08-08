@@ -39,6 +39,12 @@ class ContainerAppDebugCommandDecorator(BaseResource):
     def get_argument_command(self):
         return self.get_param("command")
 
+    def get_argument_custom_debug_image_name(self):
+        return self.get_param("custom_debug_image_name")
+
+    def get_argument_custom_debug_image_entrypoint_command(self):
+        return self.get_param("custom_debug_image_entrypoint_command")
+
     def validate_arguments(self):
         validate_basic_arguments(
             resource_group_name=self.get_argument_resource_group_name(),
@@ -59,7 +65,7 @@ class ContainerAppDebugCommandDecorator(BaseResource):
             raise ValidationError(f"Error retrieving container in revision '{revision_name}' in the container app '{container_app_name}'.")
         return container_info[0]["logStreamEndpoint"]
 
-    def _get_url(self, cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command):
+    def _get_url(self, cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command, custom_debug_image_name=None, custom_debug_image_entrypoint_command=None):
         """Get the debug url for the specified container in the replica"""
         base_url = self._get_logstream_endpoint(cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name)
         proxy_api_url = base_url[:base_url.index("/subscriptions/")]
@@ -68,6 +74,10 @@ class ContainerAppDebugCommandDecorator(BaseResource):
         debug_url = (f"{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{container_app_name}"
                      f"/revisions/{revision_name}/replicas/{replica_name}/debug"
                      f"?targetContainer={container_name}&command={encoded_cmd}")
+        if custom_debug_image_name:
+            debug_url += f"&customDebugImageName={urllib.parse.quote_plus(custom_debug_image_name)}"
+        if custom_debug_image_entrypoint_command:
+            debug_url += f"&customDebugImageEntrypointCommand={urllib.parse.quote_plus(custom_debug_image_entrypoint_command)}"
         return debug_url
 
     def _get_auth_token(self, cmd, resource_group_name, container_app_name):
@@ -82,7 +92,9 @@ class ContainerAppDebugCommandDecorator(BaseResource):
         replica_name = self.get_argument_replica_name()
         container_name = self.get_argument_container_name()
         command = self.get_argument_command()
-        url = self._get_url(cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command)
+        custom_debug_image_name = self.get_argument_custom_debug_image_name()
+        custom_debug_image_entrypoint_command = self.get_argument_custom_debug_image_entrypoint_command()
+        url = self._get_url(cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command, custom_debug_image_name, custom_debug_image_entrypoint_command)
         token = self._get_auth_token(cmd, resource_group_name, container_app_name)
         headers = [f"Authorization=Bearer {token}"]
         r = send_raw_request(cmd.cli_ctx, "GET", url, headers=headers)
