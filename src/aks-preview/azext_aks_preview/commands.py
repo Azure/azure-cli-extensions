@@ -20,6 +20,7 @@ from azext_aks_preview._client_factory import (
     cf_jwt_authenticators,
     cf_vm_skus,
     cf_prepared_image_specifications,
+    cf_alert_configurations,
 )
 
 from azext_aks_preview._format import (
@@ -54,6 +55,8 @@ from azext_aks_preview._format import (
     aks_jwtauthenticator_list_table_format,
     aks_jwtauthenticator_show_table_format,
     aks_list_vm_skus_table_format,
+    aks_alert_config_list_table_format,
+    aks_alert_config_show_table_format,
 )
 
 from knack.log import get_logger
@@ -171,6 +174,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks_pis."
         "operations._operations#PreparedImageSpecificationsOperations.{}",
         client_factory=cf_prepared_image_specifications,
+    )
+
+    alert_configurations_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._operations#AlertConfigurationsOperations.{}",
+        client_factory=cf_alert_configurations,
     )
 
     # AKS managed cluster commands
@@ -640,6 +649,36 @@ def load_command_table(self, _):
             "show",
             "aks_jwtauthenticator_show",
             table_transformer=aks_jwtauthenticator_show_table_format
+        )
+
+    # AKS alert configuration commands
+    with self.command_group(
+        "aks alert-config", alert_configurations_sdk, client_factory=cf_alert_configurations,
+    ) as g:
+        g.custom_command(
+            "add",
+            "aks_alert_config_add",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "update",
+            "aks_alert_config_update",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "delete",
+            "aks_alert_config_delete",
+            supports_no_wait=True, confirmation=True
+        )
+        g.custom_command(
+            "list",
+            "aks_alert_config_list",
+            table_transformer=aks_alert_config_list_table_format
+        )
+        g.custom_show_command(
+            "show",
+            "aks_alert_config_show",
+            table_transformer=aks_alert_config_show_table_format
         )
 
     # AKS list-vm-skus command
