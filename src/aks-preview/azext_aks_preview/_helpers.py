@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from collections.abc import MutableMapping
+
 import errno
 import os
 import platform
@@ -42,6 +44,28 @@ logger = get_logger(__name__)
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
 allowed_extensions = ["microsoft.dataprotection.kubernetes"]
+
+
+def reset_agentpool_to_name_and_mode(agentpool, mode):
+    """Remove all agent pool fields except the resource name and pool mode."""
+    name = agentpool.name
+    properties = getattr(agentpool, "properties", None)
+    if isinstance(properties, MutableMapping):
+        properties.clear()
+        properties["mode"] = mode
+        agentpool.clear()
+        agentpool["name"] = name
+        agentpool["properties"] = properties
+    elif isinstance(agentpool, MutableMapping):
+        agentpool.clear()
+        agentpool["name"] = name
+        agentpool["mode"] = mode
+    else:
+        agentpool.mode = mode
+    for attr in list(vars(agentpool)):
+        if attr not in ("name", "mode") and not attr.startswith("_") and hasattr(agentpool, attr):
+            setattr(agentpool, attr, None)
+    return agentpool
 
 
 def which(binary):

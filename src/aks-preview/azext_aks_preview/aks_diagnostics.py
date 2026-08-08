@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from collections.abc import Mapping
+
 import datetime
 import json
 import os
@@ -43,6 +45,16 @@ logger = get_logger(__name__)
 class ClusterFeatures(Flag):
     NONE = 0
     WIN_HPC = auto()
+
+
+def _get_storage_account_key(storage_account_keys):
+    keys = (
+        storage_account_keys["keys"]
+        if isinstance(storage_account_keys, Mapping)
+        else storage_account_keys.keys
+    )
+    first_key = keys[0]
+    return first_key["value"] if isinstance(first_key, Mapping) else first_key.value
 
 
 # pylint: disable=line-too-long
@@ -99,17 +111,18 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             cmd.cli_ctx, parsed_storage_account['subscription'])
         storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
                                                                          storage_account_name)
+        storage_account_key = _get_storage_account_key(storage_account_keys)
 
         t_generate_blob_service_sas = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE_BLOB, '#generate_account_sas')
 
         sas_token = t_generate_blob_service_sas(storage_account_name,
-                                                storage_account_keys.keys[0].value,
+                                                storage_account_key,
                                                 resource_types='sco',
                                                 permission='rwdlacup',
                                                 expiry=datetime.datetime.utcnow() + datetime.timedelta(days=1))
 
         readonly_sas_token = t_generate_blob_service_sas(storage_account_name,
-                                                         storage_account_keys.keys[0].value,
+                                                         storage_account_key,
                                                          resource_types='sco',
                                                          permission='rl',
                                                          expiry=datetime.datetime.utcnow() + datetime.timedelta(days=1))
