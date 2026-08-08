@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+from azext_aks_preview._consts import CONST_FLEX_NODES, CONST_NODEPOOL_MODE_MANAGEDSYSTEM
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolModels,
     AKSPreviewAgentPoolUpdateDecorator,
@@ -32,7 +32,7 @@ from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockClient,
     MockCmd,
 )
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError
 
 
 class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
@@ -641,6 +641,85 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                     agentpool,
                     expected=case["expect_update_methods_called"],
                 )
+
+    def test_update_flexnodes_rejects_explicit_unsupported_options(self):
+        if self.agentpool_decorator_mode != AgentPoolDecoratorMode.STANDALONE:
+            self.skipTest("FlexNodes update validation applies to standalone nodepool commands.")
+        raw_param_dict = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "nodepool_name": "flexpool",
+            "max_surge": "50%",
+            "enable_fips_image": True,
+        }
+        decorator = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool = self._create_initialized_agentpool_instance(
+            nodepool_name="flexpool",
+            type_properties_type=CONST_FLEX_NODES,
+        )
+        decorator.client.get = Mock(return_value=agentpool)
+
+        with patch(
+            "azext_aks_preview._helpers.get_user_supplied_argument_options",
+            return_value={
+                "max_surge": "--max-surge",
+                "enable_fips_image": "--enable-fips-image",
+            },
+        ), self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "--enable-fips-image, --max-surge",
+        ):
+            decorator.update_agentpool_profile_preview()
+
+    def test_update_flexnodes_allows_supported_options(self):
+        if self.agentpool_decorator_mode != AgentPoolDecoratorMode.STANDALONE:
+            self.skipTest("FlexNodes update validation applies to standalone nodepool commands.")
+        raw_param_dict = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "nodepool_name": "flexpool",
+            "labels": {"app": "updated"},
+            "node_taints": "dedicated=updated:NoSchedule",
+            "max_unavailable": "50%",
+        }
+        decorator = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        upgrade_settings = self.models.AgentPoolUpgradeSettings(max_unavailable="30%")
+        agentpool = self._create_initialized_agentpool_instance(
+            nodepool_name="flexpool",
+            type_properties_type=CONST_FLEX_NODES,
+            upgrade_settings=upgrade_settings,
+        )
+        decorator.client.get = Mock(return_value=agentpool)
+
+        with patch(
+            "azext_aks_preview._helpers.get_user_supplied_argument_options",
+            return_value={
+                "labels": "--labels",
+                "node_taints": "--node-taints",
+                "max_unavailable": "--max-unavailable",
+            },
+        ):
+            result = decorator.update_agentpool_profile_preview()
+
+        self.assertEqual(result.node_labels, {"app": "updated"})
+        self.assertEqual(result.node_taints, ["dedicated=updated:NoSchedule"])
+        self.assertEqual(result.upgrade_settings.max_unavailable, "50%")
+        payload = result.as_dict()["properties"]
+        self.assertEqual(payload["nodeLabels"], {"app": "updated"})
+        self.assertEqual(payload["nodeTaints"], ["dedicated=updated:NoSchedule"])
+        self.assertEqual(payload["upgradeSettings"], {"maxUnavailable": "50%"})
 
 
 class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolProfilePreview):
