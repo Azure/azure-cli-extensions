@@ -239,8 +239,16 @@ def check_extension_version(extension_name):
 
     extension_to_check = extension_to_check[0]
 
+    # On some Azure CLI versions (e.g. 2.87) the installed extension metadata is missing because
+    # newer setuptools no longer generates 'metadata.json', so the version resolves to None. Skip
+    # the up-to-date check instead of crashing the command on a None comparison (fixed in CLI 2.88).
+    installed_version = extension_to_check.get('version')
+    if not installed_version:
+        logger.debug('Could not determine the installed version of the %s extension; skipping version check.', extension_name)
+        return
+
     for ext in available_extensions:
-        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+        if ext['name'] == extension_name and ext.get('version') and ext['version'] > installed_version:
             logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
             return
 
