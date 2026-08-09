@@ -571,7 +571,7 @@ def _convert_duration_to_seconds(time_to_live):
         "d": 3600 * 24,
         "w": 3600 * 24 * 7,
         "M": 3600 * 24 * 30,
-        "y": 3600 * 24 * 30 * 365
+        "y": 3600 * 24 * 365
     }
     unit_name = time_to_live[len(time_to_live) - 1:]
     try:

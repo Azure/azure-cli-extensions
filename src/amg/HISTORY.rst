@@ -3,6 +3,10 @@
 Release History
 ===============
 
+3.0.1
+++++++
+* `az grafana service-account token create`: fix duration calculation for year ('y') unit
+
 0.1.0
 ++++++
 * Initial release.
