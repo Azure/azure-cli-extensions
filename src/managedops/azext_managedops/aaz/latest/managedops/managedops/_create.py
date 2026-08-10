@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create the ManagedOps instance.
 
     :example: ManagedOps_CreateOrUpdate
-        az managedops managedops create --managed-ops-name default --sku "{name:ManagedOps,tier:Essential}" --log-analytics-workspace-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/myLogAnalyticsWorkspace --azure-monitor-workspace-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/myResourceGroup/providers/Microsoft.Monitor/accounts/myAzureMonitorWorkspace --user-assigned-managed-identity-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
+        az managedops managedops create --managed-ops-name default --sku "{name:ManagedOps,tier:Essential}" --law-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspaces/myLogAnalyticsWorkspace --amw-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/myResourceGroup/providers/Microsoft.Monitor/accounts/myAzureMonitorWorkspace --uami-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity
     """
 
     _aaz_info = {
@@ -58,8 +58,8 @@ class Create(AAZCommand):
         # define Arg Group "AzureMonitorInsights"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_monitor_workspace_id = AAZResourceIdArg(
-            options=["--azure-monitor-workspace-id"],
+        _args_schema.amw_id = AAZResourceIdArg(
+            options=["--amw-id"],
             arg_group="AzureMonitorInsights",
             help="Azure monitor workspace resource ID used by the service.",
         )
@@ -67,8 +67,8 @@ class Create(AAZCommand):
         # define Arg Group "ChangeTrackingAndInventory"
 
         _args_schema = cls._args_schema
-        _args_schema.log_analytics_workspace_id = AAZResourceIdArg(
-            options=["--log-analytics-workspace-id"],
+        _args_schema.law_id = AAZResourceIdArg(
+            options=["--law-id"],
             arg_group="ChangeTrackingAndInventory",
             help="Log analytics workspace resource ID used by the service.",
         )
@@ -90,8 +90,8 @@ class Create(AAZCommand):
             default="Disable",
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
-        _args_schema.user_assigned_managed_identity_id = AAZResourceIdArg(
-            options=["--user-assigned-managed-identity-id"],
+        _args_schema.uami_id = AAZResourceIdArg(
+            options=["--uami-id"],
             arg_group="DesiredConfiguration",
             help="User assigned Managed Identity used to perform operations on machines managed by Ops360.",
         )
@@ -237,15 +237,15 @@ class Create(AAZCommand):
                 desired_configuration.set_prop("changeTrackingAndInventory", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 desired_configuration.set_prop("defenderCspm", AAZStrType, ".defender_cspm")
                 desired_configuration.set_prop("defenderForServers", AAZStrType, ".defender_for_servers")
-                desired_configuration.set_prop("userAssignedManagedIdentityId", AAZStrType, ".user_assigned_managed_identity_id", typ_kwargs={"flags": {"required": True}})
+                desired_configuration.set_prop("userAssignedManagedIdentityId", AAZStrType, ".uami_id", typ_kwargs={"flags": {"required": True}})
 
             azure_monitor_insights = _builder.get(".properties.desiredConfiguration.azureMonitorInsights")
             if azure_monitor_insights is not None:
-                azure_monitor_insights.set_prop("azureMonitorWorkspaceId", AAZStrType, ".azure_monitor_workspace_id", typ_kwargs={"flags": {"required": True}})
+                azure_monitor_insights.set_prop("azureMonitorWorkspaceId", AAZStrType, ".amw_id", typ_kwargs={"flags": {"required": True}})
 
             change_tracking_and_inventory = _builder.get(".properties.desiredConfiguration.changeTrackingAndInventory")
             if change_tracking_and_inventory is not None:
-                change_tracking_and_inventory.set_prop("logAnalyticsWorkspaceId", AAZStrType, ".log_analytics_workspace_id", typ_kwargs={"flags": {"required": True}})
+                change_tracking_and_inventory.set_prop("logAnalyticsWorkspaceId", AAZStrType, ".law_id", typ_kwargs={"flags": {"required": True}})
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
