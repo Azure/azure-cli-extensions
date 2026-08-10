@@ -11,6 +11,7 @@ import os
 import tempfile
 import shutil
 import json
+from unittest import mock
 
 # --- Module-level constants ---
 DEFAULT_RG = "audapure-ob-fresh"
@@ -91,14 +92,50 @@ class WorkloadOrchestrationTest(ScenarioTest):
         context_name = INIT_CONTEXT_NAME
         context_location = INIT_CONTEXT_LOCATION
 
-        result = self.cmd(
-            f'az workload-orchestration init '
-            f'-c {cluster_name} -g {rg} -l {location} '
-            f'--context-name {context_name} --context-location {context_location} '
-            f'--capabilities [0].name=Quality [0].description=quality '
-            f'--hierarchies [0].name=country [0].description=Country '
-            f'[1].name=region [1].description=Region'
-        ).get_output_in_json()
+        # Cluster preparation shells out to external az CLI extensions
+        # (connectedk8s, k8s-extension, customlocation) in-process. Their HTTP
+        # api-versions are controlled by whatever build of those extensions is
+        # installed in CI, so they cannot be reliably matched against a fixed
+        # cassette. Mock the prepare step to keep this test deterministic and
+        # focused on 'init's own orchestration: creating the Context and
+        # gracefully handling the tenant's single-Context "already exists" case
+        # (which stays live against the recording).
+        cluster_prep_result = {
+            "clusterName": cluster_name,
+            "customLocationId": (
+                f"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}"
+                f"/providers/Microsoft.ExtendedLocation/customLocations/{cluster_name}-cl"
+            ),
+            "extensionId": (
+                f"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}"
+                f"/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}"
+                f"/providers/Microsoft.KubernetesConfiguration/extensions/wo-extension"
+            ),
+            "extendedLocation": {
+                "name": (
+                    f"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}"
+                    f"/providers/Microsoft.ExtendedLocation/customLocations/{cluster_name}-cl"
+                ),
+                "type": "CustomLocation",
+            },
+            "connectedClusterId": (
+                f"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}"
+                f"/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}"
+            ),
+        }
+
+        with mock.patch(
+            "azext_workload_orchestration.common.target_init",
+            return_value=cluster_prep_result,
+        ):
+            result = self.cmd(
+                f'az workload-orchestration init '
+                f'-c {cluster_name} -g {rg} -l {location} '
+                f'--context-name {context_name} --context-location {context_location} '
+                f'--capabilities [0].name=Quality [0].description=quality '
+                f'--hierarchies [0].name=country [0].description=Country '
+                f'[1].name=region [1].description=Region'
+            ).get_output_in_json()
 
         # Cluster preparation is always reported and 'init' exits successfully
         # even when the tenant's single Context already exists.
