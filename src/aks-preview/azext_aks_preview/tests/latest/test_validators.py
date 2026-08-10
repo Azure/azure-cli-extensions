@@ -105,6 +105,29 @@ class TestSubnetId(unittest.TestCase):
         validators._validate_subnet_id("", "something")
 
 
+class TestBastionPublicIpId(unittest.TestCase):
+    def test_accepts_empty_or_valid_resource_id(self):
+        values = [
+            None,
+            "",
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/ip",
+        ]
+        for value in values:
+            with self.subTest(value=value):
+                validators.validate_bastion_public_ip_id(
+                    SimpleNamespace(bastion_public_ip=value)
+                )
+
+    def test_rejects_invalid_resource_id(self):
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "--bastion-public-ip is not a valid Azure resource ID.",
+        ):
+            validators.validate_bastion_public_ip_id(
+                SimpleNamespace(bastion_public_ip="not-a-resource-id")
+            )
+
+
 class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
