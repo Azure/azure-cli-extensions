@@ -27,6 +27,12 @@ CONFIG_TEMPLATE_FILE = os.path.join(os.path.dirname(__file__), "resources", "hot
 CONFIG_SET_FILE = os.path.join(os.path.dirname(__file__), "resources", "configset.yaml")
 SPECS_FILE = os.path.join(os.path.dirname(__file__), "resources", "specs.json")
 CUSTOM_LOCATION_NAME = "/subscriptions/973d15c6-6c57-447e-b9c6-6d79b5b784ab/resourceGroups/ConfigManager-CloudTest-Playground-C/providers/Microsoft.ExtendedLocation/customLocations/BVT-Test-Location"
+# --- init command constants ---
+INIT_CLUSTER_NAME = "BVT-Test-ME-Cluster"
+INIT_RG = "mchichili-rg"
+INIT_LOCATION = "eastus2euap"
+INIT_CONTEXT_NAME = "Mehoopany"
+INIT_CONTEXT_LOCATION = "eastus2euap"
 class WorkloadOrchestrationTest(ScenarioTest):
 
     @classmethod
@@ -72,6 +78,47 @@ class WorkloadOrchestrationTest(ScenarioTest):
         assert result.get("status") == "Deletion Succeeded", "Schema version deletion did not succeed"
         # Optionally, delete the schema itself if needed (uncomment if supported)
         self.cmd(f'az workload-orchestration schema delete --resource-group {self.rg} --name {self.schema_name} --yes')
+
+    @AllowLargeResponse()
+    def test_init_lifecycle(self):
+        # 'init' prepares the Arc-connected cluster and creates a Context in one
+        # step. A tenant can hold only a single Context, so on an already-
+        # initialized tenant 'init' reports the Context as already-existing
+        # (non-fatal) and returns just the cluster-preparation result.
+        rg = INIT_RG
+        cluster_name = INIT_CLUSTER_NAME
+        location = INIT_LOCATION
+        context_name = INIT_CONTEXT_NAME
+        context_location = INIT_CONTEXT_LOCATION
+
+        result = self.cmd(
+            f'az workload-orchestration init '
+            f'-c {cluster_name} -g {rg} -l {location} '
+            f'--context-name {context_name} --context-location {context_location} '
+            f'--capabilities [0].name=Quality [0].description=quality '
+            f'--hierarchies [0].name=country [0].description=Country '
+            f'[1].name=region [1].description=Region'
+        ).get_output_in_json()
+
+        # Cluster preparation is always reported and 'init' exits successfully
+        # even when the tenant's single Context already exists.
+        assert "cluster" in result, "init output missing 'cluster' section"
+
+        if "context" in result:
+            # Clean tenant: a Context was freshly created by init.
+            assert result["context"]["name"] == context_name
+            assert result["context"]["properties"]["provisioningState"] == "Succeeded"
+            assert any(
+                c["name"] == "Quality"
+                for c in result["context"]["properties"]["capabilities"]
+            ), "Quality capability not found on the created context"
+            # Clean up the Context created by init (cluster prep is idempotent
+            # and intentionally left in place).
+            self.cmd(
+                f'az workload-orchestration context delete '
+                f'-g {rg} --name {context_name} --yes',
+                checks=None
+            )
 
     @AllowLargeResponse()
     def test_full_wom_workflow(self):

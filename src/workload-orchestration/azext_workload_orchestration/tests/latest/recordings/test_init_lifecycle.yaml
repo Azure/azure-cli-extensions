@@ -1,0 +1,265 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedk8s show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -o
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.2 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+      x-ms-azurearc-cli:
+      - 'true'
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster?api-version=2025-08-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster","name":"BVT-Test-ME-Cluster","type":"microsoft.kubernetes/connectedclusters","location":"eastus2euap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-27T07:17:53.2696312Z","lastModifiedBy":"64b12d6e-6549-484c-8cc6-6281839ba394","lastModifiedByType":"Application","lastModifiedAt":"2026-08-10T05:56:12.4731051Z"},"identity":{"principalId":"d58e2da6-19c2-4c9a-a9d1-618f690c76de","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","connectivityStatus":"Connected","privateLinkState":"Disabled","azureHybridBenefit":"NotApplicable","agentPublicKeyCertificate":"MIICCgKCAgEApjLFF+qZed31nMXDhqRmTFxUJ06WbdNM8p4CUYtsMpuydCEtrHbZEevCbehYsDf6Wcr7Aiz+KhxfwkJVKgPVMt3Lr68gLrjckikk47WET72PeICW2EAjj6rhV9zZsUvmakpF8PIfIQbBZj1RueVU28NESr1zJWI1goch3GaYjANRGrXaATgCqHXE7gU3nP0oU6tDUS1XM11eSjSAAifa8maGMR51dH4lFbMS9NDaoixT/2Z5SJvV7JmbNt8slZ4eHW412NaE80Q4uTIPMRBshmNAQe+7ViYNeocEO07VnM2b0hOUM6XVJrcqf5PSddYOOF1gDA8iTKT0MU7UdVfnLB2wiHmytRDlMpqH782WRzj+UlQRZO6a916cKmn+UG5hoqbIrtGDK8+MJmVZKupMkbm1vMcIrrvbikI/3jA4mU/ZcflUp8ShSkSFlE/NLoXbjXrngagppfMIDJHdxynkJ0gDnI5qCdjifWpO7VAJx0uv3nA7VzliulZobMtnR8aw26kGxbzM7Ks5cnbPcSH0DXzjWJT8Rm9N3CQRglcSK5wsgO3XQFtLHqn+EU0w5Y5kuQ7H53bAMZ/20v3JVzr2Pvj3O68LvWxCRtPiThmDDX8U6d6G6o4M77D3Ym9KdUUcu752qReibC9KuL/HA7ndy5t6OR9FZhppWNB6oeQRsTcCAwEAAQ==","aadProfile":{},"distribution":"aks","infrastructure":"azure","arcAgentProfile":{"agentAutoUpgrade":"Enabled"},"kubernetesVersion":"1.32.11","totalNodeCount":3,"agentVersion":"1.36.1","totalCoreCount":12,"lastConnectivityTime":"2026-08-10T05:56:00.943Z","managedIdentityCertificateExpirationTime":"2026-10-25T07:15:00Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1862'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Aug 2026 05:57:41 GMT
+      etag:
+      - '"5f00bed7-0000-3300-0000-6a7967fc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1FCF1732EBB54ED784D76239BA88BA2E Ref B: PNQ241100406029 Ref C: 2026-08-10T05:57:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --cluster-type -o
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.2 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2023-05-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/aio-certmgr","name":"aio-certmgr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.iotoperations.platform","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":null,"currentVersion":"1.0.1","scope":{"cluster":{"releaseNamespace":"cert-manager"}},"provisioningState":"Succeeded","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-07-27T07:21:27.0052026+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-07-28T06:39:59.1059473+00:00"},"identity":{"type":"SystemAssigned","principalId":"f780fd7b-342f-43aa-ba4a-4257ea5a6f76"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/wo-extension","name":"wo-extension","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.workloadorchestration","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"2.1.34","currentVersion":"2.1.34","scope":{"cluster":{"releaseNamespace":"workloadorchestration"}},"provisioningState":"Succeeded","configurationSettings":{"redis.persistentVolume.storageClass":"default","redis.persistentVolume.size":"20Gi"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-07-27T07:23:38.5338264+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-07-27T07:24:57.3170284+00:00"},"identity":{"type":"SystemAssigned","principalId":"e8cbff85-5205-4752-aebc-7ad4d028cb1a"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/microsoft.extensiondiagnostics-v0","name":"microsoft.extensiondiagnostics-v0","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensiondiagnostics","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"0.166.0","currentVersion":"0.166.0","scope":{"cluster":{"releaseNamespace":"azure-arc"}},"provisioningState":"Succeeded","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":true},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-07-27T07:23:40.8286695+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-07-27T07:23:40.8286695+00:00"}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2023-05-01, 2024-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2995'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Aug 2026 05:57:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '139'
+      x-ms-operation-identifier:
+      - appId=e6ed84e9-6459-4861-bb95-5435f44861ce,tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2a7e458e-82eb-4373-8e4b-8794641a4847/eastus2euap/79e54397-a79a-4529-98c3-f3434fab11cb
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7A35293D7BBF4D07B8E4A4D539CFEEF6 Ref B: PNQ241100401040 Ref C: 2026-08-10T05:57:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cluster-name --cluster-type -o
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.2 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2023-05-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/aio-certmgr","name":"aio-certmgr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.iotoperations.platform","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":null,"currentVersion":"1.0.1","scope":{"cluster":{"releaseNamespace":"cert-manager"}},"provisioningState":"Succeeded","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-07-27T07:21:27.0052026+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-07-28T06:39:59.1059473+00:00"},"identity":{"type":"SystemAssigned","principalId":"f780fd7b-342f-43aa-ba4a-4257ea5a6f76"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/wo-extension","name":"wo-extension","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.workloadorchestration","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"2.1.34","currentVersion":"2.1.34","scope":{"cluster":{"releaseNamespace":"workloadorchestration"}},"provisioningState":"Succeeded","configurationSettings":{"redis.persistentVolume.storageClass":"default","redis.persistentVolume.size":"20Gi"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-07-27T07:23:38.5338264+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-07-27T07:24:57.3170284+00:00"},"identity":{"type":"SystemAssigned","principalId":"e8cbff85-5205-4752-aebc-7ad4d028cb1a"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/microsoft.extensiondiagnostics-v0","name":"microsoft.extensiondiagnostics-v0","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensiondiagnostics","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"0.166.0","currentVersion":"0.166.0","scope":{"cluster":{"releaseNamespace":"azure-arc"}},"provisioningState":"Succeeded","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":true},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-07-27T07:23:40.8286695+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-07-27T07:23:40.8286695+00:00"}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2023-05-01, 2024-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2995'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Aug 2026 05:57:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '33'
+      x-ms-operation-identifier:
+      - appId=e6ed84e9-6459-4861-bb95-5435f44861ce,tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2a7e458e-82eb-4373-8e4b-8794641a4847/eastus2euap/f780fc31-aea5-4116-8494-186ef4471794
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 69CEE1BB777247E1BA5C212116D52B52 Ref B: PNQ241100403023 Ref C: 2026-08-10T05:57:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration init
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g -l --context-name --context-location --capabilities --hierarchies
+      User-Agent:
+      - python/3.10.11 (Windows-10-10.0.26200-SP0) AZURECLI/2.83.0
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.ExtendedLocation/customLocations/BVT-Test-ME-Cluster-cl?api-version=2021-08-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.ExtendedLocation/customLocations/BVT-Test-ME-Cluster-cl","name":"BVT-Test-ME-Cluster-cl","location":"eastus2euap","type":"Microsoft.ExtendedLocation/customLocations","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-27T07:28:49.8778391Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-27T07:28:49.8778391Z"},"properties":{"hostType":"Kubernetes","hostResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster","namespace":"workloadorchestration","displayName":"BVT-Test-ME-Cluster-cl","provisioningState":"Succeeded","clusterExtensionIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Kubernetes/connectedClusters/BVT-Test-ME-Cluster/providers/Microsoft.KubernetesConfiguration/extensions/wo-extension"],"authentication":{}}}'
+    headers:
+      content-length:
+      - '1074'
+      content-type:
+      - application/json
+      date:
+      - Mon, 10 Aug 2026 05:57:45 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C94EEBBA668B486A98B1C3D30E7F70AF Ref B: PNQ241100406060 Ref C: 2026-08-10T05:57:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"capabilities": [{"description":
+      "quality", "name": "Quality"}], "hierarchies": [{"description": "Country", "name":
+      "country"}, {"description": "Region", "name": "region"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration context create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '217'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --location --capabilities --hierarchies -o
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.2 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Edge/contexts/Mehoopany?api-version=2025-08-01
+  response:
+    body:
+      string: '{"error":{"code":"ContextAlreadyExists","message":"Validation failed:
+        Context /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Mehoopany/providers/Microsoft.Edge/contexts/Mehoopany-Context
+        already exists."}}'
+    headers:
+      api-supported-versions:
+      - 2025-01-01-preview, 2025-06-01, 2025-08-01, 2026-03-01, 2026-05-01-preview,
+        2026-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '225'
+      content-type:
+      - application/json
+      date:
+      - Mon, 10 Aug 2026 05:57:49 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 83063ced-508f-4313-97e1-e3ffbcd4980a
+      pragma:
+      - no-cache
+      servertime:
+      - 757 ms
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: A78C6FF046684B9AB25D534821872D48 Ref B: PNQ241100403029 Ref C: 2026-08-10T05:57:45Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
