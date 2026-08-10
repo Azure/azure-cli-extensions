@@ -82,9 +82,9 @@ class ManagedopsScenario(ScenarioTest):
             "az managedops managedops create "
             "--managed-ops-name {managedops_name} "
             '--sku "{{name:ManagedOps,tier:Essential}}" '
-            "--azure-monitor-workspace-id {amw_id} "
-            "--log-analytics-workspace-id {law_id} "
-            "--user-assigned-managed-identity-id {mi_id} "
+            "--amw-id {amw_id} "
+            "--law-id {law_id} "
+            "--uami-id {mi_id} "
             "--defender-cspm Disable "
             "--defender-for-servers Disable",
             checks=[
