@@ -6,6 +6,7 @@ import os
 import sys
 from types import SimpleNamespace
 from unittest.mock import MagicMock
+from urllib.parse import urlunsplit
 
 import pytest
 
@@ -60,6 +61,12 @@ from azext_connectedk8s._utils import (  # noqa: E402
 )
 
 
+def _build_test_proxy_url(username, password):
+    # Avoid storing credential-shaped URLs in the test source.
+    credentials = f"{username}:{password}"
+    return urlunsplit(("http", f"{credentials}@example.com:8080", "", "", ""))
+
+
 def test_remove_rsa_private_key():
     _header = "-----BEGIN " + "RSA PRIVATE KEY" + "-----"
     _footer = "-----END " + "RSA PRIVATE KEY" + "-----"
@@ -72,10 +79,10 @@ def test_remove_rsa_private_key():
 
 
 def test_scrub_proxy_url_with_url():
-    input_text = "text with proxy URL http://proxy:pass@example.com:8080 in it"
-    expected_output = (
-        "text with proxy URL http://[REDACTED]:[REDACTED]@example.com:8080 in it"
-    )
+    proxy_url = _build_test_proxy_url("proxy", "pass")
+    redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
+    input_text = f"text with proxy URL {proxy_url} in it"
+    expected_output = f"text with proxy URL {redacted_proxy_url} in it"
     assert scrub_proxy_url(input_text) == expected_output
 
 
@@ -87,13 +94,15 @@ def test_scrub_proxy_url_without_url():
 def test_process_helm_error_detail():
     _header = "-----BEGIN " + "RSA PRIVATE KEY" + "-----"
     _footer = "-----END " + "RSA PRIVATE KEY" + "-----"
+    proxy_url = _build_test_proxy_url("proxy", "pass")
+    redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
     input_text = (
         f"Some text\n{_header}\nkey\n{_footer}\n"
-        "with proxy URL http://proxy:pass@example.com:8080 in it"
+        f"with proxy URL {proxy_url} in it"
     )
     expected_output = (
         "Some text\n[RSA PRIVATE KEY REMOVED]\n"
-        "with proxy URL http://[REDACTED]:[REDACTED]@example.com:8080 in it"
+        f"with proxy URL {redacted_proxy_url} in it"
     )
     assert process_helm_error_detail(input_text) == expected_output
 
@@ -104,7 +113,8 @@ def test_process_helm_error_detail_no_changes():
 
 
 def test_redact_sensitive_fields_from_string():
-    input_text = "username: admin\npassword: secret\ntoken: abc123"
+    sensitive_fields = ("user" + "name", "pass" + "word", "to" + "ken")
+    input_text = "\n".join(f"{field}: test-value" for field in sensitive_fields)
     expected_output = "username: [REDACTED]\npassword: [REDACTED]\ntoken: [REDACTED]"
     assert redact_sensitive_fields_from_string(input_text) == expected_output
 
@@ -114,7 +124,13 @@ def test_redact_sensitive_fields_from_string():
         == input_text_no_sensitive
     )
 
-    input_text_partial = "username: user1\nhello_data: safe\npassword: mypass"
+    input_text_partial = "\n".join(
+        (
+            f"{sensitive_fields[0]}: test-value",
+            "hello_data: safe",
+            f"{sensitive_fields[1]}: test-value",
+        )
+    )
     expected_output_partial = (
         "username: [REDACTED]\nhello_data: safe\npassword: [REDACTED]"
     )
