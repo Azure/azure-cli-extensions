@@ -41,7 +41,7 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
                 aks_custom_headers=self.headers,
                 enabled=True,
                 enabling=True,
-                bastion_sku="standard",
+                bastion_sku="Standard",
                 bastion_public_ip="/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/ip",
                 bastion_scale_units=2,
             )
@@ -49,7 +49,7 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
         self.assertEqual(result, "result")
         profile = instance.network_profile.bastion_profile
         self.assertTrue(profile.enabled)
-        self.assertEqual(profile.sku, "standard")
+        self.assertEqual(profile.sku, "Standard")
         self.assertEqual(
             profile.public_ip_address_id,
             "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/ip",

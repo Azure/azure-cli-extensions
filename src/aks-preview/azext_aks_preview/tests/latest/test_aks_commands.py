@@ -23893,7 +23893,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_bastion(self, resource_group, resource_group_location):
+    def test_aks_bastion_tunnel_byo_bastion(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -23953,6 +23953,81 @@ spec:
         os.environ["AKS_BASTION_TEST_HOOK"] = kubectl_path
         bastion_cmd = f"aks bastion -g {resource_group} -n {aks_name}"
         self.cmd(bastion_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_bastion_enable_update_disable(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --enable-private-cluster "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("privateFqdn"),
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # enable managed bastion
+        enable_cmd = (
+            "aks bastion enable --resource-group={resource_group} --name={name} "
+            "--bastion-sku Standard --bastion-scale-units 2 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            enable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", True),
+                self.check("networkProfile.bastionProfile.sku", "Standard"),
+                self.check("networkProfile.bastionProfile.scaleUnits", 2),
+            ],
+        )
+
+        # update managed bastion sku and scale units
+        update_cmd = (
+            "aks bastion update --resource-group={resource_group} --name={name} "
+            "--bastion-sku Premium --bastion-scale-units 4 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", True),
+                self.check("networkProfile.bastionProfile.sku", "Premium"),
+                self.check("networkProfile.bastionProfile.scaleUnits", 4),
+            ],
+        )
+
+        # disable managed bastion
+        disable_cmd = (
+            "aks bastion disable --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", False),
+            ],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
