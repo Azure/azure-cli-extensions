@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
+    ClientRequestError,
     CLIInternalError,
     FileOperationError,
     InvalidArgumentValueError,
@@ -432,6 +433,7 @@ RELEASE_NAMESPACE_NOT_FOUND = _define(
     name="ReleaseNamespaceNotFound",
     description="The azure-arc Helm release namespace was not found.",
     fault_type=consts.Release_Namespace_Not_Found_Fault_Type,
+    az_error_cls=ClientRequestError,
 )
 HELM_VALUES_GET_FAILED = _define(
     code="AZK8S0509",

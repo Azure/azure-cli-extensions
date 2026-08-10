@@ -47,6 +47,7 @@ for mod, stub in _STUBS.items():
 
 from azure.cli.core.azclierror import (  # noqa: E402
     ArgumentUsageError,
+    ClientRequestError,
     CLIInternalError,
     FileOperationError,
     InvalidArgumentValueError,
@@ -72,6 +73,7 @@ from azext_connectedk8s._utils import (  # noqa: E402
     process_helm_error_detail,
     redact_sensitive_fields_from_string,
     remove_rsa_private_key,
+    report_connectedk8s_diagnostic,
     report_connectedk8s_error,
     report_helm_timeout_error,
     scrub_proxy_url,
@@ -494,6 +496,7 @@ def test_error_catalog_uses_proposed_exception_classes():
         "AZK8S0405": ArgumentUsageError,
         "AZK8S0406": ValidationError,
         "AZK8S0408": ValidationError,
+        "AZK8S0508": ClientRequestError,
         "AZK8S0602": ValidationError,
         "AZK8S0603": ValidationError,
         "AZK8S0803": FileOperationError,
@@ -557,6 +560,33 @@ def test_report_connectedk8s_error_uses_same_message_and_includes_arm_id(
     assert properties["Context.Default.AzureCLI.errorName"] == "TestError"
     assert properties["Context.Default.AzureCLI.errorMessage"] == expected_message
     assert mock_telemetry.set_exception.call_args.kwargs["summary"] == expected_message
+    mock_telemetry.set_user_fault.assert_called_once_with()
+
+
+def test_report_connectedk8s_diagnostic_does_not_build_cli_exception(monkeypatch):
+    error = ArcError(
+        code="AZK8S0009",
+        name="TestDiagnostic",
+        message="Test diagnostic: {details}",
+        fault_type="test-diagnostic",
+        az_error_cls=None,
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
+    add_event = MagicMock()
+    monkeypatch.setattr(utils_module, "add_connectedk8s_telemetry_event", add_event)
+
+    message = report_connectedk8s_diagnostic(
+        None,
+        error,
+        exception=RuntimeError("underlying"),
+        user_fault=True,
+        details="details",
+    )
+
+    assert message == "[AZK8S0009] TestDiagnostic: Test diagnostic: details"
+    add_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
     mock_telemetry.set_user_fault.assert_called_once_with()
 
 
@@ -624,6 +654,137 @@ def test_report_helm_timeout_error_uses_one_message_for_console_and_telemetry(
     assert mock_telemetry.set_exception.call_args.kwargs["summary"] == expected_message
     mock_telemetry.add_extension_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
+
+
+def _mock_reported_error(monkeypatch):
+    class ReportedError(Exception):
+        pass
+
+    report_error = MagicMock(return_value=ReportedError("reported"))
+    monkeypatch.setattr(utils_module, "report_connectedk8s_error", report_error)
+    return ReportedError, report_error
+
+
+def test_pull_helm_chart_reports_standardized_error(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (b"", b"pull failed")
+    monkeypatch.setattr(
+        utils_module.subprocess, "Popen", MagicMock(return_value=process)
+    )
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.pull_helm_chart(
+            "mcr.microsoft.com/chart:1.14.0",
+            "/tmp/chart",
+            None,
+            None,
+            "/usr/bin/helm",
+            True,
+            retry_count=1,
+        )
+
+    assert report_error.call_args.args[1] is errors_module.HELM_CHART_PULL_FAILED
+
+
+def test_get_chart_path_reports_missing_export(monkeypatch, tmp_path):
+    monkeypatch.setattr(utils_module, "pull_helm_chart", MagicMock())
+    monkeypatch.setattr(utils_module.os.path, "expanduser", lambda _path: str(tmp_path))
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.get_chart_path(
+            "mcr.microsoft.com/chart:1.0.0",
+            None,
+            None,
+            "/usr/bin/helm",
+        )
+
+    assert report_error.call_args.args[1] is errors_module.HELM_CHART_EXPORT_FAILED
+
+
+def test_add_helm_repo_reports_standardized_error(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (b"", b"repo failed")
+    monkeypatch.setattr(utils_module, "Popen", MagicMock(return_value=process))
+    monkeypatch.setenv("HELMREPONAME", "arc")
+    monkeypatch.setenv("HELMREPOURL", "https://example.test/helm")
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.add_helm_repo(None, None, "/usr/bin/helm")
+
+    assert report_error.call_args.args[1] is errors_module.HELM_REPO_ADD_FAILED
+
+
+def test_delete_arc_agents_reports_standardized_error(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (b"", b"delete failed")
+    monkeypatch.setattr(utils_module, "Popen", MagicMock(return_value=process))
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.delete_arc_agents("azure-arc", None, None, "/usr/bin/helm")
+
+    assert report_error.call_args.args[1] is errors_module.HELM_RELEASE_DELETE_FAILED
+
+
+def test_get_release_namespace_reports_standardized_error(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (b"", b"list failed")
+    monkeypatch.setattr(utils_module, "Popen", MagicMock(return_value=process))
+    monkeypatch.setattr(utils_module, "get_helm_major_version", lambda _path: 3)
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.get_release_namespace(None, None, "/usr/bin/helm")
+
+    assert report_error.call_args.args[1] is errors_module.HELM_RELEASE_LIST_FAILED
+
+
+@pytest.mark.parametrize("version_output", ["v3.20.1+g123", "v4.1.0+g456"])
+def test_validate_helm_client_accepts_supported_versions(monkeypatch, version_output):
+    process = MagicMock(returncode=0)
+    process.communicate.return_value = (version_output.encode("ascii"), b"")
+    monkeypatch.setattr(utils_module, "Popen", MagicMock(return_value=process))
+
+    utils_module.validate_helm_client(MagicMock(), "/usr/bin/helm")
+
+
+def test_validate_helm_client_reports_old_version(monkeypatch):
+    process = MagicMock(returncode=0)
+    process.communicate.return_value = (b"v2.17.0+g123", b"")
+    monkeypatch.setattr(utils_module, "Popen", MagicMock(return_value=process))
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.validate_helm_client(MagicMock(), "/usr/bin/helm")
+
+    assert report_error.call_args.args[1] is errors_module.HELM_VERSION_TOO_OLD
+
+
+def test_validate_helm_client_reports_unparseable_version(monkeypatch):
+    process = MagicMock(returncode=0)
+    process.communicate.return_value = (b"unexpected output", b"")
+    monkeypatch.setattr(utils_module, "Popen", MagicMock(return_value=process))
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.validate_helm_client(MagicMock(), "/usr/bin/helm")
+
+    assert report_error.call_args.args[1] is errors_module.HELM_VERSION_TOO_OLD
+
+
+def test_validate_helm_client_reports_missing_executable(monkeypatch):
+    monkeypatch.setattr(
+        utils_module, "Popen", MagicMock(side_effect=FileNotFoundError())
+    )
+    reported_error, report_error = _mock_reported_error(monkeypatch)
+
+    with pytest.raises(reported_error):
+        utils_module.validate_helm_client(MagicMock(), "/missing/helm")
+
+    assert report_error.call_args.args[1] is errors_module.HELM_NOT_INSTALLED
 
 
 if __name__ == "__main__":

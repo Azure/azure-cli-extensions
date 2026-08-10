@@ -20,6 +20,7 @@ from knack.log import get_logger
 from kubernetes import client, config, utils, watch
 
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._errors as errors
 import azext_connectedk8s._utils as azext_utils
 from azext_connectedk8s._utils import get_utctimestring
 
@@ -1206,12 +1207,17 @@ def executing_diagnoser_job(
     )
     if response_helm_values_get.returncode != 0:
         error = error_helm_get_values.decode("ascii")
-        if "forbidden" in error or "timed out waiting for the condition" in error:
-            telemetry.set_exception(
-                exception=error_helm_get_values.decode("ascii"),
-                fault_type=consts.Get_Helm_Values_Failed,
-                summary="Error while doing helm get values azure-arc",
-            )
+        message = azext_utils.report_connectedk8s_diagnostic(
+            None,
+            errors.HELM_VALUES_GET_FAILED,
+            exception=Exception(error),
+            user_fault=(
+                "forbidden" in error or "timed out waiting for the condition" in error
+            ),
+            details=error,
+        )
+        diagnoser_output.append(f"{message}\n")
+        return None
     helm_values_json = json.loads(output_helm_values_get)
     # Retrieving the proxy values if they are present
     try:
@@ -1641,12 +1647,18 @@ def check_probable_cluster_security_policy(
         )
         if response_helm_values_get.returncode != 0:
             error = error_helm_get_values.decode("ascii")
-            if "forbidden" in error or "timed out waiting for the condition" in error:
-                telemetry.set_exception(
-                    exception=error_helm_get_values.decode("ascii"),
-                    fault_type=consts.Get_Helm_Values_Failed,
-                    summary="Error while doing helm get values azure-arc",
-                )
+            message = azext_utils.report_connectedk8s_diagnostic(
+                None,
+                errors.HELM_VALUES_GET_FAILED,
+                exception=Exception(error),
+                user_fault=(
+                    "forbidden" in error
+                    or "timed out waiting for the condition" in error
+                ),
+                details=error,
+            )
+            diagnoser_output.append(f"{message}\n")
+            return consts.Diagnostic_Check_Incomplete
         # Converting output obtained in json format and fetching the clusterconnect-agent feature
         helm_values_json = json.loads(output_helm_values_get)
         cluster_connect_feature = helm_values_json["systemDefaultValues"][
