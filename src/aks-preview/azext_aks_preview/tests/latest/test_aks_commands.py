@@ -23893,7 +23893,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_bastion_tunnel_byo_bastion(self, resource_group, resource_group_location):
+    def test_aks_bastion_tunnel(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -23951,7 +23951,7 @@ spec:
 
         # test bastion connectivity
         os.environ["AKS_BASTION_TEST_HOOK"] = kubectl_path
-        bastion_cmd = f"aks bastion -g {resource_group} -n {aks_name}"
+        bastion_cmd = f"aks bastion tunnel -g {resource_group} -n {aks_name}"
         self.cmd(bastion_cmd, checks=[self.is_empty()])
 
     @AllowLargeResponse()
