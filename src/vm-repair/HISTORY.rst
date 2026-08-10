@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.2.4
+++++++
+Fixing ADE-encrypted Linux OS disk unlock in ``vm repair create --unlock-encrypted-vm``. The root partition was selected as the largest partition on the attached disk copy, so any VM whose OS disk carries a partition larger than the root failed with ``Cannot use device /dev/sdXN which is in use (already mapped or mounted)``. Root and boot partitions are now selected by role (GPT type GUID and filesystem signature) and confirmed by opening the LUKS device, and the partitions are no longer mass-mounted read-write while searching for the detached LUKS header.
+
 2.2.3
 ++++++
 Fixing a crash ("version: null") when running any ``vm repair`` command on Azure CLI 2.87. Newer ``setuptools`` no longer generates the ``metadata.json`` that CLI 2.87 relied on to read the installed extension version, so the version resolved to ``None`` and the extension's version check raised a ``TypeError`` before the command could run. The version check now handles a missing version gracefully instead of failing. Azure CLI 2.88 also fixes the underlying metadata issue, so upgrading the CLI remains the recommended long-term resolution.
