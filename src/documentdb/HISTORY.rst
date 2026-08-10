@@ -16,6 +16,16 @@ Release History
   reset-password, and restore.
 * Mark all commands and groups as Preview so the reference docs reflect the preview status.
 * Rebrand the extension name to Azure DocumentDB.
+* ``mongocluster update`` now performs a partial update (HTTP PATCH): only the properties you
+  specify are modified and all other properties are left unchanged. Generic update arguments
+  (``--set``/``--add``/``--remove``) are supported.
+* Add ``mongocluster replica create --source-cluster`` and ``mongocluster restore
+  --source-cluster`` (name or resource ID); ``mongocluster replica promote`` now requires
+  ``--source-cluster`` and validates it matches the replica's source.
+* Add ``mongocluster identity list`` to list the cluster's user-assigned managed identities.
+* Add confirmation prompts to ``mongocluster identity remove`` and ``mongocluster replica
+  promote``.
+* ``--preview-features`` now accepts free-form feature names instead of a fixed enum.
 
 1.0.0b1
 +++++++
