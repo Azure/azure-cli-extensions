@@ -2413,6 +2413,80 @@ class TestValidateAzureMonitorLogsAndEnableAddons(unittest.TestCase):
         # Should not raise an exception
         validators.validate_azure_monitor_logs_and_enable_addons(namespace)
 
+    def test_validate_addons_warns_for_create_enable_addons_monitoring(self):
+        namespace = SimpleNamespace(enable_addons=["monitoring"])
+        with patch.object(validators.logger, "warning") as warning:
+            validators.validate_addons(namespace)
+        warning.assert_called_once()
+        self.assertIn("legacy Container Insights onboarding path", warning.call_args.args[0])
+
+    def test_validate_addons_warns_twice_when_legacy_auth_flag_is_explicit(self):
+        namespace = SimpleNamespace(
+            addons="monitoring",
+            enable_msi_auth_for_monitoring=False,
+        )
+        with patch.object(validators.logger, "warning") as warning:
+            validators.validate_addons(namespace)
+        self.assertEqual(warning.call_count, 2)
+        messages = [call.args[0] for call in warning.call_args_list]
+        self.assertTrue(any("legacy Container Insights onboarding path" in message for message in messages))
+        self.assertTrue(any("'--enable-msi-auth-for-monitoring' is deprecated" in message for message in messages))
+
+    def test_validate_addons_does_not_warn_for_auth_flag_when_omitted(self):
+        namespace = SimpleNamespace(addons="monitoring")
+        with patch.object(validators.logger, "warning") as warning:
+            validators.validate_addons(namespace)
+        warning.assert_called_once()
+        self.assertNotIn("--enable-msi-auth-for-monitoring", warning.call_args.args[0])
+
+    def test_enable_azure_monitor_logs_rejects_explicit_msi_auth_true(self):
+        namespace = SimpleNamespace(
+            enable_azure_monitor_logs=True,
+            enable_addons=None,
+            enable_msi_auth_for_monitoring=True,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_enable_azure_monitor_logs_rejects_explicit_msi_auth_false(self):
+        namespace = SimpleNamespace(
+            enable_azure_monitor_logs=True,
+            enable_addons=None,
+            enable_msi_auth_for_monitoring=False,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_amp_controls_create_require_enable_azure_monitor_logs(self):
+        namespace = SimpleNamespace(
+            enable_azure_monitor_logs=False,
+            syslog_port=28331,
+            enable_prometheus_metrics_scraping=False,
+            disable_prometheus_metrics_scraping=False,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            validators.validate_azure_monitor_logs_amp_controls_for_create(namespace)
+
+    def test_amp_controls_reject_invalid_syslog_port(self):
+        namespace = SimpleNamespace(
+            enable_azure_monitor_logs=True,
+            syslog_port=65536,
+            enable_prometheus_metrics_scraping=False,
+            disable_prometheus_metrics_scraping=False,
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_azure_monitor_logs_amp_controls_for_create(namespace)
+
+    def test_amp_controls_reject_conflicting_scraping_flags(self):
+        namespace = SimpleNamespace(
+            enable_azure_monitor_logs=True,
+            syslog_port=None,
+            enable_prometheus_metrics_scraping=True,
+            disable_prometheus_metrics_scraping=True,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_azure_monitor_logs_amp_controls_for_create(namespace)
+
 
 class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
     def test_enable_and_disable_azure_monitor_logs_throws_error(self):

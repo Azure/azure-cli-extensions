@@ -18,6 +18,15 @@ Pending
 * `az aks nodepool update`: Avoid applying VirtualMachines autoscaler profile conversions twice with newer Azure CLI versions while preserving compatibility with older CLI versions.
 * Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
 
+21.0.0b14
+++++++++
+* `az aks create/update`: `--enable-azure-monitor-logs` / `--disable-azure-monitor-logs` now configure the modern ``azureMonitorProfile.containerInsights`` profile instead of the legacy ``addonProfiles.omsagent`` addon. The containerInsights path always uses managed-identity (MSI/AAD) auth.
+* `az aks create/update`: Add ``--syslog-port`` and ``--enable/--disable-prometheus-metrics-scraping`` controls for the Container Insights Azure Monitor profile.
+* `az aks create/update`: Reject the legacy ``--enable-msi-auth-for-monitoring`` flag when used with ``--enable-azure-monitor-logs`` because the Azure Monitor profile is managed-identity only.
+* `az aks update`: Reject migration of an already-enabled legacy shared-key monitoring addon through ``--enable-azure-monitor-logs`` with guidance to migrate the addon to managed-identity authentication first.
+* `az aks update`: Avoid DCR/DCRA postprocessing when Container Insights is disabled or has no workspace, and explicitly set container network logs to ``Disabled`` when Azure Monitor logs are disabled.
+* `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring`: Show guidance toward ``--enable-azure-monitor-logs`` for the legacy ``monitoring`` addon and warn when ``--enable-msi-auth-for-monitoring`` is explicitly supplied.
+
 21.0.0b13
 ++++++++
 * `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. `--maintenance-window-id` cannot be combined with `--config-file` (set the `maintenanceWindowId` property in the JSON instead) and cannot be empty. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.

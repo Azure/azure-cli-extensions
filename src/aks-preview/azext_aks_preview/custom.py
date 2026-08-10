@@ -1280,7 +1280,10 @@ def aks_create(
     enable_addons=None,  # pylint: disable=redefined-outer-name
     enable_azure_monitor_logs=False,
     workspace_resource_id=None,
-    enable_msi_auth_for_monitoring=True,
+    syslog_port=None,
+    enable_prometheus_metrics_scraping=False,
+    disable_prometheus_metrics_scraping=False,
+    enable_msi_auth_for_monitoring=None,
     enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
@@ -1570,6 +1573,9 @@ def aks_update(
     enable_azure_monitor_logs=False,
     disable_azure_monitor_logs=False,
     workspace_resource_id=None,
+    syslog_port=None,
+    enable_prometheus_metrics_scraping=False,
+    disable_prometheus_metrics_scraping=False,
     enable_msi_auth_for_monitoring=None,
     enable_syslog=None,
     data_collection_settings=None,
@@ -3589,7 +3595,7 @@ def aks_enable_addons(
     enable_secret_rotation=False,
     rotation_poll_interval=None,
     no_wait=False,
-    enable_msi_auth_for_monitoring=True,
+    enable_msi_auth_for_monitoring=None,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
     enable_syslog=None,
@@ -3604,6 +3610,10 @@ def aks_enable_addons(
     msi_auth = False
     if instance.service_principal_profile.client_id == "msi":
         msi_auth = True
+        if enable_msi_auth_for_monitoring is None:
+            # Preserve the legacy command's existing default while allowing validators to
+            # distinguish an omitted flag from an explicitly supplied true/false value.
+            enable_msi_auth_for_monitoring = True
     else:
         enable_msi_auth_for_monitoring = False
 
