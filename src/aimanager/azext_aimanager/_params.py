@@ -9,6 +9,7 @@ from azure.cli.core.commands.parameters import (
     get_enum_type,
     get_resource_name_completion_list,
 )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_aimanager.constants import DELETE_POLICIES
 from azext_aimanager._validators import (
     validate_ai_manager_name,
@@ -34,7 +35,8 @@ def load_arguments(self, _):
                        help='Comma-separated key=value pairs to specify custom headers.')
 
     with self.argument_context('aimanager create') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
 
     with self.argument_context('aimanager list') as c:
         c.ignore('ai_manager_name')

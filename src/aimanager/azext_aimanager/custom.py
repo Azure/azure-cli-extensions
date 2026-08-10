@@ -21,7 +21,7 @@ def _get_model(cmd, name, operation_group):
 
 # region AI Manager
 
-def _construct_aimanager(cmd, location, tags, delete_policy):
+def _construct_aimanager(cmd, location, tags, delete_policy, identity=None):
     ai_manager_properties_model = _get_model(cmd, "AIManagerProperties", "ai_managers")
     ai_manager_model = _get_model(cmd, "AIManager", "ai_managers")
 
@@ -29,6 +29,8 @@ def _construct_aimanager(cmd, location, tags, delete_policy):
     ai_manager.location = location
     ai_manager.tags = tags
     ai_manager.properties = ai_manager_properties_model(delete_policy=delete_policy)
+    if identity is not None:
+        ai_manager.identity = identity
     return ai_manager
 
 
@@ -88,7 +90,10 @@ def update_aimanager(cmd,
         delete_policy = existing_properties.delete_policy
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    ai_manager = _construct_aimanager(cmd, existing.location, tags, delete_policy)
+    # Preserve the existing identity so a tags/delete-policy update does not drop a
+    # managed identity configured through ARM or another client on the create-or-replace PUT.
+    ai_manager = _construct_aimanager(
+        cmd, existing.location, tags, delete_policy, identity=existing.identity)
 
     return sdk_no_wait(
         no_wait,
