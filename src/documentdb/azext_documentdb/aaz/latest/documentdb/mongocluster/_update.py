@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a mongo cluster. Only the properties specified in the request are modified; all other properties are left unchanged (HTTP PATCH).
+    """Update a mongo cluster. Only the properties specified in the request are modified; all other properties are left unchanged (HTTP PATCH). Generic update arguments (--set, --add, --remove) are supported.
 
     :example: Update a mongo cluster's compute tier.
         az documentdb mongocluster update -n MyCluster -g MyResourceGroup --tier M40
@@ -30,6 +30,8 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -248,6 +250,11 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        self.MongoClustersGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.MongoClustersUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -259,9 +266,100 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
+
+    class MongoClustersGet(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "mongoClusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2026-06-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_mongo_cluster_read(cls._schema_on_200)
+
+            return cls._schema_on_200
 
     class MongoClustersUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -349,9 +447,43 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
             )
+
+            return self.serialize_content(_content_value)
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_mongo_cluster_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -426,27 +558,15 @@ class Update(AAZCommand):
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return self.serialize_content(_content_value)
+            return _instance_value
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
             )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_mongo_cluster_read(cls._schema_on_200)
-
-            return cls._schema_on_200
 
 
 class _UpdateHelper:

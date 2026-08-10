@@ -597,6 +597,23 @@ class DocumentdbScenario(ScenarioTest):
             '--network-bypass-mode AzureCosmosDB',
             checks=[self.check('properties.networkBypassMode', 'AzureCosmosDB')],
         )
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'"'
+        )
+
+        # Exercise the generic update arguments (--set/--add/--remove). The
+        # update command performs a read-modify-write PATCH, so --set merges into
+        # the existing tags rather than replacing them: the previously set
+        # ``env=dev`` tag is preserved while a new tag is added.
+        self._cmd_retry(
+            'documentdb mongocluster update -n {cluster} -g {rg} '
+            '--set tags.updatedBy=cli',
+            checks=[
+                self.check('tags.updatedBy', 'cli'),
+                self.check('tags.env', 'dev'),
+            ],
+        )
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
