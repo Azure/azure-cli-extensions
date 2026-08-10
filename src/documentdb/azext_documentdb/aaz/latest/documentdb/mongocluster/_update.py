@@ -149,7 +149,7 @@ class Update(AAZCommand):
         _args_schema.preview_features = AAZListArg(
             options=["--preview-features"],
             arg_group="Properties",
-            help="List of private endpoint connections.",
+            help="Space-separated list of preview features to enable on the cluster. Preview feature names are free-form strings; refer to the mongo cluster feature documentation for the currently available values.",
             nullable=True,
         )
         _args_schema.public_network_access = AAZStrArg(
@@ -201,7 +201,6 @@ class Update(AAZCommand):
         preview_features = cls._args_schema.preview_features
         preview_features.Element = AAZStrArg(
             nullable=True,
-            enum={"GeoReplicas": "GeoReplicas"},
         )
 
         # define Arg Group "Resource"
