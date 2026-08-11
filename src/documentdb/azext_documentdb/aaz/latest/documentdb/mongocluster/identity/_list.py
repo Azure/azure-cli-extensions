@@ -9,28 +9,30 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from ._show import _ShowHelper
 
 
 @register_command(
-    "documentdb mongocluster list-connection-strings",
+    "documentdb mongocluster identity list",
     is_preview=True,
 )
-class ListConnectionStrings(AAZCommand):
-    """List mongo cluster connection strings. This includes the default connection string using SCRAM-SHA-256, as well as other connection strings supported by the cluster.
+class List(AAZCommand):
+    """List the managed identities assigned to a mongo cluster.
 
-    :example: List the connection strings for a mongo cluster.
-        az documentdb mongocluster list-connection-strings --cluster-name MyCluster -g MyResourceGroup
+    :example: List managed identities.
+        az documentdb mongocluster identity list -n MyCluster -g MyResourceGroup
     """
 
     _aaz_info = {
         "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/listconnectionstrings", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-06-01", "identity"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         self._execute_operations()
         return self._output()
 
@@ -46,10 +48,9 @@ class ListConnectionStrings(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-n", "--name", "--cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
                 max_length=40,
@@ -63,7 +64,7 @@ class ListConnectionStrings(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MongoClustersListConnectionStrings(ctx=self.ctx)()
+        self.MongoClustersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,10 +76,21 @@ class ListConnectionStrings(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
 
-    class MongoClustersListConnectionStrings(AAZHttpOperation):
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
+
+    class MongoClustersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,13 +104,13 @@ class ListConnectionStrings(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/listConnectionStrings",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -157,33 +169,9 @@ class ListConnectionStrings(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.connection_strings = AAZListType(
-                serialized_name="connectionStrings",
-                flags={"read_only": True},
-            )
-
-            connection_strings = cls._schema_on_200.connection_strings
-            connection_strings.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.connection_strings.Element
-            _element.connection_string = AAZStrType(
-                serialized_name="connectionString",
-                flags={"read_only": True},
-            )
-            _element.description = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
+            _ShowHelper._build_schema_mongo_cluster_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-class _ListConnectionStringsHelper:
-    """Helper class for ListConnectionStrings"""
-
-
-__all__ = ["ListConnectionStrings"]
+__all__ = ["List"]
