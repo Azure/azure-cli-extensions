@@ -8894,9 +8894,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc.hosted_system_profile.enabled = True
 
         # BYO VNet: all three subnets (system-node / node / apiserver) must share a VNet,
-        # but the server enforces that check.
-        system_node_subnet_id = self.context.get_system_node_subnet_id()
-        node_subnet_id = self.context.get_node_subnet_id()
+        # but the server enforces that check. The trio is already validated above, so read
+        # the raw values rather than the getters, which would re-run that validation.
+        system_node_subnet_id = self.context.raw_param.get("system_node_subnet_id")
+        node_subnet_id = self.context.raw_param.get("node_subnet_id")
         if system_node_subnet_id:
             mc.hosted_system_profile.system_node_subnet_id = system_node_subnet_id
         if node_subnet_id:
