@@ -9,6 +9,9 @@ import pytest
 import random
 import time
 import unittest
+from datetime import datetime, timezone
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -18,12 +21,14 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumen
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
 from ...operations.job import (
+    _get_job_events,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
     _construct_orderby_expression,
     ERROR_MSG_INVALID_ORDER_ARGUMENT,
-    ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
+    ERROR_MSG_MISSING_ORDERBY_ARGUMENT,
+    list_events)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -47,6 +52,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
     def test_job_errors(self):
         issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
         issue_cmd_with_param_missing(self, "az quantum job delete", "az quantum job delete -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nDelete an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job events", "az quantum job events -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nGet the lifecycle events for a job.")
         issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
@@ -141,6 +147,84 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEqual(table['Target'], notFound)
         self.assertEqual(table['Job ID'], notFound)
         self.assertEqual(table['Submission Time'], notFound)
+
+    def test_get_job_events(self):
+        creation_time = datetime(2026, 8, 7, 10, 0, tzinfo=timezone.utc)
+        begin_execution_time = datetime(2026, 8, 7, 10, 1, tzinfo=timezone.utc)
+        end_execution_time = datetime(2026, 8, 7, 10, 2, tzinfo=timezone.utc)
+        job = SimpleNamespace(
+            creation_time=creation_time,
+            begin_execution_time=begin_execution_time,
+            end_execution_time=end_execution_time,
+            cancellation_time=None,
+            status=SimpleNamespace(value="Failed"),
+            error_data=SimpleNamespace(message="Provider execution failed"))
+
+        assert _get_job_events(job) == [
+            {"event": "Created", "timestamp": creation_time, "status": None, "message": None},
+            {"event": "Executing", "timestamp": begin_execution_time, "status": None, "message": None},
+            {"event": "Finished", "timestamp": end_execution_time, "status": "Failed", "message": "Provider execution failed"}
+        ]
+
+    def test_get_job_events_omits_missing_timestamps(self):
+        creation_time = datetime(2026, 8, 7, 10, 0, tzinfo=timezone.utc)
+        job = SimpleNamespace(
+            creation_time=creation_time,
+            begin_execution_time=None,
+            end_execution_time=None,
+            cancellation_time=None,
+            status="Queued",
+            error_data=None)
+
+        assert _get_job_events(job) == [
+            {"event": "Created", "timestamp": creation_time, "status": None, "message": None}
+        ]
+
+    def test_get_job_events_uses_cancellation_time(self):
+        creation_time = datetime(2026, 8, 7, 10, 0, tzinfo=timezone.utc)
+        cancellation_time = datetime(2026, 8, 7, 10, 1, tzinfo=timezone.utc)
+        job = SimpleNamespace(
+            creation_time=creation_time,
+            begin_execution_time=None,
+            end_execution_time=None,
+            cancellation_time=cancellation_time,
+            status="Cancelled",
+            error_data=None)
+
+        assert _get_job_events(job) == [
+            {"event": "Created", "timestamp": creation_time, "status": None, "message": None},
+            {"event": "Cancelled", "timestamp": cancellation_time, "status": "Cancelled", "message": None}
+        ]
+
+    @patch("azext_quantum.operations.job.cf_jobs")
+    @patch("azext_quantum.operations.job.WorkspaceInfo")
+    def test_list_events_gets_job_with_workspace_path(self, workspace_info, client_factory):
+        info = SimpleNamespace(
+            subscription="subscription-id",
+            resource_group="resource-group",
+            name="workspace",
+            endpoint="https://example.quantum.azure.com")
+        workspace_info.return_value = info
+        job = SimpleNamespace(
+            creation_time=datetime(2026, 8, 7, 10, 0, tzinfo=timezone.utc),
+            begin_execution_time=None,
+            end_execution_time=None,
+            cancellation_time=None,
+            status="Queued",
+            error_data=None)
+        client = Mock()
+        client.get.return_value = job
+        client_factory.return_value = client
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        events = list_events(cmd, "job-id", "resource-group", "workspace")
+
+        workspace_info.assert_called_once_with(cmd, "resource-group", "workspace")
+        client_factory.assert_called_once_with(
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+        client.get.assert_called_once_with(
+            info.subscription, info.resource_group, info.name, "job-id")
+        assert events[0]["event"] == "Created"
 
     def test_validate_max_poll_wait_secs(self):
         wait_secs = _validate_max_poll_wait_secs(1)

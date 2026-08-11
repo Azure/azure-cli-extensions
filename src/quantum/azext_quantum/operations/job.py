@@ -150,6 +150,41 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None):
     return client.get(job_id)
 
 
+def list_events(cmd, job_id, resource_group_name=None, workspace_name=None):
+    """
+    Get the lifecycle events for a job.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+    return _get_job_events(job)
+
+
+def _get_job_events(job):
+    events = []
+
+    def add_event(name, timestamp, status=None, message=None):
+        if timestamp is not None:
+            events.append({
+                "event": name,
+                "timestamp": timestamp,
+                "status": status,
+                "message": message
+            })
+
+    add_event("Created", job.creation_time)
+    add_event("Executing", job.begin_execution_time)
+
+    status = getattr(job.status, "value", job.status)
+    message = job.error_data.message if job.error_data is not None else None
+    if job.cancellation_time is not None:
+        add_event("Cancelled", job.cancellation_time, status, message)
+    else:
+        add_event("Finished", job.end_execution_time, status, message)
+
+    return events
+
+
 def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled", "Completed")
 

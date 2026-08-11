@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b21
++++++++++++++++
+* Added the ``az quantum job events`` command to list the lifecycle events for a job.
+
 1.0.0b20
 +++++++++++++++
 * Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
