@@ -43,6 +43,4 @@ def load_command_table(self, _):
         g.custom_command("list", "list_aimanager_namespace")
         g.custom_command("delete", "delete_aimanager_namespace", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "aimanager_namespace_get_credentials")
-        g.custom_command("list-accesskeys", "aimanager_namespace_list_accesskeys")
-        g.custom_command("rotate-accesskeys", "aimanager_namespace_rotate_accesskeys")
         g.wait_command("wait")

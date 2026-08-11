@@ -140,22 +140,3 @@ helps['aimanager namespace get-credentials'] = """
         - name: Print the credentials to stdout
           text: az aimanager namespace get-credentials -m my-ai-manager -g myrg --name team-alpha -f -
 """
-
-helps['aimanager namespace list-accesskeys'] = """
-    type: command
-    short-summary: List the LLM gateway endpoint and API keys for an AI Manager namespace.
-    examples:
-        - name: List the access keys for a namespace
-          text: az aimanager namespace list-accesskeys -m my-ai-manager -g myrg --name team-alpha
-"""
-
-helps['aimanager namespace rotate-accesskeys'] = """
-    type: command
-    short-summary: Rotate the LLM gateway API keys for an AI Manager namespace.
-    long-summary: |-
-        Generates a new primary key and moves the previous primary key to the secondary key so
-        clients can roll over without downtime. Returns the updated access information.
-    examples:
-        - name: Rotate the access keys for a namespace
-          text: az aimanager namespace rotate-accesskeys -m my-ai-manager -g myrg --name team-alpha
-"""
