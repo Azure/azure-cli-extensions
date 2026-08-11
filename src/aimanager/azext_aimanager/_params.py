@@ -41,6 +41,16 @@ def load_arguments(self, _):
     with self.argument_context('aimanager list') as c:
         c.ignore('ai_manager_name')
 
+    with self.argument_context('aimanager get-credentials') as c:
+        c.argument('path', options_list=['--file', '-f'],
+                   help='Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.')
+        c.argument('overwrite_existing', action='store_true',
+                   help='Overwrite any existing cluster entry with the same name.')
+        c.argument('context_name',
+                   help='If specified, overwrite the default context name.')
+        c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
+                   help='Comma-separated key=value pairs to specify custom headers.')
+
     with self.argument_context('aimanager namespace') as c:
         c.argument('ai_manager_name', options_list=['--manager', '-m'],
                    validator=validate_ai_manager_name,
@@ -57,3 +67,13 @@ def load_arguments(self, _):
                        help='Space-separated annotations (key=value) applied to the Kubernetes namespace.')
             c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                        help='Comma-separated key=value pairs to specify custom headers.')
+
+    with self.argument_context('aimanager namespace get-credentials') as c:
+        c.argument('path', options_list=['--file', '-f'],
+                   help='Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.')
+        c.argument('overwrite_existing', action='store_true',
+                   help='Overwrite any existing cluster entry with the same name.')
+        c.argument('context_name',
+                   help='If specified, overwrite the default context name.')
+        c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
+                   help='Comma-separated key=value pairs to specify custom headers.')
