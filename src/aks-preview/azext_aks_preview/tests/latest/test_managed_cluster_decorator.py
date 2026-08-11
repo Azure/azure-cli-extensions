@@ -8662,6 +8662,30 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_2.get_opentelemetry_metrics_port(), 8080)
 
+    def test_get_opentelemetry_metrics_port_grpc(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_metrics_port_grpc": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_opentelemetry_metrics_port_grpc(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "opentelemetry_metrics_port_grpc": 8082,
+                    "enable_opentelemetry_metrics": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_opentelemetry_metrics_port_grpc(), 8082)
+
     def test_get_enable_opentelemetry_logs(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -8720,6 +8744,80 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_2.get_opentelemetry_logs_port(), 8081)
+
+    def test_get_opentelemetry_logs_traces_port_grpc(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_logs_traces_port_grpc": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_opentelemetry_logs_traces_port_grpc(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"opentelemetry_logs_traces_port_grpc": 8083, "enable_opentelemetry_logs": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_opentelemetry_logs_traces_port_grpc(), 8083)
+
+    def test_set_up_azure_monitor_profile_with_opentelemetry_grpc_ports(self):
+        # Test enabling OpenTelemetry metrics with both HTTP and gRPC ports
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port": 8080,
+                "opentelemetry_metrics_port_grpc": 8082,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
+
+        otlp_metrics = dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        self.assertTrue(otlp_metrics.enabled)
+        self.assertEqual(otlp_metrics.http_port, 8080)
+        self.assertEqual(otlp_metrics.grpc_port, 8082)
+
+    def test_disable_opentelemetry_metrics_clears_grpc_port(self):
+        # Disabling OpenTelemetry metrics must clear BOTH http and grpc ports
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_opentelemetry_metrics": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        existing_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+            enabled=True, http_port=8080, grpc_port=8082
+        )
+        app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+            open_telemetry_metrics=existing_metrics
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                app_monitoring=app_monitoring
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_1._disable_opentelemetry_metrics(mc_1)
+        otlp_metrics = mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        self.assertFalse(otlp_metrics.enabled)
+        self.assertIsNone(otlp_metrics.http_port)
+        self.assertIsNone(otlp_metrics.grpc_port)
 
     def test_set_up_azure_monitor_profile_with_opentelemetry(self):
         # Test enabling Azure Monitor metrics with OpenTelemetry metrics
@@ -17584,6 +17682,137 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port,
             9091,
         )
+
+    def _otlp_gate_addon_profiles(self):
+        """Monitoring addon profile used by the OpenTelemetry prerequisites-gate tests."""
+        return {
+            "omsagent": self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    "logAnalyticsWorkspaceResourceID": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
+                },
+            )
+        }
+
+    def _otlp_gate_mc_with_container_insights(self, otlp_logs_enabled=True):
+        """Cluster with Azure Monitor logs (Container Insights) on and Prometheus metrics off."""
+        otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+        app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+            open_telemetry_logs_and_traces=otel_logs_cls(
+                enabled=otlp_logs_enabled, http_port=4318, grpc_port=4317
+            ),
+        )
+        return self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles=self._otlp_gate_addon_profiles(),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True
+                ),
+                app_monitoring=app_monitoring,
+            ),
+        )
+
+    def _run_otlp_gate(self, raw_parameters, mc):
+        """Run update_azure_monitor_profile and return the patched prerequisites mock."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            raw_parameters,
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec.context.attach_mc(mc)
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ) as mock_prereq, patch.object(
+            dec.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec.context, "get_location", return_value="test-location"
+        ):
+            dec.update_azure_monitor_profile(mc)
+        return mock_prereq
+
+    def test_opentelemetry_logs_traces_ports_do_not_trigger_prometheus_prerequisites(self):
+        # OpenTelemetry logs and traces ride the Container Insights pipeline. Setting their ports
+        # must NOT provision the Prometheus artifacts (Azure Monitor Workspace, DCE, DCR, DCRA,
+        # Grafana link, recording rules) created by ensure_azure_monitor_profile_prerequisites.
+        mock_prereq = self._run_otlp_gate(
+            {
+                "opentelemetry_logs_port": 2331,
+                "opentelemetry_logs_traces_port_grpc": 2332,
+            },
+            self._otlp_gate_mc_with_container_insights(),
+        )
+        mock_prereq.assert_not_called()
+
+    def test_enable_opentelemetry_logs_traces_does_not_trigger_prometheus_prerequisites(self):
+        mock_prereq = self._run_otlp_gate(
+            {"enable_opentelemetry_logs": True},
+            self._otlp_gate_mc_with_container_insights(otlp_logs_enabled=False),
+        )
+        mock_prereq.assert_not_called()
+
+    def test_disable_opentelemetry_logs_traces_does_not_trigger_prometheus_prerequisites(self):
+        mock_prereq = self._run_otlp_gate(
+            {"disable_opentelemetry_logs": True},
+            self._otlp_gate_mc_with_container_insights(),
+        )
+        mock_prereq.assert_not_called()
+
+    def test_opentelemetry_metrics_still_triggers_prometheus_prerequisites(self):
+        # Guard against over-correcting: OpenTelemetry metrics DOES need the Prometheus artifacts.
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True),
+            ),
+        )
+        mock_prereq = self._run_otlp_gate(
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port_grpc": 8082,
+            },
+            mc,
+        )
+        mock_prereq.assert_called_once()
+
+    def test_opentelemetry_mixed_signals_trigger_prometheus_prerequisites_once(self):
+        # Metrics and logs/traces arguments in the same command: the metrics side still onboards,
+        # and the logs/traces side neither suppresses nor duplicates that call.
+        otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            addon_profiles=self._otlp_gate_addon_profiles(),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True),
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True
+                ),
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    open_telemetry_logs_and_traces=otel_logs_cls(
+                        enabled=True, http_port=4318, grpc_port=4317
+                    ),
+                ),
+            ),
+        )
+        mock_prereq = self._run_otlp_gate(
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port_grpc": 8082,
+                "opentelemetry_logs_port": 2331,
+                "opentelemetry_logs_traces_port_grpc": 2332,
+            },
+            mc,
+        )
+        mock_prereq.assert_called_once()
 
     def test_disable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
         # Test that disabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration

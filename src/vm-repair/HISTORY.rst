@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.2.3
+++++++
+Fixing a crash ("version: null") when running any ``vm repair`` command on Azure CLI 2.87. Newer ``setuptools`` no longer generates the ``metadata.json`` that CLI 2.87 relied on to read the installed extension version, so the version resolved to ``None`` and the extension's version check raised a ``TypeError`` before the command could run. The version check now handles a missing version gracefully instead of failing. Azure CLI 2.88 also fixes the underlying metadata issue, so upgrading the CLI remains the recommended long-term resolution.
+
 2.2.1
 ++++++
 Fixing a command injection vulnerability (MSRC 115198 / VULN-185362). Source VM tag values copied via ``--copy-tags`` could contain shell metacharacters that, on Windows, were interpreted by ``cmd.exe`` and executed as arbitrary commands on the operator's workstation. Tag keys and values are now validated and quoted before being interpolated into the ``az`` command, and ``_call_az_command`` quotes every argument so ``cmd.exe`` treats shell metacharacters as literal text. Minimum fixed version: 2.2.1.
