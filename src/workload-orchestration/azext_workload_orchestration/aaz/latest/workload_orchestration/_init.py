@@ -244,10 +244,35 @@ class Init(AAZCommand):
             output["context"] = context_result
         return output
 
+    @staticmethod
+    def _exception_chain_text(exc):
+        """Collect message text from an exception and everything it wraps.
+
+        The child ``context create`` invocation can surface its failure in
+        different shapes depending on the CLI/test harness: a plain
+        ``CLIInternalError`` at runtime, or a wrapper such as testsdk's
+        ``CliExecutionError`` (which stores the original error on an
+        ``exception`` attribute) whose own ``str()`` is generic. Walk the
+        ``exception``/``__cause__``/``__context__`` chain so callers can
+        reliably inspect the underlying service error message (e.g.
+        ``ContextAlreadyExists``) regardless of the wrapping.
+        """
+        parts = []
+        seen = set()
+        current = exc
+        while current is not None and id(current) not in seen:
+            seen.add(id(current))
+            parts.append(str(current))
+            wrapped = getattr(current, "exception", None)
+            if wrapped is not None and id(wrapped) not in seen:
+                seen.add(id(wrapped))
+                parts.append(str(wrapped))
+            current = getattr(current, "__cause__", None) or getattr(current, "__context__", None)
+        return " ".join(p for p in parts if p)
+
     def _create_context(self, args):
         """Create a Context resource by invoking `context create` in-process.
         """
-        from azure.cli.core.azclierror import CLIInternalError
         from azext_workload_orchestration.common.utils import (
             invoke_cli_command, _eprint,
         )
@@ -289,14 +314,19 @@ class Init(AAZCommand):
         result = None
         try:
             result = invoke_cli_command(self, cli_args)
-        except CLIInternalError as exc:
+        except Exception as exc:
+            # 'context create' may fail with the tenant's single-Context
+            # "already exists" error. Depending on the CLI/test harness this is
+            # raised as a CLIInternalError (normal runtime) or wrapped in
+            # another type (e.g. testsdk's CliExecutionError). Catch broadly and
+            # decide below whether it is the benign already-exists case.
             caught = exc
         finally:
             logging.disable(logging.NOTSET)
 
         # Failure path.
         if caught is not None:
-            message = str(caught)
+            message = self._exception_chain_text(caught)
             if "contextalreadyexists" in message.lower():
                 # Already exists → surface as a warning (non-fatal).
                 yellow, reset = "\033[33m", "\033[0m"
