@@ -13,10 +13,13 @@ def load_arguments(self, _):
                    help="The fully qualified Azure Resource Manager identifier of the resource "
                         "(scope) the trace association applies to, e.g. an Application Insights "
                         "component, a resource group, or a subscription.")
+        # No default is declared here. Each command supplies its own default through its
+        # function signature, so that 'update' has no parameter default (azdev linter rule
+        # no_parameter_defaults_for_update_commands).
         c.argument('name',
                    options_list=['--name', '-n'],
-                   default='default',
-                   help="The trace association singleton name. Only 'default' is valid.")
+                   help="The trace association singleton name. Only 'default' is valid. "
+                        "Defaults to 'default'.")
 
     with self.argument_context('monitor trace-association create') as c:
         c.argument('azure_monitor_workspace_resource_id',

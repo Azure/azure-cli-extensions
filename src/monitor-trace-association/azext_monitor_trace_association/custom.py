@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 
 API_VERSION = '2026-01-01-preview'
 RESOURCE_TYPE = 'Microsoft.Monitor/traceAssociations'
+DEFAULT_NAME = 'default'
 
 
 def _build_url(cli_ctx, resource_uri, name=None):
@@ -40,7 +41,8 @@ def create_trace_association(cmd, resource_uri, azure_monitor_workspace_resource
     return response.json()
 
 
-def update_trace_association(cmd, resource_uri, azure_monitor_workspace_resource_id=None, name='default'):
+def update_trace_association(cmd, resource_uri, azure_monitor_workspace_resource_id=None, name=None):
+    name = name or DEFAULT_NAME
     url = _build_url(cmd.cli_ctx, resource_uri, name)
     existing = send_raw_request(cmd.cli_ctx, 'GET', url).json()
     properties = existing.get('properties') or {}
