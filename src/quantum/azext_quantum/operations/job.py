@@ -147,7 +147,7 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None):
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
-    return client.get(job_id)
+    return client.get(info.subscription, info.resource_group, info.name, job_id)
 
 
 def list_events(cmd, job_id, resource_group_name=None, workspace_name=None):
