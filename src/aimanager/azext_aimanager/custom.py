@@ -155,7 +155,9 @@ def _write_kubeconfig(credential_results, path, overwrite_existing, context_name
         kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
     except (IndexError, ValueError) as exc:
-        raise CLIError("Fail to find kubeconfig file.") from exc
+        raise CLIError(
+            "Failed to extract the kubeconfig from the service response. "
+            "The returned credentials did not contain a valid kubeconfig.") from exc
 
 
 # pylint: disable=unused-argument

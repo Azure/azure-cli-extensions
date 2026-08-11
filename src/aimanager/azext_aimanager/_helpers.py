@@ -92,6 +92,16 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
         addition['clusters'][0]['name'] = context_name
         addition['current-context'] = context_name
 
+    # rename the admin context so it doesn't overwrite the user context
+    for ctx in addition.get('contexts', []):
+        try:
+            if ctx['context']['user'].startswith('clusterAdmin'):
+                admin_name = ctx['name'] + '-admin'
+                addition['current-context'] = ctx['name'] = admin_name
+                break
+        except (KeyError, TypeError):
+            continue
+
     if existing is None:
         existing = addition
     else:

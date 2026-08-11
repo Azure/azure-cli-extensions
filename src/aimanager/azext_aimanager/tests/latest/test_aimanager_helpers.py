@@ -66,31 +66,41 @@ class TestAIManagerCredentials(unittest.TestCase):
 
     def test_merge_into_new_file(self):
         kubeconfig = self._sample_kubeconfig('team-alpha')
-        tmp_dir = tempfile.mkdtemp()
-        path = os.path.join(tmp_dir, 'config')
-        try:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = os.path.join(tmp_dir, 'config')
             print_or_merge_credentials(path, kubeconfig, False, None)
             with open(path, encoding='utf-8') as stream:
                 merged = yaml.safe_load(stream)
             self.assertEqual(merged['current-context'], 'team-alpha')
             self.assertEqual(merged['clusters'][0]['name'], 'team-alpha')
-        finally:
-            os.remove(path)
-            os.rmdir(tmp_dir)
 
     def test_merge_with_context_name(self):
         kubeconfig = self._sample_kubeconfig('team-alpha')
-        tmp_dir = tempfile.mkdtemp()
-        path = os.path.join(tmp_dir, 'config')
-        try:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = os.path.join(tmp_dir, 'config')
             print_or_merge_credentials(path, kubeconfig, False, 'custom-ctx')
             with open(path, encoding='utf-8') as stream:
                 merged = yaml.safe_load(stream)
             self.assertEqual(merged['current-context'], 'custom-ctx')
             self.assertEqual(merged['clusters'][0]['name'], 'custom-ctx')
-        finally:
-            os.remove(path)
-            os.rmdir(tmp_dir)
+
+    def test_merge_renames_admin_context(self):
+        kubeconfig = yaml.safe_dump({
+            'apiVersion': 'v1',
+            'kind': 'Config',
+            'clusters': [{'name': 'team-alpha', 'cluster': {'server': 'https://example'}}],
+            'users': [{'name': 'clusterAdmin_team-alpha', 'user': {}}],
+            'contexts': [{'name': 'team-alpha',
+                          'context': {'cluster': 'team-alpha', 'user': 'clusterAdmin_team-alpha'}}],
+            'current-context': 'team-alpha',
+        })
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = os.path.join(tmp_dir, 'config')
+            print_or_merge_credentials(path, kubeconfig, False, None)
+            with open(path, encoding='utf-8') as stream:
+                merged = yaml.safe_load(stream)
+            self.assertEqual(merged['current-context'], 'team-alpha-admin')
+            self.assertEqual(merged['contexts'][0]['name'], 'team-alpha-admin')
 
 
 if __name__ == '__main__':
