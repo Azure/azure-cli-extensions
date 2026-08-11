@@ -32,19 +32,40 @@ helps['monitor trace-association create'] = """
 helps['monitor trace-association update'] = """
     type: command
     short-summary: Update the trace association for a scope.
+    examples:
+      - name: Point an existing trace association at a different Azure Monitor Workspace.
+        text: |
+            az monitor trace-association update \\
+              --resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Insights/components/myAppInsights" \\
+              --azure-monitor-workspace-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.Monitor/accounts/new-amw"
 """
 
 helps['monitor trace-association show'] = """
     type: command
     short-summary: Show the trace association for a scope.
+    examples:
+      - name: Show the trace association for an Application Insights component.
+        text: |
+            az monitor trace-association show \\
+              --resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Insights/components/myAppInsights"
 """
 
 helps['monitor trace-association delete'] = """
     type: command
     short-summary: Delete the trace association for a scope.
+    examples:
+      - name: Delete the trace association for an Application Insights component.
+        text: |
+            az monitor trace-association delete \\
+              --resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Insights/components/myAppInsights"
 """
 
 helps['monitor trace-association list'] = """
     type: command
     short-summary: List trace associations for a scope.
+    examples:
+      - name: List trace associations for a resource group scope.
+        text: |
+            az monitor trace-association list \\
+              --resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg"
 """
