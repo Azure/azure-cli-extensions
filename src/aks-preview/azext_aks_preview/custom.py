@@ -1398,9 +1398,11 @@ def aks_create(
     # opentelemetry parameters
     enable_opentelemetry_metrics=False,
     opentelemetry_metrics_port=None,
+    opentelemetry_metrics_port_grpc=None,
     disable_opentelemetry_metrics=False,
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
+    opentelemetry_logs_traces_port_grpc=None,
     disable_opentelemetry_logs=False,
     # metrics profile
     enable_cost_analysis=False,
@@ -1641,9 +1643,11 @@ def aks_update(
     # opentelemetry parameters
     enable_opentelemetry_metrics=False,
     opentelemetry_metrics_port=None,
+    opentelemetry_metrics_port_grpc=None,
     disable_opentelemetry_metrics=False,
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
+    opentelemetry_logs_traces_port_grpc=None,
     disable_opentelemetry_logs=False,
     enable_vpa=False,
     disable_vpa=False,
