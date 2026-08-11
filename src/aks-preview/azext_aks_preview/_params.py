@@ -2180,6 +2180,18 @@ def load_arguments(self, _):
             is_preview=True,
             help="Set the node disruption policy for the cluster.",
         )
+        c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "system_node_subnet_id",
+            validator=validate_system_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
+            "node_subnet_id",
+            options_list=["--node-subnet-id"],
+            validator=validate_node_subnet_id,
+            is_preview=True,
+        )
 
     with self.argument_context("aks delete") as c:
         c.argument("if_match")
