@@ -12,27 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster user list",
+    "documentdb mongocluster entra-user wait",
 )
-class List(AAZCommand):
-    """List all the users on a mongo cluster.
-
-    :example: List users on a cluster.
-        az documentdb mongocluster user list --cluster-name MyCluster -g MyResourceGroup
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users/{}", "2026-06-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -49,6 +44,7 @@ class List(AAZCommand):
             options=["--cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
                 max_length=40,
@@ -58,11 +54,22 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.object_id = AAZStrArg(
+            options=["-n", "--name", "--object-id"],
+            help="Object ID (client ID) of the Microsoft Entra principal. Provide the GUID of the service principal or user, not a friendly name or UPN.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9\\-]*",
+                max_length=63,
+                min_length=1,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.UsersListByMongoCluster(ctx=self.ctx)()
+        self.UsersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,11 +81,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        return result
 
-    class UsersListByMongoCluster(AAZHttpOperation):
+    class UsersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +98,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/users",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/users/{userName}",
                 **self.url_parameters
             )
 
@@ -117,6 +123,10 @@ class List(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "userName", self.ctx.args.object_id,
                     required=True,
                 ),
             }
@@ -159,33 +169,22 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.identity_provider = AAZObjectType(
                 serialized_name="identityProvider",
             )
@@ -195,26 +194,26 @@ class List(AAZCommand):
             )
             properties.roles = AAZListType()
 
-            identity_provider = cls._schema_on_200.value.Element.properties.identity_provider
+            identity_provider = cls._schema_on_200.properties.identity_provider
             identity_provider.type = AAZStrType(
                 flags={"required": True},
             )
 
-            disc_microsoft_entra_id = cls._schema_on_200.value.Element.properties.identity_provider.discriminate_by("type", "MicrosoftEntraID")
+            disc_microsoft_entra_id = cls._schema_on_200.properties.identity_provider.discriminate_by("type", "MicrosoftEntraID")
             disc_microsoft_entra_id.properties = AAZObjectType(
                 flags={"required": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties.identity_provider.discriminate_by("type", "MicrosoftEntraID").properties
+            properties = cls._schema_on_200.properties.identity_provider.discriminate_by("type", "MicrosoftEntraID").properties
             properties.principal_type = AAZStrType(
                 serialized_name="principalType",
                 flags={"required": True},
             )
 
-            roles = cls._schema_on_200.value.Element.properties.roles
+            roles = cls._schema_on_200.properties.roles
             roles.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.roles.Element
+            _element = cls._schema_on_200.properties.roles.Element
             _element.db = AAZStrType(
                 flags={"required": True},
             )
@@ -222,7 +221,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -245,8 +244,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["List"]
+__all__ = ["Wait"]

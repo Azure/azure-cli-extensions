@@ -12,13 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "documentdb mongocluster user create",
+    "documentdb mongocluster entra-user assign",
+    is_preview=True,
 )
-class Create(AAZCommand):
-    """Create a new user or updates an existing user on a mongo cluster.
+class Assign(AAZCommand):
+    """Grant a Microsoft Entra ID principal access to a mongo cluster by assigning it database roles.
 
-    :example: Create an Entra-backed user.
-        az documentdb mongocluster user create -n alice-entra --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
+    :example: Assign admin access to an Entra ID user (or service principal) by object ID.
+        az documentdb mongocluster entra-user assign --object-id 11111111-1111-1111-1111-111111111111 --cluster-name MyCluster -g MyResourceGroup --type User --role db=admin role=root
     """
 
     _aaz_info = {
@@ -49,6 +50,7 @@ class Create(AAZCommand):
             options=["--cluster-name"],
             help="The name of the mongo cluster.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z0-9]+(-[a-z0-9]+)*",
                 max_length=40,
@@ -58,10 +60,11 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.user_name = AAZStrArg(
-            options=["-n", "--name", "--user-name"],
-            help="The name of the mongo cluster user.",
+        _args_schema.object_id = AAZStrArg(
+            options=["-n", "--name", "--object-id"],
+            help="Object ID (client ID) of the Microsoft Entra principal. Provide the GUID of the service principal or user, not a friendly name or UPN.",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9\\-]*",
                 max_length=63,
@@ -189,7 +192,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "userName", self.ctx.args.user_name,
+                    "userName", self.ctx.args.object_id,
                     required=True,
                 ),
             }
@@ -348,8 +351,8 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _AssignHelper:
+    """Helper class for Assign"""
 
 
-__all__ = ["Create"]
+__all__ = ["Assign"]
