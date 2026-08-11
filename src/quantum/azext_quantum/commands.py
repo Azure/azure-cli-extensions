@@ -60,7 +60,9 @@ def transform_events(events):
     return [OrderedDict([
         ('Event', event['event']),
         ('Timestamp', event['timestamp']),
+        ('Elapsed', event['elapsed']),
         ('Status', event['status']),
+        ('Code', event['code']),
         ('Message', event['message'])
     ]) for event in events]
 

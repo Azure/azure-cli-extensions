@@ -9,7 +9,7 @@ import pytest
 import random
 import time
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 from urllib.parse import urlparse, parse_qs
@@ -22,6 +22,7 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ...commands import transform_output
 from ...operations.job import (
     _get_job_events,
+    _format_duration,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
@@ -158,12 +159,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
             end_execution_time=end_execution_time,
             cancellation_time=None,
             status=SimpleNamespace(value="Failed"),
-            error_data=SimpleNamespace(message="Provider execution failed"))
+            error_data=SimpleNamespace(code="ProviderExecutionFailed", message="Provider execution failed"))
 
         assert _get_job_events(job) == [
-            {"event": "Created", "timestamp": creation_time, "status": None, "message": None},
-            {"event": "Executing", "timestamp": begin_execution_time, "status": None, "message": None},
-            {"event": "Finished", "timestamp": end_execution_time, "status": "Failed", "message": "Provider execution failed"}
+            {"event": "Created", "timestamp": creation_time, "elapsed": None, "status": None, "code": None, "message": None},
+            {"event": "Executing", "timestamp": begin_execution_time, "elapsed": "1m 0s", "status": None, "code": None, "message": None},
+            {"event": "Finished", "timestamp": end_execution_time, "elapsed": "1m 0s", "status": "Failed", "code": "ProviderExecutionFailed", "message": "Provider execution failed"}
         ]
 
     def test_get_job_events_omits_missing_timestamps(self):
@@ -177,7 +178,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             error_data=None)
 
         assert _get_job_events(job) == [
-            {"event": "Created", "timestamp": creation_time, "status": None, "message": None}
+            {"event": "Created", "timestamp": creation_time, "elapsed": None, "status": None, "code": None, "message": None}
         ]
 
     def test_get_job_events_uses_cancellation_time(self):
@@ -192,9 +193,14 @@ class QuantumJobsScenarioTest(ScenarioTest):
             error_data=None)
 
         assert _get_job_events(job) == [
-            {"event": "Created", "timestamp": creation_time, "status": None, "message": None},
-            {"event": "Cancelled", "timestamp": cancellation_time, "status": "Cancelled", "message": None}
+            {"event": "Created", "timestamp": creation_time, "elapsed": None, "status": None, "code": None, "message": None},
+            {"event": "Cancelled", "timestamp": cancellation_time, "elapsed": "1m 0s", "status": "Cancelled", "code": None, "message": None}
         ]
+
+    def test_format_duration(self):
+        assert _format_duration(timedelta(seconds=5.5)) == "5.500s"
+        assert _format_duration(timedelta(seconds=90)) == "1m 30s"
+        assert _format_duration(timedelta(hours=1, minutes=2, seconds=3)) == "1h 2m 3s"
 
     @patch("azext_quantum.operations.job.cf_jobs")
     @patch("azext_quantum.operations.job.WorkspaceInfo")
