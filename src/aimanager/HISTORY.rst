@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.0
+++++++
+* Add ``az aimanager namespace modeldeployment`` commands to add, update, list, show, delete,
+  and wait for model deployments.
+
 1.1.0
 ++++++
 * ``az aimanager``: Add ``get-credentials`` command to retrieve the AI Manager kubeconfig.

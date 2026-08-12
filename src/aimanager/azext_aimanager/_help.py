@@ -140,3 +140,57 @@ helps['aimanager namespace get-credentials'] = """
         - name: Print the credentials to stdout
           text: az aimanager namespace get-credentials -m my-ai-manager -g myrg --name team-alpha -f -
 """
+
+helps['aimanager namespace modeldeployment'] = """
+    type: group
+    short-summary: Manage model deployments within an AI Manager namespace.
+"""
+
+helps['aimanager namespace modeldeployment add'] = """
+    type: command
+    short-summary: Add a model deployment to an AI Manager namespace.
+    examples:
+        - name: Add a manually scaled model deployment
+          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --replicas 1
+        - name: Add an autoscaled model deployment
+          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --min-replicas 1 --max-replicas 3
+"""
+
+helps['aimanager namespace modeldeployment update'] = """
+    type: command
+    short-summary: Update a model deployment within an AI Manager namespace.
+    examples:
+        - name: Change the fixed replica count
+          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --replicas 2
+        - name: Change the performance mode
+          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --performance-mode Throughput
+"""
+
+helps['aimanager namespace modeldeployment show'] = """
+    type: command
+    short-summary: Show a model deployment within an AI Manager namespace.
+    examples:
+        - name: Show a model deployment
+          text: az aimanager namespace modeldeployment show -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi
+"""
+
+helps['aimanager namespace modeldeployment list'] = """
+    type: command
+    short-summary: List model deployments within an AI Manager namespace.
+    examples:
+        - name: List model deployments
+          text: az aimanager namespace modeldeployment list -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha
+"""
+
+helps['aimanager namespace modeldeployment delete'] = """
+    type: command
+    short-summary: Delete a model deployment from an AI Manager namespace.
+    examples:
+        - name: Delete a model deployment
+          text: az aimanager namespace modeldeployment delete -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi
+"""
+
+helps['aimanager namespace modeldeployment wait'] = """
+    type: command
+    short-summary: Wait for an AI Manager model deployment to reach a desired state.
+"""

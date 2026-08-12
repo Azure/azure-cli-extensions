@@ -21,3 +21,7 @@ def cf_ai_managers(cli_ctx, *_):
 
 def cf_ai_manager_namespaces(cli_ctx, *_):
     return get_aimanager_client(cli_ctx).ai_manager_namespaces
+
+
+def cf_model_deployments(cli_ctx, *_):
+    return get_aimanager_client(cli_ctx).model_deployments

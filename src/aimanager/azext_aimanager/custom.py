@@ -5,8 +5,9 @@
 
 import os
 
-from azure.cli.core.azclierror import ClientRequestError
+from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait
+from azure.core import MatchConditions
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from knack.util import CLIError
@@ -297,5 +298,156 @@ def aimanager_namespace_get_credentials(cmd,
     credential_results = client.list_credential(
         resource_group_name, ai_manager_name, namespace_name, headers=headers)
     _write_kubeconfig(credential_results, path, overwrite_existing, context_name)
+
+# endregion
+
+
+# region Model deployment
+
+def _construct_scaling_profile(cmd, replicas=None, min_replicas=None, max_replicas=None,
+                               existing_scale=None, required=False):
+    scaling_requested = any(value is not None for value in (replicas, min_replicas, max_replicas))
+    if not scaling_requested:
+        if existing_scale is not None:
+            return existing_scale
+        if required:
+            raise InvalidArgumentValueError(
+                "Specify either --replicas or --min-replicas for the model deployment.")
+        return None
+
+    if replicas is not None:
+        if min_replicas is not None or max_replicas is not None:
+            raise InvalidArgumentValueError(
+                "--replicas cannot be combined with --min-replicas or --max-replicas.")
+        if replicas < 0:
+            raise InvalidArgumentValueError("--replicas must be zero or greater.")
+        manual_model = _get_model(cmd, "ManualScalingProfile", "model_deployments")
+        scaling_model = _get_model(cmd, "ScalingProfile", "model_deployments")
+        return scaling_model(manual=manual_model(replicas=replicas))
+
+    existing_autoscale = getattr(existing_scale, "autoscale", None)
+    if min_replicas is None:
+        if existing_autoscale is None:
+            raise InvalidArgumentValueError(
+                "--min-replicas is required when enabling autoscale.")
+        min_replicas = existing_autoscale.min_replicas
+    if max_replicas is None and existing_autoscale is not None:
+        max_replicas = existing_autoscale.max_replicas
+    if min_replicas < 1:
+        raise InvalidArgumentValueError("--min-replicas must be at least 1.")
+    if max_replicas is not None and max_replicas < min_replicas:
+        raise InvalidArgumentValueError(
+            "--max-replicas must be greater than or equal to --min-replicas.")
+
+    autoscale_model = _get_model(cmd, "AutoscaleProfile", "model_deployments")
+    scaling_model = _get_model(cmd, "ScalingProfile", "model_deployments")
+    return scaling_model(
+        autoscale=autoscale_model(min_replicas=min_replicas, max_replicas=max_replicas))
+
+
+def _construct_modeldeployment(cmd, model_resource_id, vm_size, model_source_resource_id=None,
+                               performance_mode=None, scale=None, overrides=None):
+    deployment_model = _get_model(cmd, "ModelDeployment", "model_deployments")
+    properties_model = _get_model(cmd, "ModelDeploymentProperties", "model_deployments")
+    overrides_config = None
+    if overrides is not None:
+        overrides_model = _get_model(cmd, "ModelDeploymentOverrides", "model_deployments")
+        overrides_config = overrides_model(values_property=overrides)
+
+    return deployment_model(properties=properties_model(
+        model_resource_id=model_resource_id,
+        model_source_resource_id=model_source_resource_id,
+        performance_mode=performance_mode,
+        vm_size=vm_size,
+        scale=scale,
+        overrides=overrides_config,
+    ))
+
+
+# pylint: disable=unused-argument
+def add_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
+                        model_deployment_name, model_resource_id, vm_size,
+                        model_source_resource_id=None, performance_mode=None, replicas=None,
+                        min_replicas=None, max_replicas=None, overrides=None,
+                        aks_custom_headers=None, no_wait=False):
+    try:
+        client.get(resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+    except ResourceNotFoundError:
+        pass
+    else:
+        raise ClientRequestError(
+            f"Model deployment '{model_deployment_name}' already exists. "
+            "Please use 'az aimanager namespace modeldeployment update' to update it.")
+
+    scale = _construct_scaling_profile(
+        cmd, replicas, min_replicas, max_replicas, required=True)
+    deployment = _construct_modeldeployment(
+        cmd, model_resource_id, vm_size, model_source_resource_id, performance_mode,
+        scale, parse_key_value_list(overrides) if overrides is not None else None)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
+        namespace_name, model_deployment_name, deployment, headers=headers)
+
+
+# pylint: disable=unused-argument
+def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
+                           model_deployment_name, performance_mode=None, replicas=None,
+                           min_replicas=None, max_replicas=None, overrides=None,
+                           aks_custom_headers=None, no_wait=False):
+    try:
+        existing = client.get(
+            resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+    except ResourceNotFoundError:
+        raise ClientRequestError(
+            f"Model deployment '{model_deployment_name}' doesn't exist. "
+            "Please use 'az aimanager namespace modeldeployment list' to list deployments.")
+
+    properties = existing.properties
+    scale = _construct_scaling_profile(
+        cmd, replicas, min_replicas, max_replicas, existing_scale=properties.scale)
+    if performance_mode is None:
+        performance_mode = properties.performance_mode
+    if overrides is None:
+        override_values = (
+            properties.overrides.values_property if properties.overrides is not None else None)
+    else:
+        override_values = parse_key_value_list(overrides)
+
+    deployment = _construct_modeldeployment(
+        cmd, properties.model_resource_id, properties.vm_size,
+        properties.model_source_resource_id, performance_mode, scale, override_values)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    etag = existing.e_tag
+    match_condition = MatchConditions.IfNotModified if etag is not None else None
+    return sdk_no_wait(
+        no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
+        namespace_name, model_deployment_name, deployment, headers=headers,
+        etag=etag, match_condition=match_condition)
+
+
+def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
+                         model_deployment_name):  # pylint: disable=unused-argument
+    return client.get(
+        resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+
+
+def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
+                         namespace_name):  # pylint: disable=unused-argument
+    return client.list_by_ai_manager_namespace(
+        resource_group_name, ai_manager_name, namespace_name)
+
+
+def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
+                           model_deployment_name, no_wait=False):  # pylint: disable=unused-argument
+    try:
+        client.get(resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+    except ResourceNotFoundError:
+        raise ClientRequestError(
+            f"Model deployment '{model_deployment_name}' doesn't exist. "
+            "Please use 'az aimanager namespace modeldeployment list' to list deployments.")
+    return sdk_no_wait(
+        no_wait, client.begin_delete, resource_group_name, ai_manager_name,
+        namespace_name, model_deployment_name)
 
 # endregion
