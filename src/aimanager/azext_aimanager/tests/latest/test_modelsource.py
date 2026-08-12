@@ -109,7 +109,7 @@ class TestModelSource(unittest.TestCase):
 
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modelsource")
-    def test_update_preserves_omitted_properties_and_uses_etag(
+    def test_update_modelsource_preserves_omitted_properties_and_uses_etag(
             self, construct_modelsource, sdk_no_wait):
         existing = SimpleNamespace(
             e_tag='"etag-value"',

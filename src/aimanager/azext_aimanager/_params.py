@@ -129,7 +129,9 @@ def load_arguments(self, _):
                    help='The Azure location whose AI model catalog is queried.')
         c.argument('ai_model_name', options_list=['--name', '-n'],
                    validator=validate_ai_model_name,
-                   help='The name of the AI model.')
+                   help='The service-assigned opaque name of the AI model (see '
+                        '"az aimanager model list"). Use "properties.modelId" for the '
+                        'human-readable Hugging Face identifier.')
 
     with self.argument_context('aimanager modelsource') as c:
         c.argument('ai_manager_name', options_list=['--aimanager-name'],

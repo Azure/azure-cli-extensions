@@ -203,9 +203,12 @@ helps['aimanager model'] = """
 helps['aimanager model show'] = """
     type: command
     short-summary: Show the details of an AI model in a location's catalog.
+    long-summary: >
+        The model name is a service-assigned opaque identifier. Use 'az aimanager model list'
+        to discover it, and read 'properties.modelId' for the human-readable Hugging Face id.
     examples:
         - name: Show an AI model
-          text: az aimanager model show -l eastus2 -n phi-4
+          text: az aimanager model show -l eastus2 -n 9806f0c862fdd920
 """
 
 helps['aimanager model list'] = """
