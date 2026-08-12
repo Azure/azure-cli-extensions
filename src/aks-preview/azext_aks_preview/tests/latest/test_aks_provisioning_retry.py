@@ -7,7 +7,7 @@ import json
 import os
 import tempfile
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, PropertyMock
 
 from azure.cli.testsdk.checkers import JMESPathCheck
 from knack.util import CLIError
@@ -51,11 +51,15 @@ class AKSRetryTestCase(unittest.TestCase):
 
 
 class TestCmdRetryDispatch(AKSRetryTestCase):
-    @patch.dict(os.environ, {
-        "AZURE_TEST_RUN_LIVE": "true",
+    @patch.dict("os.environ", {
         "AZURE_CLI_TEST_RETRY_PROVISIONING_CHECK": "true",
     })
-    def test_retry_enabled_live_instance_disables_recording(self):
+    @patch(
+        "azure.cli.testsdk.scenario_tests.config.TestConfig.record_mode",
+        new_callable=PropertyMock,
+        return_value=True,
+    )
+    def test_retry_enabled_live_instance_disables_recording(self, _record_mode):
         from azext_aks_preview.tests.latest.test_aks_commands import (
             AzureKubernetesServiceScenarioTest,
         )
@@ -66,11 +70,15 @@ class TestCmdRetryDispatch(AKSRetryTestCase):
 
         self.assertTrue(instance.disable_recording)
 
-    @patch.dict(os.environ, {
-        "AZURE_TEST_RUN_LIVE": "true",
+    @patch.dict("os.environ", {
         "AZURE_CLI_TEST_RETRY_PROVISIONING_CHECK": "true",
     })
-    def test_retry_enabled_live_instance_never_saves_cassette(self):
+    @patch(
+        "azure.cli.testsdk.scenario_tests.config.TestConfig.record_mode",
+        new_callable=PropertyMock,
+        return_value=True,
+    )
+    def test_retry_enabled_live_instance_never_saves_cassette(self, _record_mode):
         from azext_aks_preview.tests.latest.test_aks_commands import (
             AzureKubernetesServiceScenarioTest,
         )
@@ -88,7 +96,7 @@ class TestCmdRetryDispatch(AKSRetryTestCase):
         self.assertFalse(instance.cassette.dirty)
         self.assertFalse(os.path.exists(temp_recording_file))
 
-    @patch.dict(os.environ, {"AZURE_CLI_TEST_RETRY_PROVISIONING_CHECK": "true"})
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_RETRY_PROVISIONING_CHECK": "true"})
     def test_live_command_without_checks_uses_retry_path(self):
         instance = self._make_instance()
         instance.is_live = True
@@ -100,7 +108,7 @@ class TestCmdRetryDispatch(AKSRetryTestCase):
 
 
 class TestProvisioningStateRetry(AKSRetryTestCase):
-    @patch.dict(os.environ, {
+    @patch.dict("os.environ", {
         "AZURE_CLI_TEST_PROVISIONING_MAX_RETRIES": "2",
         "AZURE_CLI_TEST_PROVISIONING_BASE_DELAY": "0.01",
     })
@@ -145,7 +153,7 @@ class TestProvisioningStateRetry(AKSRetryTestCase):
             resource_id, initial_result
         )
 
-    @patch.dict(os.environ, {
+    @patch.dict("os.environ", {
         "AZURE_CLI_TEST_PROVISIONING_MAX_RETRIES": "2",
         "AZURE_CLI_TEST_PROVISIONING_BASE_DELAY": "0.01",
     })
@@ -175,7 +183,7 @@ class TestProvisioningStateRetry(AKSRetryTestCase):
 
 
 class TestTransientConflictRetry(AKSRetryTestCase):
-    @patch.dict(os.environ, {
+    @patch.dict("os.environ", {
         "AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2",
         "AZURE_CLI_TEST_OPERATION_BASE_DELAY": "0.01",
     })
@@ -207,7 +215,7 @@ class TestTransientConflictRetry(AKSRetryTestCase):
                 self.assertEqual(mock_execute.call_count, 2)
                 mock_sleep.assert_called_once()
 
-    @patch.dict(os.environ, {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
     @patch("time.sleep", return_value=None)
     @patch("azure.cli.testsdk.base.execute")
     def test_does_not_retry_other_errors(self, mock_execute, mock_sleep):
@@ -221,7 +229,7 @@ class TestTransientConflictRetry(AKSRetryTestCase):
         mock_execute.assert_called_once()
         mock_sleep.assert_not_called()
 
-    @patch.dict(os.environ, {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
     @patch("time.sleep", return_value=None)
     @patch("azure.cli.testsdk.base.execute")
     def test_does_not_retry_expected_failure(self, mock_execute, mock_sleep):
