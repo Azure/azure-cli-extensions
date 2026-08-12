@@ -32,6 +32,7 @@ def load_command_table(self, _):
         g.custom_show_command("show", "show_aimanager")
         g.custom_command("list", "list_aimanager")
         g.custom_command("delete", "delete_aimanager", supports_no_wait=True, confirmation=True)
+        g.custom_command("get-credentials", "aimanager_get_credentials")
         g.wait_command("wait")
 
     # aimanager namespace command group
@@ -41,4 +42,5 @@ def load_command_table(self, _):
         g.custom_show_command("show", "show_aimanager_namespace")
         g.custom_command("list", "list_aimanager_namespace")
         g.custom_command("delete", "delete_aimanager_namespace", supports_no_wait=True, confirmation=True)
+        g.custom_command("get-credentials", "aimanager_namespace_get_credentials")
         g.wait_command("wait")

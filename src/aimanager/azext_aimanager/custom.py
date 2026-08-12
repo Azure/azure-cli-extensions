@@ -3,12 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+
 from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import ResourceNotFoundError
+from knack.log import get_logger
+from knack.util import CLIError
 
 from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
-from azext_aimanager._helpers import get_aks_custom_headers, parse_key_value_list
+from azext_aimanager._helpers import (
+    get_aks_custom_headers,
+    parse_key_value_list,
+    print_or_merge_credentials,
+)
+
+logger = get_logger(__name__)
 
 
 def _get_model(cmd, name, operation_group):
@@ -125,6 +135,45 @@ def delete_aimanager(cmd, client, resource_group_name, ai_manager_name, no_wait=
 
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, ai_manager_name)
 
+
+def _write_kubeconfig(credential_results, path, overwrite_existing, context_name):
+    # Check if KUBECONFIG environmental variable is set
+    # If path is different than default then that means -f/--file is passed
+    # in which case we ignore the KUBECONFIG variable
+    # KUBECONFIG can be colon separated. If we find that condition, use the first entry
+    if "KUBECONFIG" in os.environ and path == os.path.join(os.path.expanduser('~'), '.kube', 'config'):
+        kubeconfig_path = os.environ["KUBECONFIG"].split(os.pathsep)[0]
+        if kubeconfig_path:
+            logger.info("The default path '%s' is replaced by '%s' defined in KUBECONFIG.", path, kubeconfig_path)
+            path = kubeconfig_path
+        else:
+            logger.warning("Invalid path '%s' defined in KUBECONFIG.", kubeconfig_path)
+
+    if not credential_results:
+        raise CLIError("No Kubernetes credentials found.")
+    try:
+        kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
+        print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+    except (IndexError, ValueError) as exc:
+        raise CLIError(
+            "Failed to extract the kubeconfig from the service response. "
+            "The returned credentials did not contain a valid kubeconfig.") from exc
+
+
+# pylint: disable=unused-argument
+def aimanager_get_credentials(cmd,
+                              client,
+                              resource_group_name,
+                              ai_manager_name,
+                              path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
+                              overwrite_existing=False,
+                              context_name=None,
+                              aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    credential_results = client.list_credential(
+        resource_group_name, ai_manager_name, headers=headers)
+    _write_kubeconfig(credential_results, path, overwrite_existing, context_name)
+
 # endregion
 
 
@@ -232,5 +281,21 @@ def delete_aimanager_namespace(cmd, client, resource_group_name, ai_manager_name
             "Please use 'az aimanager namespace list' to get the current list of namespaces.")
 
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, ai_manager_name, namespace_name)
+
+
+# pylint: disable=unused-argument
+def aimanager_namespace_get_credentials(cmd,
+                                        client,
+                                        resource_group_name,
+                                        ai_manager_name,
+                                        namespace_name,
+                                        path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
+                                        overwrite_existing=False,
+                                        context_name=None,
+                                        aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    credential_results = client.list_credential(
+        resource_group_name, ai_manager_name, namespace_name, headers=headers)
+    _write_kubeconfig(credential_results, path, overwrite_existing, context_name)
 
 # endregion

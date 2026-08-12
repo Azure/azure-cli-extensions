@@ -63,6 +63,19 @@ helps['aimanager wait'] = """
     short-summary: Wait for an AI Manager resource to reach a desired state.
 """
 
+helps['aimanager get-credentials'] = """
+    type: command
+    short-summary: Get access credentials for an AI Manager.
+    long-summary: |-
+        Retrieves the Kubernetes configuration for an AI Manager and merges it into the local
+        kubeconfig file (default ~/.kube/config), similar to 'az aks get-credentials'.
+    examples:
+        - name: Get the credentials for an AI Manager and merge into the default kubeconfig
+          text: az aimanager get-credentials --name my-ai-manager -g myrg
+        - name: Print the credentials to stdout
+          text: az aimanager get-credentials --name my-ai-manager -g myrg -f -
+"""
+
 helps['aimanager namespace'] = """
     type: group
     short-summary: Manage namespaces within an AI Manager.
@@ -113,4 +126,17 @@ helps['aimanager namespace list'] = """
 helps['aimanager namespace wait'] = """
     type: command
     short-summary: Wait for an AI Manager namespace to reach a desired state.
+"""
+
+helps['aimanager namespace get-credentials'] = """
+    type: command
+    short-summary: Get access credentials for an AI Manager namespace.
+    long-summary: |-
+        Retrieves the Kubernetes configuration for an AI Manager namespace and merges it into the
+        local kubeconfig file (default ~/.kube/config), similar to 'az aks namespace get-credentials'.
+    examples:
+        - name: Get the credentials for a namespace and merge into the default kubeconfig
+          text: az aimanager namespace get-credentials -m my-ai-manager -g myrg --name team-alpha
+        - name: Print the credentials to stdout
+          text: az aimanager namespace get-credentials -m my-ai-manager -g myrg --name team-alpha -f -
 """
