@@ -55,6 +55,7 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_NODE_PROVISIONING_STATE_SUCCEEDED,
     CONST_DEFAULT_NODE_OS_TYPE,
+    CONST_FLEX_NODES,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
@@ -70,6 +71,7 @@ from azext_aks_preview._helpers import (
     get_k8s_extension_module,
     get_monitoring_addon_key,
     get_nodepool_snapshot_by_snapshot_id,
+    get_user_supplied_argument_options,
     print_or_merge_credentials,
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
@@ -78,6 +80,7 @@ from azext_aks_preview._helpers import (
     raise_validation_error_if_extension_type_not_in_allow_list,
     get_extension_in_allow_list,
     uses_kubelogin_devicecode,
+    validate_flexnodes_options,
     which,
 )
 from azext_aks_preview._podidentity import (
@@ -128,7 +131,9 @@ from azext_aks_preview.managednamespace import (
     aks_managed_namespace_update,
 )
 from azext_aks_preview.machine import (
+    add_flexnode_machine,
     add_machine,
+    update_flexnode_machine,
     update_machine,
 )
 from azext_aks_preview.jwtauthenticator import (
@@ -2019,6 +2024,9 @@ def aks_upgrade(cmd,
             if agent_pool_profile.mode == CONST_NODEPOOL_MODE_MACHINES:
                 logger.warning("Skipping node image upgrade for agent pool '%s': Machines mode pools do not support node image version upgrade.", agent_pool_profile.name)
                 continue
+            if agent_pool_profile.type == CONST_FLEX_NODES:
+                logger.warning("Skipping node image upgrade for FlexNodes pool '%s'.", agent_pool_profile.name)
+                continue
             agent_pool_client = cf_agent_pools(cmd.cli_ctx)
             _upgrade_single_nodepool_image_version(
                 True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
@@ -2467,6 +2475,7 @@ def aks_agentpool_upgrade(cmd,
                           yes=False,
                           if_match=None,
                           if_none_match=None):
+    raw_parameters = locals().copy()
     AgentPoolUpgradeSettings = cmd.get_models(
         "AgentPoolUpgradeSettings",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2515,8 +2524,10 @@ def aks_agentpool_upgrade(cmd,
             "--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes/"
             "--upgrade-strategy/--drain-batch-size/--drain-timeout-bg/--batch-soak-duration/--final-soak-duration'."
         )
-
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if node_image_only:
+        if instance.type_properties_type == CONST_FLEX_NODES:
+            raise ClientRequestError("Node image-only upgrade is not supported for FlexNodes pools.")
         return _upgrade_single_nodepool_image_version(no_wait,
                                                       client,
                                                       resource_group_name,
@@ -2524,6 +2535,15 @@ def aks_agentpool_upgrade(cmd,
                                                       nodepool_name,
                                                       snapshot_id)
 
+    if instance.type_properties_type == CONST_FLEX_NODES:
+        validate_flexnodes_options(
+            cmd,
+            raw_parameters,
+            {
+                "kubernetes_version": "--kubernetes-version",
+                "max_unavailable": "--max-unavailable",
+            },
+        )
     # load model CreationData, for nodepool snapshot
     CreationData = cmd.get_models(
         "CreationData",
@@ -2540,8 +2560,6 @@ def aks_agentpool_upgrade(cmd,
         creationData = CreationData(
             source_resource_id=snapshot_id
         )
-
-    instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
     if kubernetes_version != '' or instance.orchestrator_version == kubernetes_version:
         msg = "The new kubernetes version is the same as the current kubernetes version."
@@ -2583,7 +2601,11 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
     # Blue-green upgrade settings
-    if not instance.upgrade_settings_blue_green:
+    blue_green_settings = (drain_batch_size, drain_timeout_bg, batch_soak_duration, final_soak_duration)
+    if not instance.upgrade_settings_blue_green and (
+        instance.type_properties_type != CONST_FLEX_NODES
+        or any(setting is not None for setting in blue_green_settings)
+    ):
         instance.upgrade_settings_blue_green = AgentPoolBlueGreenUpgradeSettings()
 
     if drain_batch_size:
@@ -2634,6 +2656,27 @@ def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
     """Get rollback versions for a nodepool."""
     upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
     return upgrade_profile.recently_used_versions
+
+
+def aks_agentpool_get_bootstrap_data(cmd,
+                                     client,
+                                     resource_group_name,
+                                     cluster_name,
+                                     nodepool_name):
+    """Get bootstrap data for a FlexNodes pool."""
+    ListBootstrapDataRequest = cmd.get_models(
+        "ListBootstrapDataRequest",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+    result = client.list_bootstrap_data(
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        ListBootstrapDataRequest(),
+        logging_enable=False,
+    )
+    return result.as_dict()
 
 
 def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
@@ -3242,6 +3285,9 @@ def aks_machine_add(
     node_public_ip_tags=None,
     vm_size=None,
     kubernetes_version=None,
+    labels=None,
+    node_taints=None,
+    max_pods=None,
     no_wait=False,
     spot_max_price=float("nan"),
     enable_ultra_ssd=False,
@@ -3258,11 +3304,36 @@ def aks_machine_add(
             f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
         )
 
+    raw_parameters = locals().copy()
+    agentpool = cf_agent_pools(cmd.cli_ctx).get(resource_group_name, cluster_name, nodepool_name)
+    if agentpool.type_properties_type == CONST_FLEX_NODES:
+        validate_flexnodes_options(
+            cmd,
+            raw_parameters,
+            {
+                "kubernetes_version": "--kubernetes-version",
+                "labels": "--labels",
+                "max_pods": "--max-pods",
+                "node_taints": "--node-taints",
+            },
+        )
+        return add_flexnode_machine(cmd, client, raw_parameters, no_wait)
+
+    supplied_options = get_user_supplied_argument_options(cmd)
+    flexnode_only_options = [
+        option for name, option in supplied_options.items()
+        if name in {"labels", "node_taints", "max_pods"}
+    ]
+    if flexnode_only_options:
+        raise InvalidArgumentValueError(
+            "The following options on 'az aks machine add' are only supported for FlexNode machines: {}."
+            .format(", ".join(sorted(flexnode_only_options)))
+        )
+
     if isnan(spot_max_price):
         spot_max_price = -1
 
-    # DO NOT MOVE: get all the original parameters and save them as a dictionary
-    raw_parameters = locals()
+    raw_parameters["spot_max_price"] = spot_max_price
     return add_machine(cmd, client, raw_parameters, no_wait)
 
 
@@ -3277,6 +3348,7 @@ def aks_machine_update(
     tags=None,
     node_taints=None,
     labels=None,
+    kubernetes_version=None,
     no_wait=False,
 ):
     existedMachine = None
@@ -3290,6 +3362,20 @@ def aks_machine_update(
     if existedMachine:
         # DO NOT MOVE: get all the original parameters and save them as a dictionary
         raw_parameters = locals()
+        if existedMachine.properties is not None and existedMachine.properties.hardware is None:
+            validate_flexnodes_options(
+                cmd,
+                raw_parameters,
+                {
+                    "kubernetes_version": "--kubernetes-version",
+                    "labels": "--labels",
+                    "node_taints": "--node-taints",
+                },
+            )
+            return update_flexnode_machine(cmd, client, raw_parameters, existedMachine, no_wait)
+        if kubernetes_version is not None:
+            raise InvalidArgumentValueError(
+                "--kubernetes-version on 'az aks machine update' is only supported for FlexNode machines.")
         return update_machine(client, raw_parameters, existedMachine, no_wait)
 
 

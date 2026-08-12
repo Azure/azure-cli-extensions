@@ -12,6 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b16
++++++++++
+* `az aks nodepool add`: Add preview support for creating FlexNodes pools with `--vm-set-type FlexNodes`.
+* `az aks nodepool get-bootstrap-data`: Add preview support for retrieving FlexNodes bootstrap data.
+* `az aks nodepool update`: Add preview support for updating FlexNodes labels, taints, and `maxUnavailable`.
+* `az aks nodepool upgrade`: Add Kubernetes version upgrade support for FlexNodes pools. Node image-only upgrades are not supported.
+* `az aks machine add/update` and `az aks nodepool delete-machines`: Add FlexNode machine lifecycle support.
+
 21.0.0b15
 +++++++++
 * `az aks create` and `az aks update`: Add `--opentelemetry-metrics-port-grpc` and `--opentelemetry-logs-traces-port-grpc` (preview) to configure the gRPC ports for OpenTelemetry metrics and logs/traces collection, in addition to the existing HTTP/protobuf ports.

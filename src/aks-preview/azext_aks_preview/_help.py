@@ -2378,6 +2378,14 @@ helps['aks nodepool list'] = """
     short-summary: List node pools in the managed Kubernetes cluster.
 """
 
+helps['aks nodepool get-bootstrap-data'] = """
+    type: command
+    short-summary: Get bootstrap data for a FlexNodes pool.
+    examples:
+        - name: Get bootstrap data for a FlexNodes pool
+          text: az aks nodepool get-bootstrap-data -g MyResourceGroup --cluster-name MyManagedCluster -n flexpool
+"""
+
 helps['aks nodepool add'] = """
     type: command
     short-summary: Add a node pool to the managed Kubernetes cluster.
@@ -2475,7 +2483,7 @@ helps['aks nodepool add'] = """
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. If set as "ManagedSystem", all other properties except name and mode will be reset and managed by AKS. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet, VirtualMachines(Preview) or FlexNodes(Preview).
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -2631,6 +2639,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySubnet --pod-ip-allocation-mode StaticBlock
         - name: Create a nodepool of type VirtualMachines
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "Standard_D4s_v3,Standard_D8s_v3" --node-count 3
+        - name: Create a FlexNodes pool for customer-provided machines
+          text: az aks nodepool add -g MyResourceGroup -n flexpool --cluster-name MyManagedCluster --vm-set-type FlexNodes --kubernetes-version 1.32
         - name: Create a nodepool with ManagedSystem mode
           text: az aks nodepool add -g MyResourceGroup -n managedsystem1 --cluster-name MyManagedCluster --mode ManagedSystem
         - name: Create a node pool with blue-green upgrade strategy and default parameters
@@ -3101,6 +3111,15 @@ helps['aks machine add'] = """
        - name: --kubernetes-version
          type: string
          short-summary: Version of Kubernetes to use for creating the machine, such as "1.7.12" or "1.8.7".
+       - name: --labels
+         type: string
+         short-summary: Node labels for a FlexNode machine.
+       - name: --node-taints
+         type: string
+         short-summary: Node taints for a FlexNode machine.
+       - name: --max-pods -m
+         type: int
+         short-summary: Maximum pods for a FlexNode machine.
        - name: --enable-fips-image
          type: bool
          short-summary: Switch to use FIPS-enabled OS on the machine.
@@ -3155,6 +3174,9 @@ helps['aks machine update'] = """
        - name: --node-taints
          type: string
          short-summary: The taints of the machine.
+       - name: --kubernetes-version
+         type: string
+         short-summary: Kubernetes version for a FlexNode machine. This option is not supported for regular machines.
 """
 
 helps['aks machine list'] = """

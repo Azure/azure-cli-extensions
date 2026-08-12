@@ -9,7 +9,7 @@ import re
 import stat
 import sys
 import tempfile
-from typing import List, TypeVar
+from typing import Dict, List, Mapping, TypeVar
 
 import yaml
 from azext_aks_preview._client_factory import (
@@ -42,6 +42,55 @@ logger = get_logger(__name__)
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
 allowed_extensions = ["microsoft.dataprotection.kubernetes"]
+
+# Resource identifiers and command controls do not describe FlexNodes capabilities.
+_FLEXNODES_COMMON_PARAMETERS = {
+    "resource_group_name",
+    "cluster_name",
+    "nodepool_name",
+    "machine_name",
+    "vm_set_type",
+    "no_wait",
+    "aks_custom_headers",
+    "yes",
+    "if_match",
+    "if_none_match",
+}
+
+
+def get_user_supplied_argument_options(cmd) -> Dict[str, str]:
+    """Return explicitly supplied command arguments and their canonical option names."""
+    safe_params = set(cmd.cli_ctx.data.get("safe_params") or [])
+    supplied_options = {}
+    for argument_name, argument in getattr(cmd, "arguments", {}).items():
+        options = [option for option in (getattr(argument, "options_list", None) or [])
+                   if isinstance(option, str)]
+        if any(option in safe_params for option in options):
+            supplied_options[argument_name] = next(
+                (option for option in options if option.startswith("--")), options[0]
+            )
+    return supplied_options
+
+
+def validate_flexnodes_options(
+    cmd,
+    command_parameters: Mapping[str, object],
+    supported_parameters: Mapping[str, str],
+) -> None:
+    """Reject explicitly supplied options outside an operation's FlexNodes capabilities."""
+    supplied_options = get_user_supplied_argument_options(cmd)
+    allowed_parameters = _FLEXNODES_COMMON_PARAMETERS | set(supported_parameters)
+    unsupported_options = sorted({
+        option for name, option in supplied_options.items()
+        if name in command_parameters and name not in allowed_parameters
+    })
+    if unsupported_options:
+        raise InvalidArgumentValueError(
+            "The following options are not supported for FlexNodes pools: {}. "
+            "Supported FlexNodes pool options are: {}.".format(
+                ", ".join(unsupported_options), ", ".join(supported_parameters.values())
+            )
+        )
 
 
 def which(binary):

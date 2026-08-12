@@ -40,6 +40,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_FLEX_NODES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
     CONST_DEFAULT_VMS_VM_SIZE,
@@ -57,6 +58,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     filter_hard_taints,
     process_dns_overrides,
+    validate_flexnodes_options,
 )
 
 logger = get_logger(__name__)
@@ -140,9 +142,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_set_type = CONST_AVAILABILITY_SET
         elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
             vm_set_type = CONST_VIRTUAL_MACHINES
+        elif vm_set_type.lower() == CONST_FLEX_NODES.lower():
+            vm_set_type = CONST_FLEX_NODES
         else:
             raise InvalidArgumentValueError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)"
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet, "
+                "VirtualMachines(Preview) or FlexNodes(Preview)"
             )
         # this parameter does not need validation
         return vm_set_type
@@ -1302,6 +1307,25 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             self.agentpool_decorator_mode,
         )
 
+    def _validate_flexnodes_add_options(self) -> None:
+        if self.agentpool_decorator_mode != AgentPoolDecoratorMode.STANDALONE:
+            return
+        vm_set_type = self.__raw_parameters.get("vm_set_type")
+        if not vm_set_type or vm_set_type.lower() != CONST_FLEX_NODES.lower():
+            return
+        validate_flexnodes_options(
+            self.cmd,
+            self.__raw_parameters,
+            {
+                "kubernetes_version": "--kubernetes-version",
+                "labels": "--labels",
+                "max_pods": "--max-pods",
+                "max_unavailable": "--max-unavailable",
+                "mode": "--mode",
+                "node_taints": "--node-taints",
+            },
+        )
+
     def set_up_preview_vm_properties(self, agentpool: AgentPool) -> AgentPool:
         """Set up preview vm related properties for the AgentPool object.
 
@@ -1312,6 +1336,33 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         crg_id = self.context.get_crg_id()
         if crg_id is not None:
             agentpool.capacity_reservation_group_id = crg_id
+        return agentpool
+
+    def _keep_supported_flexnodes_properties(self, agentpool: AgentPool) -> AgentPool:
+        """Keep only properties supported by FlexNodes pools."""
+        supported_properties = {
+            "name",
+            "orchestrator_version",
+            "max_pods",
+            "mode",
+            "node_labels",
+            "node_taints",
+            "type",
+            "type_properties_type",
+            "upgrade_settings",
+        }
+        properties = getattr(agentpool, "properties", None) or agentpool
+        for property_name in properties._attr_to_rest_field:  # pylint: disable=protected-access
+            if property_name not in supported_properties:
+                setattr(agentpool, property_name, None)
+
+        upgrade_settings = agentpool.upgrade_settings
+        if upgrade_settings is not None:
+            for property_name in upgrade_settings._attr_to_rest_field:  # pylint: disable=protected-access
+                if property_name != "max_unavailable":
+                    setattr(upgrade_settings, property_name, None)
+            if not upgrade_settings.as_dict():
+                agentpool.upgrade_settings = None
         return agentpool
 
     def set_up_motd(self, agentpool: AgentPool) -> AgentPool:
@@ -1686,7 +1737,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         :return: the AgentPool object
         """
-        # DO NOT MOVE: keep this on top, construct the default AgentPool profile
+        self._validate_flexnodes_add_options()
+        # DO NOT MOVE: construct the default AgentPool profile before applying preview properties
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
 
         # Check if mode is ManagedSystem or Machines, if yes, reset all other properties
@@ -1745,6 +1797,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_prepared_image_specification(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
+        vm_set_type = getattr(agentpool, "type_properties_type", getattr(agentpool, "type", None))
+        if vm_set_type == CONST_FLEX_NODES:
+            agentpool = self._keep_supported_flexnodes_properties(agentpool)
         return agentpool
 
     def set_up_upgrade_strategy(self, agentpool: AgentPool) -> AgentPool:
@@ -1878,6 +1933,20 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             self.models,
             DecoratorMode.UPDATE,
             self.agentpool_decorator_mode,
+        )
+
+    def _validate_flexnodes_update_options(self, agentpool: AgentPool) -> None:
+        if self.agentpool_decorator_mode != AgentPoolDecoratorMode.STANDALONE or \
+                agentpool.type_properties_type != CONST_FLEX_NODES:
+            return
+        validate_flexnodes_options(
+            self.cmd,
+            self.__raw_parameters,
+            {
+                "labels": "--labels",
+                "max_unavailable": "--max-unavailable",
+                "node_taints": "--node-taints",
+            },
         )
 
     def update_network_profile(self, agentpool: AgentPool) -> AgentPool:
@@ -2116,6 +2185,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         # DO NOT MOVE: keep this on top, fetch and update the default AgentPool profile
         agentpool = self.update_agentpool_profile_default(agentpools)
+        # Update has no --vm-set-type argument; the inherited path fetches the pool before we can validate its type.
+        self._validate_flexnodes_update_options(agentpool)
 
         # Check if agentpool is in ManagedSystem mode and handle special case
         if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:

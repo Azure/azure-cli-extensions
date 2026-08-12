@@ -16,6 +16,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     process_message_for_run_command,
     filter_hard_taints,
+    validate_flexnodes_options,
 )
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -42,6 +43,37 @@ class TestFuzzyMatch(unittest.TestCase):
 
         self.assertCountEqual(result, self.expected)
         self.assertListEqual(result, self.expected)
+
+
+class TestValidateFlexNodesOptions(unittest.TestCase):
+    @patch(
+        "azext_aks_preview._helpers.get_user_supplied_argument_options",
+        return_value={
+            "resource_group_name": "--resource-group",
+            "machine_name": "--machine-name",
+            "no_wait": "--no-wait",
+            "labels": "--labels",
+            "vm_size": "--vm-size",
+        },
+    )
+    def test_ignores_command_plumbing_and_rejects_unsupported_capability(self, _):
+        with self.assertRaises(InvalidArgumentValueError) as err:
+            validate_flexnodes_options(
+                Mock(),
+                {
+                    "resource_group_name": "rg",
+                    "machine_name": "machine1",
+                    "no_wait": True,
+                    "labels": ["role=edge"],
+                    "vm_size": "Standard_D4s_v3",
+                },
+                {"labels": "--labels"},
+            )
+
+        self.assertIn("--vm-size", str(err.exception))
+        self.assertNotIn("--resource-group", str(err.exception))
+        self.assertNotIn("--machine-name", str(err.exception))
+        self.assertNotIn("--no-wait", str(err.exception))
 
 
 class GetNodepoolSnapShotTestCase(unittest.TestCase):

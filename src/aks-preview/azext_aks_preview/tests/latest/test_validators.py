@@ -842,6 +842,12 @@ class TestValidateNodepoolName(unittest.TestCase):
         validators.validate_agent_pool_name(namespace)
 
 
+class TestValidateVMSetType(unittest.TestCase):
+    def test_accepts_flexnodes(self):
+        namespace = SimpleNamespace(vm_set_type="flexnodes")
+
+        validators.validate_vm_set_type(namespace)
+
 class TestValidateAllowedHostPorts(unittest.TestCase):
     def test_invalid_allowed_host_ports(self):
         namespace = SimpleNamespace(
