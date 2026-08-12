@@ -12,6 +12,8 @@ from .restore import (create_dashboard, create_folder, create_library_panel, cre
                       check_dashboard_exists, check_snapshot_exists, check_annotation_exists_and_return_id)
 from .backup_core import (get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders,
                           get_all_annotations, get_all_datasources)
+from .dashboard_v2 import (is_v2_dashboard_definition, dashboard_identity, dashboard_folder_uid,
+                           get_v2_library_panel_uids)
 
 logger = get_logger(__name__)
 
@@ -213,21 +215,27 @@ def _migrate_library_panels_and_dashboards(all_source_dashboards, all_library_pa
 
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_source_dashboards:
-        exists_before = check_dashboard_exists(restore_url, dashboard["dashboard"]["uid"], restore_headers)
-        dashboard_title = dashboard['dashboard'].get('title', '')
+        is_v2 = is_v2_dashboard_definition(dashboard)
+        dashboard_uid, dashboard_title = dashboard_identity(dashboard)
+        exists_before = check_dashboard_exists(restore_url, dashboard_uid, restore_headers)
 
-        # Skipping making/updating dashboard if the library panel it relies on is not being updated.
-        panel_uids = {p["libraryPanel"]["uid"] for p in dashboard["dashboard"]["panels"] if "libraryPanel" in p}
+        # Skip the dashboard if a library panel it relies on isn't being created.
+        if is_v2:
+            panel_uids = set(get_v2_library_panel_uids(dashboard["spec"]))
+        else:
+            panel_uids = {p["libraryPanel"]["uid"] for p in dashboard["dashboard"]["panels"] if "libraryPanel" in p}
         if not panel_uids.issubset(created_library_panels):
-            # all the panels that are created are in the created_library_panels set, so if the panel is not in the set,
-            # then it is not created and we should skip the dashboard.
+            # all the panels that are created are in the created_library_panels set, so if the panel is not
+            # in the set, then it is not created and we should skip the dashboard.
             print_styled_text([
                 (Style.WARNING, f'Create dashboard {dashboard_title}: '),
                 (Style.ERROR, 'FAILURE (skipped because library panel is not created)')
             ])
             continue
 
-        dashboard['dashboard']['id'] = None
+        if not is_v2:
+            dashboard['dashboard']['id'] = None
+
         # Overwrite takes care of delete & create.
         is_successful = True
         if not dry_run:
@@ -247,10 +255,10 @@ def _migrate_library_panels_and_dashboards(all_source_dashboards, all_library_pa
         if not is_successful:
             continue
 
-        folder_title = dashboard['meta']['folderTitle']
+        folder_title = dashboard_folder_uid(dashboard) if is_v2 else dashboard['meta']['folderTitle']
         update_summary_dict(exists_before,
                             folder_title,
-                            dashboard['dashboard']['title'],
+                            dashboard_title,
                             dashboards_created_summary,
                             dashboards_overwrote_summary)
 

@@ -13,6 +13,7 @@ from .utils import search_snapshot, get_snapshot
 from .utils import search_folders, get_folder, get_folder_permissions
 from .utils import search_datasource
 from .utils import search_annotations
+from .dashboard_v2 import resolve_dashboard_v2_api_version, read_v2_dashboard
 
 logger = get_logger(__name__)
 
@@ -73,9 +74,14 @@ def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
     if not dashboards:
         return []
 
+    # Resolve the served v2 API version once for the whole backup. On instances that don't serve
+    # the v2 apiserver (e.g. Grafana < 13) this is None and we skip the per-dashboard v2 read
+    # entirely, so a classic-only backup makes no extra requests beyond this single discovery.
+    v2_version = resolve_dashboard_v2_api_version(grafana_url, http_headers)
     all_individual_dashboards = []
     for board in dashboards:
-        board_uri = "uid/" + board['uid']
+        uid = board['uid']
+        board_uri = "uid/" + uid
 
         (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
         if status == 200:
@@ -84,7 +90,11 @@ def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
                 logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
                 continue
 
-            all_individual_dashboards.append(content)
+            # A v2 (dynamic dashboards) dashboard has no lossless classic form, so store the true
+            # v2 resource from the apiserver instead of the down-converted legacy payload.
+            v2_dashboard = (read_v2_dashboard(grafana_url, http_headers, uid, version=v2_version)
+                            if v2_version else None)
+            all_individual_dashboards.append(v2_dashboard if v2_dashboard is not None else content)
 
     return all_individual_dashboards
 
