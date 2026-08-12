@@ -172,6 +172,44 @@ class TestModelSource(unittest.TestCase):
         construct_modelsource.assert_called_once_with(
             self.cmd, "HuggingFace", "new description", "hf_rotated")
 
+    @patch.object(custom, "sdk_no_wait")
+    @patch.object(custom, "_construct_modelsource")
+    def test_update_warns_when_credential_omitted(self, construct_modelsource, sdk_no_wait):
+        existing = SimpleNamespace(
+            e_tag=None,
+            properties=SimpleNamespace(
+                source_type="HuggingFace", description="d", credential=None),
+        )
+        client = MagicMock()
+        client.get.return_value = existing
+        construct_modelsource.return_value = object()
+        sdk_no_wait.return_value = "result"
+
+        with patch.object(custom.logger, "warning") as warn:
+            custom.update_modelsource(self.cmd, client, "rg", "manager", "source")
+
+        warn.assert_called_once()
+
+    @patch.object(custom, "sdk_no_wait")
+    @patch.object(custom, "_construct_modelsource")
+    def test_update_does_not_warn_when_credential_supplied(
+            self, construct_modelsource, sdk_no_wait):
+        existing = SimpleNamespace(
+            e_tag=None,
+            properties=SimpleNamespace(
+                source_type="HuggingFace", description="d", credential=None),
+        )
+        client = MagicMock()
+        client.get.return_value = existing
+        construct_modelsource.return_value = object()
+        sdk_no_wait.return_value = "result"
+
+        with patch.object(custom.logger, "warning") as warn:
+            custom.update_modelsource(
+                self.cmd, client, "rg", "manager", "source", credential="hf_token")
+
+        warn.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

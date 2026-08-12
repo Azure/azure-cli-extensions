@@ -522,6 +522,10 @@ def update_modelsource(cmd, client, resource_group_name, ai_manager_name, model_
     # begin_create_or_update is a full-replace PUT and the credential is write-only (never
     # returned on GET), so it cannot be read back and re-sent. Omitting --credential therefore
     # clears any stored credential; the caller must re-supply it to keep authentication.
+    if credential is None:
+        logger.warning(
+            "No --credential was supplied. 'update' replaces the model source, so if it had "
+            "a credential it will be cleared. Re-run with --credential to keep authentication.")
 
     source = _construct_modelsource(cmd, source_type, description, credential)
     headers = get_aks_custom_headers(aks_custom_headers)
