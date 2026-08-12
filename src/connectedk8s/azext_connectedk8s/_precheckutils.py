@@ -195,7 +195,9 @@ def _attach_error_details(components: list[dict[str, Any]]) -> None:
             component["error"] = " ; ".join(chosen)
 
 
-def send_prediagnostic_job_execution_error_telemetry(reason: str = "") -> None:
+def send_prediagnostic_job_execution_error_telemetry(
+    reason: str = "", cmd: CLICommand | None = None
+) -> None:
     """Send telemetry when prediagnostic job execution fails.
 
     Encodes the job status into the fault_type so ADX queries can distinguish
@@ -211,7 +213,7 @@ def send_prediagnostic_job_execution_error_telemetry(reason: str = "") -> None:
         consts.Telemetry_Onboarding_Error_Type_Key: consts.Install_Prediagnostics_Job_Execution_Error_Fault_Type,
         consts.Telemetry_Onboarding_Error_Message_Key: json.dumps(msg).replace("'", ""),
     }
-    telemetry.add_extension_event("connectedk8s", props)
+    azext_utils.add_connectedk8s_telemetry_event(cmd, props)
 
     # Encode job status into fault_type for ADX visibility
     status_slug = prediagnostic_job_execution_status.replace(" ", "-").lower()
@@ -227,7 +229,9 @@ def send_prediagnostic_job_execution_error_telemetry(reason: str = "") -> None:
 
 
 def send_prediagnostic_check_failure_telemetry(
-    dns_check: str, outbound_connectivity_check: str
+    dns_check: str,
+    outbound_connectivity_check: str,
+    cmd: CLICommand | None = None,
 ) -> None:
     """Send telemetry when prediagnostic checks fail (job completed but checks did not pass).
 
@@ -255,7 +259,7 @@ def send_prediagnostic_check_failure_telemetry(
             "'", ""
         ),
     }
-    telemetry.add_extension_event("connectedk8s", props)
+    azext_utils.add_connectedk8s_telemetry_event(cmd, props)
 
     # Build the encoded fault_type (survives to context.default.azurecli.faulttype)
     def _short(result: str) -> str:
@@ -293,7 +297,7 @@ def send_prediagnostic_check_failure_telemetry(
 
 
 def send_post_diagnostic_precheck_failure_telemetry(
-    check_name: str, reason: str
+    check_name: str, reason: str, cmd: CLICommand | None = None
 ) -> None:
     """Send telemetry for individual precheck failures that occur after the diagnostic job."""
     # Build structured message for add_extension_event
@@ -303,7 +307,7 @@ def send_post_diagnostic_precheck_failure_telemetry(
         consts.Telemetry_Onboarding_Error_Type_Key: consts.Post_Diagnostic_Precheck_Fault_Type,
         consts.Telemetry_Onboarding_Error_Message_Key: json.dumps(msg).replace("'", ""),
     }
-    telemetry.add_extension_event("connectedk8s", props)
+    azext_utils.add_connectedk8s_telemetry_event(cmd, props)
 
     # Also send via set_exception for ADX fault_type encoding
     fault_type = f"{consts.Post_Diagnostic_Precheck_Fault_Type}-{check_name}"
@@ -387,7 +391,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
                 f"dnsCheck={prediagnostic_dns_check}; outboundConnectivityCheck={prediagnostic_outbound_check}; "
                 f"entraCheck={prediagnostic_entra_check}; crdCheck={prediagnostic_crd_check}"
             )
-            send_prediagnostic_job_execution_error_telemetry()
+            send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         if cluster_diagnostic_checks_container_log != "":
@@ -431,6 +435,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
                     filepath_with_timestamp,
                     storage_space_available,
                     diagnoser_output,
+                    cmd=cmd,
                 )
             )
             prediagnostic_outbound_check = outbound_connectivity_check
@@ -467,7 +472,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
                     f"dnsCheck={prediagnostic_dns_check}; outboundConnectivityCheck={prediagnostic_outbound_check}; "
                     f"entraCheck={prediagnostic_entra_check}; crdCheck={prediagnostic_crd_check}"
                 )
-                send_prediagnostic_job_execution_error_telemetry()
+                send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
                 return consts.Diagnostic_Check_Incomplete, storage_space_available
             return consts.Diagnostic_Check_Passed, storage_space_available
 
@@ -506,7 +511,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             or prediagnostic_crd_check == consts.Diagnostic_Check_Failed
         ):
             send_prediagnostic_check_failure_telemetry(
-                dns_check, outbound_connectivity_check
+                dns_check, outbound_connectivity_check, cmd=cmd
             )
             return consts.Diagnostic_Check_Failed, storage_space_available
 
@@ -526,7 +531,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             "An exception has occured while trying to execute cluster diagnostic checks "
             "container on the cluster."
         )
-        send_prediagnostic_job_execution_error_telemetry(reason=str(e))
+        send_prediagnostic_job_execution_error_telemetry(reason=str(e), cmd=cmd)
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type,

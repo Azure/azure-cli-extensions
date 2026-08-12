@@ -107,7 +107,7 @@ def _download_proxy_from_MCR(
         "Context.Default.AzureCLI.ArcProxyDownloadTime": time_elapsed,
         "Context.Default.AzureCLI.ArcProxyVersion": consts.CLIENT_PROXY_VERSION,
     }
-    telemetry.add_extension_event("connectedk8s", proxy_data)
+    utils.add_connectedk8s_telemetry_event(cmd, proxy_data)
 
     proxy_package_path = _get_proxy_package_path_from_oras_response(response)
     _extract_proxy_tar_files(proxy_package_path, dest_dir, proxy_name)
