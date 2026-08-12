@@ -1090,6 +1090,44 @@ def create_connectedk8s(
     print(
         f"Step: {utils.get_utctimestring()}: Starting to install Azure arc agents on the Kubernetes cluster."
     )
+
+    # Decide which onboarding flow to use. Stable agents below 1.35.3 still need
+    # the legacy flow (private key in helm values), because their helm chart
+    # always renders the privatekey secret from helm values and would zero it
+    # out on install otherwise. Newer agents (and any non-stable build) get the
+    # secure flow: we pre-create the namespace + secret directly via the
+    # Kubernetes API so the private key never appears in helm values.
+    use_secret_injection_flow = utils.should_use_secret_injection_flow(
+        release_train, azure_arc_agent_version
+    )
+    telemetry.add_extension_event(
+        "connectedk8s",
+        {
+            "Context.Default.AzureCLI.OnboardingFlow": (
+                "secret-injection"
+                if use_secret_injection_flow
+                else "helm-values-legacy"
+            )
+        },
+    )
+
+    if use_secret_injection_flow:
+        # Inject the private key BEFORE running helm so that the cluster always
+        # has the onboarding secret available - even if the subsequent helm
+        # install/CLI is interrupted - preventing a stuck-disconnected state.
+        try:
+            utils.inject_onboarding_private_key_secret(private_key_pem)
+        except Exception as e:
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Inject_PrivateKey_Secret_Fault_Type,
+                summary="Failed to pre-create onboarding private key secret",
+            )
+            raise CLIInternalError(
+                "Failed to pre-create onboarding private key secret on the "
+                f"Kubernetes cluster: {e}"
+            )
+
     # Install azure-arc agents
     utils.helm_install_release(
         cmd.cli_ctx.cloud.endpoints.resource_manager,
@@ -1112,6 +1150,7 @@ def create_connectedk8s(
         registry_path,
         aad_identity_principal_id,
         onboarding_timeout,
+        inject_private_key_via_helm=not use_secret_injection_flow,
     )
 
     # Long Running Operation for Agent State
