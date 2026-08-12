@@ -1587,6 +1587,30 @@ helps['aks update'] = """
         - name: --disable-application-load-balancer
           type: bool
           short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
+        - name: --enable-hosted-system
+          type: bool
+          short-summary: (Automatic SKU) Convert an existing Automatic cluster to use a Managed System Pool.
+          long-summary: |
+              Only valid for clusters with the Automatic SKU. Optionally provide the bring-your-own
+              VNet subnet trio (`--system-node-subnet-id`, `--node-subnet-id`, `--apiserver-subnet-id`)
+              to move the cluster onto an existing VNet at the same time. Supplying the full trio also
+              implies this flag.
+        - name: --system-node-subnet-id
+          type: string
+          short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by the Managed System Pool.
+          long-summary: |
+              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
+              `--system-node-subnet-id` (this flag, for the Managed System Pool), `--node-subnet-id`
+              (for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
+              All three subnets must belong to the same VNet.
+        - name: --node-subnet-id
+          type: string
+          short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by user node pools.
+          long-summary: |
+              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
+              `--system-node-subnet-id` (for the Managed System Pool), `--node-subnet-id` (this flag,
+              for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
+              All three subnets must belong to the same VNet.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1680,6 +1704,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-metrics
       - name: Disable OpenTelemetry logs and traces collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs-traces
+      - name: Convert an existing Automatic cluster to use a Managed System Pool.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system
+      - name: Convert an existing Automatic cluster to use a Managed System Pool with a bring-your-own VNet.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID> --node-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID>
 """
 
 helps['aks kollect'] = """

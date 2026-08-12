@@ -1731,6 +1731,10 @@ def aks_update(
     node_disruption_policy=None,
     # control plane scaling
     control_plane_scaling_size=None,
+    # hosted system (Managed System Pool)
+    enable_hosted_system=False,
+    system_node_subnet_id=None,
+    node_subnet_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
