@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'aimanager' Extension
-==========================================
+AI Manager
+==========
 
-This package is for the 'aimanager' extension.
-i.e. 'az aimanager'
+Manage AI Manager resources, namespaces, and GPU-backed model deployments for
+Azure Kubernetes Service (AKS).

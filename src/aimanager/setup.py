@@ -14,7 +14,7 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -40,7 +40,8 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='aimanager',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools AI Manager Extension',
+    description=('Manage AI Manager resources, namespaces, and GPU-backed model deployments '
+                 'for Azure Kubernetes Service (AKS).'),
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/aimanager',
