@@ -1889,6 +1889,198 @@ def cleanup_release_install_namespace_if_exists() -> None:
         )
 
 
+def should_use_secret_injection_flow(
+    release_train: str | None, agent_version: str | None
+) -> bool:
+    """
+    Determine whether to use the secure onboarding flow that pre-creates the
+    onboarding private key as a Kubernetes Secret (instead of passing it through
+    helm values).
+
+    Older agents whose helm chart unconditionally renders the privatekey secret
+    from ``global.onboardingPrivateKey`` must keep using the legacy flow,
+    otherwise the helm release would re-render the secret with an empty
+    ``privateKey`` and leave the cluster stuck in a disconnected state. The
+    chart change that gates the privatekey secret on the helm value being set
+    ships in:
+
+    * ``stable``  release train: agent version ``1.35.3`` and above.
+    * ``preview`` release train: agent version ``1.35.3-preview`` and above.
+    * any other release train (e.g. ``dev``): keep the legacy flow for safety.
+    * any agent version ending in ``-dev`` (e.g. ``0.2.5738-dev``) is treated
+      as a dev build and always uses the secure flow, regardless of the train
+      DP attributed it to. This handles the case where a developer overrides
+      ``HELMREGISTRY`` to a dev chart while DP still reports the original
+      ``stable``/``preview`` train.
+
+    From those versions onward the chart only renders the privatekey secret
+    when ``global.onboardingPrivateKey`` is provided, so simply omitting the
+    helm value is sufficient to hand secret ownership to the kubectl-injected
+    resource.
+    """
+    # Dev-suffixed agent versions always use the secure flow, regardless of the
+    # release train DP attributed them to.
+    if agent_version and agent_version.lower().endswith("-dev"):
+        return True
+
+    effective_train = (release_train or consts.Stable_Release_Train).lower()
+    if effective_train == consts.Stable_Release_Train:
+        cutoff = consts.Min_Agent_Version_For_Secret_Injection
+    elif effective_train == consts.Preview_Release_Train:
+        cutoff = consts.Min_Agent_Version_For_Secret_Injection_Preview
+    else:
+        # Unknown trains (neither stable nor preview) keep the legacy
+        # helm-values flow for safety.
+        return False
+
+    if not agent_version:
+        # Cannot determine version on a gated train. Be safe and use the legacy
+        # flow so that older agents aren't broken.
+        return False
+    try:
+        return version.parse(agent_version) >= version.parse(cutoff)
+    except Exception:  # pylint: disable=broad-except
+        # If we can't parse the version, fall back to the legacy flow.
+        return False
+
+
+def ensure_arc_namespace_with_helm_metadata() -> None:
+    """
+    Ensure the ``azure-arc`` namespace exists and is annotated/labeled so that
+    the subsequent ``helm install`` can adopt it without erroring out with
+    "exists and cannot be imported into the current release".
+    """
+    api_instance = kube_client.CoreV1Api()
+    helm_labels = {"app.kubernetes.io/managed-by": "Helm"}
+    helm_annotations = {
+        "meta.helm.sh/release-name": consts.Helm_Release_Name,
+        "meta.helm.sh/release-namespace": consts.Release_Install_Namespace,
+    }
+
+    try:
+        existing_ns = api_instance.read_namespace(consts.Arc_Namespace)
+    except ApiException as ex:
+        if ex.status != 404:
+            kubernetes_exception_handler(
+                ex,
+                consts.Get_Kubernetes_Namespace_Fault_Type,
+                error_message=f"Unable to fetch namespace '{consts.Arc_Namespace}'",
+                summary=f"Unable to fetch namespace '{consts.Arc_Namespace}'",
+            )
+            return
+        # Namespace does not exist, create it with the required metadata.
+        ns_body = kube_client.V1Namespace(
+            metadata=kube_client.V1ObjectMeta(
+                name=consts.Arc_Namespace,
+                labels=helm_labels,
+                annotations=helm_annotations,
+            )
+        )
+        try:
+            api_instance.create_namespace(ns_body)
+        except ApiException as create_ex:
+            kubernetes_exception_handler(
+                create_ex,
+                consts.Inject_PrivateKey_Secret_Fault_Type,
+                error_message=f"Unable to create namespace '{consts.Arc_Namespace}'",
+                summary=f"Unable to create namespace '{consts.Arc_Namespace}'",
+            )
+        return
+
+    # Namespace exists; merge in the Helm adoption metadata so helm can manage it.
+    metadata = existing_ns.metadata or kube_client.V1ObjectMeta()
+    labels = dict(metadata.labels or {})
+    annotations = dict(metadata.annotations or {})
+    labels.update(helm_labels)
+    annotations.update(helm_annotations)
+    patch_body = {"metadata": {"labels": labels, "annotations": annotations}}
+    try:
+        api_instance.patch_namespace(consts.Arc_Namespace, patch_body)
+    except ApiException as patch_ex:
+        kubernetes_exception_handler(
+            patch_ex,
+            consts.Inject_PrivateKey_Secret_Fault_Type,
+            error_message=(
+                f"Unable to patch namespace '{consts.Arc_Namespace}' with Helm "
+                "ownership metadata"
+            ),
+            summary=(
+                f"Unable to patch namespace '{consts.Arc_Namespace}' with Helm "
+                "ownership metadata"
+            ),
+        )
+
+
+def inject_onboarding_private_key_secret(private_key_pem: str) -> None:
+    """
+    Pre-create the onboarding private key as a Kubernetes Secret so the agents
+    can consume it without ever exposing it through helm values. The namespace
+    and secret are annotated/labeled for Helm adoption so the chart can manage
+    them on subsequent upgrades.
+
+    This MUST be called before ``helm install`` so that the cluster never sits
+    in a state where the private key is missing (which would leave it stuck in
+    a disconnected state since the Cluster Identity Operator depends on this
+    secret to fetch identity certificates from HIS).
+    """
+    print(
+        f"Step: {get_utctimestring()}: Pre-creating onboarding private key "
+        f"secret '{consts.Onboarding_PrivateKey_Secret_Name}' in namespace "
+        f"'{consts.Arc_Namespace}'."
+    )
+    ensure_arc_namespace_with_helm_metadata()
+
+    api_instance = kube_client.CoreV1Api()
+    secret_body = kube_client.V1Secret(
+        metadata=kube_client.V1ObjectMeta(
+            name=consts.Onboarding_PrivateKey_Secret_Name,
+            namespace=consts.Arc_Namespace,
+            labels={"app.kubernetes.io/managed-by": "Helm"},
+            annotations={
+                "meta.helm.sh/release-name": consts.Helm_Release_Name,
+                "meta.helm.sh/release-namespace": consts.Release_Install_Namespace,
+            },
+        ),
+        type="Opaque",
+        string_data={consts.Onboarding_PrivateKey_Secret_Data_Key: private_key_pem},
+    )
+
+    try:
+        api_instance.create_namespaced_secret(consts.Arc_Namespace, secret_body)
+    except ApiException as ex:
+        if ex.status != 409:
+            kubernetes_exception_handler(
+                ex,
+                consts.Inject_PrivateKey_Secret_Fault_Type,
+                error_message=(
+                    "Unable to create onboarding private key secret "
+                    f"'{consts.Onboarding_PrivateKey_Secret_Name}' in namespace "
+                    f"'{consts.Arc_Namespace}'"
+                ),
+                summary="Unable to create onboarding private key secret",
+            )
+            return
+        # Secret already exists - replace its contents
+        # so the cluster always uses a private key matching the public key in ARM
+        try:
+            api_instance.replace_namespaced_secret(
+                consts.Onboarding_PrivateKey_Secret_Name,
+                consts.Arc_Namespace,
+                secret_body,
+            )
+        except ApiException as replace_ex:
+            kubernetes_exception_handler(
+                replace_ex,
+                consts.Inject_PrivateKey_Secret_Fault_Type,
+                error_message=(
+                    "Unable to update existing onboarding private key secret "
+                    f"'{consts.Onboarding_PrivateKey_Secret_Name}' in namespace "
+                    f"'{consts.Arc_Namespace}'"
+                ),
+                summary="Unable to update onboarding private key secret",
+            )
+
+
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm
 # release. For re-put scenarios, brownfield scenario needs to be handled where helm release
 # still stays in default NS
@@ -1915,6 +2107,7 @@ def helm_install_release(
     registry_path: str,
     aad_identity_principal_id: str | None,
     onboarding_timeout: str = consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
+    inject_private_key_via_helm: bool = True,
 ) -> None:
     cmd_helm_install = [
         helm_client_location,
@@ -1926,20 +2119,29 @@ def helm_install_release(
         f"global.kubernetesDistro={kubernetes_distro}",
         "--set",
         f"global.kubernetesInfra={kubernetes_infra}",
-        "--set",
-        f"global.onboardingPrivateKey={private_key_pem}",
-        "--set",
-        "systemDefaultValues.spnOnboarding=false",
-        "--set",
-        f"global.azureEnvironment={cloud_name}",
-        "--set",
-        "systemDefaultValues.clusterconnect-agent.enabled=true",
-        "--namespace",
-        f"{consts.Release_Install_Namespace}",
-        "--create-namespace",
-        "--output",
-        "json",
     ]
+    # Pass the onboarding private key through helm values only for older
+    # (stable < 1.35.3) agents. Newer agents have already received the key via
+    # a pre-created Kubernetes Secret so it never appears in helm values.
+    if inject_private_key_via_helm:
+        cmd_helm_install.extend(
+            ["--set", f"global.onboardingPrivateKey={private_key_pem}"]
+        )
+    cmd_helm_install.extend(
+        [
+            "--set",
+            "systemDefaultValues.spnOnboarding=false",
+            "--set",
+            f"global.azureEnvironment={cloud_name}",
+            "--set",
+            "systemDefaultValues.clusterconnect-agent.enabled=true",
+            "--namespace",
+            f"{consts.Release_Install_Namespace}",
+            "--create-namespace",
+            "--output",
+            "json",
+        ]
+    )
 
     # Special configurations from 2022-09-01 ARM metadata.
     # "dataplaneEndpoints" does not appear in arm_metadata for public and AGC
