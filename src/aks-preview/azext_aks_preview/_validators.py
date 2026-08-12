@@ -244,9 +244,11 @@ def validate_vm_set_type(namespace):
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
             namespace.vm_set_type.lower() != "virtualmachines" and \
-                namespace.vm_set_type.lower() != "virtualmachinescalesets":
+            namespace.vm_set_type.lower() != "virtualmachinescalesets" and \
+                namespace.vm_set_type.lower() != "flexnodes":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet, "
+                "VirtualMachines(Preview), or FlexNodes(Preview)")
 
 
 def validate_load_balancer_sku(namespace):

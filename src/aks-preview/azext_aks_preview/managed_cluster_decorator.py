@@ -4271,7 +4271,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        if self.decorator_mode != DecoratorMode.CREATE:
+        if self.decorator_mode not in (DecoratorMode.CREATE, DecoratorMode.UPDATE):
             return False
         explicit = bool(self.raw_param.get("enable_hosted_system"))
         implicit = all(
@@ -4282,7 +4282,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ]
         )
         if (explicit or implicit) and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
+            raise RequiredArgumentMissingError(self._hosted_system_sku_error_message())
         return explicit or implicit
 
     def get_system_node_subnet_id(self) -> Union[str, None]:
@@ -4334,6 +4334,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Return True for BYO HOBO subnets set in this request or already on the cluster."""
         return self.has_byo_hobo_subnets() or self.has_existing_byo_hobo_subnets()
 
+    def _hosted_system_sku_error_message(self) -> str:
+        """Build the SKU requirement message for hosted-system flags, per decorator mode."""
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            return (
+                '"--enable-hosted-system" is only supported on clusters with the Automatic SKU.'
+            )
+        return '"--enable-hosted-system" requires "--sku automatic".'
+
     def validate_byo_hobo_subnet_trio(self) -> None:
         """Cross-validate the BYO VNet HOBO subnet flags.
 
@@ -4347,7 +4355,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_hosted_system = bool(self.raw_param.get("enable_hosted_system"))
 
         if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
+            raise RequiredArgumentMissingError(self._hosted_system_sku_error_message())
 
         if self.has_byo_hobo_subnets():
             missing = []
@@ -4365,6 +4373,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     f"Missing: {', '.join(missing)}."
                 )
             if self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                if self.decorator_mode == DecoratorMode.UPDATE:
+                    raise RequiredArgumentMissingError(
+                        '"--system-node-subnet-id" and "--node-subnet-id" are only supported on '
+                        "clusters with the Automatic SKU."
+                    )
                 raise RequiredArgumentMissingError(
                     '"--system-node-subnet-id" and "--node-subnet-id" require "--sku automatic".'
                 )
@@ -8862,6 +8875,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_hosted_system_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update hostedSystemProfile for the ManagedCluster object.
+
+        Supports converting an existing Automatic cluster to a Managed System Pool (hosted
+        system) cluster, optionally with BYO VNet subnets.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        self.context.validate_byo_hobo_subnet_trio()
+        if not self.context.get_enable_hosted_system():
+            return mc
+
+        if mc.hosted_system_profile is None:
+            mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
+        mc.hosted_system_profile.enabled = True
+
+        # BYO VNet: all three subnets (system-node / node / apiserver) must share a VNet,
+        # but the server enforces that check. The trio is already validated above, so read
+        # the raw values rather than the getters, which would re-run that validation.
+        system_node_subnet_id = self.context.raw_param.get("system_node_subnet_id")
+        node_subnet_id = self.context.raw_param.get("node_subnet_id")
+        if system_node_subnet_id:
+            mc.hosted_system_profile.system_node_subnet_id = system_node_subnet_id
+        if node_subnet_id:
+            mc.hosted_system_profile.node_subnet_id = node_subnet_id
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -8962,6 +9005,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_disruption_policy(mc)
         # update control plane scaling profile
         mc = self.update_control_plane_scaling_profile(mc)
+        # update hosted system profile (non-HOBO to HOBO conversion)
+        mc = self.update_hosted_system_profile(mc)
         # update ManagedSystem pools, must at end
         mc = self.update_managed_system_pools(mc)
 

@@ -92,10 +92,16 @@ class AIManagerScenarioTest(ScenarioTest):
                 self.check('properties.annotations.owner', 'bob'),
             ])
 
+        # namespace get-credentials (print to stdout to avoid touching local kubeconfig)
+        self.cmd('aimanager namespace get-credentials -g {rg} -m {ai_manager_name} -n {namespace_name} -f -')
+
         # delete namespace
         self.cmd('aimanager namespace delete -g {rg} -m {ai_manager_name} -n {namespace_name} --yes')
 
         # endregion
+
+        # get-credentials (print to stdout to avoid touching local kubeconfig)
+        self.cmd('aimanager get-credentials -g {rg} -n {ai_manager_name} -f -')
 
         # delete AI Manager
         self.cmd('aimanager delete -g {rg} -n {ai_manager_name} --yes')

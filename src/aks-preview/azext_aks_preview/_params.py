@@ -2180,6 +2180,18 @@ def load_arguments(self, _):
             is_preview=True,
             help="Set the node disruption policy for the cluster.",
         )
+        c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "system_node_subnet_id",
+            validator=validate_system_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
+            "node_subnet_id",
+            options_list=["--node-subnet-id"],
+            validator=validate_node_subnet_id,
+            is_preview=True,
+        )
 
     with self.argument_context("aks delete") as c:
         c.argument("if_match")
@@ -2783,6 +2795,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_eviction_policies),
             validator=validate_eviction_policy,
         )
+        c.argument("labels", nargs="*", validator=validate_nodepool_labels)
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
 
     with self.argument_context("aks machine update") as c:
         c.argument(
@@ -2791,6 +2806,12 @@ def load_arguments(self, _):
         c.argument("tags", tags_type, help="The tags to set on the machine.")
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("labels", nargs="*", help="Labels to set on the machine.")
+        c.argument(
+            "kubernetes_version",
+            options_list=["--kubernetes-version"],
+            validator=validate_k8s_version,
+            help="Kubernetes version to use for a FlexNode machine.",
+        )
 
     with self.argument_context("aks operation") as c:
         c.argument(

@@ -2824,6 +2824,194 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+        preserve_default_location=True,
+    )
+    def test_aks_flexnodes_supported_operations(self, resource_group, resource_group_location):
+        """Exercise the supported FlexNodes pool lifecycle without joining an external machine."""
+        for feature_name in ("AKSFlexNodePreview", "PutMachinePreview"):
+            self.cmd(
+                "feature register --namespace Microsoft.ContainerService "
+                f"--name {feature_name}"
+            )
+            while True:
+                feature_state = self.cmd(
+                    "feature show --namespace Microsoft.ContainerService "
+                    f"--name {feature_name} --query properties.state -o tsv"
+                ).output.strip()
+                if feature_state.lower() == "registered":
+                    break
+                time.sleep(30)
+
+        # Propagate the feature registrations to the resource provider.
+        self.cmd("provider register --namespace Microsoft.ContainerService")
+
+        create_version, upgrade_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("flex", 12)
+        self.kwargs.update({
+            "resource_group": resource_group,
+            "location": resource_group_location,
+            "name": aks_name,
+            "nodepool_name": nodepool_name,
+            "ssh_key_value": self.generate_ssh_keys(),
+            "create_version": create_version,
+            "upgrade_version": upgrade_version,
+        })
+
+        self.cmd(
+            "aks create --resource-group={resource_group} --name={name} "
+            "--location={location} --kubernetes-version={upgrade_version} "
+            "--network-plugin azure --network-plugin-mode overlay --node-count 1 "
+            "--ssh-key-value={ssh_key_value}",
+            checks=[self.check("provisioningState", "Succeeded")],
+        )
+        resolved_upgrade_version = self.cmd(
+            "aks show --resource-group={resource_group} --name={name} "
+            "--query currentKubernetesVersion -o tsv"
+        ).output.strip()
+        self.kwargs["upgrade_version"] = resolved_upgrade_version
+
+        self.cmd(
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --vm-set-type FlexNodes --mode User "
+            "--kubernetes-version={create_version} --max-pods 75 "
+            "--labels source=pool --node-taints source=pool:NoSchedule "
+            "--max-unavailable 30%",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("typePropertiesType", "FlexNodes"),
+                self.check("mode", "User"),
+                self.check("orchestratorVersion", create_version),
+                self.check("maxPods", 75),
+                self.check("nodeLabels.source", "pool"),
+                self.check("nodeTaints[0]", "source=pool:NoSchedule"),
+                self.check("upgradeSettings.maxUnavailable", "30%"),
+            ],
+        )
+
+        self.cmd(
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name}",
+            checks=[self.check("typePropertiesType", "FlexNodes")],
+        )
+        self.cmd(
+            "aks nodepool list --resource-group={resource_group} --cluster-name={name}",
+            checks=[self.check("[?name=='{nodepool_name}'] | length(@)", 1)],
+        )
+
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --labels source=updated "
+            "--node-taints source=updated:NoSchedule --max-unavailable 50%",
+            checks=[self.check("provisioningState", "Succeeded")],
+        )
+        self.cmd(
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name}",
+            checks=[
+                self.check("nodeLabels.source", "updated"),
+                self.check("nodeTaints[0]", "source=updated:NoSchedule"),
+                # The deployed RP currently ignores the changed maxUnavailable value.
+                # Unit coverage verifies the CLI PUT payload contains 50%.
+                self.check("upgradeSettings.maxUnavailable", "30%"),
+            ],
+        )
+
+        # The raw response contains credentials; KeyReplacer redacts them in recordings.
+        bootstrap_data = self.cmd(
+            "aks nodepool get-bootstrap-data --resource-group={resource_group} "
+            "--cluster-name={name} --name={nodepool_name} "
+            "--query '{{targetPool:azure.targetAgentPoolName,kubernetes:components.kubernetes,"
+            "maxPods:node.maxPods,labels:node.labels,taints:node.taints,"
+            "hasToken:length(azure.bootstrapToken.token) > `0`,"
+            "hasCACert:length(node.kubelet.caCertData) > `0`}}'"
+        ).get_output_in_json()
+        self.assertEqual(bootstrap_data["targetPool"], nodepool_name)
+        self.assertEqual(bootstrap_data["kubernetes"], create_version)
+        self.assertEqual(bootstrap_data["maxPods"], 75)
+        self.assertEqual(bootstrap_data["labels"]["source"], "updated")
+        self.assertEqual(bootstrap_data["taints"], ["source=updated:NoSchedule"])
+        self.assertTrue(bootstrap_data["hasToken"])
+        self.assertTrue(bootstrap_data["hasCACert"])
+
+        machine_name = self.create_random_name("flexnode", 20)
+        self.kwargs["machine_name"] = machine_name
+        self.cmd(
+            "aks machine add --resource-group={resource_group} --cluster-name={name} "
+            "--nodepool-name={nodepool_name} --machine-name={machine_name} "
+            "--kubernetes-version={create_version} --max-pods 60 "
+            "--labels machine=initial --node-taints machine=initial:NoSchedule",
+            checks=[
+                self.check("properties.provisioningState", "Succeeded"),
+                self.check("properties.kubernetes.orchestratorVersion", create_version),
+                self.check("properties.kubernetes.maxPods", 60),
+                self.check("properties.kubernetes.nodeLabels.machine", "initial"),
+                self.check("properties.kubernetes.nodeTaints[0]", "machine=initial:NoSchedule"),
+            ],
+        )
+        self.cmd(
+            "aks machine show --resource-group={resource_group} --cluster-name={name} "
+            "--nodepool-name={nodepool_name} --machine-name={machine_name}",
+            checks=[self.check("name", machine_name)],
+        )
+        self.cmd(
+            "aks machine list --resource-group={resource_group} --cluster-name={name} "
+            "--nodepool-name={nodepool_name}",
+            checks=[self.check("[?name=='{machine_name}'] | length(@)", 1)],
+        )
+        self.cmd(
+            "aks machine update --resource-group={resource_group} --cluster-name={name} "
+            "--nodepool-name={nodepool_name} --machine-name={machine_name} "
+            "--kubernetes-version={upgrade_version} "
+            "--labels machine=updated --node-taints machine=updated:NoSchedule",
+            checks=[
+                self.check("properties.provisioningState", "Succeeded"),
+                self.check("properties.kubernetes.orchestratorVersion", upgrade_version),
+                self.check("properties.kubernetes.nodeLabels.machine", "updated"),
+                self.check("properties.kubernetes.nodeTaints[0]", "machine=updated:NoSchedule"),
+            ],
+        )
+        self.cmd(
+            "aks nodepool delete-machines --resource-group={resource_group} "
+            "--cluster-name={name} --nodepool-name={nodepool_name} "
+            "--machine-names {machine_name}"
+        )
+        self.cmd(
+            "aks machine list --resource-group={resource_group} --cluster-name={name} "
+            "--nodepool-name={nodepool_name}",
+            checks=[self.check("[?name=='{machine_name}'] | length(@)", 0)],
+        )
+
+        self.cmd(
+            "aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name} --kubernetes-version={upgrade_version} "
+            "--max-unavailable 50% --yes",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("orchestratorVersion", upgrade_version),
+            ],
+        )
+
+        self.cmd(
+            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} "
+            "--name={nodepool_name}"
+        )
+        self.cmd(
+            "aks nodepool list --resource-group={resource_group} --cluster-name={name}",
+            checks=[self.check("[?name=='{nodepool_name}'] | length(@)", 0)],
+        )
+
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_machine_add_spot_and_ultra_ssd(self, resource_group, resource_group_location):
