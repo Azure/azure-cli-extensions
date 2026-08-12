@@ -497,3 +497,14 @@ def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=Non
     scope = _get_workspace_resource_id(info)
     role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
     return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+
+
+def list_users(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+    """
+    List the users, groups, and service principals with access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import list_role_assignments
+
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    return list_role_assignments(cmd, assignee=assignee, assignee_object_id=assignee_object_id, role=role, scope=scope)

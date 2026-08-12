@@ -346,6 +346,19 @@ helps['quantum workspace user'] = """
     short-summary: Manage users of an Azure Quantum workspace.
 """
 
+helps['quantum workspace user list'] = """
+    type: command
+    short-summary: List the users, groups, and service principals with access to an Azure Quantum workspace.
+    examples:
+      - name: List all users with access to a workspace.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace
+      - name: List the users assigned a specific role in a workspace.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace \\
+                --role "Quantum Workspace Data Contributor"
+"""
+
 helps['quantum workspace user create'] = """
     type: command
     short-summary: Grant a user, group, or service principal access to an Azure Quantum workspace.

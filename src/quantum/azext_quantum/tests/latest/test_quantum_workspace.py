@@ -7,6 +7,8 @@ import os
 import pytest
 import unittest
 import time
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -15,7 +17,7 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, _autoadd_providers, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _validate_storage_account, _autoadd_providers, list_users, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -312,6 +314,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
         ])
 
+        # list users and verify the new assignment appears
+        self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} -o json', checks=[
+            self.check(f"length([?principalId=='{test_object_id}'])", 1)
+        ])
+
         # remove access using the object id and an explicit role
         self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} --role c1410b24-3e69-4857-8f86-4d0a2e603250 --yes')
 
@@ -323,6 +330,31 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("name", test_workspace_temp),
             self.check("properties.provisioningState", "Deleting")
         ])
+
+    def test_list_users_scopes_to_workspace(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "oid", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments) as list_role_assignments:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role=None, scope=expected_scope)
+        assert result == assignments
+
+    def test_transform_users(self):
+        from ...commands import transform_users
+        rows = transform_users([{
+            "principalId": "oid",
+            "principalName": "user@contoso.com",
+            "principalType": "User",
+            "roleDefinitionName": "Quantum Workspace Data Contributor",
+            "scope": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        }])
+        assert rows[0]["Principal Name"] == "user@contoso.com"
+        assert rows[0]["Principal Type"] == "User"
+        assert rows[0]["Role"] == "Quantum Workspace Data Contributor"
 
     # @pytest.fixture(autouse=True)
     # def _pass_fixtures(self, capsys):
