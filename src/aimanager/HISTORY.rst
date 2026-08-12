@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* Add ``az aimanager model`` commands to list and show AI models from a location's catalog.
+* Add ``az aimanager modelsource`` commands to add, update, list, show, delete, and wait for
+  model sources registered with an AI Manager.
+
 1.2.0
 ++++++
 * Add ``az aimanager namespace modeldeployment`` commands to add, update, list, show, delete,

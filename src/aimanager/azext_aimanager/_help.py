@@ -194,3 +194,78 @@ helps['aimanager namespace modeldeployment wait'] = """
     type: command
     short-summary: Wait for an AI Manager model deployment to reach a desired state.
 """
+
+helps['aimanager model'] = """
+    type: group
+    short-summary: Browse the AI model catalog exposed by Microsoft.ContainerService.
+"""
+
+helps['aimanager model show'] = """
+    type: command
+    short-summary: Show the details of an AI model in a location's catalog.
+    examples:
+        - name: Show an AI model
+          text: az aimanager model show -l eastus2 -n phi-4
+"""
+
+helps['aimanager model list'] = """
+    type: command
+    short-summary: List the AI models available in a location's catalog.
+    examples:
+        - name: List AI models in a location
+          text: az aimanager model list -l eastus2
+"""
+
+helps['aimanager modelsource'] = """
+    type: group
+    short-summary: Manage model sources registered with an AI Manager.
+"""
+
+helps['aimanager modelsource add'] = """
+    type: command
+    short-summary: Add a model source to an AI Manager.
+    examples:
+        - name: Add a public Hugging Face model source
+          text: az aimanager modelsource add -g myrg --aimanager-name my-ai-manager -n hf -s HuggingFace
+        - name: Add a Hugging Face model source with an access token
+          text: az aimanager modelsource add -g myrg --aimanager-name my-ai-manager -n hf -s HuggingFace --credential hf_xxx --description "Gated models"
+"""
+
+helps['aimanager modelsource update'] = """
+    type: command
+    short-summary: Update a model source on an AI Manager.
+    examples:
+        - name: Update the description of a model source
+          text: az aimanager modelsource update -g myrg --aimanager-name my-ai-manager -n hf --description "Team catalog"
+        - name: Rotate the credential of a model source
+          text: az aimanager modelsource update -g myrg --aimanager-name my-ai-manager -n hf --credential hf_yyy
+"""
+
+helps['aimanager modelsource show'] = """
+    type: command
+    short-summary: Show a model source on an AI Manager.
+    examples:
+        - name: Show a model source
+          text: az aimanager modelsource show -g myrg --aimanager-name my-ai-manager -n hf
+"""
+
+helps['aimanager modelsource list'] = """
+    type: command
+    short-summary: List the model sources registered with an AI Manager.
+    examples:
+        - name: List model sources
+          text: az aimanager modelsource list -g myrg --aimanager-name my-ai-manager
+"""
+
+helps['aimanager modelsource delete'] = """
+    type: command
+    short-summary: Delete a model source from an AI Manager.
+    examples:
+        - name: Delete a model source
+          text: az aimanager modelsource delete -g myrg --aimanager-name my-ai-manager -n hf
+"""
+
+helps['aimanager modelsource wait'] = """
+    type: command
+    short-summary: Wait for an AI Manager model source to reach a desired state.
+"""

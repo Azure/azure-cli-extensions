@@ -9,6 +9,8 @@ from azext_aimanager._client_factory import (
     cf_ai_managers,
     cf_ai_manager_namespaces,
     cf_model_deployments,
+    cf_ai_models,
+    cf_model_sources,
 )
 
 
@@ -30,6 +32,18 @@ def load_command_table(self, _):
         operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelDeploymentsOperations.{}",
         operation_group="model_deployments",
         client_factory=cf_model_deployments
+    )
+
+    ai_models_sdk = CliCommandType(
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIModelsOperations.{}",
+        operation_group="ai_models",
+        client_factory=cf_ai_models
+    )
+
+    model_sources_sdk = CliCommandType(
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelSourcesOperations.{}",
+        operation_group="model_sources",
+        client_factory=cf_model_sources
     )
 
     # aimanager command group
@@ -61,3 +75,18 @@ def load_command_table(self, _):
         g.custom_command("list", "list_modeldeployment")
         g.custom_command("delete", "delete_modeldeployment", supports_no_wait=True, confirmation=True)
         g.custom_wait_command("wait", "show_modeldeployment")
+
+    # aimanager model command group
+    with self.command_group("aimanager model", ai_models_sdk, client_factory=cf_ai_models) as g:
+        g.custom_show_command("show", "show_aimanager_model")
+        g.custom_command("list", "list_aimanager_model")
+
+    # aimanager modelsource command group
+    with self.command_group("aimanager modelsource", model_sources_sdk,
+                            client_factory=cf_model_sources) as g:
+        g.custom_command("add", "add_modelsource", supports_no_wait=True)
+        g.custom_command("update", "update_modelsource", supports_no_wait=True)
+        g.custom_show_command("show", "show_modelsource")
+        g.custom_command("list", "list_modelsource")
+        g.custom_command("delete", "delete_modelsource", supports_no_wait=True, confirmation=True)
+        g.custom_wait_command("wait", "show_modelsource")
