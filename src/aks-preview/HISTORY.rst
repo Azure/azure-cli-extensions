@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
 21.0.0b17
 +++++++++
 * `az aks update`: Add parameters `--enable-hosted-system`, `--system-node-subnet-id` and `--node-subnet-id` to support converting an existing Automatic cluster to a Managed System Pool cluster, optionally with BYO VNet.
