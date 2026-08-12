@@ -11,6 +11,10 @@ import os
 import sys
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 # Stub out heavy dependencies before importing the module under test.
 # The _precheckutils module imports kubernetes, azure.cli.core, knack, etc. at module level.
 # In lightweight test environments (no full CLI installed), we inject MagicMock stubs into
@@ -62,16 +66,27 @@ _utils_stub = sys.modules.get("azext_connectedk8s._utils")
 if isinstance(_utils_stub, MagicMock):
     _utils_stub.process_helm_error_detail = lambda x: x
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-
-import azext_connectedk8s._constants as consts  # noqa: E402
+import azext_connectedk8s._constants as consts  # noqa: E402, I001
 import azext_connectedk8s._precheckutils as precheckutils  # noqa: E402
+
 
 for mod, original_module in _ORIGINAL_MODULES.items():
     if original_module is None:
         sys.modules.pop(mod, None)
     else:
         sys.modules[mod] = original_module
+
+
+@pytest.fixture(autouse=True)
+def _route_wrapped_events_to_test_telemetry(monkeypatch):
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "add_connectedk8s_telemetry_event",
+        lambda _cmd, properties: precheckutils.telemetry.add_extension_event(
+            "connectedk8s", properties
+        ),
+    )
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -84,6 +99,29 @@ def _reset_globals():
     precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Not_Started
     precheckutils.prediagnostic_entra_check = consts.Diagnostic_Check_Starting
     precheckutils.prediagnostic_crd_check = consts.Diagnostic_Check_Starting
+
+
+def test_precheck_telemetry_helpers_forward_command_context(monkeypatch):
+    cmd = MagicMock()
+    add_event = MagicMock()
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "add_connectedk8s_telemetry_event",
+        add_event,
+    )
+
+    precheckutils.send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
+    precheckutils.send_prediagnostic_check_failure_telemetry(
+        consts.Diagnostic_Check_Failed,
+        consts.Diagnostic_Check_Passed,
+        cmd=cmd,
+    )
+    precheckutils.send_post_diagnostic_precheck_failure_telemetry(
+        "LinuxNodeExists", "No Linux nodes found", cmd=cmd
+    )
+
+    assert add_event.call_count == 3
+    assert all(call.args[0] is cmd for call in add_event.call_args_list)
 
 
 # ---------------------------------------------------------------------------

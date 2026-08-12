@@ -12,7 +12,7 @@ import json
 import os
 import shutil
 from subprocess import PIPE, Popen
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import yaml
 from azure.cli.core import telemetry
@@ -1067,6 +1067,7 @@ def check_diagnoser_container(
     probable_pod_security_policy_presence: str,
     kube_config: str | None,
     kube_context: str | None,
+    cmd: Any | None = None,
 ) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Check diagnoser container")
     try:
@@ -1126,6 +1127,7 @@ def check_diagnoser_container(
                     storage_space_available,
                     diagnoser_output,
                     "troubleshoot",
+                    cmd,
                 )
             )
         else:

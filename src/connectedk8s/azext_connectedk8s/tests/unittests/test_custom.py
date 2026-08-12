@@ -11,11 +11,32 @@ import pytest
 from kubernetes.client.models import V1Node, V1NodeList, V1NodeSpec, V1ObjectMeta
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+from azext_connectedk8s import custom
 from azext_connectedk8s.custom import (
+    _telemetry_catch_all,
     expand_proxy_skip_range_keywords,
     get_kubernetes_distro,
     get_kubernetes_infra,
 )
+
+
+def test_telemetry_catch_all_uses_keyword_cmd(monkeypatch):
+    class ReportedError(Exception):
+        pass
+
+    cmd = MagicMock()
+    cmd.cli_ctx = MagicMock()
+    report_error = MagicMock(return_value=ReportedError("reported"))
+    monkeypatch.setattr(custom.utils, "report_connectedk8s_error", report_error)
+
+    @_telemetry_catch_all
+    def command(*, cmd):
+        raise RuntimeError("failed")
+
+    with pytest.raises(ReportedError):
+        command(cmd=cmd)
+
+    assert report_error.call_args.args[0] is cmd
 
 
 def create_node(
