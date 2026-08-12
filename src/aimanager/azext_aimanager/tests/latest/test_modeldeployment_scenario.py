@@ -18,11 +18,15 @@ class ModelDeploymentScenarioTest(ScenarioTest):
         model_resource_id = (
             '/subscriptions/00000000-0000-0000-0000-000000000000/providers/'
             'Microsoft.ContainerService/locations/eastus2/aiModels/phi-4')
+        model_source_resource_id = (
+            '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/'
+            'providers/Microsoft.ContainerService/aiManagers/manager/modelSources/source')
         deployment = models.ModelDeployment({
             'name': 'deployment',
             'eTag': 'etag-value',
             'properties': {
                 'modelResourceId': model_resource_id,
+                'modelSourceResourceId': model_source_resource_id,
                 'performanceMode': 'Balanced',
                 'vmSize': 'Standard_NC24ads_A100_v4',
                 'scale': {'manual': {'replicas': 0}},
@@ -61,9 +65,10 @@ class ModelDeploymentScenarioTest(ScenarioTest):
             self.cmd(
                 command_prefix.format('add') +
                 ' -n deployment --model-resource-id {} '
+                '--source-id {} '
                 '--vm-size Standard_NC24ads_A100_v4 --replicas 0 '
                 '--performance-mode Balanced --overrides engine=vllm --no-wait'.format(
-                    model_resource_id),
+                    model_resource_id, model_source_resource_id),
                 checks=[self.is_empty()])
 
             self.cmd(
@@ -76,6 +81,7 @@ class ModelDeploymentScenarioTest(ScenarioTest):
                 checks=[
                     self.check('name', 'deployment'),
                     self.check('properties.modelResourceId', model_resource_id),
+                    self.check('properties.modelSourceResourceId', model_source_resource_id),
                     self.check('properties.scale.manual.replicas', 0),
                 ])
 

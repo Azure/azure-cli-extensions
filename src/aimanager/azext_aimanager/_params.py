@@ -97,7 +97,7 @@ def load_arguments(self, _):
     with self.argument_context('aimanager namespace modeldeployment add') as c:
         c.argument('model_resource_id', options_list=['--model-resource-id'], required=True,
                    help='The full ARM resource ID of the AI model to deploy.')
-        c.argument('model_source_resource_id', options_list=['--model-source-resource-id'],
+        c.argument('model_source_resource_id', options_list=['--model-source-resource-id', '--source-id'],
                    help='The full ARM resource ID of the model source used to pull artifacts.')
         c.argument('vm_size', options_list=['--vm-size', '-s'], required=True,
                    help='The Azure VM SKU used to host the deployment.')
