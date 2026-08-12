@@ -108,6 +108,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWS2025,
@@ -284,6 +285,34 @@ from .action import (
 )
 
 from knack.arguments import CLIArgumentType
+from knack.deprecation import Deprecated
+
+
+class _SizedDeprecated(Deprecated):
+    """A Deprecated option that reports a length.
+
+    knack computes the preview target with sorted(options_list, key=len). A plain Deprecated
+    has no __len__, so combining is_preview=True with a deprecated option name raises
+    TypeError. Reporting the length of the option name keeps both status tags usable and
+    makes the longest (current) option name the preview target.
+    """
+
+    def __len__(self):
+        return len(self.target)
+
+
+def _deprecate_option(c, target, redirect):
+    """Deprecate a single option name and keep it compatible with is_preview.
+
+    Builds the Deprecated object through c.deprecate() so that the message, the object type
+    and the applicability checks stay identical to every other deprecated option, then only
+    adds the __len__ behaviour that knack needs for the preview tag.
+    """
+    deprecated = c.deprecate(target=target, redirect=redirect)
+    if deprecated is not None:
+        deprecated.__class__ = _SizedDeprecated
+    return deprecated
+
 
 # candidates for enumeration
 # consts for AgentPool
@@ -309,6 +338,7 @@ node_os_skus_create = [
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
@@ -326,6 +356,7 @@ node_os_skus_update = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
@@ -1161,9 +1192,19 @@ def load_arguments(self, _):
                    validator=validate_azure_monitor_and_opentelemetry_for_create
                    )
         c.argument("opentelemetry_metrics_port",
+                   options_list=[
+                       "--opentelemetry-metrics-port-http",
+                       _deprecate_option(c, "--opentelemetry-metrics-port", "--opentelemetry-metrics-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry metrics collection"
+                   help="HTTP/protobuf port for OpenTelemetry metrics collection"
+                   )
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
@@ -1171,20 +1212,37 @@ def load_arguments(self, _):
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
-                   options_list=["--enable-opentelemetry-logs"],
+                   options_list=[
+                       "--enable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--enable-opentelemetry-logs", "--enable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Enable OpenTelemetry logs collection"
+                   help="Enable OpenTelemetry logs and traces collection"
                    )
         c.argument("opentelemetry_logs_port",
+                   options_list=[
+                       "--opentelemetry-logs-traces-port-http",
+                       _deprecate_option(c, "--opentelemetry-logs-port", "--opentelemetry-logs-traces-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry logs collection"
+                   help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
+                   )
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
                    )
         c.argument("disable_opentelemetry_logs",
+                   options_list=[
+                       "--disable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--disable-opentelemetry-logs", "--disable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Disable OpenTelemetry logs collection"
+                   help="Disable OpenTelemetry logs and traces collection"
                    )
         c.argument("enable_cost_analysis",
                    action="store_true"
@@ -1765,9 +1823,19 @@ def load_arguments(self, _):
                    validator=validate_azure_monitor_and_opentelemetry_for_update
                    )
         c.argument("opentelemetry_metrics_port",
+                   options_list=[
+                       "--opentelemetry-metrics-port-http",
+                       _deprecate_option(c, "--opentelemetry-metrics-port", "--opentelemetry-metrics-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry metrics collection"
+                   help="HTTP/protobuf port for OpenTelemetry metrics collection"
+                   )
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
@@ -1775,19 +1843,37 @@ def load_arguments(self, _):
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
+                   options_list=[
+                       "--enable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--enable-opentelemetry-logs", "--enable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Enable OpenTelemetry logs collection"
+                   help="Enable OpenTelemetry logs and traces collection"
                    )
         c.argument("opentelemetry_logs_port",
+                   options_list=[
+                       "--opentelemetry-logs-traces-port-http",
+                       _deprecate_option(c, "--opentelemetry-logs-port", "--opentelemetry-logs-traces-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry logs collection"
+                   help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
+                   )
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
                    )
         c.argument("disable_opentelemetry_logs",
+                   options_list=[
+                       "--disable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--disable-opentelemetry-logs", "--disable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Disable OpenTelemetry logs collection"
+                   help="Disable OpenTelemetry logs and traces collection"
                    )
         c.argument(
             "enable_vpa",
@@ -2794,6 +2880,15 @@ def load_arguments(self, _):
                 validator=validate_start_time,
                 help="The start time of the maintenance window. e.g. 09:30.",
             )
+            c.argument(
+                "maintenance_window_id",
+                help=(
+                    "Resource ID of a shared MaintenanceWindow resource to link this maintenance "
+                    "configuration to. When set, the schedule lives in the referenced MaintenanceWindow "
+                    "and inline schedule arguments cannot be used. Cannot be combined with --config-file "
+                    "(set the maintenanceWindowId property in the JSON instead). Omit for no shared resource."
+                ),
+            )
 
     for scope in [
         "aks maintenanceconfiguration show",
@@ -3666,6 +3761,27 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
+
+    # aks identity-binding commands
+    # --allowed-subjects-from-file is optional on create (omitting it falls back
+    # to ClusterRole/ClusterRoleBinding authorization), but required on update
+    # since it is the only mutable field today -- requiring it avoids a no-op
+    # full-PUT that would needlessly re-provision the binding.
+    for scope, is_required in [('aks identity-binding create', False),
+                               ('aks identity-binding update', True)]:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "allowed_subjects_from_file",
+                options_list=["--allowed-subjects-from-file", "-f"],
+                type=file_type,
+                completer=FilesCompleter(),
+                required=is_required,
+                help="Path to a JSON file containing an array of subjects authorized to use this "
+                     "identity binding for token exchange. Each entry has a required "
+                     "'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes "
+                     "label selector with 'matchLabels' (an array of \"key=value\" strings) and/or "
+                     "'matchExpressions'. Maximum 100 entries.",
+            )
 
     # aks list-vm-skus command
     with self.argument_context("aks list-vm-skus") as c:

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster firewall-rule update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a new firewall rule or updates an existing firewall rule on a mongo cluster.

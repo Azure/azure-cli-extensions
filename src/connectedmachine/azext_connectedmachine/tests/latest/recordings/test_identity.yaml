@@ -1,0 +1,290 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"166ca419-3ad5-47df-ba5a-feae80eb42a1","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T16:38:10.0313741Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"63ba38c8-5de0-4365-880b-e85cda9a301c","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"2001:4898:f602:111:aebd:bbc5:ee2f:8cab","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111::/64"}},{"address":"2001:4898:f602:111:5c32:bd98:3996:1eb1","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111:5c32:bd98:3996:1eb1/128"}},{"address":"10.19.4.186","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.19.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"resources":[],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T16:37:32.7902742Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T16:37:32.7902742Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4188'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 16:40:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 194615BBD619444FA5328662D5927CB0 Ref B: BN1AA2051012009 Ref C: 2026-07-16T16:40:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus", "properties":
+      {"agentUpgrade": {"enableAutomaticUpgrade": true}, "clientPublicKey": "MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB",
+      "cloudMetadata": {}, "licenseProfile": {"esuProfile": {"licenseAssignmentState":
+      "NotAssigned"}}, "mssqlDiscovered": "false", "osProfile": {"windowsConfiguration":
+      {"patchSettings": {"assessmentMode": "AutomaticByPlatform"}}}, "osType": "windows",
+      "serviceStatuses": {"extensionService": {"startupType": "automatic", "status":
+      "running"}, "guestConfigurationService": {"startupType": "automatic", "status":
+      "running"}}, "vmId": "63ba38c8-5de0-4365-880b-e85cda9a301c"}, "tags": {"azsecpack":
+      "nonprod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1013'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"166ca419-3ad5-47df-ba5a-feae80eb42a1","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Updating","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T16:38:10.0313741Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"63ba38c8-5de0-4365-880b-e85cda9a301c","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"2001:4898:f602:111:aebd:bbc5:ee2f:8cab","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111::/64"}},{"address":"2001:4898:f602:111:5c32:bd98:3996:1eb1","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111:5c32:bd98:3996:1eb1/128"}},{"address":"10.19.4.186","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.19.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T16:37:32.7902742Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T16:40:47.9490511Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4172'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 16:40:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=0cd46ea8-7371-4f65-9bb5-5de55bea6d52/westus2/9d3681be-07be-42eb-9eb1-16aca9899c60
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8503A72D4C514D63A06F7EC3A923CF6A Ref B: BN1AA2051015029 Ref C: 2026-07-16T16:40:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"166ca419-3ad5-47df-ba5a-feae80eb42a1","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T16:38:10.0313741Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"63ba38c8-5de0-4365-880b-e85cda9a301c","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"2001:4898:f602:111:aebd:bbc5:ee2f:8cab","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111::/64"}},{"address":"2001:4898:f602:111:5c32:bd98:3996:1eb1","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111:5c32:bd98:3996:1eb1/128"}},{"address":"10.19.4.186","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.19.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"resources":[],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T16:37:32.7902742Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T16:40:47.9490511Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4188'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 16:40:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4EDBB66DAEDF43E4BA831B4807FC4C06 Ref B: BN1AA2051014037 Ref C: 2026-07-16T16:40:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"166ca419-3ad5-47df-ba5a-feae80eb42a1","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T16:38:10.0313741Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"63ba38c8-5de0-4365-880b-e85cda9a301c","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"2001:4898:f602:111:aebd:bbc5:ee2f:8cab","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111::/64"}},{"address":"2001:4898:f602:111:5c32:bd98:3996:1eb1","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111:5c32:bd98:3996:1eb1/128"}},{"address":"10.19.4.186","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.19.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"resources":[],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T16:37:32.7902742Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T16:40:47.9490511Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4188'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 16:40:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A63150A09F1241128F49DD0C3220A1A0 Ref B: BN1AA2051014027 Ref C: 2026-07-16T16:40:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "eastus", "properties": {"agentUpgrade":
+      {"enableAutomaticUpgrade": true}, "clientPublicKey": "MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB",
+      "cloudMetadata": {}, "licenseProfile": {"esuProfile": {"licenseAssignmentState":
+      "NotAssigned"}}, "mssqlDiscovered": "false", "osProfile": {"windowsConfiguration":
+      {"patchSettings": {"assessmentMode": "AutomaticByPlatform"}}}, "osType": "windows",
+      "serviceStatuses": {"extensionService": {"startupType": "automatic", "status":
+      "running"}, "guestConfigurationService": {"startupType": "automatic", "status":
+      "running"}}, "vmId": "63ba38c8-5de0-4365-880b-e85cda9a301c"}, "tags": {"azsecpack":
+      "nonprod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1003'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --machine-name --resource-group --system-assigned
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H?api-version=2026-06-16-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yao_test/providers/Microsoft.HybridCompute/machines/LAPTOP-4GNU2K3H","name":"LAPTOP-4GNU2K3H","location":"eastus","tags":{"azsecpack":"nonprod"},"identity":{"type":"None","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Updating","agentVersion":"1.66.03466.3076","status":"Connected","lastStatusChange":"2026-07-16T16:38:10.0313741Z","errorDetails":[],"displayName":"LAPTOP-4GNU2K3H","machineFqdn":"LAPTOP-4GNU2K3H","osName":"windows","osVersion":"10.0.26100.8875","osType":"windows","osProfile":{"computerName":"LAPTOP-4GNU2K3H","windowsConfiguration":{"patchSettings":{"assessmentMode":"AutomaticByPlatform"}}},"vmId":"63ba38c8-5de0-4365-880b-e85cda9a301c","vmUuid":"8DF51A49-27DE-4C47-02AD-7AF71029479C","clientPublicKey":"MIIBCgKCAQEAzDcr5r4wqV+TAX5ukryDxn7t2WGXSKttgYraa4l7poC+5k3zD1APrwizeh6MaLiOkeeJKUEJtIqxEg8HhTZs+FszEdrvJYElx0GRTxIeJ/eejJMLb+ZX3recOQo6IqKQCpVYoE1HFlPeNZPW52MCgscz4T5ghAnu8gBoTrCAC9oSm4DP6KvlyWWIjdF6iQE/DkrhN/QvXTUlzSSxZiqMKciWzVjlCANLx27qsa1X/G9tiH6tEb5Ja/tZmEAADhttpVfrRY0HpDHMSlC/2PEkpu2PqdfeuiPH/EzTK/MYNgvq1mLRydxwOeZXM2HnE+QOO54aEvMDFUNVVK5x9wrQvwIDAQAB","osSku":"Windows
+        11 Enterprise","osEdition":"enterprise","osInstallDate":"2025-11-08T09:04:06+00:00","domainName":"WORKGROUP","adFqdn":"LAPTOP-4GNU2K3H","dnsFqdn":"LAPTOP-4GNU2K3H","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","biosSerialNumber":"BK37PTD25443HJ","cloudprovider":"N/A","coreCount":"12","hypervisorType":"Unknown","logicalCoreCount":"12","manufacturer":"Microsoft
+        Corporation","model":"Microsoft Surface Laptop, 7th Edition","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","productType":"4","serialNumber":"BK37PTD25443HJ","serverType":"Server;Workstation","smbiosAssetTag":"25498458","totalPhysicalMemoryInBytes":"68719476736","totalPhysicalMemoryInGigabytes":"64","tpm_Present":"true","tpm_Ready":"true","tpm_SpecVersion":"2.0,
+        0, 1.59","vmuuidEsu":"8DF51A49-27DE-4C47-02AD-7AF71029479C","vmuuidEsu2012":"8DF51A49-27DE-4C47-02AD-7AF71029479C"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"2001:4898:f602:111:aebd:bbc5:ee2f:8cab","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111::/64"}},{"address":"2001:4898:f602:111:5c32:bd98:3996:1eb1","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:4898:f602:111:5c32:bd98:3996:1eb1/128"}},{"address":"10.19.4.186","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.19.0.0/16"}}],"macAddress":"68:f7:d8:cb:e5:48","id":"18","name":"Wi-Fi"}]},"licenseProfile":{"licenseStatus":"Licensed","licenseChannel":"Retail","esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"\\\\.\\PHYSICALDRIVE0","diskType":"Fixed
+        hard disk media","generatedId":"\\\\.\\PHYSICALDRIVE0","id":"{530e5365-e29d-4dae-b50a-abd31023a47b}","name":"MZ9L41T0HBLB-00BMV-SAMSUNG","maxSizeInBytes":1024203640320}]},"firmwareProfile":{"serialNumber":"BK37PTD25443HJ","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":68719476736,"numberOfCpuSockets":1,"processors":[{"name":"Snapdragon(R)
+        X 12-core X1E80100 @ 3.40 GHz","numberOfCores":12}]}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-07-16T16:37:32.7902742Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-07-16T16:40:52.9158426Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4109'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 16 Jul 2026 16:40:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=0cd46ea8-7371-4f65-9bb5-5de55bea6d52/westus2/29777eb9-aec3-420f-b9d6-edda88474b0b
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: BF96455891A64E60B582AF7CFF06169C Ref B: BN1AA2051013023 Ref C: 2026-07-16T16:40:52Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -3,13 +3,37 @@
 Release History
 ===============
 
+1.0.0b2
++++++++
+* Rename ``az documentdb mongocluster user`` to ``entra-user``; the group only supports
+  Microsoft Entra ID principals, so the name makes that explicit.
+* The user identifier is now ``--object-id`` (the Entra object/client ID GUID), keeping the
+  ``-n``/``--name`` aliases.
+* Rename ``entra-user create``/``delete`` to ``assign``/``remove``: the Entra principal already
+  exists, so the command grants or revokes its data-plane access, matching
+  ``mongocluster identity assign/remove``.
+* Add ``--password``/``-p`` aliases to the administrator password across create, update,
+  reset-password, and restore.
+* Mark all commands and groups as Preview so the reference docs reflect the preview status.
+* Rebrand the extension name to Azure DocumentDB.
+* ``mongocluster update`` now performs a partial update (HTTP PATCH): only the properties you
+  specify are modified and all other properties are left unchanged. Generic update arguments
+  (``--set``/``--add``/``--remove``) are supported.
+* Add ``mongocluster replica create --source-cluster`` and ``mongocluster restore
+  --source-cluster`` (name or resource ID); ``mongocluster replica promote`` now requires
+  ``--source-cluster`` and validates it matches the replica's source.
+* Add ``mongocluster identity list`` to list the cluster's user-assigned managed identities.
+* Add confirmation prompts to ``mongocluster identity remove`` and ``mongocluster replica
+  promote``.
+* ``--preview-features`` now accepts free-form feature names instead of a fixed enum.
+
 1.0.0b1
 +++++++
-* Initial release of the DocumentDB (Azure Cosmos DB for MongoDB vCore) extension.
+* Initial release of the Azure DocumentDB extension.
 * Add ``az documentdb mongocluster`` commands to create, update, show, list, and delete
   mongo clusters, list connection strings, and check name availability.
 * Add ``az documentdb mongocluster firewall-rule`` commands to manage IP firewall rules.
-* Add ``az documentdb mongocluster user`` commands to manage Microsoft Entra-backed
+* Add ``az documentdb mongocluster entra-user`` commands to manage Microsoft Entra ID
   database users.
 * Add ``az documentdb mongocluster identity`` commands to manage the cluster's
   user-assigned managed identity.

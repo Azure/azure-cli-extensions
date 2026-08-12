@@ -287,7 +287,7 @@ helps['aks create'] = f"""
           short-summary: The ID of a PPG.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -630,21 +630,27 @@ helps['aks create'] = f"""
         - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
-        - name: --opentelemetry-metrics-port
+        - name: --opentelemetry-metrics-port-http
           type: int
-          short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
+          short-summary: HTTP/protobuf port for OpenTelemetry metrics collection (default port will be used if not specified)
+        - name: --opentelemetry-metrics-port-grpc
+          type: int
+          short-summary: gRPC port for OpenTelemetry metrics collection (default port will be used if not specified)
         - name: --disable-opentelemetry-metrics
           type: bool
           short-summary: Disable OpenTelemetry metrics collection
-        - name: --enable-opentelemetry-logs
+        - name: --enable-opentelemetry-logs-traces
           type: bool
-          short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
-        - name: --opentelemetry-logs-port
+          short-summary: Enable OpenTelemetry logs and traces collection. Requires Azure Monitor logs to be enabled.
+        - name: --opentelemetry-logs-traces-port-http
           type: int
-          short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-logs
+          short-summary: HTTP/protobuf port for OpenTelemetry logs and traces collection (default port will be used if not specified)
+        - name: --opentelemetry-logs-traces-port-grpc
+          type: int
+          short-summary: gRPC port for OpenTelemetry logs and traces collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-logs-traces
           type: bool
-          short-summary: Disable OpenTelemetry logs collection
+          short-summary: Disable OpenTelemetry logs and traces collection
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
@@ -839,19 +845,21 @@ helps['aks create'] = f"""
         - name: Create a kubernetes cluster with Azure Service Mesh enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
         - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azuremonitormetrics
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-metrics
         - name: Create a kubernetes cluster with Azure Monitor App Monitoring enabled
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring
         - name: Create a kubernetes cluster with OpenTelemetry metrics collection enabled
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --enable-azuremonitormetrics
-        - name: Create a kubernetes cluster with OpenTelemetry logs collection enabled
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --enable-addons monitoring
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --enable-azure-monitor-metrics
+        - name: Create a kubernetes cluster with OpenTelemetry logs and traces collection enabled
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --enable-addons monitoring
         - name: Create a kubernetes cluster with Azure Monitor logs enabled (shorthand)
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
         - name: Create a kubernetes cluster with OpenTelemetry metrics on custom port
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port 8888 --enable-azuremonitormetrics
-        - name: Create a kubernetes cluster with OpenTelemetry logs on custom port
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --opentelemetry-logs-port 4317 --enable-azure-monitor-logs
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --enable-azure-monitor-metrics
+        - name: Create a kubernetes cluster with OpenTelemetry logs and traces on custom ports
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http 8080 --opentelemetry-logs-traces-port-grpc 8082 --enable-azure-monitor-logs
+        - name: Create a kubernetes cluster with OpenTelemetry metrics on custom HTTP and gRPC ports
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --opentelemetry-metrics-port-grpc 8889 --enable-azure-monitor-metrics
         - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
         - name: Create a kubernetes cluster with a VirtualMachines nodepool
@@ -1398,21 +1406,27 @@ helps['aks update'] = """
         - name: --enable-opentelemetry-metrics
           type: bool
           short-summary: Enable OpenTelemetry metrics collection. Requires Azure Monitor metrics to be enabled.
-        - name: --opentelemetry-metrics-port
+        - name: --opentelemetry-metrics-port-http
           type: int
-          short-summary: Port for OpenTelemetry metrics collection (default port will be used if not specified)
+          short-summary: HTTP/protobuf port for OpenTelemetry metrics collection (default port will be used if not specified)
+        - name: --opentelemetry-metrics-port-grpc
+          type: int
+          short-summary: gRPC port for OpenTelemetry metrics collection (default port will be used if not specified)
         - name: --disable-opentelemetry-metrics
           type: bool
           short-summary: Disable OpenTelemetry metrics collection
-        - name: --enable-opentelemetry-logs
+        - name: --enable-opentelemetry-logs-traces
           type: bool
-          short-summary: Enable OpenTelemetry logs collection. Requires Azure Monitor logs to be enabled.
-        - name: --opentelemetry-logs-port
+          short-summary: Enable OpenTelemetry logs and traces collection. Requires Azure Monitor logs to be enabled.
+        - name: --opentelemetry-logs-traces-port-http
           type: int
-          short-summary: Port for OpenTelemetry logs collection (default port will be used if not specified)
-        - name: --disable-opentelemetry-logs
+          short-summary: HTTP/protobuf port for OpenTelemetry logs and traces collection (default port will be used if not specified)
+        - name: --opentelemetry-logs-traces-port-grpc
+          type: int
+          short-summary: gRPC port for OpenTelemetry logs and traces collection (default port will be used if not specified)
+        - name: --disable-opentelemetry-logs-traces
           type: bool
-          short-summary: Disable OpenTelemetry logs collection
+          short-summary: Disable OpenTelemetry logs and traces collection
         - name: --enable-private-cluster
           type: bool
           short-summary: Enable private cluster for apiserver vnet integration cluster.
@@ -1654,16 +1668,18 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-gateway-api
       - name: Enable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics
-      - name: Enable OpenTelemetry logs collection on an existing cluster
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs
+      - name: Enable OpenTelemetry logs and traces collection on an existing cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces
       - name: Configure OpenTelemetry metrics with custom port
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port 8888
-      - name: Configure OpenTelemetry logs with custom port
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --opentelemetry-logs-port 4317
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888
+      - name: Configure OpenTelemetry logs and traces with custom ports
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --opentelemetry-logs-traces-port-http 8080 --opentelemetry-logs-traces-port-grpc 8082
+      - name: Configure OpenTelemetry metrics with custom HTTP and gRPC ports
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --opentelemetry-metrics-port-grpc 8889
       - name: Disable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-metrics
-      - name: Disable OpenTelemetry logs collection on an existing cluster
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs
+      - name: Disable OpenTelemetry logs and traces collection on an existing cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs-traces
 """
 
 helps['aks kollect'] = """
@@ -1746,6 +1762,9 @@ helps['aks maintenanceconfiguration add'] = """
     type: command
     short-summary: Add a maintenance configuration in managed Kubernetes cluster.
     parameters:
+        - name: --maintenance-window-id
+          type: string
+          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Cannot be combined with --config-file (set the maintenanceWindowId property in the JSON instead). Omit for no shared resource.
         - name: --weekday
           type: string
           short-summary: A day in week on which maintenance is allowed. E.g. Monday. Applicable to default maintenance configuration only.
@@ -1846,6 +1865,10 @@ helps['aks maintenanceconfiguration add'] = """
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months, and this configuration will be effective from 2023-01-16.
+        - name: Link a maintenance configuration to a shared MaintenanceWindow resource.
+          text: |
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --maintenance-window-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/maintenanceWindows/myWindow
+              The schedule lives in the referenced MaintenanceWindow resource and is shared across configurations. Inline schedule arguments cannot be combined with --maintenance-window-id.
         - name: Add aksManagedAutoUpgradeSchedule maintenance configuration with json file.
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --config-file ./test.json
@@ -1880,6 +1903,9 @@ helps['aks maintenanceconfiguration update'] = """
     type: command
     short-summary: Update a maintenance configuration of a managed Kubernetes cluster.
     parameters:
+        - name: --maintenance-window-id
+          type: string
+          short-summary: Resource ID of a shared MaintenanceWindow resource to link this maintenance configuration to. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used. Cannot be combined with --config-file (set the maintenanceWindowId property in the JSON instead). Omit for no shared resource.
         - name: --weekday
           type: string
           short-summary: A day in week on which maintenance is allowed. E.g. Monday. Applicable to default maintenance configuration only.
@@ -1980,6 +2006,10 @@ helps['aks maintenanceconfiguration update'] = """
           text: |
             az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months. This configuration will be effective from 2023-01-16.
+        - name: Link a maintenance configuration to a shared MaintenanceWindow resource.
+          text: |
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --maintenance-window-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ContainerService/maintenanceWindows/myWindow
+              The schedule lives in the referenced MaintenanceWindow resource and is shared across configurations. Inline schedule arguments cannot be combined with --maintenance-window-id.
         - name: Update aksManagedAutoUpgradeSchedule maintenance configuration with json file.
           text: |
             az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --config-file ./test.json
@@ -2399,7 +2429,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -4807,10 +4837,53 @@ helps['aks identity-binding create'] = """
           short-summary: Name of the managed Kubernetes cluster.
         - name: --name -n
           type: string
-          short-summary: Name of the identity binding to show.
+          short-summary: Name of the identity binding to create.
         - name: --managed-identity-resource-id
           type: string
           short-summary: The resource ID of the managed identity to use.
+        - name: --allowed-subjects-from-file -f
+          type: string
+          short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
+          long-summary: |
+              The file must contain a JSON array (max 100 entries). Each entry has a required
+              'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes label
+              selector supporting 'matchLabels' (an array of "key=value" strings) and/or
+              'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
+              specific namespaces by name. When omitted, authorization falls back to
+              ClusterRole/ClusterRoleBinding evaluation.
+    examples:
+        - name: Create an identity binding with allowed subjects targeting specific namespaces by name.
+          text: |-
+              az aks identity-binding create --resource-group myRG --cluster-name myCluster \\
+                --name my-identity-binding \\
+                --managed-identity-resource-id /subscriptions/.../userAssignedIdentities/myMI \\
+                --allowed-subjects-from-file allowed-subjects.json
+"""
+helps['aks identity-binding update'] = """
+    type: command
+    short-summary: Update an existing identity binding in a managed Kubernetes cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed Kubernetes cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the identity binding to update.
+        - name: --allowed-subjects-from-file -f
+          type: string
+          short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
+          long-summary: |
+              The file must contain a JSON array (max 100 entries). Each entry has a required
+              'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes label
+              selector supporting 'matchLabels' (an array of "key=value" strings) and/or
+              'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
+              specific namespaces by name. Providing this replaces the existing allowed subjects list.
+    examples:
+        - name: Update the allowed subjects on an existing identity binding.
+          text: |-
+              az aks identity-binding update --resource-group myRG --cluster-name myCluster \\
+                --name my-identity-binding \\
+                --allowed-subjects-from-file updated-subjects.json
 """
 helps['aks identity-binding delete'] = """
     type: command
@@ -4821,7 +4894,7 @@ helps['aks identity-binding delete'] = """
           short-summary: Name of the managed Kubernetes cluster.
         - name: --name -n
           type: string
-          short-summary: Name of the identity binding to show.
+          short-summary: Name of the identity binding to delete.
 """
 
 helps['aks jwtauthenticator'] = """
