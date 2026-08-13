@@ -141,6 +141,25 @@ helps['aimanager namespace get-credentials'] = """
           text: az aimanager namespace get-credentials -m my-ai-manager -g myrg --name team-alpha -f -
 """
 
+helps['aimanager namespace list-accesskeys'] = """
+    type: command
+    short-summary: List the inference gateway endpoint and API keys for an AI Manager namespace.
+    examples:
+        - name: List namespace access keys
+          text: az aimanager namespace list-accesskeys -m my-ai-manager -g myrg --name team-alpha
+"""
+
+helps['aimanager namespace rotate-accesskeys'] = """
+    type: command
+    short-summary: Rotate the API keys for an AI Manager namespace.
+    long-summary: |-
+        Generates a new primary key and moves the previous primary key to the secondary key so
+        clients can roll over without downtime.
+    examples:
+        - name: Rotate namespace access keys
+          text: az aimanager namespace rotate-accesskeys -m my-ai-manager -g myrg --name team-alpha
+"""
+
 helps['aimanager namespace modeldeployment'] = """
     type: group
     short-summary: Manage model deployments within an AI Manager namespace.

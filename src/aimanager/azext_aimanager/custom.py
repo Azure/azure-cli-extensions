@@ -299,6 +299,20 @@ def aimanager_namespace_get_credentials(cmd,
         resource_group_name, ai_manager_name, namespace_name, headers=headers)
     _write_kubeconfig(credential_results, path, overwrite_existing, context_name)
 
+
+def list_aimanager_namespace_access_keys(cmd, client, resource_group_name, ai_manager_name,
+                                         namespace_name, aks_custom_headers=None):  # pylint: disable=unused-argument
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_access_keys(
+        resource_group_name, ai_manager_name, namespace_name, headers=headers)
+
+
+def rotate_aimanager_namespace_access_keys(cmd, client, resource_group_name, ai_manager_name,
+                                           namespace_name, aks_custom_headers=None):  # pylint: disable=unused-argument
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.rotate_keys(
+        resource_group_name, ai_manager_name, namespace_name, headers=headers)
+
 # endregion
 
 

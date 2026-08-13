@@ -80,6 +80,12 @@ def load_arguments(self, _):
         c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                    help='Comma-separated key=value pairs to specify custom headers.')
 
+    for scope in ['aimanager namespace list-accesskeys',
+                  'aimanager namespace rotate-accesskeys']:
+        with self.argument_context(scope) as c:
+            c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
+                       help='Comma-separated key=value pairs to specify custom headers.')
+
     with self.argument_context('aimanager namespace modeldeployment') as c:
         c.argument('ai_manager_name', options_list=['--aimanager-name'],
                    validator=validate_ai_manager_name,
