@@ -37,7 +37,6 @@ class AmgScenarioTest(ScenarioTest):
             ApiKeyServiceAccountTokenReplacer()
         ])
 
-
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
 
