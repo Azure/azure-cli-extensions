@@ -69,7 +69,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         info.resource_group = "rg"
         info.name = "ws"
 
-        mock_workspace.return_value.get_container_uri.return_value = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
 
         blob1 = unittest.mock.MagicMock()
         blob1.name = "rawOutputData"
@@ -88,7 +88,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         result = list_files(cmd, job_id, "rg", "ws")
 
-        mock_workspace.return_value.get_container_uri.assert_called_once_with(job_id=job_id)
+        mock_cf_jobs.return_value.get.assert_called_once_with("sub", "rg", "ws", job_id)
         mock_container_client.from_container_url.assert_called_once_with("https://acct.blob.core.windows.net/job-id?sas")
         self.assertEqual(result, [
             {"name": "rawOutputData", "size": 42, "lastModified": "2026-01-15T12:00:00"},
@@ -106,7 +106,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         info.resource_group = "rg"
         info.name = "ws"
 
-        mock_workspace.return_value.get_container_uri.return_value = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
         mock_container_client.from_container_url.return_value.list_blobs.side_effect = AzureResourceNotFoundError("not found")
 
         cmd = unittest.mock.MagicMock()
@@ -126,7 +126,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         info.resource_group = "rg"
         info.name = "ws"
 
-        mock_workspace.return_value.get_container_uri.return_value = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
         blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
         blob_client.download_blob.side_effect = AzureResourceNotFoundError("not found")
 
@@ -149,7 +149,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         info.resource_group = "rg"
         info.name = "ws"
 
-        mock_workspace.return_value.get_container_uri.return_value = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
 
         blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
         file_content = b"hello world"
@@ -171,7 +171,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             with open(expected_path, "rb") as file_handle:
                 self.assertEqual(file_handle.read(), file_content)
 
-            mock_workspace.return_value.get_container_uri.assert_called_once_with(job_id=job_id)
+            mock_cf_jobs.return_value.get.assert_called_once_with("sub", "rg", "ws", job_id)
             mock_container_client.from_container_url.return_value.get_blob_client.assert_called_once_with("rawOutputData")
             self.assertEqual(result["name"], "rawOutputData")
             self.assertEqual(result["path"], os.path.abspath(expected_path))
@@ -190,7 +190,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         info.resource_group = "rg"
         info.name = "ws"
 
-        mock_workspace.return_value.get_container_uri.return_value = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
 
         blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
         file_content = b"payload"
@@ -230,7 +230,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         info.resource_group = "rg"
         info.name = "ws"
 
-        mock_workspace.return_value.get_container_uri.return_value = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
 
         blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
         file_content = b"payload"

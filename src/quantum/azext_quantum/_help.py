@@ -130,7 +130,7 @@ helps['quantum job file download'] = """
       - name: Download a file to a specific directory.
         text: |-
             az quantum job file download -g MyResourceGroup -w MyWorkspace \\
-                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData --output-path ./downloads
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData --dest ./downloads
 """
 helps['quantum job show'] = """
     type: command

@@ -377,18 +377,13 @@ def list_files(cmd, job_id, resource_group_name, workspace_name):
     """
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
 
-    # Resolve the job first so an unknown or deleted job id fails with a clear
-    # not-found error, instead of get_container_uri() creating an empty container
-    # for a job that does not exist.
+    # Retrieve the job through the data-plane SDK so an unknown or deleted job id
+    # fails with a clear not-found error, and reuse the container URI recorded on
+    # the job instead of get_container_uri(), which would create the container.
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.endpoint)
-    client.get(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id)
+    job = client.get(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id)
 
-    resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
-    credential = _get_data_credentials(cmd.cli_ctx, ws_info.subscription)
-    workspace = Workspace(resource_id=resource_id, credential=credential)
-
-    container_uri = workspace.get_container_uri(job_id=job_id)
-    container_client = ContainerClient.from_container_url(container_uri)
+    container_client = ContainerClient.from_container_url(job.container_uri)
 
     files = []
     try:
@@ -410,18 +405,13 @@ def download_file(cmd, job_id, file_name, resource_group_name, workspace_name, o
     """
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
 
-    # Resolve the job first so an unknown or deleted job id fails with a clear
-    # not-found error, instead of get_container_uri() creating an empty container
-    # for a job that does not exist.
+    # Retrieve the job through the data-plane SDK so an unknown or deleted job id
+    # fails with a clear not-found error, and reuse the container URI recorded on
+    # the job instead of get_container_uri(), which would create the container.
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.endpoint)
-    client.get(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id)
+    job = client.get(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id)
 
-    resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
-    credential = _get_data_credentials(cmd.cli_ctx, ws_info.subscription)
-    workspace = Workspace(resource_id=resource_id, credential=credential)
-
-    container_uri = workspace.get_container_uri(job_id=job_id)
-    container_client = ContainerClient.from_container_url(container_uri)
+    container_client = ContainerClient.from_container_url(job.container_uri)
     blob_client = container_client.get_blob_client(file_name)
 
     # Blob names can contain path separators or traversal segments (e.g. "foo/bar"
