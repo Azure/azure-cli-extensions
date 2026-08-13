@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from collections.abc import MutableMapping
+
 import errno
 import os
 import platform
@@ -91,6 +93,46 @@ def validate_flexnodes_options(
                 ", ".join(unsupported_options), ", ".join(supported_parameters.values())
             )
         )
+
+
+def _reset_mapping_fields(model, preserved_fields):
+    model.clear()
+    for field, value in preserved_fields.items():
+        model[field] = value
+    for attr in list(getattr(model, "__dict__", {})):
+        if not attr.startswith("_"):
+            setattr(model, attr, preserved_fields.get(attr))
+
+
+def reset_agentpool_to_name_and_mode(agentpool, mode):
+    """Remove all agent pool fields except the resource name and pool mode."""
+    if isinstance(agentpool, MutableMapping):
+        name = agentpool["name"]
+        properties = agentpool.get("properties")
+        if isinstance(properties, MutableMapping):
+            _reset_mapping_fields(properties, {"mode": mode})
+            preserved_fields = {"name": name, "properties": properties}
+        else:
+            preserved_fields = {"name": name, "mode": mode}
+        _reset_mapping_fields(agentpool, preserved_fields)
+        return agentpool
+
+    properties = getattr(agentpool, "properties", None)
+    if isinstance(properties, MutableMapping):
+        properties.clear()
+        properties["mode"] = mode
+        preserved_attributes = ("name", "properties")
+    else:
+        agentpool.mode = mode
+        preserved_attributes = ("name", "mode")
+    for attr in list(vars(agentpool)):
+        if (
+            attr not in preserved_attributes
+            and not attr.startswith("_")
+            and hasattr(agentpool, attr)
+        ):
+            setattr(agentpool, attr, None)
+    return agentpool
 
 
 def which(binary):

@@ -59,6 +59,7 @@ from azext_aks_preview._helpers import (
     filter_hard_taints,
     process_dns_overrides,
     validate_flexnodes_options,
+    reset_agentpool_to_name_and_mode,
 )
 
 logger = get_logger(__name__)
@@ -1666,14 +1667,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if agentpool is None:
                 raise CLIInternalError("agentpool cannot be None for ManagedSystem mode")
 
-            # Instead of creating a new instance, modify the existing one
-            # Keep name and set mode to ManagedSystem
-            agentpool.mode = CONST_NODEPOOL_MODE_MANAGEDSYSTEM
-            # Make sure all other attributes are None
-            for attr in vars(agentpool):
-                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
-                    if hasattr(agentpool, attr):
-                        setattr(agentpool, attr, None)
+            agentpool = reset_agentpool_to_name_and_mode(
+                agentpool, CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+            )
 
         return agentpool
 
@@ -1687,28 +1683,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         mode = self.context.get_mode()
         if mode == CONST_NODEPOOL_MODE_MACHINES:
-            agentpool.mode = CONST_NODEPOOL_MODE_MACHINES
-            # Make sure all other attributes are None
-            # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
-            props = getattr(agentpool, 'properties', None)
-            rest_fields = getattr(props, '_attr_to_rest_field', None) if props is not None else None
-            if rest_fields is not None:
-                target, fields = props, rest_fields
-            else:
-                rest_fields = getattr(agentpool, '_attr_to_rest_field', None)
-                if rest_fields is not None and 'mode' in rest_fields:
-                    target, fields = agentpool, rest_fields
-                else:
-                    target, fields = None, None
-            if target is not None:
-                for attr in list(fields.keys()):
-                    if attr not in ('name', 'mode'):
-                        setattr(agentpool, attr, None)
-            else:
-                for attr in vars(agentpool):
-                    if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
-                        if hasattr(agentpool, attr):
-                            setattr(agentpool, attr, None)
+            agentpool = reset_agentpool_to_name_and_mode(
+                agentpool, CONST_NODEPOOL_MODE_MACHINES
+            )
 
         return agentpool
 
@@ -2190,12 +2167,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # Check if agentpool is in ManagedSystem mode and handle special case
         if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
-            # Make sure all other attributes are None
-            for attr in vars(agentpool):
-                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
-                    if hasattr(agentpool, attr):
-                        setattr(agentpool, attr, None)
-            return agentpool
+            return reset_agentpool_to_name_and_mode(
+                agentpool, CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+            )
 
         # update network profile
         agentpool = self.update_network_profile(agentpool)

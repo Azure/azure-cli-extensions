@@ -68,6 +68,8 @@ from azext_aks_preview._consts import (
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_BASTION_SKU_STANDARD,
+    CONST_BASTION_SKU_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
@@ -216,6 +218,7 @@ from azext_aks_preview._validators import (
     validate_message_of_the_day,
     validate_node_public_ip_prefix_ids,
     validate_node_public_ip_tags,
+    validate_bastion_public_ip_id,
     validate_nodepool_id,
     validate_nodepool_labels,
     validate_nodepool_taints,
@@ -599,6 +602,11 @@ gpu_mig_strategies = [
 upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_ROLLING,
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
+]
+
+bastion_skus = [
+    CONST_BASTION_SKU_STANDARD,
+    CONST_BASTION_SKU_PREMIUM,
 ]
 
 # AKS backup strategy presets exposed by --backup-strategy.
@@ -3750,7 +3758,33 @@ def load_arguments(self, _):
                 help="Name of the load balancer configuration. Required.",
             )
 
-    with self.argument_context("aks bastion") as c:
+    for scope in ['aks bastion enable',
+                  'aks bastion update']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "bastion_sku",
+                options_list=["--bastion-sku", "-s"],
+                arg_type=get_enum_type(bastion_skus),
+                help="set bastion sku for Azure Bastion host",
+            )
+            c.argument(
+                "bastion_scale_units",
+                options_list=["--bastion-scale-units"],
+                type=int,
+                help="Scale units for the Azure Bastion host.",
+            )
+            c.argument("aks_custom_headers")
+
+    for scope in ['aks bastion enable']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "bastion_public_ip",
+                options_list=["--bastion-public-ip"],
+                validator=validate_bastion_public_ip_id,
+                help="Optional public IP address for the Azure Bastion host.",
+            )
+
+    with self.argument_context("aks bastion tunnel") as c:
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")
