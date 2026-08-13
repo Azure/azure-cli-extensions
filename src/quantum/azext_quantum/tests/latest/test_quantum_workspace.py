@@ -340,8 +340,18 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             result = list_users(cmd, "rg", "ws")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role=None, scope=expected_scope)
+        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role=None, scope=expected_scope, include_inherited=False)
         assert result == assignments
+
+    def test_list_users_include_inherited(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=[]) as list_role_assignments:
+            cmd = SimpleNamespace(cli_ctx=object())
+            list_users(cmd, "rg", "ws", include_inherited=True)
+
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role=None, scope=expected_scope, include_inherited=True)
 
     def test_transform_users(self):
         from ...commands import transform_users

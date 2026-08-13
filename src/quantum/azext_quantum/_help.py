@@ -357,6 +357,9 @@ helps['quantum workspace user list'] = """
         text: |-
             az quantum workspace user list -g MyResourceGroup -w MyWorkspace \\
                 --role "Quantum Workspace Data Contributor"
+      - name: Include users whose access is inherited from the resource group or subscription.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace --include-inherited
 """
 
 helps['quantum workspace user create'] = """
