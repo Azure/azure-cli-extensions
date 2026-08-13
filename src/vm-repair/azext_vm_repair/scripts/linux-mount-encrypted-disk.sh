@@ -31,7 +31,7 @@ locatebekvol () {
 	if [ -z ${bekdisk} ]
 	then
 		echo "`date` No BEK disk found, cannot continue" >> ${logpath}/${logfile}
-		exit
+		exit 1
 	else
 		echo "`date` the BEK Volume is ${bekdisk}" >> ${logpath}/${logfile}
 		export bekdisk=/dev/${bekdisk}
@@ -54,7 +54,7 @@ get_data_disk () {
 	if [ -z ${data_disk} ]
 	then
 		echo "`date` OS disk attached as data disk was not found, cannot continue" >> ${logpath}/${logfile}
-		exit
+		exit 1
 	else
 		echo "`date` The data disk is ${data_disk}" >> ${logpath}/${logfile}
 	fi
@@ -86,54 +86,83 @@ if [ ${local_vg_number} -eq 1 ]
 fi
 }
 
-data_os_lvm_check () {
-	trapper
-	echo "`date` Looking for LVM on the data disk" >> ${logpath}/${logfile}
-	export lvm_part=`fdisk -l ${data_disk} 2>&1 | grep -i lvm | awk '{print $1}'` >> ${logpath}/${logfile}
-	echo ${lvm_part} >> ${logpath}/${logfile}
-	if [ -z ${lvm_part} ]
+# GPT type GUIDs that can never hold the root filesystem.
+biosboot_guid=21686148-6449-6e6f-744e-656564454649
+efi_guid=c12a7328-f81f-11d2-ba4b-00a0c93ec93b
+
+part_type () {
+	# lsblk gained PARTTYPE in util-linux 2.25; RHEL 7 rescue images ship 2.23.
+	local pt
+	pt=`lsblk -dno PARTTYPE "$1" 2>/dev/null | tr -d ' '`
+	if [ -z "${pt}" ]
 	then
-		#Updaing the below command to use lsblk instead of fdisk for accounting for different distros
-		#export root_part=`fdisk -l ${data_disk} 2>&1 | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
-		# Select the largest partition on the data disk (root is always the largest).
-		# Using sort+head instead of a size threshold to avoid matching /boot partitions
-		# that exceed 600MB (e.g. Ubuntu 24.04 has a ~913MB /boot on partition 16).
-		root_part=$(lsblk "${data_disk}" -l -n -p -b 2>>"${logpath}/${logfile}" | grep -w -v "${data_disk}" | sort -k4 -rn | awk 'NR==1{print $1}')
-		export root_part
-		echo "`date` LVM not found on the data disk" >> ${logpath}/${logfile}
-		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
-	else
-		#adding a check to see if the returned value is just the partition number or partition full path.
-		if grep -q ${data_disk} <<< ${lvm_part}
-		then
-			export root_part=${lvm_part} >> ${logpath}/${logfile}
-		else
-			export root_part=${data_disk}${lvm_part} >> ${logpath}/${logfile}
-		fi
-		echo "`date` LVM found on the data disk" >> ${logpath}/${logfile}
-		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
+		pt=`blkid -p -s PART_ENTRY_TYPE -o value "$1" 2>/dev/null`
 	fi
+	echo "${pt}" | tr 'A-Z' 'a-z'
+}
+
+classify_data_parts () {
+	trapper
+	echo "`date` Classifying the partitions on the data drive" >> ${logpath}/${logfile}
+	export boot_candidates=""
+	export root_candidates=""
+	local part fstype parttype
+	for part in `lsblk ${data_disk} -l -n -p -o NAME,TYPE | awk '$2=="part"{print $1}'`
+	do
+		parttype=`part_type ${part}`
+		if [ "${parttype}" = "${biosboot_guid}" ] || [ "${parttype}" = "${efi_guid}" ]
+		then
+			echo "`date` ${part} skipped, BIOS boot or EFI system partition" >> ${logpath}/${logfile}
+			continue
+		fi
+		fstype=`lsblk -dno FSTYPE ${part} 2>/dev/null | tr -d ' '`
+		case "${fstype}" in
+			ext2|ext3|ext4|xfs)
+				# A readable Linux filesystem cannot be the ADE root, so it is a /boot candidate.
+				boot_candidates="${boot_candidates} ${part}" ;;
+			""|crypto_LUKS)
+				# ADE root: a detached header leaves no signature, an inline header shows crypto_LUKS.
+				root_candidates="${root_candidates} ${part}" ;;
+			*)
+				echo "`date` ${part} skipped, fstype ${fstype}" >> ${logpath}/${logfile} ;;
+		esac
+	done
+	echo "`date` Boot candidates on the data drive: ${boot_candidates}" >> ${logpath}/${logfile}
+	echo "`date` Root candidates on the data drive: ${root_candidates}" >> ${logpath}/${logfile}
 }
 
 locate_mount_data_boot () {
 	trapper
-	echo "`date` Locating the partitions on the data drive" >> ${logpath}/${logfile}
-	#export data_parts=`fdisk -l ${data_disk} 2>&1 | grep ^/  | awk '{print $1}'` >> ${logpath}/${logfile}
-	#The below is updated to use lsblk, as fdisk output is diffferent between distros while the lsblk command is the same.
-	export data_parts=`lsblk ${data_disk} -l -o name -n -p | grep -v -w ${data_disk}` >> ${logpath}/${logfile}
-	echo "`date` Your data partitions are: ${data_parts}" >> ${logpath}/${logfile}
-
-	#create mountpoints for all the data parts
-	echo "`date` Creating mountpoints for all partitions on the data drive" >> ${logpath}/${logfile}
-	for dpart in ${data_parts} ; do echo "`date` Creating mountpoint for ${dpart}" >> ${logpath}/${logfile} ; mkdir -p /tmp${dpart} >> ${logpath}/${logfile} ; done
-
-	#mount all partitions
-	echo "`date` Mounting all partitions on the data drive" >> ${logpath}/${logfile}
-	for part in ${data_parts} ; do echo "`date` Mounting ${part} on /tmp/${part}" >> ${logpath}/${logfile} ; mount ${part} /tmp${part} >> ${logpath}/${logfile} 2>&1 ; done
-	echo "`date`Locating luksheader" >> ${logpath}/${logfile} 
-	export luksheaderpath=`find /tmp -name osluksheader` >> ${logpath}/${logfile} 
-	echo "`date` The luksheader part is ${luksheaderpath}" >> ${logpath}/${logfile}
-	export boot_part=`df -h $luksheaderpath | grep ^/ |awk '{print $1}'` >> ${logpath}/${logfile}
+	echo "`date` Looking for the boot partition that carries the LUKS header" >> ${logpath}/${logfile}
+	# Probe the candidates one at a time, read only. The previous version mounted every
+	# partition read-write just to run `find /tmp -name osluksheader`, which replays the
+	# journal of a filesystem that belongs to a VM that already failed to boot.
+	export boot_part=""
+	export luksheaderpath=""
+	probe_mnt=/tmp/vmrepair_headerprobe
+	mkdir -p ${probe_mnt}
+	for part in ${boot_candidates}
+	do
+		echo "`date` Probing ${part} for luks/osluksheader" >> ${logpath}/${logfile}
+		mount -o ro,noload ${part} ${probe_mnt} 2>/dev/null \
+			|| mount -o ro,norecovery ${part} ${probe_mnt} 2>/dev/null \
+			|| mount -o ro ${part} ${probe_mnt} 2>/dev/null \
+			|| continue
+		if [ -f ${probe_mnt}/luks/osluksheader ]
+		then
+			export boot_part=${part}
+			export luksheaderpath=/investigateboot/luks/osluksheader
+			umount ${probe_mnt} >> ${logpath}/${logfile} 2>&1
+			break
+		fi
+		umount ${probe_mnt} >> ${logpath}/${logfile} 2>&1
+	done
+	rmdir ${probe_mnt} 2>/dev/null
+	if [ -z "${boot_part}" ]
+	then
+		echo "`date` No partition on the data disk carries luks/osluksheader, cannot continue" >> ${logpath}/${logfile}
+		exit 1
+	fi
 	echo "`date` The boot partition on the data disk is ${boot_part}" >> ${logpath}/${logfile}
 }
 
@@ -165,8 +194,39 @@ mount_lvm () {
 
 unlock_root () {
 	trapper
-	echo "`date` unlocking root with command: cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName --header /investigateboot/luks/osluksheader ${root_part} osencrypt" >> ${logpath}/${logfile} 
-	cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName --header /investigateboot/luks/osluksheader ${root_part} osencrypt >> ${logpath}/${logfile}
+	# The root partition is identified by opening it: if the decrypted content is not a
+	# filesystem or an LVM PV, that candidate was not the root.
+	export root_part=""
+	export lvm_part=""
+	for part in ${root_candidates}
+	do
+		echo "`date` unlocking root with command: cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName --header /investigateboot/luks/osluksheader ${part} osencrypt" >> ${logpath}/${logfile}
+		cryptsetup luksOpen --key-file /mnt/azure_bek_disk/LinuxPassPhraseFileName --header /investigateboot/luks/osluksheader ${part} osencrypt >> ${logpath}/${logfile} 2>&1 || continue
+		udevadm settle >/dev/null 2>&1
+		inner=`blkid -p -s TYPE -o value /dev/mapper/osencrypt 2>/dev/null`
+		if [ -z "${inner}" ]
+		then
+			inner=`lsblk -dno FSTYPE /dev/mapper/osencrypt 2>/dev/null | tr -d ' '`
+		fi
+		echo "`date` ${part} opened, decrypted content is '${inner}'" >> ${logpath}/${logfile}
+		case "${inner}" in
+			LVM2_member)
+				export root_part=${part}
+				export lvm_part=${part}
+				echo "`date` LVM found on the data disk" >> ${logpath}/${logfile}
+				echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
+				return 0 ;;
+			ext2|ext3|ext4|xfs|btrfs)
+				export root_part=${part}
+				echo "`date` LVM not found on the data disk" >> ${logpath}/${logfile}
+				echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
+				return 0 ;;
+		esac
+		echo "`date` ${part} did not decrypt to a usable root, trying the next candidate" >> ${logpath}/${logfile}
+		cryptsetup luksClose osencrypt >> ${logpath}/${logfile} 2>&1
+	done
+	echo "`date` None of the root candidates could be unlocked, cannot continue" >> ${logpath}/${logfile}
+	exit 1
 }
 
 verify_root_unlock () {
@@ -176,7 +236,7 @@ verify_root_unlock () {
 	if [ $? -gt 0 ]
 	then
 		        echo "`date` device osencrypt was not found" >> ${logpath}/${logfile}
-			        exit
+			        exit 1
 			else
 				        echo "`date` device osencrypt found" >> ${logpath}/${logfile}
 				fi
@@ -185,7 +245,7 @@ verify_root_unlock () {
 mount_encrypted () {
 	trapper
 	echo "`date` Mounting root" >> ${logpath}/${logfile}
-	if [ -z ${lvm_part} ]
+	if [ -z "${lvm_part}" ]
 	then
 		echo "`date` Mounting /dev/mapper/osencrypt on /investigateroot" >> ${logpath}/${logfile}
 		${mount_cmd} /dev/mapper/osencrypt /investigateroot >> ${logpath}/${logfile}
@@ -197,8 +257,6 @@ mount_encrypted () {
 
 mount_boot () {
 	trapper
-	echo "`date` Unmounting the boot partition ${boot_part} on the data drive from the temp mount" >> ${logpath}/${logfile}
-	umount -l ${boot_part} >> ${logpath}/${logfile}
 	echo "`date` Mounting the boot partition ${boot_part} on /investigateboot" >> ${logpath}/${logfile}
 	${mount_cmd} ${boot_part} /investigateboot/ >> ${logpath}/${logfile}
 }
@@ -240,7 +298,7 @@ locatebekvol
 mountbekvol
 get_data_disk
 check_local_lvm
-data_os_lvm_check
+classify_data_parts
 mount_cmd
 locate_mount_data_boot
 mount_boot
