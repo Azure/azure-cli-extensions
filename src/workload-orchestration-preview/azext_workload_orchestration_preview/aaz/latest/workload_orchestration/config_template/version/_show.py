@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration config-template version show",
+    "workload-orchestration-preview config-template version show",
 )
 class Show(AAZCommand):
     """Get a Config Template Version Resource
