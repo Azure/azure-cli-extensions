@@ -79,6 +79,9 @@ class TestValidateFlexNodesOptions(unittest.TestCase):
 
 
 class TestResetAgentPoolToNameAndMode(unittest.TestCase):
+    class HybridAgentPool(dict):
+        pass
+
     def test_resets_attribute_style_model(self):
         agentpool = SimpleNamespace(
             name="pool1",
@@ -129,6 +132,58 @@ class TestResetAgentPoolToNameAndMode(unittest.TestCase):
             },
         )
         self.assertIs(result["properties"], properties)
+
+    def test_resets_hybrid_mapping_and_attribute_model(self):
+        agentpool = self.HybridAgentPool(
+            name="pool1",
+            mode="ManagedSystem",
+            type="VirtualMachineScaleSets",
+        )
+        agentpool.name = "pool1"
+        agentpool.mode = "ManagedSystem"
+        agentpool.type_properties_type = "VirtualMachineScaleSets"
+
+        result = reset_agentpool_to_name_and_mode(agentpool, "ManagedSystem")
+
+        self.assertIs(result, agentpool)
+        self.assertEqual(
+            result,
+            {"name": "pool1", "mode": "ManagedSystem"},
+        )
+        self.assertEqual(result.name, "pool1")
+        self.assertEqual(result.mode, "ManagedSystem")
+        self.assertIsNone(result.type_properties_type)
+
+    def test_resets_hybrid_nested_properties(self):
+        properties = self.HybridAgentPool(
+            mode="System",
+            count=3,
+        )
+        properties.mode = "System"
+        properties.count = 3
+        agentpool = self.HybridAgentPool(
+            name="pool1",
+            location="eastus",
+            properties=properties,
+        )
+        agentpool.name = "pool1"
+        agentpool.location = "eastus"
+        agentpool.properties = properties
+
+        result = reset_agentpool_to_name_and_mode(agentpool, "ManagedSystem")
+
+        self.assertIs(result, agentpool)
+        self.assertEqual(
+            result,
+            {
+                "name": "pool1",
+                "properties": {"mode": "ManagedSystem"},
+            },
+        )
+        self.assertIs(result.properties, properties)
+        self.assertEqual(result.properties.mode, "ManagedSystem")
+        self.assertIsNone(result.properties.count)
+        self.assertIsNone(result.location)
 
     def test_resets_attribute_model_with_mapping_properties(self):
         properties = {
