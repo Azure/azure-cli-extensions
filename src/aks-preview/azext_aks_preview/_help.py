@@ -4829,6 +4829,75 @@ helps['aks loadbalancer show'] = """
 """
 
 helps['aks bastion'] = """
+    type: group
+    short-summary: Commands to manage or connect to Azure Bastion for a managed Kubernetes cluster.
+"""
+
+helps['aks bastion enable'] = """
+type: command
+short-summary: Enable managed Azure Bastion host for a managed Kubernetes cluster.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+  - name: --bastion-sku -s
+    type: string
+    short-summary: Specify the SKU of the managed Azure Bastion host.
+  - name: --bastion-public-ip
+    type: string
+    short-summary: The resource ID of an existing public IP address to be assigned to the managed Azure Bastion host.
+    long-summary: When not specified, a new public IP address will be created and assigned to the managed Azure Bastion host.
+  - name: --bastion-scale-units
+    type: int
+    short-summary: The number of scale units for the managed Azure Bastion host.
+examples:
+  - name: Enable managed Azure Bastion host for a managed Kubernetes cluster with default settings.
+    text: az aks bastion enable --name MyManagedCluster --resource-group MyResourceGroup
+    crafted: true
+  - name: Enable managed Azure Bastion host with premium sku and custom scale units.
+    text: az aks bastion enable --name MyManagedCluster --resource-group MyResourceGroup --bastion-sku premium --bastion-scale-units 7
+    crafted: true
+  - name: Enable managed Azure Bastion host with BYO public IP address.
+    text: az aks bastion enable --name MyManagedCluster --resource-group MyResourceGroup --bastion-public-ip /subscriptions/{subscription-id}/resourceGroups/MyResourceGroup/providers/Microsoft.Network/publicIPAddresses/MyPublicIP
+    crafted: true
+"""
+
+helps['aks bastion disable'] = """
+type: command
+short-summary: Disable managed Azure Bastion host for a managed Kubernetes cluster.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+examples:
+  - name: Disable managed Azure Bastion host for a managed Kubernetes cluster.
+    text: az aks bastion disable --name MyManagedCluster --resource-group MyResourceGroup
+    crafted: true
+"""
+
+helps['aks bastion update'] = """
+type: command
+short-summary: Update managed Azure Bastion host for a managed Kubernetes cluster.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+  - name: --bastion-sku -s
+    type: string
+    short-summary: Specify the SKU of the managed Azure Bastion host.
+  - name: --bastion-scale-units
+    type: int
+    short-summary: The number of scale units for the managed Azure Bastion host.
+examples:
+  - name: Upgrade managed Azure Bastion host to Premium SKU.
+    text: az aks bastion update --name MyManagedCluster --resource-group MyResourceGroup --bastion-sku premium
+    crafted: true
+  - name: Scale managed Azure Bastion host.
+    text: az aks bastion update --name MyManagedCluster --resource-group MyResourceGroup --bastion-scale-units 7
+    crafted: true
+"""
+
+helps['aks bastion tunnel'] = """
     type: command
     short-summary: Connect to a managed Kubernetes cluster using Azure Bastion.
     long-summary: The command will launch a subshell with the kubeconfig set to connect to the cluster via Bastion. Use exit or Ctrl-D (i.e. EOF) to exit the subshell.
@@ -4850,9 +4919,9 @@ helps['aks bastion'] = """
           long-summary: If specified, uses this kubeconfig file at its original location instead of fetching credentials from Azure.
     examples:
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
-          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+          text: az aks bastion tunnel -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
         - name: Connect using an existing kubeconfig file.
-          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --kubeconfig-path ~/.kube/config
+          text: az aks bastion tunnel -g MyResourceGroup --name MyManagedCluster --kubeconfig-path ~/.kube/config
 """
 
 helps['aks identity-binding'] = """

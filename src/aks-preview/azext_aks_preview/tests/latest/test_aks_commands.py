@@ -24048,7 +24048,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
-    def test_aks_bastion(self, resource_group, resource_group_location):
+    def test_aks_bastion_tunnel(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -24106,8 +24106,170 @@ spec:
 
         # test bastion connectivity
         os.environ["AKS_BASTION_TEST_HOOK"] = kubectl_path
-        bastion_cmd = f"aks bastion -g {resource_group} -n {aks_name}"
+        bastion_cmd = f"aks bastion tunnel -g {resource_group} -n {aks_name}"
         self.cmd(bastion_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_bastion_enable_update_disable(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --enable-private-cluster "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("privateFqdn"),
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Enable managed bastion
+        enable_cmd = (
+            "aks bastion enable --resource-group={resource_group} --name={name} "
+            "--bastion-sku Standard --bastion-scale-units 2 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            enable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", True),
+                self.check("networkProfile.bastionProfile.sku", "Standard"),
+                self.check("networkProfile.bastionProfile.scaleUnits", 2),
+            ],
+        )
+
+        # Update managed bastion sku and scale units
+        update_cmd = (
+            "aks bastion update --resource-group={resource_group} --name={name} "
+            "--bastion-sku Premium --bastion-scale-units 4 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", True),
+                self.check("networkProfile.bastionProfile.sku", "Premium"),
+                self.check("networkProfile.bastionProfile.scaleUnits", 4),
+            ],
+        )
+
+        # Disable managed bastion
+        disable_cmd = (
+            "aks bastion disable --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", False),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_bastion_enable_disable_byo_public_ip(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --enable-private-cluster "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        mc = self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("privateFqdn"),
+                self.check("provisioningState", "Succeeded"),
+            ],
+        ).get_output_in_json()
+        nrg = mc["nodeResourceGroup"]
+
+        # Create a PIP in the NRG so clean up is done when delete MC
+        create_pip_cmd = f"network public-ip create -g {nrg} -n aks-bastion-pip --sku Standard"
+        self.cmd(create_pip_cmd)
+        show_pip_cmd = f"network public-ip show -g {nrg} -n aks-bastion-pip"
+        pip = self.cmd(
+            show_pip_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded")
+            ],
+        ).get_output_in_json()
+        pip_id = pip["id"]
+
+        self.kwargs.update({
+            "pip_id": pip_id
+        })
+
+        # Enable managed bastion
+        enable_cmd = (
+            "aks bastion enable --resource-group={resource_group} --name={name} "
+            "--bastion-sku Standard --bastion-scale-units 2 "
+            "--bastion-public-ip={pip_id} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            enable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", True),
+                self.check("networkProfile.bastionProfile.sku", "Standard"),
+                self.check("networkProfile.bastionProfile.scaleUnits", 2),
+                self.check("networkProfile.bastionProfile.publicIpAddressId", pip_id)
+            ],
+        )
+
+        # Disable managed bastion
+        disable_cmd = (
+            "aks bastion disable --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
+        )
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.bastionProfile.enabled", False),
+            ],
+        )
+
+        # Make sure the public IP is not deleted
+        show_pip_cmd = f"network public-ip show -g {nrg} -n aks-bastion-pip"
+        self.cmd(
+            show_pip_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded")
+            ],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
