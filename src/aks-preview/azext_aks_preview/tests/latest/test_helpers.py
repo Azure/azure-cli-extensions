@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from azext_aks_preview._helpers import (
@@ -16,6 +17,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     process_message_for_run_command,
     filter_hard_taints,
+    reset_agentpool_to_name_and_mode,
     validate_flexnodes_options,
 )
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
@@ -74,6 +76,78 @@ class TestValidateFlexNodesOptions(unittest.TestCase):
         self.assertNotIn("--resource-group", str(err.exception))
         self.assertNotIn("--machine-name", str(err.exception))
         self.assertNotIn("--no-wait", str(err.exception))
+
+
+class TestResetAgentPoolToNameAndMode(unittest.TestCase):
+    def test_resets_attribute_style_model(self):
+        agentpool = SimpleNamespace(
+            name="pool1",
+            mode="System",
+            count=3,
+            vm_size="Standard_D2s_v3",
+        )
+
+        result = reset_agentpool_to_name_and_mode(agentpool, "ManagedSystem")
+
+        self.assertIs(result, agentpool)
+        self.assertEqual(result.name, "pool1")
+        self.assertEqual(result.mode, "ManagedSystem")
+        self.assertIsNone(result.count)
+        self.assertIsNone(result.vm_size)
+
+    def test_resets_flat_mapping_model(self):
+        agentpool = {
+            "name": "pool1",
+            "mode": "System",
+            "count": 3,
+        }
+
+        result = reset_agentpool_to_name_and_mode(agentpool, "Machines")
+
+        self.assertIs(result, agentpool)
+        self.assertEqual(result, {"name": "pool1", "mode": "Machines"})
+
+    def test_resets_mapping_model_with_properties(self):
+        properties = {
+            "mode": "System",
+            "count": 3,
+        }
+        agentpool = {
+            "name": "pool1",
+            "location": "eastus",
+            "properties": properties,
+        }
+
+        result = reset_agentpool_to_name_and_mode(agentpool, "ManagedSystem")
+
+        self.assertIs(result, agentpool)
+        self.assertEqual(
+            result,
+            {
+                "name": "pool1",
+                "properties": {"mode": "ManagedSystem"},
+            },
+        )
+        self.assertIs(result["properties"], properties)
+
+    def test_resets_attribute_model_with_mapping_properties(self):
+        properties = {
+            "mode": "System",
+            "count": 3,
+        }
+        agentpool = SimpleNamespace(
+            name="pool1",
+            location="eastus",
+            properties=properties,
+        )
+
+        result = reset_agentpool_to_name_and_mode(agentpool, "ManagedSystem")
+
+        self.assertIs(result, agentpool)
+        self.assertEqual(result.name, "pool1")
+        self.assertEqual(result.properties, {"mode": "ManagedSystem"})
+        self.assertIs(result.properties, properties)
+        self.assertIsNone(result.location)
 
 
 class GetNodepoolSnapShotTestCase(unittest.TestCase):

@@ -97,22 +97,33 @@ def validate_flexnodes_options(
 
 def reset_agentpool_to_name_and_mode(agentpool, mode):
     """Remove all agent pool fields except the resource name and pool mode."""
-    name = agentpool.name
+    if isinstance(agentpool, MutableMapping):
+        name = agentpool["name"]
+        properties = agentpool.get("properties")
+        agentpool.clear()
+        agentpool["name"] = name
+        if isinstance(properties, MutableMapping):
+            properties.clear()
+            properties["mode"] = mode
+            agentpool["properties"] = properties
+        else:
+            agentpool["mode"] = mode
+        return agentpool
+
     properties = getattr(agentpool, "properties", None)
     if isinstance(properties, MutableMapping):
         properties.clear()
         properties["mode"] = mode
-        agentpool.clear()
-        agentpool["name"] = name
-        agentpool["properties"] = properties
-    elif isinstance(agentpool, MutableMapping):
-        agentpool.clear()
-        agentpool["name"] = name
-        agentpool["mode"] = mode
+        preserved_attributes = ("name", "properties")
     else:
         agentpool.mode = mode
+        preserved_attributes = ("name", "mode")
     for attr in list(vars(agentpool)):
-        if attr not in ("name", "mode") and not attr.startswith("_") and hasattr(agentpool, attr):
+        if (
+            attr not in preserved_attributes
+            and not attr.startswith("_")
+            and hasattr(agentpool, attr)
+        ):
             setattr(agentpool, attr, None)
     return agentpool
 
