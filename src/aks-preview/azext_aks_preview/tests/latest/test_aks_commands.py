@@ -112,6 +112,48 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "ProvisioningState of extension: Updating" in message
         )
 
+    @staticmethod
+    def _is_resource_already_exists_conflict(ex):
+        message = str(ex)
+        return "already exists" in message.lower()
+
+    @staticmethod
+    def _extract_cli_option(command, *option_names):
+        """Extract the value of the first matching --option=value / --option value CLI flag."""
+        for option_name in option_names:
+            match = re.search(rf"{re.escape(option_name)}[= ]+(\S+)", command)
+            if match:
+                return match.group(1).strip("\"'")
+        return None
+
+    @classmethod
+    def _build_show_command_for_already_existing_resource(cls, command):
+        """
+        Build the equivalent 'show' command for an 'aks create' or 'aks nodepool add' command.
+
+        Used when a create/add call is retried (after an earlier transient conflict) and the
+        retry fails with an "already exists" conflict, because the earlier attempt's
+        asynchronous operation had actually already succeeded server-side by the time the
+        client-side retry landed. Returns None if the command shape isn't recognized, in which
+        case the "already exists" error is treated like any other non-retriable error.
+        """
+        stripped = command.strip()
+        resource_group = cls._extract_cli_option(command, "--resource-group", "-g")
+        name = cls._extract_cli_option(command, "--name", "-n")
+        if not resource_group or not name:
+            return None
+        if re.match(r"^aks\s+create\b", stripped):
+            return f"aks show --resource-group {resource_group} --name {name}"
+        if re.match(r"^aks\s+nodepool\s+add\b", stripped):
+            cluster_name = cls._extract_cli_option(command, "--cluster-name")
+            if not cluster_name:
+                return None
+            return (
+                f"aks nodepool show --resource-group {resource_group} "
+                f"--cluster-name {cluster_name} --name {name}"
+            )
+        return None
+
     def _execute_with_transient_conflict_retry(self, command, expect_failure):
         from azure.cli.testsdk.base import execute
         import logging
@@ -124,6 +166,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             try:
                 return execute(self.cli_ctx, command, expect_failure=expect_failure)
             except (HttpResponseError, CLIError) as ex:
+                # Only treat "already exists" as a benign state-collision once we've already
+                # retried this command at least once (attempt > 0): that means an earlier
+                # attempt hit a transient conflict, was retried, and the *original* attempt's
+                # async operation actually completed server-side in the meantime. On the very
+                # first attempt, "already exists" is a genuine, expected failure (e.g. a
+                # deliberate duplicate-name negative test) and must keep failing normally.
+                if (
+                    not expect_failure and
+                    attempt > 0 and
+                    self._is_resource_already_exists_conflict(ex)
+                ):
+                    show_command = self._build_show_command_for_already_existing_resource(command)
+                    if show_command is not None:
+                        logging.warning(
+                            "Resource already exists after a retried create/add; the earlier "
+                            "attempt's async operation likely already succeeded server-side. "
+                            "Switching to 'show' instead of re-issuing create: %s",
+                            show_command,
+                        )
+                        return execute(self.cli_ctx, show_command, expect_failure=False)
                 if (
                     expect_failure or
                     not self._is_transient_operation_conflict(ex) or
@@ -367,15 +429,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         Some preview OS SKUs have since been retired by the service (verified live for
         `Flatcar`: "(InvalidOSSKU) OSSKU='Flatcar' is invalid, details: Flatcar Container
         Linux for AKS (preview) was retired on 2026-06-08 and is no longer available for
-        new node pools. ... See https://aka.ms/aks/flatcar-preview-retirement."). Rather
-        than hard-coding an unconditional skip, detect the retirement error dynamically
-        and skip with a precise reason; any other failure still propagates normally.
+        new node pools. ... See https://aka.ms/aks/flatcar-preview-retirement."; and for
+        `WindowsAnnual`: "(WindowsSKUNotSupported) Requested Windows SKU "WindowsAnnual" is
+        not supported. Details: "Windows Annual Channel has been retired. Creation of new
+        Windows Annual agent pools is no longer supported. Use Windows2022 or Windows2025
+        instead.""). Rather than hard-coding an unconditional skip, detect the retirement
+        error dynamically and skip with a precise reason; any other failure still propagates
+        normally.
         """
         try:
             return self.cmd(cmd, checks=checks)
         except Exception as ex:  # pylint: disable=broad-except
             message = str(ex)
-            if "InvalidOSSKU" in message and "retired" in message.lower() and os_sku.lower() in message.lower():
+            is_known_retirement_error_code = (
+                "InvalidOSSKU" in message or "WindowsSKUNotSupported" in message
+            )
+            if (
+                is_known_retirement_error_code and
+                "retired" in message.lower() and
+                os_sku.lower() in message.lower()
+            ):
                 self.skipTest(
                     f"OS SKU '{os_sku}' has been retired by the service and is no longer "
                     f"available for new node pools: {message}"
@@ -1465,18 +1538,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_addon_list_available(self):
         list_available_cmd = "aks addon list-available -o json"
         addon_list = self.cmd(list_available_cmd).get_output_in_json()
-        assert len(addon_list) == 11
-        assert addon_list[0]["name"] == "http_application_routing"
-        assert addon_list[1]["name"] == "monitoring"
-        assert addon_list[2]["name"] == "virtual-node"
-        assert addon_list[3]["name"] == "kube-dashboard"
-        assert addon_list[4]["name"] == "azure-policy"
-        assert addon_list[5]["name"] == "ingress-appgw"
-        assert addon_list[6]["name"] == "confcom"
-        assert addon_list[7]["name"] == "open-service-mesh"
-        assert addon_list[8]["name"] == "azure-keyvault-secrets-provider"
-        assert addon_list[9]["name"] == "gitops"
-        assert addon_list[10]["name"] == "web_application_routing"
+        # Assert membership of the known/required addons rather than an exact count or
+        # fixed ordering: new addons are periodically added to `ADDONS` (e.g.
+        # "application-load-balancer"), and a hardcoded length/order assertion breaks every
+        # time one is added even though list-available itself is working correctly.
+        expected_addon_names = {
+            "http_application_routing",
+            "monitoring",
+            "virtual-node",
+            "kube-dashboard",
+            "azure-policy",
+            "ingress-appgw",
+            "confcom",
+            "open-service-mesh",
+            "azure-keyvault-secrets-provider",
+            "gitops",
+            "web_application_routing",
+        }
+        actual_addon_names = {addon["name"] for addon in addon_list}
+        missing_addon_names = expected_addon_names - actual_addon_names
+        assert not missing_addon_names, (
+            f"Expected addons missing from 'aks addon list-available' output: "
+            f"{missing_addon_names}"
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -4234,7 +4318,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # add WindowsAnnual nodepool
-        self.cmd(
+        self._cmd_or_skip_if_os_sku_retired(
             "aks nodepool add "
             "--resource-group={resource_group} "
             "--cluster-name={name} "
@@ -4243,6 +4327,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--os-type Windows "
             "--os-sku WindowsAnnual "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindowsAnnualPreview",
+            os_sku="WindowsAnnual",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("osSku", "WindowsAnnual"),
@@ -22099,7 +22184,8 @@ spec:
             "--enable-workload-identity "
             "--enable-gateway-api "
             "--enable-application-load-balancer "
-            "--ssh-key-value={ssh_key_value}"
+            "--ssh-key-value={ssh_key_value} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ApplicationLoadBalancerPreview"
         )
         self.cmd(
             create_cmd,
@@ -22110,7 +22196,11 @@ spec:
         )
 
         # disable application load balancer
-        disable_applicationloadbalancer_cmd = "aks update --resource-group={resource_group} --name={aks_name} --disable-application-load-balancer --disable-gateway-api"
+        disable_applicationloadbalancer_cmd = (
+            "aks update --resource-group={resource_group} --name={aks_name} "
+            "--disable-application-load-balancer --disable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ApplicationLoadBalancerPreview"
+        )
         self.cmd(
             disable_applicationloadbalancer_cmd,
             checks=[
@@ -22154,7 +22244,8 @@ spec:
         # create cluster with application load balancer enabled
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
-            "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer"
+            "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ApplicationLoadBalancerPreview"
         )
         self.cmd(
             create_cmd,
@@ -22167,6 +22258,7 @@ spec:
         # update (currently makes a PUT no-op)
         update_cmd = (
             "aks applicationloadbalancer update --resource-group={resource_group} --name={aks_name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ApplicationLoadBalancerPreview"
         )
 
         self.cmd(
@@ -25246,7 +25338,10 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        # eastus is capacity-constrained for standard_dc16ads_cc_v5 (verified live:
+        # "SkuNotAvailable ... Following SKUs have failed for Capacity Restrictions");
+        # eastus2 has capacity for this confidential-compute SKU.
+        random_name_length=17, name_prefix="clitest", location="eastus2"
     )
     def test_aks_jwtauthenticator_cmds(self, resource_group, resource_group_location):
         # reset the count so that in replay mode the random names will start with 0
