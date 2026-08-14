@@ -604,7 +604,7 @@ Cluster_Diagnostic_Checks_Job_Log_Save_Failed_Fault_Type = (
     Cluster_Diagnostic_Checks_Job_Log_Save_Failed
 )
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.034631"
+CLIENT_PROXY_VERSION = "1.3.035022"
 CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
