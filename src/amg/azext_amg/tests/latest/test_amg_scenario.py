@@ -17,11 +17,13 @@ from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class AmgScenarioTest(ScenarioTest):
     def __init__(self, method_name):
         super().__init__(method_name, recording_processors=[
             ApiKeyServiceAccountTokenReplacer()
         ])
+
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):

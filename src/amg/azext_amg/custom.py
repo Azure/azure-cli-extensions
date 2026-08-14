@@ -180,7 +180,7 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
     for retry_time in range(0, retry_times):
         try:
             parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                        principal_id=str(principal_id),
+                                                        principal_id=principal_id,
                                                         principal_type=current_principal_type)
             assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                       parameters=parameters)
