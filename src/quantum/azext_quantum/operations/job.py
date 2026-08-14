@@ -462,7 +462,7 @@ def delete(cmd, job_id, resource_group_name, workspace_name):
     logger.warning("Deleted job %s.", job_id)
 
 
-def job_update(cmd, job_id, resource_group_name, workspace_name, job_name=None, job_priority=None, job_tags=None):
+def update(cmd, job_id, resource_group_name, workspace_name, job_name=None, job_priority=None, job_tags=None):
     """
     Update a submitted job's name, priority, and/or tags.
     """
@@ -470,9 +470,7 @@ def job_update(cmd, job_id, resource_group_name, workspace_name, job_name=None, 
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
 
     update_options = {}
-    if job_name is not None:
-        if not job_name.strip():
-            raise InvalidArgumentValueError("The --job-name argument cannot be empty or whitespace.")
+    if job_name and job_name.strip():
         update_options["name"] = job_name.strip()
     if job_priority is not None:
         try:
@@ -480,10 +478,9 @@ def job_update(cmd, job_id, resource_group_name, workspace_name, job_name=None, 
         except ValueError:
             raise InvalidArgumentValueError(ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
     if job_tags is not None:
-        tags = [tag.strip() for tag in job_tags if tag.strip()]
-        if not tags:
-            raise InvalidArgumentValueError("The --job-tags argument cannot be empty or whitespace. Provide one or more space-separated tags.")
-        update_options["tags"] = tags
+        # An explicit --job-tags value (even one that is only blank/whitespace, e.g. "")
+        # replaces the existing tags. Blank entries are dropped, so passing "" clears all tags.
+        update_options["tags"] = [tag.strip() for tag in job_tags if tag.strip()]
 
     if not update_options:
         raise RequiredArgumentMissingError("At least one of --job-name, --job-priority, or --job-tags must be specified.")

@@ -19,7 +19,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumen
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
 from ...operations.job import (
-    job_update,
+    update,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
@@ -70,25 +70,29 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Calling with no updatable fields should raise.
         with self.assertRaises(RequiredArgumentMissingError):
-            job_update(cmd, job_id, "rg", "ws")
+            update(cmd, job_id, "rg", "ws")
 
         # An invalid priority value should raise.
         with self.assertRaises(InvalidArgumentValueError) as context:
-            job_update(cmd, job_id, "rg", "ws", job_priority="NotAPriority")
+            update(cmd, job_id, "rg", "ws", job_priority="NotAPriority")
         self.assertEqual(str(context.exception), ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
 
-        # An empty or whitespace-only job name should raise.
-        with self.assertRaises(InvalidArgumentValueError):
-            job_update(cmd, job_id, "rg", "ws", job_name="   ")
+        # An empty or whitespace-only job name is ignored, so with no other fields it should raise.
+        with self.assertRaises(RequiredArgumentMissingError):
+            update(cmd, job_id, "rg", "ws", job_name="   ")
 
-        # Tags that are all empty or whitespace should raise.
-        with self.assertRaises(InvalidArgumentValueError):
-            job_update(cmd, job_id, "rg", "ws", job_tags=["", "   "])
+        # Passing only blank/whitespace tags is an explicit request to clear all tags,
+        # which sends an empty list rather than raising.
+        result = update(cmd, job_id, "rg", "ws", job_tags=["", "   "])
+        client.update.assert_called_once_with("sub", "rg", "ws", job_id, {"tags": []})
+        self.assertEqual(result, {"id": "job-id"})
+        client.update.reset_mock()
+        client.get.reset_mock()
 
         # A valid update should build a merge-patch with only the provided fields
         # and return the refreshed job. Surrounding whitespace is trimmed and blank
         # tags are dropped.
-        result = job_update(cmd, job_id, "rg", "ws", job_name="  New name  ", job_priority="High", job_tags=["a", "  ", "b "])
+        result = update(cmd, job_id, "rg", "ws", job_name="  New name  ", job_priority="High", job_tags=["a", "  ", "b "])
         client.update.assert_called_once_with("sub", "rg", "ws", job_id, {"name": "New name", "priority": "High", "tags": ["a", "b"]})
         client.get.assert_called_once_with("sub", "rg", "ws", job_id)
         self.assertEqual(result, {"id": "job-id"})
