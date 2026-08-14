@@ -56,5 +56,14 @@ class NamespaceAccessKeysScenarioTest(ScenarioTest):
                 'aimanager namespace list-accesskeys -g rg -m manager -n namespace',
                 checks=[self.check('primaryKey', 'primary-key-value')])
 
-        operations.list_access_keys.assert_called_with('rg', 'manager', 'namespace', headers={})
+            operations.list_access_keys.assert_called_with(
+                'rg', 'manager', 'namespace', headers={})
+
+            # --aks-custom-headers is parsed and forwarded to the request
+            self.cmd(
+                command_prefix.format('list-accesskeys') + ' --aks-custom-headers a=1,b=2',
+                checks=[self.check('primaryKey', 'primary-key-value')])
+
+        operations.list_access_keys.assert_called_with(
+            'rg', 'manager', 'namespace', headers={'a': '1', 'b': '2'})
         operations.rotate_keys.assert_called_once_with('rg', 'manager', 'namespace', headers={})
