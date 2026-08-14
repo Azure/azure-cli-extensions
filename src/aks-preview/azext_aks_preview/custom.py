@@ -246,6 +246,41 @@ def _ssl_context():
     return ssl.create_default_context()
 
 
+# The Log Analytics workspace's default output tables (e.g. the ContainerInsights solution
+# tables) can take a short while to finish provisioning right after the workspace itself, or
+# its association with the ContainerInsights solution, reports "Succeeded". During that window
+# a Data Collection Rule (DCR) PUT referencing those tables can fail synchronously with
+# "InvalidOutputTable" even though the workspace is otherwise ready.
+_DCR_TABLE_READINESS_MAX_RETRY_TIMES = 5
+_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS = 15
+
+
+def _create_or_update_dcr_with_table_readiness_retry(resources, dcr_resource_id, api_version, body):
+    """
+    Create/update a Data Collection Rule (DCR), applying a bounded backoff-and-retry
+    specifically for the known-transient "InvalidOutputTable" readiness error described above.
+    Any other error keeps the pre-existing immediate-retry policy (up to 3 attempts, no delay)
+    and is re-raised unchanged once that bound is exhausted.
+    """
+    _MAX_RETRY_TIMES = 3
+    error = None
+    readiness_retries = 0
+    attempt = 0
+    while True:
+        try:
+            resources.begin_create_or_update_by_id(dcr_resource_id, api_version, body)
+            return
+        except (CLIError, HttpResponseError) as e:
+            error = e
+            if "InvalidOutputTable" in str(e) and readiness_retries < _DCR_TABLE_READINESS_MAX_RETRY_TIMES:
+                readiness_retries += 1
+                time.sleep(_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS)
+                continue
+            attempt += 1
+            if attempt >= _MAX_RETRY_TIMES:
+                raise error
+
+
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_container_insights_for_monitoring_preview(
     cmd,
@@ -581,26 +616,12 @@ def ensure_container_insights_for_monitoring_preview(
             )
 
             resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
-            for _ in range(3):
-                try:
-                    if enable_syslog:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_with_syslog)
-                        )
-                    else:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_without_syslog)
-                        )
-                    error = None
-                    break
-                except (CLIError, HttpResponseError) as e:
-                    error = e
-            else:
-                raise error
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources,
+                dcr_resource_id,
+                "2022-06-01",
+                json.loads(dcr_creation_body_with_syslog) if enable_syslog else json.loads(dcr_creation_body_without_syslog),
+            )
 
         if create_dcra:
             # only create or delete the association between the DCR and cluster
