@@ -155,7 +155,6 @@ def _migrate_folders(all_source_folders, all_destination_folders, restore_url, r
     folders_overwrote_summary = []
 
     restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_destination_folders}
-    restore_folder_uids = set()
 
     for folder in all_source_folders:
         content_folder_settings, _ = folder
