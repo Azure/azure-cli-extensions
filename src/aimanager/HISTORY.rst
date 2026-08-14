@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.2.1b1
++++++++
+* ``az aimanager namespace``: Add ``list-accesskeys`` and ``rotate-accesskeys`` commands to
+  read and rotate the namespace LLM gateway API keys.
+* ``az aimanager namespace``: Accept ``--aimanager-name`` as an alias of ``--manager``/``-m``
+  for consistency with ``az aimanager namespace modeldeployment``.
+
 1.2.0
 ++++++
 * Add ``az aimanager namespace modeldeployment`` commands to add, update, list, show, delete,
