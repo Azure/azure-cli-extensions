@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from types import ModuleType
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -20,6 +21,56 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 # In lightweight test environments (no full CLI installed), we inject MagicMock stubs into
 # sys.modules so the import succeeds. In full azdev CI, the real modules are already loaded
 # and setdefault() leaves them untouched.
+azclierror_stub = ModuleType("azure.cli.core.azclierror")
+
+
+class AzCLIError(Exception):
+    pass
+
+
+class CLIInternalError(AzCLIError):
+    pass
+
+
+class ArgumentUsageError(AzCLIError):
+    pass
+
+
+class ClientRequestError(AzCLIError):
+    pass
+
+
+class FileOperationError(AzCLIError):
+    pass
+
+
+class InvalidArgumentValueError(AzCLIError):
+    pass
+
+
+class MutuallyExclusiveArgumentError(AzCLIError):
+    pass
+
+
+class RequiredArgumentMissingError(AzCLIError):
+    pass
+
+
+class ValidationError(AzCLIError):
+    pass
+
+
+azclierror_stub.AzCLIError = AzCLIError
+azclierror_stub.CLIInternalError = CLIInternalError
+azclierror_stub.ArgumentUsageError = ArgumentUsageError
+azclierror_stub.ClientRequestError = ClientRequestError
+azclierror_stub.FileOperationError = FileOperationError
+azclierror_stub.InvalidArgumentValueError = InvalidArgumentValueError
+azclierror_stub.MutuallyExclusiveArgumentError = MutuallyExclusiveArgumentError
+azclierror_stub.RequiredArgumentMissingError = RequiredArgumentMissingError
+azclierror_stub.ValidationError = ValidationError
+
+
 _STUBS = {
     "kubernetes": MagicMock(),
     "kubernetes.config": MagicMock(),
@@ -30,7 +81,7 @@ _STUBS = {
     "azure.cli": MagicMock(),
     "azure.cli.core": MagicMock(),
     "azure.cli.core.telemetry": MagicMock(),
-    "azure.cli.core.azclierror": MagicMock(),
+    "azure.cli.core.azclierror": azclierror_stub,
     "azure.cli.core.commands": MagicMock(),
     "azure.cli.core.commands.client_factory": MagicMock(),
     "azure.cli.core.util": MagicMock(),
@@ -122,6 +173,117 @@ def test_precheck_telemetry_helpers_forward_command_context(monkeypatch):
 
     assert add_event.call_count == 3
     assert all(call.args[0] is cmd for call in add_event.call_args_list)
+
+
+def test_fetch_diagnostic_checks_results_preserves_standardized_cli_error(monkeypatch):
+    expected = precheckutils.AzCLIError("[AZK8S0502] HelmChartPullFailed")
+    monkeypatch.setattr(
+        precheckutils,
+        "executing_cluster_diagnostic_checks_job",
+        MagicMock(side_effect=expected),
+    )
+
+    with pytest.raises(precheckutils.AzCLIError) as raised:
+        precheckutils.fetch_diagnostic_checks_results(
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            "/usr/bin/helm",
+            "/usr/bin/kubectl",
+            None,
+            None,
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            "/tmp/prechecks",
+            True,
+        )
+
+    assert raised.value is expected
+
+
+def test_executing_cluster_diagnostic_checks_job_preserves_chart_pull_error(
+    monkeypatch,
+):
+    expected = precheckutils.AzCLIError("[AZK8S0502] HelmChartPullFailed")
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_release_namespace", MagicMock(return_value=None)
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_mcr_path",
+        MagicMock(return_value="mcr.microsoft.com"),
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_chart_path",
+        MagicMock(side_effect=expected),
+    )
+    cleanup_process = MagicMock()
+    monkeypatch.setattr(precheckutils, "Popen", cleanup_process)
+
+    with pytest.raises(precheckutils.AzCLIError) as raised:
+        precheckutils.executing_cluster_diagnostic_checks_job(
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            "/usr/bin/helm",
+            "/usr/bin/kubectl",
+            None,
+            None,
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            "/tmp/prechecks",
+            True,
+        )
+
+    assert raised.value is expected
+    cleanup_process.assert_called_once()
+
+
+def test_prediagnostics_helm_install_uses_standardized_error(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (
+        b"",
+        b"Error: injected Helm install failure",
+    )
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock(return_value=process))
+    expected = precheckutils.AzCLIError(
+        "[AZK8S0607] PrediagnosticsHelmInstallFailed"
+    )
+    report_error = MagicMock(return_value=expected)
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "report_connectedk8s_error", report_error
+    )
+
+    with pytest.raises(precheckutils.AzCLIError) as raised:
+        precheckutils.helm_install_release_cluster_diagnostic_checks(
+            "/tmp/chart",
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            None,
+            None,
+            "/usr/bin/helm",
+            "mcr.microsoft.com",
+        )
+
+    assert raised.value is expected
+    assert report_error.call_args.args[1] is precheckutils.errors.PREDIAGNOSTICS_HELM_INSTALL_FAILED
+    assert (
+        report_error.call_args.kwargs["details"]
+        == "Error: injected Helm install failure"
+    )
 
 
 # ---------------------------------------------------------------------------

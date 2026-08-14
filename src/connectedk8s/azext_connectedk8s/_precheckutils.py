@@ -34,12 +34,14 @@ from typing import TYPE_CHECKING, Any
 
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
+    AzCLIError,
     CLIInternalError,
 )
 from knack.log import get_logger
 from kubernetes import config, watch
 
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._errors as errors
 import azext_connectedk8s._utils as azext_utils
 
 if TYPE_CHECKING:
@@ -508,6 +510,9 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
         # All checks passed or not applicable
         return consts.Diagnostic_Check_Passed, storage_space_available
 
+    except AzCLIError:
+        raise
+
     # To handle any exception that may occur during the execution
     except Exception as e:  # pylint: disable=broad-exception-caught
         logger.exception(
@@ -870,6 +875,11 @@ def executing_cluster_diagnostic_checks_job(
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
+    except AzCLIError:
+        prediagnostic_job_execution_status = consts.Job_Status_Execution_Failed
+        Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+        raise
+
     # To handle any exception that may occur during the execution
     except Exception as e:  # pylint: disable=broad-exception-caught
         prediagnostic_job_execution_status = consts.Job_Status_Execution_Failed
@@ -940,13 +950,14 @@ def helm_install_release_cluster_diagnostic_checks(
         if "forbidden" in error or "timed out waiting for the condition" in error:
             telemetry.set_user_fault()
 
-        telemetry.set_exception(
+        raise azext_utils.report_connectedk8s_error(
+            None,
+            errors.PREDIAGNOSTICS_HELM_INSTALL_FAILED,
             exception=Exception(error),
-            fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type,
-            summary="Unable to install cluster diagnostic checks helm release",
-        )
-        raise CLIInternalError(
-            f"Unable to install cluster diagnostic checks helm release: {error}"
+            user_fault=(
+                "forbidden" in error or "timed out waiting for the condition" in error
+            ),
+            details=error,
         )
 
 
