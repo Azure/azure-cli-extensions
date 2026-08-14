@@ -194,3 +194,47 @@ helps['aimanager namespace modeldeployment wait'] = """
     type: command
     short-summary: Wait for an AI Manager model deployment to reach a desired state.
 """
+
+helps['aimanager model'] = """
+    type: group
+    short-summary: Browse the AI model catalog and estimate deployment cost.
+    long-summary: |-
+        AI models are read-only, platform-maintained catalog entries scoped to an Azure region.
+        Use 'az aimanager model list' to discover the models available in a region and their
+        resource names, which can then be passed to
+        'az aimanager namespace modeldeployment add --model-resource-id'.
+"""
+
+helps['aimanager model show'] = """
+    type: command
+    short-summary: Show the details of an AI model in the catalog.
+    examples:
+        - name: Show an AI model
+          text: az aimanager model show -l eastus2 -n 9806f0c862fdd920
+"""
+
+helps['aimanager model list'] = """
+    type: command
+    short-summary: List the AI models available in a region.
+    examples:
+        - name: List the AI models in a region
+          text: az aimanager model list -l eastus2
+        - name: List the AI models in a region as a table
+          text: az aimanager model list -l eastus2 -o table
+"""
+
+helps['aimanager model calculate-cost'] = """
+    type: command
+    short-summary: Calculate the estimated cost of deploying an AI model in a region.
+    long-summary: |-
+        Returns a ranked list of GPU SKU pricing plans for deploying the model in the target
+        region, each annotated with feasibility, per-replica hourly cost, and estimated relative
+        performance. Feasible plans are returned first, ordered by total hourly price ascending.
+        No Azure or Kubernetes resources are provisioned by this command. Prices describe a single
+        replica; multiply by the desired replica count, bounded by maxAvailableReplicas.
+    examples:
+        - name: Calculate the cost of deploying a model
+          text: az aimanager model calculate-cost -l eastus2 -n 9806f0c862fdd920
+        - name: Show the pricing plans as a table
+          text: az aimanager model calculate-cost -l eastus2 -n 9806f0c862fdd920 -o table
+"""

@@ -9,3 +9,14 @@ DELETE_POLICY_DELETE = "Delete"
 DELETE_POLICIES = [DELETE_POLICY_KEEP, DELETE_POLICY_DELETE]
 
 MODEL_DEPLOYMENT_PERFORMANCE_MODES = ["Balanced", "Latency", "Throughput"]
+
+# Table output projections for the 'az aimanager model' commands.
+AI_MODEL_TABLE_TRANSFORMER = (
+    "[].{Name:name, ModelId:properties.modelId, Description:properties.description}"
+)
+
+CALCULATE_COST_TABLE_TRANSFORMER = (
+    "plans[].{VmSize:vmSize, Feasible:feasible, VmsPerReplica:vmsPerReplica, "
+    "VmHourlyPrice:vmHourlyPrice, TotalHourlyPrice:totalHourlyPrice, "
+    "MaxAvailableReplicas:maxAvailableReplicas, Quantization:quantization}"
+)

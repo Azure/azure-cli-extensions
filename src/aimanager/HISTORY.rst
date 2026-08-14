@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* Add ``az aimanager model`` commands to list and show AI models in a region, and to
+  ``calculate-cost`` for deploying a model.
+
 1.2.0
 ++++++
 * Add ``az aimanager namespace modeldeployment`` commands to add, update, list, show, delete,

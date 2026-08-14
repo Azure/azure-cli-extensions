@@ -15,6 +15,7 @@ from azext_aimanager._validators import (
     validate_ai_manager_name,
     validate_namespace_name,
     validate_model_deployment_name,
+    validate_ai_model_name,
     validate_labels,
     validate_annotations,
     validate_overrides,
@@ -117,3 +118,14 @@ def load_arguments(self, _):
                        help='Space-separated experimental deployment overrides (key=value).')
             c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                        help='Comma-separated key=value pairs to specify custom headers.')
+
+    with self.argument_context('aimanager model') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=True,
+                   help='The Azure region hosting the AI model catalog.')
+        c.argument('ai_model_name', options_list=['--name', '-n'],
+                   validator=validate_ai_model_name,
+                   help='The name of the AI model. This is an opaque, stable identifier derived '
+                        'from the model ID; use "az aimanager model list" to discover it.')
+
+    with self.argument_context('aimanager model list') as c:
+        c.ignore('ai_model_name')
