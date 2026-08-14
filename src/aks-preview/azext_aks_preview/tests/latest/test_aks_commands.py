@@ -771,8 +771,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
-        k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.28.0"
+        # Keep playback aligned with the existing cassette while live runs
+        # select a currently supported patch instead of the retired 1.30.
+        k8s_version = (
+            self._get_version_at_least(
+                location=resource_group_location, min_version="1.28.0"
+            )
+            if self.is_live
+            else "1.30"
         )
         self.kwargs.update(
             {
