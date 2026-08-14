@@ -76,6 +76,67 @@ helps['aimanager get-credentials'] = """
           text: az aimanager get-credentials --name my-ai-manager -g myrg -f -
 """
 
+helps['aimanager modelsource'] = """
+    type: group
+    short-summary: Manage model sources within an AI Manager.
+    long-summary: |-
+        A model source tells the platform where to pull model artifacts from and, for gated or
+        private sources, which credential to authenticate with. Model sources are referenced by
+        'az aimanager namespace modeldeployment add --model-source-resource-id'.
+"""
+
+helps['aimanager modelsource add'] = """
+    type: command
+    short-summary: Add a model source to an AI Manager.
+    examples:
+        - name: Add a public Hugging Face model source
+          text: az aimanager modelsource add -g myrg --aimanager-name my-ai-manager -n hf --source-type HuggingFace
+        - name: Add a Hugging Face model source with an access token for gated models
+          text: az aimanager modelsource add -g myrg --aimanager-name my-ai-manager -n hf -s HuggingFace --token hf_xxx --description "Gated models"
+"""
+
+helps['aimanager modelsource update'] = """
+    type: command
+    short-summary: Update a model source within an AI Manager.
+    long-summary: |-
+        The source type is immutable after creation and is always preserved. Omitted properties
+        keep their current values.
+    examples:
+        - name: Rotate the access token of a model source
+          text: az aimanager modelsource update -g myrg --aimanager-name my-ai-manager -n hf --token hf_yyy
+        - name: Update the description of a model source
+          text: az aimanager modelsource update -g myrg --aimanager-name my-ai-manager -n hf --description "Internal mirror"
+"""
+
+helps['aimanager modelsource show'] = """
+    type: command
+    short-summary: Show the details of a model source within an AI Manager.
+    examples:
+        - name: Show a model source
+          text: az aimanager modelsource show -g myrg --aimanager-name my-ai-manager -n hf
+"""
+
+helps['aimanager modelsource list'] = """
+    type: command
+    short-summary: List the model sources within an AI Manager.
+    examples:
+        - name: List model sources
+          text: az aimanager modelsource list -g myrg --aimanager-name my-ai-manager
+"""
+
+helps['aimanager modelsource delete'] = """
+    type: command
+    short-summary: Delete a model source from an AI Manager.
+    examples:
+        - name: Delete a model source
+          text: az aimanager modelsource delete -g myrg --aimanager-name my-ai-manager -n hf
+"""
+
+helps['aimanager modelsource wait'] = """
+    type: command
+    short-summary: Wait for an AI Manager model source to reach a desired state.
+"""
+
 helps['aimanager namespace'] = """
     type: group
     short-summary: Manage namespaces within an AI Manager.
