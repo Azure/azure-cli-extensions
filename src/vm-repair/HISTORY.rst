@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.2.4
+++++++
+Replacing deprecated ``datetime.utcnow()`` with timezone-aware ``datetime.now(timezone.utc)`` for Python 3.12+ forward compatibility. ``datetime.utcnow()`` is deprecated as of Python 3.12 and scheduled for removal in a future release. The generated timestamps (used for repair VM, copied disk, and repair resource group names) are unchanged. Also replacing ``pkgutil.get_loader()``/``loader.load_module()`` (deprecated in Python 3.12, removed in Python 3.14) with ``importlib.util.find_spec()`` when locating the bundled driver scripts, and extending the static Python 3.12+ compatibility guard to cover these APIs.
+
 2.2.3
 ++++++
 Fixing a crash ("version: null") when running any ``vm repair`` command on Azure CLI 2.87. Newer ``setuptools`` no longer generates the ``metadata.json`` that CLI 2.87 relied on to read the installed extension version, so the version resolved to ``None`` and the extension's version check raised a ``TypeError`` before the command could run. The version check now handles a missing version gracefully instead of failing. Azure CLI 2.88 also fixes the underlying metadata issue, so upgrading the CLI remains the recommended long-term resolution.
