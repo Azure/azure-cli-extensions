@@ -5,8 +5,8 @@ Release History
 
 1.2.1b1
 +++++++
-* Add ``az aimanager modelsource`` commands to add, update, list, show, delete, and wait for
-  model sources.
+* Add ``az aimanager modelsource`` commands (``add``, ``update``, ``list``, ``show``,
+  ``delete`` and ``wait``) to manage the model sources of an AI Manager.
 
 1.2.0
 ++++++

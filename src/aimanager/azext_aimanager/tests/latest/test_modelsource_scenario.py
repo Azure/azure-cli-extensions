@@ -25,8 +25,8 @@ class ModelSourceScenarioTest(ScenarioTest):
 
         operations = MagicMock()
         operations.get.side_effect = [
+            # add -> not found, then show / update / delete each read the resource once
             ResourceNotFoundError(),
-            model_source,
             model_source,
             model_source,
             model_source,
@@ -64,6 +64,7 @@ class ModelSourceScenarioTest(ScenarioTest):
                 command_prefix.format('delete') + ' -n hf --yes --no-wait',
                 checks=[self.is_empty()])
 
+        self.assertEqual(operations.get.call_count, 4)
         self.assertEqual(operations.begin_create_or_update.call_count, 2)
         operations.list.assert_called_once_with('rg', 'manager')
         operations.begin_delete.assert_called_once()
