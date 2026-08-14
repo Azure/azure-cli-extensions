@@ -77,9 +77,18 @@ class QuantumJobsScenarioTest(ScenarioTest):
             job_update(cmd, job_id, "rg", "ws", job_priority="NotAPriority")
         self.assertEqual(str(context.exception), ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
 
+        # An empty or whitespace-only job name should raise.
+        with self.assertRaises(InvalidArgumentValueError):
+            job_update(cmd, job_id, "rg", "ws", job_name="   ")
+
+        # Tags that are all empty or whitespace should raise.
+        with self.assertRaises(InvalidArgumentValueError):
+            job_update(cmd, job_id, "rg", "ws", job_tags=["", "   "])
+
         # A valid update should build a merge-patch with only the provided fields
-        # and return the refreshed job.
-        result = job_update(cmd, job_id, "rg", "ws", job_name="New name", job_priority="High", job_tags=["a", "b"])
+        # and return the refreshed job. Surrounding whitespace is trimmed and blank
+        # tags are dropped.
+        result = job_update(cmd, job_id, "rg", "ws", job_name="  New name  ", job_priority="High", job_tags=["a", "  ", "b "])
         client.update.assert_called_once_with("sub", "rg", "ws", job_id, {"name": "New name", "priority": "High", "tags": ["a", "b"]})
         client.get.assert_called_once_with("sub", "rg", "ws", job_id)
         self.assertEqual(result, {"id": "job-id"})
@@ -251,9 +260,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assert_contains_standard_sas_params(job["inputDataUri"])
         self.assert_contains_standard_sas_params(job["outputDataUri"])
 
-        # Update the submitted job's name, priority, and tags, then confirm the change
+        # Update the submitted job's name, priority, and tags, then confirm all three changes were applied
         updated_job = self.cmd(f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json').get_output_in_json()
         self.assertEqual(updated_job["name"], "Updated job name")
+        self.assertEqual(updated_job["priority"], "High")
+        self.assertEqual(updated_job["tags"], ["tag1", "tag2"])
 
         # Run a Quil pass-through job on Rigetti
         results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()

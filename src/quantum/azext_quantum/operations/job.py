@@ -471,21 +471,26 @@ def job_update(cmd, job_id, resource_group_name, workspace_name, job_name=None, 
 
     update_options = {}
     if job_name is not None:
-        update_options["name"] = job_name
+        if not job_name.strip():
+            raise InvalidArgumentValueError("The --job-name argument cannot be empty or whitespace.")
+        update_options["name"] = job_name.strip()
     if job_priority is not None:
         try:
             update_options["priority"] = Priority(job_priority).value
         except ValueError:
             raise InvalidArgumentValueError(ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
     if job_tags is not None:
-        update_options["tags"] = job_tags
+        tags = [tag.strip() for tag in job_tags if tag.strip()]
+        if not tags:
+            raise InvalidArgumentValueError("The --job-tags argument cannot be empty or whitespace. Provide one or more space-separated tags.")
+        update_options["tags"] = tags
 
     if not update_options:
         raise RequiredArgumentMissingError("At least one of --job-name, --job-priority, or --job-tags must be specified.")
 
+    # The update (PATCH) response only echoes back the JobUpdateOptions that were sent, not the
+    # full job, so fetch the job afterwards to return its current state to the user.
     client.update(info.subscription, info.resource_group, info.name, job_id, update_options)
-
-    # Return the full, updated job so the user sees the current state after the patch.
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
     return job.as_dict()
 
