@@ -70,7 +70,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
     assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user, group, or service principal. Supported formats: object id, user sign-in name, or service principal name.')
     assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with object ids for users, groups, service principals, and managed identities. For managed identities use the principal id. For service principals, use the object id and not the app id.")
-    role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role to grant; for 'delete', the assignment to remove (both default to the 'Quantum Workspace Data Contributor' role); for 'list', an optional filter by role.")
+    role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role to grant; for 'delete', the assignment to remove; for 'list', the role to filter by. All default to the 'Quantum Workspace Data Contributor' role.")
     assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="Use with '--assignee-object-id' to avoid errors caused by propagation latency in Microsoft Graph.")
     include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], help='If specified, also list role assignments inherited from the parent resource group and subscription scopes.')
 

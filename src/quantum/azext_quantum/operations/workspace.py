@@ -507,4 +507,5 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, assignee=None
 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
+    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
     return list_role_assignments(cmd, assignee=assignee, assignee_object_id=assignee_object_id, role=role, scope=scope, include_inherited=include_inherited)
