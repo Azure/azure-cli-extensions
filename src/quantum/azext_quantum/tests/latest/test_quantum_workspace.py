@@ -333,7 +333,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     def test_list_users_scopes_to_workspace(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
-        assignments = [{"principalId": "oid", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        assignments = [{"principalId": "oid", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments) as list_role_assignments:
             cmd = SimpleNamespace(cli_ctx=object())
@@ -362,6 +362,20 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role="Reader", scope=expected_scope, include_inherited=False)
+
+    def test_list_users_excludes_groups_and_service_principals(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [
+            {"principalId": "u", "principalType": "User"},
+            {"principalId": "g", "principalType": "Group"},
+            {"principalId": "sp", "principalType": "ServicePrincipal"},
+        ]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        assert result == [{"principalId": "u", "principalType": "User"}]
 
     def test_transform_users(self):
         from ...commands import transform_users

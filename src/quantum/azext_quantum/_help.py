@@ -348,11 +348,11 @@ helps['quantum workspace user'] = """
 
 helps['quantum workspace user list'] = """
     type: command
-    short-summary: List the users, groups, and service principals with access to an Azure Quantum workspace.
+    short-summary: List the users with access to an Azure Quantum workspace.
     long-summary: >-
-        By default, lists the principals assigned the 'Quantum Workspace Data Contributor' role (the
-        role granted by 'az quantum workspace user create') at the scope of the given (or current)
-        workspace. Use '--role' to filter by a different role.
+        Lists the user principals (excluding groups and service principals) assigned the 'Quantum
+        Workspace Data Contributor' role at the scope of the given (or current) workspace. Use
+        '--role' to filter by a different role.
     examples:
       - name: List all users with access to a workspace.
         text: |-
