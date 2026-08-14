@@ -141,7 +141,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
             final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            self.assertEqual(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -308,7 +308,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
             final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            self.assertEqual(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
