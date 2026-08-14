@@ -8289,6 +8289,60 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_3.set_up_enable_fips(mc_3)
 
+    def test_set_up_os_disk_full_caching(self):
+        # not set, default agent pool profile should not be modified
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool_profile_1],
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_os_disk_full_caching(mc_1)
+        ground_truth_agentpool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agentpool_profile_1],
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # --enable-osdisk-full-caching should set the flag on the default agent pool profile
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_os_disk_full_caching": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool_profile_2],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_os_disk_full_caching(mc_2)
+        ground_truth_agentpool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_os_disk_full_caching=True,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agentpool_profile_2],
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_set_up_static_egress_gateway(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
