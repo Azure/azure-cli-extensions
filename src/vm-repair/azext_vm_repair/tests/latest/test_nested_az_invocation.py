@@ -21,7 +21,6 @@ import json
 import os
 import shutil
 import subprocess
-import sys
 from unittest import mock
 
 import pytest
@@ -156,15 +155,15 @@ def test_failure_prefers_stderr_when_present(mock_popen):
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
 def test_secure_params_are_masked_in_error_message(mock_popen):
-    # The error text is emitted to the user and to telemetry, so credentials must not leak.
-    secret = 'Sup3rSecretP@ss'
+    # The error text is emitted to the user and to telemetry, so secure parameters must not leak.
+    secure_value = 'unit-test-secure-parameter-value'
     mock_popen.return_value = _FakeProcess(
-        returncode=1, stdout='', stderr='failed for password {0}'.format(secret))
+        returncode=1, stdout='', stderr='failed using {0}'.format(secure_value))
 
     with pytest.raises(AzCommandError) as raised:
-        _call_az_command('az vm create -g rg -n vm', secure_params=[secret])
+        _call_az_command('az vm create -g rg -n vm', secure_params=[secure_value])
 
-    assert secret not in str(raised.value)
+    assert secure_value not in str(raised.value)
     assert '********' in str(raised.value)
 
 
@@ -187,22 +186,18 @@ def test_non_az_command_is_still_rejected(mock_popen):
 # ---------------------------------------------------------------------------
 
 @pytest.mark.skipif(os.name != 'nt', reason='cmd.exe launcher behavior is Windows-specific')
-def test_real_cmd_resolves_unquoted_program_but_not_quoted_program():
+def test_real_cmd_resolves_unquoted_program_but_not_quoted_program(tmp_path):
     # Demonstrates the mechanism against a real cmd.exe using a batch file that mirrors how
     # az.cmd locates its interpreter through '%~dp0'. Quoting the program name breaks that
     # resolution; leaving it unquoted keeps it working.
-    import tempfile
-
-    directory = tempfile.mkdtemp()
-    batch_path = os.path.join(directory, 'fakeaz.cmd')
-    with open(batch_path, 'w', encoding='utf-8') as batch_file:
-        batch_file.write('@echo off\r\n')
-        batch_file.write('IF EXIST "%~dp0\\marker.txt" (echo RESOLVED) ELSE (echo NOT_RESOLVED)\r\n')
-    with open(os.path.join(directory, 'marker.txt'), 'w', encoding='utf-8') as marker:
-        marker.write('present')
+    batch_file = tmp_path / 'fakeaz.cmd'
+    batch_file.write_bytes(
+        b'@echo off\r\n'
+        b'IF EXIST "%~dp0\\marker.txt" (echo RESOLVED) ELSE (echo NOT_RESOLVED)\r\n')
+    (tmp_path / 'marker.txt').write_text('present', encoding='utf-8')
 
     environment = dict(os.environ)
-    environment['PATH'] = directory + os.pathsep + environment.get('PATH', '')
+    environment['PATH'] = str(tmp_path) + os.pathsep + environment.get('PATH', '')
 
     unquoted = subprocess.run('cmd /s /c "fakeaz"', capture_output=True, text=True,
                               env=environment, cwd=os.path.expanduser('~'))
