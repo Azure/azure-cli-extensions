@@ -25,3 +25,33 @@ class AmgUnitTest(unittest.TestCase):
         self.assertEqual(_convert_duration_to_seconds("1M"), 2592000)
         self.assertEqual(_convert_duration_to_seconds("1y"), 31536000)
         self.assertEqual(_convert_duration_to_seconds("10y"), 315360000)
+
+    def test_create_role_assignment_with_aaz_types(self):
+        from unittest.mock import MagicMock, patch
+        from azure.cli.core.aaz._field_value import AAZSimpleValue
+        from azext_amg.custom import _create_role_assignment
+
+        mock_cli_ctx = MagicMock()
+        mock_assignments_client = MagicMock()
+
+        # Simulate AAZSimpleValue types that previously caused JSON serialization errors
+        aaz_principal_id = AAZSimpleValue(None, "2b83823d-1afa-419f-8246-4b5d9df2f7e2")
+        aaz_role_id = AAZSimpleValue(None, "monitoring-reader-role-id")
+        aaz_scope = AAZSimpleValue(None, "/subscriptions/00000000-0000-0000-0000-000000000000")
+
+        with patch('azext_amg.custom.get_mgmt_service_client') as mock_get_client:
+            mock_client = MagicMock()
+            mock_client.role_assignments = mock_assignments_client
+            mock_get_client.return_value = mock_client
+
+            _create_role_assignment(mock_cli_ctx, aaz_principal_id, aaz_role_id, aaz_scope)
+
+            # Verify client.create was called with string parameters
+            self.assertTrue(mock_assignments_client.create.called)
+            call_kwargs = mock_assignments_client.create.call_args.kwargs
+            self.assertIsInstance(call_kwargs['parameters'].principal_id, str)
+            self.assertIsInstance(call_kwargs['parameters'].role_definition_id, str)
+            self.assertIsInstance(call_kwargs['scope'], str)
+            self.assertEqual(call_kwargs['parameters'].principal_id, "2b83823d-1afa-419f-8246-4b5d9df2f7e2")
+
+
