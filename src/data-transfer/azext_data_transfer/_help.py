@@ -173,3 +173,63 @@ examples:
         - name: Enable a flow by name in a resource group.
           text: az data-transfer connection flow enable --resource-group {rg} --name {connectionName}
 """
+
+helps['data-transfer pipeline disable'] = """
+type: command
+short-summary: Disable a pipeline.
+examples:
+        - name: Disable a pipeline with justification.
+          text: az data-transfer pipeline disable --resource-group myResourceGroup --pipeline-name myPipeline --justification "Emergency maintenance"
+        - name: Disable a pipeline without waiting for completion.
+          text: az data-transfer pipeline disable --resource-group myResourceGroup --pipeline-name myPipeline --no-wait
+"""
+
+helps['data-transfer pipeline enable'] = """
+type: command
+short-summary: Enable a pipeline to allow updates.
+examples:
+        - name: Enable a pipeline with justification.
+          text: az data-transfer pipeline enable --resource-group myResourceGroup --pipeline-name myPipeline --justification "Maintenance completed"
+        - name: Enable a pipeline without waiting for completion.
+          text: az data-transfer pipeline enable --resource-group myResourceGroup --pipeline-name myPipeline --no-wait
+"""
+
+helps['data-transfer pipeline connection disable'] = """
+type: command
+short-summary: Disable specific connections in a pipeline.
+examples:
+        - name: Disable multiple connections in a pipeline.
+          text: az data-transfer pipeline connection disable --resource-group myResourceGroup --pipeline-name myPipeline --connection-ids conn1 conn2 --justification "Connection maintenance"
+        - name: Disable a single connection.
+          text: az data-transfer pipeline connection disable --resource-group myResourceGroup --pipeline-name myPipeline --connection-ids /subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.AzureDataTransfer/connections/myConnection
+"""
+
+helps['data-transfer pipeline connection enable'] = """
+type: command
+short-summary: Enable specific connections in a pipeline to allow updates.
+examples:
+        - name: Enable multiple connections in a pipeline.
+          text: az data-transfer pipeline connection enable --resource-group myResourceGroup --pipeline-name myPipeline --connection-ids conn1 conn2 --justification "Connection maintenance completed"
+        - name: Enable a single connection.
+          text: az data-transfer pipeline connection enable --resource-group myResourceGroup --pipeline-name myPipeline --connection-ids /subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.AzureDataTransfer/connections/myConnection
+"""
+
+helps['data-transfer pipeline flowtype disable'] = """
+type: command
+short-summary: Disable specific flow types in a pipeline.
+examples:
+        - name: Disable multiple flow types in a pipeline.
+          text: az data-transfer pipeline flowtype disable --resource-group myResourceGroup --pipeline-name myPipeline --flow-types DataFlow LogFlow --justification "Flow type maintenance"
+        - name: Disable a single flow type.
+          text: az data-transfer pipeline flowtype disable --resource-group myResourceGroup --pipeline-name myPipeline --flow-types DataFlow
+"""
+
+helps['data-transfer pipeline flowtype enable'] = """
+type: command
+short-summary: Enable specific flow types in a pipeline to allow updates.
+examples:
+        - name: Enable multiple flow types in a pipeline.
+          text: az data-transfer pipeline flowtype enable --resource-group myResourceGroup --pipeline-name myPipeline --flow-types DataFlow LogFlow --justification "Flow type maintenance completed"
+        - name: Enable a single flow type.
+          text: az data-transfer pipeline flowtype enable --resource-group myResourceGroup --pipeline-name myPipeline --flow-types DataFlow
+"""
