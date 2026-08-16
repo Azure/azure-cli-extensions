@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.1
+++++++
+* Mark ``az aimanager`` command groups as preview.
+
 1.2.0
 ++++++
 * Add ``az aimanager namespace modeldeployment`` commands to add, update, list, show, delete,
