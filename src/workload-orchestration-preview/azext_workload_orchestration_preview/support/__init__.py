@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Support bundle package for workload-orchestration CLI extension.
+"""Support bundle package for workload-orchestration-preview CLI extension.
 
-This package provides the ``az workload-orchestration support create-bundle`` command
+This package provides the ``az workload-orchestration-preview support create-bundle`` command
 which collects Kubernetes cluster diagnostics, runs prerequisite validation checks,
 and packages everything into a zip bundle for troubleshooting.
 

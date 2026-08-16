@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-deployment show",
+    "workload-orchestration-preview solution-deployment show",
 )
 class Show(AAZCommand):
     """Get a SolutionDeployment Resource
 
     :example: Show a Solution Deployment
-        az workload-orchestration solution-deployment show -n mySolutionDeployment -g myResourceGroup
+        az workload-orchestration-preview solution-deployment show -n mySolutionDeployment -g myResourceGroup
     """
 
     _aaz_info = {

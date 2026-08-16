@@ -9,12 +9,12 @@
 from azure.cli.core.aaz import *
 
 @register_command(
-    "workload-orchestration context set",
+    "workload-orchestration-preview context set",
 )
 class SetContext(AAZCommand):
     """Set current context using context ID
     :example: Set a Context using ID
-        az workload-orchestration context set --id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Edge/contexts/myContext
+        az workload-orchestration-preview context set --id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Edge/contexts/myContext
     """
 
     _aaz_info = {

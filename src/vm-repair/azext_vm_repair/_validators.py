@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from datetime import datetime
+from datetime import datetime, timezone
 from json import loads
 from re import match, search, findall
 from knack.log import get_logger
@@ -46,7 +46,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:
@@ -400,7 +400,7 @@ def validate_repair_and_restore(cmd, namespace):
     logger.info('Repair VM name: %s', namespace.repair_vm_name)
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:

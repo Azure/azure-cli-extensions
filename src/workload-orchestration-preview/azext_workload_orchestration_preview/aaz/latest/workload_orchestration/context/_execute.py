@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context execute",
+    "workload-orchestration-preview context execute",
 )
 class Execute(AAZCommand):
     """Post request to execute

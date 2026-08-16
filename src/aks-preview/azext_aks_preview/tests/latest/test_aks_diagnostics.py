@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+from types import SimpleNamespace
+
 import azext_aks_preview.aks_diagnostics as commands
 
 
@@ -25,6 +27,18 @@ class TestGenerateContainerName(unittest.TestCase):
         expected_container_name = 'abcdef-dns-ed55ba6d-e48fe2bd-b4bc-4aac-bc23-29bc44154fe1-privat'
         trim_container_name = commands._generate_container_name(None, private_fqdn)
         self.assertEqual(expected_container_name, trim_container_name)
+
+
+class TestGetStorageAccountKey(unittest.TestCase):
+    def test_mapping_sdk_model(self):
+        response = {"keys": [{"value": "mapping-key"}]}
+
+        self.assertEqual("mapping-key", commands._get_storage_account_key(response))
+
+    def test_attribute_sdk_model(self):
+        response = SimpleNamespace(keys=[SimpleNamespace(value="attribute-key")])
+
+        self.assertEqual("attribute-key", commands._get_storage_account_key(response))
 
 
 if __name__ == "__main__":

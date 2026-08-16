@@ -102,9 +102,6 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
         )
         vm_image_repository_credentials.registry_url = AAZStrArg(
             options=["registry-url"],

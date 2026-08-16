@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration workflow-template version list",
+    "workload-orchestration-preview workflow-template version list",
 )
 class List(AAZCommand):
     """List Workflow Template Version Resources

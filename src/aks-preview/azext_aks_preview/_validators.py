@@ -16,6 +16,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
@@ -40,6 +41,23 @@ logger = get_logger(__name__)
 
 def validate_ssh_key(namespace):
     if hasattr(namespace, 'no_ssh_key') and namespace.no_ssh_key:
+        return
+    # Automatic SKU clusters use a fully managed system node pool that rejects any SSH key
+    # configuration. Skip reading/generating an SSH key so users don't need --no-ssh-key.
+    if getattr(namespace, 'sku', None) is not None and \
+            namespace.sku.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        # ssh_key_value defaults to "~/.ssh/id_rsa.pub" (expanded to an absolute path by
+        # the arg's file_type); only treat a non-default value as an explicit user request.
+        default_ssh_key_value = os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub"))
+        explicit_ssh_key = (
+            namespace.ssh_key_value and
+            os.path.expanduser(namespace.ssh_key_value) != default_ssh_key_value
+        )
+        if namespace.generate_ssh_keys or explicit_ssh_key:
+            raise MutuallyExclusiveArgumentError(
+                'SSH key configuration is not supported for the Automatic SKU. '
+                'Do not specify "--ssh-key-value" or "--generate-ssh-keys" when using "--sku automatic".'
+            )
         return
     string_or_file = (namespace.ssh_key_value or
                       os.path.join(os.path.expanduser('~'), '.ssh', 'id_rsa.pub'))
@@ -226,9 +244,11 @@ def validate_vm_set_type(namespace):
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
             namespace.vm_set_type.lower() != "virtualmachines" and \
-                namespace.vm_set_type.lower() != "virtualmachinescalesets":
+            namespace.vm_set_type.lower() != "virtualmachinescalesets" and \
+                namespace.vm_set_type.lower() != "flexnodes":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet, "
+                "VirtualMachines(Preview), or FlexNodes(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -426,6 +446,14 @@ def validate_node_public_ip_prefix_ids(ns):
                 raise InvalidArgumentValueError(
                     f"'{prefix_id}' is not a valid Azure resource ID for --node-public-ip-prefix-ids."
                 )
+
+
+def validate_bastion_public_ip_id(namespace):
+    if namespace.bastion_public_ip is None or namespace.bastion_public_ip == '':
+        return
+    if not is_valid_resource_id(namespace.bastion_public_ip):
+        raise InvalidArgumentValueError(
+            "--bastion-public-ip is not a valid Azure resource ID.")
 
 
 def validate_nodepool_labels(namespace):
@@ -1085,23 +1113,30 @@ def validate_location_resource_group_cluster_parameters(namespace):
 
 
 def validate_opentelemetry_ports(namespace):
-    """Validate that OpenTelemetry metrics and logs ports don't conflict."""
-    metrics_port = getattr(namespace, 'opentelemetry_metrics_port', None)
-    logs_port = getattr(namespace, 'opentelemetry_logs_port', None)
-
-    # Check if both ports are specified and are the same
-    if metrics_port is not None and logs_port is not None and metrics_port == logs_port:
-        raise ArgumentUsageError(
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
-        )
+    """Validate that the OpenTelemetry HTTP and gRPC ports are in range and all distinct."""
+    ports = [
+        ("--opentelemetry-metrics-port-http", getattr(namespace, 'opentelemetry_metrics_port', None)),
+        ("--opentelemetry-metrics-port-grpc", getattr(namespace, 'opentelemetry_metrics_port_grpc', None)),
+        ("--opentelemetry-logs-traces-port-http", getattr(namespace, 'opentelemetry_logs_port', None)),
+        ("--opentelemetry-logs-traces-port-grpc", getattr(namespace, 'opentelemetry_logs_traces_port_grpc', None)),
+    ]
 
     # Validate port ranges
-    for port, port_name in [(metrics_port, 'metrics'), (logs_port, 'logs')]:
+    for flag, port in ports:
         if port is not None and not (1 <= port <= 65535):
             raise ArgumentUsageError(
-                f"OpenTelemetry {port_name} port must be between 1 and 65535, got {port}."
+                f"OpenTelemetry port {flag} must be between 1 and 65535, got {port}."
             )
+
+    # All specified OpenTelemetry ports (HTTP and gRPC, metrics and logs/traces) must be distinct
+    specified = [(flag, port) for flag, port in ports if port is not None]
+    for i in range(len(specified)):
+        for j in range(i + 1, len(specified)):
+            if specified[i][1] == specified[j][1]:
+                raise ArgumentUsageError(
+                    "OpenTelemetry ports must all be different. "
+                    f"{specified[i][0]} and {specified[j][0]} cannot both be set to {specified[i][1]}."
+                )
 
 
 def validate_opentelemetry_metrics_dependencies(namespace):
@@ -1154,7 +1189,7 @@ def validate_opentelemetry_logs_dependencies(namespace):
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
         raise MutuallyExclusiveArgumentError(
-            "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+            "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         )
 
     # Check if trying to enable OTLP logs without Azure Monitor
@@ -1179,7 +1214,7 @@ def validate_opentelemetry_logs_dependencies_for_update(namespace):
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
         raise MutuallyExclusiveArgumentError(
-            "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+            "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         )
     # For update operations, validation is deferred to the decorator where we have access
     # to the cluster's Azure Monitor profile
