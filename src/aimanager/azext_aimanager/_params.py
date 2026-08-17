@@ -86,7 +86,7 @@ def load_arguments(self, _):
                        help='Comma-separated key=value pairs to specify custom headers.')
 
     with self.argument_context('aimanager namespace') as c:
-        c.argument('ai_manager_name', options_list=['--manager', '-m'],
+        c.argument('ai_manager_name', options_list=['--aimanager-name', '--manager', '-m'],
                    validator=validate_ai_manager_name,
                    help='The name of the AI Manager resource.')
         c.argument('namespace_name', options_list=['--name', '-n'],
@@ -111,6 +111,11 @@ def load_arguments(self, _):
                    help='If specified, overwrite the default context name.')
         c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                    help='Comma-separated key=value pairs to specify custom headers.')
+
+    for scope in ['aimanager namespace list-accesskeys', 'aimanager namespace rotate-accesskeys']:
+        with self.argument_context(scope) as c:
+            c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
+                       help='Comma-separated key=value pairs to specify custom headers.')
 
     with self.argument_context('aimanager namespace modeldeployment') as c:
         c.argument('ai_manager_name', options_list=['--aimanager-name'],

@@ -202,6 +202,33 @@ helps['aimanager namespace get-credentials'] = """
           text: az aimanager namespace get-credentials -m my-ai-manager -g myrg --name team-alpha -f -
 """
 
+helps['aimanager namespace list-accesskeys'] = """
+    type: command
+    short-summary: List the LLM gateway endpoint and API keys of an AI Manager namespace.
+    long-summary: |-
+        Returns the namespace-scoped, OpenAI-compatible inference gateway endpoint together with the
+        current primary and secondary API keys. Treat the keys as secrets: do not log them or persist
+        them in plaintext.
+    examples:
+        - name: List the access keys of a namespace
+          text: az aimanager namespace list-accesskeys -g myrg --aimanager-name my-ai-manager --name team-alpha
+        - name: Show only the gateway endpoint
+          text: az aimanager namespace list-accesskeys -g myrg --aimanager-name my-ai-manager --name team-alpha --query endpoint -o tsv
+"""
+
+helps['aimanager namespace rotate-accesskeys'] = """
+    type: command
+    short-summary: Rotate the LLM gateway API keys of an AI Manager namespace.
+    long-summary: |-
+        A new key is generated and installed as the primary key, and the previous primary key
+        overwrites the secondary key so clients can roll over without downtime. Returns the updated
+        access info. Any client still using the previous secondary key will stop being able to
+        authenticate.
+    examples:
+        - name: Rotate the access keys of a namespace
+          text: az aimanager namespace rotate-accesskeys -g myrg --aimanager-name my-ai-manager --name team-alpha
+"""
+
 helps['aimanager namespace modeldeployment'] = """
     type: group
     short-summary: Manage model deployments within an AI Manager namespace.
