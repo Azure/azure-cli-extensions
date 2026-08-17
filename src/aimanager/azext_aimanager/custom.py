@@ -451,3 +451,20 @@ def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
         namespace_name, model_deployment_name)
 
 # endregion
+
+
+# region AI model
+
+def show_aimodel(cmd, client, location, ai_model_name):  # pylint: disable=unused-argument
+    return client.get(location, ai_model_name)
+
+
+def list_aimodel(cmd, client, location):  # pylint: disable=unused-argument
+    return client.list(location)
+
+
+def calculate_aimodel_cost(cmd, client, location, ai_model_name):
+    request_model = _get_model(cmd, "CalculateCostRequest", "ai_models")
+    return client.calculate_cost(location, ai_model_name, request_model())
+
+# endregion

@@ -5,10 +5,15 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
+from azext_aimanager.constants import (
+    AI_MODEL_TABLE_TRANSFORMER,
+    CALCULATE_COST_TABLE_TRANSFORMER,
+)
 from azext_aimanager._client_factory import (
     cf_ai_managers,
     cf_ai_manager_namespaces,
     cf_model_deployments,
+    cf_ai_models,
 )
 
 
@@ -30,6 +35,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelDeploymentsOperations.{}",
         operation_group="model_deployments",
         client_factory=cf_model_deployments
+    )
+
+    ai_models_sdk = CliCommandType(
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIModelsOperations.{}",
+        operation_group="ai_models",
+        client_factory=cf_ai_models
     )
 
     # aimanager command group
@@ -61,3 +72,11 @@ def load_command_table(self, _):
         g.custom_command("list", "list_modeldeployment")
         g.custom_command("delete", "delete_modeldeployment", supports_no_wait=True, confirmation=True)
         g.custom_wait_command("wait", "show_modeldeployment")
+
+    # aimanager model command group
+    with self.command_group("aimanager model", ai_models_sdk, client_factory=cf_ai_models) as g:
+        g.custom_show_command("show", "show_aimodel")
+        g.custom_command("list", "list_aimodel",
+                         table_transformer=AI_MODEL_TABLE_TRANSFORMER)
+        g.custom_command("calculate-cost", "calculate_aimodel_cost",
+                         table_transformer=CALCULATE_COST_TABLE_TRANSFORMER)
