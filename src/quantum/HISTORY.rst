@@ -6,6 +6,7 @@ Release History
 1.0.0b21
 +++++++++++++++
 * Added the ``az quantum workspace user list`` command to list the users with access to an Azure Quantum workspace.
+* Restricted ``az quantum workspace user create`` and ``az quantum workspace user delete`` to user principals and removed the ``--assignee-principal-type`` parameter.
 
 1.0.0b20
 +++++++++++++++

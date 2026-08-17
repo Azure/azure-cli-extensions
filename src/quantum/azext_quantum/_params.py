@@ -8,7 +8,6 @@
 import argparse
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
-from azure.cli.core.commands.parameters import get_enum_type
 from azure.cli.core.util import shell_safe_json_parse
 
 
@@ -68,10 +67,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
-    assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user, group, or service principal. Supported formats: object id, user sign-in name, or service principal name.')
-    assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with object ids for users, groups, service principals, and managed identities. For managed identities use the principal id. For service principals, use the object id and not the app id.")
+    assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user. Supported formats: object id or user sign-in name.')
+    assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with the object id of a user.")
     role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role to grant; for 'delete', the assignment to remove; for 'list', the role to filter by. All default to the 'Quantum Workspace Data Contributor' role.")
-    assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="Use with '--assignee-object-id' to avoid errors caused by propagation latency in Microsoft Graph.")
     include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], help='If specified, also list role assignments inherited from the parent resource group and subscription scopes.')
 
     with self.argument_context('quantum workspace') as c:
@@ -89,9 +87,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('assignee', assignee_type)
         c.argument('assignee_object_id', assignee_object_id_type)
         c.argument('role', role_type)
-
-    with self.argument_context('quantum workspace user create') as c:
-        c.argument('assignee_principal_type', assignee_principal_type_type)
 
     with self.argument_context('quantum workspace user list') as c:
         c.argument('include_inherited', include_inherited_type)

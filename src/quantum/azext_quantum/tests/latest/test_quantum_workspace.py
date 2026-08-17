@@ -17,7 +17,7 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, _autoadd_providers, list_users, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _validate_storage_account, _autoadd_providers, add_user, list_users, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -376,6 +376,16 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             result = list_users(cmd, "rg", "ws")
 
         assert result == [{"principalId": "u", "principalType": "User"}]
+
+    def test_add_user_forces_user_principal_type(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment:
+            cmd = SimpleNamespace(cli_ctx=object())
+            add_user(cmd, "rg", "ws", assignee_object_id="oid")
+
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee=None, assignee_object_id="oid", assignee_principal_type="User")
 
     def test_transform_users(self):
         from ...commands import transform_users

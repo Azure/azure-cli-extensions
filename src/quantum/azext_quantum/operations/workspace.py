@@ -472,9 +472,9 @@ def _validate_assignee_args(assignee, assignee_object_id):
         raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
     """
-    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
@@ -482,13 +482,14 @@ def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
+    # Restrict workspace access management to user principals (not groups or service principals).
     return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
-                                  assignee_principal_type=assignee_principal_type)
+                                  assignee_principal_type="User")
 
 
 def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
     """
-    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
