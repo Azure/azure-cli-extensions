@@ -28,6 +28,12 @@ def validate_ai_model_name(namespace):
         raise InvalidArgumentValueError("--name/-n is not a valid AI model name.")
 
 
+def validate_model_source_name(namespace):
+    name = getattr(namespace, "model_source_name", None)
+    if name is not None and not name.strip():
+        raise InvalidArgumentValueError("--name/-n is not a valid model source name.")
+
+
 def _validate_key_value_pairs(values, option):
     if not values:
         return

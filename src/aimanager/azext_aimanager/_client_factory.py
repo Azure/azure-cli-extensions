@@ -29,3 +29,7 @@ def cf_model_deployments(cli_ctx, *_):
 
 def cf_ai_models(cli_ctx, *_):
     return get_aimanager_client(cli_ctx).ai_models
+
+
+def cf_model_sources(cli_ctx, *_):
+    return get_aimanager_client(cli_ctx).model_sources

@@ -14,6 +14,7 @@ from azext_aimanager._client_factory import (
     cf_ai_manager_namespaces,
     cf_model_deployments,
     cf_ai_models,
+    cf_model_sources,
 )
 
 
@@ -62,6 +63,21 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_aimanager_namespace", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "aimanager_namespace_get_credentials")
         g.wait_command("wait")
+
+    model_sources_sdk = CliCommandType(
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelSourcesOperations.{}",
+        operation_group="model_sources",
+        client_factory=cf_model_sources
+    )
+
+    # aimanager modelsource command group
+    with self.command_group("aimanager modelsource", model_sources_sdk, client_factory=cf_model_sources) as g:
+        g.custom_command("add", "add_modelsource", supports_no_wait=True)
+        g.custom_command("update", "update_modelsource", supports_no_wait=True)
+        g.custom_show_command("show", "show_modelsource")
+        g.custom_command("list", "list_modelsource")
+        g.custom_command("delete", "delete_modelsource", supports_no_wait=True, confirmation=True)
+        g.custom_wait_command("wait", "show_modelsource")
 
     # aimanager namespace modeldeployment command group
     with self.command_group("aimanager namespace modeldeployment", model_deployments_sdk,

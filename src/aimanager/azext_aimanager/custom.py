@@ -302,6 +302,108 @@ def aimanager_namespace_get_credentials(cmd,
 # endregion
 
 
+# region Model source
+
+def _construct_modelsource(cmd, source_type, description=None, token=None):
+    properties_model = _get_model(cmd, "ModelSourceProperties", "model_sources")
+    source_model = _get_model(cmd, "ModelSource", "model_sources")
+
+    credential = None
+    if token is not None:
+        credential_model = _get_model(cmd, "CredentialValue", "model_sources")
+        inline_model = _get_model(cmd, "InlineCredential", "model_sources")
+        credential = credential_model(inline=inline_model(value=token))
+
+    return source_model(properties=properties_model(
+        source_type=source_type,
+        description=description,
+        credential=credential,
+    ))
+
+
+# pylint: disable=unused-argument
+def add_modelsource(cmd,
+                    client,
+                    resource_group_name,
+                    ai_manager_name,
+                    model_source_name,
+                    source_type,
+                    description=None,
+                    token=None,
+                    aks_custom_headers=None,
+                    no_wait=False):
+    try:
+        client.get(resource_group_name, ai_manager_name, model_source_name)
+    except ResourceNotFoundError:
+        pass
+    else:
+        raise ClientRequestError(
+            f"Model source '{model_source_name}' already exists. "
+            "Please use 'az aimanager modelsource update' to update it.")
+
+    model_source = _construct_modelsource(cmd, source_type, description, token)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
+        model_source_name, model_source, headers=headers)
+
+
+# pylint: disable=unused-argument
+def update_modelsource(cmd,
+                       client,
+                       resource_group_name,
+                       ai_manager_name,
+                       model_source_name,
+                       description=None,
+                       token=None,
+                       aks_custom_headers=None,
+                       no_wait=False):
+    try:
+        existing = client.get(resource_group_name, ai_manager_name, model_source_name)
+    except ResourceNotFoundError:
+        raise ClientRequestError(
+            f"Model source '{model_source_name}' doesn't exist. "
+            "Please use 'az aimanager modelsource list' to get the current list of model sources.")
+
+    existing_properties = existing.properties
+    if description is None and existing_properties is not None:
+        description = existing_properties.description
+    # sourceType is immutable after creation, so it is always carried over from the existing
+    # resource on this create-or-replace PUT.
+    source_type = existing_properties.source_type if existing_properties is not None else None
+
+    model_source = _construct_modelsource(cmd, source_type, description, token)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
+        model_source_name, model_source, headers=headers)
+
+
+def show_modelsource(cmd, client, resource_group_name, ai_manager_name,
+                     model_source_name):  # pylint: disable=unused-argument
+    return client.get(resource_group_name, ai_manager_name, model_source_name)
+
+
+def list_modelsource(cmd, client, resource_group_name,
+                     ai_manager_name):  # pylint: disable=unused-argument
+    return client.list(resource_group_name, ai_manager_name)
+
+
+def delete_modelsource(cmd, client, resource_group_name, ai_manager_name, model_source_name,
+                       no_wait=False):  # pylint: disable=unused-argument
+    try:
+        client.get(resource_group_name, ai_manager_name, model_source_name)
+    except ResourceNotFoundError:
+        raise ClientRequestError(
+            f"Model source '{model_source_name}' doesn't exist. "
+            "Please use 'az aimanager modelsource list' to get the current list of model sources.")
+
+    return sdk_no_wait(
+        no_wait, client.begin_delete, resource_group_name, ai_manager_name, model_source_name)
+
+# endregion
+
+
 # region Model deployment
 
 def _construct_scaling_profile(cmd, replicas=None, min_replicas=None, max_replicas=None,

@@ -20,3 +20,6 @@ CALCULATE_COST_TABLE_TRANSFORMER = (
     "VmHourlyPrice:vmHourlyPrice, TotalHourlyPrice:totalHourlyPrice, "
     "MaxAvailableReplicas:maxAvailableReplicas, Quantization:quantization}"
 )
+
+# Supported model source types for an AI Manager model source.
+MODEL_SOURCE_TYPES = ["HuggingFace"]
