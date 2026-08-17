@@ -245,7 +245,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
 
         with tempfile.TemporaryDirectory() as tmp_dir:
-            # A non-existent path without a file extension is treated as a directory.
+            # A non-existent --dest is created and treated as a directory.
             new_dir = os.path.join(tmp_dir, "downloads")
 
             result = download_file(cmd, job_id, "outputData", "rg", "ws", output_path=new_dir)

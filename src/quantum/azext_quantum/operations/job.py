@@ -416,25 +416,16 @@ def download_file(cmd, job_id, file_name, resource_group_name, workspace_name, o
 
     # Blob names can contain path separators or traversal segments (e.g. "foo/bar"
     # or "../x"). Use only the final path component so a file is never written
-    # outside the intended directory.
+    # outside the destination directory.
     safe_file_name = os.path.basename(file_name.replace("\\", "/"))
     if safe_file_name in ("", ".", ".."):
         raise InvalidArgumentValueError(
             "File name '{}' cannot be used to build a local download path.".format(file_name))
 
-    if output_path is None:
-        destination = os.path.join(os.getcwd(), safe_file_name)
-    elif os.path.isdir(output_path):
-        destination = os.path.join(output_path, safe_file_name)
-    elif not os.path.exists(output_path) and not os.path.splitext(output_path)[1]:
-        # A non-existent path without a file extension is treated as a directory.
-        destination = os.path.join(output_path, safe_file_name)
-    else:
-        destination = output_path
-
-    destination_dir = os.path.dirname(destination)
-    if destination_dir and not os.path.exists(destination_dir):
-        os.makedirs(destination_dir, exist_ok=True)
+    # --dest is always a directory; the file keeps its blob name inside it.
+    output_dir = output_path if output_path else os.getcwd()
+    os.makedirs(output_dir, exist_ok=True)
+    destination = os.path.join(output_dir, safe_file_name)
 
     try:
         downloader = blob_client.download_blob()
