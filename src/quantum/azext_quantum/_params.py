@@ -40,7 +40,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     file_name_type = CLIArgumentType(options_list=['--file-name', '-n'], help="The name of the file (blob) in the job's output storage container.")
-    output_path_type = CLIArgumentType(options_list=['--dest'], help="Destination directory. The file is saved using its blob name in this directory (the current directory if omitted).")
+    dest_type = CLIArgumentType(options_list=['--dest'], help="Destination directory. The file is saved using its blob name in this directory (the current directory if omitted).")
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the program on the given target.')
@@ -134,7 +134,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum job file download') as c:
         c.argument('file_name', file_name_type)
-        c.argument('output_path', output_path_type)
+        c.argument('dest', dest_type)
 
     with self.argument_context('quantum execute') as c:
         c.argument('workspace_name', workspace_name_type)

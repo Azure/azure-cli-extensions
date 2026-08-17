@@ -399,7 +399,7 @@ def list_files(cmd, job_id, resource_group_name, workspace_name):
     return files
 
 
-def download_file(cmd, job_id, file_name, resource_group_name, workspace_name, output_path=None):
+def download_file(cmd, job_id, file_name, resource_group_name, workspace_name, dest=None):
     """
     Download a file from a job's output storage container.
     """
@@ -423,7 +423,7 @@ def download_file(cmd, job_id, file_name, resource_group_name, workspace_name, o
             "File name '{}' cannot be used to build a local download path.".format(file_name))
 
     # --dest is always a directory; the file keeps its blob name inside it.
-    output_dir = output_path if output_path else os.getcwd()
+    output_dir = dest if dest else os.getcwd()
     os.makedirs(output_dir, exist_ok=True)
     destination = os.path.join(output_dir, safe_file_name)
 

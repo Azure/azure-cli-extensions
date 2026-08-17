@@ -164,7 +164,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
 
         with tempfile.TemporaryDirectory() as tmp_dir:
-            result = download_file(cmd, job_id, "rawOutputData", "rg", "ws", output_path=tmp_dir)
+            result = download_file(cmd, job_id, "rawOutputData", "rg", "ws", dest=tmp_dir)
 
             expected_path = os.path.join(tmp_dir, "rawOutputData")
             self.assertTrue(os.path.exists(expected_path))
@@ -208,7 +208,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             target_dir = os.path.join(tmp_dir, "downloads")
             os.makedirs(target_dir)
 
-            result = download_file(cmd, job_id, "../../evil.txt", "rg", "ws", output_path=target_dir)
+            result = download_file(cmd, job_id, "../../evil.txt", "rg", "ws", dest=target_dir)
 
             # Only the basename is used, so the file stays inside target_dir
             # and never escapes via the traversal segments in the blob name.
@@ -248,7 +248,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             # A non-existent --dest is created and treated as a directory.
             new_dir = os.path.join(tmp_dir, "downloads")
 
-            result = download_file(cmd, job_id, "outputData", "rg", "ws", output_path=new_dir)
+            result = download_file(cmd, job_id, "outputData", "rg", "ws", dest=new_dir)
 
             expected_path = os.path.join(new_dir, "outputData")
             self.assertTrue(os.path.isdir(new_dir))
