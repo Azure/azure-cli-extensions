@@ -114,6 +114,16 @@ helps['quantum job show'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status
 """
 
+helps['quantum job events'] = """
+    type: command
+    short-summary: Get the lifecycle events for a job.
+    examples:
+      - name: List the lifecycle events for an Azure Quantum job.
+        text: |-
+            az quantum job events -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+"""
+
 helps['quantum job submit'] = """
     type: command
     short-summary: Submit a program or circuit to run on Azure Quantum.
