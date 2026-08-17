@@ -224,6 +224,25 @@ helps['quantum target list'] = """
             az quantum target list -g MyResourceGroup -w MyWorkspace
 """
 
+helps['quantum suite-offers'] = """
+    type: group
+    short-summary: Manage suite offers in Azure Quantum.
+"""
+
+helps['quantum suite-offers target'] = """
+    type: group
+    short-summary: Manage targets available through an Azure Quantum suite offer.
+"""
+
+helps['quantum suite-offers target list'] = """
+    type: command
+    short-summary: Get the list of targets and their status available through a suite offer, without requiring a workspace.
+    examples:
+      - name: Get the list of targets available in a suite offer
+        text: |-
+            az quantum suite-offers target list -p MyProviderId
+"""
+
 helps['quantum target set'] = """
     type: command
     short-summary: Select the default target to use when submitting jobs to Azure Quantum.

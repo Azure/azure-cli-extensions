@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b21
++++++++++++++++
+* Added the ``az quantum suite-offers target list`` command to list targets and their status from a suite offer, without requiring a workspace.
+
 1.0.0b20
 +++++++++++++++
 * Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.

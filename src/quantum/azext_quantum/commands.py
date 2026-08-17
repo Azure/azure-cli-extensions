@@ -123,6 +123,7 @@ def load_command_table(self, _):
     job_ops = CliCommandType(operations_tmpl='azext_quantum.operations.job#{}')
     target_ops = CliCommandType(operations_tmpl='azext_quantum.operations.target#{}')
     offerings_ops = CliCommandType(operations_tmpl='azext_quantum.operations.offerings#{}')
+    suiteoffers_ops = CliCommandType(operations_tmpl='azext_quantum.operations.suiteoffers#{}')
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
@@ -163,3 +164,6 @@ def load_command_table(self, _):
         o.command('list', 'list_offerings', table_transformer=transform_offerings)
         o.command('accept-terms', 'accept_terms', validator=validate_provider_and_sku_info)
         o.command('show-terms', 'show_terms', validator=validate_provider_and_sku_info)
+
+    with self.command_group('quantum suite-offers target', suiteoffers_ops) as s:
+        s.command('list', 'list_targets', table_transformer=transform_targets)
