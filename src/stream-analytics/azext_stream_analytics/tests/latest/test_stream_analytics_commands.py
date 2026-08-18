@@ -637,22 +637,19 @@ class StreamAnalyticsClientTest(ScenarioTest):
             --account-name {account} --account-key {key}"
         )
 
-        # create/test an input
+        # create/test an output
         datasource_props = {
-            "type": "Stream",
-            "datasource": {
-                "type": "Microsoft.Storage/Blob",
-                "properties": {
-                    "container": self.kwargs["container"],
-                    "dateFormat": "yyyy/MM/dd",
-                    "pathPattern": "{date}/{time}",
-                    "storageAccounts": [{
-                        "accountName": self.kwargs["account"],
-                        "accountKey": self.kwargs["key"]
-                    }],
-                    "timeFormat": "HH",
-                    "authenticationMode": "ConnectionString"
-                }
+            "type": "Microsoft.Storage/Blob",
+            "properties": {
+                "container": self.kwargs["container"],
+                "dateFormat": "yyyy/MM/dd",
+                "pathPattern": "{date}/{time}",
+                "storageAccounts": [{
+                    "accountName": self.kwargs["account"],
+                    "accountKey": self.kwargs["key"]
+                }],
+                "timeFormat": "HH",
+                "authenticationMode": "ConnectionString"
             }
         }
         serialization_props = {
