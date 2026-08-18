@@ -17,9 +17,6 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an output from the streaming job.
-
-    :example: Delete an output
-        az stream-analytics output delete --resource-group sjrg2157 --job-name sj6458 --output-name output1755
     """
 
     _aaz_info = {

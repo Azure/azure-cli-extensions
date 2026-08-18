@@ -15,52 +15,7 @@ from azure.cli.core.aaz import *
     "stream-analytics output update",
 )
 class Update(AAZCommand):
-    """Update an output or replaces an already existing output under an existing streaming job.
-
-    :example: Create an Azure SQL database output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755
-
-    :example: Create an Azure Table output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958
-
-    :example: Create a blob output with CSV serialization
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623
-
-    :example: Create a DocumentDB output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022
-
-    :example: Create an Azure Data Warehouse output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput
-
-    :example: Create an Azure Function output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1
-
-    :example: Create an Event Hub output with JSON serialization
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195
-
-    :example: Create a Service Bus Queue output with Avro serialization
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456
-
-    :example: Create a Service Bus Topic output with CSV serialization
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886
-
-    :example: Create a Power BI output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022
-
-    :example: Create an Azure Data Lake Store output with JSON serialization
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195
-
-    :example: Create a Gateway Message Bus output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg7983 --job-name sj2331 --output-name output3022
-
-    :example: Create a PostgreSQL output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg7983 --job-name sj2331 --output-name output3022
-
-    :example: Create a Delta Lake output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name output1221
-
-    :example: Create an Azure Data Explorer output
-        az stream-analytics output update --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name output1221 --resource-group sjrg --job-name sjName --output-name adxOutput
+    """Update an existing output under an existing streaming job. This can be used to partially update (ie. update one or two properties) an output without affecting the rest the job or output definition.
     """
 
     _aaz_info = {
@@ -69,8 +24,6 @@ class Update(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.streamanalytics/streamingjobs/{}/outputs/{}", "2021-10-01-preview"],
         ]
     }
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -92,10 +45,6 @@ class Update(AAZCommand):
             options=["--if-match"],
             help="The ETag of the output. Omit this value to always overwrite the current output. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.",
         )
-        _args_schema.if_none_match = AAZStrArg(
-            options=["--if-none-match"],
-            help="Set to '*' to allow a new output to be created, but to prevent updating an existing output. Other values will result in a 412 Pre-condition Failed response.",
-        )
         _args_schema.job_name = AAZStrArg(
             options=["--job-name"],
             help="The name of the streaming job.",
@@ -111,39 +60,21 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
         _args_schema.datasource = AAZObjectArg(
             options=["--datasource"],
-            arg_group="Properties",
             help="Describes the data source that output will be written to. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         _args_schema.serialization = AAZObjectArg(
             options=["--serialization"],
-            arg_group="Properties",
             help="Describes how data from an input is serialized or how data is serialized when written to an output. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         _args_schema.size_window = AAZIntArg(
             options=["--size-window"],
-            arg_group="Properties",
             help="The size window to constrain a Stream Analytics output to.",
-            nullable=True,
         )
         _args_schema.time_window = AAZStrArg(
             options=["--time-window"],
-            arg_group="Properties",
             help="The time frame for filtering Stream Analytics job outputs.",
-            nullable=True,
-        )
-        _args_schema.watermark_settings = AAZObjectArg(
-            options=["--watermark-settings"],
-            arg_group="Properties",
-            help="Settings which determine whether to send watermarks to downstream.",
-            nullable=True,
         )
 
         datasource = cls._args_schema.datasource
@@ -200,127 +131,106 @@ class Update(AAZCommand):
         gateway_message_bus.topic = AAZStrArg(
             options=["topic"],
             help="The name of the Service Bus topic.",
-            nullable=True,
         )
 
         microsoft_azure_function = cls._args_schema.datasource.microsoft_azure_function
         microsoft_azure_function.api_key = AAZStrArg(
             options=["api-key"],
             help="If you want to use an Azure Function from another subscription, you can do so by providing the key to access your function.",
-            nullable=True,
         )
         microsoft_azure_function.function_app_name = AAZStrArg(
             options=["function-app-name"],
             help="The name of your Azure Functions app.",
-            nullable=True,
         )
         microsoft_azure_function.function_name = AAZStrArg(
             options=["function-name"],
             help="The name of the function in your Azure Functions app.",
-            nullable=True,
         )
         microsoft_azure_function.max_batch_count = AAZFloatArg(
             options=["max-batch-count"],
             help="A property that lets you specify the maximum number of events in each batch that's sent to Azure Functions. The default value is 100.",
-            nullable=True,
         )
         microsoft_azure_function.max_batch_size = AAZFloatArg(
             options=["max-batch-size"],
             help="A property that lets you set the maximum size for each output batch that's sent to your Azure function. The input unit is in bytes. By default, this value is 262,144 bytes (256 KB).",
-            nullable=True,
         )
 
         microsoft_db_for_postgre_sql_servers_databases = cls._args_schema.datasource.microsoft_db_for_postgre_sql_servers_databases
         microsoft_db_for_postgre_sql_servers_databases.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_db_for_postgre_sql_servers_databases.database = AAZStrArg(
             options=["database"],
             help="The name of the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_db_for_postgre_sql_servers_databases.max_writer_count = AAZFloatArg(
             options=["max-writer-count"],
             help="Max Writer count, currently only 1(single writer) and 0(based on query partition) are available. Optional on PUT requests.",
-            nullable=True,
         )
         microsoft_db_for_postgre_sql_servers_databases.password = AAZStrArg(
             options=["password"],
             help="The password that will be used to connect to the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_db_for_postgre_sql_servers_databases.server = AAZStrArg(
             options=["server"],
             help="The name of the SQL server containing the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_db_for_postgre_sql_servers_databases.table = AAZStrArg(
             options=["table"],
             help="The name of the table in the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_db_for_postgre_sql_servers_databases.user = AAZStrArg(
             options=["user"],
             help="The user name that will be used to connect to the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         microsoft_data_lake_accounts = cls._args_schema.datasource.microsoft_data_lake_accounts
         microsoft_data_lake_accounts.account_name = AAZStrArg(
             options=["account-name"],
             help="The name of the Azure Data Lake Store account. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_data_lake_accounts.date_format = AAZStrArg(
             options=["date-format"],
             help="The date format. Wherever {date} appears in filePathPrefix, the value of this property is used as the date format instead.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.file_path_prefix = AAZStrArg(
             options=["file-path-prefix"],
             help="The location of the file to which the output should be written to. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.refresh_token = AAZStrArg(
             options=["refresh-token"],
             help="A refresh token that can be used to obtain a valid access token that can then be used to authenticate with the data source. A valid refresh token is currently only obtainable via the Azure Portal. It is recommended to put a dummy string value here when creating the data source and then going to the Azure Portal to authenticate the data source which will update this property with a valid refresh token. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.tenant_id = AAZStrArg(
             options=["tenant-id"],
             help="The tenant id of the user used to obtain the refresh token. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.time_format = AAZStrArg(
             options=["time-format"],
             help="The time format. Wherever {time} appears in filePathPrefix, the value of this property is used as the time format instead.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.token_user_display_name = AAZStrArg(
             options=["token-user-display-name"],
             help="The user display name of the user that was used to obtain the refresh token. Use this property to help remember which user was used to obtain the refresh token.",
-            nullable=True,
         )
         microsoft_data_lake_accounts.token_user_principal_name = AAZStrArg(
             options=["token-user-principal-name"],
             help="The user principal name (UPN) of the user that was used to obtain the refresh token. Use this property to help remember which user was used to obtain the refresh token.",
-            nullable=True,
         )
 
         microsoft_event_hub_event_hub = cls._args_schema.datasource.microsoft_event_hub_event_hub
         microsoft_event_hub_event_hub.properties = AAZObjectArg(
             options=["properties"],
             help="The properties that are associated with an Event Hub output. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         cls._build_args_event_hub_output_data_source_properties_update(microsoft_event_hub_event_hub.properties)
 
@@ -328,30 +238,26 @@ class Update(AAZCommand):
         microsoft_kusto_clusters_databases.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_kusto_clusters_databases.cluster = AAZStrArg(
             options=["cluster"],
             help="The name of the Azure Data Explorer cluster. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_kusto_clusters_databases.database = AAZStrArg(
             options=["database"],
             help="The name of the Azure Data Explorer database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_kusto_clusters_databases.table = AAZStrArg(
             options=["table"],
             help="The name of the Azure Table. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         microsoft_service_bus_event_hub = cls._args_schema.datasource.microsoft_service_bus_event_hub
         microsoft_service_bus_event_hub.properties = AAZObjectArg(
             options=["properties"],
             help="The properties that are associated with an Event Hub output. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         cls._build_args_event_hub_output_data_source_properties_update(microsoft_service_bus_event_hub.properties)
 
@@ -359,238 +265,195 @@ class Update(AAZCommand):
         microsoft_service_bus_queue.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_service_bus_queue.property_columns = AAZListArg(
             options=["property-columns"],
             help="A string array of the names of output columns to be attached to Service Bus messages as custom properties.",
-            nullable=True,
         )
         microsoft_service_bus_queue.queue_name = AAZStrArg(
             options=["queue-name"],
             help="The name of the Service Bus Queue. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_queue.service_bus_namespace = AAZStrArg(
             options=["service-bus-namespace"],
             help="The namespace that is associated with the desired Event Hub, Service Bus Queue, Service Bus Topic, etc. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_queue.shared_access_policy_key = AAZStrArg(
             options=["shared-access-policy-key"],
             help="The shared access policy key for the specified shared access policy. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_queue.shared_access_policy_name = AAZStrArg(
             options=["shared-access-policy-name"],
             help="The shared access policy name for the Event Hub, Service Bus Queue, Service Bus Topic, etc. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_queue.system_property_columns = AAZDictArg(
             options=["system-property-columns"],
             help="The system properties associated with the Service Bus Queue. The following system properties are supported: ReplyToSessionId, ContentType, To, Subject, CorrelationId, TimeToLive, PartitionKey, SessionId, ScheduledEnqueueTime, MessageId, ReplyTo, Label, ScheduledEnqueueTimeUtc.",
-            nullable=True,
         )
 
         property_columns = cls._args_schema.datasource.microsoft_service_bus_queue.property_columns
-        property_columns.Element = AAZStrArg(
-            nullable=True,
-        )
+        property_columns.Element = AAZStrArg()
 
         system_property_columns = cls._args_schema.datasource.microsoft_service_bus_queue.system_property_columns
-        system_property_columns.Element = AAZAnyTypeArg(
-            nullable=True,
-        )
+        system_property_columns.Element = AAZAnyTypeArg()
 
         microsoft_service_bus_topic = cls._args_schema.datasource.microsoft_service_bus_topic
         microsoft_service_bus_topic.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_service_bus_topic.property_columns = AAZListArg(
             options=["property-columns"],
             help="A string array of the names of output columns to be attached to Service Bus messages as custom properties.",
-            nullable=True,
         )
         microsoft_service_bus_topic.service_bus_namespace = AAZStrArg(
             options=["service-bus-namespace"],
             help="The namespace that is associated with the desired Event Hub, Service Bus Queue, Service Bus Topic, etc. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_topic.shared_access_policy_key = AAZStrArg(
             options=["shared-access-policy-key"],
             help="The shared access policy key for the specified shared access policy. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_topic.shared_access_policy_name = AAZStrArg(
             options=["shared-access-policy-name"],
             help="The shared access policy name for the Event Hub, Service Bus Queue, Service Bus Topic, etc. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_service_bus_topic.system_property_columns = AAZDictArg(
             options=["system-property-columns"],
             help="The system properties associated with the Service Bus Topic Output. The following system properties are supported: ReplyToSessionId, ContentType, To, Subject, CorrelationId, TimeToLive, PartitionKey, SessionId, ScheduledEnqueueTime, MessageId, ReplyTo, Label, ScheduledEnqueueTimeUtc.",
-            nullable=True,
         )
         microsoft_service_bus_topic.topic_name = AAZStrArg(
             options=["topic-name"],
             help="The name of the Service Bus Topic. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         property_columns = cls._args_schema.datasource.microsoft_service_bus_topic.property_columns
-        property_columns.Element = AAZStrArg(
-            nullable=True,
-        )
+        property_columns.Element = AAZStrArg()
 
         system_property_columns = cls._args_schema.datasource.microsoft_service_bus_topic.system_property_columns
-        system_property_columns.Element = AAZStrArg(
-            nullable=True,
-        )
+        system_property_columns.Element = AAZStrArg()
 
         microsoft_sql_server_data_warehouse = cls._args_schema.datasource.microsoft_sql_server_data_warehouse
         microsoft_sql_server_data_warehouse.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_sql_server_data_warehouse.database = AAZStrArg(
             options=["database"],
             help="The name of the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_data_warehouse.password = AAZStrArg(
             options=["password"],
             help="The password that will be used to connect to the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_data_warehouse.server = AAZStrArg(
             options=["server"],
             help="The name of the SQL server containing the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_data_warehouse.table = AAZStrArg(
             options=["table"],
             help="The name of the table in the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_data_warehouse.user = AAZStrArg(
             options=["user"],
             help="The user name that will be used to connect to the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         microsoft_sql_server_database = cls._args_schema.datasource.microsoft_sql_server_database
         microsoft_sql_server_database.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_sql_server_database.database = AAZStrArg(
             options=["database"],
             help="The name of the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_database.max_batch_count = AAZFloatArg(
             options=["max-batch-count"],
             help="Max Batch count for write to Sql database, the default value is 10,000. Optional on PUT requests.",
-            nullable=True,
         )
         microsoft_sql_server_database.max_writer_count = AAZFloatArg(
             options=["max-writer-count"],
             help="Max Writer count, currently only 1(single writer) and 0(based on query partition) are available. Optional on PUT requests.",
-            nullable=True,
         )
         microsoft_sql_server_database.password = AAZStrArg(
             options=["password"],
             help="The password that will be used to connect to the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_database.server = AAZStrArg(
             options=["server"],
             help="The name of the SQL server containing the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_database.table = AAZStrArg(
             options=["table"],
             help="The name of the table in the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_sql_server_database.user = AAZStrArg(
             options=["user"],
             help="The user name that will be used to connect to the Azure SQL database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         microsoft_storage_blob = cls._args_schema.datasource.microsoft_storage_blob
         microsoft_storage_blob.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_storage_blob.blob_path_prefix = AAZStrArg(
             options=["blob-path-prefix"],
             help="Blob path prefix.",
-            nullable=True,
         )
         microsoft_storage_blob.blob_write_mode = AAZStrArg(
             options=["blob-write-mode"],
             help="Blob write mode.",
-            nullable=True,
             enum={"Append": "Append", "Once": "Once"},
         )
         microsoft_storage_blob.container = AAZStrArg(
             options=["container"],
             help="The name of a container within the associated Storage account. This container contains either the blob(s) to be read from or written to. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_blob.date_format = AAZStrArg(
             options=["date-format"],
             help="The date format. Wherever {date} appears in pathPattern, the value of this property is used as the date format instead.",
-            nullable=True,
         )
         microsoft_storage_blob.path_pattern = AAZStrArg(
             options=["path-pattern"],
             help="The blob path pattern. Not a regular expression. It represents a pattern against which blob names will be matched to determine whether or not they should be included as input or output to the job. See https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and example.",
-            nullable=True,
         )
         microsoft_storage_blob.storage_accounts = AAZListArg(
             options=["storage-accounts"],
             help="A list of one or more Azure Storage accounts. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_blob.time_format = AAZStrArg(
             options=["time-format"],
             help="The time format. Wherever {time} appears in pathPattern, the value of this property is used as the time format instead.",
-            nullable=True,
         )
 
         storage_accounts = cls._args_schema.datasource.microsoft_storage_blob.storage_accounts
-        storage_accounts.Element = AAZObjectArg(
-            nullable=True,
-        )
+        storage_accounts.Element = AAZObjectArg()
 
         _element = cls._args_schema.datasource.microsoft_storage_blob.storage_accounts.Element
         _element.account_key = AAZStrArg(
             options=["account-key"],
             help="The account key for the Azure Storage account. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         _element.account_name = AAZStrArg(
             options=["account-name"],
             help="The name of the Azure Storage account. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         _element.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
 
@@ -598,130 +461,107 @@ class Update(AAZCommand):
         microsoft_storage_document_db.account_id = AAZStrArg(
             options=["account-id"],
             help="The DocumentDB account name or ID. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_document_db.account_key = AAZStrArg(
             options=["account-key"],
             help="The account key for the DocumentDB account. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_document_db.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         microsoft_storage_document_db.collection_name_pattern = AAZStrArg(
             options=["collection-name-pattern"],
             help="The collection name pattern for the collections to be used. The collection name format can be constructed using the optional {partition} token, where partitions start from 0. See the DocumentDB section of https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-analytics-output for more information. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_document_db.database = AAZStrArg(
             options=["database"],
             help="The name of the DocumentDB database. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_document_db.document_id = AAZStrArg(
             options=["document-id"],
             help="The name of the field in output events used to specify the primary key which insert or update operations are based on.",
-            nullable=True,
         )
         microsoft_storage_document_db.partition_key = AAZStrArg(
             options=["partition-key"],
             help="The name of the field in output events used to specify the key for partitioning output across collections. If 'collectionNamePattern' contains the {partition} token, this property is required to be specified.",
-            nullable=True,
         )
 
         microsoft_storage_table = cls._args_schema.datasource.microsoft_storage_table
         microsoft_storage_table.account_key = AAZStrArg(
             options=["account-key"],
             help="The account key for the Azure Storage account. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_table.account_name = AAZStrArg(
             options=["account-name"],
             help="The name of the Azure Storage account. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_table.batch_size = AAZIntArg(
             options=["batch-size"],
             help="The number of rows to write to the Azure Table at a time.",
-            nullable=True,
         )
         microsoft_storage_table.columns_to_remove = AAZListArg(
             options=["columns-to-remove"],
             help="If specified, each item in the array is the name of a column to remove (if present) from output event entities.",
-            nullable=True,
         )
         microsoft_storage_table.partition_key = AAZStrArg(
             options=["partition-key"],
             help="This element indicates the name of a column from the SELECT statement in the query that will be used as the partition key for the Azure Table. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_table.row_key = AAZStrArg(
             options=["row-key"],
             help="This element indicates the name of a column from the SELECT statement in the query that will be used as the row key for the Azure Table. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         microsoft_storage_table.table = AAZStrArg(
             options=["table"],
             help="The name of the Azure Table. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         columns_to_remove = cls._args_schema.datasource.microsoft_storage_table.columns_to_remove
-        columns_to_remove.Element = AAZStrArg(
-            nullable=True,
-        )
+        columns_to_remove.Element = AAZStrArg()
 
         power_bi = cls._args_schema.datasource.power_bi
         power_bi.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         power_bi.dataset = AAZStrArg(
             options=["dataset"],
             help="The name of the Power BI dataset. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         power_bi.group_id = AAZStrArg(
             options=["group-id"],
             help="The ID of the Power BI group.",
-            nullable=True,
         )
         power_bi.group_name = AAZStrArg(
             options=["group-name"],
             help="The name of the Power BI group. Use this property to help remember which specific Power BI group id was used.",
-            nullable=True,
         )
         power_bi.refresh_token = AAZStrArg(
             options=["refresh-token"],
             help="A refresh token that can be used to obtain a valid access token that can then be used to authenticate with the data source. A valid refresh token is currently only obtainable via the Azure Portal. It is recommended to put a dummy string value here when creating the data source and then going to the Azure Portal to authenticate the data source which will update this property with a valid refresh token. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         power_bi.table = AAZStrArg(
             options=["table"],
             help="The name of the Power BI table under the specified dataset. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         power_bi.token_user_display_name = AAZStrArg(
             options=["token-user-display-name"],
             help="The user display name of the user that was used to obtain the refresh token. Use this property to help remember which user was used to obtain the refresh token.",
-            nullable=True,
         )
         power_bi.token_user_principal_name = AAZStrArg(
             options=["token-user-principal-name"],
             help="The user principal name (UPN) of the user that was used to obtain the refresh token. Use this property to help remember which user was used to obtain the refresh token.",
-            nullable=True,
         )
 
         raw = cls._args_schema.datasource.raw
         raw.payload_uri = AAZStrArg(
             options=["payload-uri"],
             help="The SAS URL to a blob where the output should be written. If this property is not set, output data will be written into a temporary storage, and a SAS URL to that temporary storage will be included in the result.",
-            nullable=True,
         )
 
         serialization = cls._args_schema.serialization
@@ -750,25 +590,21 @@ class Update(AAZCommand):
         csv.encoding = AAZStrArg(
             options=["encoding"],
             help="Specifies the encoding of the incoming data in the case of input and the encoding of outgoing data in the case of output. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
             enum={"UTF8": "UTF8"},
         )
         csv.field_delimiter = AAZStrArg(
             options=["field-delimiter"],
             help="Specifies the delimiter that will be used to separate comma-separated value (CSV) records. See https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-analytics-output for a list of supported values. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         custom_clr = cls._args_schema.serialization.custom_clr
         custom_clr.serialization_class_name = AAZStrArg(
             options=["serialization-class-name"],
             help="The serialization class name.",
-            nullable=True,
         )
         custom_clr.serialization_dll_path = AAZStrArg(
             options=["serialization-dll-path"],
             help="The serialization library path.",
-            nullable=True,
         )
 
         delta = cls._args_schema.serialization.delta
@@ -779,38 +615,40 @@ class Update(AAZCommand):
         delta.partition_columns = AAZListArg(
             options=["partition-columns"],
             help="Specifies the names of the columns for which the Delta Lake table will be partitioned. We are only supporting 1 partition column, but keeping it as an array for extensibility.",
-            nullable=True,
         )
 
         partition_columns = cls._args_schema.serialization.delta.partition_columns
-        partition_columns.Element = AAZStrArg(
-            nullable=True,
-        )
+        partition_columns.Element = AAZStrArg()
 
         json = cls._args_schema.serialization.json
         json.encoding = AAZStrArg(
             options=["encoding"],
             help="Specifies the encoding of the incoming data in the case of input and the encoding of outgoing data in the case of output. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
             enum={"UTF8": "UTF8"},
         )
         json.format = AAZStrArg(
             options=["format"],
             help="This property only applies to JSON serialization of outputs only. It is not applicable to inputs. This property specifies the format of the JSON the output will be written in. The currently supported values are 'lineSeparated' indicating the output will be formatted by having each JSON object separated by a new line and 'array' indicating the output will be formatted as an array of JSON objects. Default value is 'lineSeparated' if left null.",
-            nullable=True,
             enum={"Array": "Array", "LineSeparated": "LineSeparated"},
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.watermark_settings = AAZObjectArg(
+            options=["--watermark-settings"],
+            arg_group="Properties",
+            help="Settings which determine whether to send watermarks to downstream.",
         )
 
         watermark_settings = cls._args_schema.watermark_settings
         watermark_settings.max_watermark_difference_across_partitions = AAZStrArg(
             options=["max-watermark-difference-across-partitions"],
             help="Describes the maximal delta between the fastest and slowest partitions, so the out of order window that catches all necessary events in downstream jobs is well defined.",
-            nullable=True,
         )
         watermark_settings.watermark_mode = AAZStrArg(
             options=["watermark-mode"],
             help="The output watermark mode.",
-            nullable=True,
             enum={"None": "None", "SendCurrentPartitionWatermark": "SendCurrentPartitionWatermark", "SendLowestWatermarkAcrossPartitions": "SendLowestWatermarkAcrossPartitions"},
         )
         return cls._args_schema
@@ -830,57 +668,46 @@ class Update(AAZCommand):
             _schema.shared_access_policy_name = cls._args_event_hub_output_data_source_properties_update.shared_access_policy_name
             return
 
-        cls._args_event_hub_output_data_source_properties_update = AAZObjectArg(
-            nullable=True,
-        )
+        cls._args_event_hub_output_data_source_properties_update = AAZObjectArg()
 
         event_hub_output_data_source_properties_update = cls._args_event_hub_output_data_source_properties_update
         event_hub_output_data_source_properties_update.authentication_mode = AAZStrArg(
             options=["authentication-mode"],
             help="Authentication Mode.",
-            nullable=True,
+            default="ConnectionString",
             enum={"ConnectionString": "ConnectionString", "Msi": "Msi", "UserToken": "UserToken"},
         )
         event_hub_output_data_source_properties_update.event_hub_name = AAZStrArg(
             options=["event-hub-name"],
             help="The name of the Event Hub. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         event_hub_output_data_source_properties_update.partition_count = AAZIntArg(
             options=["partition-count"],
             help="The partition count of the event hub data source. Range 1 - 256.",
-            nullable=True,
         )
         event_hub_output_data_source_properties_update.partition_key = AAZStrArg(
             options=["partition-key"],
             help="The key/column that is used to determine to which partition to send event data.",
-            nullable=True,
         )
         event_hub_output_data_source_properties_update.property_columns = AAZListArg(
             options=["property-columns"],
             help="The properties associated with this Event Hub output.",
-            nullable=True,
         )
         event_hub_output_data_source_properties_update.service_bus_namespace = AAZStrArg(
             options=["service-bus-namespace"],
             help="The namespace that is associated with the desired Event Hub, Service Bus Queue, Service Bus Topic, etc. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         event_hub_output_data_source_properties_update.shared_access_policy_key = AAZStrArg(
             options=["shared-access-policy-key"],
             help="The shared access policy key for the specified shared access policy. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
         event_hub_output_data_source_properties_update.shared_access_policy_name = AAZStrArg(
             options=["shared-access-policy-name"],
             help="The shared access policy name for the Event Hub, Service Bus Queue, Service Bus Topic, etc. Required on PUT (CreateOrReplace) requests.",
-            nullable=True,
         )
 
         property_columns = cls._args_event_hub_output_data_source_properties_update.property_columns
-        property_columns.Element = AAZStrArg(
-            nullable=True,
-        )
+        property_columns.Element = AAZStrArg()
 
         _schema.authentication_mode = cls._args_event_hub_output_data_source_properties_update.authentication_mode
         _schema.event_hub_name = cls._args_event_hub_output_data_source_properties_update.event_hub_name
@@ -893,12 +720,7 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.OutputsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        self.OutputsCreateOrReplace(ctx=self.ctx)()
+        self.OutputsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -909,19 +731,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class OutputsGet(AAZHttpOperation):
+    class OutputsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -941,94 +755,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "jobName", self.ctx.args.job_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "outputName", self.ctx.args.output_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2021-10-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_output_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class OutputsCreateOrReplace(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.StreamAnalytics/streamingjobs/{jobName}/outputs/{outputName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -1073,9 +800,6 @@ class Update(AAZCommand):
                     "If-Match", self.ctx.args.if_match,
                 ),
                 **self.serialize_header_param(
-                    "If-None-Match", self.ctx.args.if_none_match,
-                ),
-                **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
                 **self.serialize_header_param(
@@ -1088,41 +812,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_output_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("name", AAZStrType, ".output_name")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
@@ -1459,15 +1150,524 @@ class Update(AAZCommand):
                 watermark_settings.set_prop("maxWatermarkDifferenceAcrossPartitions", AAZStrType, ".max_watermark_difference_across_partitions")
                 watermark_settings.set_prop("watermarkMode", AAZStrType, ".watermark_mode")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.datasource = AAZObjectType()
+            properties.diagnostics = AAZObjectType(
+                flags={"read_only": True},
+            )
+            properties.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.last_output_event_timestamps = AAZListType(
+                serialized_name="lastOutputEventTimestamps",
+                flags={"read_only": True},
+            )
+            properties.serialization = AAZObjectType()
+            properties.size_window = AAZIntType(
+                serialized_name="sizeWindow",
+            )
+            properties.time_window = AAZStrType(
+                serialized_name="timeWindow",
+            )
+            properties.watermark_settings = AAZObjectType(
+                serialized_name="watermarkSettings",
+            )
+
+            datasource = cls._schema_on_200.properties.datasource
+            datasource.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_gateway_message_bus = cls._schema_on_200.properties.datasource.discriminate_by("type", "GatewayMessageBus")
+            disc_gateway_message_bus.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "GatewayMessageBus").properties
+            properties.topic = AAZStrType()
+
+            disc_microsoft__azure_function = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.AzureFunction")
+            disc_microsoft__azure_function.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.AzureFunction").properties
+            properties.api_key = AAZStrType(
+                serialized_name="apiKey",
+            )
+            properties.function_app_name = AAZStrType(
+                serialized_name="functionAppName",
+            )
+            properties.function_name = AAZStrType(
+                serialized_name="functionName",
+            )
+            properties.max_batch_count = AAZFloatType(
+                serialized_name="maxBatchCount",
+            )
+            properties.max_batch_size = AAZFloatType(
+                serialized_name="maxBatchSize",
+            )
+
+            disc_microsoft_db_for_postgre_sql_servers_databases = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.DBForPostgreSQL/servers/databases")
+            disc_microsoft_db_for_postgre_sql_servers_databases.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.DBForPostgreSQL/servers/databases").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.database = AAZStrType()
+            properties.max_writer_count = AAZFloatType(
+                serialized_name="maxWriterCount",
+            )
+            properties.password = AAZStrType(
+                flags={"secret": True},
+            )
+            properties.server = AAZStrType()
+            properties.table = AAZStrType()
+            properties.user = AAZStrType()
+
+            disc_microsoft__data_lake__accounts = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.DataLake/Accounts")
+            disc_microsoft__data_lake__accounts.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.DataLake/Accounts").properties
+            properties.account_name = AAZStrType(
+                serialized_name="accountName",
+            )
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.date_format = AAZStrType(
+                serialized_name="dateFormat",
+            )
+            properties.file_path_prefix = AAZStrType(
+                serialized_name="filePathPrefix",
+            )
+            properties.refresh_token = AAZStrType(
+                serialized_name="refreshToken",
+            )
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+            properties.time_format = AAZStrType(
+                serialized_name="timeFormat",
+            )
+            properties.token_user_display_name = AAZStrType(
+                serialized_name="tokenUserDisplayName",
+            )
+            properties.token_user_principal_name = AAZStrType(
+                serialized_name="tokenUserPrincipalName",
+            )
+
+            disc_microsoft__event_hub__event_hub = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.EventHub/EventHub")
+            disc_microsoft__event_hub__event_hub.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _UpdateHelper._build_schema_event_hub_output_data_source_properties_read(disc_microsoft__event_hub__event_hub.properties)
+
+            disc_microsoft__kusto_clusters_databases = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Kusto/clusters/databases")
+            disc_microsoft__kusto_clusters_databases.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Kusto/clusters/databases").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.cluster = AAZStrType()
+            properties.database = AAZStrType()
+            properties.table = AAZStrType()
+
+            disc_microsoft__service_bus__event_hub = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/EventHub")
+            disc_microsoft__service_bus__event_hub.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _UpdateHelper._build_schema_event_hub_output_data_source_properties_read(disc_microsoft__service_bus__event_hub.properties)
+
+            disc_microsoft__service_bus__queue = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue")
+            disc_microsoft__service_bus__queue.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.property_columns = AAZListType(
+                serialized_name="propertyColumns",
+            )
+            properties.queue_name = AAZStrType(
+                serialized_name="queueName",
+            )
+            properties.service_bus_namespace = AAZStrType(
+                serialized_name="serviceBusNamespace",
+            )
+            properties.shared_access_policy_key = AAZStrType(
+                serialized_name="sharedAccessPolicyKey",
+                flags={"secret": True},
+            )
+            properties.shared_access_policy_name = AAZStrType(
+                serialized_name="sharedAccessPolicyName",
+            )
+            properties.system_property_columns = AAZDictType(
+                serialized_name="systemPropertyColumns",
+            )
+
+            property_columns = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue").properties.property_columns
+            property_columns.Element = AAZStrType()
+
+            system_property_columns = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue").properties.system_property_columns
+            system_property_columns.Element = AAZAnyType()
+
+            disc_microsoft__service_bus__topic = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic")
+            disc_microsoft__service_bus__topic.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.property_columns = AAZListType(
+                serialized_name="propertyColumns",
+            )
+            properties.service_bus_namespace = AAZStrType(
+                serialized_name="serviceBusNamespace",
+            )
+            properties.shared_access_policy_key = AAZStrType(
+                serialized_name="sharedAccessPolicyKey",
+                flags={"secret": True},
+            )
+            properties.shared_access_policy_name = AAZStrType(
+                serialized_name="sharedAccessPolicyName",
+            )
+            properties.system_property_columns = AAZDictType(
+                serialized_name="systemPropertyColumns",
+            )
+            properties.topic_name = AAZStrType(
+                serialized_name="topicName",
+            )
+
+            property_columns = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic").properties.property_columns
+            property_columns.Element = AAZStrType()
+
+            system_property_columns = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic").properties.system_property_columns
+            system_property_columns.Element = AAZStrType()
+
+            disc_microsoft__sql__server__data_warehouse = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/DataWarehouse")
+            disc_microsoft__sql__server__data_warehouse.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/DataWarehouse").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.database = AAZStrType()
+            properties.password = AAZStrType(
+                flags={"secret": True},
+            )
+            properties.server = AAZStrType()
+            properties.table = AAZStrType()
+            properties.user = AAZStrType()
+
+            disc_microsoft__sql__server__database = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/Database")
+            disc_microsoft__sql__server__database.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/Database").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.database = AAZStrType()
+            properties.max_batch_count = AAZFloatType(
+                serialized_name="maxBatchCount",
+            )
+            properties.max_writer_count = AAZFloatType(
+                serialized_name="maxWriterCount",
+            )
+            properties.password = AAZStrType()
+            properties.server = AAZStrType()
+            properties.table = AAZStrType()
+            properties.user = AAZStrType()
+
+            disc_microsoft__storage__blob = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob")
+            disc_microsoft__storage__blob.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.blob_path_prefix = AAZStrType(
+                serialized_name="blobPathPrefix",
+            )
+            properties.blob_write_mode = AAZStrType(
+                serialized_name="blobWriteMode",
+            )
+            properties.container = AAZStrType()
+            properties.date_format = AAZStrType(
+                serialized_name="dateFormat",
+            )
+            properties.path_pattern = AAZStrType(
+                serialized_name="pathPattern",
+            )
+            properties.storage_accounts = AAZListType(
+                serialized_name="storageAccounts",
+            )
+            properties.time_format = AAZStrType(
+                serialized_name="timeFormat",
+            )
+
+            storage_accounts = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob").properties.storage_accounts
+            storage_accounts.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob").properties.storage_accounts.Element
+            _element.account_key = AAZStrType(
+                serialized_name="accountKey",
+                flags={"secret": True},
+            )
+            _element.account_name = AAZStrType(
+                serialized_name="accountName",
+            )
+            _element.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+
+            disc_microsoft__storage__document_db = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/DocumentDB")
+            disc_microsoft__storage__document_db.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/DocumentDB").properties
+            properties.account_id = AAZStrType(
+                serialized_name="accountId",
+            )
+            properties.account_key = AAZStrType(
+                serialized_name="accountKey",
+                flags={"secret": True},
+            )
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.collection_name_pattern = AAZStrType(
+                serialized_name="collectionNamePattern",
+            )
+            properties.database = AAZStrType()
+            properties.document_id = AAZStrType(
+                serialized_name="documentId",
+            )
+            properties.partition_key = AAZStrType(
+                serialized_name="partitionKey",
+            )
+
+            disc_microsoft__storage__table = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Table")
+            disc_microsoft__storage__table.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Table").properties
+            properties.account_key = AAZStrType(
+                serialized_name="accountKey",
+                flags={"secret": True},
+            )
+            properties.account_name = AAZStrType(
+                serialized_name="accountName",
+            )
+            properties.batch_size = AAZIntType(
+                serialized_name="batchSize",
+            )
+            properties.columns_to_remove = AAZListType(
+                serialized_name="columnsToRemove",
+            )
+            properties.partition_key = AAZStrType(
+                serialized_name="partitionKey",
+            )
+            properties.row_key = AAZStrType(
+                serialized_name="rowKey",
+            )
+            properties.table = AAZStrType()
+
+            columns_to_remove = cls._schema_on_200.properties.datasource.discriminate_by("type", "Microsoft.Storage/Table").properties.columns_to_remove
+            columns_to_remove.Element = AAZStrType()
+
+            disc_power_bi = cls._schema_on_200.properties.datasource.discriminate_by("type", "PowerBI")
+            disc_power_bi.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "PowerBI").properties
+            properties.authentication_mode = AAZStrType(
+                serialized_name="authenticationMode",
+            )
+            properties.dataset = AAZStrType()
+            properties.group_id = AAZStrType(
+                serialized_name="groupId",
+            )
+            properties.group_name = AAZStrType(
+                serialized_name="groupName",
+            )
+            properties.refresh_token = AAZStrType(
+                serialized_name="refreshToken",
+            )
+            properties.table = AAZStrType()
+            properties.token_user_display_name = AAZStrType(
+                serialized_name="tokenUserDisplayName",
+            )
+            properties.token_user_principal_name = AAZStrType(
+                serialized_name="tokenUserPrincipalName",
+            )
+
+            disc_raw = cls._schema_on_200.properties.datasource.discriminate_by("type", "Raw")
+            disc_raw.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.datasource.discriminate_by("type", "Raw").properties
+            properties.payload_uri = AAZStrType(
+                serialized_name="payloadUri",
+            )
+
+            diagnostics = cls._schema_on_200.properties.diagnostics
+            diagnostics.conditions = AAZListType(
+                flags={"read_only": True},
+            )
+
+            conditions = cls._schema_on_200.properties.diagnostics.conditions
+            conditions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.diagnostics.conditions.Element
+            _element.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.since = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            last_output_event_timestamps = cls._schema_on_200.properties.last_output_event_timestamps
+            last_output_event_timestamps.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.last_output_event_timestamps.Element
+            _element.last_output_event_time = AAZStrType(
+                serialized_name="lastOutputEventTime",
+            )
+            _element.last_update_time = AAZStrType(
+                serialized_name="lastUpdateTime",
+            )
+
+            serialization = cls._schema_on_200.properties.serialization
+            serialization.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_avro = cls._schema_on_200.properties.serialization.discriminate_by("type", "Avro")
+            disc_avro.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            disc_csv = cls._schema_on_200.properties.serialization.discriminate_by("type", "Csv")
+            disc_csv.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.serialization.discriminate_by("type", "Csv").properties
+            properties.encoding = AAZStrType()
+            properties.field_delimiter = AAZStrType(
+                serialized_name="fieldDelimiter",
+            )
+
+            disc_custom_clr = cls._schema_on_200.properties.serialization.discriminate_by("type", "CustomClr")
+            disc_custom_clr.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.serialization.discriminate_by("type", "CustomClr").properties
+            properties.serialization_class_name = AAZStrType(
+                serialized_name="serializationClassName",
+            )
+            properties.serialization_dll_path = AAZStrType(
+                serialized_name="serializationDllPath",
+            )
+
+            disc_delta = cls._schema_on_200.properties.serialization.discriminate_by("type", "Delta")
+            disc_delta.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.serialization.discriminate_by("type", "Delta").properties
+            properties.delta_table_path = AAZStrType(
+                serialized_name="deltaTablePath",
+                flags={"required": True},
+            )
+            properties.partition_columns = AAZListType(
+                serialized_name="partitionColumns",
+            )
+
+            partition_columns = cls._schema_on_200.properties.serialization.discriminate_by("type", "Delta").properties.partition_columns
+            partition_columns.Element = AAZStrType()
+
+            disc_json = cls._schema_on_200.properties.serialization.discriminate_by("type", "Json")
+            disc_json.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            properties = cls._schema_on_200.properties.serialization.discriminate_by("type", "Json").properties
+            properties.encoding = AAZStrType()
+            properties.format = AAZStrType()
+
+            disc_parquet = cls._schema_on_200.properties.serialization.discriminate_by("type", "Parquet")
+            disc_parquet.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+
+            watermark_settings = cls._schema_on_200.properties.watermark_settings
+            watermark_settings.max_watermark_difference_across_partitions = AAZStrType(
+                serialized_name="maxWatermarkDifferenceAcrossPartitions",
+            )
+            watermark_settings.watermark_mode = AAZStrType(
+                serialized_name="watermarkMode",
+            )
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
@@ -1545,522 +1745,6 @@ class _UpdateHelper:
         _schema.service_bus_namespace = cls._schema_event_hub_output_data_source_properties_read.service_bus_namespace
         _schema.shared_access_policy_key = cls._schema_event_hub_output_data_source_properties_read.shared_access_policy_key
         _schema.shared_access_policy_name = cls._schema_event_hub_output_data_source_properties_read.shared_access_policy_name
-
-    _schema_output_read = None
-
-    @classmethod
-    def _build_schema_output_read(cls, _schema):
-        if cls._schema_output_read is not None:
-            _schema.id = cls._schema_output_read.id
-            _schema.name = cls._schema_output_read.name
-            _schema.properties = cls._schema_output_read.properties
-            _schema.type = cls._schema_output_read.type
-            return
-
-        cls._schema_output_read = _schema_output_read = AAZObjectType()
-
-        output_read = _schema_output_read
-        output_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        output_read.name = AAZStrType()
-        output_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        output_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_output_read.properties
-        properties.datasource = AAZObjectType()
-        properties.diagnostics = AAZObjectType(
-            flags={"read_only": True},
-        )
-        properties.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties.last_output_event_timestamps = AAZListType(
-            serialized_name="lastOutputEventTimestamps",
-            flags={"read_only": True},
-        )
-        properties.serialization = AAZObjectType()
-        properties.size_window = AAZIntType(
-            serialized_name="sizeWindow",
-        )
-        properties.time_window = AAZStrType(
-            serialized_name="timeWindow",
-        )
-        properties.watermark_settings = AAZObjectType(
-            serialized_name="watermarkSettings",
-        )
-
-        datasource = _schema_output_read.properties.datasource
-        datasource.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        disc_gateway_message_bus = _schema_output_read.properties.datasource.discriminate_by("type", "GatewayMessageBus")
-        disc_gateway_message_bus.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "GatewayMessageBus").properties
-        properties.topic = AAZStrType()
-
-        disc_microsoft__azure_function = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.AzureFunction")
-        disc_microsoft__azure_function.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.AzureFunction").properties
-        properties.api_key = AAZStrType(
-            serialized_name="apiKey",
-        )
-        properties.function_app_name = AAZStrType(
-            serialized_name="functionAppName",
-        )
-        properties.function_name = AAZStrType(
-            serialized_name="functionName",
-        )
-        properties.max_batch_count = AAZFloatType(
-            serialized_name="maxBatchCount",
-        )
-        properties.max_batch_size = AAZFloatType(
-            serialized_name="maxBatchSize",
-        )
-
-        disc_microsoft_db_for_postgre_sql_servers_databases = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.DBForPostgreSQL/servers/databases")
-        disc_microsoft_db_for_postgre_sql_servers_databases.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.DBForPostgreSQL/servers/databases").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.database = AAZStrType()
-        properties.max_writer_count = AAZFloatType(
-            serialized_name="maxWriterCount",
-        )
-        properties.password = AAZStrType(
-            flags={"secret": True},
-        )
-        properties.server = AAZStrType()
-        properties.table = AAZStrType()
-        properties.user = AAZStrType()
-
-        disc_microsoft__data_lake__accounts = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.DataLake/Accounts")
-        disc_microsoft__data_lake__accounts.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.DataLake/Accounts").properties
-        properties.account_name = AAZStrType(
-            serialized_name="accountName",
-        )
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.date_format = AAZStrType(
-            serialized_name="dateFormat",
-        )
-        properties.file_path_prefix = AAZStrType(
-            serialized_name="filePathPrefix",
-        )
-        properties.refresh_token = AAZStrType(
-            serialized_name="refreshToken",
-        )
-        properties.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-        )
-        properties.time_format = AAZStrType(
-            serialized_name="timeFormat",
-        )
-        properties.token_user_display_name = AAZStrType(
-            serialized_name="tokenUserDisplayName",
-        )
-        properties.token_user_principal_name = AAZStrType(
-            serialized_name="tokenUserPrincipalName",
-        )
-
-        disc_microsoft__event_hub__event_hub = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.EventHub/EventHub")
-        disc_microsoft__event_hub__event_hub.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        cls._build_schema_event_hub_output_data_source_properties_read(disc_microsoft__event_hub__event_hub.properties)
-
-        disc_microsoft__kusto_clusters_databases = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Kusto/clusters/databases")
-        disc_microsoft__kusto_clusters_databases.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Kusto/clusters/databases").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.cluster = AAZStrType()
-        properties.database = AAZStrType()
-        properties.table = AAZStrType()
-
-        disc_microsoft__service_bus__event_hub = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/EventHub")
-        disc_microsoft__service_bus__event_hub.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        cls._build_schema_event_hub_output_data_source_properties_read(disc_microsoft__service_bus__event_hub.properties)
-
-        disc_microsoft__service_bus__queue = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue")
-        disc_microsoft__service_bus__queue.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.property_columns = AAZListType(
-            serialized_name="propertyColumns",
-        )
-        properties.queue_name = AAZStrType(
-            serialized_name="queueName",
-        )
-        properties.service_bus_namespace = AAZStrType(
-            serialized_name="serviceBusNamespace",
-        )
-        properties.shared_access_policy_key = AAZStrType(
-            serialized_name="sharedAccessPolicyKey",
-            flags={"secret": True},
-        )
-        properties.shared_access_policy_name = AAZStrType(
-            serialized_name="sharedAccessPolicyName",
-        )
-        properties.system_property_columns = AAZDictType(
-            serialized_name="systemPropertyColumns",
-        )
-
-        property_columns = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue").properties.property_columns
-        property_columns.Element = AAZStrType()
-
-        system_property_columns = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Queue").properties.system_property_columns
-        system_property_columns.Element = AAZAnyType()
-
-        disc_microsoft__service_bus__topic = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic")
-        disc_microsoft__service_bus__topic.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.property_columns = AAZListType(
-            serialized_name="propertyColumns",
-        )
-        properties.service_bus_namespace = AAZStrType(
-            serialized_name="serviceBusNamespace",
-        )
-        properties.shared_access_policy_key = AAZStrType(
-            serialized_name="sharedAccessPolicyKey",
-            flags={"secret": True},
-        )
-        properties.shared_access_policy_name = AAZStrType(
-            serialized_name="sharedAccessPolicyName",
-        )
-        properties.system_property_columns = AAZDictType(
-            serialized_name="systemPropertyColumns",
-        )
-        properties.topic_name = AAZStrType(
-            serialized_name="topicName",
-        )
-
-        property_columns = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic").properties.property_columns
-        property_columns.Element = AAZStrType()
-
-        system_property_columns = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.ServiceBus/Topic").properties.system_property_columns
-        system_property_columns.Element = AAZStrType()
-
-        disc_microsoft__sql__server__data_warehouse = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/DataWarehouse")
-        disc_microsoft__sql__server__data_warehouse.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/DataWarehouse").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.database = AAZStrType()
-        properties.password = AAZStrType(
-            flags={"secret": True},
-        )
-        properties.server = AAZStrType()
-        properties.table = AAZStrType()
-        properties.user = AAZStrType()
-
-        disc_microsoft__sql__server__database = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/Database")
-        disc_microsoft__sql__server__database.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Sql/Server/Database").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.database = AAZStrType()
-        properties.max_batch_count = AAZFloatType(
-            serialized_name="maxBatchCount",
-        )
-        properties.max_writer_count = AAZFloatType(
-            serialized_name="maxWriterCount",
-        )
-        properties.password = AAZStrType()
-        properties.server = AAZStrType()
-        properties.table = AAZStrType()
-        properties.user = AAZStrType()
-
-        disc_microsoft__storage__blob = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob")
-        disc_microsoft__storage__blob.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.blob_path_prefix = AAZStrType(
-            serialized_name="blobPathPrefix",
-        )
-        properties.blob_write_mode = AAZStrType(
-            serialized_name="blobWriteMode",
-        )
-        properties.container = AAZStrType()
-        properties.date_format = AAZStrType(
-            serialized_name="dateFormat",
-        )
-        properties.path_pattern = AAZStrType(
-            serialized_name="pathPattern",
-        )
-        properties.storage_accounts = AAZListType(
-            serialized_name="storageAccounts",
-        )
-        properties.time_format = AAZStrType(
-            serialized_name="timeFormat",
-        )
-
-        storage_accounts = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob").properties.storage_accounts
-        storage_accounts.Element = AAZObjectType()
-
-        _element = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Blob").properties.storage_accounts.Element
-        _element.account_key = AAZStrType(
-            serialized_name="accountKey",
-            flags={"secret": True},
-        )
-        _element.account_name = AAZStrType(
-            serialized_name="accountName",
-        )
-        _element.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-
-        disc_microsoft__storage__document_db = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/DocumentDB")
-        disc_microsoft__storage__document_db.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/DocumentDB").properties
-        properties.account_id = AAZStrType(
-            serialized_name="accountId",
-        )
-        properties.account_key = AAZStrType(
-            serialized_name="accountKey",
-            flags={"secret": True},
-        )
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.collection_name_pattern = AAZStrType(
-            serialized_name="collectionNamePattern",
-        )
-        properties.database = AAZStrType()
-        properties.document_id = AAZStrType(
-            serialized_name="documentId",
-        )
-        properties.partition_key = AAZStrType(
-            serialized_name="partitionKey",
-        )
-
-        disc_microsoft__storage__table = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Table")
-        disc_microsoft__storage__table.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Table").properties
-        properties.account_key = AAZStrType(
-            serialized_name="accountKey",
-            flags={"secret": True},
-        )
-        properties.account_name = AAZStrType(
-            serialized_name="accountName",
-        )
-        properties.batch_size = AAZIntType(
-            serialized_name="batchSize",
-        )
-        properties.columns_to_remove = AAZListType(
-            serialized_name="columnsToRemove",
-        )
-        properties.partition_key = AAZStrType(
-            serialized_name="partitionKey",
-        )
-        properties.row_key = AAZStrType(
-            serialized_name="rowKey",
-        )
-        properties.table = AAZStrType()
-
-        columns_to_remove = _schema_output_read.properties.datasource.discriminate_by("type", "Microsoft.Storage/Table").properties.columns_to_remove
-        columns_to_remove.Element = AAZStrType()
-
-        disc_power_bi = _schema_output_read.properties.datasource.discriminate_by("type", "PowerBI")
-        disc_power_bi.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "PowerBI").properties
-        properties.authentication_mode = AAZStrType(
-            serialized_name="authenticationMode",
-        )
-        properties.dataset = AAZStrType()
-        properties.group_id = AAZStrType(
-            serialized_name="groupId",
-        )
-        properties.group_name = AAZStrType(
-            serialized_name="groupName",
-        )
-        properties.refresh_token = AAZStrType(
-            serialized_name="refreshToken",
-        )
-        properties.table = AAZStrType()
-        properties.token_user_display_name = AAZStrType(
-            serialized_name="tokenUserDisplayName",
-        )
-        properties.token_user_principal_name = AAZStrType(
-            serialized_name="tokenUserPrincipalName",
-        )
-
-        disc_raw = _schema_output_read.properties.datasource.discriminate_by("type", "Raw")
-        disc_raw.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.datasource.discriminate_by("type", "Raw").properties
-        properties.payload_uri = AAZStrType(
-            serialized_name="payloadUri",
-        )
-
-        diagnostics = _schema_output_read.properties.diagnostics
-        diagnostics.conditions = AAZListType(
-            flags={"read_only": True},
-        )
-
-        conditions = _schema_output_read.properties.diagnostics.conditions
-        conditions.Element = AAZObjectType()
-
-        _element = _schema_output_read.properties.diagnostics.conditions.Element
-        _element.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.since = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        last_output_event_timestamps = _schema_output_read.properties.last_output_event_timestamps
-        last_output_event_timestamps.Element = AAZObjectType()
-
-        _element = _schema_output_read.properties.last_output_event_timestamps.Element
-        _element.last_output_event_time = AAZStrType(
-            serialized_name="lastOutputEventTime",
-        )
-        _element.last_update_time = AAZStrType(
-            serialized_name="lastUpdateTime",
-        )
-
-        serialization = _schema_output_read.properties.serialization
-        serialization.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        disc_avro = _schema_output_read.properties.serialization.discriminate_by("type", "Avro")
-        disc_avro.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        disc_csv = _schema_output_read.properties.serialization.discriminate_by("type", "Csv")
-        disc_csv.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.serialization.discriminate_by("type", "Csv").properties
-        properties.encoding = AAZStrType()
-        properties.field_delimiter = AAZStrType(
-            serialized_name="fieldDelimiter",
-        )
-
-        disc_custom_clr = _schema_output_read.properties.serialization.discriminate_by("type", "CustomClr")
-        disc_custom_clr.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.serialization.discriminate_by("type", "CustomClr").properties
-        properties.serialization_class_name = AAZStrType(
-            serialized_name="serializationClassName",
-        )
-        properties.serialization_dll_path = AAZStrType(
-            serialized_name="serializationDllPath",
-        )
-
-        disc_delta = _schema_output_read.properties.serialization.discriminate_by("type", "Delta")
-        disc_delta.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.serialization.discriminate_by("type", "Delta").properties
-        properties.delta_table_path = AAZStrType(
-            serialized_name="deltaTablePath",
-            flags={"required": True},
-        )
-        properties.partition_columns = AAZListType(
-            serialized_name="partitionColumns",
-        )
-
-        partition_columns = _schema_output_read.properties.serialization.discriminate_by("type", "Delta").properties.partition_columns
-        partition_columns.Element = AAZStrType()
-
-        disc_json = _schema_output_read.properties.serialization.discriminate_by("type", "Json")
-        disc_json.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        properties = _schema_output_read.properties.serialization.discriminate_by("type", "Json").properties
-        properties.encoding = AAZStrType()
-        properties.format = AAZStrType()
-
-        disc_parquet = _schema_output_read.properties.serialization.discriminate_by("type", "Parquet")
-        disc_parquet.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-
-        watermark_settings = _schema_output_read.properties.watermark_settings
-        watermark_settings.max_watermark_difference_across_partitions = AAZStrType(
-            serialized_name="maxWatermarkDifferenceAcrossPartitions",
-        )
-        watermark_settings.watermark_mode = AAZStrType(
-            serialized_name="watermarkMode",
-        )
-
-        _schema.id = cls._schema_output_read.id
-        _schema.name = cls._schema_output_read.name
-        _schema.properties = cls._schema_output_read.properties
-        _schema.type = cls._schema_output_read.type
 
 
 __all__ = ["Update"]

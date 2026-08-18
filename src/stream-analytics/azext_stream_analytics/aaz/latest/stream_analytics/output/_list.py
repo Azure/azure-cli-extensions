@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all of the outputs under the specified streaming job.
-
-    :example: List all outputs in a streaming job
-        az stream-analytics output list --resource-group sjrg2157 --job-name sj6458
     """
 
     _aaz_info = {

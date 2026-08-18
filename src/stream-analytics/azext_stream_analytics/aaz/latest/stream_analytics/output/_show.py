@@ -16,42 +16,6 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get details about the specified output.
-
-    :example: Get an Azure SQL database output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755
-
-    :example: Get an Azure Table output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958
-
-    :example: Get a blob output with CSV serialization
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623
-
-    :example: Get a DocumentDB output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022
-
-    :example: Get an Azure Data Warehouse output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput
-
-    :example: Get an Azure Function output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1
-
-    :example: Get an Event Hub output with JSON serialization
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195
-
-    :example: Get a Service Bus Queue output with Avro serialization
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456
-
-    :example: Get a Service Bus Topic output with CSV serialization
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886
-
-    :example: Get a Power BI output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022
-
-    :example: Get an Azure Data Lake Store output with JSON serialization
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195
-
-    :example: Get a Delta Lake output
-        az stream-analytics output show --resource-group sjrg2157 --job-name sj6458 --output-name output1755 --resource-group sjrg5176 --job-name sj2790 --output-name output958 --resource-group sjrg5023 --job-name sj900 --output-name output1623 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg --job-name sjName --output-name dwOutput --resource-group sjrg --job-name sjName --output-name azureFunction1 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg3410 --job-name sj5095 --output-name output3456 --resource-group sjrg6450 --job-name sj7094 --output-name output7886 --resource-group sjrg7983 --job-name sj2331 --output-name output3022 --resource-group sjrg6912 --job-name sj3310 --output-name output5195 --resource-group sjrg --job-name sjName --output-name output1221
     """
 
     _aaz_info = {

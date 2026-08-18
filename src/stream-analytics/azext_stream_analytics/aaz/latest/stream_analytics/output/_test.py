@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class Test(AAZCommand):
     """Tests whether an output’s datasource is reachable and usable by the Azure Stream Analytics service.
-
-    :example: Test the connection for an output
-        az stream-analytics output test --resource-group sjrg2157 --job-name sj6458 --output-name output1755
     """
 
     _aaz_info = {
@@ -52,7 +49,7 @@ class Test(AAZCommand):
             id_part="name",
         )
         _args_schema.output_name = AAZStrArg(
-            options=["--output-name"],
+            options=["-n", "--name", "--output-name"],
             help="The name of the output.",
             required=True,
             id_part="child_name_1",
@@ -60,43 +57,21 @@ class Test(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Output"
-
-        _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            arg_group="Output",
-            help="Resource name",
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
         _args_schema.datasource = AAZObjectArg(
             options=["--datasource"],
-            arg_group="Properties",
             help="Describes the data source that output will be written to. Required on PUT (CreateOrReplace) requests.",
         )
         _args_schema.serialization = AAZObjectArg(
             options=["--serialization"],
-            arg_group="Properties",
             help="Describes how data from an input is serialized or how data is serialized when written to an output. Required on PUT (CreateOrReplace) requests.",
         )
         _args_schema.size_window = AAZIntArg(
             options=["--size-window"],
-            arg_group="Properties",
             help="The size window to constrain a Stream Analytics output to.",
         )
         _args_schema.time_window = AAZStrArg(
             options=["--time-window"],
-            arg_group="Properties",
             help="The time frame for filtering Stream Analytics job outputs.",
-        )
-        _args_schema.watermark_settings = AAZObjectArg(
-            options=["--watermark-settings"],
-            arg_group="Properties",
-            help="Settings which determine whether to send watermarks to downstream.",
         )
 
         datasource = cls._args_schema.datasource
@@ -654,6 +629,17 @@ class Test(AAZCommand):
             enum={"Array": "Array", "LineSeparated": "LineSeparated"},
         )
 
+        # define Arg Group "Output"
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.watermark_settings = AAZObjectArg(
+            options=["--watermark-settings"],
+            arg_group="Properties",
+            help="Settings which determine whether to send watermarks to downstream.",
+        )
+
         watermark_settings = cls._args_schema.watermark_settings
         watermark_settings.max_watermark_difference_across_partitions = AAZStrArg(
             options=["max-watermark-difference-across-partitions"],
@@ -841,7 +827,6 @@ class Test(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".name")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
