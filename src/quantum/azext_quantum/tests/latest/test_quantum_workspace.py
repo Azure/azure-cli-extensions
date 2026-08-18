@@ -287,25 +287,22 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     @live_only()
     def test_workspace_user(self):
-        import random
         # initialize values
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
         test_storage_account = get_test_workspace_storage()
         test_provider_sku_list = get_test_workspace_provider_sku_list()
-        test_identity_name = "e2e-test-id" + str(random.randint(1000000, 9999999))
 
         # create a workspace to manage users on
         self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
             self.check("properties.provisioningState", "Succeeded")
         ])
 
-        # Create a user-assigned managed identity to use as the assignee. Using its
-        # object id (and '--assignee-object-id') keeps the test runnable under both
-        # user and service-principal logins, since no Microsoft Graph lookup is needed.
-        identity = self.cmd(f'az identity create -g {test_resource_group} -n {test_identity_name} -l {test_location} -o json').get_output_in_json()
-        test_object_id = identity["principalId"]
+        # Use the signed-in user's object id as the assignee. The workspace user commands are
+        # user-only, so a real user principal is required (a managed identity or service principal
+        # would be excluded by 'az quantum workspace user list'). Requires a user (not SP) login.
+        test_object_id = self.cmd('az ad signed-in-user show -o json').get_output_in_json()["id"]
 
         # grant access using the object id, relying on the default role. Verify the
         # default 'Quantum Workspace Data Contributor' role was assigned.
@@ -321,9 +318,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         # remove access using the object id and an explicit role
         self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} --role c1410b24-3e69-4857-8f86-4d0a2e603250 --yes')
-
-        # clean up the managed identity
-        self.cmd(f'az identity delete -g {test_resource_group} -n {test_identity_name}')
 
         # delete the workspace
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
