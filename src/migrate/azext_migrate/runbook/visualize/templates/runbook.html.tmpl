@@ -132,6 +132,23 @@ $refresh<title>$title</title>
     padding: 12px 16px; font-weight: 600; background: #f3f2f1;
     border-bottom: 1px solid var(--border); font-size: 15px; margin: 0;
   }
+  /* Collapsible workstream group (native details/summary) */
+  .ws-group { border-bottom: 1px solid var(--border-strong); }
+  .ws-group:last-child { border-bottom: 0; }
+  summary.group__head {
+    cursor: pointer; list-style: none; user-select: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  summary.group__head::-webkit-details-marker { display: none; }
+  summary.group__head::before {
+    content: '\25B8'; color: var(--muted); font-size: 12px;
+    transition: transform 0.15s ease;
+  }
+  .ws-group[open] > summary.group__head::before { transform: rotate(90deg); }
+  summary.group__head:hover { background: #eceae8; }
+  summary.group__head:focus-visible {
+    outline: 2px solid var(--azure-blue); outline-offset: -2px;
+  }
   .grid .row { border-bottom: 1px solid var(--border); }
   .grid .row:hover { background: #f3f9fd; }
   .grid .row--empty { display: block; color: var(--muted); }

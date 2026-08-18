@@ -54,8 +54,23 @@ def _looks_like_step(step):
 def _step_rows(workstream, labels):
     workstream = workstream or {}
     workstream_id = workstream.get('id')
-    return [_step_row(step, workstream_id, labels)
-            for step in workstream.get('steps', []) or []]
+    steps = workstream.get('steps', []) or []
+    # Keep an empty workstream visible with a single placeholder row.
+    if not steps:
+        return [_empty_workstream_row(workstream_id)]
+    return [_step_row(step, workstream_id, labels) for step in steps]
+
+
+def _empty_workstream_row(workstream_id):
+    return OrderedDict([
+        ('Workstream Id', workstream_id),
+        ('Step Id', ''),
+        ('Step Name', '(no steps)'),
+        ('Depends On', ''),
+        ('Configuration Status', ''),
+        ('Workloads', ''),
+        ('Applications', _APPLICATIONS_PLACEHOLDER),
+    ])
 
 
 def _step_row(step, workstream_id=None, labels=None):

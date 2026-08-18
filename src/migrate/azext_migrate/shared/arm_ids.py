@@ -28,6 +28,12 @@ def execution_id(runbook_resource_id, execution):
         runbook_id=runbook_resource_id, execution_id=execution)
 
 
+def artifact_id(project_id, artifact_name):
+    """Build an artifact ARM id from a project id."""
+    return constants.ARTIFACT_ID_TEMPLATE.format(
+        project_id=project_id, artifact_name=artifact_name)
+
+
 def with_api_version(resource_id, api_version):
     """Append the api-version query parameter to a resource id/url."""
     joiner = '&' if '?' in resource_id else '?'

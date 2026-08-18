@@ -8,10 +8,12 @@
 PROVIDER_NAMESPACE = "Microsoft.Migrate"
 
 # API version for the Runbooks resource provider surface.
-# NOTE: the migrateProjects/runbooks type is only registered at
-# 2020-06-01-preview. Newer versions (2025/2026) are for the wave APIs
-# and return NoRegisteredProviderFound on the runbooks path.
 RUNBOOKS_API_VERSION = "2020-06-01-preview"
+
+# The runbook definition/parameters archive is delivered by the separate
+# Artifact Service (Microsoft.Migrate artifacts), which is versioned
+# independently of the runbooks surface.
+ARTIFACTS_API_VERSION = "2020-06-01-preview"
 
 # Runbook create/delete are long-running operations whose async status
 # is served by the migrateProjects/waveOperations type. That type is NOT
@@ -29,3 +31,4 @@ MIGRATE_PROJECT_ID_TEMPLATE = (
 )
 RUNBOOK_ID_TEMPLATE = "{project_id}/runbooks/{runbook_name}"
 EXECUTION_ID_TEMPLATE = "{runbook_id}/executions/{execution_id}"
+ARTIFACT_ID_TEMPLATE = "{project_id}/artifacts/{artifact_name}"

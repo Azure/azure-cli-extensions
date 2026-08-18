@@ -27,30 +27,39 @@ STEP_TYPE_VALUES = [
 STEP_ACTION_APPROVE = "Approve"
 STEP_ACTION_COMPLETE = "Complete"
 
+# ``DownloadMode`` for the Artifact Service GenerateDownloadUrl request:
+# a single file or a whole directory (subtree) of the artifact.
+ARTIFACT_DOWNLOAD_MODE_FILE = "file"
+ARTIFACT_DOWNLOAD_MODE_DIRECTORY = "directory"
+
+# Runbook definition artifact fetch strategy. The service currently returns
+# individual blobs (file mode, raw JSON). Set this True once the service
+# packages the whole artifact as a downloadable ZIP so the CLI switches to
+# directory mode without touching call sites.
+RUNBOOK_ARTIFACT_DOWNLOAD_AS_ZIP = True
+RUNBOOK_DEFINITION_FILE = "runbook.json"
+RUNBOOK_INPUT_FILE = "input.json"
+
 # ``stepRef`` value the AddStep body binds per step type. These correlate
 # the CLI step with the partner runbook step used for execution.
 STEP_REF_BY_TYPE = {
-    STEP_TYPE_MANUAL: "custom.manual",
+    STEP_TYPE_MANUAL: "common.manual",
     STEP_TYPE_APPROVAL: "common.approval",
 }
 
-# A step dependency in the AddStep/UpdateStep WRITE model (service
-# ``RunbookStepDependency``, a System.Text.Json polymorphic type) is an
-# object ``{"Mode": <int>, "stepId": <step-id>}``. ``Mode`` is the verbatim
-# (non-camelCased) discriminator carrying the integer enum ordinal and must
-# appear first: 0 = step gate, 1 = migration-entity gate. The CLI
-# ``--depends-on`` takes step ids only and maps each to a step gate.
-# NOTE: the GET (read) model is NOT symmetric — it emits
-# ``{"step": <id>, "mode": <string>}``; do not assume round-trip.
-STEP_DEPENDENCY_MODE_STEP_GATE = 0
-STEP_DEPENDENCY_MODE_ENTITY_GATE = 1
+# A step dependency in the AddStep/UpdateStep write model (service
+# ``RunbookStepDependency``) is ``{"mode": <string>, "stepId": <step-id>}``.
+# ``mode`` is the ``RunbookStepDependencyMode`` enum (string values). The
+# CLI ``--depends-on`` takes step ids only and maps each to a Step gate.
+STEP_DEPENDENCY_MODE_STEP = "Step"
+STEP_DEPENDENCY_MODE_MIGRATION_ENTITY = "MigrationEntity"
 
 
 class RunbookStatus(str, Enum):
     """Runbook lifecycle status values (GetRunbook properties.status)."""
 
     GENERATING = "Generating"
-    NEW = "New"
+    NOT_CONFIGURED = "NotConfigured"
     READY_TO_START = "ReadyToStart"
     IN_EXECUTION = "InExecution"
     PAUSED = "Paused"

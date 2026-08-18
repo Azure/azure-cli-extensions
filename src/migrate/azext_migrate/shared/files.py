@@ -47,6 +47,14 @@ _DERIVED_INPUTS_NAMES = ('derived-input.json', 'derived-inputs.json')
 # a ZIP that contains it; read_status_json handles both.
 _STATUS_SUFFIX = 'status.json'
 
+# Local ZIP file magic; a SAS download may be a ZIP archive or a raw blob.
+_ZIP_MAGIC = b'PK\x03\x04'
+
+
+def _is_zip(data):
+    """True when ``data`` starts with the local ZIP file signature."""
+    return isinstance(data, (bytes, bytearray)) and data[:4] == _ZIP_MAGIC
+
 
 def extract_sas_url(response_body):
     """Return the download URL from a GenerateDownloadUrl response body."""
@@ -164,7 +172,16 @@ def _classify_archive(zip_bytes):
 
 
 def read_spec_json(zip_bytes):
-    """Return the parsed runbook definition (``runbookSpec``) or None."""
+    """Return the parsed runbook definition (``runbookSpec``) or None.
+
+    Accepts either a ZIP archive (definition classified out of it) or a raw
+    ``runbook.json`` blob (file-mode download), returning the parsed JSON.
+    """
+    if not _is_zip(zip_bytes):
+        try:
+            return json.loads(zip_bytes.decode('utf-8'))
+        except ValueError:
+            return None
     found = _classify_archive(zip_bytes)['definition']
     return json.loads(found[1].decode('utf-8')) if found else None
 
@@ -173,8 +190,11 @@ def extract_parameters_file(zip_bytes):
     """Return ``(filename, raw_bytes)`` for the user parameters, or None.
 
     ``derived-input.json`` (which shares the parameters shape) is never
-    returned; see :func:`_classify_archive`.
+    returned; see :func:`_classify_archive`. A raw (non-ZIP) blob carries
+    no separate parameters file, so None is returned.
     """
+    if not _is_zip(zip_bytes):
+        return None
     return _classify_archive(zip_bytes)['parameters']
 
 
@@ -323,6 +343,11 @@ def extract_definition_files(zip_bytes, destination):
     """
     destination = os.path.abspath(destination)
     os.makedirs(destination, exist_ok=True)
+    if not _is_zip(zip_bytes):
+        target = os.path.join(destination, 'runbook.json')
+        with open(target, 'wb') as handle:
+            handle.write(zip_bytes)
+        return [target]
     classified = _classify_archive(zip_bytes)
     selected = list(classified['docs'])
     if classified['definition']:

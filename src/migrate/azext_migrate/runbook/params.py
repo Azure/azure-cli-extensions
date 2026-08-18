@@ -142,9 +142,8 @@ def load_runbook_arguments(self, _):
             help='Space-separated ids of the workstreams to merge.')
         c.argument(
             'new_workstream_name',
-            options_list=['--new-workstream-name'], required=False,
-            help='Display name for the merged workstream. Defaults to the '
-                 'first workstream name if not provided.')
+            options_list=['--new-workstream-name'], required=True,
+            help='Display name for the merged workstream.')
 
     with self.argument_context(
             'migrate runbook execution show') as c:
@@ -284,3 +283,33 @@ def load_runbook_arguments(self, _):
         c.argument(
             'comment', options_list=['--comment'], required=True,
             help='Comment recording who/why the step was completed.')
+
+    with self.argument_context('migrate runbook parameter download') as c:
+        c.argument(
+            'file', options_list=['--file'],
+            help='Output path for the parameters file '
+                 '(default: current directory).')
+
+    with self.argument_context('migrate runbook parameter upload') as c:
+        c.argument(
+            'file', options_list=['--file'], required=True,
+            help='Path to the parameters JSON file to upload.')
+
+    with self.argument_context(
+            'migrate runbook execution parameter download') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'], required=True,
+            help='Id of the runbook execution.')
+        c.argument(
+            'file', options_list=['--file'],
+            help='Output path for the input-parameters file '
+                 '(default: current directory).')
+
+    with self.argument_context(
+            'migrate runbook execution parameter upload') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'], required=True,
+            help='Id of the runbook execution.')
+        c.argument(
+            'file', options_list=['--file'], required=True,
+            help='Path to the input-parameters JSON file to upload.')

@@ -71,8 +71,9 @@ class RunbookCrudScenarioTest(unittest.TestCase):
 
         self.client.list.return_value = [
             generated,
-            {"name": "other", "properties": {"status": "New", "scope": {
-                "waveId": f"{PROJECT_ID}/waves/otherWave"}}}]
+            {"name": "other", "properties": {
+                "status": "NotConfigured", "scope": {
+                    "waveId": f"{PROJECT_ID}/waves/otherWave"}}}]
         filtered = runbook_cmds.list_(
             self.cmd, RG, PROJECT, wave_name=WAVE)
         self.assertEqual([r["name"] for r in filtered], [RUNBOOK])
@@ -80,7 +81,7 @@ class RunbookCrudScenarioTest(unittest.TestCase):
             f"{PROJECT_ID}/runbooks")
 
         by_status = runbook_cmds.list_(
-            self.cmd, RG, PROJECT, status="New")
+            self.cmd, RG, PROJECT, status="NotConfigured")
         self.assertEqual([r["name"] for r in by_status], ["other"])
 
         self.client.delete.return_value = None
@@ -113,7 +114,7 @@ class ExecutionStepScenarioTest(unittest.TestCase):
         resource_id, action, body = self.client.post_action.call_args[0]
         self.assertEqual(resource_id, EXECUTION_ID)
         self.assertEqual(action, 'PerformAction')
-        self.assertEqual(body["action"], 4)
+        self.assertEqual(body["action"], "Retry")
         self.assertEqual(body["targetId"], "step1")
 
         execution_step_cmds.approve(

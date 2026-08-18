@@ -62,9 +62,14 @@ class ArmClient:
     and error mapping live in exactly one place.
     """
 
-    def __init__(self, cmd, api_version=RUNBOOKS_API_VERSION):
+    def __init__(self, cmd, api_version=RUNBOOKS_API_VERSION,
+                 rewrite_poll_api_version=True):
         self.cmd = cmd
         self.api_version = api_version
+        # Runbook create/delete LROs are polled via the waveOperations type
+        # at a different api-version; artifact LROs are polled at their own
+        # async-operation URI as-is, so callers can opt out of the rewrite.
+        self.rewrite_poll_api_version = rewrite_poll_api_version
 
     def _url(self, resource_id):
         endpoint = self.cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -108,7 +113,7 @@ class ArmClient:
         return refreshed if refreshed is not None else result
 
     def _poll_until_done(self, response, method, resource_id,
-                         final_get_id=None):
+                         final_get_id=None, return_final_poll=False):
         """Follow an Azure LRO to completion and return the final state.
 
         Create/delete on runbooks are long-running: they return 201/202
@@ -116,7 +121,11 @@ class ArmClient:
         until the operation reaches a terminal state. On success, when
         ``final_get_id`` is set, re-read that resource so the caller sees
         the settled representation (see :meth:`_finalize`); otherwise the
-        original response body is returned.
+        original response body is returned. When ``return_final_poll`` is
+        set (and no ``final_get_id``), the terminal operation-status body
+        is returned instead -- used by actions whose result (e.g. a SAS
+        URL) is carried in the async operation status rather than the
+        initial accepted body.
         """
         header_name = ('Azure-AsyncOperation'
                        if response.headers.get('Azure-AsyncOperation')
@@ -128,7 +137,8 @@ class ArmClient:
                 "%s '%s' completed synchronously (HTTP %s).",
                 method, resource_id, response.status_code)
             return self._finalize(result, final_get_id)
-        poll_url = _rewrite_poll_api_version(poll_url)
+        if self.rewrite_poll_api_version:
+            poll_url = _rewrite_poll_api_version(poll_url)
         op_ref = poll_url.split('?', 1)[0]
         delay = _poll_delay(response)
         logger.warning(
@@ -154,11 +164,15 @@ class ArmClient:
                 logger.warning(
                     "%s '%s' completed (elapsed %ss, %s poll(s)).",
                     method, resource_id, elapsed, attempt)
+                if return_final_poll and not final_get_id:
+                    return body
                 return self._finalize(result, final_get_id)
             if norm == _TERMINAL_SUCCESS:
                 logger.warning(
                     "%s '%s' succeeded (elapsed %ss, %s poll(s)).",
                     method, resource_id, elapsed, attempt)
+                if return_final_poll and not final_get_id:
+                    return body
                 return self._finalize(result, final_get_id)
             if norm in _TERMINAL_FAILURE:
                 errors.raise_for_async_operation(body)
@@ -170,7 +184,7 @@ class ArmClient:
                 attempt, delay)
 
     def _begin(self, method, resource_id, body=None, no_wait=False,
-               final_get_id=None):
+               final_get_id=None, return_final_poll=False):
         response = self._send(method, resource_id, body)
         if no_wait:
             logger.warning(
@@ -178,7 +192,7 @@ class ArmClient:
                 "completion.", method, resource_id)
             return self._json_or_none(response)
         return self._poll_until_done(
-            response, method, resource_id, final_get_id)
+            response, method, resource_id, final_get_id, return_final_poll)
 
     def get(self, resource_id):
         """GET a resource and return its JSON body."""
@@ -226,11 +240,18 @@ class ArmClient:
         return self._json_or_none(self._send('PATCH', resource_id, body))
 
     def delete(self, resource_id, no_wait=False):
-        """DELETE a resource, awaiting any LRO."""
-        return self._begin('DELETE', resource_id, no_wait=no_wait)
+        """DELETE a resource, awaiting any LRO.
+
+        Returns None: a completed delete has no resource to render (the
+        initial 202 accepted body still shows the resource as InProgress,
+        which is misleading), matching standard Azure CLI delete behaviour.
+        """
+        self._begin('DELETE', resource_id, no_wait=no_wait)
+        return None
 
     def post_action(self, resource_id, action_name, body=None,
-                    no_wait=False, final_get=False):
+                    no_wait=False, final_get=False,
+                    return_final_poll=False):
         """POST {resourceId}/{action_name} with an optional JSON body.
 
         This is the workhorse for every action endpoint (AddStep,
@@ -239,9 +260,13 @@ class ArmClient:
         Set ``final_get=True`` only for actions whose settled state is the
         parent resource itself (e.g. Regenerate), so the LRO result is a
         fresh GET of ``resource_id`` rather than the initial InProgress body.
+        Set ``return_final_poll=True`` for actions whose result is carried
+        in the async operation status (e.g. an artifact download SAS URL).
         Most actions return their own payload (SAS URL, validation result)
-        or mutate state exposed elsewhere, so they leave this False.
+        or mutate state exposed elsewhere, so they leave both False.
         """
         action_id = f"{resource_id}/{action_name}"
         final_get_id = resource_id if final_get else None
-        return self._begin('POST', action_id, body, no_wait, final_get_id)
+        return self._begin(
+            'POST', action_id, body, no_wait, final_get_id,
+            return_final_poll)

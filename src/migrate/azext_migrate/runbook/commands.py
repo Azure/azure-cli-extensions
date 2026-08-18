@@ -80,6 +80,13 @@ def load_runbook_command_table(self):
             table_transformer=definition_table)
 
     with self.command_group(
+            'migrate runbook parameter',
+            custom_command_type=runbook_cmds,
+            is_preview=True) as g:
+        g.custom_command('download', 'parameter#download')
+        g.custom_command('upload', 'parameter#upload')
+
+    with self.command_group(
             'migrate runbook execution',
             custom_command_type=runbook_cmds,
             is_preview=True) as g:
@@ -98,6 +105,13 @@ def load_runbook_command_table(self):
             'cancel', 'execution#cancel',
             confirmation=True)
         g.custom_command('visualize', 'execution#visualize')
+
+    with self.command_group(
+            'migrate runbook execution parameter',
+            custom_command_type=runbook_cmds,
+            is_preview=True) as g:
+        g.custom_command('download', 'execution_parameter#download')
+        g.custom_command('upload', 'execution_parameter#upload')
 
     with self.command_group(
             'migrate runbook execution step',

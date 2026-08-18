@@ -408,3 +408,62 @@ helps['migrate runbook execution step complete'] = """
               --execution-id myExecution --step-id step1 \\
               --comment "Verified manually"
 """
+
+
+helps['migrate runbook parameter'] = """
+    type: group
+    short-summary: Download and upload a runbook's parameters (inputs) file.
+"""
+
+
+helps['migrate runbook parameter download'] = """
+    type: command
+    short-summary: Download the runbook's parameters file.
+    examples:
+        - name: Download the parameters file to the current directory.
+          text: |
+            az migrate runbook parameter download -g myRg \\
+              --project-name myProject --runbook-name myRunbook
+"""
+
+
+helps['migrate runbook parameter upload'] = """
+    type: command
+    short-summary: Upload a new parameters file and validate it.
+    examples:
+        - name: Upload a parameters file.
+          text: |
+            az migrate runbook parameter upload -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --file ./params.json
+"""
+
+
+helps['migrate runbook execution parameter'] = """
+    type: group
+    short-summary: Download and upload an execution's input-parameters file.
+"""
+
+
+helps['migrate runbook execution parameter download'] = """
+    type: command
+    short-summary: Download an execution's input-parameters file.
+    examples:
+        - name: Download the execution input file.
+          text: |
+            az migrate runbook execution parameter download -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution
+"""
+
+
+helps['migrate runbook execution parameter upload'] = """
+    type: command
+    short-summary: Upload an execution's input-parameters file.
+    examples:
+        - name: Upload the execution input file.
+          text: |
+            az migrate runbook execution parameter upload -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution --file ./input.json
+"""

@@ -284,13 +284,15 @@ def _portal_grid(view):
             _esc(workstream.name or 'Ungrouped'),
             _id_badge(workstream.id, 'Workstream id'),
             len(workstream.steps))
-        parts.append('<div class="group__head">%s</div>' % head)
+        parts.append('<details class="ws-group" open>')
+        parts.append('<summary class="group__head">%s</summary>' % head)
         if not workstream.steps:
             parts.append('<div class="row row--empty">'
                          'No steps in this workstream.</div>')
         for step in workstream.steps:
             parts.append(_grid_row(view.kind, index, step))
             index += 1
+        parts.append('</details>')
     return '<div class="grid">%s</div>' % ''.join(parts)
 
 

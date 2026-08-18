@@ -38,6 +38,8 @@ from azext_migrate.runbook.cmds import (
 from azext_migrate.runbook.cmds import execution as execution_cmds
 from azext_migrate.runbook.cmds import execution_step as execution_step_cmds
 from azext_migrate.runbook.cmds import parameter as parameter_cmds
+from azext_migrate.runbook.cmds import (
+    execution_parameter as execution_parameter_cmds)
 from azext_migrate.runbook.visualize import graph as visualize_graph
 from azext_migrate.runbook.visualize import renderer as visualize_renderer
 from azext_migrate.runbook.visualize import viewmodel as visualize_viewmodel
@@ -56,6 +58,7 @@ SUB = "00000000-0000-0000-0000-000000000000"
 RG = "myRg"
 PROJECT = "myProject"
 RUNBOOK = "myRunbook"
+ARTIFACT = "rb-art-1"
 WAVE = "myWave"
 
 
@@ -147,7 +150,7 @@ class RunbookStatusChoiceTests(unittest.TestCase):
     def test_status_values(self):
         self.assertEqual(
             RUNBOOK_STATUS_VALUES,
-            ["Generating", "New", "ReadyToStart", "InExecution",
+            ["Generating", "NotConfigured", "ReadyToStart", "InExecution",
              "Paused", "Completed", "Failed"])
 
 
@@ -220,13 +223,38 @@ class ArmClientLroTests(unittest.TestCase):
 
         result = _arm_client().delete("/runbooks/r")
 
-        self.assertEqual(
-            result, {"properties": {"state": "ExecutionSucceeded"}})
+        # A completed delete renders nothing (not the stale accepted body).
+        self.assertIsNone(result)
         # Initial DELETE + two status polls.
         self.assertEqual(self.send.call_count, 3)
         polled_url = self.send.call_args_list[1][0][2]
         self.assertIn(
             "api-version=" + WAVE_OPERATIONS_API_VERSION, polled_url)
+
+    def test_poll_uses_async_uri_as_is_when_rewrite_disabled(self):
+        async_url = ("https://management.azure.com/.../operationStatuses/op"
+                     "?api-version=2026-06-01-preview")
+        accepted = _fake_response(
+            202, headers={'Azure-AsyncOperation': async_url}, body={})
+        done = _fake_response(
+            200, body={"status": "Succeeded",
+                       "properties": {"sasUrl": "https://blob/x"}})
+        self.send.side_effect = [accepted, done]
+
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com")
+        client = ArmClient(cmd, rewrite_poll_api_version=False)
+        result = client.post_action(
+            "/artifacts/a", 'generateDownloadUrl', {},
+            return_final_poll=True)
+
+        self.assertEqual(
+            (result.get("properties") or {}).get("sasUrl"),
+            "https://blob/x")
+        polled_url = self.send.call_args_list[1][0][2]
+        self.assertIn("api-version=2026-06-01-preview", polled_url)
+        self.assertNotIn(WAVE_OPERATIONS_API_VERSION, polled_url)
 
     def test_delete_raises_on_failed_operation(self):
         async_url = ("https://management.azure.com/.../WaveOperations/op"
@@ -330,13 +358,27 @@ class RunbookUpdateRegenerateTests(unittest.TestCase):
         self.client.patch.assert_called_once_with(
             self._runbook_id(), {"properties": {"description": "d"}})
 
-    def test_regenerate_posts_action(self):
-        self.client.post_action.return_value = {"ok": True}
+    def test_regenerate_deletes_then_regenerates(self):
+        wave_id = (arm_ids.migrate_project_id(SUB, RG, PROJECT)
+                   + '/waves/wave-1')
+        self.client.get.return_value = {
+            "properties": {"scope": {
+                "scopeType": "Wave", "waveId": wave_id}}}
+        self.client.put.return_value = {"ok": True}
         result = runbook_cmds.regenerate(
             mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
         self.assertEqual(result, {"ok": True})
-        self.client.post_action.assert_called_once_with(
-            self._runbook_id(), 'Regenerate', no_wait=True, final_get=True)
+        self.client.get.assert_called_once_with(self._runbook_id())
+        self.client.delete.assert_called_once_with(self._runbook_id())
+        self.client.put.assert_called_once_with(
+            self._runbook_id(),
+            models.build_generate_body(wave_id),
+            no_wait=True)
+
+    def test_regenerate_raises_without_scope(self):
+        self.client.get.return_value = {"properties": {}}
+        with self.assertRaises(CLIError):
+            runbook_cmds.regenerate(mock.Mock(), RG, PROJECT, RUNBOOK)
 
 
 class RunbookDefinitionTransformerTests(unittest.TestCase):
@@ -369,6 +411,17 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
     def test_single_step(self):
         rows = transformers.definition_table({"stepId": "s9"})
         self.assertEqual(rows[0]["Step Id"], "s9")
+
+    def test_empty_workstream_still_shows_a_row(self):
+        rows = transformers.definition_table({"workstreams": [
+            {"id": "w1", "steps": [{"stepId": "s1"}]},
+            {"id": "w-empty", "displayName": "Unmapped", "steps": []},
+        ]})
+        self.assertEqual(
+            [r["Workstream Id"] for r in rows], ["w1", "w-empty"])
+        empty = rows[1]
+        self.assertEqual(empty["Step Id"], "")
+        self.assertEqual(empty["Step Name"], "(no steps)")
 
     def test_empty_definition(self):
         self.assertEqual(transformers.definition_table({}), [])
@@ -626,6 +679,25 @@ class FilesTests(unittest.TestCase):
             self.assertFalse(
                 os.path.exists(os.path.join(tmp, "derived-input.json")))
 
+    def test_read_spec_json_accepts_raw_blob(self):
+        raw = b'{"runbookSpec": {"workstreams": [{"id": "w1"}]}}'
+        self.assertEqual(
+            files.read_spec_json(raw),
+            {"runbookSpec": {"workstreams": [{"id": "w1"}]}})
+
+    def test_extract_parameters_file_none_for_raw_blob(self):
+        self.assertIsNone(
+            files.extract_parameters_file(b'{"runbookSpec": {}}'))
+
+    def test_extract_definition_files_writes_raw_blob(self):
+        raw = b'{"runbookSpec": {"workstreams": []}}'
+        with tempfile.TemporaryDirectory() as tmp:
+            written = files.extract_definition_files(raw, tmp)
+            self.assertEqual(
+                [os.path.basename(p) for p in written], ["runbook.json"])
+            with open(written[0], "rb") as handle:
+                self.assertEqual(handle.read(), raw)
+
 
 class DefinitionCommandTests(unittest.TestCase):
 
@@ -643,6 +715,8 @@ class DefinitionCommandTests(unittest.TestCase):
         return arm_ids.runbook_id(project, RUNBOOK)
 
     def test_show_projects_runbook_spec(self):
+        self.client.get.return_value = {
+            "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
         zip_bytes = _make_zip({
@@ -655,14 +729,45 @@ class DefinitionCommandTests(unittest.TestCase):
             result = definition_cmds.show(
                 mock.Mock(), RG, PROJECT, RUNBOOK, workstream_id="w1")
         dl.assert_called_once_with("https://blob/x")
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
         self.client.post_action.assert_called_once_with(
-            self._runbook_id(), 'GenerateDownloadUrl')
+            arm_ids.artifact_id(project, ARTIFACT), 'generateDownloadUrl',
+            {"mode": "directory", "path": "/", "includeMetadata": True},
+            return_final_poll=True)
         self.assertEqual(result["id"], "w1")
 
     def test_show_raises_without_download_url(self):
         self.client.post_action.return_value = {"expiresAt": "t"}
         with self.assertRaises(CLIInternalError):
             definition_cmds.show(mock.Mock(), RG, PROJECT, RUNBOOK)
+
+    def test_show_raises_when_no_definition_in_archive(self):
+        self.client.get.return_value = {
+            "properties": {"artifactId": ARTIFACT}}
+        self.client.post_action.return_value = {
+            "downloadUrl": "https://blob/x"}
+        zip_bytes = _make_zip({"user-inputs.json": '{"runbookInputs": {}}'})
+        with mock.patch.object(
+                definition_cmds.files, 'download_bytes',
+                return_value=zip_bytes):
+            with self.assertRaises(CLIInternalError):
+                definition_cmds.show(mock.Mock(), RG, PROJECT, RUNBOOK)
+
+    def test_show_uses_full_artifact_arm_id_as_is(self):
+        full_id = (
+            "/subscriptions/other/resourceGroups/rg2/providers"
+            "/Microsoft.Migrate/migrateProjects/p2/artifacts/art9")
+        self.client.get.return_value = {
+            "properties": {"artifactId": full_id}}
+        self.client.post_action.return_value = {
+            "downloadUrl": "https://blob/x"}
+        with mock.patch.object(
+                definition_cmds.files, 'download_bytes',
+                return_value=_make_zip({
+                    "s.json": '{"runbookSpec": {"workstreams": []}}'})):
+            definition_cmds.show(mock.Mock(), RG, PROJECT, RUNBOOK)
+        called_id = self.client.post_action.call_args[0][0]
+        self.assertEqual(called_id, full_id)
 
     def test_download_writes_files(self):
         self.client.post_action.return_value = {
@@ -688,11 +793,9 @@ class StepModelTests(unittest.TestCase):
         body = models.build_add_step_body("Manual", "Step 1", "ws1")
         self.assertEqual(body, {
             "workstreamId": "ws1",
-            "stepName": "Step 1",
             "displayName": "Step 1",
             "description": "",
-            "stepRef": "custom.manual",
-            "migrationEntityIds": [],
+            "stepRef": "common.manual",
             "dependsOn": [],
         })
 
@@ -703,12 +806,11 @@ class StepModelTests(unittest.TestCase):
             migration_entity_ids=["e1", "e2"])
         self.assertEqual(body, {
             "workstreamId": "ws1",
-            "stepName": "Approve",
             "displayName": "Approve",
             "description": "desc",
             "stepRef": "common.approval",
+            "dependsOn": [{"mode": "Step", "stepId": "s0"}],
             "migrationEntityIds": ["e1", "e2"],
-            "dependsOn": [{"Mode": 0, "stepId": "s0"}],
         })
 
     def test_build_update_step_body_minimal(self):
@@ -722,7 +824,7 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "stepId": "s1", "displayName": "New",
             "description": "d",
-            "dependsOn": [{"Mode": 0, "stepId": "s0"}]})
+            "dependsOn": [{"mode": "Step", "stepId": "s0"}]})
 
     def test_build_delete_step_body(self):
         self.assertEqual(
@@ -739,12 +841,12 @@ class StepModelTests(unittest.TestCase):
     def test_build_merge_workstreams_body(self):
         body = models.build_merge_workstreams_body(["w1", "w2"], "merged")
         self.assertEqual(body, {
-            "workstreamId": ["w1", "w2"],
+            "workstreamIds": ["w1", "w2"],
             "newWorkstreamName": "merged"})
 
-    def test_build_merge_workstreams_body_omits_optional_name(self):
-        body = models.build_merge_workstreams_body(["w1", "w2"])
-        self.assertEqual(body, {"workstreamId": ["w1", "w2"]})
+    def test_build_merge_workstreams_body_requires_name(self):
+        with self.assertRaises(TypeError):
+            models.build_merge_workstreams_body(["w1", "w2"])
 
 
 class StepCommandTests(unittest.TestCase):
@@ -815,7 +917,7 @@ class WorkstreamCommandTests(unittest.TestCase):
             mock.Mock(), RG, PROJECT, RUNBOOK, ["w1", "w2"], "merged")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'MergeWorkstreams',
-            {"workstreamId": ["w1", "w2"],
+            {"workstreamIds": ["w1", "w2"],
              "newWorkstreamName": "merged"})
 
 
@@ -825,26 +927,39 @@ class ExecutionModelTests(unittest.TestCase):
         self.assertEqual(
             models.build_start_execution_body(), {"properties": {}})
 
+    def test_build_artifact_download_url_body(self):
+        self.assertEqual(
+            models.build_artifact_download_url_body(),
+            {"mode": "file", "path": "runbook.json",
+             "includeMetadata": True})
+        self.assertEqual(
+            models.build_artifact_download_url_body(
+                path="reports/r.xlsx", mode="directory",
+                include_metadata=False),
+            {"mode": "directory", "path": "reports/r.xlsx",
+             "includeMetadata": False})
+
     def test_action_enum_values(self):
-        self.assertEqual(int(ExecutionAction.START), 0)
-        self.assertEqual(int(ExecutionAction.PAUSE), 1)
-        self.assertEqual(int(ExecutionAction.RESUME), 2)
-        self.assertEqual(int(ExecutionAction.CANCEL), 3)
-        self.assertEqual(int(ExecutionAction.RETRY), 4)
+        self.assertEqual(ExecutionAction.START.value, "Start")
+        self.assertEqual(ExecutionAction.PAUSE.value, "Pause")
+        self.assertEqual(ExecutionAction.RESUME.value, "Resume")
+        self.assertEqual(ExecutionAction.CANCEL.value, "Cancel")
+        self.assertEqual(ExecutionAction.RETRY.value, "Retry")
 
     def test_perform_action_body_shape(self):
         body = models.build_perform_action_body(ExecutionAction.PAUSE)
         self.assertEqual(
             body,
-            {"action": 1, "targetId": "", "migrationEntityIds": []})
-        self.assertIsInstance(body["action"], int)
+            {"action": "Pause", "targetId": "",
+             "migrationEntityIds": []})
+        self.assertIsInstance(body["action"], str)
 
     def test_perform_action_body_with_target(self):
         body = models.build_perform_action_body(
             ExecutionAction.RESUME, target_id="t1", entity_ids=["e1"])
         self.assertEqual(
             body,
-            {"action": 2, "targetId": "t1",
+            {"action": "Resume", "targetId": "t1",
              "migrationEntityIds": ["e1"]})
 
 
@@ -1013,19 +1128,20 @@ class ExecutionCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e1"),
             'PerformAction',
-            {"action": 1, "targetId": "", "migrationEntityIds": []})
+            {"action": "Pause", "targetId": "",
+             "migrationEntityIds": []})
 
     def test_resume_posts_perform_action(self):
         self.client.post_action.return_value = {"ok": True}
         execution_cmds.resume(mock.Mock(), RG, PROJECT, RUNBOOK, "e1")
         _, args, _ = self.client.post_action.mock_calls[0]
-        self.assertEqual(args[2]["action"], 2)
+        self.assertEqual(args[2]["action"], "Resume")
 
     def test_cancel_posts_perform_action(self):
         self.client.post_action.return_value = {"ok": True}
         execution_cmds.cancel(mock.Mock(), RG, PROJECT, RUNBOOK, "e1")
         _, args, _ = self.client.post_action.mock_calls[0]
-        self.assertEqual(args[2]["action"], 3)
+        self.assertEqual(args[2]["action"], "Cancel")
 
 
 class ExecutionStepModelTests(unittest.TestCase):
@@ -1033,9 +1149,9 @@ class ExecutionStepModelTests(unittest.TestCase):
     def test_build_retry_step_body(self):
         body = models.build_retry_step_body("step1")
         self.assertEqual(body, {
-            "action": 4, "targetId": "step1",
+            "action": "Retry", "targetId": "step1",
             "migrationEntityIds": []})
-        self.assertIsInstance(body["action"], int)
+        self.assertIsInstance(body["action"], str)
 
     def test_build_approve_step_body_full(self):
         body = models.build_approve_step_body("step1")
@@ -1105,7 +1221,7 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'PerformAction',
-            {"action": 4, "targetId": "step1",
+            {"action": "Retry", "targetId": "step1",
              "migrationEntityIds": []})
 
     def test_approve_posts_provide_approval(self):
@@ -1144,6 +1260,8 @@ class ParameterCommandTests(unittest.TestCase):
         return arm_ids.runbook_id(project, RUNBOOK)
 
     def test_download_writes_parameters_file(self):
+        self.client.get.return_value = {
+            "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
         zip_bytes = _make_zip({
@@ -1157,24 +1275,88 @@ class ParameterCommandTests(unittest.TestCase):
                 result = parameter_cmds.download(
                     mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
             dl.assert_called_once_with("https://blob/x")
+            project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
             self.client.post_action.assert_called_once_with(
-                self._runbook_id(), 'GenerateDownloadUrl')
+                arm_ids.artifact_id(project, ARTIFACT),
+                'generateDownloadUrl',
+                {"mode": "directory", "path": "/",
+                 "includeMetadata": True},
+                return_final_poll=True)
             expected = os.path.join(tmp, "user-inputs.json")
             self.assertEqual(result, {"path": expected})
             with open(expected) as handle:
                 self.assertEqual(
                     handle.read(), '{"runbookInputs": {"stepInputs": {}}}')
 
-    def test_download_raises_without_parameters_file(self):
+    def test_download_writes_raw_input_blob(self):
+        self.client.get.return_value = {
+            "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        zip_bytes = _make_zip({"rb-x-spec.json": '{"runbookSpec": {}}'})
-        with mock.patch.object(
-                parameter_cmds.files, 'download_bytes',
-                return_value=zip_bytes):
-            with self.assertRaises(CLIInternalError):
-                parameter_cmds.download(
-                    mock.Mock(), RG, PROJECT, RUNBOOK)
+        raw = b'{"runbookInputs": {"stepInputs": {}}}'
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(
+                    parameter_cmds.files, 'download_bytes',
+                    return_value=raw):
+                result = parameter_cmds.download(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
+            expected = os.path.join(tmp, "input.json")
+            self.assertEqual(result, {"path": expected})
+            with open(expected, "rb") as handle:
+                self.assertEqual(handle.read(), raw)
+
+
+class ExecutionParameterCommandTests(unittest.TestCase):
+
+    def setUp(self):
+        sub_patch = mock.patch.object(
+            execution_cmds, 'get_subscription_id', return_value=SUB)
+        self.addCleanup(sub_patch.stop)
+        sub_patch.start()
+        client_patch = mock.patch.object(
+            execution_parameter_cmds, 'ArmClient')
+        self.addCleanup(client_patch.stop)
+        self.client = client_patch.start().return_value
+
+    def _execution_id(self):
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        runbook = arm_ids.runbook_id(project, RUNBOOK)
+        return arm_ids.execution_id(runbook, "e1")
+
+    def test_download_writes_input_file(self):
+        self.client.post_action.return_value = {
+            "downloadUrl": "https://blob/x"}
+        raw = b'{"runbookInputs": {"stepInputs": {}}}'
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(
+                    execution_parameter_cmds.files, 'download_bytes',
+                    return_value=raw) as dl:
+                result = execution_parameter_cmds.download(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", file=tmp)
+            dl.assert_called_once_with("https://blob/x")
+            self.client.post_action.assert_called_once_with(
+                self._execution_id(), 'GenerateInputDownloadUrl')
+            expected = os.path.join(tmp, "input.json")
+            self.assertEqual(result, {"path": expected})
+            with open(expected, "rb") as handle:
+                self.assertEqual(handle.read(), raw)
+
+    def test_upload_puts_input_file(self):
+        self.client.post_action.return_value = {
+            "uploadUrl": "https://blob/u"}
+        with tempfile.TemporaryDirectory() as tmp:
+            src = os.path.join(tmp, "input.json")
+            with open(src, "wb") as handle:
+                handle.write(b'{"runbookInputs": {}}')
+            with mock.patch.object(
+                    execution_parameter_cmds.files, 'upload_bytes') as up:
+                result = execution_parameter_cmds.upload(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", src)
+            self.client.post_action.assert_called_once_with(
+                self._execution_id(), 'GenerateInputUploadUrl')
+            up.assert_called_once_with(
+                "https://blob/u", b'{"runbookInputs": {}}')
+            self.assertEqual(result, {"status": "uploaded"})
 
 
 _DEFINITION_DOC = {
@@ -1918,7 +2100,11 @@ class CommandRegistrationTests(unittest.TestCase):
                 'migrate runbook execution visualize',
                 'migrate runbook execution step retry',
                 'migrate runbook execution step approve',
-                'migrate runbook execution step complete'):
+                'migrate runbook execution step complete',
+                'migrate runbook parameter download',
+                'migrate runbook parameter upload',
+                'migrate runbook execution parameter download',
+                'migrate runbook execution parameter upload'):
             self.assertIn(expected, commands)
 
 

@@ -4,35 +4,37 @@
 # --------------------------------------------------------------------------------------------
 """Request/response body builders for the runbook feature."""
 
-from enum import IntEnum
+from enum import Enum
 
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     WAVE_ID_TEMPLATE,
+    STEP_TYPE_APPROVAL,
     STEP_REF_BY_TYPE,
-    STEP_DEPENDENCY_MODE_STEP_GATE,
+    STEP_DEPENDENCY_MODE_STEP,
     STEP_ACTION_APPROVE,
     STEP_ACTION_COMPLETE,
+    ARTIFACT_DOWNLOAD_MODE_FILE,
 )
 
 
-class ExecutionAction(IntEnum):
-    """Service ``RunbookExecutionAction`` enum (0-based ordinal).
+class ExecutionAction(str, Enum):
+    """Service ``RunbookExecutionAction`` enum (string values).
 
-    ``PerformAction`` sends the integer code; ``ProvideApproval`` /
-    ``UpdateStepStatus`` send the string member name.
+    ``PerformAction`` / ``ProvideApproval`` / ``UpdateStepStatus`` all send
+    the string member value.
     """
 
-    START = 0
-    PAUSE = 1
-    RESUME = 2
-    CANCEL = 3
-    RETRY = 4
-    COMPLETE = 5
-    FAIL = 6
-    SKIP = 7
-    APPROVE = 8
-    REJECT = 9
+    START = "Start"
+    PAUSE = "Pause"
+    RESUME = "Resume"
+    CANCEL = "Cancel"
+    RETRY = "Retry"
+    COMPLETE = "Complete"
+    FAIL = "Fail"
+    SKIP = "Skip"
+    APPROVE = "Approve"
+    REJECT = "Reject"
 
 
 def wave_id(project_id, wave_name):
@@ -71,12 +73,11 @@ def build_update_body(description=None):
 def _depends_on_refs(depends_on):
     """Map CLI ``--depends-on`` entries to write-model dependency objects.
 
-    The AddStep/UpdateStep write model expects a list of polymorphic
-    ``RunbookStepDependency`` objects ``{"Mode": <int>, "stepId": <id>}``
-    (NOT bare strings, and NOT the GET read shape). ``Mode`` is the verbatim
-    discriminator (integer enum ordinal) and must appear first; a plain
-    ``--depends-on <stepId>`` maps to a step gate (``Mode`` 0). Entries that
-    are already dicts are passed through unchanged.
+    The AddStep/UpdateStep write model expects a list of
+    ``RunbookStepDependency`` objects ``{"mode": <string>, "stepId": <id>}``.
+    ``mode`` is the ``RunbookStepDependencyMode`` string; a plain
+    ``--depends-on <stepId>`` maps to a Step gate. Entries that are already
+    dicts (e.g. carrying an ``entityMap``) are passed through unchanged.
     """
     refs = []
     for entry in depends_on or []:
@@ -84,7 +85,7 @@ def _depends_on_refs(depends_on):
             refs.append(entry)
         else:
             refs.append(
-                {"Mode": STEP_DEPENDENCY_MODE_STEP_GATE, "stepId": entry})
+                {"mode": STEP_DEPENDENCY_MODE_STEP, "stepId": entry})
     return refs
 
 
@@ -95,17 +96,19 @@ def build_add_step_body(step_type, step_name, workstream_id,
 
     Mirrors the service ``RunbookStepAddRequest``. ``step_type`` selects
     the ``stepRef`` binding (Approval -> ``common.approval``, Manual ->
-    ``custom.manual``); the step is added to ``workstream_id``.
+    ``common.manual``); the step is added to ``workstream_id``.
+    ``migrationEntityIds`` is only carried by the Approval step variant.
     """
-    return {
+    body = {
         "workstreamId": workstream_id,
-        "stepName": step_name,
         "displayName": step_name,
         "description": step_description or "",
         "stepRef": STEP_REF_BY_TYPE.get(step_type, step_type),
-        "migrationEntityIds": migration_entity_ids or [],
         "dependsOn": _depends_on_refs(depends_on),
     }
+    if step_type == STEP_TYPE_APPROVAL:
+        body["migrationEntityIds"] = migration_entity_ids or []
+    return body
 
 
 def build_update_step_body(step_id, step_name=None, step_description=None,
@@ -142,18 +145,17 @@ def build_split_workstream_body(source_workstream_id, new_workstream_name,
 
 
 def build_merge_workstreams_body(source_workstream_ids,
-                                 new_workstream_name=None):
+                                 new_workstream_name):
     """Build the MergeWorkstreams POST body.
 
-    ``source_workstream_ids`` serializes as the ``workstreamId`` array.
-    ``new_workstream_name`` is optional; when omitted the service defaults
-    it to the first workstream's name (service
-    ``RunbookWorkstreamsMergeRequest``).
+    ``source_workstream_ids`` serializes as the ``workstreamIds`` array and
+    ``new_workstream_name`` as ``newWorkstreamName``; both are required by
+    the service ``RunbookWorkstreamsMergeRequest``.
     """
-    body = {"workstreamId": source_workstream_ids or []}
-    if new_workstream_name:
-        body["newWorkstreamName"] = new_workstream_name
-    return body
+    return {
+        "workstreamIds": source_workstream_ids or [],
+        "newWorkstreamName": new_workstream_name,
+    }
 
 
 def build_start_execution_body():
@@ -161,10 +163,26 @@ def build_start_execution_body():
     return {"properties": {}}
 
 
+def build_artifact_download_url_body(
+        path="runbook.json", mode=ARTIFACT_DOWNLOAD_MODE_FILE,
+        include_metadata=True):
+    """Build the Artifact Service GenerateDownloadUrl request body.
+
+    Omitting ``version``/``versionId`` requests the latest committed
+    version. File mode targets a single blob within the artifact by
+    ``path``.
+    """
+    body = {"mode": mode, "path": path}
+    if include_metadata is not None:
+        body["includeMetadata"] = include_metadata
+    return body
+
+
 def build_perform_action_body(action, target_id=None, entity_ids=None):
-    """Build the PerformAction POST body (integer action code)."""
+    """Build the PerformAction POST body (string action value)."""
     return {
-        "action": int(action),
+        "action": action.value if isinstance(action, ExecutionAction)
+        else action,
         "targetId": target_id or "",
         "migrationEntityIds": entity_ids or [],
     }
@@ -173,8 +191,8 @@ def build_perform_action_body(action, target_id=None, entity_ids=None):
 def build_retry_step_body(step_id, entity_ids=None):
     """Build the PerformAction POST body to retry a failed step.
 
-    Retry reuses ``PerformAction`` with the integer ``RETRY`` (4) code and
-    the step id as the ``targetId``.
+    Retry reuses ``PerformAction`` with the ``Retry`` action and the step
+    id as the ``targetId``.
     """
     return build_perform_action_body(
         ExecutionAction.RETRY, target_id=step_id, entity_ids=entity_ids)

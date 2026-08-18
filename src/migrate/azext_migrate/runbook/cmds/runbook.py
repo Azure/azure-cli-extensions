@@ -79,11 +79,28 @@ def update(cmd, resource_group_name, project_name, runbook_name,
 
 def regenerate(cmd, resource_group_name, project_name, runbook_name,
                no_wait=False):
-    """Regenerate a runbook from its current scope."""
+    """Regenerate a runbook: delete it, then re-create it from its scope.
+
+    The service has no Regenerate action, so the CLI reads the runbook's
+    current scope (wave), deletes the runbook, and re-generates it with the
+    same scope.
+    """
     project = _project_id(cmd, resource_group_name, project_name)
     resource_id = arm_ids.runbook_id(project, runbook_name)
-    return ArmClient(cmd).post_action(
-        resource_id, 'Regenerate', no_wait=no_wait, final_get=True)
+    client = ArmClient(cmd)
+    existing = client.get(resource_id)
+    scope = ((existing or {}).get('properties') or {}).get('scope') or {}
+    wave_id = scope.get('waveId')
+    if not wave_id:
+        raise CLIError(
+            'Cannot regenerate: the runbook has no wave scope to '
+            'regenerate from.')
+    logger.warning(
+        "Regenerating runbook '%s': deleting and re-creating from its "
+        "wave scope.", runbook_name)
+    client.delete(resource_id)
+    body = models.build_generate_body(wave_id)
+    return client.put(resource_id, body, no_wait=no_wait)
 
 
 def _provisioning_state(runbook):
