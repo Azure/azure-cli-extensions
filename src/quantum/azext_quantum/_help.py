@@ -112,6 +112,10 @@ helps['quantum job file'] = """
 helps['quantum job file list'] = """
     type: command
     short-summary: List the files stored in a job's output storage container.
+    long-summary: >
+        Returns one entry per file, each reporting the file name, its size in bytes,
+        and the last-modified time as an ISO 8601 timestamp. Use "-o table" for a
+        condensed view.
     examples:
       - name: List the files in an Azure Quantum job's output container.
         text: |-

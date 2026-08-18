@@ -374,6 +374,13 @@ def output(cmd, job_id, resource_group_name, workspace_name):
 def list_files(cmd, job_id, resource_group_name, workspace_name):
     """
     List the files stored in a job's output storage container.
+
+    :return: A list of files, one dictionary per file, each with the keys:
+        - name: The file (blob) name.
+        - size: The file size in bytes.
+        - lastModified: The last-modified time as an ISO 8601 timestamp,
+          or None when the storage service does not report it.
+    :rtype: list[dict]
     """
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
 
