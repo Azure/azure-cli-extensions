@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration context site-reference",
+    "workload-orchestration-preview context site-reference",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage workload orchestration site reference context.

@@ -68,6 +68,7 @@ from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
     get_monitoring_addon_key,
     filter_hard_taints,
+    reset_agentpool_to_name_and_mode,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -6312,26 +6313,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Check if agentpool is in ManagedSystem mode and handle special case
             if agentpool.mode != CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
                 continue
-            # Make sure all other attributes are None
-            # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
-            props = getattr(agentpool, 'properties', None)
-            rest_fields = getattr(props, '_attr_to_rest_field', None) if props is not None else None
-            if rest_fields is not None:
-                target, fields = props, rest_fields
-            else:
-                rest_fields = getattr(agentpool, '_attr_to_rest_field', None)
-                if rest_fields is not None and 'mode' in rest_fields:
-                    target, fields = agentpool, rest_fields
-                else:
-                    target, fields = None, None
-            if target is not None:
-                for attr in list(fields.keys()):
-                    if attr not in ('name', 'mode'):
-                        setattr(agentpool, attr, None)
-            else:
-                for attr in vars(agentpool):
-                    if attr not in ('name', 'mode') and not attr.startswith('_') and hasattr(agentpool, attr):
-                        setattr(agentpool, attr, None)
+            reset_agentpool_to_name_and_mode(
+                agentpool, CONST_NODEPOOL_MODE_MANAGEDSYSTEM
+            )
         return mc
 
     def init_models(self) -> None:

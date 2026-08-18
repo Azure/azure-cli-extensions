@@ -12,6 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+22.0.0b1
+++++++++
+* [BREAKING CHANGE]: `az aks bastion`: This command does not connect to Azure Bastion anymore. A new subcommand is introduced for this purpose: `az aks bastion tunnel`. The `az aks bastion` command is now used to manage Azure Bastion resources for AKS clusters.
+* `az aks bastion tunnel`: Connect to Azure Bastion for AKS clusters. All the parameters from old `az aks bastion` are supported.
+* `az aks bastion enable`: Enable managed Azure Bastion for AKS clusters.
+* `az aks bastion disable`: Disable managed Azure Bastion for AKS clusters.
+* `az aks bastion update`: Update managed Azure Bastion for AKS clusters.
+
 21.0.0b17
 +++++++++
 * `az aks update`: Add parameters `--enable-hosted-system`, `--system-node-subnet-id` and `--node-subnet-id` to support converting an existing Automatic cluster to a Managed System Pool cluster, optionally with BYO VNet.

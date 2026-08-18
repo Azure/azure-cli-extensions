@@ -3562,6 +3562,32 @@ configuration:
           action: Opened
       - or:
         - titleContains:
+            pattern: '\b(aimanager|AIManager|aiManager|AImanager)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: az \b(aimanager|aimanager namespace|aimanager model)\b
+            isRegex: True
+      then:
+      - requestReview:
+          reviewer: yanzhudd
+      - assignTo:
+          users:
+          - yanzhudd
+      - addLabel:
+          label: Auto-Assign
+      - requestReview:
+          reviewer: xmzhao0822
+      - requestReview:
+          reviewer: techworldhello
+      - addLabel:
+          label: AKS
+      description: '[aks aimanager] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
             pattern: '\b(aosm|Aosm|AOSM)\b'
             isRegex: True
         - bodyContains:

@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context delete",
+    "workload-orchestration-preview context delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete Context Resource
     :example: Delete a Context
-        az workload-orchestration context delete -n myContext -g myResourceGroup
+        az workload-orchestration-preview context delete -n myContext -g myResourceGroup
     """
 
     _aaz_info = {

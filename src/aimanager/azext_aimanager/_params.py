@@ -10,11 +10,17 @@ from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list,
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_aimanager.constants import DELETE_POLICIES, MODEL_DEPLOYMENT_PERFORMANCE_MODES
+from azext_aimanager.constants import (
+    DELETE_POLICIES,
+    MODEL_DEPLOYMENT_PERFORMANCE_MODES,
+    MODEL_SOURCE_TYPES,
+)
 from azext_aimanager._validators import (
     validate_ai_manager_name,
     validate_namespace_name,
     validate_model_deployment_name,
+    validate_ai_model_name,
+    validate_model_source_name,
     validate_labels,
     validate_annotations,
     validate_overrides,
@@ -53,8 +59,34 @@ def load_arguments(self, _):
         c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                    help='Comma-separated key=value pairs to specify custom headers.')
 
+    with self.argument_context('aimanager modelsource') as c:
+        c.argument('ai_manager_name', options_list=['--aimanager-name'],
+                   validator=validate_ai_manager_name,
+                   help='The name of the AI Manager resource.')
+        c.argument('model_source_name', options_list=['--name', '-n'],
+                   validator=validate_model_source_name,
+                   help='The name of the model source.')
+
+    with self.argument_context('aimanager modelsource list') as c:
+        c.ignore('model_source_name')
+
+    with self.argument_context('aimanager modelsource add') as c:
+        c.argument('source_type', options_list=['--source-type', '-s'], required=True,
+                   arg_type=get_enum_type(MODEL_SOURCE_TYPES),
+                   help='The type of the model source. Immutable after creation.')
+
+    for scope in ['aimanager modelsource add', 'aimanager modelsource update']:
+        with self.argument_context(scope) as c:
+            c.argument('description',
+                       help='An optional, free-form description of the model source.')
+            c.argument('token',
+                       help='Access token used by the platform to authenticate to the source. '
+                            'Optional for public sources such as ungated Hugging Face models.')
+            c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
+                       help='Comma-separated key=value pairs to specify custom headers.')
+
     with self.argument_context('aimanager namespace') as c:
-        c.argument('ai_manager_name', options_list=['--manager', '-m'],
+        c.argument('ai_manager_name', options_list=['--aimanager-name', '--manager', '-m'],
                    validator=validate_ai_manager_name,
                    help='The name of the AI Manager resource.')
         c.argument('namespace_name', options_list=['--name', '-n'],
@@ -79,6 +111,11 @@ def load_arguments(self, _):
                    help='If specified, overwrite the default context name.')
         c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                    help='Comma-separated key=value pairs to specify custom headers.')
+
+    for scope in ['aimanager namespace list-accesskeys', 'aimanager namespace rotate-accesskeys']:
+        with self.argument_context(scope) as c:
+            c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
+                       help='Comma-separated key=value pairs to specify custom headers.')
 
     with self.argument_context('aimanager namespace modeldeployment') as c:
         c.argument('ai_manager_name', options_list=['--aimanager-name'],
@@ -117,3 +154,14 @@ def load_arguments(self, _):
                        help='Space-separated experimental deployment overrides (key=value).')
             c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                        help='Comma-separated key=value pairs to specify custom headers.')
+
+    with self.argument_context('aimanager model') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=True,
+                   help='The Azure region hosting the AI model catalog.')
+        c.argument('ai_model_name', options_list=['--name', '-n'],
+                   validator=validate_ai_model_name,
+                   help='The name of the AI model. This is an opaque, stable identifier derived '
+                        'from the model ID; use "az aimanager model list" to discover it.')
+
+    with self.argument_context('aimanager model list') as c:
+        c.ignore('ai_model_name')
