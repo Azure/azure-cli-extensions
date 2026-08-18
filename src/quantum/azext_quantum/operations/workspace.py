@@ -508,5 +508,4 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = list_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, include_inherited=include_inherited)
-    # Match the Quantum portal, which lists only user principals (not groups or service principals).
     return [assignment for assignment in assignments if assignment.get("principalType") == "User"]
