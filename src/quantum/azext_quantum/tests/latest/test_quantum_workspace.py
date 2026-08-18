@@ -387,6 +387,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee=None, assignee_object_id="oid", assignee_principal_type="User")
 
+    def test_add_user_rejects_non_user_principal_type(self):
+        cmd = SimpleNamespace(cli_ctx=object())
+        with self.assertRaises(InvalidArgumentValueError):
+            add_user(cmd, "rg", "ws", assignee_object_id="oid", assignee_principal_type="Group")
+
     def test_transform_users(self):
         from ...commands import transform_users
         rows = transform_users([{

@@ -472,17 +472,19 @@ def _validate_assignee_args(assignee, assignee_object_id):
         raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
     """
     Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
     _validate_assignee_args(assignee, assignee_object_id)
+    # Workspace access is user-only; '--assignee-principal-type' is deprecated and accepts only 'User'.
+    if assignee_principal_type and assignee_principal_type != "User":
+        raise InvalidArgumentValueError("Azure Quantum workspace access can only be granted to users. '--assignee-principal-type' only supports 'User'.")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    # Restrict workspace access management to user principals (not groups or service principals).
     return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
                                   assignee_principal_type="User")
 
