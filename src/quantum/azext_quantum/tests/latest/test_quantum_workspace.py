@@ -340,28 +340,18 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             result = list_users(cmd, "rg", "ws")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=False)
+        list_role_assignments.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=True)
         assert result == assignments
 
-    def test_list_users_include_inherited(self):
+    def test_list_users_can_exclude_inherited(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=[]) as list_role_assignments:
             cmd = SimpleNamespace(cli_ctx=object())
-            list_users(cmd, "rg", "ws", include_inherited=True)
+            list_users(cmd, "rg", "ws", include_inherited=False)
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=True)
-
-    def test_list_users_role_override(self):
-        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
-        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
-                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=[]) as list_role_assignments:
-            cmd = SimpleNamespace(cli_ctx=object())
-            list_users(cmd, "rg", "ws", role="Reader")
-
-        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_called_once_with(cmd, assignee=None, assignee_object_id=None, role="Reader", scope=expected_scope, include_inherited=False)
+        list_role_assignments.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=False)
 
     def test_list_users_excludes_groups_and_service_principals(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
