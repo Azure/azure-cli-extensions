@@ -2894,6 +2894,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
     async def _update_initial(
         self,
         resource_group_name: str,
+        cluster_name: str,
         private_endpoint_connection_name: str,
         properties: Union[_models.PrivateEndpointConnectionUpdate, JSON, IO[bytes]],
         **kwargs: Any
@@ -2921,6 +2922,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
 
         _request = build_horizon_db_private_endpoint_connections_update_request(
             resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
             private_endpoint_connection_name=private_endpoint_connection_name,
             subscription_id=self._config.subscription_id,
             content_type=content_type,
@@ -2970,6 +2972,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
     async def begin_update(
         self,
         resource_group_name: str,
+        cluster_name: str,
         private_endpoint_connection_name: str,
         properties: _models.PrivateEndpointConnectionUpdate,
         *,
@@ -2981,6 +2984,8 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param cluster_name: The name of the HorizonDb cluster. Required.
+        :type cluster_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource. Required.
         :type private_endpoint_connection_name: str
@@ -3000,6 +3005,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
     async def begin_update(
         self,
         resource_group_name: str,
+        cluster_name: str,
         private_endpoint_connection_name: str,
         properties: JSON,
         *,
@@ -3011,6 +3017,8 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param cluster_name: The name of the HorizonDb cluster. Required.
+        :type cluster_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource. Required.
         :type private_endpoint_connection_name: str
@@ -3030,6 +3038,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
     async def begin_update(
         self,
         resource_group_name: str,
+        cluster_name: str,
         private_endpoint_connection_name: str,
         properties: IO[bytes],
         *,
@@ -3041,6 +3050,8 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param cluster_name: The name of the HorizonDb cluster. Required.
+        :type cluster_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource. Required.
         :type private_endpoint_connection_name: str
@@ -3060,6 +3071,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
     async def begin_update(
         self,
         resource_group_name: str,
+        cluster_name: str,
         private_endpoint_connection_name: str,
         properties: Union[_models.PrivateEndpointConnectionUpdate, JSON, IO[bytes]],
         **kwargs: Any
@@ -3069,6 +3081,8 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param cluster_name: The name of the HorizonDb cluster. Required.
+        :type cluster_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource. Required.
         :type private_endpoint_connection_name: str
@@ -3093,6 +3107,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         if cont_token is None:
             raw_result = await self._update_initial(
                 resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
                 private_endpoint_connection_name=private_endpoint_connection_name,
                 properties=properties,
                 content_type=content_type,
@@ -3135,7 +3150,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         )
 
     async def _delete_initial(
-        self, resource_group_name: str, private_endpoint_connection_name: str, **kwargs: Any
+        self, resource_group_name: str, cluster_name: str, private_endpoint_connection_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -3152,6 +3167,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
 
         _request = build_horizon_db_private_endpoint_connections_delete_request(
             resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
             private_endpoint_connection_name=private_endpoint_connection_name,
             subscription_id=self._config.subscription_id,
             api_version=self._config.api_version,
@@ -3200,13 +3216,15 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
 
     @distributed_trace_async
     async def begin_delete(
-        self, resource_group_name: str, private_endpoint_connection_name: str, **kwargs: Any
+        self, resource_group_name: str, cluster_name: str, private_endpoint_connection_name: str, **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes a private endpoint connection.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param cluster_name: The name of the HorizonDb cluster. Required.
+        :type cluster_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource. Required.
         :type private_endpoint_connection_name: str
@@ -3224,6 +3242,7 @@ class HorizonDbPrivateEndpointConnectionsOperations:  # pylint: disable=name-too
         if cont_token is None:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
                 private_endpoint_connection_name=private_endpoint_connection_name,
                 cls=lambda x, y, z: x,
                 headers=_headers,

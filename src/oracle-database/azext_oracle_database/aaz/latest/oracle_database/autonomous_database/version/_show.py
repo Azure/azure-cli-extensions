@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database version show",
 )
 class Show(AAZCommand):
-    """Get a AutonomousDbVersion
+    """Get an Autonomous Database version
 
     :example: Get ADBS Version
         az oracle-database autonomous-database version show --location <location> --name <version name>
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.autonomousdbversionsname = AAZStrArg(
             options=["-n", "--name", "--autonomousdbversionsname"],
-            help="AutonomousDbVersion name",
+            help="Autonomous Database version name",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database change-disaster-recovery-configuration",
 )
 class ChangeDisasterRecoveryConfiguration(AAZCommand):
-    """Perform ChangeDisasterRecoveryConfiguration action on Autonomous Database
+    """Change the disaster recovery configuration of a cross-region disaster recovery peer Autonomous Database
 
-    :example: AutonomousDatabases_ChangeDisasterRecoveryConfiguration
-        az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group rg000 --autonomousdatabasename databasedb1 --disaster-recovery-type Adg --is-replicate-automatic-backups False
+    :example: Change the disaster recovery configuration of a cross-region disaster recovery peer
+        az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group MyResourceGroup --autonomousdatabasename MyCrossRegionPeerDB --disaster-recovery-type Adg --is-replicate-automatic-backups false
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.autonomousdatabasename = AAZStrArg(
             options=["--autonomousdatabasename"],
-            help="The database name.",
+            help="The peer Autonomous Database name for the existing cross-region disaster recovery association.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

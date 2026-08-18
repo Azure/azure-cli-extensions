@@ -28,15 +28,20 @@ from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+from azext_fleet.constants import SUPPORTED_GATE_TYPE_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
-from azext_fleet.vendored_sdks.v2026_03_02_preview.models import (
+from azext_fleet.constants import POLLING_INTERVAL_SECS
+from azext_fleet.vendored_sdks.v2026_06_02_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
+    PlacementV1ClusterUpdateStrategyReference,
     PlacementV1PlacementPolicy,
+    PlacementV1RolloutStrategy,
     PropagationType,
     PlacementType,
+    RolloutStrategyType,
 )
 
 logger = get_logger(__name__)
@@ -195,7 +200,10 @@ def update_fleet(cmd,
         identity=managed_service_identity
     )
 
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+    return sdk_no_wait(
+        no_wait, client.begin_update, resource_group_name, name, fleet_patch,
+        polling_interval=POLLING_INTERVAL_SECS
+    )
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -218,7 +226,7 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  resource_group_name,
                  name,
                  no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=POLLING_INTERVAL_SECS)
 
 
 def _convert_kubeconfig_to_azurecli(path):
@@ -580,6 +588,56 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
 
+def build_gate_configs(cmd, operation_group, gates_list):
+    """Convert a list of gate dicts from JSON into GateConfiguration model objects."""
+    if not gates_list:
+        return None
+
+    gate_configuration_model = cmd.get_models(
+        "GateConfiguration",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
+    scheduled_start_configuration_model = cmd.get_models(
+        "ScheduledStartConfiguration",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
+
+    valid_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    result = []
+    for gate in gates_list:
+        gate_type = gate.get("type", "Approval")
+        scheduled_start_config = None
+        raw_config = gate.get("scheduledStartConfiguration")
+        if raw_config is not None:
+            required_keys = ["startDay", "startTime", "utcOffset"]
+            missing_keys = [k for k in required_keys if k not in raw_config]
+            if missing_keys:
+                raise CLIError(
+                    f"Missing required field(s) {missing_keys} in scheduledStartConfiguration. "
+                    "'startDay', 'startTime', and 'utcOffset' are all required "
+                    "when using scheduledStartConfiguration."
+                )
+            start_day = raw_config["startDay"]
+            if start_day not in valid_days:
+                raise CLIError(
+                    f"Invalid startDay value '{start_day}'. "
+                    f"Valid values are: {', '.join(valid_days)}."
+                )
+            scheduled_start_config = scheduled_start_configuration_model(
+                start_day=start_day,
+                start_time=raw_config["startTime"],
+                utc_offset=raw_config["utcOffset"],
+            )
+        result.append(gate_configuration_model(
+            type=gate_type,
+            display_name=gate.get("displayName"),
+            scheduled_start_configuration=scheduled_start_config,
+        ))
+    return result
+
+
 def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
@@ -605,27 +663,44 @@ def get_update_run_strategy(cmd, operation_group, stages):
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group=operation_group
     )
+    member_selector_model = cmd.get_models(
+        "MemberSelector",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
 
     update_stages = []
 
     for stage in data["stages"]:
         update_groups = []
-        for group in stage["groups"]:
+        for group in stage.get("groups", []):
+            group_member_selector = None
+            raw_group_selector = group.get("memberSelector")
+            if raw_group_selector:
+                group_member_selector = member_selector_model(by_label=raw_group_selector.get("byLabel"))
             update_groups.append(update_group_model(
                 name=group["name"],
                 max_concurrency=group.get("maxConcurrency"),
-                before_gates=group.get("beforeGates", []),
-                after_gates=group.get("afterGates", []),
+                max_allowed_failures=group.get("maxAllowedFailures"),
+                member_selector=group_member_selector,
+                before_gates=build_gate_configs(cmd, operation_group, group.get("beforeGates")),
+                after_gates=build_gate_configs(cmd, operation_group, group.get("afterGates")),
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
 
+        stage_member_selector = None
+        raw_stage_selector = stage.get("memberSelector")
+        if raw_stage_selector:
+            stage_member_selector = member_selector_model(by_label=raw_stage_selector.get("byLabel"))
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
+            member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
-            before_gates=stage.get("beforeGates", []),
-            after_gates=stage.get("afterGates", []),
+            max_allowed_failures=stage.get("maxAllowedFailures"),
+            before_gates=build_gate_configs(cmd, operation_group, stage.get("beforeGates")),
+            after_gates=build_gate_configs(cmd, operation_group, stage.get("afterGates")),
             after_stage_wait_in_seconds=after_wait
         ))
 
@@ -690,6 +765,17 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
 
     if channel == "NodeImage" and node_image_selection is not None:
         raise CLIError("node_image_selection must NOT be populated when channel type `NodeImage` is selected")
+
+    if channel == "SecurityPatch":
+        if node_image_selection is not None:
+            raise CLIError("node_image_selection must NOT be populated when "
+                           "channel type `SecurityPatch` is selected")
+        if target_kubernetes_version is not None:
+            raise CLIError("target_kubernetes_version must NOT be populated when "
+                           "channel type `SecurityPatch` is selected")
+        if long_term_support:
+            raise CLIError("long_term_support must NOT be set when "
+                           "channel type `SecurityPatch` is selected")
 
     upgrade_channel_model = cmd.get_models(
         "UpgradeChannel",
@@ -772,8 +858,9 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                         client,
                         resource_group_name,
                         fleet_name,
-                        state_filter=None):
-    params = {}
+                        state_filter=None,
+                        gate_type=None):
+    filters = []
 
     if state_filter:
         if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
@@ -781,8 +868,19 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                 f"Unsupported gate state filter value: '{state_filter}'. "
                 f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
             )
+        filters.append(f"state eq {state_filter}")
 
-        params["$filter"] = f"state eq {state_filter}"
+    if gate_type:
+        if gate_type not in SUPPORTED_GATE_TYPE_FILTERS:
+            raise CLIError(
+                f"Unsupported gate type filter value: '{gate_type}'. "
+                f"Allowed values are {SUPPORTED_GATE_TYPE_FILTERS}"
+            )
+        filters.append(f"gateType eq {gate_type}")
+
+    params = {}
+    if filters:
+        params["$filter"] = filters
 
     return client.list_by_fleet(resource_group_name, fleet_name, params=params)
 
@@ -844,6 +942,76 @@ def approve_gate(cmd,  # pylint: disable=unused-argument
     return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
 
 
+def _build_resource_quota(cmd, cpu_requests, cpu_limits, memory_requests, memory_limits):
+    if not (cpu_requests or cpu_limits or memory_requests or memory_limits):
+        return None
+    resource_quota_model = cmd.get_models(
+        "ResourceQuota",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+    resource_limits = {}
+    if cpu_requests:
+        resource_limits['cpu_request'] = cpu_requests
+    if memory_requests:
+        resource_limits['memory_request'] = memory_requests
+    if cpu_limits:
+        resource_limits['cpu_limit'] = cpu_limits
+    if memory_limits:
+        resource_limits['memory_limit'] = memory_limits
+    return resource_quota_model(**resource_limits)
+
+
+def _build_network_policy(cmd, ingress_policy, egress_policy):
+    if not (ingress_policy or egress_policy):
+        return None
+    network_policy_model = cmd.get_models(
+        "NetworkPolicy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+    network_policies = {}
+    if ingress_policy:
+        network_policies['ingress'] = ingress_policy
+    if egress_policy:
+        network_policies['egress'] = egress_policy
+    return network_policy_model(**network_policies)
+
+
+def _build_propagation_policy(member_cluster_names, rollout_update_strategy=None, default_rollout_type=None):
+    rollout_strategy_obj = None
+    if rollout_update_strategy:
+        rollout_strategy_obj = PlacementV1RolloutStrategy(
+            type=RolloutStrategyType.EXTERNAL.value,
+            cluster_update_strategy=PlacementV1ClusterUpdateStrategyReference(name=rollout_update_strategy)
+        )
+    elif default_rollout_type:
+        rollout_strategy_obj = PlacementV1RolloutStrategy(
+            type=default_rollout_type
+        )
+
+    if not (member_cluster_names or rollout_update_strategy):
+        return None
+
+    placement_policy = None
+    if member_cluster_names:
+        placement_policy = PlacementV1PlacementPolicy(
+            placement_type=PlacementType.pick_fixed,
+            cluster_names=member_cluster_names
+        )
+    placement_spec = PlacementV1ClusterResourcePlacementSpec(
+        policy=placement_policy,
+        rollout_strategy=rollout_strategy_obj
+    )
+    placement_profile = PlacementProfile(
+        default_cluster_resource_placement=placement_spec
+    )
+    return PropagationPolicy(
+        type=PropagationType.placement,
+        placement_profile=placement_profile
+    )
+
+
 def create_managed_namespace(cmd,
                              client,
                              resource_group_name,
@@ -861,6 +1029,7 @@ def create_managed_namespace(cmd,
                              delete_policy=None,
                              adoption_policy=None,
                              member_cluster_names=None,
+                             rollout_update_strategy=None,
                              no_wait=False):
 
     managed_namespace_model = cmd.get_models(
@@ -881,67 +1050,21 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
-    resource_quota_model = cmd.get_models(
-        "ResourceQuota",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleet_managed_namespaces"
-    )
-
-    network_policy_model = cmd.get_models(
-        "NetworkPolicy",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleet_managed_namespaces"
-    )
-
     fleet_client = cf_fleets(cmd.cli_ctx)
     fleet = fleet_client.get(resource_group_name, fleet_name)
-
-    default_resource_quota = None
-    if cpu_requests or cpu_limits or memory_requests or memory_limits:
-        resource_limits = {}
-        if cpu_requests:
-            resource_limits['cpu_request'] = cpu_requests
-        if memory_requests:
-            resource_limits['memory_request'] = memory_requests
-        if cpu_limits:
-            resource_limits['cpu_limit'] = cpu_limits
-        if memory_limits:
-            resource_limits['memory_limit'] = memory_limits
-        default_resource_quota = resource_quota_model(**resource_limits)
-
-    default_network_policy = None
-    if ingress_policy or egress_policy:
-        network_policies = {}
-        if ingress_policy:
-            network_policies['ingress'] = ingress_policy
-        if egress_policy:
-            network_policies['egress'] = egress_policy
-        default_network_policy = network_policy_model(**network_policies)
 
     managed_namespace_props = managed_namespace_properties_model(
         labels=labels,
         annotations=annotations,
-        default_resource_quota=default_resource_quota,
-        default_network_policy=default_network_policy
+        default_resource_quota=_build_resource_quota(cmd, cpu_requests, cpu_limits, memory_requests, memory_limits),
+        default_network_policy=_build_network_policy(cmd, ingress_policy, egress_policy)
     )
 
-    propagation_policy = None
-    if member_cluster_names:
-        placement_policy = PlacementV1PlacementPolicy(
-            placement_type=PlacementType.pick_fixed,
-            cluster_names=member_cluster_names
-        )
-        placement_spec = PlacementV1ClusterResourcePlacementSpec(
-            policy=placement_policy
-        )
-        placement_profile = PlacementProfile(
-            default_cluster_resource_placement=placement_spec
-        )
-        propagation_policy = PropagationPolicy(
-            type=PropagationType.placement,
-            placement_profile=placement_profile
-        )
-    else:
+    propagation_policy = _build_propagation_policy(
+        member_cluster_names, rollout_update_strategy,
+        default_rollout_type=RolloutStrategyType.ROLLING_UPDATE.value
+    )
+    if not member_cluster_names:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
     fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
@@ -964,7 +1087,7 @@ def create_managed_namespace(cmd,
         fleet_name,
         managed_namespace_name,
         managed_namespace,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
@@ -973,23 +1096,69 @@ def update_managed_namespace(cmd,
                              resource_group_name,
                              fleet_name,
                              managed_namespace_name,
-                             tags=None):
-    """
-    Update a fleet managed namespace. Currently only supports updating tags.
-    """
+                             tags=None,
+                             labels=None,
+                             annotations=None,
+                             cpu_requests=None,
+                             cpu_limits=None,
+                             memory_requests=None,
+                             memory_limits=None,
+                             ingress_policy=None,
+                             egress_policy=None,
+                             delete_policy=None,
+                             adoption_policy=None,
+                             member_cluster_names=None,
+                             rollout_update_strategy=None,
+                             no_wait=False):
     fleet_managed_namespace_patch_model = cmd.get_models(
         "FleetManagedNamespacePatch",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_managed_namespaces"
     )
 
-    patch = fleet_managed_namespace_patch_model(tags=tags)
+    fleet_managed_namespace_properties_patch_model = cmd.get_models(
+        "FleetManagedNamespacePropertiesPatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
 
-    return client.begin_update(
+    default_resource_quota = _build_resource_quota(cmd, cpu_requests, cpu_limits, memory_requests, memory_limits)
+    default_network_policy = _build_network_policy(cmd, ingress_policy, egress_policy)
+
+    managed_namespace_props = None
+    if labels is not None or annotations is not None or default_resource_quota or default_network_policy:
+        managed_namespace_properties_model = cmd.get_models(
+            "ManagedNamespaceProperties",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleet_managed_namespaces"
+        )
+        managed_namespace_props = managed_namespace_properties_model(
+            labels=labels,
+            annotations=annotations,
+            default_resource_quota=default_resource_quota,
+            default_network_policy=default_network_policy
+        )
+
+    properties_patch = fleet_managed_namespace_properties_patch_model(
+        managed_namespace_properties=managed_namespace_props,
+        adoption_policy=adoption_policy,
+        delete_policy=delete_policy,
+        propagation_policy=_build_propagation_policy(member_cluster_names, rollout_update_strategy)
+    )
+
+    patch = fleet_managed_namespace_patch_model(
+        tags=tags,
+        properties=properties_patch
+    )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_update,
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         managed_namespace_name=managed_namespace_name,
-        properties=patch
+        properties=patch,
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
@@ -1005,7 +1174,7 @@ def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
         resource_group_name,
         fleet_name,
         managed_namespace_name,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 

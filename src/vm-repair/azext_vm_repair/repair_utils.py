@@ -9,7 +9,7 @@ import shlex
 import os
 import re
 from json import loads
-import pkgutil
+import importlib.util
 import requests
 
 from knack.log import get_logger
@@ -18,7 +18,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SkuNotAvailableError)
 
-from azure.cli.core.azclierror import CLIError
+from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -30,9 +30,8 @@ def _get_cloud_init_script():
     SCRIPTS_DIR_NAME = 'scripts'
     CLOUD_INIT = 'linux-build_setup-cloud-init.txt'
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
+    mod_spec = importlib.util.find_spec(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod_spec.origin)
     return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
 
 
@@ -60,6 +59,61 @@ def _is_gen2(vm):
     return 1
 
 
+def _quote_cmd_arg(arg):
+    """
+    Quote a single argument for safe use on a Windows 'cmd /c' command line.
+
+    The argument is always wrapped in double quotes so that cmd.exe treats shell
+    metacharacters such as & | < > ( ) ^ as literal text instead of operators.
+    Embedded double quotes and any backslashes that precede them are escaped using
+    the Windows CommandLineToArgvW convention so the receiving program parses the
+    original value. This prevents command injection from untrusted values (for
+    example source VM tags) that are interpolated into the command string.
+    See MSRC 115198 / VULN-185362.
+    """
+    result = '"'
+    backslash_count = 0
+    for char in arg:
+        if char == '\\':
+            backslash_count += 1
+        elif char == '"':
+            # Double the backslashes that precede the quote, then escape the quote.
+            result += '\\' * (backslash_count * 2 + 1)
+            result += '"'
+            backslash_count = 0
+        else:
+            result += '\\' * backslash_count
+            result += char
+            backslash_count = 0
+    # Double any trailing backslashes so they do not escape the closing quote.
+    result += '\\' * (backslash_count * 2)
+    result += '"'
+    return result
+
+
+# Characters that cannot be safely carried through a Windows 'cmd /c' command line when
+# interpolated from an untrusted tag value (for example a source VM tag copied via
+# --copy-tags). Double quotes and ASCII control characters break argument tokenization,
+# and '%' / '!' are expanded by cmd.exe as environment / delayed-expansion variables even
+# inside double quotes -- '%' in particular cannot be reliably escaped on a 'cmd /c' line
+# (a leading '^' is preserved as a literal caret and corrupts the value). Such characters
+# are therefore rejected at the boundary rather than escaped. See MSRC 115198 / VULN-185362.
+def _validate_tags_for_command(merged_tags):
+    """
+    Reject tag keys and values that contain characters which are unsafe to interpolate
+    into the 'az' command string. Raises InvalidArgumentValueError on the first offending
+    key or value; returns None when every tag is safe.
+    """
+    for tag_key, tag_value in merged_tags.items():
+        for tag_field in (str(tag_key), str(tag_value)):
+            if any(unsafe_char in tag_field for unsafe_char in ('"', '%', '!')) or \
+                    any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+                raise InvalidArgumentValueError(
+                    f'Tag keys and values must not contain double quotes, percent signs, '
+                    f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
+                )
+
+
 def _call_az_command(command_string, run_async=False, secure_params=None):
     """
     Uses subprocess to run a command string. To hide sensitive parameters from logs, add the
@@ -72,10 +126,6 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # If command does not start with 'az' then raise exception
     if not tokenized_command or tokenized_command[0] != 'az':
         raise AzCommandError("The command string is not an 'az' command!")
-    # If run on windows, add 'cmd /c'
-    windows_os_name = 'nt'
-    if os.name == windows_os_name:
-        tokenized_command = ['cmd', '/c'] + tokenized_command
 
     # Hide sensitive data such as passwords from logs
     if secure_params:
@@ -83,7 +133,30 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
             if param:
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
-    process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+    # On Windows, 'az' resolves to a batch file (az.cmd) so the call must be launched
+    # through cmd.exe. Handing the tokenized list to subprocess would let cmd.exe
+    # re-interpret shell metacharacters: subprocess.list2cmdline only quotes tokens that
+    # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
+    # and the '&' would be parsed as a command separator. To prevent command injection
+    # from untrusted interpolated values (for example source VM tags), build the command
+    # line explicitly and wrap every token in double quotes so cmd.exe treats
+    # metacharacters as literal text.
+    #
+    # The whole command is additionally wrapped in one outer pair of quotes and invoked
+    # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
+    # line (its documented /c behavior), which would unbalance the quoting around the final
+    # argument and re-expose metacharacters. With '/s' and a leading+trailing quote, cmd.exe
+    # strips exactly those outer quotes and parses the remainder verbatim, keeping every
+    # per-token quote balanced. See MSRC 115198 / VULN-185362.
+    windows_os_name = 'nt'
+    if os.name == windows_os_name:
+        quoted_command = ' '.join(_quote_cmd_arg(token) for token in tokenized_command)
+        command_to_run = 'cmd /s /c "' + quoted_command + '"'
+    else:
+        command_to_run = tokenized_command
+
+    process = subprocess.Popen(command_to_run, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
@@ -108,9 +181,8 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
 
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
+    mod_spec = importlib.util.find_spec(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod_spec.origin)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, script_name)
 
     if is_linux:
@@ -165,8 +237,16 @@ def check_extension_version(extension_name):
 
     extension_to_check = extension_to_check[0]
 
+    # On some Azure CLI versions (e.g. 2.87) the installed extension metadata is missing because
+    # newer setuptools no longer generates 'metadata.json', so the version resolves to None. Skip
+    # the up-to-date check instead of crashing the command on a None comparison (fixed in CLI 2.88).
+    installed_version = extension_to_check.get('version')
+    if not installed_version:
+        logger.debug('Could not determine the installed version of the %s extension; skipping version check.', extension_name)
+        return
+
     for ext in available_extensions:
-        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+        if ext['name'] == extension_name and ext.get('version') and ext['version'] > installed_version:
             logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
             return
 

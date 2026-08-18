@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration config-template hierarchy show",
+    "workload-orchestration-preview config-template hierarchy show",
 )
 class Show(AAZCommand):
     """Show linked hierarchies for a config template
     :example: Show linked hierarchies for a config template
-        az workload-orchestration config-template hierarchy show -g rg1 -n configTemplateName
+        az workload-orchestration-preview config-template hierarchy show -g rg1 -n configTemplateName
     """
 
     _aaz_info = {

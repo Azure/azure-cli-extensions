@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
+            help="Azure backup resource id. Use the value returned by backup create or backup list.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

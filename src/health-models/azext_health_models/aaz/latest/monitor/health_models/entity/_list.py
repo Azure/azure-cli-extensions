@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List Entity resources by HealthModel

@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Restore(AAZCommand):
     """Restores an Autonomous Database based on the provided request parameters.
 
-    :example: Restore Autonomous database
-        az oracle-database autonomous-database restore --autonomousdatabasename <ADBS name> --resource-group <resource_group> --timestamp <timestamp>
+    :example: Restore an Autonomous Database
+        az oracle-database autonomous-database restore --autonomousdatabasename <ADBS name> --resource-group <resource_group> --timestamp 2026-06-03T15:45:11.000Z
     """
 
     _aaz_info = {
@@ -66,7 +66,7 @@ class Restore(AAZCommand):
         _args_schema.timestamp = AAZDateTimeArg(
             options=["--timestamp"],
             arg_group="Body",
-            help="The time to restore the database to.",
+            help="The point in time to restore the database to. Use RFC3339 UTC format, for example 2026-06-03T15:45:11.000Z.",
             required=True,
         )
         return cls._args_schema

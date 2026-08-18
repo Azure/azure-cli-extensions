@@ -2,7 +2,7 @@
 
 Release History
 ===============
-3.0.0b5
+3.0.0b6
 +++++++++++++++
 * Add ``az migrate runbook`` commands (generate, show, list, update,
   regenerate, delete, wait).
@@ -11,11 +11,16 @@ Release History
 * Add ``az migrate runbook definition step`` commands (add, update,
   remove) and ``az migrate runbook definition workstream`` commands
   (split, merge).
-* Add ``az migrate runbook parameter`` commands (download, upload).
+* Add ``az migrate runbook parameter`` and
+  ``az migrate runbook execution parameter`` commands (download, upload).
 * Add ``az migrate runbook execution`` commands (start, show, list,
   pause, resume, cancel, visualize).
 * Add ``az migrate runbook execution step`` commands (retry, approve,
   complete).
+
+3.0.0b5
++++++++++++++++
+* Change migrate command parameter name.
 
 3.0.0b4
 +++++++++++++++

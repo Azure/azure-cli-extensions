@@ -6,13 +6,13 @@
 # pylint: skip-file
 # flake8: noqa
 
-"""AAZ command for `workload-orchestration context remove-capability`."""
+"""AAZ command for `workload-orchestration-preview context remove-capability`."""
 
 from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context remove-capability",
+    "workload-orchestration-preview context remove-capability",
     confirmation="Are you sure you want to remove the specified capability(ies) from the context?",
 )
 class RemoveCapability(AAZCommand):
@@ -22,10 +22,10 @@ class RemoveCapability(AAZCommand):
     The context must retain at least one capability after removal.
 
     :example: Remove a single capability
-        az workload-orchestration context remove-capability -g Mehoopany -n Mehoopany-Context --capabilities "[soap]" --yes
+        az workload-orchestration-preview context remove-capability -g Mehoopany -n Mehoopany-Context --capabilities "[soap]" --yes
 
     :example: Remove multiple capabilities
-        az workload-orchestration context remove-capability -g Mehoopany -n Mehoopany-Context --capabilities "[soap,shampoo,detergent]" --yes
+        az workload-orchestration-preview context remove-capability -g Mehoopany -n Mehoopany-Context --capabilities "[soap,shampoo,detergent]" --yes
     """
 
     _aaz_info = {

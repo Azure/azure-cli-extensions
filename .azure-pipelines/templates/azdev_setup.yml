@@ -11,14 +11,12 @@ steps:
       python -m venv env
       chmod +x env/bin/activate
       source ./env/bin/activate
-      # clone azure-cli
       git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
       python -m pip install -U pip
-      # azdev 0.2.11b1 (decouples extension metadata from wheel==0.30.0) tho it is not on PyPI yet.
-      # Pinned to a specific azure-cli-dev-tools commit (not @dev) for reproducible builds
-      # until the pre-release is published; then switch this back to:
-      # pip install --upgrade "azdev==0.2.11b1"
-      pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@49390f30c6a822620d2fbdf88889c4445d22666f#egg=azdev"
+      pip install --upgrade azdev==0.2.13
+      # wheel is unpinned on purpose. setuptools' legacy backend still needs it for the extensions
+      # that haven't moved to pyproject.toml yet, and it can go once they all have.
+      pip install build wheel
       azdev --version
       azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
       pip list -v
