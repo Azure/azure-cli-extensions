@@ -350,9 +350,9 @@ helps['quantum workspace user list'] = """
     type: command
     short-summary: List the users with access to an Azure Quantum workspace.
     long-summary: >-
-        Lists the user principals (excluding groups and service principals) assigned the 'Quantum
-        Workspace Data Contributor' role at the scope of the given (or current) workspace. Use
-        '--role' to filter by a different role.
+        Lists user principals (excluding groups and service principals) assigned the 'Quantum Workspace Data Contributor'
+        role for the given (or current) workspace. By default, only assignments scoped to the workspace are shown; use
+        '--include-inherited' to include those inherited from the parent resource group/subscription. Use '--role' to filter by a different role.
     examples:
       - name: List all users with access to a workspace.
         text: |-

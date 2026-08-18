@@ -70,7 +70,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user. Supported formats: object id or user sign-in name.')
     assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with the object id of a user.")
     role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role to grant; for 'delete', the assignment to remove; for 'list', the role to filter by. All default to the 'Quantum Workspace Data Contributor' role.")
-    include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], help='If specified, also list role assignments inherited from the parent resource group and subscription scopes.')
+    include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], action='store_true', help='If specified, also list role assignments inherited from the parent resource group and subscription scopes.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
