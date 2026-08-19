@@ -448,6 +448,14 @@ def validate_node_public_ip_prefix_ids(ns):
                 )
 
 
+def validate_bastion_public_ip_id(namespace):
+    if namespace.bastion_public_ip is None or namespace.bastion_public_ip == '':
+        return
+    if not is_valid_resource_id(namespace.bastion_public_ip):
+        raise InvalidArgumentValueError(
+            "--bastion-public-ip is not a valid Azure resource ID.")
+
+
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 

@@ -1,4 +1,4 @@
-workload-orchestration solution-template create:
+workload-orchestration-preview solution-template create:
   parameters:
     configuration-template-file:
       rule_exclusions:
@@ -7,13 +7,13 @@ workload-orchestration solution-template create:
       rule_exclusions:
       - option_length_too_long
       
-workload-orchestration solution-template version show:
+workload-orchestration-preview solution-template version show:
   parameters:
     solution-template-version-name:
       rule_exclusions:
       - option_length_too_long
 
-workload-orchestration target resolve:
+workload-orchestration-preview target resolve:
   parameters:
     solution-template-name:
       rule_exclusions:
@@ -22,7 +22,7 @@ workload-orchestration target resolve:
       rule_exclusions:
       - option_length_too_long
 
-workload-orchestration target review:
+workload-orchestration-preview target review:
   parameters:
     solution-template-name:
       rule_exclusions:
@@ -34,13 +34,13 @@ workload-orchestration target review:
       rule_exclusions:
       - option_length_too_long
 
-workload-orchestration sync:
+workload-orchestration-preview sync:
   parameters:
     local_connected_registry_ip:
       rule_exclusions:
       - option_length_too_long
 
-workload-orchestration solution-deployment create:
+workload-orchestration-preview solution-deployment create:
   parameters:
     solution_template_subscription:
       rule_exclusions:
@@ -49,7 +49,7 @@ workload-orchestration solution-deployment create:
       rule_exclusions:
       - option_length_too_long
 
-workload-orchestration solution-deployment update:
+workload-orchestration-preview solution-deployment update:
   parameters:
     solution_template_subscription:
       rule_exclusions:
@@ -58,7 +58,7 @@ workload-orchestration solution-deployment update:
       rule_exclusions:
       - option_length_too_long
 
-workload-orchestration cluster init:
+workload-orchestration-preview cluster init:
   parameters:
     extension-dependency-version:
       rule_exclusions:

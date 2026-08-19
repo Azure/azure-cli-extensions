@@ -6,7 +6,7 @@
 # pylint: skip-file
 # flake8: noqa
 
-"""AAZ command for `workload-orchestration cluster init`.
+"""AAZ command for `workload-orchestration-preview cluster init`.
 
 Hand-authored AAZ command class that owns argument parsing and delegates the
 orchestration to the existing custom target_prepare() function.
@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration cluster init",
+    "workload-orchestration-preview cluster init",
 )
 class Init(AAZCommand):
     """Prepare an Arc-connected Kubernetes cluster for Workload Orchestration.
@@ -31,23 +31,23 @@ class Init(AAZCommand):
       4. Create Custom Location (validates cluster binding if already exists)
 
     :example: Initialize a cluster with defaults
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap
     :example: Use a specific release train
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train dev
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --release-train dev
     :example: Pin a specific WO extension version
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-version 2.1.28
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --extension-version 2.1.28
     :example: Pin a dependency extension (partial-value shorthand)
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version iotplatform=0.7.6
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version iotplatform=0.7.6
     :example: Pin a dependency extension (full-value shorthand)
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version "{iotplatform:0.7.6}"
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version "{iotplatform:0.7.6}"
     :example: Pin dependencies from a JSON file
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version deps.json
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version deps.json
     :example: Custom location name
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
     :example: Custom location in a different resource group
-        az workload-orchestration cluster init -c my-cluster -g cluster-rg -l eastus2euap --custom-location-resource-group cl-rg
+        az workload-orchestration-preview cluster init -c my-cluster -g cluster-rg -l eastus2euap --custom-location-resource-group cl-rg
     :example: Custom location in a different region
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-location westus2
+        az workload-orchestration-preview cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-location westus2
     """
 
     _aaz_info = {
