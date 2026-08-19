@@ -382,6 +382,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             "principalName": "user@contoso.com",
             "displayName": "Contoso User",
             "mail": "user@contoso.com",
+            "createdOn": "2026-06-24T16:53:26.107178+00:00",
             "principalType": "User",
             "roleDefinitionName": "Quantum Workspace Data Contributor",
             "scope": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
@@ -389,6 +390,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assert rows[0]["Name"] == "Contoso User"
         assert rows[0]["Email"] == "user@contoso.com"
         assert rows[0]["Role"] == "Quantum Workspace Data Contributor"
+        assert rows[0]["Time Created"] == "2026-06-24T16:53:26.107178+00:00"
         assert rows[0]["Principal Id"] == "oid"
 
         # Email falls back to the principal name when Graph did not return a mail address.
