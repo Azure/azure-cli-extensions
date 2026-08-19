@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long,protected-access,too-many-statements
 
 import argparse
+import re
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.commands.parameters import get_enum_type
@@ -30,6 +31,92 @@ class JobParamsAction(argparse._AppendAction):
                 except ValueError as e:
                     raise InvalidArgumentValueError(f'Usage error: {option_string} KEY=VALUE [KEY=VALUE ...], json string, or @file expected') from e
         return params
+
+
+class QuotaAction(argparse._AppendAction):
+    _allowed_keys = {
+        'providerId',
+        'targetId',
+        'standardMinutesLifetime',
+        'highMinutesLifetime'
+    }
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        allocations = list(getattr(namespace, self.dest, None) or [])
+        parsed_values = []
+        current = {}
+
+        for item in values:
+            try:
+                parsed = shell_safe_json_parse(item)
+                if isinstance(parsed, list):
+                    parsed_values.extend(parsed)
+                elif isinstance(parsed, dict):
+                    current.update(parsed)
+                else:
+                    raise InvalidArgumentValueError(
+                        f'Usage error: {option_string} expects key=value pairs, a JSON object or array, or @file.'
+                    )
+            except CLIError:
+                try:
+                    key, value = item.split('=', 1)
+                    current[key] = value
+                except ValueError as ex:
+                    raise InvalidArgumentValueError(
+                        f'Usage error: {option_string} expects key=value pairs, a JSON object or array, or @file.'
+                    ) from ex
+
+        if current:
+            parsed_values.append(current)
+
+        allocations.extend(self._validate(allocation, option_string) for allocation in parsed_values)
+        pairs = [(item['providerId'].lower(), item['targetId'].lower()) for item in allocations]
+        if len(pairs) != len(set(pairs)):
+            raise InvalidArgumentValueError(f'Duplicate providerId/targetId pair specified for {option_string}.')
+
+        setattr(namespace, self.dest, allocations)
+
+    @classmethod
+    def _validate(cls, allocation, option_string):
+        if not isinstance(allocation, dict):
+            raise InvalidArgumentValueError(f'Each {option_string} allocation must be a JSON object.')
+
+        unknown_keys = set(allocation) - cls._allowed_keys
+        if unknown_keys:
+            raise InvalidArgumentValueError(
+                f'Unsupported key(s) for {option_string}: {", ".join(sorted(unknown_keys))}.'
+            )
+
+        for required_key in ('providerId', 'targetId'):
+            if not allocation.get(required_key):
+                raise InvalidArgumentValueError(f'{option_string} requires {required_key}.')
+
+        target_id = allocation['targetId']
+        if not isinstance(target_id, str) or not re.fullmatch(r'[a-zA-Z0-9][-._a-zA-Z0-9]{0,199}', target_id):
+            raise InvalidArgumentValueError(f'{option_string} targetId is not valid: {target_id}')
+
+        if not any(key in allocation for key in ('standardMinutesLifetime', 'highMinutesLifetime')):
+            raise InvalidArgumentValueError(
+                f'{option_string} requires standardMinutesLifetime and/or highMinutesLifetime.'
+            )
+
+        result = {
+            'providerId': str(allocation['providerId']),
+            'targetId': target_id
+        }
+        for key in ('standardMinutesLifetime', 'highMinutesLifetime'):
+            if key not in allocation:
+                continue
+            try:
+                value = int(allocation[key])
+            except (TypeError, ValueError) as ex:
+                raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.') from ex
+            if isinstance(allocation[key], bool) or value < 0 or value > 2147483647:
+                raise InvalidArgumentValueError(
+                    f'{option_string} {key} must be between 0 and 2147483647.'
+                )
+            result[key] = value
+        return result
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals
@@ -60,6 +147,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
     workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', choices=['V1', 'V2'])
+    quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation as providerId, targetId, standardMinutesLifetime, and optional highMinutesLifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. standardMinutesLifetime is required for a new allocation. Repeat for multiple targets.', action=QuotaAction, nargs='+')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
     job_type_type = CLIArgumentType(options_list=['--job-type'], help='Job type to be listed, example "QuantumComputing".')
@@ -85,6 +173,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('auto_accept', auto_accept_type)
         c.argument('skip_autoadd', skip_autoadd_type)
         c.argument('workspace_kind', workspace_kind_type)
+        c.argument('quota', quota_type)
 
     with self.argument_context('quantum workspace user') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -181,3 +270,4 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     with self.argument_context('quantum workspace update') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('enable_key', enable_key_type)
+        c.argument('quota', quota_type)
