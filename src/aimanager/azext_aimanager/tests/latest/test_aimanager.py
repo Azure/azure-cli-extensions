@@ -46,11 +46,13 @@ class TestCallerRoleWiring(unittest.TestCase):
     @patch.object(custom, "assign_caller_roles")
     @patch.object(custom, "_construct_aimanager", return_value=object())
     def test_create_skips_roles_when_flag_set(self, _construct, mock_assign, _sub, mock_lro):
+        mock_lro.return_value = lambda poller: poller  # still waits for creation to succeed
+
         custom.create_aimanager(
             self.cmd, self.client, "rg", "aim", location="eastus2", skip_role_assignments=True)
 
+        mock_lro.assert_called_once()  # --skip-role-assignments must not change waiting semantics
         mock_assign.assert_not_called()
-        mock_lro.assert_not_called()
 
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
@@ -62,6 +64,22 @@ class TestCallerRoleWiring(unittest.TestCase):
 
         mock_assign.assert_not_called()
         mock_lro.assert_not_called()
+
+    @patch.object(custom, "logger")
+    @patch.object(custom, "LongRunningOperation")
+    @patch(SUB_PATCH, return_value="sub")
+    @patch.object(custom, "assign_caller_roles")
+    @patch.object(custom, "_construct_aimanager", return_value=object())
+    def test_create_no_wait_and_skip_roles_suppresses_warning(
+            self, _construct, mock_assign, _sub, mock_lro, mock_logger):
+        custom.create_aimanager(
+            self.cmd, self.client, "rg", "aim", location="eastus2",
+            no_wait=True, skip_role_assignments=True)
+
+        mock_lro.assert_not_called()  # --no-wait: does not wait
+        mock_assign.assert_not_called()  # no grant
+        # The caller explicitly opted out, so the "roles skipped" no-wait warning must not fire.
+        mock_logger.warning.assert_not_called()
 
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
@@ -83,11 +101,13 @@ class TestCallerRoleWiring(unittest.TestCase):
     @patch.object(custom, "assign_caller_roles")
     @patch.object(custom, "_construct_namespace", return_value=object())
     def test_namespace_add_skips_roles_when_flag_set(self, _construct, mock_assign, _sub, mock_lro):
+        mock_lro.return_value = lambda poller: poller  # still waits for creation to succeed
+
         custom.add_aimanager_namespace(
             self.cmd, self.client, "rg", "aim", "team-alpha", skip_role_assignments=True)
 
+        mock_lro.assert_called_once()  # --skip-role-assignments must not change waiting semantics
         mock_assign.assert_not_called()
-        mock_lro.assert_not_called()
 
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
@@ -99,6 +119,22 @@ class TestCallerRoleWiring(unittest.TestCase):
 
         mock_assign.assert_not_called()
         mock_lro.assert_not_called()
+
+    @patch.object(custom, "logger")
+    @patch.object(custom, "LongRunningOperation")
+    @patch(SUB_PATCH, return_value="sub")
+    @patch.object(custom, "assign_caller_roles")
+    @patch.object(custom, "_construct_namespace", return_value=object())
+    def test_namespace_add_no_wait_and_skip_roles_suppresses_warning(
+            self, _construct, mock_assign, _sub, mock_lro, mock_logger):
+        custom.add_aimanager_namespace(
+            self.cmd, self.client, "rg", "aim", "team-alpha",
+            no_wait=True, skip_role_assignments=True)
+
+        mock_lro.assert_not_called()  # --no-wait: does not wait
+        mock_assign.assert_not_called()  # no grant
+        # The caller explicitly opted out, so the "roles skipped" no-wait warning must not fire.
+        mock_logger.warning.assert_not_called()
 
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")

@@ -50,17 +50,20 @@ def _grant_caller_roles_on_success(cmd, poller, no_wait, skip_role_assignments, 
     """Wait for the create to succeed, then grant the caller the built-in roles (best-effort).
 
     Returns the value the command should return: the completed resource when we waited for it,
-    otherwise the poller. With --no-wait the grant is skipped, since the command returns before
-    the operation completes and success cannot be confirmed.
+    otherwise the poller. With --no-wait the grant is skipped and the poller is returned, since
+    the command returns before the operation completes and success cannot be confirmed.
+    --skip-role-assignments only opts out of the grant; it does not change the command's waiting
+    or output behavior.
     """
-    if skip_role_assignments:
-        return poller
     if no_wait:
-        logger.warning(
-            "--no-wait was set, so the caller's role assignments on %s were skipped. Re-run "
-            "without --no-wait, or assign the roles manually.", scope)
+        if not skip_role_assignments:
+            logger.warning(
+                "--no-wait was set, so the caller's role assignments on %s were skipped. Re-run "
+                "without --no-wait, or assign the roles manually.", scope)
         return poller
     result = LongRunningOperation(cmd.cli_ctx)(poller)  # blocks until Succeeded; raises on failure
+    if skip_role_assignments:
+        return result
     try:
         assign_caller_roles(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
     except Exception as ex:  # pylint: disable=broad-except
