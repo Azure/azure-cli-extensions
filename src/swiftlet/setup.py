@@ -27,8 +27,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_swiftlet.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
