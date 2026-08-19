@@ -3,11 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-# --------------------------------------------------------------------------------------------
-
 """Recorded ScenarioTests for the ``az migrate runbook`` commands.
 
 Runbooks require a pre-existing migrate project + wave (a
@@ -102,6 +97,10 @@ class _RunbookScenario(ScenarioTest):
             method_name, recording_processors=[_SasScrubber()])
 
 
+# TODO(runbook): record cassettes against a live migrate project + wave,
+# then drop @live_only so these replay offline in CI. Until a cassette
+# exists the framework would run them live and fail on CI's empty sub.
+@live_only()
 class RunbookReadScenario(_RunbookScenario):
 
     def test_runbook_show_and_list(self):
@@ -122,6 +121,7 @@ class RunbookReadScenario(_RunbookScenario):
             checks=[self.check("length([?name=='{name}'])", 1)])
 
 
+@live_only()
 class RunbookCrudScenario(_RunbookScenario):
 
     def test_runbook_generate_update_delete(self):
@@ -158,6 +158,7 @@ class RunbookCrudScenario(_RunbookScenario):
             checks=[self.check("length([?name=='{name}'])", 0)])
 
 
+@live_only()
 class RunbookExecutionReadScenario(_RunbookScenario):
 
     def test_execution_list(self):
