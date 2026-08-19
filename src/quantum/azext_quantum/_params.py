@@ -34,6 +34,11 @@ class JobParamsAction(argparse._AppendAction):
 
 
 class QuotaAction(argparse._AppendAction):
+    # targetId: leading alphanumeric followed by up to 199 more alphanumeric, '-', '.', or '_' characters.
+    _TARGET_ID_PATTERN = re.compile(r'[a-zA-Z0-9][-._a-zA-Z0-9]{0,199}')
+    # Maximum value accepted for minutes-lifetime fields (Int32 max, matching the service contract).
+    _MAX_MINUTES_LIFETIME = 2147483647
+
     _allowed_keys = {
         'providerId',
         'targetId',
@@ -119,7 +124,7 @@ class QuotaAction(argparse._AppendAction):
                 raise InvalidArgumentValueError(f'{option_string} requires {required_key}.')
 
         target_id = allocation['targetId']
-        if not isinstance(target_id, str) or not re.fullmatch(r'[a-zA-Z0-9][-._a-zA-Z0-9]{0,199}', target_id):
+        if not isinstance(target_id, str) or not cls._TARGET_ID_PATTERN.fullmatch(target_id):
             raise InvalidArgumentValueError(f'{option_string} targetId is not valid: {target_id}')
 
         if not any(key in allocation for key in ('standardMinutesLifetime', 'highMinutesLifetime')):
@@ -134,16 +139,16 @@ class QuotaAction(argparse._AppendAction):
         for key in ('standardMinutesLifetime', 'highMinutesLifetime'):
             if key not in allocation:
                 continue
-            raw = allocation[key]
-            if isinstance(raw, (bool, float)):
+            allocation_value = allocation[key]
+            if isinstance(allocation_value, (bool, float)):
                 raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.')
             try:
-                value = int(raw)
+                value = int(allocation_value)
             except (TypeError, ValueError) as ex:
                 raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.') from ex
-            if value < 0 or value > 2147483647:
+            if value < 0 or value > cls._MAX_MINUTES_LIFETIME:
                 raise InvalidArgumentValueError(
-                    f'{option_string} {key} must be between 0 and 2147483647.'
+                    f'{option_string} {key} must be between 0 and {cls._MAX_MINUTES_LIFETIME}.'
                 )
             result[key] = value
         return result
