@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.4.1
+++++++
+* ``az aimanager modelsource`` and ``az aimanager namespace modeldeployment``: Accept
+  ``--manager`` and ``-m`` as aliases of ``--aimanager-name``.
+
 1.4.0
 +++++++
 * Mark ``az aimanager`` command groups as preview.

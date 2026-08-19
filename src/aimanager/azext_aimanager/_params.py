@@ -60,7 +60,7 @@ def load_arguments(self, _):
                    help='Comma-separated key=value pairs to specify custom headers.')
 
     with self.argument_context('aimanager modelsource') as c:
-        c.argument('ai_manager_name', options_list=['--aimanager-name'],
+        c.argument('ai_manager_name', options_list=['--aimanager-name', '--manager', '-m'],
                    validator=validate_ai_manager_name,
                    help='The name of the AI Manager resource.')
         c.argument('model_source_name', options_list=['--name', '-n'],
@@ -118,7 +118,7 @@ def load_arguments(self, _):
                        help='Comma-separated key=value pairs to specify custom headers.')
 
     with self.argument_context('aimanager namespace modeldeployment') as c:
-        c.argument('ai_manager_name', options_list=['--aimanager-name'],
+        c.argument('ai_manager_name', options_list=['--aimanager-name', '--manager', '-m'],
                    validator=validate_ai_manager_name,
                    help='The name of the AI Manager resource.')
         c.argument('namespace_name', options_list=['--namespace-name'],

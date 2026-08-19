@@ -90,6 +90,11 @@ class ModelDeploymentScenarioTest(ScenarioTest):
                 checks=[self.check("length([?name=='deployment'])", 1)])
 
             self.cmd(
+                'aimanager namespace modeldeployment list -g rg '
+                '-m manager --namespace-name namespace',
+                checks=[self.check("length([?name=='deployment'])", 1)])
+
+            self.cmd(
                 command_prefix.format('update') +
                 ' -n deployment --performance-mode Throughput --replicas 0 '
                 '--overrides engine=vllm max-model-len=4096 --no-wait',
@@ -101,6 +106,7 @@ class ModelDeploymentScenarioTest(ScenarioTest):
                 checks=[self.is_empty()])
 
         self.assertEqual(operations.begin_create_or_update.call_count, 2)
-        operations.list_by_ai_manager_namespace.assert_called_once_with(
+        self.assertEqual(operations.list_by_ai_manager_namespace.call_count, 2)
+        operations.list_by_ai_manager_namespace.assert_called_with(
             'rg', 'manager', 'namespace')
         operations.begin_delete.assert_called_once()
