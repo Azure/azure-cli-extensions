@@ -374,17 +374,18 @@ _HELP_CHIPS = (
      'Adds a step to a workstream in the runbook definition.',
      'az migrate runbook definition step add --resource-group <rg> '
      '--project-name <project> --runbook-name <name> '
-     '--workstream-id <workstream> --step-ref <stepRef>'),
+     '--step-type <type> --step-name <stepName> --workstream-id <workstream>'),
     ('&#8649;', 'Merge workstreams',
      'Combines two workstreams into a single track.',
      'az migrate runbook definition workstream merge --resource-group <rg> '
      '--project-name <project> --runbook-name <name> '
-     '--source-id <id> --target-id <id>'),
+     '--source-workstream-ids <id1> <id2> --new-workstream-name <name>'),
     ('&#9649;', 'Split a workstream',
      'Splits a workstream into parallel tracks.',
      'az migrate runbook definition workstream split --resource-group <rg> '
      '--project-name <project> --runbook-name <name> '
-     '--workstream-id <id>'),
+     '--source-workstream-id <id> --new-workstream-name <name> '
+     '--entities-to-move <entity1> <entity2>'),
     ('&#8635;', 'Refresh this view',
      'Regenerates the HTML from the latest runbook definition.',
      'az migrate runbook definition visualize --resource-group <rg> '

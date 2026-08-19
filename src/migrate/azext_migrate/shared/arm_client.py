@@ -247,7 +247,6 @@ class ArmClient:
         which is misleading), matching standard Azure CLI delete behaviour.
         """
         self._begin('DELETE', resource_id, no_wait=no_wait)
-        return None
 
     def post_action(self, resource_id, action_name, body=None,
                     no_wait=False, final_get=False,

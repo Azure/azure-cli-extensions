@@ -25,7 +25,7 @@ NODE_TYPE_STEP = 'step'
 class Node:
     """A single step in the runbook dependency graph."""
 
-    # pylint: disable=too-few-public-methods,too-many-arguments
+    # pylint: disable=too-few-public-methods,too-many-arguments,too-many-instance-attributes
     def __init__(self, node_id, name, node_type=NODE_TYPE_STEP,
                  group=None, status=None, layer=0, ref=None,
                  group_id=None):

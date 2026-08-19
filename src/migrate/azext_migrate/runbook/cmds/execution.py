@@ -182,7 +182,7 @@ def _render(execution):
     for row in rows:
         logger.warning(
             "%s | %s | %s | %s | %s",
-            row.get('Id'), row.get('Step Name'), row.get('Step Status'),
+            row.get('Step Id'), row.get('Step Name'), row.get('Step Status'),
             row.get('Depends On'), row.get('Workload Progress'))
 
 
