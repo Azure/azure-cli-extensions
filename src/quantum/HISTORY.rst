@@ -3,9 +3,13 @@
 Release History
 ===============
 
-1.0.0b21
+1.0.0b22
 +++++++++++++++
 * Added the ``az quantum workspace user list`` command to list the users with access to an Azure Quantum workspace.
+
+1.0.0b21
++++++++++++++++
+* Added the ``az quantum job update`` command to update a submitted job's name, priority, and tags.
 
 1.0.0b20
 +++++++++++++++
