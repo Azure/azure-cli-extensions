@@ -45,6 +45,9 @@ def load_arguments(self, _):
     with self.argument_context('aimanager create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
+        c.argument('skip_role_assignments', action='store_true',
+                   help="Do not grant the caller the built-in 'Azure AIManager Contributor' and "
+                        "'Azure AIManager and namespace RBAC Reader' roles on the new AI Manager.")
 
     with self.argument_context('aimanager list') as c:
         c.ignore('ai_manager_name')
@@ -101,6 +104,11 @@ def load_arguments(self, _):
                        help='Space-separated annotations (key=value) applied to the Kubernetes namespace.')
             c.argument('aks_custom_headers', options_list=['--aks-custom-headers'],
                        help='Comma-separated key=value pairs to specify custom headers.')
+
+    with self.argument_context('aimanager namespace add') as c:
+        c.argument('skip_role_assignments', action='store_true',
+                   help="Do not grant the caller the built-in 'Azure AIManager Contributor' and "
+                        "'Azure AIManager and namespace RBAC Reader' roles on the new namespace.")
 
     with self.argument_context('aimanager namespace get-credentials') as c:
         c.argument('path', options_list=['--file', '-f'],
