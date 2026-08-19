@@ -13,6 +13,7 @@
 from azure.cli.core.util import sdk_no_wait
 
 from ._input_helpers import input_properties_to_args
+from ._output_helpers import output_data_to_args
 
 
 def stream_analytics_job_list(client,
@@ -389,17 +390,17 @@ def stream_analytics_output_create(cmd,
                                    serialization=None):
     from ..aaz.latest.stream_analytics.output import Create
 
-    result = Create(cli_ctx=cmd.cli_ctx)(command_args={
+    args = {
         "resource_group": resource_group_name,
         "job_name": job_name,
         "output_name": output_name,
         "if_match": if_match,
         "if_none_match": if_none_match,
-        "datasource": datasource,
         "time_window": time_window,
-        "size_window": size_window,
-        "serialization": serialization
-    })
+        "size_window": size_window
+    }
+    args.update(output_data_to_args(datasource, serialization))
+    result = Create(cli_ctx=cmd.cli_ctx)(command_args=args)
     return _stream_analytics_output_flatten_inner_properties(result)
 
 
@@ -421,14 +422,11 @@ def stream_analytics_output_update(cmd,
     }
     if if_match is not None:
         args["if_match"] = if_match
-    if datasource is not None:
-        args["datasource"] = datasource
     if time_window is not None:
         args["time_window"] = time_window
     if size_window is not None:
         args["size_window"] = size_window
-    if serialization is not None:
-        args["serialization"] = serialization
+    args.update(output_data_to_args(datasource, serialization))
 
     result = Patch(cli_ctx=cmd.cli_ctx)(command_args=args)
     return _stream_analytics_output_flatten_inner_properties(result)
@@ -457,16 +455,16 @@ def stream_analytics_output_test(cmd,
                                  no_wait=False):
     from ..aaz.latest.stream_analytics.output import Test
 
-    return Test(cli_ctx=cmd.cli_ctx)(command_args={
+    args = {
         "resource_group": resource_group_name,
         "job_name": job_name,
         "output_name": output_name,
-        "datasource": datasource,
         "time_window": time_window,
         "size_window": size_window,
-        "serialization": serialization,
         "no_wait": no_wait
-    })
+    }
+    args.update(output_data_to_args(datasource, serialization))
+    return Test(cli_ctx=cmd.cli_ctx)(command_args=args)
 
 # endregion
 
