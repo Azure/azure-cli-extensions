@@ -28,6 +28,10 @@ from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
+from knack.log import get_logger
+
+logger = get_logger(__name__)
+
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 DEFAULT_STORAGE_SKU = 'Standard_LRS'
 DEFAULT_STORAGE_SKU_TIER = 'Standard'
@@ -508,4 +512,32 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = list_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, include_inherited=include_inherited)
-    return [assignment for assignment in assignments if assignment.get("principalType") == "User"]
+    users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
+    _fill_user_display_names(cmd, users)
+    return users
+
+
+def _fill_user_display_names(cmd, users):
+    """
+    Enrich user role assignments with the display name and email resolved from Microsoft Graph,
+    matching the Name and Email columns shown in the Quantum portal. Best-effort: if the lookup
+    fails (for example, the caller cannot read the directory), the principal name is used instead.
+    """
+    principal_ids = {user["principalId"] for user in users if user.get("principalId")}
+    if not principal_ids:
+        return
+
+    from azure.cli.command_modules.role.custom import _graph_client_factory, _get_object_stubs
+
+    directory_objects = {}
+    try:
+        graph_client = _graph_client_factory(cmd.cli_ctx)
+        for obj in _get_object_stubs(graph_client, principal_ids):
+            directory_objects[obj.get("id")] = obj
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.warning("Could not resolve user display names from Microsoft Graph: %s", ex)
+
+    for user in users:
+        obj = directory_objects.get(user.get("principalId"), {})
+        user["displayName"] = obj.get("displayName")
+        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or user.get("principalName")

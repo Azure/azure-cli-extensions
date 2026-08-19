@@ -333,15 +333,19 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     def test_list_users_scopes_to_workspace(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
-        assignments = [{"principalId": "oid", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        assignments = [{"principalId": "oid", "principalName": "user@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        stubs = [{"id": "oid", "displayName": "Contoso User", "mail": "user@contoso.com", "userPrincipalName": "user@contoso.com"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
-                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments) as list_role_assignments:
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments) as list_role_assignments, \
+                patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         list_role_assignments.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=True)
-        assert result == assignments
+        assert result[0]["displayName"] == "Contoso User"
+        assert result[0]["mail"] == "user@contoso.com"
 
     def test_list_users_can_exclude_inherited(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
@@ -360,25 +364,37 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             {"principalId": "g", "principalType": "Group"},
             {"principalId": "sp", "principalType": "ServicePrincipal"},
         ]
+        stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com", "userPrincipalName": "u@contoso.com"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
-                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments):
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments), \
+                patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")
 
-        assert result == [{"principalId": "u", "principalType": "User"}]
+        assert [user["principalId"] for user in result] == ["u"]
+        assert result[0]["displayName"] == "User One"
 
     def test_transform_users(self):
         from ...commands import transform_users
         rows = transform_users([{
             "principalId": "oid",
             "principalName": "user@contoso.com",
+            "displayName": "Contoso User",
+            "mail": "user@contoso.com",
             "principalType": "User",
             "roleDefinitionName": "Quantum Workspace Data Contributor",
             "scope": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         }])
-        assert rows[0]["Principal Name"] == "user@contoso.com"
-        assert rows[0]["Principal Type"] == "User"
+        assert rows[0]["Name"] == "Contoso User"
+        assert rows[0]["Email"] == "user@contoso.com"
         assert rows[0]["Role"] == "Quantum Workspace Data Contributor"
+        assert rows[0]["Principal Id"] == "oid"
+
+        # Email falls back to the principal name when Graph did not return a mail address.
+        fallback = transform_users([{"principalName": "fallback@contoso.com"}])
+        assert fallback[0]["Email"] == "fallback@contoso.com"
+        assert fallback[0]["Name"] is None
 
     # @pytest.fixture(autouse=True)
     # def _pass_fixtures(self, capsys):

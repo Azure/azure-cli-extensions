@@ -59,10 +59,10 @@ def transform_jobs(results):
 def transform_users(results):
     def one(result):
         return OrderedDict([
-            ('Principal Id', result.get('principalId')),
-            ('Principal Name', result.get('principalName')),
-            ('Principal Type', result.get('principalType')),
+            ('Name', result.get('displayName')),
+            ('Email', result.get('mail') or result.get('principalName')),
             ('Role', result.get('roleDefinitionName')),
+            ('Principal Id', result.get('principalId')),
             ('Scope', result.get('scope'))
         ])
     return [one(result) for result in results]
