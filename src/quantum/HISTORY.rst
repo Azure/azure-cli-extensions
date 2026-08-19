@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b22
++++++++++++++++
+* Added ``--quota`` support to ``az quantum workspace create`` and ``az quantum workspace update`` for managing V2 provider target quota allocations.
+* Updated control plane related commands to use API version 2026-06-15-preview.
+
 1.0.0b21
 +++++++++++++++
 * Added the ``az quantum job update`` command to update a submitted job's name, priority, and tags.
