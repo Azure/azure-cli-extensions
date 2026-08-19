@@ -244,9 +244,11 @@ def validate_vm_set_type(namespace):
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
             namespace.vm_set_type.lower() != "virtualmachines" and \
-                namespace.vm_set_type.lower() != "virtualmachinescalesets":
+            namespace.vm_set_type.lower() != "virtualmachinescalesets" and \
+                namespace.vm_set_type.lower() != "flexnodes":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet, "
+                "VirtualMachines(Preview), or FlexNodes(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -444,6 +446,14 @@ def validate_node_public_ip_prefix_ids(ns):
                 raise InvalidArgumentValueError(
                     f"'{prefix_id}' is not a valid Azure resource ID for --node-public-ip-prefix-ids."
                 )
+
+
+def validate_bastion_public_ip_id(namespace):
+    if namespace.bastion_public_ip is None or namespace.bastion_public_ip == '':
+        return
+    if not is_valid_resource_id(namespace.bastion_public_ip):
+        raise InvalidArgumentValueError(
+            "--bastion-public-ip is not a valid Azure resource ID.")
 
 
 def validate_nodepool_labels(namespace):

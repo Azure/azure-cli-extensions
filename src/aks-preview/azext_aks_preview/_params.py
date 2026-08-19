@@ -68,6 +68,8 @@ from azext_aks_preview._consts import (
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_BASTION_SKU_STANDARD,
+    CONST_BASTION_SKU_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
@@ -216,6 +218,7 @@ from azext_aks_preview._validators import (
     validate_message_of_the_day,
     validate_node_public_ip_prefix_ids,
     validate_node_public_ip_tags,
+    validate_bastion_public_ip_id,
     validate_nodepool_id,
     validate_nodepool_labels,
     validate_nodepool_taints,
@@ -599,6 +602,11 @@ gpu_mig_strategies = [
 upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_ROLLING,
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
+]
+
+bastion_skus = [
+    CONST_BASTION_SKU_STANDARD,
+    CONST_BASTION_SKU_PREMIUM,
 ]
 
 # AKS backup strategy presets exposed by --backup-strategy.
@@ -2180,6 +2188,18 @@ def load_arguments(self, _):
             is_preview=True,
             help="Set the node disruption policy for the cluster.",
         )
+        c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "system_node_subnet_id",
+            validator=validate_system_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
+            "node_subnet_id",
+            options_list=["--node-subnet-id"],
+            validator=validate_node_subnet_id,
+            is_preview=True,
+        )
 
     with self.argument_context("aks delete") as c:
         c.argument("if_match")
@@ -2783,6 +2803,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_eviction_policies),
             validator=validate_eviction_policy,
         )
+        c.argument("labels", nargs="*", validator=validate_nodepool_labels)
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
 
     with self.argument_context("aks machine update") as c:
         c.argument(
@@ -2791,6 +2814,12 @@ def load_arguments(self, _):
         c.argument("tags", tags_type, help="The tags to set on the machine.")
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("labels", nargs="*", help="Labels to set on the machine.")
+        c.argument(
+            "kubernetes_version",
+            options_list=["--kubernetes-version"],
+            validator=validate_k8s_version,
+            help="Kubernetes version to use for a FlexNode machine.",
+        )
 
     with self.argument_context("aks operation") as c:
         c.argument(
@@ -3729,7 +3758,33 @@ def load_arguments(self, _):
                 help="Name of the load balancer configuration. Required.",
             )
 
-    with self.argument_context("aks bastion") as c:
+    for scope in ['aks bastion enable',
+                  'aks bastion update']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "bastion_sku",
+                options_list=["--bastion-sku", "-s"],
+                arg_type=get_enum_type(bastion_skus),
+                help="set bastion sku for Azure Bastion host",
+            )
+            c.argument(
+                "bastion_scale_units",
+                options_list=["--bastion-scale-units"],
+                type=int,
+                help="Scale units for the Azure Bastion host.",
+            )
+            c.argument("aks_custom_headers")
+
+    for scope in ['aks bastion enable']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "bastion_public_ip",
+                options_list=["--bastion-public-ip"],
+                validator=validate_bastion_public_ip_id,
+                help="Optional public IP address for the Azure Bastion host.",
+            )
+
+    with self.argument_context("aks bastion tunnel") as c:
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")

@@ -12,15 +12,99 @@ from azure.cli.core.util import sdk_no_wait
 
 
 def parse_key_value_list(pairs):
-    result = {}
     if pairs is None:
-        return result
+        return None
+    if isinstance(pairs, dict):
+        return pairs.copy()
+    if isinstance(pairs, str):
+        pairs = [pairs]
+    result = {}
     for pair in pairs:
         if "=" not in pair:
             raise ValueError(f"Invalid format '{pair}'. Expected format key=value.")
         key, value = pair.split("=", 1)
         result[key.strip()] = value.strip()
     return result
+
+
+def construct_flexnode_machine(cmd, raw_parameters, existed_machine=None):
+    """Construct the minimal Machine payload supported by FlexNodes."""
+    if raw_parameters.get("machine_name") is None:
+        raise RequiredArgumentMissingError("Please specify --machine-name.")
+
+    MachineKubernetesProfile = cmd.get_models(
+        "MachineKubernetesProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines",
+    )
+    MachineProperties = cmd.get_models(
+        "MachineProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines",
+    )
+    Machine = cmd.get_models(
+        "Machine",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines",
+    )
+
+    existing_kubernetes = None
+    if existed_machine is not None and existed_machine.properties is not None:
+        existing_kubernetes = existed_machine.properties.kubernetes
+
+    labels = existing_kubernetes.node_labels if existing_kubernetes is not None else None
+    if raw_parameters.get("labels") is not None:
+        labels = parse_key_value_list(raw_parameters.get("labels"))
+
+    node_taints = existing_kubernetes.node_taints if existing_kubernetes is not None else None
+    if raw_parameters.get("node_taints") is not None:
+        raw_taints = raw_parameters.get("node_taints")
+        node_taints = [x.strip() for x in (raw_taints.split(",") if raw_taints else [])]
+
+    # maxPods is create-only for FlexNode Machines; preserve it on update.
+    max_pods = raw_parameters.get("max_pods")
+    if existing_kubernetes is not None:
+        max_pods = existing_kubernetes.max_pods
+
+    kubernetes = MachineKubernetesProfile(
+        node_labels=labels,
+        node_taints=node_taints,
+        orchestrator_version=(
+            raw_parameters.get("kubernetes_version")
+            if raw_parameters.get("kubernetes_version") is not None
+            else existing_kubernetes.orchestrator_version
+            if existing_kubernetes is not None
+            else None
+        ),
+        max_pods=max_pods,
+    )
+    return Machine(properties=MachineProperties(kubernetes=kubernetes))
+
+
+def add_flexnode_machine(cmd, client, raw_parameters, no_wait):
+    machine = construct_flexnode_machine(cmd, raw_parameters)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        raw_parameters.get("resource_group_name"),
+        raw_parameters.get("cluster_name"),
+        raw_parameters.get("nodepool_name"),
+        raw_parameters.get("machine_name"),
+        machine,
+    )
+
+
+def update_flexnode_machine(cmd, client, raw_parameters, existed_machine, no_wait):
+    machine = construct_flexnode_machine(cmd, raw_parameters, existed_machine)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        raw_parameters.get("resource_group_name"),
+        raw_parameters.get("cluster_name"),
+        raw_parameters.get("nodepool_name"),
+        raw_parameters.get("machine_name"),
+        machine,
+    )
 
 
 def add_machine(cmd, client, raw_parameters, no_wait):

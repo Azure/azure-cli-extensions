@@ -983,7 +983,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     :param copy_tags: (Optional) Boolean indicating whether to copy tags from the source VM to the repair VM.
     :param size: (Optional) The size of the repair VM.
     """
-    from datetime import datetime
+    from datetime import datetime, timezone
     import secrets
     import string
 
@@ -1001,7 +1001,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_username = ''.join(secrets.choice(username_characters) for _ in range(username_length))
 
     # Generate unique names for the repair VM, copied disk, and repair resource group
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     repair_vm_name = ('repair-' + vm_name)[:14] + '_'
     copy_disk_name = vm_name + '-DiskCopy-' + timestamp
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
@@ -1088,7 +1088,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     """
     Button-triggered repair operation. Supports tags for the repair VM.
     """
-    from datetime import datetime
+    from datetime import datetime, timezone
     import secrets
     import string
 
@@ -1107,7 +1107,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     username_characters = string.ascii_lowercase + string.digits
     repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
 
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     repair_vm_name = ('repair-' + vm_name)[:14] + '_'
     copy_disk_name = vm_name + '-DiskCopy-' + timestamp
     repair_group_name = 'repair-' + vm_name + '-' + timestamp

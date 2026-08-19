@@ -16,6 +16,24 @@ def validate_namespace_name(namespace):
         raise InvalidArgumentValueError("--name/-n is not a valid namespace name.")
 
 
+def validate_model_deployment_name(namespace):
+    name = getattr(namespace, "model_deployment_name", None)
+    if name is not None and not name.strip():
+        raise InvalidArgumentValueError("--name/-n is not a valid model deployment name.")
+
+
+def validate_ai_model_name(namespace):
+    name = getattr(namespace, "ai_model_name", None)
+    if name is not None and not name.strip():
+        raise InvalidArgumentValueError("--name/-n is not a valid AI model name.")
+
+
+def validate_model_source_name(namespace):
+    name = getattr(namespace, "model_source_name", None)
+    if name is not None and not name.strip():
+        raise InvalidArgumentValueError("--name/-n is not a valid model source name.")
+
+
 def _validate_key_value_pairs(values, option):
     if not values:
         return
@@ -31,3 +49,7 @@ def validate_labels(namespace):
 
 def validate_annotations(namespace):
     _validate_key_value_pairs(namespace.annotations, "--annotations")
+
+
+def validate_overrides(namespace):
+    _validate_key_value_pairs(namespace.overrides, "--overrides")
