@@ -762,9 +762,8 @@ class ValidateForRestore(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                # [eSAN TEMP api-version flip - local live-test only; revert to "2025-07-01" before commit]
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

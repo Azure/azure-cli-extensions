@@ -1014,6 +1014,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "MySQL server"
         if datasource_type == 'AzureCosmosDB':
             helptext_dsname = "Cosmos DB account"
+        if datasource_type == 'AzureElasticSAN':
+            helptext_dsname = "Elastic SAN volume group"
 
         return helptext_dsname
 

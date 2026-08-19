@@ -470,6 +470,124 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         track_job_to_completion(test)
 
+    # Uses persistent vault, policy, Elastic SAN + volume group + source volume pre-provisioned in
+    # esan-bugbash-CLIrg-1 (subscription 97cda027-4279-4cde-b4ff-19afa0021d87). Create these in the SAME
+    # subscription, a DIFFERENT resource group, following the Cosmos convention:
+    #   - Elastic SAN 'esanbugbashcli1' + volume group 'esanbugbashcli1-vg' + source volume 'srcvol1'
+    #   - Backup vault 'TestEsanVault' + policy 'TestEsanPolicy' (from the AzureElasticSAN default policy template)
+    # Marked @live_only() because it drives real backup/restore against live Elastic SAN volumes and grants
+    # MSI role assignments that cannot be faithfully replayed from a recording.
+    @live_only()
+    @AllowLargeResponse(size_kb=10240)
+    def test_dataprotection_backup_and_restore_esan(test):
+        test.kwargs.update({
+            'location': 'eastus2euap',
+            'restoreLocation': 'eastus2euap',
+            'rg': 'esan-bugbash-CLIrg-1',
+            'vaultName': 'TestEsanVault',
+            'dataSourceType': 'AzureElasticSAN',
+            'sourceDataStore': 'OperationalStore',
+            'permissionsScope': 'Resource',
+            'operation': 'Backup',
+            'restoreOperation': 'Restore',
+            'policyRuleName': 'BackupDaily',
+            'sourceVolume': 'srcvol1',
+            'targetVolume': 'restoredvol1',
+            'vgId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/esan-bugbash-CLIrg-1/providers/Microsoft.ElasticSan/elasticSans/esanbugbashcli1/volumeGroups/esanbugbashcli1-vg',
+            'snapshotRgId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/esan-bugbash-CLIrg-1',
+            'policyId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/esan-bugbash-CLIrg-1/providers/Microsoft.DataProtection/backupVaults/TestEsanVault/backupPolicies/TestEsanPolicy',
+        })
+
+        # Backup configuration selects exactly one source volume (eSAN enforces single volume per instance).
+        backup_config = test.cmd('az dataprotection backup-instance initialize-backupconfig '
+                                 '--datasource-type "{dataSourceType}" --resource-selectors "{sourceVolume}"').get_output_in_json()
+        test.kwargs.update({'backupConfig': backup_config})
+
+        # datasource-id is the volume group ARM id; initialize resolves data_source_set_info to the parent Elastic SAN.
+        backup_instance_json = test.cmd('az dataprotection backup-instance initialize '
+                                        '--datasource-type "{dataSourceType}" --datasource-location "{location}" '
+                                        '--policy-id "{policyId}" --datasource-id "{vgId}" '
+                                        '--friendly-name esan-bi --backup-configuration "{backupConfig}"').get_output_in_json()
+        test.kwargs.update({
+            'backupInstance': backup_instance_json,
+            'backupInstanceName': backup_instance_json['backup_instance_name'],
+        })
+
+        # Grant backup permissions to the vault MSI (Elastic SAN Snapshot Exporter + Disk Snapshot Contributor).
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" --vault-name "{vaultName}" --datasource-type "{dataSourceType}" '
+                 '--operation "{operation}" --permissions-scope "{permissionsScope}" '
+                 '--backup-instance "{backupInstance}" --yes')
+
+        backup_instance_validate_create(test)
+
+        # eSAN protection can take several minutes; poll until stably ProtectionConfigured before adhoc backup.
+        deadline = time.time() + 1800  # 30 minutes
+        stable_hits = 0
+        last_status = None
+        while time.time() < deadline:
+            bi = test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{vaultName}" '
+                          '--backup-instance-name "{backupInstanceName}"').get_output_in_json()
+            last_status = bi['properties']['protectionStatus']['status']
+            if last_status == 'ProtectionConfigured':
+                stable_hits += 1
+                if stable_hits >= 2:
+                    break
+            else:
+                stable_hits = 0
+            time.sleep(30)
+        else:
+            raise AssertionError(
+                "eSAN backup-instance did not reach a stable ProtectionConfigured state within 30 minutes "
+                f"(last status: {last_status})."
+            )
+
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
+
+        # Trigger ad-hoc backup and track to completion
+        adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
+                                         '-n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}" '
+                                         '--rule-name "{policyRuleName}"').get_output_in_json()
+        test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
+        track_job_to_completion(test)
+
+        recovery_point = test.cmd('az dataprotection recovery-point list --backup-instance-name '
+                                  '"{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+                                      test.greater_than('length([])', 0)
+                                  ]).get_output_in_json()
+        test.kwargs.update({'recoveryPointId': recovery_point[0]['name']})
+
+        # Restore renames the source volume to a new target volume in the same volume group (AlternateLocation, item-level).
+        test.kwargs.update({'overrides': {test.kwargs['sourceVolume']: test.kwargs['targetVolume']}})
+        restore_config = test.cmd('az dataprotection backup-instance initialize-restoreconfig '
+                                  '--datasource-type "{dataSourceType}" --resource-identifiers "{sourceVolume}" '
+                                  '--resource-name-overrides "{overrides}"').get_output_in_json()
+        test.kwargs.update({'restoreConfig': restore_config})
+
+        restore_request = test.cmd('az dataprotection backup-instance restore initialize-for-data-recovery '
+                                   '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" '
+                                   '--source-datastore "{sourceDataStore}" --recovery-point-id "{recoveryPointId}" '
+                                   '--target-resource-id "{vgId}" --restore-configuration "{restoreConfig}"').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request})
+
+        # Grant restore permissions (Elastic SAN Volume Importer + snapshot RG role). --snapshot-resource-group-id required.
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" --vault-name "{vaultName}" --datasource-type "{dataSourceType}" '
+                 '--operation "{restoreOperation}" --permissions-scope "{permissionsScope}" '
+                 '--restore-request-object "{restoreRequest}" --snapshot-resource-group-id "{snapshotRgId}" --yes')
+
+        test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" '
+                 '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
+
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
+
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
+                                        '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+        track_job_to_completion(test)
+
     # Uses a persistent vault and DS
     @unittest.skip("MySQL backup offering has been temporarily paused")
     @AllowLargeResponse()

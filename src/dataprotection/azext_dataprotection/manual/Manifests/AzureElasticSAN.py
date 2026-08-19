@@ -3,11 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# NOTE: AzureElasticSAN (eSAN) backup is currently exposed only in the 2024-02-01-preview
-# DataProtection API. The backup-instance create/update body schema has been grafted with the
-# GenericBackupDatasourceParameters discriminator (see aaz .../backup_instance/_create.py and
-# _update.py "# [eSAN graft]").
-
 manifest = '''
 {
     "isProxyResource": true,

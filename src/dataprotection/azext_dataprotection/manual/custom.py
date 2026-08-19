@@ -190,9 +190,11 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                                                 for creating the backup-configuration")
         if backup_configuration:
             if isinstance(backup_configuration, str):
+                # Accept both JSON and dict-literal strings (e.g. from test harness) in addition to @file/dict inputs.
+                from azure.cli.core.util import shell_safe_json_parse
                 try:
-                    backup_configuration = json.loads(backup_configuration)
-                except json.JSONDecodeError as ex:
+                    backup_configuration = shell_safe_json_parse(backup_configuration)
+                except Exception as ex:
                     raise InvalidArgumentValueError(
                         "Invalid backup configuration. Please provide a valid JSON object."
                     ) from ex

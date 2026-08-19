@@ -110,7 +110,7 @@ def load_arguments(self, _):
                    options_list=['--auto-protection-exclusion-prefixes', '--exclusion-prefixes'],
                    help='List of container name prefixes to exclude from auto-protection. Requires --auto-protection to be enabled.')
         c.argument('resource_selectors', type=str, nargs='+',
-                    help='List of source volume names (or selectors expected by the service) within the selected '
+                   help='List of source volume names (or selectors expected by the service) within the selected '
                         'Elastic SAN volume group to be backed up. Use this parameter for DatasourceType AzureElasticSAN.')
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
@@ -179,7 +179,7 @@ def load_arguments(self, _):
         c.argument('keyvault_id', type=str, help='ARM id of the key vault. Required when --datasource-type is AzureDatabaseForPostgreSQL')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('snapshot_resource_group_id', options_list=['--snapshot-resource-group-id', '--snapshot-rg-id'], type=str,
-                    help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore. '
+                   help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore. '
                         'For AzureElasticSAN restore permissions, pass the snapshot resource group used by the recovery point.')
         c.argument('target_storage_account_id', options_list=['--target-storage-account-id'], type=str,
                    help='ARM id of the target storage account. Required when assigning permissions over target storage account and the --operation is Restore')
@@ -316,10 +316,11 @@ def load_arguments(self, _):
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
         c.argument('resource_identifiers', type=str, nargs='+',
-                    help='List of source volume identifiers (volume names or ARM IDs) to restore. '
+                   help='List of source volume identifiers (volume names or ARM IDs) to restore. '
                         'Use this parameter for DatasourceType AzureElasticSAN.')
         c.argument('resource_name_overrides', type=validate_file_or_dict,
-                    help='Map of source volume names to target volume names to restore into. Keys must match selected '
+                   options_list=['--resource-name-overrides', '--name-overrides'],
+                   help='Map of source volume names to target volume names to restore into. Keys must match selected '
                         'source volume names from --resource-identifiers. Any source not included will be restored '
                         'with a default naming format. Use this parameter for DatasourceType AzureElasticSAN.')
 

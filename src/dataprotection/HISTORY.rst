@@ -5,7 +5,7 @@ Release History
 
 1.12.0
 ++++++
-* Added dataprotection support for the AzureElasticSAN (Elastic SAN volume group) workload: new manifest (Microsoft.ElasticSan/elasticSans/volumeGroups), registration in supported datasource types and datasource map. New backup configuration via ``az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors`` (GenericBackupDatasourceParameters) and restore configuration via ``az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers/--resource-name-overrides`` (GenericRestoreDatasourceCriteria), with data-recovery and item-recovery restore wiring plus help/examples. Grafted the GenericBackupDatasourceParameters discriminator onto the backup-instance create/update body schema (sourced from the 2024-02-01-preview API).
+* Added dataprotection support for the AzureElasticSAN (Elastic SAN volume group) workload: new manifest (Microsoft.ElasticSan/elasticSans/volumeGroups), registration in supported datasource types and datasource map. New backup configuration via ``az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors`` (GenericBackupDatasourceParameters) and restore configuration via ``az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers/--resource-name-overrides`` (GenericRestoreDatasourceCriteria), with data-recovery and item-recovery restore wiring plus help/examples. The AzureElasticSAN backup-instance operations are pinned to the GA 2026-06-01 DataProtection API, which defines GenericBackupDatasourceParameters/GenericRestoreDatasourceCriteria natively.
 
 1.11.3
 ++++++++++++++++
