@@ -462,6 +462,36 @@ def delete(cmd, job_id, resource_group_name, workspace_name):
     logger.warning("Deleted job %s.", job_id)
 
 
+def update(cmd, job_id, resource_group_name, workspace_name, job_name=None, job_priority=None, job_tags=None):
+    """
+    Update a submitted job's name, priority, and/or tags.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+
+    update_options = {}
+    if job_name and job_name.strip():
+        update_options["name"] = job_name.strip()
+    if job_priority is not None:
+        try:
+            update_options["priority"] = Priority(job_priority).value
+        except ValueError:
+            raise InvalidArgumentValueError(ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
+    if job_tags is not None:
+        # An explicit --job-tags value (even one that is only blank/whitespace, e.g. "")
+        # replaces the existing tags. Blank entries are dropped, so passing "" clears all tags.
+        update_options["tags"] = [tag.strip() for tag in job_tags if tag.strip()]
+
+    if not update_options:
+        raise RequiredArgumentMissingError("At least one of --job-name, --job-priority, or --job-tags must be specified.")
+
+    # The update (PATCH) response only echoes back the JobUpdateOptions that were sent, not the
+    # full job, so fetch the job afterwards to return its current state to the user.
+    client.update(info.subscription, info.resource_group, info.name, job_id, update_options)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+    return job.as_dict()
+
+
 def _get_job_output(job):
 
     import tempfile

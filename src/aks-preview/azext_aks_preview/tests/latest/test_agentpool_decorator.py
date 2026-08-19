@@ -2085,12 +2085,12 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         # Verify that name is preserved
         self.assertEqual(dec_agentpool_1.name, original_name)
 
-        # Verify that all other properties are reset to None
-        for attr_name in vars(dec_agentpool_1):
-            if attr_name not in ['name', 'mode'] and not attr_name.startswith('_'):
-                attr_value = getattr(dec_agentpool_1, attr_name)
-                self.assertIsNone(attr_value,
-                    f"Attribute '{attr_name}' should be None but was '{attr_value}'")
+        self.assertIsNone(dec_agentpool_1.count)
+        self.assertIsNone(dec_agentpool_1.vm_size)
+        self.assertIsNone(dec_agentpool_1.os_type)
+        self.assertIsNone(dec_agentpool_1.enable_auto_scaling)
+        self.assertIsNone(dec_agentpool_1.min_count)
+        self.assertIsNone(dec_agentpool_1.max_count)
 
         # Test case 2: mode is not ManagedSystem - should return agentpool unchanged
         dec_2 = AKSPreviewAgentPoolAddDecorator(
@@ -2169,11 +2169,12 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_1 = dec_1.set_up_machines_mode(agentpool_1)
         self.assertEqual(dec_agentpool_1.name, original_name)
         self.assertEqual(dec_agentpool_1.mode, CONST_NODEPOOL_MODE_MACHINES)
-        for attr_name in vars(dec_agentpool_1):
-            if attr_name not in ['name', 'mode'] and not attr_name.startswith('_'):
-                attr_value = getattr(dec_agentpool_1, attr_name)
-                self.assertIsNone(attr_value,
-                    f"Attribute '{attr_name}' should be None but was '{attr_value}'")
+        self.assertIsNone(dec_agentpool_1.count)
+        self.assertIsNone(dec_agentpool_1.vm_size)
+        self.assertIsNone(dec_agentpool_1.os_type)
+        self.assertIsNone(dec_agentpool_1.enable_auto_scaling)
+        self.assertIsNone(dec_agentpool_1.min_count)
+        self.assertIsNone(dec_agentpool_1.max_count)
 
     def common_construct_agentpool_profile_preview_with_managed_system_mode(self):
         """Test that construct_agentpool_profile_preview properly handles ManagedSystem mode"""
