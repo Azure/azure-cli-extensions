@@ -292,8 +292,8 @@ helps['quantum workspace create'] = """
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                 --workspace-kind V2 -r "MyProvider/default" --skip-autoadd -a MyStorageAccountName \\
-                --quota providerId=MyProvider targetId=MyProvider.Target1 standardMinutesLifetime=500 highMinutesLifetime=50 \\
-                --quota providerId=MyProvider targetId=MyProvider.Target2 standardMinutesLifetime=250
+                --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=500 high-minutes-lifetime=50 \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target2 standard-minutes-lifetime=250
 """
 
 helps['quantum workspace delete'] = """
@@ -361,7 +361,7 @@ helps['quantum workspace update'] = """
       - name: Update a target quota allocation on a V2 workspace.
         text: |-
             az quantum workspace update -g MyResourceGroup -w MyWorkspace \\
-                --quota providerId=MyProvider targetId=MyProvider.Target1 standardMinutesLifetime=1000
+                --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=1000
 """
 
 helps['quantum workspace keys'] = """

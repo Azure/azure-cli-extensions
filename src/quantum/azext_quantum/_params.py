@@ -41,10 +41,34 @@ class QuotaAction(argparse._AppendAction):
         'highMinutesLifetime'
     }
 
+    # Accept az-style kebab-case and snake_case keys (case-insensitive) as aliases of the camelCase keys.
+    _key_aliases = {
+        'providerid': 'providerId',
+        'targetid': 'targetId',
+        'standardminuteslifetime': 'standardMinutesLifetime',
+        'highminuteslifetime': 'highMinutesLifetime'
+    }
+
+    @classmethod
+    def _canonical_key(cls, key):
+        if not isinstance(key, str):
+            return key
+        normalized = key.strip().lower().replace('-', '').replace('_', '')
+        return cls._key_aliases.get(normalized, key.strip())
+
     def __call__(self, parser, namespace, values, option_string=None):
         allocations = list(getattr(namespace, self.dest, None) or [])
         parsed_values = []
         current = {}
+
+        def add_to_current(key, value):
+            canonical = self._canonical_key(key)
+            if canonical in current:
+                raise InvalidArgumentValueError(
+                    f'{option_string} got multiple values for "{key}" in a single allocation. '
+                    f'Specify a separate {option_string} for each target.'
+                )
+            current[canonical] = value
 
         for item in values:
             try:
@@ -52,7 +76,8 @@ class QuotaAction(argparse._AppendAction):
                 if isinstance(parsed, list):
                     parsed_values.extend(parsed)
                 elif isinstance(parsed, dict):
-                    current.update(parsed)
+                    for key, value in parsed.items():
+                        add_to_current(key, value)
                 else:
                     raise InvalidArgumentValueError(
                         f'Usage error: {option_string} expects key=value pairs, a JSON object or array, or @file.'
@@ -60,11 +85,11 @@ class QuotaAction(argparse._AppendAction):
             except CLIError:
                 try:
                     key, value = item.split('=', 1)
-                    current[key] = value
                 except ValueError as ex:
                     raise InvalidArgumentValueError(
                         f'Usage error: {option_string} expects key=value pairs, a JSON object or array, or @file.'
                     ) from ex
+                add_to_current(key, value)
 
         if current:
             parsed_values.append(current)
@@ -80,6 +105,8 @@ class QuotaAction(argparse._AppendAction):
     def _validate(cls, allocation, option_string):
         if not isinstance(allocation, dict):
             raise InvalidArgumentValueError(f'Each {option_string} allocation must be a JSON object.')
+
+        allocation = {cls._canonical_key(key): value for key, value in allocation.items()}
 
         unknown_keys = set(allocation) - cls._allowed_keys
         if unknown_keys:
@@ -107,11 +134,14 @@ class QuotaAction(argparse._AppendAction):
         for key in ('standardMinutesLifetime', 'highMinutesLifetime'):
             if key not in allocation:
                 continue
+            raw = allocation[key]
+            if isinstance(raw, (bool, float)):
+                raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.')
             try:
-                value = int(allocation[key])
+                value = int(raw)
             except (TypeError, ValueError) as ex:
                 raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.') from ex
-            if isinstance(allocation[key], bool) or value < 0 or value > 2147483647:
+            if value < 0 or value > 2147483647:
                 raise InvalidArgumentValueError(
                     f'{option_string} {key} must be between 0 and 2147483647.'
                 )
@@ -147,7 +177,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
     workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', choices=['V1', 'V2'])
-    quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation as providerId, targetId, standardMinutesLifetime, and optional highMinutesLifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. standardMinutesLifetime is required for a new allocation. Repeat for multiple targets.', action=QuotaAction, nargs='+')
+    quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation as provider-id, target-id, standard-minutes-lifetime, and optional high-minutes-lifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. standard-minutes-lifetime is required for a new allocation. camelCase keys (providerId, targetId, ...) are also accepted. Repeat --quota once per target.', action=QuotaAction, nargs='+')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
     job_type_type = CLIArgumentType(options_list=['--job-type'], help='Job type to be listed, example "QuantumComputing".')

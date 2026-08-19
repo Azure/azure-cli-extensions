@@ -445,6 +445,75 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 'standardMinutesLifetime=250'
             ])
 
+    def test_quota_key_aliases(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--quota', action=QuotaAction, nargs='+')
+
+        result = parser.parse_args([
+            '--quota',
+            'provider-id=provider',
+            'target-id=provider.target-1',
+            'standard-minutes-lifetime=500',
+            'high-minutes-lifetime=50',
+            '--quota',
+            'Provider_Id=provider',
+            'Target_Id=provider.target-2',
+            'Standard_Minutes_Lifetime=250'
+        ])
+
+        assert result.quota[0] == {
+            'providerId': 'provider',
+            'targetId': 'provider.target-1',
+            'standardMinutesLifetime': 500,
+            'highMinutesLifetime': 50
+        }
+        assert result.quota[1] == {
+            'providerId': 'provider',
+            'targetId': 'provider.target-2',
+            'standardMinutesLifetime': 250
+        }
+
+    def test_quota_rejects_duplicate_key_in_single_flag(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--quota', action=QuotaAction, nargs='+')
+
+        # Two targets crammed into a single --quota must not be silently merged.
+        with self.assertRaises(InvalidArgumentValueError):
+            parser.parse_args([
+                '--quota',
+                'providerId=provider',
+                'targetId=provider.target-1',
+                'standardMinutesLifetime=500',
+                'providerId=provider',
+                'targetId=provider.target-2',
+                'standardMinutesLifetime=250'
+            ])
+
+        # camelCase and kebab-case spellings of the same key also collide.
+        with self.assertRaises(InvalidArgumentValueError):
+            parser.parse_args([
+                '--quota',
+                'targetId=provider.target-1',
+                'target-id=provider.target-2',
+                'providerId=provider',
+                'standardMinutesLifetime=500'
+            ])
+
+    def test_quota_rejects_float(self):
+        with self.assertRaises(InvalidArgumentValueError):
+            QuotaAction._validate({
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': 500.5
+            }, '--quota')
+
+        with self.assertRaises(InvalidArgumentValueError):
+            QuotaAction._validate({
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': '500.5'
+            }, '--quota')
+
     def test_apply_target_quotas(self):
         provider = Provider(provider_id='provider', provider_sku='default')
 
