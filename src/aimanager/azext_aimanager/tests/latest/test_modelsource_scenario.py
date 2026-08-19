@@ -57,6 +57,10 @@ class ModelSourceScenarioTest(ScenarioTest):
                 checks=[self.check("length([?name=='hf'])", 1)])
 
             self.cmd(
+                'aimanager modelsource list -g rg --manager manager',
+                checks=[self.check("length([?name=='hf'])", 1)])
+
+            self.cmd(
                 command_prefix.format('update') + ' -n hf --token hf_yyy --no-wait',
                 checks=[self.is_empty()])
 
@@ -66,7 +70,8 @@ class ModelSourceScenarioTest(ScenarioTest):
 
         self.assertEqual(operations.get.call_count, 4)
         self.assertEqual(operations.begin_create_or_update.call_count, 2)
-        operations.list.assert_called_once_with('rg', 'manager')
+        self.assertEqual(operations.list.call_count, 2)
+        operations.list.assert_called_with('rg', 'manager')
         operations.begin_delete.assert_called_once()
 
         # the source type is immutable and must be carried over on update

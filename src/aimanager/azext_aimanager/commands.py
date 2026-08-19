@@ -45,7 +45,7 @@ def load_command_table(self, _):
     )
 
     # aimanager command group
-    with self.command_group("aimanager", ai_managers_sdk, client_factory=cf_ai_managers) as g:
+    with self.command_group("aimanager", ai_managers_sdk, client_factory=cf_ai_managers, is_preview=True) as g:
         g.custom_command("create", "create_aimanager", supports_no_wait=True)
         g.custom_command("update", "update_aimanager", supports_no_wait=True)
         g.custom_show_command("show", "show_aimanager")
@@ -55,7 +55,7 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     # aimanager namespace command group
-    with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces) as g:
+    with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces, is_preview=True) as g:
         g.custom_command("add", "add_aimanager_namespace", supports_no_wait=True)
         g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True)
         g.custom_show_command("show", "show_aimanager_namespace")
@@ -83,7 +83,7 @@ def load_command_table(self, _):
 
     # aimanager namespace modeldeployment command group
     with self.command_group("aimanager namespace modeldeployment", model_deployments_sdk,
-                            client_factory=cf_model_deployments) as g:
+                            client_factory=cf_model_deployments, is_preview=True) as g:
         g.custom_command("add", "add_modeldeployment", supports_no_wait=True)
         g.custom_command("update", "update_modeldeployment", supports_no_wait=True)
         g.custom_show_command("show", "show_modeldeployment")

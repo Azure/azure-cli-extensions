@@ -166,6 +166,24 @@ helps['quantum job delete'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
 """
 
+helps['quantum job update'] = """
+    type: command
+    short-summary: Update a submitted job's name, priority, and/or tags.
+    examples:
+      - name: Rename an Azure Quantum job.
+        text: |-
+            az quantum job update -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-name "My new job name"
+      - name: Change the priority of an Azure Quantum job.
+        text: |-
+            az quantum job update -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-priority High
+      - name: Replace the tags of an Azure Quantum job.
+        text: |-
+            az quantum job update -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-tags tag1 tag2
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.

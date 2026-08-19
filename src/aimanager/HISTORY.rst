@@ -3,7 +3,16 @@
 Release History
 ===============
 
-1.2.1b1
+1.4.1
+++++++
+* ``az aimanager modelsource`` and ``az aimanager namespace modeldeployment``: Accept
+  ``--manager`` and ``-m`` as aliases of ``--aimanager-name``.
+
+1.4.0
++++++++
+* Mark ``az aimanager`` command groups as preview.
+
+1.3.0
 +++++++
 * Add ``az aimanager model`` commands (``show``, ``list`` and ``calculate-cost``) to browse the
   regional AI model catalog and estimate the cost of deploying a model.
