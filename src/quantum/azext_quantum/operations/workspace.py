@@ -472,33 +472,33 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_assignee_args(assignee):
-    if not assignee:
-        raise RequiredArgumentMissingError("Please provide '--assignee' (the user's sign-in name/email or object id).")
+def _validate_email_arg(email):
+    if not email:
+        raise RequiredArgumentMissingError("Please provide '--email' (the user's sign-in name/email or object id).")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None):
+def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
     Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_assignee_args(assignee)
+    _validate_email_arg(email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=assignee)
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=email)
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
     Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_assignee_args(assignee)
+    _validate_email_arg(email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=assignee)
+    return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=email)
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):

@@ -299,15 +299,15 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("properties.provisioningState", "Succeeded")
         ])
 
-        # Use the signed-in user as the assignee. The workspace user commands are user-only,
+        # Use the signed-in user's email. The workspace user commands are user-only,
         # so a real user principal is required. Requires a user (not service-principal) login.
         signed_in_user = self.cmd('az ad signed-in-user show -o json').get_output_in_json()
         test_object_id = signed_in_user["id"]
-        test_assignee = signed_in_user["userPrincipalName"]
+        test_email = signed_in_user["userPrincipalName"]
 
-        # grant access by sign-in name. Verify the default
+        # grant access by email. Verify the default
         # 'Quantum Workspace Data Contributor' role was assigned.
-        self.cmd(f'az quantum workspace user create -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee {test_assignee} -o json', checks=[
+        self.cmd(f'az quantum workspace user create -g {test_resource_group} --workspace-name {test_workspace_temp} --email {test_email} -o json', checks=[
             self.check("principalId", test_object_id),
             self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
         ])
@@ -317,8 +317,8 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check(f"length([?principalId=='{test_object_id}'])", 1)
         ])
 
-        # remove access by sign-in name
-        self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee {test_assignee} --yes')
+        # remove access by email
+        self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --email {test_email} --yes')
 
         # delete the workspace
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -394,12 +394,12 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment:
             cmd = SimpleNamespace(cli_ctx=object())
-            add_user(cmd, "rg", "ws", assignee="user@contoso.com")
+            add_user(cmd, "rg", "ws", email="user@contoso.com")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee="user@contoso.com")
 
-    def test_add_user_requires_assignee(self):
+    def test_add_user_requires_email(self):
         cmd = SimpleNamespace(cli_ctx=object())
         with self.assertRaises(RequiredArgumentMissingError):
             add_user(cmd, "rg", "ws")

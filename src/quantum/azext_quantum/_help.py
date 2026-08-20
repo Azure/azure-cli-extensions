@@ -391,7 +391,7 @@ helps['quantum workspace user create'] = """
       - name: Grant a user access to a workspace using their sign-in name (email).
         text: |-
             az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee user@contoso.com
+                --email user@contoso.com
 """
 
 helps['quantum workspace user delete'] = """
@@ -401,7 +401,7 @@ helps['quantum workspace user delete'] = """
       - name: Remove a user's access to a workspace using their sign-in name (email).
         text: |-
             az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
-                --assignee user@contoso.com
+                --email user@contoso.com
 """
 
 helps['quantum workspace keys list'] = """
