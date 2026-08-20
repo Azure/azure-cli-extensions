@@ -4358,6 +4358,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         apiserver_subnet_id = self.raw_param.get("apiserver_subnet_id")
         enable_hosted_system = bool(self.raw_param.get("enable_hosted_system"))
 
+        if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            raise RequiredArgumentMissingError(self._hosted_system_sku_error_message())
+
         if self.decorator_mode == DecoratorMode.UPDATE:
             if not self.has_byo_hobo_subnets():
                 return
@@ -4367,17 +4370,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
             if not enable_hosted_system:
                 raise RequiredArgumentMissingError(
-                    '"--system-node-subnet-id" and "--node-subnet-id" require "--enable-hosted-system".'
-                )
-            if self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                raise RequiredArgumentMissingError(
-                    '"--system-node-subnet-id" and "--node-subnet-id" are only supported on '
-                    "clusters with the Automatic SKU."
+                    'Using "--system-node-subnet-id" and "--node-subnet-id" require "--enable-hosted-system".'
                 )
             return
-
-        if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            raise RequiredArgumentMissingError(self._hosted_system_sku_error_message())
 
         if self.has_byo_hobo_subnets():
             missing = []
