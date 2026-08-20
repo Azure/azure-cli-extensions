@@ -8,7 +8,7 @@
 import argparse
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
-from azure.cli.core.commands.parameters import get_enum_type
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azure.cli.core.util import shell_safe_json_parse
 
 
@@ -74,8 +74,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user. Supported formats: object id or user sign-in name.')
     assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with the object id of a user.")
     role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role to grant; for 'delete', the assignment to remove; for 'list', the role to filter by. All default to the 'Quantum Workspace Data Contributor' role.")
-    assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="[Deprecated] Azure Quantum workspace access is user-only; only 'User' is supported.")
-    include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], action='store_true', help='If specified, also list role assignments inherited from the parent resource group and subscription scopes.')
+    assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="Use with '--assignee-object-id' to avoid errors caused by propagation latency in Microsoft Graph.")
+    include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], arg_type=get_three_state_flag(), help='Include role assignments inherited from the parent resource group and subscription. Enabled by default; use "--include-inherited false" to list only assignments scoped directly to the workspace.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
