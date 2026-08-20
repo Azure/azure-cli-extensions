@@ -1,0 +1,31 @@
+{
+	"apiVersion": "arcdata.microsoft.com/v1",
+	"kind": "ActiveDirectoryConnector",
+	"metadata": {
+		"name": "arcadc"
+	},
+	"spec": {
+		"activeDirectory": {
+			"domainControllers": {
+				"primaryDomainController": {
+					"hostname": "dc1.contoso.local"
+				},
+				"secondaryDomainControllers": [{
+					"hostname": "dc2.contoso.local"
+				}]
+			},
+			"netbiosDomainName": "CONTOSO",
+			"realm": "CONTOSO.LOCAL",
+			"serviceAccountProvisioning": "manual"
+		},
+		"dns": {
+			"domainName": "contoso.local",
+			"nameserverIPAddresses": [
+				"11.11.22.222",
+				"11.11.22.223"
+			],
+			"preferK8sDnsForPtrLookups": false,
+			"replicas": 1
+		}
+	}
+}

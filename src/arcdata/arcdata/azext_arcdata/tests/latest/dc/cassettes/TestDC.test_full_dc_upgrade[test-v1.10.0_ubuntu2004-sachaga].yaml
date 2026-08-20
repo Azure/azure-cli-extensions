@@ -1,0 +1,992 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/apiextensions.k8s.io/v1/customresourcedefinitions
+  response:
+    body:
+      string: '{"kind":"CustomResourceDefinitionList","apiVersion":"apiextensions.k8s.io/v1","metadata":{"resourceVersion":"10978"},"items":[{"metadata":{"name":"activedirectoryconnectors.arcdata.microsoft.com","uid":"dd7b84b1-a60f-443c-84d1-146a1e4a25fa","resourceVersion":"7985","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"activedirectoryconnectors","singular":"activedirectoryconnector","shortNames":["adc","adcon","adconnector"],"kind":"ActiveDirectoryConnector","listKind":"ActiveDirectoryConnectorList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta2","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"activedirectoryconnectors","singular":"activedirectoryconnector","shortNames":["adc","adcon","adconnector"],"kind":"ActiveDirectoryConnector","listKind":"ActiveDirectoryConnectorList"},"storedVersions":["v1beta2"]}},{"metadata":{"name":"datacontrollers.arcdata.microsoft.com","uid":"66a51dc2-91ca-43aa-b544-621ec7049c56","resourceVersion":"7993","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"datacontrollers","singular":"datacontroller","kind":"DataController","listKind":"DataControllerList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v3","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v4","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v5","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"datacontrollers","singular":"datacontroller","kind":"DataController","listKind":"DataControllerList"},"storedVersions":["v5"]}},{"metadata":{"name":"exporttasks.tasks.arcdata.microsoft.com","uid":"6cefb505-dcb4-4e7e-8c0d-9ef835125395","resourceVersion":"7999","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"tasks.arcdata.microsoft.com","names":{"plural":"exporttasks","singular":"exporttask","shortNames":["export"],"kind":"ExportTask","listKind":"ExportTaskList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v2","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"exporttasks","singular":"exporttask","shortNames":["export"],"kind":"ExportTask","listKind":"ExportTaskList"},"storedVersions":["v2"]}},{"metadata":{"name":"failovergroups.sql.arcdata.microsoft.com","uid":"0e56c673-3841-4cb9-93ab-4a46f425c25e","resourceVersion":"8005","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"sql.arcdata.microsoft.com","names":{"plural":"failovergroups","singular":"failovergroup","shortNames":["fog"],"kind":"FailoverGroup","listKind":"FailoverGroupList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Results","type":"string","jsonPath":".status.results"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Results","type":"string","jsonPath":".status.results"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Results","type":"string","jsonPath":".status.results"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"failovergroups","singular":"failovergroup","shortNames":["fog"],"kind":"FailoverGroup","listKind":"FailoverGroupList"},"storedVersions":["v1"]}},{"metadata":{"name":"kafkas.arcdata.microsoft.com","uid":"d3730141-b88e-4fbe-9719-d7436da85f68","resourceVersion":"8008","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"kafkas","singular":"kafka","shortNames":["kafka"],"kind":"Kafka","listKind":"KafkaList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"kafkas","singular":"kafka","shortNames":["kafka"],"kind":"Kafka","listKind":"KafkaList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"monitors.arcdata.microsoft.com","uid":"adfee909-096b-454d-beef-77625056a014","resourceVersion":"8011","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"monitors","singular":"monitor","shortNames":["monitor"],"kind":"Monitor","listKind":"MonitorList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v2","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"monitors","singular":"monitor","shortNames":["monitor"],"kind":"Monitor","listKind":"MonitorList"},"storedVersions":["v2"]}},{"metadata":{"name":"postgresqls.arcdata.microsoft.com","uid":"1e735229-1fda-4a6f-ab9f-25ed70a5fd6d","resourceVersion":"8013","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"postgresqls","singular":"postgresql","shortNames":["postgres"],"kind":"PostgreSql","listKind":"PostgreSqlList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"},{"name":"Ready-Pods","type":"string","jsonPath":".status.readyPods"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta2","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"},{"name":"Ready-Pods","type":"string","jsonPath":".status.readyPods"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"postgresqls","singular":"postgresql","shortNames":["postgres"],"kind":"PostgreSql","listKind":"PostgreSqlList"},"storedVersions":["v1beta2"]}},{"metadata":{"name":"sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com","uid":"8ec359c9-aeb3-435a-872b-e8720944ba93","resourceVersion":"8026","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"tasks.sql.arcdata.microsoft.com","names":{"plural":"sqlmanagedinstancerestoretasks","singular":"sqlmanagedinstancerestoretask","shortNames":["sqlmirestoretask"],"kind":"SqlManagedInstanceRestoreTask","listKind":"SqlManagedInstanceRestoreTaskList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"sqlmanagedinstancerestoretasks","singular":"sqlmanagedinstancerestoretask","shortNames":["sqlmirestoretask"],"kind":"SqlManagedInstanceRestoreTask","listKind":"SqlManagedInstanceRestoreTaskList"},"storedVersions":["v1"]}},{"metadata":{"name":"sqlmanagedinstances.sql.arcdata.microsoft.com","uid":"ce47f963-8110-4de0-aa45-fb3ff2fb703e","resourceVersion":"8025","generation":1,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"sql.arcdata.microsoft.com","names":{"plural":"sqlmanagedinstances","singular":"sqlmanagedinstance","shortNames":["sqlmi"],"kind":"SqlManagedInstance","listKind":"SqlManagedInstanceList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v3","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v4","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.roles.sql.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.endpoints.primary"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v5","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.roles.sql.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.endpoints.primary"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v6","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.roles.sql.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.endpoints.primary"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"sqlmanagedinstances","singular":"sqlmanagedinstance","shortNames":["sqlmi"],"kind":"SqlManagedInstance","listKind":"SqlManagedInstanceList"},"storedVersions":["v6"]}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1beta2/namespaces/test/postgresqls
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1beta2","items":[],"kind":"PostgreSqlList","metadata":{"continue":"","resourceVersion":"10978"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '135'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/sql.arcdata.microsoft.com/v1beta2/namespaces/test/dags
+  response:
+    body:
+      string: '404 page not found
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '19'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Content-Type-Options:
+      - nosniff
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"10978"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"10978"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/api/v1/namespaces/test/secrets/arc-private-registry
+  response:
+    body:
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"secrets
+        \"arc-private-registry\" not found","reason":"NotFound","details":{"name":"arc-private-registry","kind":"secrets"},"code":404}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '214'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://mock-host/v2/arcdata-dev/arc-controller/tags/list
+  response:
+    body:
+      string: '{"name":"arcdata-dev/arc-controller","tags":["ubuntu2004-bilia","ubuntu2004-brkoc","ubuntu2004-chkamath","ubuntu2004-etchang","ubuntu2004-etchang2","ubuntu2004-letung","ubuntu2004-micn","ubuntu2004-pakotha","ubuntu2004-romonste","ubuntu2004-safeitle","ubuntu2004-shashta","v1.1.0_2021-11-02","v1.1.0_ubuntu2004-safeitle","v1.10.0_ubuntu2004-","v1.10.0_ubuntu2004-mdrrahman","v1.2.0_ubuntu2004-safeitle","v1.3.0_ubuntu2004-romonste","v1.3.0_ubuntu2004-safeitle","v1.3.0_ubuntu2004-shashta","v1.4.0_ubuntu2004-safeitle","v1.4.0_ubuntu2004-shashta","v1.4.1_ubuntu2004-safeitle","v1.5.0_ubuntu2004-bilia","v1.6.0_ubuntu2004-safeitle","v1.6.0_ubuntu2004-shashta","v1.7.0_ubuntu2004-safeitle","v1.7.0_ubuntu2004-yuronhe","v1.8.0_ubuntu2004-safeitle","v1.8.0_ubuntu2004-yuronhe","v1.9.0_ubuntu2004-","v1.9.0_ubuntu2004-mdrrahman","v1.9.0_ubuntu2004-safeitle","v1.9.0_ubuntu2004-yuronhe"]}
+
+        '
+    headers:
+      Access-Control-Expose-Headers:
+      - Docker-Content-Digest
+      - WWW-Authenticate
+      - Link
+      - X-Ms-Correlation-Request-Id
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '882'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ms-Correlation-Request-Id:
+      - a69a4aea-dba0-4a2b-bb22-c9d3c7aa6610
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "v1", "kind": "ServiceAccount", "metadata": {"name": "sa-arc-deployer"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/api/v1/namespaces/test/serviceaccounts/sa-arc-deployer
+  response:
+    body:
+      string: '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"sa-arc-deployer","namespace":"test","uid":"2a182bb4-2fd2-4712-b2bc-91629b417952","resourceVersion":"7952","creationTimestamp":"2022-07-30T01:17:47Z"},"secrets":[{"name":"sa-arc-deployer-token-qr89x"}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '265'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRole", "metadata":
+      {"name": "test:cr-deployer"}, "rules": [{"apiGroups": ["apiextensions.k8s.io"],
+      "resources": ["customresourcedefinitions"], "verbs": ["create", "list", "get"]},
+      {"apiGroups": ["apiextensions.k8s.io"], "resources": ["customresourcedefinitions"],
+      "resourceNames": ["activedirectoryconnectors.arcdata.microsoft.com", "datacontrollers.arcdata.microsoft.com",
+      "exporttasks.tasks.arcdata.microsoft.com", "failovergroups.sql.arcdata.microsoft.com",
+      "kafkas.arcdata.microsoft.com", "monitors.arcdata.microsoft.com", "postgresqls.arcdata.microsoft.com",
+      "sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com", "sqlmanagedinstances.sql.arcdata.microsoft.com"],
+      "verbs": ["update", "patch"]}, {"apiGroups": ["admissionregistration.k8s.io"],
+      "resources": ["mutatingwebhookconfigurations"], "verbs": ["create"]}, {"apiGroups":
+      ["admissionregistration.k8s.io"], "resources": ["mutatingwebhookconfigurations"],
+      "resourceNames": ["arcdata.microsoft.com-webhook-test"], "verbs": ["delete",
+      "get", "patch"]}, {"apiGroups": ["rbac.authorization.k8s.io"], "resources":
+      ["clusterroles"], "verbs": ["create", "get"]}, {"apiGroups": ["rbac.authorization.k8s.io"],
+      "resources": ["clusterroles"], "resourceNames": ["test:cr-arc-crd-reader", "test:cr-arc-metricsdc-reader",
+      "cr-arc-webhook-job"], "verbs": ["delete", "patch"]}, {"apiGroups": ["rbac.authorization.k8s.io"],
+      "resources": ["clusterrolebindings"], "verbs": ["create", "get"]}, {"apiGroups":
+      ["rbac.authorization.k8s.io"], "resources": ["clusterrolebindings"], "resourceNames":
+      ["test:crb-arc-crd-reader", "test:crb-arc-metricsdc-reader", "crb-arc-webhook-job"],
+      "verbs": ["delete", "patch"]}, {"apiGroups": [""], "resources": ["namespaces"],
+      "verbs": ["create", "list"]}, {"apiGroups": [""], "resources": ["namespaces"],
+      "resourceNames": ["test"], "verbs": ["get", "patch"]}, {"apiGroups": [""], "resources":
+      ["nodes/stats", "nodes/proxy", "pods"], "verbs": ["list", "get"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/clusterroles/test%3Acr-deployer
+  response:
+    body:
+      string: '{"kind":"ClusterRole","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"test:cr-deployer","uid":"820e3202-cb48-4b91-84e7-18fef020fc18","resourceVersion":"7953","creationTimestamp":"2022-07-30T01:17:47Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:rules":{}}}]},"rules":[{"verbs":["create","list","get"],"apiGroups":["apiextensions.k8s.io"],"resources":["customresourcedefinitions"]},{"verbs":["update","patch"],"apiGroups":["apiextensions.k8s.io"],"resources":["customresourcedefinitions"],"resourceNames":["activedirectoryconnectors.arcdata.microsoft.com","datacontrollers.arcdata.microsoft.com","exporttasks.tasks.arcdata.microsoft.com","failovergroups.sql.arcdata.microsoft.com","kafkas.arcdata.microsoft.com","monitors.arcdata.microsoft.com","postgresqls.arcdata.microsoft.com","sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com","sqlmanagedinstances.sql.arcdata.microsoft.com"]},{"verbs":["create"],"apiGroups":["admissionregistration.k8s.io"],"resources":["mutatingwebhookconfigurations"]},{"verbs":["delete","get","patch"],"apiGroups":["admissionregistration.k8s.io"],"resources":["mutatingwebhookconfigurations"],"resourceNames":["arcdata.microsoft.com-webhook-test"]},{"verbs":["create","get"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterroles"]},{"verbs":["delete","patch"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterroles"],"resourceNames":["test:cr-arc-crd-reader","test:cr-arc-metricsdc-reader","cr-arc-webhook-job"]},{"verbs":["create","get"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterrolebindings"]},{"verbs":["delete","patch"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterrolebindings"],"resourceNames":["test:crb-arc-crd-reader","test:crb-arc-metricsdc-reader","crb-arc-webhook-job"]},{"verbs":["create","list"],"apiGroups":[""],"resources":["namespaces"]},{"verbs":["get","patch"],"apiGroups":[""],"resources":["namespaces"],"resourceNames":["test"]},{"verbs":["list","get"],"apiGroups":[""],"resources":["nodes/stats","nodes/proxy","pods"]}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "ClusterRoleBinding", "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": {"name": "test:crb-deployer"}, "subjects": [{"kind": "ServiceAccount",
+      "name": "sa-arc-deployer", "namespace": "test"}], "roleRef": {"kind": "ClusterRole",
+      "name": "test:cr-deployer", "apiGroup": "rbac.authorization.k8s.io"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/test%3Acrb-deployer
+  response:
+    body:
+      string: '{"kind":"ClusterRoleBinding","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"test:crb-deployer","uid":"8f95a166-a8ac-4e37-92b5-8557972da50c","resourceVersion":"7954","creationTimestamp":"2022-07-30T01:17:47Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:roleRef":{"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:subjects":{}}}]},"subjects":[{"kind":"ServiceAccount","name":"sa-arc-deployer","namespace":"test"}],"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"ClusterRole","name":"test:cr-deployer"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '660'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "rbac.authorization.k8s.io/v1", "kind": "Role", "metadata":
+      {"name": "role-deployer", "namespace": "test"}, "rules": [{"apiGroups": [""],
+      "resources": ["pods/log"], "verbs": ["get"]}, {"apiGroups": [""], "resources":
+      ["secrets"], "verbs": ["get", "delete"]}, {"apiGroups": [""], "resources": ["serviceaccounts"],
+      "resourceNames": ["sa-arc-webhook-job", "sa-arc-bootstrapper"], "verbs": ["delete"]},
+      {"apiGroups": ["apps"], "resources": ["deployments"], "verbs": ["delete"]},
+      {"apiGroups": ["rbac.authorization.k8s.io"], "resources": ["roles", "rolebindings"],
+      "verbs": ["delete"]}, {"apiGroups": ["batch"], "resources": ["jobs"], "verbs":
+      ["create", "get", "list", "delete"]}, {"apiGroups": ["arcdata.microsoft.com"],
+      "resources": ["datacontrollers"], "verbs": ["create", "update", "patch", "delete"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/roles/role-deployer
+  response:
+    body:
+      string: '{"kind":"Role","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"role-deployer","namespace":"test","uid":"ef1dcd47-456d-4bf0-83a0-77f8b2665472","resourceVersion":"7955","creationTimestamp":"2022-07-30T01:17:47Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:rules":{}}}]},"rules":[{"verbs":["get"],"apiGroups":[""],"resources":["pods/log"]},{"verbs":["get","delete"],"apiGroups":[""],"resources":["secrets"]},{"verbs":["delete"],"apiGroups":[""],"resources":["serviceaccounts"],"resourceNames":["sa-arc-webhook-job","sa-arc-bootstrapper"]},{"verbs":["delete"],"apiGroups":["apps"],"resources":["deployments"]},{"verbs":["delete"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["roles","rolebindings"]},{"verbs":["create","get","list","delete"],"apiGroups":["batch"],"resources":["jobs"]},{"verbs":["create","update","patch","delete"],"apiGroups":["arcdata.microsoft.com"],"resources":["datacontrollers"]}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '1065'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/rolebindings/rb-deployer
+  response:
+    body:
+      string: '{"kind":"RoleBinding","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"rb-deployer","namespace":"test","uid":"8d8e8041-ee7c-46fe-ad5d-9604ba08126d","resourceVersion":"7956","creationTimestamp":"2022-07-30T01:17:47Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:roleRef":{"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:subjects":{}}}]},"subjects":[{"kind":"ServiceAccount","name":"sa-arc-deployer"}],"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"role-deployer"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '637'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "rbac.authorization.k8s.io/v1", "kind": "Role", "metadata":
+      {"name": "role-bootstrapper", "namespace": "test"}, "rules": [{"apiGroups":
+      [""], "resources": ["pods"], "verbs": ["delete", "get", "list", "patch", "update",
+      "watch"]}, {"apiGroups": [""], "resources": ["configmaps", "persistentvolumeclaims",
+      "secrets"], "verbs": ["delete"]}, {"apiGroups": [""], "resources": ["configmaps",
+      "events", "persistentvolumeclaims", "secrets", "serviceaccounts", "services"],
+      "verbs": ["create", "get", "list", "patch", "update", "watch"]}, {"apiGroups":
+      ["apps"], "resources": ["daemonsets", "deployments", "replicasets", "statefulsets"],
+      "verbs": ["create", "get", "list", "patch", "update", "watch"]}, {"apiGroups":
+      ["rbac.authorization.k8s.io"], "resources": ["roles", "rolebindings"], "verbs":
+      ["create", "get", "list", "patch", "update"]}, {"apiGroups": ["arcdata.microsoft.com"],
+      "resources": ["monitors", "kafkas"], "verbs": ["create", "patch", "update"]},
+      {"apiGroups": ["sql.arcdata.microsoft.com", "tasks.sql.arcdata.microsoft.com",
+      "tasks.arcdata.microsoft.com", "arcdata.microsoft.com"], "resources": ["activedirectoryconnectors",
+      "datacontrollers", "exporttasks", "failovergroups", "kafkas", "monitors", "postgresqls",
+      "sqlmanagedinstances", "sqlmanagedinstancerestoretasks"], "verbs": ["get", "list",
+      "watch"]}, {"apiGroups": ["sql.arcdata.microsoft.com", "tasks.sql.arcdata.microsoft.com",
+      "tasks.arcdata.microsoft.com", "arcdata.microsoft.com"], "resources": ["activedirectoryconnectors/status",
+      "datacontrollers/status", "exporttasks/status", "failovergroups/status", "kafkas/status",
+      "monitors/status", "postgresqls/status", "sqlmanagedinstances/status", "sqlmanagedinstancerestoretasks/status"],
+      "verbs": ["patch", "update"]}, {"apiGroups": ["clusterconfig.azure.com"], "resources":
+      ["azureclusteridentityrequests"], "verbs": ["create", "delete", "get"]}, {"apiGroups":
+      ["clusterconfig.azure.com"], "resources": ["azureclusteridentityrequests/status"],
+      "verbs": ["patch", "update"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/roles/role-bootstrapper
+  response:
+    body:
+      string: '{"kind":"Role","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"role-bootstrapper","namespace":"test","uid":"e6298831-fa70-41ff-9f85-4cf869993283","resourceVersion":"8034","creationTimestamp":"2022-07-30T01:17:47Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:rules":{}}},{"manager":"Go-http-client","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}},{"manager":"bootstrapper","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{"f:helm.sh/chart":{}}}}}]},"rules":[{"verbs":["delete","get","list","patch","update","watch"],"apiGroups":[""],"resources":["pods"]},{"verbs":["delete"],"apiGroups":[""],"resources":["configmaps","persistentvolumeclaims","secrets"]},{"verbs":["create","get","list","patch","update","watch"],"apiGroups":[""],"resources":["configmaps","events","persistentvolumeclaims","secrets","serviceaccounts","services"]},{"verbs":["create","get","list","patch","update","watch"],"apiGroups":["apps"],"resources":["daemonsets","deployments","replicasets","statefulsets"]},{"verbs":["create","get","list","patch","update"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["roles","rolebindings"]},{"verbs":["create","patch","update"],"apiGroups":["arcdata.microsoft.com"],"resources":["monitors","kafkas"]},{"verbs":["get","list","watch"],"apiGroups":["sql.arcdata.microsoft.com","tasks.sql.arcdata.microsoft.com","tasks.arcdata.microsoft.com","arcdata.microsoft.com"],"resources":["activedirectoryconnectors","datacontrollers","exporttasks","failovergroups","kafkas","monitors","postgresqls","sqlmanagedinstances","sqlmanagedinstancerestoretasks"]},{"verbs":["patch","update"],"apiGroups":["sql.arcdata.microsoft.com","tasks.sql.arcdata.microsoft.com","tasks.arcdata.microsoft.com","arcdata.microsoft.com"],"resources":["activedirectoryconnectors/status","datacontrollers/status","exporttasks/status","failovergroups/status","kafkas/status","monitors/status","postgresqls/status","sqlmanagedinstances/status","sqlmanagedinstancerestoretasks/status"]},{"verbs":["create","delete","get"],"apiGroups":["clusterconfig.azure.com"],"resources":["azureclusteridentityrequests"]},{"verbs":["patch","update"],"apiGroups":["clusterconfig.azure.com"],"resources":["azureclusteridentityrequests/status"]}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/rolebindings/rb-deployer-bootstrapper
+  response:
+    body:
+      string: '{"kind":"RoleBinding","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"rb-deployer-bootstrapper","namespace":"test","uid":"6ef0014e-6c06-4758-829f-eb3a8753fb32","resourceVersion":"7958","creationTimestamp":"2022-07-30T01:17:47Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-07-30T01:17:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:roleRef":{"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:subjects":{}}}]},"subjects":[{"kind":"ServiceAccount","name":"sa-arc-deployer"}],"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"role-bootstrapper"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '654'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"10978"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: DELETE
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs/arc-bootstrapper-job
+  response:
+    body:
+      string: '{"kind":"Job","apiVersion":"batch/v1","metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34","resourceVersion":"10979","creationTimestamp":"2022-07-30T01:35:36Z","deletionTimestamp":"2022-07-30T01:40:21Z","deletionGracePeriodSeconds":0,"labels":{"controller-uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34","job-name":"arc-bootstrapper-job"},"finalizers":["orphan"],"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:35:36Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:35:58Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:completionTime":{},"f:conditions":{},"f:startTime":{},"f:succeeded":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"conditions":[{"type":"Complete","status":"True","lastProbeTime":"2022-07-30T01:35:58Z","lastTransitionTime":"2022-07-30T01:35:58Z"}],"startTime":"2022-07-30T01:35:36Z","completionTime":"2022-07-30T01:35:58Z","succeeded":1}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"10980"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34","resourceVersion":"10979","creationTimestamp":"2022-07-30T01:35:36Z","deletionTimestamp":"2022-07-30T01:40:21Z","deletionGracePeriodSeconds":0,"labels":{"controller-uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34","job-name":"arc-bootstrapper-job"},"finalizers":["orphan"],"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:35:36Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:35:58Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:completionTime":{},"f:conditions":{},"f:startTime":{},"f:succeeded":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"7bd6c614-9a82-45c9-bbe1-b657030b4d34","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"conditions":[{"type":"Complete","status":"True","lastProbeTime":"2022-07-30T01:35:58Z","lastTransitionTime":"2022-07-30T01:35:58Z"}],"startTime":"2022-07-30T01:35:36Z","completionTime":"2022-07-30T01:35:58Z","succeeded":1}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"11001"},"items":[]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '93'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:32 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "batch/v1", "kind": "Job", "metadata": {"name": "arc-bootstrapper-job"},
+      "spec": {"template": {"spec": {"nodeSelector": {"kubernetes.io/os": "linux"},
+      "imagePullSecrets": [{"name": "arc-private-registry"}], "containers": [{"name":
+      "bootstrapper", "image": "arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga",
+      "imagePullPolicy": "IfNotPresent", "command": ["/opt/bootstrapper/bin/bootstrapper"],
+      "args": ["-image", "arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga",
+      "-policy", "IfNotPresent", "-chart", "/opt/helm/arcdataservices", "-bootstrap"]}],
+      "restartPolicy": "Never", "serviceAccountName": "sa-arc-deployer"}}, "ttlSecondsAfterFinished":
+      86400, "backoffLimit": 0}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: POST
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"Job","apiVersion":"batch/v1","metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","resourceVersion":"11002","creationTimestamp":"2022-07-30T01:40:32Z","labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:40:32Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:32 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"11002"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","resourceVersion":"11002","creationTimestamp":"2022-07-30T01:40:32Z","labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:40:32Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:32 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"11102"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","resourceVersion":"11006","creationTimestamp":"2022-07-30T01:40:32Z","labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:40:32Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:40:32Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:active":{},"f:startTime":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"startTime":"2022-07-30T01:40:32Z","active":1}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:42 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"11142"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","resourceVersion":"11130","creationTimestamp":"2022-07-30T01:40:32Z","labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:40:32Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-07-30T01:40:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:completionTime":{},"f:conditions":{},"f:startTime":{},"f:succeeded":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"f771c7d2-07a7-4a96-992f-033b7ef9c4ec","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"conditions":[{"type":"Complete","status":"True","lastProbeTime":"2022-07-30T01:40:49Z","lastTransitionTime":"2022-07-30T01:40:49Z"}],"startTime":"2022-07-30T01:40:32Z","completionTime":"2022-07-30T01:40:49Z","succeeded":1}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"11142"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"11142"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"spec": {"docker": {"imageTag": "v1.10.0_ubuntu2004-sachaga"}}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers/datacontroller-sachaga-3528e2572
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"11142"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-07-30T01:17:58Z","generation":2,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}},"f:maintenance":{".":{},"f:duration":{},"f:recurrence":{},"f:start":{},"f:timeZone":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-07-30T01:36:09Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-07-30T01:36:47Z"}],"name":"datacontroller-sachaga-3528e2572","namespace":"test","resourceVersion":"9969","uid":"fd74b3a5-ac52-402c-ba5e-a02f7a617af1"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.10.0_ubuntu2004-sachaga","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-sachaga-3528e2572","logs.rotation.days":"7","logs.rotation.size":"5000"},"maintenance":{"duration":"3:00","recurrence":"Saturday","start":"2022-01-01T23:00","timeZone":"US/Pacific"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-07-30T01:36:59.328825Z","observedGeneration":2,"runningVersion":"v1.10.0_ubuntu2004-sachaga","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"11142"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/apps/v1/namespaces/test/deployments
+  response:
+    body:
+      string: '{"kind":"DeploymentList","apiVersion":"apps/v1","metadata":{"resourceVersion":"11142"},"items":[{"metadata":{"name":"bootstrapper","namespace":"test","uid":"22889d72-ccd9-485a-8eda-afda5d639bc7","resourceVersion":"11101","generation":3,"creationTimestamp":"2022-07-30T01:17:49Z","labels":{"app":"bootstrapper","app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"deployment.kubernetes.io/revision":"3","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apps/v1","time":"2022-07-30T01:17:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:progressDeadlineSeconds":{},"f:replicas":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:strategy":{"f:rollingUpdate":{".":{},"f:maxSurge":{},"f:maxUnavailable":{}},"f:type":{}},"f:template":{"f:metadata":{"f:annotations":{".":{},"f:releaseRevision":{}},"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:env":{".":{},"k:{\"name\":\"ACCEPT_EULA\"}":{".":{},"f:name":{},"f:value":{}}},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:securityContext":{".":{},"f:runAsGroup":{},"f:runAsUser":{}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{".":{},"f:fsGroup":{}},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"apps/v1","time":"2022-07-30T01:40:41Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:deployment.kubernetes.io/revision":{}}},"f:status":{"f:availableReplicas":{},"f:conditions":{".":{},"k:{\"type\":\"Available\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Progressing\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}},"f:observedGeneration":{},"f:readyReplicas":{},"f:replicas":{},"f:updatedReplicas":{}}}}]},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"bootstrapper"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"bootstrapper"},"annotations":{"releaseRevision":"3"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","env":[{"name":"ACCEPT_EULA","value":"Y"}],"resources":{"limits":{"cpu":"200m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent","securityContext":{"runAsUser":1000700001,"runAsGroup":1000700001}}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-bootstrapper","serviceAccount":"sa-arc-bootstrapper","securityContext":{"fsGroup":1000700001},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"strategy":{"type":"RollingUpdate","rollingUpdate":{"maxUnavailable":"25%","maxSurge":"25%"}},"revisionHistoryLimit":0,"progressDeadlineSeconds":600},"status":{"observedGeneration":3,"replicas":1,"updatedReplicas":1,"readyReplicas":1,"availableReplicas":1,"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2022-07-30T01:17:51Z","lastTransitionTime":"2022-07-30T01:17:51Z","reason":"MinimumReplicasAvailable","message":"Deployment
+        has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2022-07-30T01:40:41Z","lastTransitionTime":"2022-07-30T01:17:49Z","reason":"NewReplicaSetAvailable","message":"ReplicaSet
+        \"bootstrapper-66b7fd6d8c\" has successfully progressed."}]}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:40:52 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,420 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 599dce5b-c790-11ee-9a3e-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4","name":"LAPTOP-OIUS4TO4","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus2euap","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2023-12-07T20:57:32.5401341Z","lastModifiedBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","lastModifiedByType":"Application","lastModifiedAt":"2024-02-09T21:14:22.6933719Z"},"properties":{"version":"SQL
+        Server 2022","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4","createTime":null,"vCore":"12","cores":null,"status":"Connected","patchLevel":"16.0.1110.1","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"16.0.1000.6","instanceName":"MSSQLSERVER","tcpDynamicPorts":"","tcpStaticPorts":"1433","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-09T21:14:19.2902244Z","lastUsageUploadTime":"2024-02-09T21:00:26.9603356Z","hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":null,"upgradeLockedUntil":null,"monitoring":{"enabled":true},"migration":{"assessment":{"enabled":true}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1457'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:29 GMT
+      ETag:
+      - '"03008364-0000-3400-0000-65c695af0000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: F66774B34D0745948434FD4B7FF6A591 Ref B: BN1AA2051013039 Ref C: 2024-02-09T21:15:29Z'
+      x-ms-correlation-request-id:
+      - f6a6a16c-4660-4471-ac95-ad3d770abf0e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - 9974a945-46dc-49b5-a867-fdfaf834baf1
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211529Z:f6a6a16c-4660-4471-ac95-ad3d770abf0e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"ExcludedSqlInstances":[""],"SqlManagement":{"IsEnabled":true},"LicenseType":"Paid","enableExtendedSecurityUpdates":false,"esuLastUpdatedTimestamp":"2024-02-02T18:48:37.571Z","cloudprovider":"N/A"},"provisioningState":"Succeeded","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","status":{"code":"0","level":"Information","message":"Extension
+        Message: SQL Server Extension Agent: Healthy; timestampUTC : 2024/02/09, 21:05:36.937;
+        uploadStatus : OK; uploadMessage : Upload succeeded.;;AutomaticBackups: Running;PurviewPlugin:
+        {};AzureActiveDirectoryPlugin: {\r\n  \"MSSQLSERVER\": \"\"\r\n};DatabaseMonitorArcPlugin:
+        {\"State\":\"Running\",\"MetricsUploadStatus\":\"OK\"}, AutomaticBackups:
+        {\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.AutomaticSqlBackupConfiguration,
+        SqlAgent\",\"retentionPeriodInDays\":7,\"profiles\":{\"$type\":\"System.Collections.Generic.List`1[[Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent]], System.Private.CoreLib\",\"$values\":[{\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent\",\"instanceName\":\"LAPTOP-OIUS4TO4\",\"databaseName\":\"MyDatabase\",\"differentialBackupHours\":12,\"fullBackupDays\":7,\"tLogBackupMinutes\":5,\"retentionPeriodInDays\":7,\"enabled\":true}]}},
+        Purview plugin: [], Azure active directory configuration plugin: [], Assessment:
+        [], Assessment Status: {\"AssessmentHistory\":[],\"Enabled\":false,\"ErrorMessage\":\"\",\"NextScheduledTime\":null,\"RunStatus\":\"NotRunning\",\"StartTime\":null},
+        DatabaseMonitorArcPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.DatabaseMonitorConfiguration,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"endpointUrl\":\"https://telemetry.{0}.arcdataservices.com/\",\"endpointAppId\":\"524058e3-2702-4b98-932b-b2d1de613fd2\"},
+        MigrationAssessmentPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.PublicSettings,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"excludedSqlInstances\":{\"$type\":\"System.String[],
+        System.Private.CoreLib\",\"$values\":[]},\"azureAD\":{\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.AADSettings[],
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"$values\":[]},\"externalPolicyBasedAuthorization\":{\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.PurviewSettings[],
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"$values\":[]},\"licenseType\":\"Undefined\",\"enableExtendedSecurityUpdates\":false,\"esuLastUpdatedTimestamp\":\"0001-01-01T00:00:00\"}"}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '3138'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:30 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: D2DC7A769D164D33A2605955D2528AD2 Ref B: BN1AA2051012053 Ref C: 2024-02-09T21:15:29Z'
+      x-ms-correlation-request-id:
+      - a6f88ed8-8644-4152-ab90-7bfe0087bebf
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11999'
+      x-ms-request-id:
+      - 4baea929-96af-44be-866e-66894a692b8d
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211530Z:a6f88ed8-8644-4152-ab90-7bfe0087bebf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 5a77007c-c790-11ee-a531-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/LAPTOP-OIUS4TO4/Databases/AA_G-d_te_st2e321tt''
+        under resource group ''lawynn-dotnet8Upgrade'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '280'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:30 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 2CD87E7E129A4384B337D6CA735764FD Ref B: BN1AA2051013039 Ref C: 2024-02-09T21:15:30Z'
+      x-ms-correlation-request-id:
+      - f93d5a6a-d89a-49f2-b6ac-b83f391bbabe
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - f93d5a6a-d89a-49f2-b6ac-b83f391bbabe
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211530Z:f93d5a6a-d89a-49f2-b6ac-b83f391bbabe
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 5ab65548-c790-11ee-98d4-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/MyDatabase?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/MyDatabase","name":"MyDatabase","type":"microsoft.azurearcdata/sqlserverinstances/databases","location":"eastus2euap","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2023-12-07T20:57:41.2876869Z","lastModifiedBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","lastModifiedByType":"Application","lastModifiedAt":"2024-02-09T21:14:23.1883513Z"},"properties":{"collationName":"SQL_Latin1_General_CP1_CI_AS","databaseCreationDate":"2023-12-05T22:22:05Z","compatibilityLevel":160,"sizeMB":8.0,"spaceAvailableMB":2.5,"state":"Online","isReadOnly":false,"recoveryMode":"Full","databaseOptions":{"isAutoCloseOn":false,"isAutoShrinkOn":false,"isAutoCreateStatsOn":true,"isAutoUpdateStatsOn":true,"isMemoryOptimizationEnabled":true,"isEncrypted":false,"isTrustworthyOn":false},"backupInformation":{"lastFullBackup":"2024-02-02T15:32:32Z","lastLogBackup":"2024-02-07T19:18:43Z"},"backupPolicy":{"retentionPeriodDays":7,"fullBackupDays":7,"differentialBackupHours":12,"transactionLogBackupMinutes":5},"provisioningState":"Succeeded","lastDatabaseUploadTime":"2024-02-09T21:14:19.9026846Z"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1305'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:31 GMT
+      ETag:
+      - '"04003625-0000-3400-0000-65c695af0000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 0A06EF1A945C444EB37C8956AFC3DDA9 Ref B: BN1AA2051013039 Ref C: 2024-02-09T21:15:30Z'
+      x-ms-correlation-request-id:
+      - 52fa7e07-5732-4292-baa9-6ddb331b4efb
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199999'
+      x-ms-request-id:
+      - b47ebc4d-92b5-4e53-82df-77ef2c08277f
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211531Z:52fa7e07-5732-4292-baa9-6ddb331b4efb
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"collationName": "SQL_Latin1_General_CP1_CI_AS",
+      "compatibilityLevel": 160, "sizeMB": 8.0, "spaceAvailableMB": 2.5, "state":
+      "Online", "isReadOnly": false, "recoveryMode": "Full", "databaseOptions": {"isAutoCloseOn":
+      false, "isAutoShrinkOn": false, "isAutoCreateStatsOn": true, "isAutoUpdateStatsOn":
+      true, "isMemoryOptimizationEnabled": true, "isEncrypted": false, "isTrustworthyOn":
+      false}, "backupPolicy": {"retentionPeriodDays": 7, "fullBackupDays": 7, "differentialBackupHours":
+      12, "transactionLogBackupMinutes": 5}, "createMode": "restorePointInTime", "sourceDatabaseId":
+      "MyDatabase", "restorePointInTime": "2024-02-09T21:15:28.778631Z"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '689'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 5b32de62-c790-11ee-b2ae-d8bbc1c51c4b
+    method: PUT
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt","name":"AA_G-d_te_st2e321tt","type":"microsoft.azurearcdata/sqlserverinstances/databases","location":"eastus2euap","systemData":{"createdBy":"aagonzalez@microsoft.com","createdByType":"User","createdAt":"2024-02-09T21:15:32.1334684Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-09T21:15:32.1334684Z"},"properties":{"collationName":"SQL_Latin1_General_CP1_CI_AS","databaseCreationDate":null,"compatibilityLevel":160,"sizeMB":8.0,"spaceAvailableMB":2.5,"state":"Online","isReadOnly":false,"recoveryMode":"Full","databaseOptions":{"isAutoCloseOn":false,"isAutoShrinkOn":false,"isAutoCreateStatsOn":true,"isAutoUpdateStatsOn":true,"isRemoteDataArchiveEnabled":null,"isMemoryOptimizationEnabled":true,"isEncrypted":false,"isTrustworthyOn":false},"backupInformation":null,"backupPolicy":{"retentionPeriodDays":7,"fullBackupDays":7,"differentialBackupHours":12,"transactionLogBackupMinutes":5},"earliestRestoreDate":null,"createMode":"restorePointInTime","sourceDatabaseId":"MyDatabase","restorePointInTime":"2024-02-09T21:15:28.778631Z","provisioningState":"Accepted","lastDatabaseUploadTime":null}}'
+    headers:
+      Azure-AsyncOperation:
+      - https://management.azure.com/providers/Microsoft.AzureArcData/locations/EASTUS2EUAP/operationStatuses/8def3d0d-0ced-4b60-a75d-0e4f601fcc04*511FBC8DD5C7046EBEF8438F5D751DECF44B37E2B8713EF9C15518A18EF15FCB?api-version=2024-02-01-preview&t=638431101329772011&c=MIIHHjCCBgagAwIBAgITOgKWSTEcBIQCHsI5sQAEApZJMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwMTMwMTcxMzQ3WhcNMjUwMTI0MTcxMzQ3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKfKGGbOvD4LAPDfkshHK3sJKXPyc6AeX55uMe8VlhdaGe_9D0A-bqQEJaSr3LEychnUuD2sLuWvyahqSPOCXH0CnDuBFrlYok8KsDKQI8AGG7nvZxYDiM3WUooL4Z2edyIcSJgIRr2Fv7mxLROBrzwSMecTV4lgINXMg_ptVwUd0nwPOcgKcL1FBQtL2G2cb-V1XGnfa9ft_GJi9tImBsgqbjmvZiScDsr59TB0TX_hkrnykdH2DGTJ0MIni2JyvxdKWpdfD6r8gP1CCFmua81KDc4QF38lsvStqTga4k9QoeOe4T1I93b5HXOojrEQqqkfocEpYXisEkaN2hnaICkCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBQKysUo5XBF7lZioAO7t0cZOsD34jAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABhzezI96uSdJ5d-Z3j1yTekDNM2K0S4Hfl7_qMAis_kA0h7-9wQCsEORTUkWptY_qjImHVf0nCcfW94F6_9m4QVpyhtnz3xaAERQjBC7C-gHJecgORaR9eIQyGDavg0AmtqFVlH-q_HN9ALPvc-j4HESy0HkMoVGnv6AsR0zVStmGt2eoQduTq1nzv1AtAmbtXLmdc6csWHX5YlFIj0A3xUxmiTdBMCJc6G-Dy-3s2UWw9eZm_ZWwOSrvWD94lJ4Q485uJetzogrPi_KiwZy-kiQ0lxLoaSw_TSisHBSdXGa0rVjdBCZFo8_q4WyYLpPfcBeiHuA4GEfoeETEsUI_g&s=Muh0E2kuAMBhXcYpyaO_9lV7NRKHdNvBR5-y2BC0cPF4KrQuoxHRdyBPcAceM4DaVC1NA_Df4s2vnhONaQFdU-Z6DLIvK8eUFGNnTwDMBrDH0gkWACvdDDU5nNKKlgaRYHidy-xyFbFltbOonfxDVw-aX-Oz6vXJezb4M-MWE5vrBGAxwLIzMNXBW-j_0WnJFk4Kdk4hgrH7o0w7fHAplxOSkUkJWo5jbZm0p2uwSBdXzNQCgHOGE2DnQk68lpisiX4OAv-rcr-NavEAxcn_32KbadIcTvg6StophuSKsBCH-ibahF4NqbvVApKS1lqP7EhtCPwu7OurrFuiFTSD2Q&h=B84vz2-LVv67it964EfcylvOqJFuHHDMN--G65b80JI
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1342'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:32 GMT
+      ETag:
+      - '"04000d26-0000-3400-0000-65c695f40000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - ARRAffinity=766c5affa0c5fdaf613caffb8d67cfec97b2147d28b8ee85da8124fa61b8fb2e;Path=/;HttpOnly;Secure;Domain=azurearcdata-tmprofile-eastus2euap.trafficmanager.net
+      - ARRAffinitySameSite=766c5affa0c5fdaf613caffb8d67cfec97b2147d28b8ee85da8124fa61b8fb2e;Path=/;HttpOnly;SameSite=None;Secure;Domain=azurearcdata-tmprofile-eastus2euap.trafficmanager.net
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: D2D06648CE38489C9E9FAB4D2CE0B3BA Ref B: BN1AA2051013039 Ref C: 2024-02-09T21:15:31Z'
+      X-Powered-By:
+      - ASP.NET
+      x-ms-correlation-request-id:
+      - 2ed5d7d7-ba8f-4188-8a53-9dd2cd49e79b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '19999'
+      x-ms-request-id:
+      - 8def3d0d-0ced-4b60-a75d-0e4f601fcc04
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211532Z:2ed5d7d7-ba8f-4188-8a53-9dd2cd49e79b
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 5c1b5587-c790-11ee-a312-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt","name":"AA_G-d_te_st2e321tt","type":"microsoft.azurearcdata/sqlserverinstances/databases","location":"eastus2euap","systemData":{"createdBy":"aagonzalez@microsoft.com","createdByType":"User","createdAt":"2024-02-09T21:15:32.1334684Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-09T21:15:32.1334684Z"},"properties":{"collationName":"SQL_Latin1_General_CP1_CI_AS","databaseCreationDate":null,"compatibilityLevel":160,"sizeMB":8.0,"spaceAvailableMB":2.5,"state":"Online","isReadOnly":false,"recoveryMode":"Full","databaseOptions":{"isAutoCloseOn":false,"isAutoShrinkOn":false,"isAutoCreateStatsOn":true,"isAutoUpdateStatsOn":true,"isRemoteDataArchiveEnabled":null,"isMemoryOptimizationEnabled":true,"isEncrypted":false,"isTrustworthyOn":false},"backupInformation":null,"backupPolicy":{"retentionPeriodDays":7,"fullBackupDays":7,"differentialBackupHours":12,"transactionLogBackupMinutes":5},"earliestRestoreDate":null,"createMode":"restorePointInTime","sourceDatabaseId":"MyDatabase","restorePointInTime":"2024-02-09T21:15:28.778631Z","provisioningState":"Accepted","lastDatabaseUploadTime":null}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1342'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:33 GMT
+      ETag:
+      - '"04000d26-0000-3400-0000-65c695f40000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: BB458F5C0FD646E5BD1BFE1E669904A1 Ref B: BN1AA2051013039 Ref C: 2024-02-09T21:15:33Z'
+      x-ms-correlation-request-id:
+      - 25093a22-fc5c-4682-b32e-3df8269bdd26
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199999'
+      x-ms-request-id:
+      - 948c4730-d0ed-49e2-b753-d2aa04b6e437
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211533Z:25093a22-fc5c-4682-b32e-3df8269bdd26
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 5ff1266f-c790-11ee-a26a-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/AA_G-d_te_st2e321tt","name":"AA_G-d_te_st2e321tt","type":"microsoft.azurearcdata/sqlserverinstances/databases","location":"eastus2euap","systemData":{"createdBy":"aagonzalez@microsoft.com","createdByType":"User","createdAt":"2024-02-09T21:15:32.1334684Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-09T21:15:32.1334684Z"},"properties":{"collationName":"SQL_Latin1_General_CP1_CI_AS","databaseCreationDate":null,"compatibilityLevel":160,"sizeMB":8.0,"spaceAvailableMB":2.5,"state":"Online","isReadOnly":false,"recoveryMode":"Full","databaseOptions":{"isAutoCloseOn":false,"isAutoShrinkOn":false,"isAutoCreateStatsOn":true,"isAutoUpdateStatsOn":true,"isRemoteDataArchiveEnabled":null,"isMemoryOptimizationEnabled":true,"isEncrypted":false,"isTrustworthyOn":false},"backupInformation":null,"backupPolicy":{"retentionPeriodDays":7,"fullBackupDays":7,"differentialBackupHours":12,"transactionLogBackupMinutes":5},"earliestRestoreDate":null,"createMode":"restorePointInTime","sourceDatabaseId":"MyDatabase","restorePointInTime":"2024-02-09T21:15:28.778631Z","provisioningState":"Processing","lastDatabaseUploadTime":null}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1344'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 21:15:39 GMT
+      ETag:
+      - '"04002e26-0000-3400-0000-65c695fa0000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 1EC4680C06034E35BDC0A3425511EB01 Ref B: BN1AA2051013039 Ref C: 2024-02-09T21:15:39Z'
+      x-ms-correlation-request-id:
+      - 878572f5-8af2-4119-b3ee-83479d1bbd9e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199999'
+      x-ms-request-id:
+      - 78899bfb-6808-4be4-ad3a-9153c75ca990
+      x-ms-routing-request-id:
+      - NORTHCENTRALUS:20240209T211539Z:878572f5-8af2-4119-b3ee-83479d1bbd9e
+    status:
+      code: 200
+      message: OK
+version: 1
