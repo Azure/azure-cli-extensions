@@ -518,11 +518,7 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
 
 
 def _fill_user_display_names(cmd, users):
-    """
-    Enrich user role assignments with the display name and email resolved from Microsoft Graph,
-    matching the Name and Email columns shown in the Quantum portal. Best-effort: if the lookup
-    fails (for example, the caller cannot read the directory), the principal name is used instead.
-    """
+    """Add each user's display name and email from Microsoft Graph; best-effort, falls back to the principal name."""
     principal_ids = {user["principalId"] for user in users if user.get("principalId")}
     if not principal_ids:
         return
