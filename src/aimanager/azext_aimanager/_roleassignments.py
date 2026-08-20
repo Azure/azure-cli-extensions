@@ -105,18 +105,23 @@ def _assign_role(assignments_client, params_model, subscription_id, scope, role_
     return None
 
 
+def _role_name(role_id):
+    # Fall back to the raw GUID (which `az role assignment create --role` also accepts) so the
+    # best-effort warning path never raises on a role id that is not in AIMANAGER_ROLE_NAMES.
+    return AIMANAGER_ROLE_NAMES.get(role_id, role_id)
+
+
 def _role_assignment_command(assignee, role_id, scope):
     """Build the exact 'az role assignment create' command that grants one role to the caller."""
-    role_name = AIMANAGER_ROLE_NAMES.get(role_id, role_id)
     return (f'az role assignment create --assignee-object-id {assignee} '
-            f'--role "{role_name}" --scope {scope}')
+            f'--role "{_role_name(role_id)}" --scope {scope}')
 
 
 def _warn_assignment_failed(scope, role_id, object_id):
     logger.warning(
         "Could not assign '%s' to the caller on %s. This is expected if you are not an Owner or "
         "User Access Administrator. An administrator can grant it with:\n  %s",
-        AIMANAGER_ROLE_NAMES.get(role_id, role_id), scope,
+        _role_name(role_id), scope,
         _role_assignment_command(object_id, role_id, scope))
 
 
