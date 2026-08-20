@@ -27,7 +27,7 @@ CONFIG_TEMPLATE_LOCATION = "eastus2euap"
 CONFIG_TEMPLATE_FILE = os.path.join(os.path.dirname(__file__), "resources", "hotmelt-config-template-hard.yaml")
 CONFIG_SET_FILE = os.path.join(os.path.dirname(__file__), "resources", "configset.yaml")
 SPECS_FILE = os.path.join(os.path.dirname(__file__), "resources", "specs.json")
-CUSTOM_LOCATION_NAME = "/subscriptions/973d15c6-6c57-447e-b9c6-6d79b5b784ab/resourceGroups/ConfigManager-CloudTest-Playground-C/providers/Microsoft.ExtendedLocation/customLocations/BVT-Test-Location"
+CUSTOM_LOCATION_NAME = "/subscriptions/973d15c6-6c57-447e-b9c6-6d79b5b784ab/resourceGroups/ConfigManager-CloudTest-Playground-DevTest/providers/Microsoft.ExtendedLocation/customLocations/DEV-CANARY-Location"
 # --- init command constants ---
 INIT_CLUSTER_NAME = "BVT-Test-ME-Cluster"
 INIT_RG = "mchichili-rg"
@@ -157,7 +157,7 @@ class WorkloadOrchestrationTest(ScenarioTest):
                 checks=None
             )
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     def test_full_wom_workflow(self):
         # Get existing context and update capabilities
         context = self.cmd(
