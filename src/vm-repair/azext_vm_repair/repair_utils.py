@@ -140,8 +140,15 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
     # and the '&' would be parsed as a command separator. To prevent command injection
     # from untrusted interpolated values (for example source VM tags), build the command
-    # line explicitly and wrap every token in double quotes so cmd.exe treats
+    # line explicitly and wrap every argument in double quotes so cmd.exe treats
     # metacharacters as literal text.
+    #
+    # The 'az' token itself must stay unquoted. Quoting it makes cmd.exe treat it as a
+    # literal path instead of a PATH search, so '%~dp0' inside az.cmd no longer expands to
+    # the launcher directory, the bundled python.exe is not found, and every nested call
+    # fails with 'Failed to load python executable.' on stdout and an empty stderr. The
+    # first token is validated to be exactly 'az' above, so it never carries untrusted
+    # input and does not need quoting.
     #
     # The whole command is additionally wrapped in one outer pair of quotes and invoked
     # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
@@ -151,7 +158,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # per-token quote balanced. See MSRC 115198 / VULN-185362.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
-        quoted_command = ' '.join(_quote_cmd_arg(token) for token in tokenized_command)
+        quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
+        quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'
     else:
         command_to_run = tokenized_command
@@ -162,7 +170,17 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     if not run_async:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
-            raise AzCommandError(stderr)
+            # A failing launcher (for example a broken CLI install) reports on stdout and
+            # leaves stderr empty, which used to surface an error with no message at all.
+            error_message = (stderr or '').strip() or (stdout or '').strip()
+            if not error_message:
+                error_message = 'The az command failed with exit code {code} and produced no output.' \
+                    .format(code=process.returncode)
+            if secure_params:
+                for param in secure_params:
+                    if param:
+                        error_message = error_message.replace(param, '********')
+            raise AzCommandError(error_message)
 
         logger.debug('Success.\n')
 

@@ -2,6 +2,11 @@
 Release History
 ===============
 
+2.2.5
+++++++
+Fixing a regression introduced in 2.2.1 that could break every ``vm repair`` command on Windows when ``az`` resolves to the ``az.cmd`` launcher (the default for MSI installations). The command-injection hardening quoted every token of the nested ``az`` call, including the ``az`` program name itself. cmd.exe then treated it as a literal path instead of a PATH search, so ``%~dp0`` inside ``az.cmd`` no longer pointed at the launcher directory, the bundled Python interpreter was not found, and the call failed with ``Failed to load python executable.`` and exit code 1. The ``az`` token is no longer quoted; all arguments are still individually quoted, so the injection protection added in 2.2.1 (MSRC 115198) is unchanged.
+Also fixing failed ``az`` calls that surfaced an empty error message. Because the launcher reports on standard output and leaves standard error empty, the failure previously produced a blank error and empty telemetry. The error now falls back to the command's standard output, reports the exit code when there is no output at all, and masks credentials passed as secure parameters.
+
 2.2.4
 ++++++
 Replacing deprecated ``datetime.utcnow()`` with timezone-aware ``datetime.now(timezone.utc)`` for Python 3.12+ forward compatibility. ``datetime.utcnow()`` is deprecated as of Python 3.12 and scheduled for removal in a future release. The generated timestamps (used for repair VM, copied disk, and repair resource group names) are unchanged. Also replacing ``pkgutil.get_loader()``/``loader.load_module()`` (deprecated in Python 3.12, removed in Python 3.14) with ``importlib.util.find_spec()`` when locating the bundled driver scripts, and extending the static Python 3.12+ compatibility guard to cover these APIs.
