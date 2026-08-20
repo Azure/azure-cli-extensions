@@ -6,6 +6,7 @@
 import os
 
 from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import sdk_no_wait
 from azure.core import MatchConditions
 from azure.core.exceptions import ResourceNotFoundError
@@ -18,6 +19,8 @@ from azext_aimanager._helpers import (
     parse_key_value_list,
     print_or_merge_credentials,
 )
+from azext_aimanager._roleassignments import assign_caller_roles
+from azext_aimanager.constants import AIMANAGER_CALLER_ROLE_IDS
 
 logger = get_logger(__name__)
 
@@ -28,6 +31,40 @@ def _get_model(cmd, name, operation_group):
         resource_type=CUSTOM_MGMT_AIMANAGER,
         operation_group=operation_group,
     )
+
+
+def _aimanager_scope(cli_ctx, resource_group_name, ai_manager_name):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    return (
+        f"/subscriptions/{get_subscription_id(cli_ctx)}/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.ContainerService/aiManagers/{ai_manager_name}")
+
+
+def _namespace_scope(cli_ctx, resource_group_name, ai_manager_name, namespace_name):
+    return (
+        _aimanager_scope(cli_ctx, resource_group_name, ai_manager_name)
+        + f"/namespaces/{namespace_name}")
+
+
+def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
+    """Wait for the create to succeed, then grant the caller the built-in roles (best-effort).
+
+    Returns the value the command should return: the completed resource when we waited for it,
+    otherwise the poller. With --no-wait the grant is skipped and the poller is returned, since
+    the command returns before the operation completes and success cannot be confirmed.
+    """
+    if no_wait:
+        logger.warning(
+            "--no-wait was set, so the caller's role assignments on %s were skipped. Re-run "
+            "without --no-wait, or assign the roles manually.", scope)
+        return poller
+    result = LongRunningOperation(cmd.cli_ctx)(poller)  # blocks until Succeeded; raises on failure
+    try:
+        assign_caller_roles(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
+    except Exception as ex:  # pylint: disable=broad-except
+        # Role assignment is best-effort: never fail a successful create/add because of it.
+        logger.warning("Could not assign the caller's roles on %s: %s", scope, ex)
+    return result
 
 
 # region AI Manager
@@ -68,7 +105,7 @@ def create_aimanager(cmd,
     headers = get_aks_custom_headers(aks_custom_headers)
     ai_manager = _construct_aimanager(cmd, location, tags, delete_policy)
 
-    return sdk_no_wait(
+    poller = sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
         resource_group_name,
@@ -76,6 +113,10 @@ def create_aimanager(cmd,
         ai_manager,
         headers=headers,
     )
+    # Grant the caller the built-in roles once creation succeeds (best-effort).
+    return _grant_caller_roles_on_success(
+        cmd, poller, no_wait,
+        _aimanager_scope(cmd.cli_ctx, resource_group_name, ai_manager_name))
 
 
 # pylint: disable=unused-argument
@@ -213,7 +254,7 @@ def add_aimanager_namespace(cmd,
     namespace_config = _construct_namespace(
         cmd, parse_key_value_list(labels), parse_key_value_list(annotations))
 
-    return sdk_no_wait(
+    poller = sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
         resource_group_name,
@@ -222,6 +263,10 @@ def add_aimanager_namespace(cmd,
         namespace_config,
         headers=headers,
     )
+    # Grant the caller the built-in roles on the namespace once creation succeeds (best-effort).
+    return _grant_caller_roles_on_success(
+        cmd, poller, no_wait,
+        _namespace_scope(cmd.cli_ctx, resource_group_name, ai_manager_name, namespace_name))
 
 
 # pylint: disable=unused-argument

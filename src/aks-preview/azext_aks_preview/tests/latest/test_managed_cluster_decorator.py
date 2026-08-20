@@ -35,6 +35,7 @@ from azext_aks_preview._consts import (
     CONST_INGRESS_APPGW_WATCH_NAMESPACE,
     CONST_KUBE_DASHBOARD_ADDON_NAME,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
@@ -109,7 +110,9 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azext_aks_preview._consts import (
+    CONST_OUTBOUND_TYPE_BLOCK,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from dateutil.parser import parse
 from deepdiff import DeepDiff
@@ -10432,6 +10435,185 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_11, ground_truth_mc_11)
+
+    def test_update_load_balancer_profile__outbound_type_not_specified_keeps_backend_pool_type(self):
+        # `az aks update --load-balancer-backend-pool-type nodeIP` without --outbound-type:
+        # the outbound type is inherited from the existing cluster and must not cause the
+        # requested NodeIPConfiguration -> nodeIP change to be dropped, for any outbound type.
+        for outbound_type in [
+            CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+            CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+            CONST_OUTBOUND_TYPE_NONE,
+            CONST_OUTBOUND_TYPE_BLOCK,
+        ]:
+            with self.subTest(outbound_type=outbound_type):
+                dec = AKSPreviewManagedClusterUpdateDecorator(
+                    self.cmd,
+                    self.client,
+                    {
+                        "load_balancer_backend_pool_type": CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                        "outbound_type": None,
+                    },
+                    CUSTOM_MGMT_AKS_PREVIEW,
+                )
+                mc = self.models.ManagedCluster(
+                    location="test_location",
+                    network_profile=self.models.ContainerServiceNetworkProfile(
+                        outbound_type=outbound_type,
+                        load_balancer_sku="standard",
+                        load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+                        ),
+                    ),
+                )
+                dec.context.attach_mc(mc)
+                dec_mc = dec.update_load_balancer_profile(mc)
+
+                lb_profile = dec_mc.network_profile.load_balancer_profile
+                self.assertIsNotNone(
+                    lb_profile,
+                    "load balancer profile must not be dropped when outbound type is unchanged",
+                )
+                self.assertEqual(
+                    lb_profile.backend_pool_type,
+                    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                )
+
+    def _lb_profile_with_every_outbound_field(self):
+        lb = self.models.load_balancer_models
+        return lb.ManagedClusterLoadBalancerProfile(
+            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+            managed_outbound_i_ps=lb.ManagedClusterLoadBalancerProfileManagedOutboundIPs(count=2),
+            outbound_i_ps=lb.ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_i_ps=[lb.ResourceReference(id="ip1")]
+            ),
+            outbound_ip_prefixes=lb.ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes=[lb.ResourceReference(id="prefix1")]
+            ),
+            allocated_outbound_ports=8000,
+            idle_timeout_in_minutes=10,
+        )
+
+    def test_update_load_balancer_profile__outbound_type_not_load_balancer_clears_outbound_fields(self):
+        # `--outbound-type userDefinedRouting` and `--load-balancer-backend-pool-type nodeIP` in the
+        # same command: every outbound field is dropped, the backend pool type is still applied
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "load_balancer_backend_pool_type": CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                # changing outbound type to userDefinedRouting requires a BYO vnet
+                "vnet_subnet_id": "test_vnet_subnet_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                load_balancer_sku="standard",
+                load_balancer_profile=self._lb_profile_with_every_outbound_field(),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        lb_profile = dec.update_load_balancer_profile(mc).network_profile.load_balancer_profile
+
+        self.assertEqual(lb_profile.backend_pool_type, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP)
+        self.assertIsNone(lb_profile.managed_outbound_i_ps)
+        self.assertIsNone(lb_profile.outbound_i_ps)
+        self.assertIsNone(lb_profile.outbound_ip_prefixes)
+        self.assertIsNone(lb_profile.allocated_outbound_ports)
+        self.assertIsNone(lb_profile.idle_timeout_in_minutes)
+
+    def test_update_load_balancer_profile__outbound_type_not_load_balancer_no_inbound_drops_profile(self):
+        # `--outbound-type userDefinedRouting` on a profile holding only outbound fields: nothing
+        # inbound is left to keep, so the profile is omitted entirely as before
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "vnet_subnet_id": "test_vnet_subnet_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                load_balancer_sku="standard",
+                load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                    allocated_outbound_ports=8000,
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_load_balancer_profile(mc)
+
+        self.assertIsNone(dec_mc.network_profile.load_balancer_profile)
+
+    def test_update_load_balancer_profile__outbound_type_load_balancer_keeps_outbound_fields(self):
+        # `--outbound-type loadBalancer` keeps egress on the load balancer, so every outbound field
+        # stays valid and must survive untouched
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"outbound_type": CONST_OUTBOUND_TYPE_LOAD_BALANCER},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                load_balancer_sku="standard",
+                load_balancer_profile=self._lb_profile_with_every_outbound_field(),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        lb_profile = dec.update_load_balancer_profile(mc).network_profile.load_balancer_profile
+
+        self.assertEqual(lb_profile.managed_outbound_i_ps.count, 2)
+        self.assertEqual(lb_profile.outbound_i_ps.public_i_ps[0].id, "ip1")
+        self.assertEqual(lb_profile.outbound_ip_prefixes.public_ip_prefixes[0].id, "prefix1")
+        self.assertEqual(lb_profile.allocated_outbound_ports, 8000)
+        self.assertEqual(lb_profile.idle_timeout_in_minutes, 10)
+
+    def test_update_load_balancer_profile__outbound_type_changed_to_load_balancer_applies_outbound_fields(self):
+        # moving a userDefinedRouting cluster back onto the load balancer: outbound settings become
+        # valid again, so those requested in the same command must be applied
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                "load_balancer_managed_outbound_ip_count": 2,
+                "load_balancer_outbound_ports": 8000,
+                "load_balancer_idle_timeout": 25,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                load_balancer_sku="standard",
+                # a userDefinedRouting cluster only carries the inbound settings
+                load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                    backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        lb_profile = dec.update_load_balancer_profile(mc).network_profile.load_balancer_profile
+
+        self.assertEqual(lb_profile.managed_outbound_i_ps.count, 2)
+        self.assertEqual(lb_profile.allocated_outbound_ports, 8000)
+        self.assertEqual(lb_profile.idle_timeout_in_minutes, 25)
+        self.assertEqual(lb_profile.backend_pool_type, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION)
 
     def test_update_nat_gateway_profile(self):
         # default value in `aks_update`

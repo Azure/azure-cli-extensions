@@ -7143,25 +7143,39 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             raise UnknownError(
                 "Unexpectedly get an empty network profile in the process of updating load balancer profile."
             )
-        outbound_type = self.context.get_outbound_type()
-        if outbound_type and outbound_type != CONST_OUTBOUND_TYPE_LOAD_BALANCER:
-            mc.network_profile.load_balancer_profile = None
-        else:
-            # In the internal function "_update_load_balancer_profile", it will check whether the provided parameters
-            # have been assigned, and if there are any, the corresponding profile will be modified; otherwise, it will
-            # remain unchanged.
-            mc.network_profile.load_balancer_profile = _update_load_balancer_profile(
-                managed_outbound_ip_count=self.context.get_load_balancer_managed_outbound_ip_count(),
-                managed_outbound_ipv6_count=self.context.get_load_balancer_managed_outbound_ipv6_count(),
-                outbound_ips=self.context.get_load_balancer_outbound_ips(),
-                outbound_ip_prefixes=self.context.get_load_balancer_outbound_ip_prefixes(),
-                outbound_ports=self.context.get_load_balancer_outbound_ports(),
-                idle_timeout=self.context.get_load_balancer_idle_timeout(),
-                backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
-                health_probe_mode=self.context.get_cluster_service_load_balancer_health_probe_mode(),
-                profile=mc.network_profile.load_balancer_profile,
-                models=self.models.load_balancer_models,
-            )
+        # In the internal function "_update_load_balancer_profile", it will check whether the provided parameters
+        # have been assigned, and if there are any, the corresponding profile will be modified; otherwise, it will
+        # remain unchanged.
+        profile = _update_load_balancer_profile(
+            managed_outbound_ip_count=self.context.get_load_balancer_managed_outbound_ip_count(),
+            managed_outbound_ipv6_count=self.context.get_load_balancer_managed_outbound_ipv6_count(),
+            outbound_ips=self.context.get_load_balancer_outbound_ips(),
+            outbound_ip_prefixes=self.context.get_load_balancer_outbound_ip_prefixes(),
+            outbound_ports=self.context.get_load_balancer_outbound_ports(),
+            idle_timeout=self.context.get_load_balancer_idle_timeout(),
+            backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
+            health_probe_mode=self.context.get_cluster_service_load_balancer_health_probe_mode(),
+            profile=mc.network_profile.load_balancer_profile,
+            models=self.models.load_balancer_models,
+        )
+        # read the original value passed by the command
+        outbound_type = self.context.raw_param.get("outbound_type")
+        # The outbound fields only apply while the load balancer provides egress, so they are dropped
+        # when the command switches the cluster to a different outbound type. Inbound settings such as
+        # backendPoolType stay valid for every outbound type and must be preserved.
+        if profile and outbound_type and outbound_type != CONST_OUTBOUND_TYPE_LOAD_BALANCER:
+            profile.managed_outbound_i_ps = None
+            profile.outbound_i_ps = None
+            profile.outbound_ip_prefixes = None
+            profile.allocated_outbound_ports = None
+            profile.idle_timeout_in_minutes = None
+            if not any([
+                profile.backend_pool_type,
+                profile.cluster_service_load_balancer_health_probe_mode,
+                profile.enable_multiple_standard_load_balancers,
+            ]):
+                profile = None
+        mc.network_profile.load_balancer_profile = profile
         return mc
 
     def update_nat_gateway_profile(self, mc: ManagedCluster) -> ManagedCluster:

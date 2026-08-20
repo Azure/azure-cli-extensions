@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+22.0.0b2
+++++++++
+* `az aks update`: Fix load balancer options such as `--load-balancer-backend-pool-type` being silently ignored on clusters whose `outboundType` is not `loadBalancer` (for example `userDefinedRouting` or a NAT gateway). Passing `--outbound-type` to switch away from `loadBalancer` now only drops the load balancer outbound settings instead of the whole load balancer profile, so options requested in the same command are still applied.
+
 22.0.0b1
 ++++++++
 * [BREAKING CHANGE]: `az aks bastion`: This command does not connect to Azure Bastion anymore. A new subcommand is introduced for this purpose: `az aks bastion tunnel`. The `az aks bastion` command is now used to manage Azure Bastion resources for AKS clusters.
