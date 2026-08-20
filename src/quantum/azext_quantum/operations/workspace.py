@@ -18,8 +18,7 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError,
-                                       MutuallyExclusiveArgumentError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
@@ -473,41 +472,33 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_assignee_args(assignee, assignee_object_id):
-    if not assignee and not assignee_object_id:
-        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
-    if assignee and assignee_object_id:
-        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+def _validate_assignee_args(assignee):
+    if not assignee:
+        raise RequiredArgumentMissingError("Please provide '--assignee' (the user's sign-in name/email or object id).")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None):
     """
     Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_assignee_args(assignee, assignee_object_id)
-    # Workspace access is user-only; '--assignee-principal-type' is deprecated and accepts only 'User'.
-    if assignee_principal_type and assignee_principal_type != "User":
-        raise InvalidArgumentValueError("Azure Quantum workspace access can only be granted to users. '--assignee-principal-type' only supports 'User'.")
+    _validate_assignee_args(assignee)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
-                                  assignee_principal_type="User")
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=assignee)
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None):
     """
     Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    _validate_assignee_args(assignee)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+    return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=assignee)
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):

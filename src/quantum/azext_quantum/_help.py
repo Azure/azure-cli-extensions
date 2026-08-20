@@ -385,31 +385,23 @@ helps['quantum workspace user create'] = """
     type: command
     short-summary: Grant a user access to an Azure Quantum workspace.
     long-summary: >-
-        Assigns the 'Quantum Workspace Data Contributor' role (by default) at the scope of the given
+        Assigns the 'Quantum Workspace Data Contributor' role at the scope of the given
         (or current) Azure Quantum workspace.
     examples:
-      - name: Grant a user access to a workspace using their sign-in name.
+      - name: Grant a user access to a workspace using their sign-in name (email).
         text: |-
             az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
                 --assignee user@contoso.com
-      - name: Grant a user access to a workspace using their object id.
-        text: |-
-            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['quantum workspace user delete'] = """
     type: command
     short-summary: Remove a user's access to an Azure Quantum workspace.
     examples:
-      - name: Remove a user's access to a workspace using their sign-in name.
+      - name: Remove a user's access to a workspace using their sign-in name (email).
         text: |-
             az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
                 --assignee user@contoso.com
-      - name: Remove a user's access to a workspace using their object id.
-        text: |-
-            az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['quantum workspace keys list'] = """

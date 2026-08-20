@@ -299,14 +299,15 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("properties.provisioningState", "Succeeded")
         ])
 
-        # Use the signed-in user's object id as the assignee. The workspace user commands are
-        # user-only, so a real user principal is required (a managed identity or service principal
-        # would be excluded by 'az quantum workspace user list'). Requires a user (not SP) login.
-        test_object_id = self.cmd('az ad signed-in-user show -o json').get_output_in_json()["id"]
+        # Use the signed-in user as the assignee. The workspace user commands are user-only,
+        # so a real user principal is required. Requires a user (not service-principal) login.
+        signed_in_user = self.cmd('az ad signed-in-user show -o json').get_output_in_json()
+        test_object_id = signed_in_user["id"]
+        test_assignee = signed_in_user["userPrincipalName"]
 
-        # grant access using the object id, relying on the default role. Verify the
-        # default 'Quantum Workspace Data Contributor' role was assigned.
-        self.cmd(f'az quantum workspace user create -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} -o json', checks=[
+        # grant access by sign-in name. Verify the default
+        # 'Quantum Workspace Data Contributor' role was assigned.
+        self.cmd(f'az quantum workspace user create -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee {test_assignee} -o json', checks=[
             self.check("principalId", test_object_id),
             self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
         ])
@@ -316,8 +317,8 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check(f"length([?principalId=='{test_object_id}'])", 1)
         ])
 
-        # remove access using the object id and an explicit role
-        self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} --role c1410b24-3e69-4857-8f86-4d0a2e603250 --yes')
+        # remove access by sign-in name
+        self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee {test_assignee} --yes')
 
         # delete the workspace
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -388,20 +389,20 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assert [user["principalId"] for user in result] == ["u"]
         assert result[0]["displayName"] == "User One"
 
-    def test_add_user_forces_user_principal_type(self):
+    def test_add_user_assigns_data_contributor(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment:
             cmd = SimpleNamespace(cli_ctx=object())
-            add_user(cmd, "rg", "ws", assignee_object_id="oid")
+            add_user(cmd, "rg", "ws", assignee="user@contoso.com")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee=None, assignee_object_id="oid", assignee_principal_type="User")
+        create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee="user@contoso.com")
 
-    def test_add_user_rejects_non_user_principal_type(self):
+    def test_add_user_requires_assignee(self):
         cmd = SimpleNamespace(cli_ctx=object())
-        with self.assertRaises(InvalidArgumentValueError):
-            add_user(cmd, "rg", "ws", assignee_object_id="oid", assignee_principal_type="Group")
+        with self.assertRaises(RequiredArgumentMissingError):
+            add_user(cmd, "rg", "ws")
 
     def test_transform_users(self):
         from ...commands import transform_users
