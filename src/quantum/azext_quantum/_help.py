@@ -364,39 +364,44 @@ helps['quantum workspace user'] = """
     short-summary: Manage users of an Azure Quantum workspace.
 """
 
+helps['quantum workspace user list'] = """
+    type: command
+    short-summary: List the users with access to an Azure Quantum workspace.
+    long-summary: >-
+        Lists user principals (excluding groups and service principals) assigned the 'Quantum Workspace Owner' or
+        'Quantum Workspace Data Contributor' role for the given (or current) workspace. Each user's Name and Email are
+        resolved from Microsoft Graph. By default this includes access inherited from the parent resource group and
+        subscription; pass '--include-inherited false' to list only assignments scoped directly to the workspace.
+    examples:
+      - name: List all users with access to a workspace.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace
+      - name: List only users assigned directly on the workspace (exclude inherited access).
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace --include-inherited false
+"""
+
 helps['quantum workspace user create'] = """
     type: command
-    short-summary: Grant a user, group, or service principal access to an Azure Quantum workspace.
+    short-summary: Grant a user access to an Azure Quantum workspace.
     long-summary: >-
-        Assigns the 'Quantum Workspace Data Contributor' role (by default) at the scope of the given
+        Assigns the 'Quantum Workspace Data Contributor' role at the scope of the given
         (or current) Azure Quantum workspace.
     examples:
-      - name: Grant a user access to a workspace using their sign-in name.
+      - name: Grant a user access to a workspace using their sign-in name (email).
         text: |-
             az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee user@contoso.com
-      - name: Grant a user access to a workspace using their object id.
-        text: |-
-            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000
-      - name: Grant a group access to a workspace using its object id and principal type.
-        text: |-
-            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000 --assignee-principal-type Group
+                --email user@contoso.com
 """
 
 helps['quantum workspace user delete'] = """
     type: command
-    short-summary: Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    short-summary: Remove a user's access to an Azure Quantum workspace.
     examples:
-      - name: Remove a user's access to a workspace using their sign-in name.
+      - name: Remove a user's access to a workspace using their sign-in name (email).
         text: |-
             az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
-                --assignee user@contoso.com
-      - name: Remove a user's access to a workspace using their object id.
-        text: |-
-            az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000
+                --email user@contoso.com
 """
 
 helps['quantum workspace keys list'] = """

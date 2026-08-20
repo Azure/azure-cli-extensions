@@ -18,8 +18,7 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError,
-                                       MutuallyExclusiveArgumentError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
@@ -27,6 +26,10 @@ from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
+
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 DEFAULT_STORAGE_SKU = 'Standard_LRS'
@@ -43,6 +46,10 @@ MAX_POLLS_CREATE_WORKSPACE = 300
 # Built-in "Quantum Workspace Data Contributor" role. This is the role granted to
 # users when they are added to a workspace in the Azure Quantum portal.
 QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
+
+# Built-in "Quantum Workspace Owner" role. The Azure Quantum portal labels users
+# holding this role as workspace administrators.
+QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -465,35 +472,68 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_assignee_args(assignee, assignee_object_id):
-    if not assignee and not assignee_object_id:
-        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
-    if assignee and assignee_object_id:
-        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+def _validate_email_arg(email):
+    if not email:
+        raise RequiredArgumentMissingError("Please provide '--email' (the user's sign-in name/email or object id).")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    _validate_email_arg(email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
-                                  assignee_principal_type=assignee_principal_type)
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=email)
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    _validate_email_arg(email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+    return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=email)
+
+
+def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):
+    """
+    List the users with access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import list_role_assignments
+
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    assignments = []
+    for role_id in (QUANTUM_WORKSPACE_OWNER_ROLE_ID, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID):
+        assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited)
+    users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
+    _fill_user_display_names(cmd, users)
+    return users
+
+
+def _fill_user_display_names(cmd, users):
+    """Add each user's display name and email from Microsoft Graph; best-effort, falls back to the principal name."""
+    principal_ids = {user["principalId"] for user in users if user.get("principalId")}
+    if not principal_ids:
+        return
+
+    from azure.cli.command_modules.role.custom import _graph_client_factory, _get_object_stubs
+
+    directory_objects = {}
+    try:
+        graph_client = _graph_client_factory(cmd.cli_ctx)
+        for obj in _get_object_stubs(graph_client, principal_ids):
+            directory_objects[obj.get("id")] = obj
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.warning("Could not resolve user display names from Microsoft Graph: %s", ex)
+
+    for user in users:
+        obj = directory_objects.get(user.get("principalId"), {})
+        user["displayName"] = obj.get("displayName")
+        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or user.get("principalName")
