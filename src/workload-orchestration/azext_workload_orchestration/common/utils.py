@@ -168,7 +168,7 @@ def print_step(step_num, total, message, status=""):
 # errors. Mirrors the azext_vme.utils.check_and_add_cli_extension pattern.
 REQUIRED_CLI_EXTENSIONS = [
     "connectedk8s",     # `connectedk8s show` in _preflight_checks
-    "k8s-extension",    # `k8s-extension list/create` for aio-certmgr + wo-extension
+    "k8s-extension",    # `k8s-extension list/create` for cert management + wo-extension
     "customlocation",   # `customlocation create` for Step 4
 ]
 
