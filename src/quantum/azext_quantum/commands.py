@@ -62,8 +62,7 @@ def transform_users(results):
             ('Name', result.get('displayName')),
             ('Email', result.get('mail') or result.get('principalName')),
             ('Role', result.get('roleDefinitionName')),
-            ('Time Created', result.get('createdOn')),
-            ('Principal Id', result.get('principalId'))
+            ('Time Created', result.get('createdOn'))
         ])
     return [one(result) for result in results]
 

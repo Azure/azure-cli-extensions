@@ -410,7 +410,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assert rows[0]["Email"] == "user@contoso.com"
         assert rows[0]["Role"] == "Quantum Workspace Data Contributor"
         assert rows[0]["Time Created"] == "2026-06-24T16:53:26.107178+00:00"
-        assert rows[0]["Principal Id"] == "oid"
 
         # Email falls back to the principal name when Graph did not return a mail address.
         fallback = transform_users([{"principalName": "fallback@contoso.com"}])
