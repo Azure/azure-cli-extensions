@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.5.0
+++++++
+* ``az aimanager create`` and ``az aimanager namespace add``: On success, grant the caller the
+  built-in ``Azure AIManager Contributor`` and ``Azure AIManager and namespace RBAC Reader``
+  roles on the new resource (best-effort; requires Owner or User Access Administrator). Skipped
+  with ``--no-wait``.
+
 1.4.1
 ++++++
 * ``az aimanager modelsource`` and ``az aimanager namespace modeldeployment``: Accept
