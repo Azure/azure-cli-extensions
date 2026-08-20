@@ -46,24 +46,19 @@ def _namespace_scope(cli_ctx, resource_group_name, ai_manager_name, namespace_na
         + f"/namespaces/{namespace_name}")
 
 
-def _grant_caller_roles_on_success(cmd, poller, no_wait, skip_role_assignments, scope):
+def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
     """Wait for the create to succeed, then grant the caller the built-in roles (best-effort).
 
     Returns the value the command should return: the completed resource when we waited for it,
     otherwise the poller. With --no-wait the grant is skipped and the poller is returned, since
     the command returns before the operation completes and success cannot be confirmed.
-    --skip-role-assignments only opts out of the grant; it does not change the command's waiting
-    or output behavior.
     """
     if no_wait:
-        if not skip_role_assignments:
-            logger.warning(
-                "--no-wait was set, so the caller's role assignments on %s were skipped. Re-run "
-                "without --no-wait, or assign the roles manually.", scope)
+        logger.warning(
+            "--no-wait was set, so the caller's role assignments on %s were skipped. Re-run "
+            "without --no-wait, or assign the roles manually.", scope)
         return poller
     result = LongRunningOperation(cmd.cli_ctx)(poller)  # blocks until Succeeded; raises on failure
-    if skip_role_assignments:
-        return result
     try:
         assign_caller_roles(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
     except Exception as ex:  # pylint: disable=broad-except
@@ -95,7 +90,6 @@ def create_aimanager(cmd,
                      location=None,
                      tags=None,
                      delete_policy=None,
-                     skip_role_assignments=False,
                      aks_custom_headers=None,
                      no_wait=False):
     existing = None
@@ -121,7 +115,7 @@ def create_aimanager(cmd,
     )
     # Grant the caller the built-in roles once creation succeeds (best-effort).
     return _grant_caller_roles_on_success(
-        cmd, poller, no_wait, skip_role_assignments,
+        cmd, poller, no_wait,
         _aimanager_scope(cmd.cli_ctx, resource_group_name, ai_manager_name))
 
 
@@ -244,7 +238,6 @@ def add_aimanager_namespace(cmd,
                             namespace_name,
                             labels=None,
                             annotations=None,
-                            skip_role_assignments=False,
                             aks_custom_headers=None,
                             no_wait=False):
     existing = None
@@ -272,7 +265,7 @@ def add_aimanager_namespace(cmd,
     )
     # Grant the caller the built-in roles on the namespace once creation succeeds (best-effort).
     return _grant_caller_roles_on_success(
-        cmd, poller, no_wait, skip_role_assignments,
+        cmd, poller, no_wait,
         _namespace_scope(cmd.cli_ctx, resource_group_name, ai_manager_name, namespace_name))
 
 

@@ -18,15 +18,12 @@ helps['aimanager create'] = """
     long-summary: >
         Once creation succeeds the caller is granted the built-in 'Azure AIManager Contributor'
         and 'Azure AIManager and namespace RBAC Reader' roles on the new AI Manager (best-effort;
-        requires Owner or User Access Administrator). Skipped with --no-wait or
-        --skip-role-assignments.
+        requires Owner or User Access Administrator). Skipped with --no-wait.
     examples:
         - name: Create an AI Manager
           text: az aimanager create --name my-ai-manager -g myrg -l eastus2
         - name: Create an AI Manager with the Keep delete policy
           text: az aimanager create --name my-ai-manager -g myrg -l eastus2 --delete-policy Keep
-        - name: Create an AI Manager without granting the caller any roles
-          text: az aimanager create --name my-ai-manager -g myrg -l eastus2 --skip-role-assignments
 """
 
 helps['aimanager update'] = """
@@ -155,8 +152,7 @@ helps['aimanager namespace add'] = """
     long-summary: >
         Once creation succeeds the caller is granted the built-in 'Azure AIManager Contributor'
         and 'Azure AIManager and namespace RBAC Reader' roles on the new namespace (best-effort;
-        requires Owner or User Access Administrator). Skipped with --no-wait or
-        --skip-role-assignments.
+        requires Owner or User Access Administrator). Skipped with --no-wait.
     examples:
         - name: Add a namespace
           text: az aimanager namespace add -m my-ai-manager -g myrg --name team-alpha

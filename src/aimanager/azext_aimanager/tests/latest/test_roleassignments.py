@@ -86,6 +86,24 @@ class TestAssignCallerRoles(unittest.TestCase):
     @patch.object(ra, "get_sdk", return_value=_fake_params)
     @patch.object(ra, "get_subscription_id", return_value="sub")
     @patch.object(ra, "_get_caller_identity", return_value=("oid-1", "User"))
+    def test_existing_first_role_does_not_block_second(self, _ident, _sub, _sdk, mock_client):
+        assignments = MagicMock()
+        # Role A was already assigned by the user before creation; role B is new. The "already
+        # exists" response on role A must not stop role B from being assigned.
+        assignments.create.side_effect = [ResourceExistsError("exists"), None]
+        mock_client.return_value = SimpleNamespace(role_assignments=assignments)
+
+        ra.assign_caller_roles(self.cmd, SCOPE, [ROLE_A, ROLE_B])
+
+        self.assertEqual(assignments.create.call_count, 2)
+        # The second call is role B, assigned independently of role A already existing.
+        self.assertTrue(
+            assignments.create.call_args_list[1].args[2]["role_definition_id"].endswith(ROLE_B))
+
+    @patch.object(ra, "get_mgmt_service_client")
+    @patch.object(ra, "get_sdk", return_value=_fake_params)
+    @patch.object(ra, "get_subscription_id", return_value="sub")
+    @patch.object(ra, "_get_caller_identity", return_value=("oid-1", "User"))
     def test_best_effort_on_permission_denied(self, _ident, _sub, _sdk, mock_client):
         err = HttpResponseError()
         err.error = SimpleNamespace(code="AuthorizationFailed")
