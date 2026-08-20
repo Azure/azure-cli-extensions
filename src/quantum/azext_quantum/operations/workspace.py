@@ -516,7 +516,7 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = []
-    for role_id in (QUANTUM_WORKSPACE_OWNER_ROLE_ID, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID):
+    for role_id in (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID):
         assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited)
     users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
     _fill_user_display_names(cmd, users)
