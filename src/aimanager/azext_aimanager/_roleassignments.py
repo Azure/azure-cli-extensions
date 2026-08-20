@@ -105,10 +105,31 @@ def _assign_role(assignments_client, params_model, subscription_id, scope, role_
     return None
 
 
-def _warn_assignment_failed(scope, role_id, object_id):
+def _role_assignment_command(assignee, role_id, scope):
+    """Build the exact 'az role assignment create' command that grants one role to the caller."""
     role_name = AIMANAGER_ROLE_NAMES.get(role_id, role_id)
+    return (f'az role assignment create --assignee-object-id {assignee} '
+            f'--role "{role_name}" --scope {scope}')
+
+
+def _warn_assignment_failed(scope, role_id, object_id):
     logger.warning(
         "Could not assign '%s' to the caller on %s. This is expected if you are not an Owner or "
-        "User Access Administrator. An administrator can grant it with:\n"
-        "  az role assignment create --assignee-object-id %s --role \"%s\" --scope %s",
-        role_name, scope, object_id, role_name, scope)
+        "User Access Administrator. An administrator can grant it with:\n  %s",
+        AIMANAGER_ROLE_NAMES.get(role_id, role_id), scope,
+        _role_assignment_command(object_id, role_id, scope))
+
+
+def warn_roles_skipped_no_wait(cmd, scope, role_definition_ids):
+    """--no-wait skipped the automatic grant (success cannot be confirmed before the command
+    returns). Print the exact 'az role assignment create' commands so the caller can grant the
+    roles themselves."""
+    object_id, _ = _get_caller_identity(cmd.cli_ctx)
+    assignee = object_id or "<caller-object-id>"
+    commands = "\n".join(
+        "  " + _role_assignment_command(assignee, role_id, scope)
+        for role_id in role_definition_ids)
+    logger.warning(
+        "--no-wait was set, so the caller's role assignments on %s were skipped. Once the create "
+        "succeeds, grant them with (safe to run after creation completes; data-plane access can "
+        "take a few minutes to take effect):\n%s", scope, commands)
