@@ -28,7 +28,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
     step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     cleanup_scenario(test)
@@ -50,7 +53,8 @@ def step_create_scenario1(test, checks=None):
         " --redistribute-connected-subnets {redistributeConnectedSubnets} --redistribute-static-routes {redistributeStaticRoutes}"
         " --aggregate-route-configuration {aggregateRouteConf} --connected-subnet-route-policy {connectedSubnetRoutePolicy}"
         " --static-route-route-policy {staticRouteRoutePolicy} --annotation {annotation} --v4route-prefix-limit {ipv4RoutePrefixLimit}"
-        " --v6route-prefix-limit {ipv6RoutePrefixLimit} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        " --v6route-prefix-limit {ipv6RoutePrefixLimit} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}"
+        " --export-policy-configuration {exportPolicyConfig}",
         checks=checks,
     )
 
@@ -62,7 +66,7 @@ def step_create_scenario2(test, checks=None):
     test.cmd(
         "az networkfabric l3domain create --resource-group {rg} --resource-name {name} --location {location} --network-fabric-id {nfId}"
         " --redist-conn-subnets {redistributeConnectedSubnets} --redist-static-routes {redistributeStaticRoutes}"
-        " --aggr-route-config {aggregateRouteConf} --cs-route-policy {connectedSubnetRoutePolicy} --export-policy-config {export_policy_config}"
+        " --aggr-route-config {aggregateRouteConf} --cs-route-policy {connectedSubnetRoutePolicy} --export-policy-config {exportPolicyConfig}"
         " --sr-route-policy {staticRouteRoutePolicy} --annotation {annotation} --v4route-prefix-limit {ipv4RoutePrefixLimit}"
         " --v6route-prefix-limit {ipv6RoutePrefixLimit} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
@@ -74,7 +78,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain show --resource-name {name} --resource-group {rg}"
+        "az networkfabric l3domain show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 

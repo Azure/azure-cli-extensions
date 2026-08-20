@@ -1,0 +1,112 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"description": "Edge connector test"}, "tags": {"environment": "mock"}}'
+    headers:
+      CommandName:
+      - networkfabric edgeconnector create
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --location --description --connectivity --tags
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test","name":"edgeconnector-test","type":"Microsoft.ManagedNetworkFabric/edgeConnectors","location":"eastus","tags":{"environment":"mock"},"properties":{"description":"Edge connector test","provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric edgeconnector show
+      ParameterSetName:
+        - --resource-group --resource-name
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test","name":"edgeconnector-test","type":"Microsoft.ManagedNetworkFabric/edgeConnectors","location":"eastus","tags":{"environment":"mock"},"properties":{"description":"Edge connector test","provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Updated edge connector test"}}'
+    headers:
+      CommandName:
+      - networkfabric edgeconnector update
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --description --connectivity --tags
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test","name":"edgeconnector-test","type":"Microsoft.ManagedNetworkFabric/edgeConnectors","location":"eastus","tags":{"environment":"mock"},"properties":{"description":"Updated edge connector test","provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric edgeconnector list
+      ParameterSetName:
+      - --resource-group
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test","name":"edgeconnector-test","type":"Microsoft.ManagedNetworkFabric/edgeConnectors","location":"eastus","properties":{"description":"Updated edge connector test","provisioningState":"Succeeded"}}]}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric edgeconnector list
+      ParameterSetName:
+      - ''
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/edgeConnectors?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test","name":"edgeconnector-test","type":"Microsoft.ManagedNetworkFabric/edgeConnectors","location":"eastus","properties":{"description":"Updated edge connector test","provisioningState":"Succeeded"}}]}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric edgeconnector delete
+      ParameterSetName:
+        - --resource-group --resource-name
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/edgeConnectors/edgeconnector-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: ''
+    headers: {}
+    status:
+      code: 204
+      message: No Content
+version: 1

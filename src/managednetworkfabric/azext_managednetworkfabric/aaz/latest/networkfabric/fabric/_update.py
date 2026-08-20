@@ -30,9 +30,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -253,6 +253,10 @@ class Update(AAZCommand):
         _element.feature_flag_name = AAZStrArg(
             options=["feature-flag-name"],
             help="Feature flag name.",
+        )
+        _element.feature_flag_state = AAZStrArg(
+            options=["feature-flag-state"],
+            help="Feature flag state.",
         )
         _element.feature_flag_value = AAZStrArg(
             options=["feature-flag-value"],
@@ -652,7 +656,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -727,6 +731,7 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.featureFlags[]")
             if _elements is not None:
                 _elements.set_prop("featureFlagName", AAZStrType, ".feature_flag_name")
+                _elements.set_prop("featureFlagState", AAZStrType, ".feature_flag_state")
                 _elements.set_prop("featureFlagValue", AAZStrType, ".feature_flag_value")
 
             management_network_configuration = _builder.get(".properties.managementNetworkConfiguration")
@@ -949,6 +954,9 @@ class Update(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_connectivity = AAZObjectType(
+                serialized_name="publicConnectivity",
+            )
             properties.qos_configuration = AAZObjectType(
                 serialized_name="qosConfiguration",
             )
@@ -1023,6 +1031,9 @@ class Update(AAZCommand):
             _element.feature_flag_name = AAZStrType(
                 serialized_name="featureFlagName",
             )
+            _element.feature_flag_state = AAZStrType(
+                serialized_name="featureFlagState",
+            )
             _element.feature_flag_value = AAZStrType(
                 serialized_name="featureFlagValue",
             )
@@ -1034,7 +1045,30 @@ class Update(AAZCommand):
             l3_isolation_domains.Element = AAZStrType()
 
             last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -1049,6 +1083,47 @@ class Update(AAZCommand):
                 flags={"required": True},
             )
             _UpdateHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
+
+            public_connectivity = cls._schema_on_200.properties.public_connectivity
+            public_connectivity.infra_vpn_tunnels = AAZListType(
+                serialized_name="infraVpnTunnels",
+                flags={"read_only": True},
+            )
+            public_connectivity.peering = AAZObjectType(
+                flags={"required": True},
+            )
+            public_connectivity.tenant_vpn_tunnels = AAZListType(
+                serialized_name="tenantVpnTunnels",
+                flags={"read_only": True},
+            )
+
+            infra_vpn_tunnels = cls._schema_on_200.properties.public_connectivity.infra_vpn_tunnels
+            infra_vpn_tunnels.Element = AAZObjectType()
+            _UpdateHelper._build_schema_vpn_tunnel_read(infra_vpn_tunnels.Element)
+
+            peering = cls._schema_on_200.properties.public_connectivity.peering
+            peering.peering_type = AAZStrType(
+                serialized_name="peeringType",
+            )
+            peering.public_peering_configuration = AAZObjectType(
+                serialized_name="publicPeeringConfiguration",
+            )
+
+            public_peering_configuration = cls._schema_on_200.properties.public_connectivity.peering.public_peering_configuration
+            public_peering_configuration.infrastructure_local_network_gateways = AAZObjectType(
+                serialized_name="infrastructureLocalNetworkGateways",
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_public_peering_local_network_gateways_read(public_peering_configuration.infrastructure_local_network_gateways)
+            public_peering_configuration.tenant_local_network_gateways = AAZObjectType(
+                serialized_name="tenantLocalNetworkGateways",
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_public_peering_local_network_gateways_read(public_peering_configuration.tenant_local_network_gateways)
+
+            tenant_vpn_tunnels = cls._schema_on_200.properties.public_connectivity.tenant_vpn_tunnels
+            tenant_vpn_tunnels.Element = AAZObjectType()
+            _UpdateHelper._build_schema_vpn_tunnel_read(tenant_vpn_tunnels.Element)
 
             qos_configuration = cls._schema_on_200.properties.qos_configuration
             qos_configuration.qos_configuration_state = AAZStrType(
@@ -1327,6 +1402,30 @@ class _UpdateHelper:
         _schema.identity_type = cls._schema_identity_selector_read.identity_type
         _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
+    _schema_public_peering_local_network_gateways_read = None
+
+    @classmethod
+    def _build_schema_public_peering_local_network_gateways_read(cls, _schema):
+        if cls._schema_public_peering_local_network_gateways_read is not None:
+            _schema.primary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.primary_local_network_gateway_ip_v4_address
+            _schema.secondary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.secondary_local_network_gateway_ip_v4_address
+            return
+
+        cls._schema_public_peering_local_network_gateways_read = _schema_public_peering_local_network_gateways_read = AAZObjectType()
+
+        public_peering_local_network_gateways_read = _schema_public_peering_local_network_gateways_read
+        public_peering_local_network_gateways_read.primary_local_network_gateway_ip_v4_address = AAZStrType(
+            serialized_name="primaryLocalNetworkGatewayIpV4Address",
+            flags={"required": True},
+        )
+        public_peering_local_network_gateways_read.secondary_local_network_gateway_ip_v4_address = AAZStrType(
+            serialized_name="secondaryLocalNetworkGatewayIpV4Address",
+            flags={"required": True},
+        )
+
+        _schema.primary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.primary_local_network_gateway_ip_v4_address
+        _schema.secondary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.secondary_local_network_gateway_ip_v4_address
+
     _schema_vpn_configuration_properties_read = None
 
     @classmethod
@@ -1445,6 +1544,45 @@ class _UpdateHelper:
         _schema.option_a_properties = cls._schema_vpn_configuration_properties_read.option_a_properties
         _schema.option_b_properties = cls._schema_vpn_configuration_properties_read.option_b_properties
         _schema.peering_option = cls._schema_vpn_configuration_properties_read.peering_option
+
+    _schema_vpn_tunnel_read = None
+
+    @classmethod
+    def _build_schema_vpn_tunnel_read(cls, _schema):
+        if cls._schema_vpn_tunnel_read is not None:
+            _schema.ip_sec_tunnel_name = cls._schema_vpn_tunnel_read.ip_sec_tunnel_name
+            _schema.local_network_gateway_id = cls._schema_vpn_tunnel_read.local_network_gateway_id
+            _schema.vpn_gateway_connection_id = cls._schema_vpn_tunnel_read.vpn_gateway_connection_id
+            _schema.vpn_gateway_id = cls._schema_vpn_tunnel_read.vpn_gateway_id
+            return
+
+        cls._schema_vpn_tunnel_read = _schema_vpn_tunnel_read = AAZObjectType()
+
+        vpn_tunnel_read = _schema_vpn_tunnel_read
+        vpn_tunnel_read.ip_sec_tunnel_name = AAZStrType(
+            serialized_name="ipSecTunnelName",
+            flags={"read_only": True},
+        )
+        vpn_tunnel_read.local_network_gateway_id = AAZStrType(
+            serialized_name="localNetworkGatewayId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+        vpn_tunnel_read.vpn_gateway_connection_id = AAZStrType(
+            serialized_name="vpnGatewayConnectionId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+        vpn_tunnel_read.vpn_gateway_id = AAZStrType(
+            serialized_name="vpnGatewayId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+
+        _schema.ip_sec_tunnel_name = cls._schema_vpn_tunnel_read.ip_sec_tunnel_name
+        _schema.local_network_gateway_id = cls._schema_vpn_tunnel_read.local_network_gateway_id
+        _schema.vpn_gateway_connection_id = cls._schema_vpn_tunnel_read.vpn_gateway_connection_id
+        _schema.vpn_gateway_id = cls._schema_vpn_tunnel_read.vpn_gateway_id
 
 
 __all__ = ["Update"]

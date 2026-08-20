@@ -30,7 +30,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_update(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
@@ -54,7 +57,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}"
+        "az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 

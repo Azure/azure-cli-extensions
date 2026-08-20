@@ -28,7 +28,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
     step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
     cleanup_scenario(test)
@@ -52,6 +55,7 @@ def step_create_scenario1(test, checks=None):
         " --control-plane-acls {controlPlaneAcls} --fabric-version {fabricVersion} --annotation {annotation}"
         " --ha-threshold {hardwareAlertThreshold} --storage-account-config {storageAccountConfiguration}"
         " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-config {uniqueRdConfiguration}"
+        " --upgrade-profile {upgradeProfile} --secret-archive-settings {secretArchiveSettings} --public-connectivity {publicConnectivity}"
         " --authorized-transceiver {authorizedTransceiver} --tags {tags} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
@@ -68,6 +72,7 @@ def step_create_scenario2(test, checks=None):
         " --annotation {annotation} --feature-flags {featureFlags} --management-network-configuration {managementNetworkConfig} --qos-configuration {qosConfig}"
         " --hardware-alert-threshold {hardwareAlertThreshold} --storage-account-configuration {storageAccountConfiguration}"
         " --storage-array-count {storageArrayCount} --trusted-ip-prefixes {trustedIpPrefixes} --unique-rd-configuration {uniqueRdConfiguration}"
+        " --archive-settings {secretArchiveSettings}"
         " --authorized-transceiver {authorizedTransceiver} --tags {tags} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
@@ -78,7 +83,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric show --resource-name {name} --resource-group {rg}"
+        "az networkfabric fabric show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -147,6 +153,13 @@ class GA_NFScenarioTest1(ScenarioTest):
                     "NETWORK_FABRIC", "management_network_configuration"
                 ),
                 "featureFlags": CONFIG.get("NETWORK_FABRIC", "feature_flags"),
+                "upgradeProfile": CONFIG.get("NETWORK_FABRIC", "upgrade_profile"),
+                "secretArchiveSettings": CONFIG.get(
+                    "NETWORK_FABRIC", "secret_archive_settings"
+                ),
+                "publicConnectivity": CONFIG.get(
+                    "NETWORK_FABRIC", "public_connectivity"
+                ),
                 "tags": CONFIG.get("NETWORK_FABRIC", "tags"),
                 "userAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "user_assigned_identity"

@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -193,6 +193,11 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
+        _args_schema.public_connectivity = AAZObjectArg(
+            options=["--public-connectivity"],
+            arg_group="Properties",
+            help="Public connectivity configuration for the Network Fabric, including peering details and read-only IPsec VPN tunnel information for infrastructure and tenant traffic.",
+        )
         _args_schema.qos_configuration = AAZObjectArg(
             options=["--qos-configuration"],
             arg_group="Properties",
@@ -281,6 +286,10 @@ class Create(AAZCommand):
             options=["feature-flag-name"],
             help="Feature flag name.",
         )
+        _element.feature_flag_state = AAZStrArg(
+            options=["feature-flag-state"],
+            help="Feature flag state.",
+        )
         _element.feature_flag_value = AAZStrArg(
             options=["feature-flag-value"],
             help="Feature flag value.",
@@ -299,6 +308,38 @@ class Create(AAZCommand):
             required=True,
         )
         cls._build_args_vpn_configuration_properties_create(management_network_configuration.workload_vpn_configuration)
+
+        public_connectivity = cls._args_schema.public_connectivity
+        public_connectivity.peering = AAZObjectArg(
+            options=["peering"],
+            help="Peering configuration applied between the Network Fabric CE devices and the Azure VPN Gateways.",
+            required=True,
+        )
+
+        peering = cls._args_schema.public_connectivity.peering
+        peering.peering_type = AAZStrArg(
+            options=["peering-type"],
+            help="Type of peering between the Network Fabric and the Azure VPN Gateways.",
+            enum={"ExpressRouteCircuitPrivatePeering": "ExpressRouteCircuitPrivatePeering", "PublicPeering": "PublicPeering"},
+        )
+        peering.public_peering_configuration = AAZObjectArg(
+            options=["public-peering-configuration"],
+            help="Public peering configuration. Required when peeringType is PublicPeering.",
+        )
+
+        public_peering_configuration = cls._args_schema.public_connectivity.peering.public_peering_configuration
+        public_peering_configuration.infrastructure_local_network_gateways = AAZObjectArg(
+            options=["infrastructure-local-network-gateways"],
+            help="Local Network Gateways used as the on-premises endpoints for the infrastructure VPN tunnels.",
+            required=True,
+        )
+        cls._build_args_public_peering_local_network_gateways_create(public_peering_configuration.infrastructure_local_network_gateways)
+        public_peering_configuration.tenant_local_network_gateways = AAZObjectArg(
+            options=["tenant-local-network-gateways"],
+            help="Local Network Gateways used as the on-premises endpoints for the tenant VPN tunnels.",
+            required=True,
+        )
+        cls._build_args_public_peering_local_network_gateways_create(public_peering_configuration.tenant_local_network_gateways)
 
         qos_configuration = cls._args_schema.qos_configuration
         qos_configuration.qos_configuration_state = AAZStrArg(
@@ -466,6 +507,32 @@ class Create(AAZCommand):
 
         _schema.identity_type = cls._args_identity_selector_create.identity_type
         _schema.user_assigned_identity_resource_id = cls._args_identity_selector_create.user_assigned_identity_resource_id
+
+    _args_public_peering_local_network_gateways_create = None
+
+    @classmethod
+    def _build_args_public_peering_local_network_gateways_create(cls, _schema):
+        if cls._args_public_peering_local_network_gateways_create is not None:
+            _schema.primary_local_network_gateway_ip_v4_address = cls._args_public_peering_local_network_gateways_create.primary_local_network_gateway_ip_v4_address
+            _schema.secondary_local_network_gateway_ip_v4_address = cls._args_public_peering_local_network_gateways_create.secondary_local_network_gateway_ip_v4_address
+            return
+
+        cls._args_public_peering_local_network_gateways_create = AAZObjectArg()
+
+        public_peering_local_network_gateways_create = cls._args_public_peering_local_network_gateways_create
+        public_peering_local_network_gateways_create.primary_local_network_gateway_ip_v4_address = AAZStrArg(
+            options=["primary-local-network-gateway-ip-v4-address"],
+            help="Primary Local Network Gateway IPv4 address used as the on-premises endpoint for the infrastructure VPN tunnel.",
+            required=True,
+        )
+        public_peering_local_network_gateways_create.secondary_local_network_gateway_ip_v4_address = AAZStrArg(
+            options=["secondary-local-network-gateway-ip-v4-address"],
+            help="Secondary Local Network Gateway IPv4 address used as the on-premises endpoint for the infrastructure VPN tunnel.",
+            required=True,
+        )
+
+        _schema.primary_local_network_gateway_ip_v4_address = cls._args_public_peering_local_network_gateways_create.primary_local_network_gateway_ip_v4_address
+        _schema.secondary_local_network_gateway_ip_v4_address = cls._args_public_peering_local_network_gateways_create.secondary_local_network_gateway_ip_v4_address
 
     _args_vpn_configuration_properties_create = None
 
@@ -698,7 +765,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -751,6 +818,7 @@ class Create(AAZCommand):
                 properties.set_prop("managementNetworkConfiguration", AAZObjectType, ".management_network_configuration", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkFabricControllerId", AAZStrType, ".network_fabric_controller_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("networkFabricSku", AAZStrType, ".network_fabric_sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("publicConnectivity", AAZObjectType, ".public_connectivity")
                 properties.set_prop("qosConfiguration", AAZObjectType, ".qos_configuration")
                 properties.set_prop("rackCount", AAZIntType, ".rack_count")
                 properties.set_prop("secretArchiveSettings", AAZObjectType, ".secret_archive_settings")
@@ -778,12 +846,27 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.featureFlags[]")
             if _elements is not None:
                 _elements.set_prop("featureFlagName", AAZStrType, ".feature_flag_name")
+                _elements.set_prop("featureFlagState", AAZStrType, ".feature_flag_state")
                 _elements.set_prop("featureFlagValue", AAZStrType, ".feature_flag_value")
 
             management_network_configuration = _builder.get(".properties.managementNetworkConfiguration")
             if management_network_configuration is not None:
                 _CreateHelper._build_schema_vpn_configuration_properties_create(management_network_configuration.set_prop("infrastructureVpnConfiguration", AAZObjectType, ".infrastructure_vpn_configuration", typ_kwargs={"flags": {"required": True}}))
                 _CreateHelper._build_schema_vpn_configuration_properties_create(management_network_configuration.set_prop("workloadVpnConfiguration", AAZObjectType, ".workload_vpn_configuration", typ_kwargs={"flags": {"required": True}}))
+
+            public_connectivity = _builder.get(".properties.publicConnectivity")
+            if public_connectivity is not None:
+                public_connectivity.set_prop("peering", AAZObjectType, ".peering", typ_kwargs={"flags": {"required": True}})
+
+            peering = _builder.get(".properties.publicConnectivity.peering")
+            if peering is not None:
+                peering.set_prop("peeringType", AAZStrType, ".peering_type")
+                peering.set_prop("publicPeeringConfiguration", AAZObjectType, ".public_peering_configuration")
+
+            public_peering_configuration = _builder.get(".properties.publicConnectivity.peering.publicPeeringConfiguration")
+            if public_peering_configuration is not None:
+                _CreateHelper._build_schema_public_peering_local_network_gateways_create(public_peering_configuration.set_prop("infrastructureLocalNetworkGateways", AAZObjectType, ".infrastructure_local_network_gateways", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_public_peering_local_network_gateways_create(public_peering_configuration.set_prop("tenantLocalNetworkGateways", AAZObjectType, ".tenant_local_network_gateways", typ_kwargs={"flags": {"required": True}}))
 
             qos_configuration = _builder.get(".properties.qosConfiguration")
             if qos_configuration is not None:
@@ -1000,6 +1083,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_connectivity = AAZObjectType(
+                serialized_name="publicConnectivity",
+            )
             properties.qos_configuration = AAZObjectType(
                 serialized_name="qosConfiguration",
             )
@@ -1074,6 +1160,9 @@ class Create(AAZCommand):
             _element.feature_flag_name = AAZStrType(
                 serialized_name="featureFlagName",
             )
+            _element.feature_flag_state = AAZStrType(
+                serialized_name="featureFlagState",
+            )
             _element.feature_flag_value = AAZStrType(
                 serialized_name="featureFlagValue",
             )
@@ -1085,7 +1174,30 @@ class Create(AAZCommand):
             l3_isolation_domains.Element = AAZStrType()
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -1100,6 +1212,47 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             _CreateHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
+
+            public_connectivity = cls._schema_on_200_201.properties.public_connectivity
+            public_connectivity.infra_vpn_tunnels = AAZListType(
+                serialized_name="infraVpnTunnels",
+                flags={"read_only": True},
+            )
+            public_connectivity.peering = AAZObjectType(
+                flags={"required": True},
+            )
+            public_connectivity.tenant_vpn_tunnels = AAZListType(
+                serialized_name="tenantVpnTunnels",
+                flags={"read_only": True},
+            )
+
+            infra_vpn_tunnels = cls._schema_on_200_201.properties.public_connectivity.infra_vpn_tunnels
+            infra_vpn_tunnels.Element = AAZObjectType()
+            _CreateHelper._build_schema_vpn_tunnel_read(infra_vpn_tunnels.Element)
+
+            peering = cls._schema_on_200_201.properties.public_connectivity.peering
+            peering.peering_type = AAZStrType(
+                serialized_name="peeringType",
+            )
+            peering.public_peering_configuration = AAZObjectType(
+                serialized_name="publicPeeringConfiguration",
+            )
+
+            public_peering_configuration = cls._schema_on_200_201.properties.public_connectivity.peering.public_peering_configuration
+            public_peering_configuration.infrastructure_local_network_gateways = AAZObjectType(
+                serialized_name="infrastructureLocalNetworkGateways",
+                flags={"required": True},
+            )
+            _CreateHelper._build_schema_public_peering_local_network_gateways_read(public_peering_configuration.infrastructure_local_network_gateways)
+            public_peering_configuration.tenant_local_network_gateways = AAZObjectType(
+                serialized_name="tenantLocalNetworkGateways",
+                flags={"required": True},
+            )
+            _CreateHelper._build_schema_public_peering_local_network_gateways_read(public_peering_configuration.tenant_local_network_gateways)
+
+            tenant_vpn_tunnels = cls._schema_on_200_201.properties.public_connectivity.tenant_vpn_tunnels
+            tenant_vpn_tunnels.Element = AAZObjectType()
+            _CreateHelper._build_schema_vpn_tunnel_read(tenant_vpn_tunnels.Element)
 
             qos_configuration = cls._schema_on_200_201.properties.qos_configuration
             qos_configuration.qos_configuration_state = AAZStrType(
@@ -1293,6 +1446,13 @@ class _CreateHelper:
         _builder.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id", typ_kwargs={"nullable": True})
 
     @classmethod
+    def _build_schema_public_peering_local_network_gateways_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("primaryLocalNetworkGatewayIpV4Address", AAZStrType, ".primary_local_network_gateway_ip_v4_address", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("secondaryLocalNetworkGatewayIpV4Address", AAZStrType, ".secondary_local_network_gateway_ip_v4_address", typ_kwargs={"flags": {"required": True}})
+
+    @classmethod
     def _build_schema_vpn_configuration_properties_create(cls, _builder):
         if _builder is None:
             return
@@ -1377,6 +1537,30 @@ class _CreateHelper:
 
         _schema.identity_type = cls._schema_identity_selector_read.identity_type
         _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+
+    _schema_public_peering_local_network_gateways_read = None
+
+    @classmethod
+    def _build_schema_public_peering_local_network_gateways_read(cls, _schema):
+        if cls._schema_public_peering_local_network_gateways_read is not None:
+            _schema.primary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.primary_local_network_gateway_ip_v4_address
+            _schema.secondary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.secondary_local_network_gateway_ip_v4_address
+            return
+
+        cls._schema_public_peering_local_network_gateways_read = _schema_public_peering_local_network_gateways_read = AAZObjectType()
+
+        public_peering_local_network_gateways_read = _schema_public_peering_local_network_gateways_read
+        public_peering_local_network_gateways_read.primary_local_network_gateway_ip_v4_address = AAZStrType(
+            serialized_name="primaryLocalNetworkGatewayIpV4Address",
+            flags={"required": True},
+        )
+        public_peering_local_network_gateways_read.secondary_local_network_gateway_ip_v4_address = AAZStrType(
+            serialized_name="secondaryLocalNetworkGatewayIpV4Address",
+            flags={"required": True},
+        )
+
+        _schema.primary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.primary_local_network_gateway_ip_v4_address
+        _schema.secondary_local_network_gateway_ip_v4_address = cls._schema_public_peering_local_network_gateways_read.secondary_local_network_gateway_ip_v4_address
 
     _schema_vpn_configuration_properties_read = None
 
@@ -1496,6 +1680,45 @@ class _CreateHelper:
         _schema.option_a_properties = cls._schema_vpn_configuration_properties_read.option_a_properties
         _schema.option_b_properties = cls._schema_vpn_configuration_properties_read.option_b_properties
         _schema.peering_option = cls._schema_vpn_configuration_properties_read.peering_option
+
+    _schema_vpn_tunnel_read = None
+
+    @classmethod
+    def _build_schema_vpn_tunnel_read(cls, _schema):
+        if cls._schema_vpn_tunnel_read is not None:
+            _schema.ip_sec_tunnel_name = cls._schema_vpn_tunnel_read.ip_sec_tunnel_name
+            _schema.local_network_gateway_id = cls._schema_vpn_tunnel_read.local_network_gateway_id
+            _schema.vpn_gateway_connection_id = cls._schema_vpn_tunnel_read.vpn_gateway_connection_id
+            _schema.vpn_gateway_id = cls._schema_vpn_tunnel_read.vpn_gateway_id
+            return
+
+        cls._schema_vpn_tunnel_read = _schema_vpn_tunnel_read = AAZObjectType()
+
+        vpn_tunnel_read = _schema_vpn_tunnel_read
+        vpn_tunnel_read.ip_sec_tunnel_name = AAZStrType(
+            serialized_name="ipSecTunnelName",
+            flags={"read_only": True},
+        )
+        vpn_tunnel_read.local_network_gateway_id = AAZStrType(
+            serialized_name="localNetworkGatewayId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+        vpn_tunnel_read.vpn_gateway_connection_id = AAZStrType(
+            serialized_name="vpnGatewayConnectionId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+        vpn_tunnel_read.vpn_gateway_id = AAZStrType(
+            serialized_name="vpnGatewayId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+
+        _schema.ip_sec_tunnel_name = cls._schema_vpn_tunnel_read.ip_sec_tunnel_name
+        _schema.local_network_gateway_id = cls._schema_vpn_tunnel_read.local_network_gateway_id
+        _schema.vpn_gateway_connection_id = cls._schema_vpn_tunnel_read.vpn_gateway_connection_id
+        _schema.vpn_gateway_id = cls._schema_vpn_tunnel_read.vpn_gateway_id
 
 
 __all__ = ["Create"]

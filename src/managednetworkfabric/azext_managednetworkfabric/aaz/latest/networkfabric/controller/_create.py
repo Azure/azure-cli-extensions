@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -149,6 +149,11 @@ class Create(AAZCommand):
             default="Standard",
             enum={"Basic": "Basic", "HighPerformance": "HighPerformance", "Standard": "Standard"},
         )
+        _args_schema.public_connectivity = AAZObjectArg(
+            options=["--public-connectivity"],
+            arg_group="Properties",
+            help="Public connectivity configuration. including VPN Gateway SKU input and the read-only VPN Gateway information provisioned by the platform.",
+        )
         _args_schema.vm_profile = AAZObjectArg(
             options=["--vm-profile"],
             arg_group="Properties",
@@ -172,6 +177,20 @@ class Create(AAZCommand):
         managed_resource_group_configuration.name = AAZStrArg(
             options=["name"],
             help="The NFC service will be hosted in a Managed resource group.",
+        )
+
+        public_connectivity = cls._args_schema.public_connectivity
+        public_connectivity.infrastructure_vpn_gateway_sku = AAZStrArg(
+            options=["infrastructure-vpn-gateway-sku"],
+            help="Infrastructure VPN Gateway SKU. Specified by the user at Create and Update time.",
+            required=True,
+            enum={"VpnGw2AZ": "VpnGw2AZ", "VpnGw3AZ": "VpnGw3AZ", "VpnGw4AZ": "VpnGw4AZ", "VpnGw5AZ": "VpnGw5AZ"},
+        )
+        public_connectivity.tenant_vpn_gateway_sku = AAZStrArg(
+            options=["tenant-vpn-gateway-sku"],
+            help="Tenant VPN Gateway SKU. Specified by the user at Create and Update time.",
+            required=True,
+            enum={"VpnGw2AZ": "VpnGw2AZ", "VpnGw3AZ": "VpnGw3AZ", "VpnGw4AZ": "VpnGw4AZ", "VpnGw5AZ": "VpnGw5AZ"},
         )
 
         vm_profile = cls._args_schema.vm_profile
@@ -294,7 +313,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -342,6 +361,7 @@ class Create(AAZCommand):
                 properties.set_prop("isWorkloadManagementNetworkEnabled", AAZStrType, ".is_workload_management_network_enabled")
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
                 properties.set_prop("nfcSku", AAZStrType, ".nfc_sku")
+                properties.set_prop("publicConnectivity", AAZObjectType, ".public_connectivity")
                 properties.set_prop("vmProfile", AAZObjectType, ".vm_profile")
                 properties.set_prop("workloadExpressRouteConnections", AAZListType, ".workload_express_route_connections")
 
@@ -353,6 +373,11 @@ class Create(AAZCommand):
             if managed_resource_group_configuration is not None:
                 managed_resource_group_configuration.set_prop("location", AAZStrType, ".location")
                 managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
+
+            public_connectivity = _builder.get(".properties.publicConnectivity")
+            if public_connectivity is not None:
+                public_connectivity.set_prop("infrastructureVpnGatewaySku", AAZStrType, ".infrastructure_vpn_gateway_sku", typ_kwargs={"flags": {"required": True}})
+                public_connectivity.set_prop("tenantVpnGatewaySku", AAZStrType, ".tenant_vpn_gateway_sku", typ_kwargs={"flags": {"required": True}})
 
             vm_profile = _builder.get(".properties.vmProfile")
             if vm_profile is not None:
@@ -480,6 +505,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_connectivity = AAZObjectType(
+                serialized_name="publicConnectivity",
+            )
             properties.tenant_internet_gateway_ids = AAZListType(
                 serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
@@ -501,7 +529,30 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
 
             last_operation = cls._schema_on_200_201.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -513,6 +564,32 @@ class Create(AAZCommand):
             network_fabric_ids.Element = AAZStrType(
                 nullable=True,
             )
+
+            public_connectivity = cls._schema_on_200_201.properties.public_connectivity
+            public_connectivity.infrastructure_vpn_gateway_sku = AAZStrType(
+                serialized_name="infrastructureVpnGatewaySku",
+                flags={"required": True},
+            )
+            public_connectivity.infrastructure_vpn_gateways = AAZListType(
+                serialized_name="infrastructureVpnGateways",
+                flags={"read_only": True},
+            )
+            public_connectivity.tenant_vpn_gateway_sku = AAZStrType(
+                serialized_name="tenantVpnGatewaySku",
+                flags={"required": True},
+            )
+            public_connectivity.tenant_vpn_gateways = AAZListType(
+                serialized_name="tenantVpnGateways",
+                flags={"read_only": True},
+            )
+
+            infrastructure_vpn_gateways = cls._schema_on_200_201.properties.public_connectivity.infrastructure_vpn_gateways
+            infrastructure_vpn_gateways.Element = AAZObjectType()
+            _CreateHelper._build_schema_vpn_gateway_read(infrastructure_vpn_gateways.Element)
+
+            tenant_vpn_gateways = cls._schema_on_200_201.properties.public_connectivity.tenant_vpn_gateways
+            tenant_vpn_gateways.Element = AAZObjectType()
+            _CreateHelper._build_schema_vpn_gateway_read(tenant_vpn_gateways.Element)
 
             tenant_internet_gateway_ids = cls._schema_on_200_201.properties.tenant_internet_gateway_ids
             tenant_internet_gateway_ids.Element = AAZStrType(
@@ -619,6 +696,51 @@ class _CreateHelper:
 
         _schema.express_route_authorization_key = cls._schema_express_route_connection_information_read.express_route_authorization_key
         _schema.express_route_circuit_id = cls._schema_express_route_connection_information_read.express_route_circuit_id
+
+    _schema_vpn_gateway_read = None
+
+    @classmethod
+    def _build_schema_vpn_gateway_read(cls, _schema):
+        if cls._schema_vpn_gateway_read is not None:
+            _schema.vpn_gateway_asn = cls._schema_vpn_gateway_read.vpn_gateway_asn
+            _schema.vpn_gateway_bgp_primary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_primary_ip_v4_address
+            _schema.vpn_gateway_bgp_secondary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_secondary_ip_v4_address
+            _schema.vpn_gateway_id = cls._schema_vpn_gateway_read.vpn_gateway_id
+            _schema.vpn_gateway_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_ip_v4_address
+            _schema.vpn_gateway_type = cls._schema_vpn_gateway_read.vpn_gateway_type
+            return
+
+        cls._schema_vpn_gateway_read = _schema_vpn_gateway_read = AAZObjectType()
+
+        vpn_gateway_read = _schema_vpn_gateway_read
+        vpn_gateway_read.vpn_gateway_asn = AAZIntType(
+            serialized_name="vpnGatewayAsn",
+        )
+        vpn_gateway_read.vpn_gateway_bgp_primary_ip_v4_address = AAZStrType(
+            serialized_name="vpnGatewayBgpPrimaryIpV4Address",
+        )
+        vpn_gateway_read.vpn_gateway_bgp_secondary_ip_v4_address = AAZStrType(
+            serialized_name="vpnGatewayBgpSecondaryIpV4Address",
+        )
+        vpn_gateway_read.vpn_gateway_id = AAZStrType(
+            serialized_name="vpnGatewayId",
+            nullable=True,
+            flags={"read_only": True},
+        )
+        vpn_gateway_read.vpn_gateway_ip_v4_address = AAZStrType(
+            serialized_name="vpnGatewayIpV4Address",
+        )
+        vpn_gateway_read.vpn_gateway_type = AAZStrType(
+            serialized_name="vpnGatewayType",
+            flags={"read_only": True},
+        )
+
+        _schema.vpn_gateway_asn = cls._schema_vpn_gateway_read.vpn_gateway_asn
+        _schema.vpn_gateway_bgp_primary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_primary_ip_v4_address
+        _schema.vpn_gateway_bgp_secondary_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_bgp_secondary_ip_v4_address
+        _schema.vpn_gateway_id = cls._schema_vpn_gateway_read.vpn_gateway_id
+        _schema.vpn_gateway_ip_v4_address = cls._schema_vpn_gateway_read.vpn_gateway_ip_v4_address
+        _schema.vpn_gateway_type = cls._schema_vpn_gateway_read.vpn_gateway_type
 
 
 __all__ = ["Create"]

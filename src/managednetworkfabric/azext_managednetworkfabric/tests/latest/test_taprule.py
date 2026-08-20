@@ -38,7 +38,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario1(test)
     step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_update_scenario1(test, checks=[])
@@ -59,9 +62,12 @@ def step_create_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --dynamic-match-configurations {dynamicMatchConfigurations}"
-        " --global-network-tap-rule-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations} --polling-interval-in-seconds {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
-        " --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity} --annotation {annotation} ",
+        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name}"
+        " --configuration-type {configurationType} --dynamic-match-configurations {dynamicMatchConfigurations}"
+        " --global-network-tap-rule-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations}"
+        " --polling-interval-in-seconds {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity}"
+        " --mi-system-assigned {systemAssignedIdentity} --annotation {annotation} --is-match-config-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -71,9 +77,12 @@ def step_create_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --dynamic-match-configs {dynamicMatchConfigurations}"
-        " --global-ntr-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations} --polling-interval {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
-        " --identity-selector {identitySelector} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity} --annotation {annotation} ",
+        "az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name}"
+        " --configuration-type {configurationType} --dynamic-match-configs {dynamicMatchConfigurations}"
+        " --global-ntr-actions {globalNetworkTapRuleActions} --match-configurations {matchConfigurations}"
+        " --polling-interval {pollingIntervalInSeconds} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --user-assigned {userAssignedIdentity}"
+        " --system-assigned {systemAssignedIdentity} --annotation {annotation} --is-mc-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -83,7 +92,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule show --resource-name {name} --resource-group {rg}"
+        "az networkfabric taprule show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 
@@ -106,10 +116,12 @@ def step_update_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg} --match-configurations {updatedMatchConfigurations}"
-        " --tap-rules-url {tapRulesUrl} --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}"
-        " --dynamic-match-configurations {dynamicMatchConfigurations} --annotation {annotation} --global-network-tap-rule-actions {globalNetworkTapRuleActions}"
-        " --configuration-type {configurationType}",
+        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg}"
+        " --match-configurations {updatedMatchConfigurations} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --mi-user-assigned {userAssignedIdentity}"
+        " --mi-system-assigned {systemAssignedIdentity} --dynamic-match-configurations {dynamicMatchConfigurations}"
+        " --annotation {annotation} --global-network-tap-rule-actions {globalNetworkTapRuleActions}"
+        " --configuration-type {configurationType} --is-match-config-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -119,10 +131,12 @@ def step_update_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg} --match-configurations {updatedMatchConfigurations}"
-        " --tap-rules-url {tapRulesUrl} --identity-selector {identitySelector} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}"
-        " --dynamic-match-configs {dynamicMatchConfigurations} --annotation {annotation} --global-ntr-actions {globalNetworkTapRuleActions}"
-        " --configuration-type {configurationType}",
+        "az networkfabric taprule update --resource-name {deleteName} --resource-group {rg}"
+        " --match-configurations {updatedMatchConfigurations} --tap-rules-url {tapRulesUrl}"
+        " --identity-selector {identitySelector} --user-assigned {userAssignedIdentity}"
+        " --system-assigned {systemAssignedIdentity} --dynamic-match-configs {dynamicMatchConfigurations}"
+        " --annotation {annotation} --global-ntr-actions {globalNetworkTapRuleActions}"
+        " --configuration-type {configurationType} --is-mc-updated {matchConfigUpdated}",
         checks=checks,
     )
 
@@ -173,6 +187,9 @@ class GA_TapRuleScenarioTest1(ScenarioTest):
                 ),
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
+                ),
+                "matchConfigUpdated": CONFIG.get(
+                    "NETWORK_TAP_RULE", "match_config_updated"
                 ),
             }
         )

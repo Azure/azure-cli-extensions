@@ -28,7 +28,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
     step_create_scenario1(test, checks=[])
-    step_show_scenario1(test, checks=[])
+    step_show_scenario1(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_resource_group_scenario1(test, checks=[])
     step_delete_scenario1(test, checks=[])
     cleanup_scenario(test)
@@ -81,7 +84,8 @@ def step_show_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric {fabric}"
+        "az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric {fabric}",
+        checks=checks,
     )
 
 

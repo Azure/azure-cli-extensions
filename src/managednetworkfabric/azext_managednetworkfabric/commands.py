@@ -12,6 +12,21 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
+    # bootstrapdevice
+    with self.command_group("networkfabric bootstrapdevice"):
+
+        from .operations.bootstrapdevice._run_ro_command import RunRoCommand
+
+        self.command_table["networkfabric bootstrapdevice run-ro-command"] = (
+            RunRoCommand(loader=self)
+        )
+
+        from .operations.bootstrapdevice._run_rw_command import RunRwCommand
+
+        self.command_table["networkfabric bootstrapdevice run-rw-command"] = (
+            RunRwCommand(loader=self)
+        )
+
     # device
     with self.command_group("networkfabric device"):
 

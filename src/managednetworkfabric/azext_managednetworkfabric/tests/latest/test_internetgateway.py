@@ -28,7 +28,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
     step_update_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_resource_group(test, checks=[])
     cleanup_scenario(test)
 
@@ -45,7 +48,8 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgateway show --resource-name {name} --resource-group {rg}"
+        "az networkfabric internetgateway show --resource-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 

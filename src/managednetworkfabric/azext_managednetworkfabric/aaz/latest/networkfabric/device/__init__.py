@@ -14,8 +14,10 @@ from ._reboot import *
 from ._refresh_configuration import *
 from ._resync_certificate import *
 from ._resync_password import *
+from ._run_diagnostic import *
 from ._run_ro import *
 from ._run_rw import *
+from ._run_validation import *
 from ._show import *
 from ._update import *
 from ._update_admin_state import *

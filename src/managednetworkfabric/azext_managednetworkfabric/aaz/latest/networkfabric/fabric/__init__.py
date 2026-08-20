@@ -22,6 +22,8 @@ from ._resync_certificate import *
 from ._resync_password import *
 from ._rotate_certificate import *
 from ._rotate_password import *
+from ._run_diagnostic import *
+from ._run_validation import *
 from ._show import *
 from ._update import *
 from ._upgrade import *

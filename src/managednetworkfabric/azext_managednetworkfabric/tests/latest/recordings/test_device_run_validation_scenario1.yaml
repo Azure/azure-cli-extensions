@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: '{"deviceCommandConfiguration": {"configurationType": "Inline"}, "metricsConfiguration": [{"bucketAggregation": "Average", "checkName": "cpu-check", "description": "Check CPU utilization", "dimensionFilters": [{"dimensionName": "FabricId", "value": "nffab3-5-1"}], "expectedValue": 0.0, "maxAllowedFailures": 0, "metricName": "CpuUtilizationMax", "namespace": "NfaDeviceMetrics", "operator": "GreaterThan", "perResultDimensionName": "DeviceId", "samplingIntervalMinutes": 15, "samplingType": "Max", "timeWindowMinutes": 15}], "overrideChecks": [{"checkName": "cpu-check", "justification": "Waived for scenario testing"}], "targetVersion": "2.0.0", "validationType": "UpgradePrecheck"}'
+    headers:
+      CommandName:
+      - networkfabric device run-validation
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --validation-type --target-version --command-config --metrics-config --override-checks
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1/runValidation?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"device-validation-operation","name":"device-validation-operation","status":"Succeeded","properties":{"validationId":"device-validation","validationResult":"Passed","validationTime":"2026-08-14T00:00:00Z","currentVersion":"1.9.0","targetVersion":"2.0.0","resultUrl":"https://example.blob.core.windows.net/results/device-validation.json","checkResults":[]}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

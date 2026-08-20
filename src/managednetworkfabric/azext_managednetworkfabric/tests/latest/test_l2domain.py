@@ -38,11 +38,14 @@ def call_scenario1(test):
     cleanup_scenario(test)
 
 
-def call_scenario1(test):
-    """Testcase: scenario1"""
+def call_scenario2(test):
+    """Testcase: scenario2"""
     setup_scenario(test)
     step_create_scenario2(test, checks=[])
-    step_update_scenario2(test, checks=[])
+    step_update_scenario2(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     cleanup_scenario(test)
 
 
@@ -120,7 +123,7 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable} --resource-ids {resourceIds}"
+        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable} --resource-ids {resourceIds} -f {force}"
     )
 
 
@@ -129,7 +132,7 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable}"
+        "az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable} --force {force}"
     )
 
 
@@ -162,6 +165,7 @@ class GA_L2DomainScenarioTest1(ScenarioTest):
                 "nniId": CONFIG.get("L2_ISOLATION_DOMAIN", "nni_id"),
                 "extendedVlan": CONFIG.get("L2_ISOLATION_DOMAIN", "extended_vlan"),
                 "resourceIds": CONFIG.get("L2_ISOLATION_DOMAIN", "resource_ids"),
+                "force": CONFIG.get("L2_ISOLATION_DOMAIN", "force_flag"),
                 "userAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "user_assigned_identity"
                 ),
@@ -174,3 +178,7 @@ class GA_L2DomainScenarioTest1(ScenarioTest):
     def test_GA_l2domain_scenario1(self):
         """test scenario for L2 Domain CRUD operations"""
         call_scenario1(self)
+
+    def test_GA_l2domain_scenario2(self):
+        """test scenario for L2 Domain CRUD operations"""
+        call_scenario2(self)

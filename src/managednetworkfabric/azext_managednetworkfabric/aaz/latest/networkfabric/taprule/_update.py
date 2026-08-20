@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaprules/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -125,6 +125,13 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The selection of the managed identity to use with this storage account. The identity type must be either system assigned or user assigned.",
             nullable=True,
+        )
+        _args_schema.is_match_config_updated = AAZStrArg(
+            options=["--is-mc-updated", "--is-match-config-updated"],
+            arg_group="Properties",
+            help="Match configuration update types. If the configuration type is not provided, then both static and dynamic match configurations will be updated.",
+            nullable=True,
+            enum={"False": "False", "True": "True"},
         )
         _args_schema.match_configurations = AAZListArg(
             options=["--match-configurations"],
@@ -500,7 +507,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -545,6 +552,7 @@ class Update(AAZCommand):
                 properties.set_prop("dynamicMatchConfigurations", AAZListType, ".dynamic_match_configurations", typ_kwargs={"nullable": True})
                 properties.set_prop("globalNetworkTapRuleActions", AAZObjectType, ".global_network_tap_rule_actions", typ_kwargs={"nullable": True})
                 properties.set_prop("identitySelector", AAZObjectType, ".identity_selector", typ_kwargs={"nullable": True})
+                properties.set_prop("isMatchConfigurationUpdated", AAZStrType, ".is_match_config_updated", typ_kwargs={"nullable": True})
                 properties.set_prop("matchConfigurations", AAZListType, ".match_configurations", typ_kwargs={"nullable": True})
                 properties.set_prop("tapRulesUrl", AAZStrType, ".tap_rules_url", typ_kwargs={"nullable": True})
 
@@ -796,6 +804,9 @@ class Update(AAZCommand):
             properties.identity_selector = AAZObjectType(
                 serialized_name="identitySelector",
             )
+            properties.is_match_configuration_updated = AAZStrType(
+                serialized_name="isMatchConfigurationUpdated",
+            )
             properties.last_operation = AAZObjectType(
                 serialized_name="lastOperation",
                 flags={"read_only": True},
@@ -896,7 +907,30 @@ class Update(AAZCommand):
             )
 
             last_operation = cls._schema_on_200.properties.last_operation
+            last_operation.completed_at = AAZStrType(
+                serialized_name="completedAt",
+                flags={"read_only": True},
+            )
+            last_operation.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
             last_operation.details = AAZStrType(
+                flags={"read_only": True},
+            )
+            last_operation.operation_type = AAZStrType(
+                serialized_name="operationType",
+                flags={"read_only": True},
+            )
+            last_operation.result_blob_url = AAZStrType(
+                serialized_name="resultBlobUrl",
+                flags={"read_only": True},
+            )
+            last_operation.started_at = AAZStrType(
+                serialized_name="startedAt",
+                flags={"read_only": True},
+            )
+            last_operation.status = AAZStrType(
                 flags={"read_only": True},
             )
 

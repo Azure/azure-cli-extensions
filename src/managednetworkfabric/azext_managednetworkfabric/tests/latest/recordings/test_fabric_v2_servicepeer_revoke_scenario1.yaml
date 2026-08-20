@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: '{"consumerResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.Compute/virtualMachines/service-consumer", "force": "True", "reason": "Scenario test cleanup", "requestGeneration": 2}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 vrf servicepeer revoke
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2 --vrf --resource-name --consumer-resource-id --request-generation --force --reason
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/vrfs/vrf-test/servicePeers/service-peer-test/revoke?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"requestId":"revoke-attachment-request"}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -29,7 +29,10 @@ def call_scenario1(test):
     setup_scenario(test)
     step_create_scenario1(test, checks=[])
     step_update_scenario1(test, checks=[])
-    step_show_scenario1(test, checks=[])
+    step_show_scenario1(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_resource_group_scenario1(test, checks=[])
     step_delete_scenario1(test, checks=[])
     cleanup_scenario(test)
@@ -107,7 +110,8 @@ def step_show_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}"
+        "az networkfabric internalnetwork show --resource-name {name} --l3domain {l3Domain} --resource-group {rg}",
+        checks=checks,
     )
 
 
