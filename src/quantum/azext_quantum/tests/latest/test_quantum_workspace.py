@@ -17,7 +17,7 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, _autoadd_providers, list_users, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _validate_storage_account, _autoadd_providers, list_users, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -336,16 +336,34 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assignments = [{"principalId": "oid", "principalName": "user@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
         stubs = [{"id": "oid", "displayName": "Contoso User", "mail": "user@contoso.com", "userPrincipalName": "user@contoso.com"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
-                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments) as list_role_assignments, \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[[], assignments]) as list_role_assignments, \
                 patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=True)
+        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_OWNER_ROLE_ID, scope=expected_scope, include_inherited=True)
+        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=True)
         assert result[0]["displayName"] == "Contoso User"
         assert result[0]["mail"] == "user@contoso.com"
+
+    def test_list_users_includes_owner_and_contributor_roles(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        owner = [{"principalId": "o", "principalName": "owner@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Owner"}]
+        contributor = [{"principalId": "c", "principalName": "contrib@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        stubs = [
+            {"id": "o", "displayName": "Owner User", "mail": "owner@contoso.com", "userPrincipalName": "owner@contoso.com"},
+            {"id": "c", "displayName": "Contrib User", "mail": "contrib@contoso.com", "userPrincipalName": "contrib@contoso.com"},
+        ]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[owner, contributor]), \
+                patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        assert {user["roleDefinitionName"] for user in result} == {"Quantum Workspace Owner", "Quantum Workspace Data Contributor"}
 
     def test_list_users_can_exclude_inherited(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
@@ -355,7 +373,8 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             list_users(cmd, "rg", "ws", include_inherited=False)
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=False)
+        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_OWNER_ROLE_ID, scope=expected_scope, include_inherited=False)
+        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=False)
 
     def test_list_users_excludes_groups_and_service_principals(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
@@ -366,7 +385,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ]
         stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com", "userPrincipalName": "u@contoso.com"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
-                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
                 patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
@@ -389,6 +408,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         }])
         assert rows[0]["Name"] == "Contoso User"
         assert rows[0]["Email"] == "user@contoso.com"
+        assert rows[0]["Role"] == "Quantum Workspace Data Contributor"
         assert rows[0]["Time Created"] == "2026-06-24T16:53:26.107178+00:00"
         assert rows[0]["Principal Id"] == "oid"
 

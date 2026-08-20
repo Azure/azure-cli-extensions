@@ -48,6 +48,10 @@ MAX_POLLS_CREATE_WORKSPACE = 300
 # users when they are added to a workspace in the Azure Quantum portal.
 QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
 
+# Built-in "Quantum Workspace Owner" role. The Azure Quantum portal labels users
+# holding this role as workspace administrators.
+QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
+
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
                                "https://privacy.microsoft.com/privacystatement\n" \
@@ -511,7 +515,9 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    assignments = list_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, include_inherited=include_inherited)
+    assignments = []
+    for role_id in (QUANTUM_WORKSPACE_OWNER_ROLE_ID, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID):
+        assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited)
     users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
     _fill_user_display_names(cmd, users)
     return users

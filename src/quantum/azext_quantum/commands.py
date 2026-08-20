@@ -61,6 +61,7 @@ def transform_users(results):
         return OrderedDict([
             ('Name', result.get('displayName')),
             ('Email', result.get('mail') or result.get('principalName')),
+            ('Role', result.get('roleDefinitionName')),
             ('Time Created', result.get('createdOn')),
             ('Principal Id', result.get('principalId'))
         ])
