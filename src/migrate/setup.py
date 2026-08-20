@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "3.0.0b6"
+VERSION = "3.0.0b5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
