@@ -135,6 +135,6 @@ def warn_roles_skipped_no_wait(cmd, scope, role_definition_ids):
         "  " + _role_assignment_command(assignee, role_id, scope)
         for role_id in role_definition_ids)
     logger.warning(
-        "--no-wait was set, so the caller's role assignments on %s were skipped. Once the create "
-        "succeeds, grant them with (safe to run after creation completes; data-plane access can "
+        "--no-wait was set, so the caller's role assignments on %s were skipped. Grant them once "
+        "the create succeeds (requires Owner or User Access Administrator; data-plane access can "
         "take a few minutes to take effect):\n%s", scope, commands)

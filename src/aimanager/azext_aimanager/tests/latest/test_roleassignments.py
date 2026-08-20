@@ -195,6 +195,8 @@ class TestAssignCallerRoles(unittest.TestCase):
         self.assertIn(f'--role "{ra.AIMANAGER_ROLE_NAMES[ROLE_B]}"', msg)
         # The old, broken remediation must not reappear.
         self.assertNotIn("Re-run without --no-wait", msg)
+        # Sets expectations that the manual grant needs elevated permissions.
+        self.assertIn("Owner or User Access Administrator", msg)
 
     @patch.object(ra, "logger")
     @patch.object(ra, "_get_caller_identity", return_value=(None, None))
