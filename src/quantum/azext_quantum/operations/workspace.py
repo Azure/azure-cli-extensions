@@ -42,6 +42,7 @@ DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
+MAX_RETRIES_USER_LOOKUP = 3
 MAX_POLLS_CREATE_WORKSPACE = 300
 
 # Built-in "Quantum Workspace Data Contributor" role.
@@ -535,12 +536,19 @@ def _fill_user_display_names(cmd, users):
     from azure.cli.command_modules.role.custom import _get_object_stubs
 
     directory_objects = {}
-    try:
-        graph_client = graph_client_factory(cmd.cli_ctx)
-        for obj in _get_object_stubs(graph_client, principal_ids):
-            directory_objects[obj.get("id")] = obj
-    except Exception as ex:  # pylint: disable=broad-except
-        logger.warning("Could not resolve user display names from Microsoft Graph: %s", ex)
+    for attempt in range(MAX_RETRIES_USER_LOOKUP):
+        try:
+            graph_client = graph_client_factory(cmd.cli_ctx)
+            directory_objects = {obj.get("id"): obj for obj in _get_object_stubs(graph_client, principal_ids)}
+            if principal_ids.issubset(directory_objects):
+                break
+        except Exception:  # pylint: disable=broad-except
+            directory_objects = {}
+
+        if attempt < MAX_RETRIES_USER_LOOKUP - 1:
+            time.sleep(1)
+    else:
+        raise AzureInternalError("Could not resolve user names and email addresses from Microsoft Graph. Please try again later.")
 
     for user in users:
         obj = directory_objects.get(user.get("principalId"), {})

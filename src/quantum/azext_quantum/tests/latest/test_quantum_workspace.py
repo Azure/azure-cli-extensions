@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, AzureInternalError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
 from datetime import datetime
@@ -504,6 +504,37 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
         # Name and Email fall back to the UPN from Graph.
         self.assertEqual(result[0]["displayName"], "user@contoso.com")
         self.assertEqual(result[0]["mail"], "user@contoso.com")
+
+    def test_list_users_retries_graph_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[Exception("temporary"), stubs]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        self.assertEqual(result[0]["displayName"], "User One")
+        self.assertEqual(get_object_stubs.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_list_users_raises_when_graph_cannot_resolve_users(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=[]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            cmd = SimpleNamespace(cli_ctx=object())
+            with self.assertRaisesRegex(AzureInternalError, "Please try again later"):
+                list_users(cmd, "rg", "ws")
+
+        self.assertEqual(get_object_stubs.call_count, 3)
+        self.assertEqual(sleep.call_count, 2)
 
     def test_transform_users(self):
         from ...commands import transform_users
