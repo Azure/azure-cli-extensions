@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.1.1
++++++
+* Fix NumPy 2.0 compatibility by updating deepdiff dependency to version ~=8.6.1
+
 2.1.0
 +++++
 * Add command for generating container policy definitions from radius application templates
