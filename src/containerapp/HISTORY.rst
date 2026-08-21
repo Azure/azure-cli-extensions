@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* `az containerapp create`, `az containerapp update`, `az containerapp job create`: Fix managed identity registry authentication for Azure Container Registry sovereign cloud domains (`*.azurecr.us`, `*.azurecr.cn`)
 
 1.3.0b4
 ++++++
