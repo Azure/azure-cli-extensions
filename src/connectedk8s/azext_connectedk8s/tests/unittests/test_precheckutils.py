@@ -385,3 +385,178 @@ class TestSendPostDiagnosticPrecheckFailureTelemetry:
         msg2 = json.loads(calls[1][0][1][consts.Telemetry_Onboarding_Error_Message_Key])
         assert msg1["checkName"] == "LinuxNodeExists"
         assert msg2["checkName"] == "ClusterRoleBindings"
+
+
+# ---------------------------------------------------------------------------
+# fetch_diagnostic_checks_results log parsing
+# ---------------------------------------------------------------------------
+
+
+CONFORMANCE_PREDIAGNOSTIC_OUTPUT = """\
+Thu Aug 20 19:11:59 UTC 2026 : Performing check: 1 of 5 - DNS and outbound connectivity
+DNS Result:;; Got recursion not available from 10.89.0.10
+;; Got recursion not available from 10.89.0.10
+Server:		10.89.0.10
+Address:	10.89.0.10#53
+
+Name: kubernetes.default.svc.cluster.local
+Address: 10.89.0.1
+;; Got recursion not available from 10.89.0.10
+Thu Aug 20 19:12:01 UTC 2026 : Performing check: 2 of 5 - Entra (Azure AD) authentication endpoint connectivity. This is a mandatory endpoint for Azure Arc authentication.
+Entra endpoint connectivity check passed. Response Code: 200
+Entra Authentication Endpoint Connectivity Check Result : https://login.microsoftonline.com : 200
+Thu Aug 20 19:12:01 UTC 2026 : Performing check: 3 of 5 - Outbound connectivity for Cluster Connect Pre-check Endpoint. This is an optional endpoint required only for cluster-connect functionality
+Warning - Cluster Connect Pre-check Endpoint https://eastus2euap.obo.arc.azure.com:8084/ is not reachable. Response Code : 404
+Response Code - Outbound Network Connectivity Check for Cluster Connect : https://eastus2euap.obo.arc.azure.com:8084/ : 404
+Warning - Cluster Connect Pre-check Endpoint https://eastus2euap.obo.arc.azure.com/ is not reachable. Response Code : 404
+Response Code - Outbound Network Connectivity Check for Cluster Connect : https://eastus2euap.obo.arc.azure.com/ : 404
+Thu Aug 20 19:12:03 UTC 2026 : Performing check: 4 of 5 - Outbound connectivity for MCR repo URL. This is a mandatory endpoint.
+Outbound Network Connectivity Check for MCR Repo URL Result : mcr.microsoft.com : 200
+Thu Aug 20 19:12:04 UTC 2026 : Performing check: 5 of 5 - CRD ownership validation
+CRD extensionconfigs.clusterconfig.azure.com does not exist - OK (will be created during Arc installation)
+CRD configsyncstatuses.clusterconfig.azure.com does not exist - OK (will be created during Arc installation)
+All PreOnboading Diagnostic Checks passed successfully
+"""
+
+
+def _run_completed_prediagnostic_output(monkeypatch, output):
+    def execute_job(*_args, **_kwargs):
+        precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Completed
+        return output
+
+    def parse_dns(log, _path, storage_available, _diagnoser_output):
+        result = (
+            consts.Diagnostic_Check_Passed
+            if consts.DNS_Check_Result_String in log
+            else consts.Diagnostic_Check_Incomplete
+        )
+        return result, storage_available
+
+    def parse_outbound(log, _path, storage_available, _diagnoser_output, **_kwargs):
+        result = (
+            consts.Diagnostic_Check_Passed
+            if consts.Outbound_Connectivity_Check_Result_String in log
+            else consts.Diagnostic_Check_Incomplete
+        )
+        return result, storage_available
+
+    monkeypatch.setattr(
+        precheckutils, "executing_cluster_diagnostic_checks_job", execute_job
+    )
+    monkeypatch.setattr(precheckutils.azext_utils, "check_cluster_DNS", parse_dns)
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "check_cluster_outbound_connectivity",
+        parse_outbound,
+    )
+
+    result, _ = precheckutils.fetch_diagnostic_checks_results(
+        cmd=MagicMock(),
+        corev1_api_instance=MagicMock(),
+        batchv1_api_instance=MagicMock(),
+        helm_client_location="helm",
+        kubectl_client_location="kubectl",
+        kube_config=None,
+        kube_context=None,
+        location="eastus2euap",
+        http_proxy="",
+        https_proxy="",
+        no_proxy="",
+        proxy_cert="",
+        azure_cloud="AZUREPUBLICCLOUD",
+        filepath_with_timestamp="/tmp/prediagnostics",
+        storage_space_available=True,
+    )
+    return result
+
+
+def test_completed_job_parses_healthy_1_36_1_output(monkeypatch):
+    result = _run_completed_prediagnostic_output(
+        monkeypatch, CONFORMANCE_PREDIAGNOSTIC_OUTPUT
+    )
+
+    assert result == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_dns_check == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+
+
+def test_completed_job_parses_conformance_stringified_bytes(monkeypatch):
+    escaped_output = repr(CONFORMANCE_PREDIAGNOSTIC_OUTPUT.encode("utf-8"))
+    print(f"Stringified Kubernetes log: {escaped_output}")
+
+    result = _run_completed_prediagnostic_output(monkeypatch, escaped_output)
+
+    assert (
+        precheckutils.prediagnostic_dns_check,
+        precheckutils.prediagnostic_outbound_check,
+        precheckutils.prediagnostic_entra_check,
+        precheckutils.prediagnostic_crd_check,
+    ) == (
+        consts.Diagnostic_Check_Passed,
+        consts.Diagnostic_Check_Passed,
+        consts.Diagnostic_Check_Passed,
+        consts.Diagnostic_Check_Passed,
+    )
+    assert result == consts.Diagnostic_Check_Passed
+
+
+def test_completed_job_parses_byte_output(monkeypatch):
+    result = _run_completed_prediagnostic_output(
+        monkeypatch, CONFORMANCE_PREDIAGNOSTIC_OUTPUT.encode("utf-8")
+    )
+
+    assert result == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_dns_check == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
+    assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+
+
+def test_normalize_container_log_preserves_text():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert precheckutils.normalize_container_log(container_log) == container_log.strip()
+
+
+def test_normalize_container_log_decodes_bytes():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert (
+        precheckutils.normalize_container_log(container_log.encode())
+        == container_log.strip()
+    )
+
+
+def test_normalize_container_log_decodes_stringified_bytes():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert (
+        precheckutils.normalize_container_log(repr(container_log.encode()))
+        == container_log.strip()
+    )
+
+
+def test_normalize_container_log_preserves_malformed_byte_literal():
+    malformed_log = "b'not a complete byte literal"
+
+    assert precheckutils.normalize_container_log(malformed_log) == malformed_log
+
+
+def test_split_container_log_preserves_last_line_without_trailing_newline():
+    container_log = "DNS Result: success\nOutbound Result: success"
+
+    assert precheckutils.split_container_log(container_log) == [
+        "DNS Result: success",
+        "Outbound Result: success",
+    ]
+
+
+def test_split_container_log_handles_stringified_bytes():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert precheckutils.split_container_log(repr(container_log.encode())) == [
+        "DNS Result: success",
+        "Outbound Result: success",
+    ]

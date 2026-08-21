@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.11.3
++++++++
+* Fix container log parsing issue for environments using Python Kubernetes client 36.0 or higher.
+
 1.11.2
 +++++++
 * Fix telemetry `Unknown` errors: wrap string exceptions, add missing instrumentation, and catch-all decorator for unhandled exceptions.

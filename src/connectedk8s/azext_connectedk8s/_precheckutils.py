@@ -41,6 +41,10 @@ from kubernetes import config, watch
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
+from azext_connectedk8s._logutils import (
+    normalize_container_log,
+    split_container_log,
+)
 
 if TYPE_CHECKING:
     from knack.commands import CLICommand
@@ -389,10 +393,9 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         if cluster_diagnostic_checks_container_log != "":
-            cluster_diagnostic_checks_container_log_list = (
-                cluster_diagnostic_checks_container_log.split("\n")
+            cluster_diagnostic_checks_container_log_list = split_container_log(
+                cluster_diagnostic_checks_container_log
             )
-            cluster_diagnostic_checks_container_log_list.pop(-1)
             dns_check_log = ""
             outbound_connectivity_check_log = ""
             entra_check_log = ""
@@ -757,6 +760,9 @@ def executing_cluster_diagnostic_checks_job(
                         namespace="azure-arc-release",
                     )
                 )
+                cluster_diagnostic_checks_container_log = normalize_container_log(
+                    cluster_diagnostic_checks_container_log
+                )
                 try:
                     if storage_space_available:
                         dns_check_path = os.path.join(
@@ -830,12 +836,15 @@ def executing_cluster_diagnostic_checks_job(
                             namespace="azure-arc-release",
                         )
                     )
+                    cluster_diagnostic_checks_container_log = normalize_container_log(
+                        cluster_diagnostic_checks_container_log
+                    )
                     if storage_space_available:
                         log_path = os.path.join(
                             filepath_with_timestamp,
                             "cluster_diagnostic_checks_job_log.txt",
                         )
-                        with open(log_path, "w+") as f:
+                        with open(log_path, "w+", encoding="utf-8") as f:
                             f.write(cluster_diagnostic_checks_container_log)
                 except OSError as e:
                     if "[Errno 28]" in str(e):
