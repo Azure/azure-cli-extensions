@@ -16,6 +16,7 @@ from azure.ai.ml._version import VERSION  # pylint: disable=no-name-in-module,im
 from azure.ai.ml.constants._common import Scope  # pylint: disable=no-name-in-module, import-error
 from azure.ai.ml.entities._load_functions import load_workspace  # pylint: disable=no-name-in-module, import-error
 from azure.cli.core.commands import LongRunningOperation
+from azure.core.exceptions import ResourceNotFoundError
 
 from .raise_error import log_and_raise_error
 from .utils import _dump_entity_with_warnings, get_ml_client
@@ -80,6 +81,26 @@ def ml_workspace_provision_network(cmd, resource_group_name, name, include_spark
         return provision_network_result
     except Exception as err:  # pylint: disable=broad-except
         log_and_raise_error(err, debug)
+
+
+def _hint_soft_deleted_workspace_on_create_error(err, workspace_name, resource_group_name=None):
+    """Emit an actionable warning when a workspace creation failure looks like it was
+    caused by an existing soft-deleted workspace with the same name."""
+    err_str = str(err).lower()
+    if any(
+        keyword in err_str
+        for keyword in ("soft", "deleted", "purge", "conflict", "already exists")
+    ):
+        rg_arg = f"-g {resource_group_name} " if resource_group_name else "-g <resource-group> "
+        name_arg = f"-n {workspace_name} " if workspace_name else ""
+        module_logger.warning(
+            "If a workspace named '%s' already exists in a soft-deleted state and is blocking "
+            "this creation, you can permanently delete (purge) it with:\n"
+            "  az ml workspace delete %s%s--permanently-delete",
+            workspace_name,
+            rg_arg,
+            name_arg,
+        )
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -178,6 +199,7 @@ def ml_workspace_create(
         )
         return ws
     except Exception as err:  # pylint: disable=broad-except
+        _hint_soft_deleted_workspace_on_create_error(err, name, resource_group_name)
         log_and_raise_error(err, debug)
 
 
@@ -277,6 +299,32 @@ def ml_workspace_delete(cmd, resource_group_name, name, all_resources=False, no_
     try:
         del_result = ml_client.workspaces.begin_delete(
             name=name, delete_dependent_resources=all_resources, permanently_delete=permanently_delete
+        )
+        if not no_wait:
+            del_result = LongRunningOperation(cmd.cli_ctx)(del_result)
+        return del_result
+    except ResourceNotFoundError:
+        if not permanently_delete:
+            raise
+        # The workspace may already be in a soft-deleted state (not returned by the regular get call).
+        # Attempt to purge it directly via the underlying REST API with force_to_purge=True.
+        module_logger.debug(
+            "Workspace '%s' was not found at its active path. "
+            "Attempting to purge a soft-deleted workspace directly.",
+            name,
+        )
+    except Exception as err:  # pylint: disable=broad-except
+        log_and_raise_error(err, debug)
+        return None  # unreachable; satisfies static analysis
+
+    # Fallthrough: permanently_delete=True and workspace was not reachable via the standard get
+    # (i.e. it is already in a soft-deleted state).  Call the REST operation directly so the
+    # SDK's get() check is bypassed.
+    try:
+        del_result = ml_client.workspaces._operation.begin_delete(  # pylint: disable=protected-access
+            resource_group_name=resource_group_name,
+            workspace_name=name,
+            force_to_purge=True,
         )
         if not no_wait:
             del_result = LongRunningOperation(cmd.cli_ctx)(del_result)
