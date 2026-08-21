@@ -394,6 +394,20 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assert [user["principalId"] for user in result] == ["u"]
         assert result[0]["displayName"] == "User One"
 
+    def test_list_users_falls_back_to_principal_name_when_graph_empty(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalName": "user@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=[]):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        # Graph returned nothing, so Name and Email fall back to the principal name.
+        assert result[0]["displayName"] == "user@contoso.com"
+        assert result[0]["mail"] == "user@contoso.com"
+
     def test_transform_users(self):
         from ...commands import transform_users
         rows = transform_users([{

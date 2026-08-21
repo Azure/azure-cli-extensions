@@ -546,5 +546,5 @@ def _fill_user_display_names(cmd, users):
 
     for user in users:
         obj = directory_objects.get(user.get("principalId"), {})
-        user["displayName"] = obj.get("displayName")
+        user["displayName"] = obj.get("displayName") or user.get("principalName")
         user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or user.get("principalName")
