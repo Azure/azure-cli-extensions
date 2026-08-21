@@ -170,6 +170,10 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
     import time
     from azure.core.exceptions import HttpResponseError, ResourceExistsError
 
+    principal_id = str(principal_id) if principal_id is not None else principal_id
+    role_definition_id = str(role_definition_id) if role_definition_id is not None else role_definition_id
+    scope = str(scope) if scope is not None else scope
+
     assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
     principal_types = [p.value for p in PrincipalType]
     current_principal_type = principal_types.pop(0)
@@ -208,6 +212,14 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
 
 
 def _delete_role_assignment(cli_ctx, principal_id, role_definition_id=None, scope=None):
+    if not principal_id:
+        return
+    principal_id = str(principal_id)
+    if role_definition_id:
+        role_definition_id = str(role_definition_id)
+    if scope:
+        scope = str(scope)
+
     assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
     f = f"principalId eq '{principal_id}'"
 
@@ -571,7 +583,7 @@ def _convert_duration_to_seconds(time_to_live):
         "d": 3600 * 24,
         "w": 3600 * 24 * 7,
         "M": 3600 * 24 * 30,
-        "y": 3600 * 24 * 30 * 365
+        "y": 3600 * 24 * 365
     }
     unit_name = time_to_live[len(time_to_live) - 1:]
     try:
