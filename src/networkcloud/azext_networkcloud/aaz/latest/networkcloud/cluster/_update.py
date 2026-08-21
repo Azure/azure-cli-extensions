@@ -56,9 +56,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -341,9 +341,114 @@ class Update(AAZCommand):
             options=["identity-resource-id"],
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
         )
+        secret_archive_settings.encryption_public_key = AAZStrArg(
+            options=["encryption-public-key"],
+            help="The public key used to encrypt secrets that are archived into the key vault. Expected encoding is a PEM-encoded RSA public key with a minimum key size of 3072 bits. Additional key formats or sizes may be supported in future versions.",
+        )
+        secret_archive_settings.provider_configuration = AAZObjectArg(
+            options=["provider-configuration"],
+            help="The configuration indicating the use of self-supplied secret archive software. Specification of a provider configuration indicates that the provided configuration will be used. Exclusion of any providerConfiguration indicates the use of Azure Key Vault. If providerConfiguration is included in a PATCH, the body must be a complete, valid configuration for the chosen provider, including all fields required for that provider; omit providerConfiguration from PATCH bodies that do not change it.",
+        )
         secret_archive_settings.vault_uri = AAZStrArg(
             options=["vault-uri"],
             help="The URI for the key vault used as the secret archive.",
+        )
+
+        provider_configuration = cls._args_schema.secret_archive_settings.provider_configuration
+        provider_configuration.cyber_ark = AAZObjectArg(
+            options=["cyber-ark"],
+        )
+        provider_configuration.hashi_corp_vault = AAZObjectArg(
+            options=["hashi-corp-vault"],
+        )
+        provider_configuration.open_bao = AAZObjectArg(
+            options=["open-bao"],
+        )
+
+        cyber_ark = cls._args_schema.secret_archive_settings.provider_configuration.cyber_ark
+        cyber_ark.application_id = AAZStrArg(
+            options=["application-id"],
+            help="The CyberArk application ID.",
+            required=True,
+        )
+        cyber_ark.folder_name = AAZStrArg(
+            options=["folder-name"],
+            help="The folder name within the safe. Defaults to Root if not specified.",
+        )
+        cyber_ark.object_name_template = AAZStrArg(
+            options=["object-name-template"],
+            help="The object naming pattern within the safe. The tokens `{namespace}` and `{name}` may appear in the template and are substituted at archive time.",
+        )
+        cyber_ark.safe_name = AAZStrArg(
+            options=["safe-name"],
+            help="The safe name for credential storage.",
+            required=True,
+        )
+
+        hashi_corp_vault = cls._args_schema.secret_archive_settings.provider_configuration.hashi_corp_vault
+        hashi_corp_vault.application_role_id = AAZStrArg(
+            options=["application-role-id"],
+            help="The Role ID, required when `authenticationMethod` is `AppRole`; ignored for other authentication methods.",
+        )
+        hashi_corp_vault.authentication_method = AAZStrArg(
+            options=["authentication-method"],
+            help="The authentication method used for the archive. When set to `AppRole`, `applicationRoleId` is required; when set to `ClientCertificate`, `applicationRoleId` is ignored.",
+            required=True,
+            enum={"AppRole": "AppRole", "ClientCertificate": "ClientCertificate"},
+        )
+        hashi_corp_vault.authentication_mount_path = AAZStrArg(
+            options=["authentication-mount-path"],
+            help="The authentication method mount path in the archive.",
+        )
+        hashi_corp_vault.key_value_version = AAZStrArg(
+            options=["key-value-version"],
+            help="The key value engine version. Supports values `V1` and `V2`, defaults to `V2`.",
+            enum={"V1": "V1", "V2": "V2"},
+        )
+        hashi_corp_vault.mount_path = AAZStrArg(
+            options=["mount-path"],
+            help="The key value secrets engine mount path. Defaults to secret if not specified.",
+        )
+        hashi_corp_vault.namespace = AAZStrArg(
+            options=["namespace"],
+            help="The vault namespace.",
+        )
+        hashi_corp_vault.path_template = AAZStrArg(
+            options=["path-template"],
+            help="The secret path pattern. Defaults to `edge-credentials/{namespace}/{name}`.",
+        )
+
+        open_bao = cls._args_schema.secret_archive_settings.provider_configuration.open_bao
+        open_bao.application_role_id = AAZStrArg(
+            options=["application-role-id"],
+            help="The Role ID, required when `authenticationMethod` is `AppRole`; ignored for other authentication methods.",
+        )
+        open_bao.authentication_method = AAZStrArg(
+            options=["authentication-method"],
+            help="The authentication method used for the archive. When set to `AppRole`, `applicationRoleId` is required; when set to `ClientCertificate`, `applicationRoleId` is ignored.",
+            required=True,
+            enum={"AppRole": "AppRole", "ClientCertificate": "ClientCertificate"},
+        )
+        open_bao.authentication_mount_path = AAZStrArg(
+            options=["authentication-mount-path"],
+            help="The authentication method mount path in the archive.",
+        )
+        open_bao.key_value_version = AAZStrArg(
+            options=["key-value-version"],
+            help="The key value engine version. Supports values `V1` and `V2`, defaults to `V2`.",
+            enum={"V1": "V1", "V2": "V2"},
+        )
+        open_bao.mount_path = AAZStrArg(
+            options=["mount-path"],
+            help="The key value secrets engine mount path. Defaults to secret if not specified.",
+        )
+        open_bao.namespace = AAZStrArg(
+            options=["namespace"],
+            help="The vault namespace.",
+        )
+        open_bao.path_template = AAZStrArg(
+            options=["path-template"],
+            help="The secret path pattern. Defaults to `edge-credentials/{namespace}/{name}`.",
         )
 
         update_strategy = cls._args_schema.update_strategy
@@ -646,7 +751,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -771,12 +876,50 @@ class Update(AAZCommand):
             secret_archive_settings = _builder.get(".properties.secretArchiveSettings")
             if secret_archive_settings is not None:
                 secret_archive_settings.set_prop("associatedIdentity", AAZObjectType)
+                secret_archive_settings.set_prop("encryptionPublicKey", AAZStrType, ".encryption_public_key")
+                secret_archive_settings.set_prop("providerConfiguration", AAZObjectType, ".provider_configuration")
                 secret_archive_settings.set_prop("vaultUri", AAZStrType, ".vault_uri")
 
             associated_identity = _builder.get(".properties.secretArchiveSettings.associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
                 associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
+
+            provider_configuration = _builder.get(".properties.secretArchiveSettings.providerConfiguration")
+            if provider_configuration is not None:
+                provider_configuration.set_const("provider", "CyberArk", AAZStrType, ".cyber_ark", typ_kwargs={"flags": {"required": True}})
+                provider_configuration.set_const("provider", "HashiCorpVault", AAZStrType, ".hashi_corp_vault", typ_kwargs={"flags": {"required": True}})
+                provider_configuration.set_const("provider", "OpenBao", AAZStrType, ".open_bao", typ_kwargs={"flags": {"required": True}})
+                provider_configuration.discriminate_by("provider", "CyberArk")
+                provider_configuration.discriminate_by("provider", "HashiCorpVault")
+                provider_configuration.discriminate_by("provider", "OpenBao")
+
+            disc_cyber_ark = _builder.get(".properties.secretArchiveSettings.providerConfiguration{provider:CyberArk}")
+            if disc_cyber_ark is not None:
+                disc_cyber_ark.set_prop("applicationId", AAZStrType, ".cyber_ark.application_id", typ_kwargs={"flags": {"required": True}})
+                disc_cyber_ark.set_prop("folderName", AAZStrType, ".cyber_ark.folder_name")
+                disc_cyber_ark.set_prop("objectNameTemplate", AAZStrType, ".cyber_ark.object_name_template")
+                disc_cyber_ark.set_prop("safeName", AAZStrType, ".cyber_ark.safe_name", typ_kwargs={"flags": {"required": True}})
+
+            disc_hashi_corp_vault = _builder.get(".properties.secretArchiveSettings.providerConfiguration{provider:HashiCorpVault}")
+            if disc_hashi_corp_vault is not None:
+                disc_hashi_corp_vault.set_prop("applicationRoleId", AAZStrType, ".hashi_corp_vault.application_role_id")
+                disc_hashi_corp_vault.set_prop("authenticationMethod", AAZStrType, ".hashi_corp_vault.authentication_method", typ_kwargs={"flags": {"required": True}})
+                disc_hashi_corp_vault.set_prop("authenticationMountPath", AAZStrType, ".hashi_corp_vault.authentication_mount_path")
+                disc_hashi_corp_vault.set_prop("keyValueVersion", AAZStrType, ".hashi_corp_vault.key_value_version")
+                disc_hashi_corp_vault.set_prop("mountPath", AAZStrType, ".hashi_corp_vault.mount_path")
+                disc_hashi_corp_vault.set_prop("namespace", AAZStrType, ".hashi_corp_vault.namespace")
+                disc_hashi_corp_vault.set_prop("pathTemplate", AAZStrType, ".hashi_corp_vault.path_template")
+
+            disc_open_bao = _builder.get(".properties.secretArchiveSettings.providerConfiguration{provider:OpenBao}")
+            if disc_open_bao is not None:
+                disc_open_bao.set_prop("applicationRoleId", AAZStrType, ".open_bao.application_role_id")
+                disc_open_bao.set_prop("authenticationMethod", AAZStrType, ".open_bao.authentication_method", typ_kwargs={"flags": {"required": True}})
+                disc_open_bao.set_prop("authenticationMountPath", AAZStrType, ".open_bao.authentication_mount_path")
+                disc_open_bao.set_prop("keyValueVersion", AAZStrType, ".open_bao.key_value_version")
+                disc_open_bao.set_prop("mountPath", AAZStrType, ".open_bao.mount_path")
+                disc_open_bao.set_prop("namespace", AAZStrType, ".open_bao.namespace")
+                disc_open_bao.set_prop("pathTemplate", AAZStrType, ".open_bao.path_template")
 
             update_strategy = _builder.get(".properties.updateStrategy")
             if update_strategy is not None:
@@ -953,6 +1096,10 @@ class Update(AAZCommand):
             )
             properties.detailed_status_message = AAZStrType(
                 serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.edge_management_service_ca_certificate = AAZObjectType(
+                serialized_name="edgeManagementServiceCaCertificate",
                 flags={"read_only": True},
             )
             properties.hybrid_aks_extended_location = AAZObjectType(
@@ -1182,6 +1329,14 @@ class Update(AAZCommand):
             compute_rack_definitions.Element = AAZObjectType()
             _UpdateHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
 
+            edge_management_service_ca_certificate = cls._schema_on_200.properties.edge_management_service_ca_certificate
+            edge_management_service_ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            edge_management_service_ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
             managed_credentials = cls._schema_on_200.properties.managed_credentials
             managed_credentials.Element = AAZStrType()
 
@@ -1211,8 +1366,79 @@ class Update(AAZCommand):
                 serialized_name="associatedIdentity",
             )
             _UpdateHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.encryption_public_key = AAZStrType(
+                serialized_name="encryptionPublicKey",
+            )
+            secret_archive_settings.provider_configuration = AAZObjectType(
+                serialized_name="providerConfiguration",
+            )
             secret_archive_settings.vault_uri = AAZStrType(
                 serialized_name="vaultUri",
+            )
+
+            provider_configuration = cls._schema_on_200.properties.secret_archive_settings.provider_configuration
+            provider_configuration.provider = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_cyber_ark = cls._schema_on_200.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "CyberArk")
+            disc_cyber_ark.application_id = AAZStrType(
+                serialized_name="applicationId",
+                flags={"required": True},
+            )
+            disc_cyber_ark.folder_name = AAZStrType(
+                serialized_name="folderName",
+            )
+            disc_cyber_ark.object_name_template = AAZStrType(
+                serialized_name="objectNameTemplate",
+            )
+            disc_cyber_ark.safe_name = AAZStrType(
+                serialized_name="safeName",
+                flags={"required": True},
+            )
+
+            disc_hashi_corp_vault = cls._schema_on_200.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "HashiCorpVault")
+            disc_hashi_corp_vault.application_role_id = AAZStrType(
+                serialized_name="applicationRoleId",
+            )
+            disc_hashi_corp_vault.authentication_method = AAZStrType(
+                serialized_name="authenticationMethod",
+                flags={"required": True},
+            )
+            disc_hashi_corp_vault.authentication_mount_path = AAZStrType(
+                serialized_name="authenticationMountPath",
+            )
+            disc_hashi_corp_vault.key_value_version = AAZStrType(
+                serialized_name="keyValueVersion",
+            )
+            disc_hashi_corp_vault.mount_path = AAZStrType(
+                serialized_name="mountPath",
+            )
+            disc_hashi_corp_vault.namespace = AAZStrType()
+            disc_hashi_corp_vault.path_template = AAZStrType(
+                serialized_name="pathTemplate",
+            )
+
+            disc_open_bao = cls._schema_on_200.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "OpenBao")
+            disc_open_bao.application_role_id = AAZStrType(
+                serialized_name="applicationRoleId",
+            )
+            disc_open_bao.authentication_method = AAZStrType(
+                serialized_name="authenticationMethod",
+                flags={"required": True},
+            )
+            disc_open_bao.authentication_mount_path = AAZStrType(
+                serialized_name="authenticationMountPath",
+            )
+            disc_open_bao.key_value_version = AAZStrType(
+                serialized_name="keyValueVersion",
+            )
+            disc_open_bao.mount_path = AAZStrType(
+                serialized_name="mountPath",
+            )
+            disc_open_bao.namespace = AAZStrType()
+            disc_open_bao.path_template = AAZStrType(
+                serialized_name="pathTemplate",
             )
 
             update_strategy = cls._schema_on_200.properties.update_strategy

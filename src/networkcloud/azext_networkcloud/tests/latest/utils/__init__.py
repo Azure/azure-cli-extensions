@@ -1,8 +1,3 @@
-# --------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See License.txt in the project root for license information.
-#
-# --------------------------------------------------------------------------------------------
 """Utilities package for latest Network Cloud tests."""
 
 from .assert_messages import (

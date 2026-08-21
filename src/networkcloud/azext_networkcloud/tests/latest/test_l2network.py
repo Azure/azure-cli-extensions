@@ -99,7 +99,9 @@ def step_delete(test, checks=None):
     """L2Network delete operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud l2network delete --name {name} --resource-group {rg} -y")
+    test.cmd(
+        "az networkcloud l2network delete --name {name} --resource-group {rg} --yes"
+    )
 
 
 def step_list_resource_group(test, checks=None):
