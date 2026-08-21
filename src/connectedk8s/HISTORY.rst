@@ -4,7 +4,7 @@ Release History
 ===============
 1.11.3
 +++++++
-* Fix container log parsing issue for environments using python Kubernetes client 36.0 or higher.
+* Fix container log parsing issue for environments using Python Kubernetes client 36.0 or higher.
 
 1.11.2
 +++++++
