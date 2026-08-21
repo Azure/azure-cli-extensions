@@ -44,12 +44,10 @@ POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 300
 
-# Built-in "Quantum Workspace Data Contributor" role. This is the role granted to
-# users when they are added to a workspace in the Azure Quantum portal.
+# Built-in "Quantum Workspace Data Contributor" role.
 QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
 
-# Built-in "Quantum Workspace Owner" role. The Azure Quantum portal labels users
-# holding this role as workspace administrators.
+# Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
@@ -527,8 +525,7 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
 def _fill_user_display_names(cmd, users):
     """
     Enrich user role assignments with the display name and email resolved from Microsoft Graph
-    in a single batched lookup, matching the Name and Email columns shown in the Quantum portal.
-    Best-effort: when a principal can't be resolved its name/email are left empty.
+    in a single batched lookup. This avoids a per-user Microsoft Graph lookup that would be slow and could hit throttling limits.
     """
     principal_ids = {user["principalId"] for user in users if user.get("principalId")}
     if not principal_ids:
