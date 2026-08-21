@@ -59,6 +59,7 @@ Pending
 21.0.0b12
 ++++++++
 * Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
 
 21.0.0b11
 ++++++++
