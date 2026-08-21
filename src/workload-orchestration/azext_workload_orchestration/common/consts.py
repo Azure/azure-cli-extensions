@@ -56,29 +56,25 @@ def get_regional_arm_endpoint(cmd_or_cli_ctx, location):
 EDGE_RP_NAMESPACE = "Microsoft.Edge"
 
 # ---------------------------------------------------------------------------
-# cert-manager + trust-manager Defaults (installed via AIO Platform extension)
+# cert-manager + trust-manager defaults (installed via Certificate Management extension)
 # ---------------------------------------------------------------------------
-DEFAULT_CERT_MANAGER_VERSION = None  # None = AIO extension default
+DEFAULT_CERT_MANAGER_VERSION = None  # None = extension default
 
 # Registry of extension dependencies for `--extension-dependency-version`.
 # Keys are the user-facing names; values configure the Arc extension install.
 EXTENSION_DEPENDENCIES = {
     "iotplatform": {
-        "extension_type": "microsoft.iotoperations.platform",
-        "extension_name": "aio-certmgr",
-        "namespace": "cert-manager",
-        "scope": "cluster",
+        "extension_type": "microsoft.certmanagement",
+        "extension_name": "azure-cert-management",
         "default_version": None,
     },
 }
 
 # ---------------------------------------------------------------------------
-# AIO Platform Extension (bundles cert-manager + trust-manager)
+# Certificate Management extension (bundles cert-manager + trust-manager)
 # ---------------------------------------------------------------------------
-AIO_PLATFORM_EXTENSION_TYPE = "microsoft.iotoperations.platform"
-AIO_PLATFORM_EXTENSION_NAME = "aio-certmgr"
-AIO_PLATFORM_EXTENSION_NAMESPACE = "cert-manager"
-AIO_PLATFORM_EXTENSION_SCOPE = "cluster"
+CERT_MANAGEMENT_EXTENSION_TYPE = "microsoft.certmanagement"
+CERT_MANAGEMENT_EXTENSION_NAME = "azure-cert-management"
 
 # ---------------------------------------------------------------------------
 # WO Extension Defaults
