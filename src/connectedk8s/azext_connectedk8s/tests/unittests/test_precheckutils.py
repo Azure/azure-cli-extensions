@@ -459,9 +459,7 @@ All PreOnboading Diagnostic Checks passed successfully
 
 def _run_completed_prediagnostic_output(monkeypatch, output):
     def execute_job(*_args, **_kwargs):
-        precheckutils.prediagnostic_job_execution_status = (
-            consts.Job_Status_Completed
-        )
+        precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Completed
         return output
 
     def parse_dns(log, _path, storage_available, _diagnoser_output):
@@ -517,10 +515,7 @@ def test_completed_job_parses_healthy_1_36_1_output(monkeypatch):
 
     assert result == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_dns_check == consts.Diagnostic_Check_Passed
-    assert (
-        precheckutils.prediagnostic_outbound_check
-        == consts.Diagnostic_Check_Passed
-    )
+    assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
 
@@ -552,9 +547,54 @@ def test_completed_job_parses_byte_output(monkeypatch):
 
     assert result == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_dns_check == consts.Diagnostic_Check_Passed
-    assert (
-        precheckutils.prediagnostic_outbound_check
-        == consts.Diagnostic_Check_Passed
-    )
+    assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+
+
+def test_normalize_container_log_preserves_text():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert precheckutils.normalize_container_log(container_log) == container_log.strip()
+
+
+def test_normalize_container_log_decodes_bytes():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert (
+        precheckutils.normalize_container_log(container_log.encode())
+        == container_log.strip()
+    )
+
+
+def test_normalize_container_log_decodes_stringified_bytes():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert (
+        precheckutils.normalize_container_log(repr(container_log.encode()))
+        == container_log.strip()
+    )
+
+
+def test_normalize_container_log_preserves_malformed_byte_literal():
+    malformed_log = "b'not a complete byte literal"
+
+    assert precheckutils.normalize_container_log(malformed_log) == malformed_log
+
+
+def test_split_container_log_preserves_last_line_without_trailing_newline():
+    container_log = "DNS Result: success\nOutbound Result: success"
+
+    assert precheckutils.split_container_log(container_log) == [
+        "DNS Result: success",
+        "Outbound Result: success",
+    ]
+
+
+def test_split_container_log_handles_stringified_bytes():
+    container_log = "DNS Result: success\nOutbound Result: success\n"
+
+    assert precheckutils.split_container_log(repr(container_log.encode())) == [
+        "DNS Result: success",
+        "Outbound Result: success",
+    ]

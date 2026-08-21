@@ -26,7 +26,6 @@ Flow:
 
 from __future__ import annotations
 
-import ast
 import json
 import os
 import shutil
@@ -42,6 +41,10 @@ from kubernetes import config, watch
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
+from azext_connectedk8s._logutils import (
+    normalize_container_log,
+    split_container_log,
+)
 
 if TYPE_CHECKING:
     from knack.commands import CLICommand
@@ -72,22 +75,6 @@ prediagnostic_crd_check = consts.Diagnostic_Check_Starting
 # Log parsing helpers
 # These parse specific sections of the diagnostic job's container logs.
 # ---------------------------------------------------------------------------
-
-
-def _normalize_container_log(container_log: str | bytes) -> str:
-    stripped = container_log.strip()
-    if isinstance(stripped, bytes):
-        return stripped.decode("utf-8", errors="replace")
-
-    if stripped.startswith(("b'", 'b"')):
-        try:
-            byte_log = ast.literal_eval(stripped)
-        except (SyntaxError, ValueError):
-            return stripped
-        if isinstance(byte_log, bytes):
-            return byte_log.decode("utf-8", errors="replace")
-
-    return stripped
 
 
 def _parse_entra_check_result(entra_check_log: str) -> str:
@@ -410,9 +397,9 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         if cluster_diagnostic_checks_container_log != "":
-            cluster_diagnostic_checks_container_log_list = _normalize_container_log(
+            cluster_diagnostic_checks_container_log_list = split_container_log(
                 cluster_diagnostic_checks_container_log
-            ).splitlines()
+            )
             dns_check_log = ""
             outbound_connectivity_check_log = ""
             entra_check_log = ""
@@ -778,7 +765,7 @@ def executing_cluster_diagnostic_checks_job(
                         namespace="azure-arc-release",
                     )
                 )
-                cluster_diagnostic_checks_container_log = _normalize_container_log(
+                cluster_diagnostic_checks_container_log = normalize_container_log(
                     cluster_diagnostic_checks_container_log
                 )
                 try:
@@ -854,7 +841,7 @@ def executing_cluster_diagnostic_checks_job(
                             namespace="azure-arc-release",
                         )
                     )
-                    cluster_diagnostic_checks_container_log = _normalize_container_log(
+                    cluster_diagnostic_checks_container_log = normalize_container_log(
                         cluster_diagnostic_checks_container_log
                     )
                     if storage_space_available:
