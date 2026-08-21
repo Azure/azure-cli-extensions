@@ -88,3 +88,13 @@ migrate local start-migration:
         - missing_command_example
         - missing_command_help
         - unrecognized_help_parameter_rule
+
+# The runbook group binds the global resource_group_name argument, whose
+# option list is -g/--resource-group. The test-coverage linter derives the
+# option name from the dest (--resource-group-name), which the recordings can
+# never match, so this parameter is excluded like the other migrate commands.
+migrate runbook:
+    parameters:
+        resource_group_name:
+            rule_exclusions:
+                - missing_parameter_test_coverage
