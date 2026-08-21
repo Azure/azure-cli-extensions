@@ -120,7 +120,7 @@ def ml_online_deployment_create(
                 module_logger.warning(
                     "All traffic will be set to deployment %s once it has been provisioned.\n"
                     "If you interrupt this command or it times out while waiting for the provisioning, "
-                    "you can try to set all the traffic to this deployment later once its has been provisioned.",
+                    "you can try to set all the traffic to this deployment later once it has been provisioned.",
                     deployment.name
                 )
 
