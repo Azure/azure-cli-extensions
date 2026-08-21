@@ -714,7 +714,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -1212,6 +1212,15 @@ class _UpdateHelper:
             flags={"required": True},
         )
         cls._build_schema_blob_backup_rule_based_auto_protection_settings_read(disc_blob_backup_datasource_parameters_for_auto_protection.auto_protection_settings)
+
+        disc_generic_backup_datasource_parameters = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "GenericBackupDatasourceParameters")
+        disc_generic_backup_datasource_parameters.resource_selectors = AAZListType(
+            serialized_name="resourceSelectors",
+            flags={"required": True},
+        )
+
+        resource_selectors = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "GenericBackupDatasourceParameters").resource_selectors
+        resource_selectors.Element = AAZStrType()
 
         disc_kubernetes_cluster_backup_datasource_parameters = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
         disc_kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListType(
