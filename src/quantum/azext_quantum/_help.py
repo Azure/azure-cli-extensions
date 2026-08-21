@@ -364,6 +364,23 @@ helps['quantum workspace user'] = """
     short-summary: Manage users of an Azure Quantum workspace.
 """
 
+helps['quantum workspace user list'] = """
+    type: command
+    short-summary: List the users with access to an Azure Quantum workspace.
+    long-summary: >-
+        Lists user principals (excluding groups and service principals) assigned the 'Quantum Workspace Owner' or
+        'Quantum Workspace Data Contributor' role for the given (or current) workspace. Each user's Name and Email are
+        resolved from Microsoft Graph. By default this includes access inherited from the parent resource group and
+        subscription; pass '--include-inherited false' to list only assignments scoped directly to the workspace.
+    examples:
+      - name: List all users with access to a workspace.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace
+      - name: List only users assigned directly on the workspace (exclude inherited access).
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace --include-inherited false
+"""
+
 helps['quantum workspace user create'] = """
     type: command
     short-summary: Grant a user, group, or service principal access to an Azure Quantum workspace.
