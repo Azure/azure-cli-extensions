@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces/{}", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces/{}", "2026-07-15-preview"],
         ]
     }
 
@@ -44,8 +44,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_bootstrap_device_name = AAZStrArg(
-            options=["--bootstrap-device", "--network-bootstrap-device-name"],
+        _args_schema.bootstrap_device = AAZStrArg(
+            options=["--bootstrap-device"],
             help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
@@ -114,7 +114,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkBootstrapDeviceName", self.ctx.args.network_bootstrap_device_name,
+                    "networkBootstrapDeviceName", self.ctx.args.bootstrap_device,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -229,6 +229,9 @@ class Show(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
             )
 
             system_data = cls._schema_on_200.system_data

@@ -37,7 +37,10 @@ def call_scenario1(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_show_scenario2(test, checks=[])
+    step_show_scenario2(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_delete_scenario2(test, checks=[])
     cleanup_scenario(test)
 
@@ -56,7 +59,8 @@ def step_show_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric networkmonitor show --network-monitor-name {name} --resource-group {rg}"
+        "az networkfabric networkmonitor show --network-monitor-name {name} --resource-group {rg}",
+        checks=checks,
     )
 
 

@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"administrativeState": "Enabled", "allowedEgressNetworks": [], "customerResourceGroupName": "customer-resource-group", "customerSubscriptionId": "00000000-0000-0000-0000-000000000000", "customerTenantId": "00000000-0000-0000-0000-000000000000", "defaultRoutingDomainLimits": {"managedNatEnabled": "False", "maxSnatPorts": 0, "publicIpAllowance": 0, "vlanBudget": 2}, "routingDomainBudget": 2}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 delegation create
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2-name --resource-name --location --address-prefixes --admin-state --allowed-egr-nets --customer-rg --customer-sub --customer-tenant --drd-limits --rd-budget --tags
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test","name":"fabric-delegation-test","type":"Microsoft.ManagedNetworkFabric/fabrics/delegations","location":"eastus","properties":{"administrativeState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 delegation show
+      ParameterSetName:
+        - --resource-group --fabric-v2 --resource-name
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test","name":"fabric-delegation-test","type":"Microsoft.ManagedNetworkFabric/fabrics/delegations","location":"eastus","properties":{"administrativeState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"administrativeState": "Disabled"}}'
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 delegation update
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --fabric-v2-name --resource-name --admin-state --address-prefixes --allowed-egr-nets --drd-limits --rd-budget --tags
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test","name":"fabric-delegation-test","type":"Microsoft.ManagedNetworkFabric/fabrics/delegations","location":"eastus","properties":{"administrativeState":"Disabled","provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 delegation list
+      ParameterSetName:
+      - --resource-group --fabric-v2
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test","name":"fabric-delegation-test","type":"Microsoft.ManagedNetworkFabric/fabrics/delegations","location":"eastus","properties":{"administrativeState":"Disabled","provisioningState":"Succeeded"}}]}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric fabric-v2 delegation delete
+      ParameterSetName:
+      - --resource-group --fabric-v2 --resource-name
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-resource-group/providers/Microsoft.ManagedNetworkFabric/fabrics/fabric-v2-test/delegations/fabric-delegation-test?api-version=2026-07-15-preview
+  response:
+    body:
+      string: ''
+    headers: {}
+    status:
+      code: 204
+      message: No Content
+version: 1

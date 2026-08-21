@@ -22,9 +22,9 @@ class UpdateAdminState(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}/updateadministrativestate", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}/updateadministrativestate", "2026-07-15-preview"],
         ]
     }
 
@@ -70,6 +70,12 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
+        _args_schema.force = AAZStrArg(
+            options=["-f", "--force"],
+            arg_group="Body",
+            help="Break-glass revocation without successful consumer coordination. Default value is False.",
+            enum={"False": "False", "True": "True"},
+        )
         _args_schema.resource_ids = AAZListArg(
             options=["--resource-ids"],
             arg_group="Body",
@@ -171,7 +177,7 @@ class UpdateAdminState(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -196,6 +202,7 @@ class UpdateAdminState(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("force", AAZStrType, ".force")
             _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
             _builder.set_prop("state", AAZStrType, ".state")
 

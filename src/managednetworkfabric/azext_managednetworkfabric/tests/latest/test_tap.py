@@ -28,7 +28,10 @@ def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
     step_create_scenario1(test, checks=[])
-    step_show(test, checks=[])
+    step_show(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_update_scenario1(test, checks=[])
@@ -73,7 +76,10 @@ def step_show(test, checks=None):
     """Network Tap show operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkfabric tap show --resource-name {name} --resource-group {rg}")
+    test.cmd(
+        "az networkfabric tap show --resource-name {name} --resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_list_resource_group(test, checks=None):
@@ -117,7 +123,7 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable}"
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateEnable} -f {force}"
     )
 
 
@@ -126,7 +132,7 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable} --resource-ids {resourceIds}"
+        "az networkfabric tap update-admin-state --resource-group {rg} --resource-name {name} --state {stateDisable} --resource-ids {resourceIds} --force {force}"
     )
 
 
@@ -158,6 +164,7 @@ class GA_TapScenarioTest1(ScenarioTest):
                 ),
                 "updatedPollingType": CONFIG.get("NETWORK_TAP", "updated_polling_type"),
                 "resourceIds": CONFIG.get("NETWORK_TAP", "resource_ids"),
+                "force": CONFIG.get("NETWORK_TAP", "force_flag"),
                 "userAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "user_assigned_identity"
                 ),

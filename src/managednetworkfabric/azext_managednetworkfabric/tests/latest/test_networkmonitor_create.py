@@ -27,7 +27,10 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     cleanup_scenario(test)
 
 
