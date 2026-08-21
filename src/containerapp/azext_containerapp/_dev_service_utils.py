@@ -6,7 +6,7 @@
 
 from azure.cli.core.azclierror import CLIError, ResourceNotFoundError
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient
+from ._clients import ManagedEnvironmentPreviewClient, ContainerAppPreviewClient
 from ._constants import (
     CONTAINER_APPS_RP
 )
@@ -25,7 +25,7 @@ class DevServiceUtils:
         env_info = None
 
         try:
-            env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name,
+            env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name,
                                                      name=environment_name)
         except Exception:  # pylint: disable=broad-except
             pass
@@ -46,7 +46,7 @@ class DevServiceUtils:
         containerapp_def = None
 
         try:
-            containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name,
+            containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name,
                                                        name=service_name)
         except Exception:  # pylint: disable=broad-except
             pass
@@ -59,7 +59,7 @@ class DevServiceUtils:
             raise ResourceNotFoundError("The service '{}' of type {} does not exist".format(service_name, service_type))
 
         try:
-            return ContainerAppClient.delete(cmd=cmd, name=service_name, resource_group_name=resource_group_name,
+            return ContainerAppPreviewClient.delete(cmd=cmd, name=service_name, resource_group_name=resource_group_name,
                                              no_wait=no_wait)
         except CLIError as e:
             handle_raw_exception(e)
