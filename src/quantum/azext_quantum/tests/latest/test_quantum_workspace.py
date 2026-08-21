@@ -337,7 +337,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         stubs = [{"id": "oid", "displayName": "Contoso User", "mail": "user@contoso.com", "userPrincipalName": "user@contoso.com"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[[], assignments]) as list_role_assignments, \
-                patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")
@@ -358,7 +358,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[owner, contributor]), \
-                patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")
@@ -386,7 +386,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com", "userPrincipalName": "u@contoso.com"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
-                patch("azure.cli.command_modules.role.custom._graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")

@@ -533,11 +533,12 @@ def _fill_user_display_names(cmd, users):
     if not principal_ids:
         return
 
-    from azure.cli.command_modules.role.custom import _graph_client_factory, _get_object_stubs
+    from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import _get_object_stubs
 
     directory_objects = {}
     try:
-        graph_client = _graph_client_factory(cmd.cli_ctx)
+        graph_client = graph_client_factory(cmd.cli_ctx)
         for obj in _get_object_stubs(graph_client, principal_ids):
             directory_objects[obj.get("id")] = obj
     except Exception as ex:  # pylint: disable=broad-except
