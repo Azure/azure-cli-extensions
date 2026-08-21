@@ -4275,7 +4275,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if self.decorator_mode not in (DecoratorMode.CREATE, DecoratorMode.UPDATE):
             return False
         explicit = bool(self.raw_param.get("enable_hosted_system"))
-        implicit = all(
+        # on update the conversion must be requested explicitly; subnets never imply it
+        implicit = self.decorator_mode == DecoratorMode.CREATE and all(
             [
                 self.raw_param.get("system_node_subnet_id"),
                 self.raw_param.get("node_subnet_id"),
@@ -4289,8 +4290,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_system_node_subnet_id(self) -> Union[str, None]:
         """Obtain the value of system_node_subnet_id.
 
-        Validates that BYO VNet subnet flags are used as a full triple
-        (system-node / node / apiserver).
+        Cross-validates the BYO VNet subnet flags for the current decorator mode.
 
         :return: str or None
         """
@@ -4346,9 +4346,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def validate_byo_hobo_subnet_trio(self) -> None:
         """Cross-validate the BYO VNet HOBO subnet flags.
 
-        Rule: if either --system-node-subnet-id or --node-subnet-id is set, the
-        full BYO trio must be set and --sku must be automatic. A complete trio
-        implies hosted-system enablement.
+        On create, setting either --system-node-subnet-id or --node-subnet-id requires the
+        full trio (both of those plus --apiserver-subnet-id), and a complete trio implies
+        hosted-system enablement. On update the conversion is requested explicitly with
+        --enable-hosted-system, so the subnets only shape the networking it lands on:
+        --node-subnet-id requires --system-node-subnet-id and --apiserver-subnet-id stays
+        optional. Either way the cluster must use the Automatic SKU.
         """
         system_node_subnet_id = self.raw_param.get("system_node_subnet_id")
         node_subnet_id = self.raw_param.get("node_subnet_id")
@@ -4357,6 +4360,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             raise RequiredArgumentMissingError(self._hosted_system_sku_error_message())
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if not self.has_byo_hobo_subnets():
+                return
+            if node_subnet_id and not system_node_subnet_id:
+                raise RequiredArgumentMissingError(
+                    '"--node-subnet-id" requires "--system-node-subnet-id".'
+                )
+            if not enable_hosted_system:
+                raise RequiredArgumentMissingError(
+                    'Using "--system-node-subnet-id" and "--node-subnet-id" require "--enable-hosted-system".'
+                )
+            return
 
         if self.has_byo_hobo_subnets():
             missing = []
@@ -4374,11 +4390,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     f"Missing: {', '.join(missing)}."
                 )
             if self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-                if self.decorator_mode == DecoratorMode.UPDATE:
-                    raise RequiredArgumentMissingError(
-                        '"--system-node-subnet-id" and "--node-subnet-id" are only supported on '
-                        "clusters with the Automatic SKU."
-                    )
                 raise RequiredArgumentMissingError(
                     '"--system-node-subnet-id" and "--node-subnet-id" require "--sku automatic".'
                 )
@@ -8891,9 +8902,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
         mc.hosted_system_profile.enabled = True
 
-        # BYO VNet: all three subnets (system-node / node / apiserver) must share a VNet,
-        # but the server enforces that check. The trio is already validated above, so read
-        # the raw values rather than the getters, which would re-run that validation.
+        # Already validated above, so read the raw values rather than the getters,
+        # which would re-run that validation.
         system_node_subnet_id = self.context.raw_param.get("system_node_subnet_id")
         node_subnet_id = self.context.raw_param.get("node_subnet_id")
         if system_node_subnet_id:
