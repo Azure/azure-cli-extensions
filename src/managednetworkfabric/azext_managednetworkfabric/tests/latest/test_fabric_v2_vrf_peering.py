@@ -54,7 +54,7 @@ def step_create_scenario1(test, checks=None):
         "--secondary-ipv6-prefix {secondaryIpv6Prefix} "
         "--management-policy {managementPolicy} "
         "--arista-cv-config {aristaCvConfig} --cisco-aci-config {ciscoAciConfig} "
-        "--platform-managed-config {platformManagedConfig} --tags {tags}",
+        "--platform-mg-config {platformManagedConfig} --tags {tags}",
         checks=checks or [],
     )
 
@@ -108,7 +108,7 @@ def step_update_scenario1(test, checks=None):
         "--secondary-ipv6-prefix {secondaryIpv6Prefix} "
         "--management-policy {updatedManagementPolicy} "
         "--arista-cv-config {aristaCvConfig} --cisco-aci-config {ciscoAciConfig} "
-        "--platform-managed-config {platformManagedConfig} --tags {updatedTags}",
+        "--platform-mg-config {platformManagedConfig} --tags {updatedTags}",
         checks=checks or [],
     )
 

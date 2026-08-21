@@ -27,7 +27,7 @@ def step_confirm_attachment(test, checks=None):
         "--resource-group {rg} --fabric-v2 {fabricName} --vrf {vrfName} "
         "--resource-name {name} --consumer-resource-id {consumerResourceId} "
         "--request-generation {confirmRequestGeneration} "
-        "--service-peer-attachment-token {servicePeerAttachmentToken}",
+        "--spa-token {servicePeerAttachmentToken}",
         checks=checks or [],
     )
 

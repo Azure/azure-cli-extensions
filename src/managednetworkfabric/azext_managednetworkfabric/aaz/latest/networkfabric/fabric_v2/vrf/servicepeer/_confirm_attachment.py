@@ -100,7 +100,7 @@ class ConfirmAttachment(AAZCommand):
             ),
         )
         _args_schema.service_peer_attachment_token = AAZPasswordArg(
-            options=["--service-peer-attachment-token"],
+            options=["--spa-token", "--service-peer-attachment-token"],
             arg_group="Body",
             help="Exact unexpired token returned by prepareAttachment.",
             required=True,

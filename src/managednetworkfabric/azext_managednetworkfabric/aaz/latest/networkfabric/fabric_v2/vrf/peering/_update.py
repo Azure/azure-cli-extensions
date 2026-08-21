@@ -129,7 +129,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.platform_managed_config = AAZObjectArg(
-            options=["--platform-managed-config"],
+            options=["--platform-mg-config", "--platform-managed-config"],
             arg_group="Properties",
             help="Platform-managed peering configuration.",
             nullable=True,

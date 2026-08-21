@@ -88,8 +88,8 @@ class Create(AAZCommand):
             help="Provider-neutral egress labels a customer-created Vrf may select. Empty authorizes private-only routing domains.",
             required=True,
         )
-        _args_schema.customer_resource_group_name = AAZStrArg(
-            options=["--customer-rg", "--customer-rg-name", "--customer-resource-group-name"],
+        _args_schema.customer_rg_name = AAZStrArg(
+            options=["--customer-rg", "--customer-rg-name"],
             arg_group="Properties",
             help="Exact customer resource group that receives the tenant-local authorization. Required and immutable after creation.",
             required=True,
@@ -309,7 +309,7 @@ class Create(AAZCommand):
                 properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
                 properties.set_prop("administrativeState", AAZStrType, ".admin_state", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("allowedEgressNetworks", AAZListType, ".allowed_egress_networks", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("customerResourceGroupName", AAZStrType, ".customer_resource_group_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("customerResourceGroupName", AAZStrType, ".customer_rg_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("customerSubscriptionId", AAZStrType, ".customer_subscription_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("customerTenantId", AAZStrType, ".customer_tenant_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("defaultRoutingDomainLimits", AAZObjectType, ".default_routing_domain_limits", typ_kwargs={"flags": {"required": True}})
