@@ -26,6 +26,7 @@ Flow:
 
 from __future__ import annotations
 
+import ast
 import json
 import os
 import shutil
@@ -71,6 +72,22 @@ prediagnostic_crd_check = consts.Diagnostic_Check_Starting
 # Log parsing helpers
 # These parse specific sections of the diagnostic job's container logs.
 # ---------------------------------------------------------------------------
+
+
+def _normalize_container_log(container_log: str | bytes) -> str:
+    stripped = container_log.strip()
+    if isinstance(stripped, bytes):
+        return stripped.decode("utf-8", errors="replace")
+
+    if stripped.startswith(("b'", 'b"')):
+        try:
+            byte_log = ast.literal_eval(stripped)
+        except (SyntaxError, ValueError):
+            return stripped
+        if isinstance(byte_log, bytes):
+            return byte_log.decode("utf-8", errors="replace")
+
+    return stripped
 
 
 def _parse_entra_check_result(entra_check_log: str) -> str:
@@ -389,10 +406,9 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         if cluster_diagnostic_checks_container_log != "":
-            cluster_diagnostic_checks_container_log_list = (
-                cluster_diagnostic_checks_container_log.split("\n")
-            )
-            cluster_diagnostic_checks_container_log_list.pop(-1)
+            cluster_diagnostic_checks_container_log_list = _normalize_container_log(
+                cluster_diagnostic_checks_container_log
+            ).splitlines()
             dns_check_log = ""
             outbound_connectivity_check_log = ""
             entra_check_log = ""
@@ -757,6 +773,9 @@ def executing_cluster_diagnostic_checks_job(
                         namespace="azure-arc-release",
                     )
                 )
+                cluster_diagnostic_checks_container_log = _normalize_container_log(
+                    cluster_diagnostic_checks_container_log
+                )
                 try:
                     if storage_space_available:
                         dns_check_path = os.path.join(
@@ -830,12 +849,15 @@ def executing_cluster_diagnostic_checks_job(
                             namespace="azure-arc-release",
                         )
                     )
+                    cluster_diagnostic_checks_container_log = _normalize_container_log(
+                        cluster_diagnostic_checks_container_log
+                    )
                     if storage_space_available:
                         log_path = os.path.join(
                             filepath_with_timestamp,
                             "cluster_diagnostic_checks_job_log.txt",
                         )
-                        with open(log_path, "w+") as f:
+                        with open(log_path, "w+", encoding="utf-8") as f:
                             f.write(cluster_diagnostic_checks_container_log)
                 except OSError as e:
                     if "[Errno 28]" in str(e):
