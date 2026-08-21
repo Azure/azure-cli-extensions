@@ -315,7 +315,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # list users and verify the new assignment appears
-        self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} -o json', checks=[
+        self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} --include-inherited false -o json', checks=[
             self.check(f"length([?principalId=='{test_object_id}'])", 1)
         ])
 
