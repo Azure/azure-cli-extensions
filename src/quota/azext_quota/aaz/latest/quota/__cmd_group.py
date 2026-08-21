@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "quota",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manag quota for Azure resource providers.
+    """Manage quota for Azure resource providers.
     """
     pass
 
