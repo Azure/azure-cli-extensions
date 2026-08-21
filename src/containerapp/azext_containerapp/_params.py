@@ -515,6 +515,10 @@ def load_arguments(self, _):
                    help="The name of the container app revision. Default to the latest revision.")
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('custom_debug_image_name', options_list=['--image'], is_preview=True,
+                   help="Custom container image for the debug ephemeral container (e.g., 'mcr.microsoft.com/dotnet/sdk:8.0'). If not specified, the platform default debug image is used.")
+        c.argument('custom_debug_image_entrypoint_command', options_list=['--entrypoint'], is_preview=True,
+                   help="Custom entrypoint command for the debug container (e.g., '/bin/bash'). Requires --image to also be specified.")
 
     with self.argument_context('containerapp label-history') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
