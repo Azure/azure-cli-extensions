@@ -517,7 +517,8 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
     scope = _get_workspace_resource_id(info)
     assignments = []
     for role_id in (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID):
-        assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited)
+        # fill_principal_name=False avoids a per-call Microsoft Graph lookup that _fill_user_display_names already does in one batch.
+        assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited, fill_principal_name=False)
     users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
     _fill_user_display_names(cmd, users)
     return users
@@ -525,9 +526,9 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
 
 def _fill_user_display_names(cmd, users):
     """
-    Enrich user role assignments with the display name and email resolved from Microsoft Graph,
-    matching the Name and Email columns shown in the Quantum portal. Best-effort: if the lookup
-    fails (for example, the caller cannot read the directory), the principal name is used instead.
+    Enrich user role assignments with the display name and email resolved from Microsoft Graph
+    in a single batched lookup, matching the Name and Email columns shown in the Quantum portal.
+    Best-effort: when a principal can't be resolved its name/email are left empty.
     """
     principal_ids = {user["principalId"] for user in users if user.get("principalId")}
     if not principal_ids:
@@ -546,5 +547,5 @@ def _fill_user_display_names(cmd, users):
 
     for user in users:
         obj = directory_objects.get(user.get("principalId"), {})
-        user["displayName"] = obj.get("displayName") or user.get("principalName")
-        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or user.get("principalName")
+        user["displayName"] = obj.get("displayName") or obj.get("userPrincipalName")
+        user["mail"] = obj.get("mail") or obj.get("userPrincipalName")
