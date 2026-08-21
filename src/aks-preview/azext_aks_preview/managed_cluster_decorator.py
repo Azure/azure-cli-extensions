@@ -1906,6 +1906,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return properties.get("enableFIPS")
         return None
 
+    def get_enable_os_disk_full_caching(self) -> bool:
+        """Obtain the value of enable_os_disk_full_caching for the default agent pool profile.
+        :return: bool
+        """
+        return self.raw_param.get("enable_os_disk_full_caching")
+
     def get_enable_fips(self) -> bool:
         """Obtain the value of enable_fips.
         :return: bool
@@ -4778,6 +4784,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     agentpool.enable_fips = True
         return mc
 
+    def set_up_os_disk_full_caching(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up enable_os_disk_full_caching for the default agent pool profile.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_os_disk_full_caching():
+            if mc.agent_pool_profiles:
+                mc.agent_pool_profiles[0].enable_os_disk_full_caching = True
+        return mc
+
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -5833,6 +5851,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_integrity(mc)
         # set up FIPS mode at the cluster level
         mc = self.set_up_enable_fips(mc)
+        # set up full-cache ephemeral OS disk on the default agent pool profile
+        mc = self.set_up_os_disk_full_caching(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption

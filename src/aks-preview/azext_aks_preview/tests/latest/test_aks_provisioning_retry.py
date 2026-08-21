@@ -246,6 +246,241 @@ class TestTransientConflictRetry(AKSRetryTestCase):
         mock_sleep.assert_not_called()
 
 
+class TestAlreadyExistsConflictHandling(AKSRetryTestCase):
+    def test_is_resource_already_exists_conflict_detects_message(self):
+        instance = self._make_instance()
+
+        self.assertTrue(
+            instance._is_resource_already_exists_conflict(
+                CLIError("Resource 'cliakstest123' already exists.")
+            )
+        )
+        self.assertTrue(
+            instance._is_resource_already_exists_conflict(
+                CLIError("The Resource 'cliakstest123' ALREADY EXISTS in the given RG.")
+            )
+        )
+        self.assertFalse(
+            instance._is_resource_already_exists_conflict(
+                CLIError("Another operation is in progress.")
+            )
+        )
+
+    def test_build_show_command_for_aks_create(self):
+        instance = self._make_instance()
+
+        show_command = instance._build_show_command_for_already_existing_resource(
+            "aks create --resource-group=rg1 --name=cluster1 --ssh-key-value=abc"
+        )
+
+        self.assertEqual(
+            show_command, "aks show --resource-group rg1 --name cluster1"
+        )
+
+    def test_build_show_command_for_aks_create_with_short_options(self):
+        instance = self._make_instance()
+
+        show_command = instance._build_show_command_for_already_existing_resource(
+            "aks create -g rg1 -n cluster1 --ssh-key-value abc"
+        )
+
+        self.assertEqual(
+            show_command, "aks show --resource-group rg1 --name cluster1"
+        )
+
+    def test_build_show_command_for_nodepool_add(self):
+        instance = self._make_instance()
+
+        show_command = instance._build_show_command_for_already_existing_resource(
+            "aks nodepool add --resource-group=rg1 --cluster-name=cluster1 --name=pool1"
+        )
+
+        self.assertEqual(
+            show_command,
+            "aks nodepool show --resource-group rg1 --cluster-name cluster1 --name pool1",
+        )
+
+    def test_build_show_command_returns_none_for_unrecognized_command(self):
+        instance = self._make_instance()
+
+        self.assertIsNone(
+            instance._build_show_command_for_already_existing_resource(
+                "aks delete --resource-group=rg1 --name=cluster1 --yes"
+            )
+        )
+
+    def test_build_show_command_returns_none_when_missing_required_options(self):
+        instance = self._make_instance()
+
+        # aks nodepool add without --cluster-name cannot be translated to a show command.
+        self.assertIsNone(
+            instance._build_show_command_for_already_existing_resource(
+                "aks nodepool add --resource-group=rg1 --name=pool1"
+            )
+        )
+
+    @patch.dict("os.environ", {
+        "AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3",
+        "AZURE_CLI_TEST_OPERATION_BASE_DELAY": "0.01",
+    })
+    @patch("time.sleep", return_value=None)
+    @patch("random.uniform", return_value=0)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_already_exists_after_prior_retry_falls_back_to_show(
+        self, mock_execute, _mock_random, mock_sleep
+    ):
+        """
+        Regression coverage for the flaky race: a create is retried after a transient
+        conflict, but the *original* attempt's async operation actually finishes
+        server-side before the retry lands, so the retried create fails with
+        "already exists". Since this happens on a retry (attempt > 0), it must be
+        treated as success by switching to the equivalent 'show' command rather than
+        re-raising.
+        """
+        settled_result = self._result({"provisioningState": "Succeeded"})
+        mock_execute.side_effect = [
+            CLIError("Another operation is in progress."),
+            CLIError("Resource 'cliakstest123' already exists."),
+            settled_result,
+        ]
+
+        instance = self._make_instance()
+        result = instance._execute_with_transient_conflict_retry(
+            "aks create --resource-group=rg1 --name=cliakstest123 --ssh-key-value=abc",
+            False,
+        )
+
+        self.assertIs(result, settled_result)
+        self.assertEqual(mock_execute.call_count, 3)
+        mock_execute.assert_called_with(
+            instance.cli_ctx,
+            "aks show --resource-group rg1 --name cliakstest123",
+            expect_failure=False,
+        )
+        # Only the first (transient-conflict) retry should have slept; the
+        # already-exists fallback must not sleep before switching to 'show'.
+        mock_sleep.assert_called_once()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_already_exists_on_first_attempt_still_raises(
+        self, mock_execute, mock_sleep
+    ):
+        """
+        Protects the intentional negative test for duplicate cluster names: an
+        "already exists" failure on the very first attempt (no prior transient-conflict
+        retry) must keep propagating unchanged, not be swallowed into a 'show' call.
+        """
+        mock_execute.side_effect = CLIError(
+            "Resource 'cliakstest123' already exists."
+        )
+
+        with self.assertRaisesRegex(CLIError, "already exists"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks create --resource-group=rg1 --name=cliakstest123 --ssh-key-value=abc",
+                False,
+            )
+
+        mock_execute.assert_called_once()
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_already_exists_on_first_attempt_raises_even_with_expect_failure(
+        self, mock_execute, mock_sleep
+    ):
+        mock_execute.side_effect = CLIError(
+            "Resource 'cliakstest123' already exists."
+        )
+
+        with self.assertRaises(CLIError):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks create --resource-group=rg1 --name=cliakstest123 --ssh-key-value=abc",
+                True,
+            )
+
+        mock_execute.assert_called_once()
+        mock_sleep.assert_not_called()
+
+
+class TestOsSkuRetirementSkip(AKSRetryTestCase):
+    """
+    Unit coverage for `_cmd_or_skip_if_os_sku_retired`, which was broadened this session
+    to recognize both `InvalidOSSKU` (Flatcar's retirement error code) and
+    `WindowsSKUNotSupported` (WindowsAnnual's retirement error code) as valid retirement
+    signals, instead of only the former.
+    """
+
+    def test_skips_on_flatcar_retirement_error(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock(
+            side_effect=CLIError(
+                "(InvalidOSSKU) OSSKU='Flatcar' is invalid, details: Flatcar Container "
+                "Linux for AKS (preview) was retired on 2026-06-08 and is no longer "
+                "available for new node pools."
+            )
+        )
+
+        with self.assertRaises(unittest.SkipTest):
+            instance._cmd_or_skip_if_os_sku_retired("aks nodepool add", os_sku="Flatcar")
+
+    def test_skips_on_windows_annual_retirement_error(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock(
+            side_effect=CLIError(
+                '(WindowsSKUNotSupported) Requested Windows SKU "WindowsAnnual" is not '
+                'supported. Details: "Windows Annual Channel has been retired. Creation '
+                'of new Windows Annual agent pools is no longer supported. Use Windows2022 '
+                'or Windows2025 instead."'
+            )
+        )
+
+        with self.assertRaises(unittest.SkipTest):
+            instance._cmd_or_skip_if_os_sku_retired(
+                "aks nodepool add", os_sku="WindowsAnnual"
+            )
+
+    def test_propagates_unrelated_errors(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock(
+            side_effect=CLIError("(BadRequest) something unrelated went wrong")
+        )
+
+        with self.assertRaisesRegex(CLIError, "unrelated"):
+            instance._cmd_or_skip_if_os_sku_retired(
+                "aks nodepool add", os_sku="WindowsAnnual"
+            )
+
+    def test_propagates_when_os_sku_name_does_not_match(self):
+        """A retirement-shaped error for a *different* OS SKU must not be swallowed."""
+        instance = self._make_instance()
+        instance.cmd = MagicMock(
+            side_effect=CLIError(
+                "(InvalidOSSKU) OSSKU='Flatcar' is invalid, details: Flatcar Container "
+                "Linux for AKS (preview) was retired on 2026-06-08 and is no longer "
+                "available for new node pools."
+            )
+        )
+
+        with self.assertRaisesRegex(CLIError, "Flatcar"):
+            instance._cmd_or_skip_if_os_sku_retired(
+                "aks nodepool add", os_sku="WindowsAnnual"
+            )
+
+    def test_returns_result_when_command_succeeds(self):
+        instance = self._make_instance()
+        expected = self._result({"provisioningState": "Succeeded"})
+        instance.cmd = MagicMock(return_value=expected)
+
+        result = instance._cmd_or_skip_if_os_sku_retired(
+            "aks nodepool add", os_sku="WindowsAnnual"
+        )
+
+        self.assertIs(result, expected)
+
+
 class TestRefetchSettledResult(AKSRetryTestCase):
     @patch("azure.cli.testsdk.base.execute")
     def test_refetches_agentpool_with_native_show(self, mock_execute):
