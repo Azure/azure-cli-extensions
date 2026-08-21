@@ -368,8 +368,8 @@ class OutputsOperations(object):
         :param job_name: The name of the streaming job.
         :type job_name: str
         :param select: The $select OData query parameter. This is a comma-separated list of structural
-         properties to include in the response, or "\ *" to include all properties. By default, all
-         properties are returned except diagnostics. Currently only accepts '*\ ' as a valid value.
+         properties to include in the response, or "\\ *" to include all properties. By default, all
+         properties are returned except diagnostics. Currently only accepts '*\\ ' as a valid value.
         :type select: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OutputListResult or the result of cls(response)
