@@ -69,7 +69,7 @@ interactions:
       - AZURECLI/2.50.0 (PIP) azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.13
         (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001","name":"clitsi.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_timeseriesinsights_event_source_eventhub","date":"2023-08-01T03:26:55Z","module":"timeseriesinsights","CreatedOnDate":"2023-08-01T03:26:57.1774378Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -377,7 +377,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.EventHub/namespaces/cli-test-tsi-ehns000003/authorizationRules/RootManageSharedAccessKey/listKeys?api-version=2023-01-01-preview
   response:
     body:
-      string: '{"primaryConnectionString":"Endpoint=sb://cli-test-tsi-ehns000003.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=********************************************","secondaryConnectionString":"Endpoint=sb://cli-test-tsi-ehns000003.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=********************************************","primaryKey":"********************************************","secondaryKey":"********************************************","keyName":"RootManageSharedAccessKey"}'
+      string: '{"primaryConnectionString":"Endpoint=sb://cli-test-tsi-ehns000003.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=HWms3+JUHOKgE6HH85DHfVleM5KUaGsQW+AEhPvVgH4=","secondaryConnectionString":"Endpoint=sb://cli-test-tsi-ehns000003.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=B0vxBhed7hH3O37SpgFM9JTnvaBpVBKxp+AEhL4C3EM=","primaryKey":"HWms3+JUHOKgE6HH85DHfVleM5KUaGsQW+AEhPvVgH4=","secondaryKey":"B0vxBhed7hH3O37SpgFM9JTnvaBpVBKxp+AEhL4C3EM=","keyName":"RootManageSharedAccessKey"}'
     headers:
       cache-control:
       - no-cache
