@@ -35,6 +35,7 @@ from azext_aks_preview._consts import (
     CONST_INGRESS_APPGW_WATCH_NAMESPACE,
     CONST_KUBE_DASHBOARD_ADDON_NAME,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
@@ -81,6 +82,7 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
+    AKSManagedClusterCreateDecorator,
     AKSManagedClusterParamDict,
 )
 from azext_aks_preview.tests.latest.mocks import (
@@ -108,7 +110,9 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azext_aks_preview._consts import (
+    CONST_OUTBOUND_TYPE_BLOCK,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from dateutil.parser import parse
 from deepdiff import DeepDiff
@@ -583,7 +587,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         load_balancer_profile_2 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_i_pv6=20
+                count=10, count_ipv6=20
             ),
             outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPs(
                 public_i_ps=[
@@ -624,7 +628,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), None)
         load_balancer_profile = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_i_pv6=10
+                count_ipv6=10
             )
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
@@ -662,7 +666,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         load_balancer_profile_3 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_i_pv6=20
+                count=10, count_ipv6=20
             ),
             outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPs(
                 public_i_ps=[
@@ -4894,6 +4898,148 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
         )
 
+        system_node_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/SystemNode"
+        node_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/Node"
+        apiserver_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/APIServer"
+        ctx6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx6)
+        outbound_type_6 = ctx6._get_outbound_type(False, False, None)
+        self.assertEqual(outbound_type_6, CONST_OUTBOUND_TYPE_LOAD_BALANCER)
+
+        ctx7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "sku": "automatic",
+                "outbound_type": "managedNATGateway",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx7)
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx7._get_outbound_type(True, False, None)
+
+        ctx8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "sku": "automatic",
+                "outbound_type": "userAssignedNATGateway",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx8)
+        with self.assertRaisesRegex(RequiredArgumentMissingError, "NAT gateway with outbound ips"):
+            ctx8._get_outbound_type(True, False, None)
+
+        hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()
+        hosted_system_profile.system_node_subnet_id = system_node_subnet_id
+        hosted_system_profile.node_subnet_id = node_subnet_id
+        mc_existing_byo = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER
+            ),
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+            hosted_system_profile=hosted_system_profile,
+        )
+        for outbound_type in ["userDefinedRouting", "userAssignedNATGateway"]:
+            ctx_existing_byo = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict({"outbound_type": outbound_type}),
+                self.models,
+                decorator_mode=DecoratorMode.UPDATE,
+            )
+            self.create_attach_agentpool_context(ctx_existing_byo)
+            ctx_existing_byo.attach_mc(mc_existing_byo)
+            self.assertEqual(
+                ctx_existing_byo._get_outbound_type(True, False, None),
+                outbound_type,
+            )
+
+    def test_get_outbound_type_update_preserves_existing_value(self):
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            outbound_type=CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=network_profile,
+            sku=self.models.ManagedClusterSKU(name="Base"),
+        )
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "base"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        ctx.agentpool_context = mock.MagicMock()
+        ctx.agentpool_context.get_vnet_subnet_id.return_value = None
+        ctx.attach_mc(mc)
+
+        self.assertEqual(
+            ctx.get_outbound_type(),
+            CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+        )
+
+    def test_byo_hobo_subnet_trio_implies_enable_hosted_system(self):
+        system_node_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/SystemNode"
+        node_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/Node"
+        apiserver_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/APIServer"
+
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx1.validate_byo_hobo_subnet_trio()
+        self.assertTrue(ctx1.get_enable_hosted_system())
+
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx2.validate_byo_hobo_subnet_trio()
+
+        ctx3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "sku": "base",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx3.validate_byo_hobo_subnet_trio()
+
     def test_get_outbound_type_update_udr_byo_vnet(self):
         """Test that updating to UDR succeeds when the cluster has a BYO VNet (vnet_subnet_id is set on agentpool)."""
         ctx = AKSPreviewManagedClusterContext(
@@ -6166,7 +6312,81 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_set_up_network_profile_preview(self):
+    def test_set_up_agentpool_profile_hosted_system_skips_default_pool(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "sku": "automatic",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            dec_1.agentpool_decorator,
+            "construct_agentpool_profile_preview",
+        ) as construct_agentpool_profile:
+            dec_mc_1 = dec_1.set_up_agentpool_profile(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.agent_pool_profiles)
+        construct_agentpool_profile.assert_not_called()
+
+    def test_set_up_agentpool_profile_ssh_access_allows_no_agent_pools(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_access": CONST_SSH_ACCESS_LOCALUSER},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location", agent_pool_profiles=None)
+        dec_1.context.attach_mc(mc_1)
+
+        dec_mc_1 = dec_1.set_up_agentpool_profile_ssh_access(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.agent_pool_profiles)
+
+    def test_set_up_linux_profile_hosted_system_skips_ssh_key(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "sku": "automatic",
+                "ssh_key_value": "unused-for-managed-system-pool",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        dec_mc_1 = dec_1.set_up_linux_profile(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.linux_profile)
+
+    def test_set_up_linux_profile_automatic_sku_skips_ssh_key(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "sku": "automatic",
+                "ssh_key_value": "unused-for-managed-system-pool",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        dec_mc_1 = dec_1.set_up_linux_profile(mc_1)
+
+        self.assertIs(dec_mc_1, mc_1)
+        self.assertIsNone(dec_mc_1.linux_profile)
+
         # custom value
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -6328,6 +6548,144 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             api_server_access_profile=ground_truth_api_server_access_profile_4,
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        dec_5 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "apiserver_subnet_id": apiserver_subnet_id,
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "sku": "automatic",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(location="test_location")
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.set_up_api_server_access_profile(mc_5)
+        ground_truth_api_server_access_profile_5 = (
+            self.models.ManagedClusterAPIServerAccessProfile(
+                enable_vnet_integration=True,
+                subnet_id=apiserver_subnet_id,
+            )
+        )
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            api_server_access_profile=ground_truth_api_server_access_profile_5,
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+    def test_set_up_enable_hosted_components_byo_trio_implies_enable(self):
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agent_pool_profiles = [self.models.ManagedClusterAgentPoolProfile(name="nodepool1")]
+        mc_1 = self.models.ManagedCluster(location="test_location", agent_pool_profiles=agent_pool_profiles)
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_enable_hosted_components(mc_1)
+        self.assertTrue(dec_mc_1.hosted_system_profile.enabled)
+        self.assertEqual(dec_mc_1.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
+        self.assertEqual(dec_mc_1.hosted_system_profile.node_subnet_id, node_subnet_id)
+        self.assertEqual(dec_mc_1.agent_pool_profiles, agent_pool_profiles)
+
+    def test_process_add_role_assignment_for_byo_hobo_system_identity_cli_285_fallback(self):
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_managed_identity": True,
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            AKSManagedClusterCreateDecorator,
+            "_get_byo_hosted_system_subnet_ids",
+            None,
+            create=True,
+        ), patch.object(
+            AKSManagedClusterCreateDecorator,
+            "process_add_role_assignment_for_vnet_subnet",
+            return_value=None,
+        ), patch.object(
+            dec_1.context.external_functions,
+            "subnet_role_assignment_exists",
+            return_value=False,
+        ):
+            dec_1.process_add_role_assignment_for_vnet_subnet(mc_1)
+
+        self.assertTrue(
+            dec_1.context.get_intermediate("need_post_creation_vnet_permission_granting")
+        )
+        self.assertEqual(
+            dec_1.context.get_intermediate("byo_hosted_system_subnets_pending_grant"),
+            [system_node_subnet_id, node_subnet_id, apiserver_subnet_id],
+        )
+
+    def test_process_add_role_assignment_for_byo_hobo_cli_285_fallback_only_defers_missing_subnets(self):
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_managed_identity": True,
+                "sku": "automatic",
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            AKSManagedClusterCreateDecorator,
+            "_get_byo_hosted_system_subnet_ids",
+            None,
+            create=True,
+        ), patch.object(
+            AKSManagedClusterCreateDecorator,
+            "process_add_role_assignment_for_vnet_subnet",
+            return_value=None,
+        ), patch.object(
+            dec_1.context.external_functions,
+            "subnet_role_assignment_exists",
+            side_effect=[True, False, True],
+        ):
+            dec_1.process_add_role_assignment_for_vnet_subnet(mc_1)
+
+        self.assertTrue(
+            dec_1.context.get_intermediate("need_post_creation_vnet_permission_granting")
+        )
+        self.assertEqual(
+            dec_1.context.get_intermediate("byo_hosted_system_subnets_pending_grant"),
+            [node_subnet_id],
+        )
 
     def test_build_gitops_addon_profile(self):
         # default
@@ -8307,6 +8665,30 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_2.get_opentelemetry_metrics_port(), 8080)
 
+    def test_get_opentelemetry_metrics_port_grpc(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_metrics_port_grpc": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_opentelemetry_metrics_port_grpc(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "opentelemetry_metrics_port_grpc": 8082,
+                    "enable_opentelemetry_metrics": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_opentelemetry_metrics_port_grpc(), 8082)
+
     def test_get_enable_opentelemetry_logs(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -8365,6 +8747,80 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_2.get_opentelemetry_logs_port(), 8081)
+
+    def test_get_opentelemetry_logs_traces_port_grpc(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_logs_traces_port_grpc": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_opentelemetry_logs_traces_port_grpc(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"opentelemetry_logs_traces_port_grpc": 8083, "enable_opentelemetry_logs": True}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_opentelemetry_logs_traces_port_grpc(), 8083)
+
+    def test_set_up_azure_monitor_profile_with_opentelemetry_grpc_ports(self):
+        # Test enabling OpenTelemetry metrics with both HTTP and gRPC ports
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port": 8080,
+                "opentelemetry_metrics_port_grpc": 8082,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_azure_monitor_profile(mc_1)
+
+        otlp_metrics = dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        self.assertTrue(otlp_metrics.enabled)
+        self.assertEqual(otlp_metrics.http_port, 8080)
+        self.assertEqual(otlp_metrics.grpc_port, 8082)
+
+    def test_disable_opentelemetry_metrics_clears_grpc_port(self):
+        # Disabling OpenTelemetry metrics must clear BOTH http and grpc ports
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_opentelemetry_metrics": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        existing_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+            enabled=True, http_port=8080, grpc_port=8082
+        )
+        app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+            open_telemetry_metrics=existing_metrics
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                app_monitoring=app_monitoring
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_1._disable_opentelemetry_metrics(mc_1)
+        otlp_metrics = mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics
+        self.assertFalse(otlp_metrics.enabled)
+        self.assertIsNone(otlp_metrics.http_port)
+        self.assertIsNone(otlp_metrics.grpc_port)
 
     def test_set_up_azure_monitor_profile_with_opentelemetry(self):
         # Test enabling Azure Monitor metrics with OpenTelemetry metrics
@@ -9713,7 +10169,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_i_pv6=20
+                        count=10, count_ipv6=20
                     ),
                 )
             ),
@@ -9727,7 +10183,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=5, count_i_pv6=20
+                            count=5, count_ipv6=20
                         ),
                     )
                 )
@@ -9753,7 +10209,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_i_pv6=20
+                        count=10, count_ipv6=20
                     ),
                 )
             ),
@@ -9767,7 +10223,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=10, count_i_pv6=5
+                            count=10, count_ipv6=5
                         ),
                     )
                 )
@@ -9793,7 +10249,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_i_pv6=20
+                        count=10, count_ipv6=20
                     ),
                 )
             ),
@@ -9807,7 +10263,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=25, count_i_pv6=5
+                            count=25, count_ipv6=5
                         ),
                     )
                 )
@@ -9832,7 +10288,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=3, count_i_pv6=2
+                        count=3, count_ipv6=2
                     )
                 )
             ),
@@ -9894,7 +10350,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_load_balancer_profile_8 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_i_pv6=5
+                count=10, count_ipv6=5
             ),
         )
         ground_truth_network_profile_8 = self.models.ContainerServiceNetworkProfile(
@@ -9979,6 +10435,185 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_11, ground_truth_mc_11)
+
+    def test_update_load_balancer_profile__outbound_type_not_specified_keeps_backend_pool_type(self):
+        # `az aks update --load-balancer-backend-pool-type nodeIP` without --outbound-type:
+        # the outbound type is inherited from the existing cluster and must not cause the
+        # requested NodeIPConfiguration -> nodeIP change to be dropped, for any outbound type.
+        for outbound_type in [
+            CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+            CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+            CONST_OUTBOUND_TYPE_NONE,
+            CONST_OUTBOUND_TYPE_BLOCK,
+        ]:
+            with self.subTest(outbound_type=outbound_type):
+                dec = AKSPreviewManagedClusterUpdateDecorator(
+                    self.cmd,
+                    self.client,
+                    {
+                        "load_balancer_backend_pool_type": CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                        "outbound_type": None,
+                    },
+                    CUSTOM_MGMT_AKS_PREVIEW,
+                )
+                mc = self.models.ManagedCluster(
+                    location="test_location",
+                    network_profile=self.models.ContainerServiceNetworkProfile(
+                        outbound_type=outbound_type,
+                        load_balancer_sku="standard",
+                        load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+                        ),
+                    ),
+                )
+                dec.context.attach_mc(mc)
+                dec_mc = dec.update_load_balancer_profile(mc)
+
+                lb_profile = dec_mc.network_profile.load_balancer_profile
+                self.assertIsNotNone(
+                    lb_profile,
+                    "load balancer profile must not be dropped when outbound type is unchanged",
+                )
+                self.assertEqual(
+                    lb_profile.backend_pool_type,
+                    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                )
+
+    def _lb_profile_with_every_outbound_field(self):
+        lb = self.models.load_balancer_models
+        return lb.ManagedClusterLoadBalancerProfile(
+            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+            managed_outbound_i_ps=lb.ManagedClusterLoadBalancerProfileManagedOutboundIPs(count=2),
+            outbound_i_ps=lb.ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_i_ps=[lb.ResourceReference(id="ip1")]
+            ),
+            outbound_ip_prefixes=lb.ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes=[lb.ResourceReference(id="prefix1")]
+            ),
+            allocated_outbound_ports=8000,
+            idle_timeout_in_minutes=10,
+        )
+
+    def test_update_load_balancer_profile__outbound_type_not_load_balancer_clears_outbound_fields(self):
+        # `--outbound-type userDefinedRouting` and `--load-balancer-backend-pool-type nodeIP` in the
+        # same command: every outbound field is dropped, the backend pool type is still applied
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "load_balancer_backend_pool_type": CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+                # changing outbound type to userDefinedRouting requires a BYO vnet
+                "vnet_subnet_id": "test_vnet_subnet_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                load_balancer_sku="standard",
+                load_balancer_profile=self._lb_profile_with_every_outbound_field(),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        lb_profile = dec.update_load_balancer_profile(mc).network_profile.load_balancer_profile
+
+        self.assertEqual(lb_profile.backend_pool_type, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP)
+        self.assertIsNone(lb_profile.managed_outbound_i_ps)
+        self.assertIsNone(lb_profile.outbound_i_ps)
+        self.assertIsNone(lb_profile.outbound_ip_prefixes)
+        self.assertIsNone(lb_profile.allocated_outbound_ports)
+        self.assertIsNone(lb_profile.idle_timeout_in_minutes)
+
+    def test_update_load_balancer_profile__outbound_type_not_load_balancer_no_inbound_drops_profile(self):
+        # `--outbound-type userDefinedRouting` on a profile holding only outbound fields: nothing
+        # inbound is left to keep, so the profile is omitted entirely as before
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "vnet_subnet_id": "test_vnet_subnet_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                load_balancer_sku="standard",
+                load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                    allocated_outbound_ports=8000,
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_load_balancer_profile(mc)
+
+        self.assertIsNone(dec_mc.network_profile.load_balancer_profile)
+
+    def test_update_load_balancer_profile__outbound_type_load_balancer_keeps_outbound_fields(self):
+        # `--outbound-type loadBalancer` keeps egress on the load balancer, so every outbound field
+        # stays valid and must survive untouched
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"outbound_type": CONST_OUTBOUND_TYPE_LOAD_BALANCER},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                load_balancer_sku="standard",
+                load_balancer_profile=self._lb_profile_with_every_outbound_field(),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        lb_profile = dec.update_load_balancer_profile(mc).network_profile.load_balancer_profile
+
+        self.assertEqual(lb_profile.managed_outbound_i_ps.count, 2)
+        self.assertEqual(lb_profile.outbound_i_ps.public_i_ps[0].id, "ip1")
+        self.assertEqual(lb_profile.outbound_ip_prefixes.public_ip_prefixes[0].id, "prefix1")
+        self.assertEqual(lb_profile.allocated_outbound_ports, 8000)
+        self.assertEqual(lb_profile.idle_timeout_in_minutes, 10)
+
+    def test_update_load_balancer_profile__outbound_type_changed_to_load_balancer_applies_outbound_fields(self):
+        # moving a userDefinedRouting cluster back onto the load balancer: outbound settings become
+        # valid again, so those requested in the same command must be applied
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                "load_balancer_managed_outbound_ip_count": 2,
+                "load_balancer_outbound_ports": 8000,
+                "load_balancer_idle_timeout": 25,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type=CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                load_balancer_sku="standard",
+                # a userDefinedRouting cluster only carries the inbound settings
+                load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                    backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        lb_profile = dec.update_load_balancer_profile(mc).network_profile.load_balancer_profile
+
+        self.assertEqual(lb_profile.managed_outbound_i_ps.count, 2)
+        self.assertEqual(lb_profile.allocated_outbound_ports, 8000)
+        self.assertEqual(lb_profile.idle_timeout_in_minutes, 25)
+        self.assertEqual(lb_profile.backend_pool_type, CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION)
 
     def test_update_nat_gateway_profile(self):
         # default value in `aks_update`
@@ -16405,10 +17040,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16426,10 +17059,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16438,10 +17069,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16476,10 +17105,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16500,10 +17127,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16536,10 +17161,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_4 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16548,10 +17171,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_4 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16569,10 +17190,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_5 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.MANAGED_BY_CRD
                 )
             ),
         )
@@ -16581,10 +17200,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_5 = self.models.ManagedCluster(
             location="test_location",
             scheduler_profile=self.models.SchedulerProfile(
-                scheduler_instance_profiles=self.models.SchedulerProfileSchedulerInstanceProfiles(
-                    upstream=self.models.SchedulerInstanceProfile(
-                        scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
-                    )
+                upstream=self.models.SchedulerInstanceProfile(
+                    scheduler_config_mode=self.models.SchedulerConfigMode.DEFAULT
                 )
             ),
         )
@@ -16664,6 +17281,161 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_update_hosted_system_profile(self):
+        system_node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/systemnode"
+        node_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/node"
+        apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
+
+        # not specified, no change
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_hosted_system_profile(mc_0)
+        self.assertIsNone(dec_mc_0.hosted_system_profile)
+
+        # non-BYO conversion
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_hosted_system": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_hosted_system_profile(mc_1)
+        self.assertTrue(dec_mc_1.hosted_system_profile.enabled)
+        self.assertIsNone(dec_mc_1.hosted_system_profile.system_node_subnet_id)
+        self.assertIsNone(dec_mc_1.hosted_system_profile.node_subnet_id)
+
+        # BYO conversion
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_hosted_system_profile(mc_2)
+        self.assertTrue(dec_mc_2.hosted_system_profile.enabled)
+        self.assertEqual(dec_mc_2.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
+        self.assertEqual(dec_mc_2.hosted_system_profile.node_subnet_id, node_subnet_id)
+
+        # --node-subnet-id and --apiserver-subnet-id are optional
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "system_node_subnet_id": system_node_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_6.context.attach_mc(mc_6)
+        dec_mc_6 = dec_6.update_hosted_system_profile(mc_6)
+        self.assertTrue(dec_mc_6.hosted_system_profile.enabled)
+        self.assertEqual(dec_mc_6.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
+        self.assertIsNone(dec_mc_6.hosted_system_profile.node_subnet_id)
+
+        # the subnet flags require --enable-hosted-system
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_9.context.attach_mc(mc_9)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_9.update_hosted_system_profile(mc_9)
+
+        # --node-subnet-id requires --system-node-subnet-id
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "node_subnet_id": node_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_3.update_hosted_system_profile(mc_3)
+
+        # --apiserver-subnet-id may still be supplied alongside the node subnets
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                enable_vnet_integration=True,
+                subnet_id=apiserver_subnet_id,
+            ),
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_hosted_system_profile(mc_5)
+        self.assertTrue(dec_mc_5.hosted_system_profile.enabled)
+        self.assertEqual(dec_mc_5.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
+        self.assertEqual(dec_mc_5.hosted_system_profile.node_subnet_id, node_subnet_id)
+
+        # non-Automatic SKU is rejected
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_hosted_system": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Base"),
+        )
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4.update_hosted_system_profile(mc_4)
 
     def test_update_ingress_profile_gateway_api(self):
         # Test enabling Gateway API
@@ -17248,6 +18020,137 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             9091,
         )
 
+    def _otlp_gate_addon_profiles(self):
+        """Monitoring addon profile used by the OpenTelemetry prerequisites-gate tests."""
+        return {
+            "omsagent": self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    "logAnalyticsWorkspaceResourceID": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
+                },
+            )
+        }
+
+    def _otlp_gate_mc_with_container_insights(self, otlp_logs_enabled=True):
+        """Cluster with Azure Monitor logs (Container Insights) on and Prometheus metrics off."""
+        otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+        app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+            open_telemetry_logs_and_traces=otel_logs_cls(
+                enabled=otlp_logs_enabled, http_port=4318, grpc_port=4317
+            ),
+        )
+        return self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles=self._otlp_gate_addon_profiles(),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True
+                ),
+                app_monitoring=app_monitoring,
+            ),
+        )
+
+    def _run_otlp_gate(self, raw_parameters, mc):
+        """Run update_azure_monitor_profile and return the patched prerequisites mock."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            raw_parameters,
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec.context.attach_mc(mc)
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ) as mock_prereq, patch.object(
+            dec.context, "get_subscription_id", return_value="test-subscription"
+        ), patch.object(
+            dec.context, "get_resource_group_name", return_value="test-rg"
+        ), patch.object(
+            dec.context, "get_name", return_value="test-cluster"
+        ), patch.object(
+            dec.context, "get_location", return_value="test-location"
+        ):
+            dec.update_azure_monitor_profile(mc)
+        return mock_prereq
+
+    def test_opentelemetry_logs_traces_ports_do_not_trigger_prometheus_prerequisites(self):
+        # OpenTelemetry logs and traces ride the Container Insights pipeline. Setting their ports
+        # must NOT provision the Prometheus artifacts (Azure Monitor Workspace, DCE, DCR, DCRA,
+        # Grafana link, recording rules) created by ensure_azure_monitor_profile_prerequisites.
+        mock_prereq = self._run_otlp_gate(
+            {
+                "opentelemetry_logs_port": 2331,
+                "opentelemetry_logs_traces_port_grpc": 2332,
+            },
+            self._otlp_gate_mc_with_container_insights(),
+        )
+        mock_prereq.assert_not_called()
+
+    def test_enable_opentelemetry_logs_traces_does_not_trigger_prometheus_prerequisites(self):
+        mock_prereq = self._run_otlp_gate(
+            {"enable_opentelemetry_logs": True},
+            self._otlp_gate_mc_with_container_insights(otlp_logs_enabled=False),
+        )
+        mock_prereq.assert_not_called()
+
+    def test_disable_opentelemetry_logs_traces_does_not_trigger_prometheus_prerequisites(self):
+        mock_prereq = self._run_otlp_gate(
+            {"disable_opentelemetry_logs": True},
+            self._otlp_gate_mc_with_container_insights(),
+        )
+        mock_prereq.assert_not_called()
+
+    def test_opentelemetry_metrics_still_triggers_prometheus_prerequisites(self):
+        # Guard against over-correcting: OpenTelemetry metrics DOES need the Prometheus artifacts.
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True),
+            ),
+        )
+        mock_prereq = self._run_otlp_gate(
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port_grpc": 8082,
+            },
+            mc,
+        )
+        mock_prereq.assert_called_once()
+
+    def test_opentelemetry_mixed_signals_trigger_prometheus_prerequisites_once(self):
+        # Metrics and logs/traces arguments in the same command: the metrics side still onboards,
+        # and the logs/traces side neither suppresses nor duplicates that call.
+        otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            addon_profiles=self._otlp_gate_addon_profiles(),
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True),
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True
+                ),
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    open_telemetry_logs_and_traces=otel_logs_cls(
+                        enabled=True, http_port=4318, grpc_port=4317
+                    ),
+                ),
+            ),
+        )
+        mock_prereq = self._run_otlp_gate(
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_opentelemetry_metrics": True,
+                "opentelemetry_metrics_port_grpc": 8082,
+                "opentelemetry_logs_port": 2331,
+                "opentelemetry_logs_traces_port_grpc": 2332,
+            },
+            mc,
+        )
+        mock_prereq.assert_called_once()
+
     def test_disable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
         # Test that disabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
         dec = AKSPreviewManagedClusterUpdateDecorator(
@@ -17527,6 +18430,33 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(result_1, mc_1)
         self.assertIsNone(result_1.agent_pool_profiles)
         self.assertTrue(result_1.hosted_system_profile.enabled)
+
+    def test_update_agentpool_profile_hosted_system_with_user_pool_skips_default_pool_update(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agent_pool_profiles = [
+            self.models.ManagedClusterAgentPoolProfile(name="userpool", mode="User")
+        ]
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=agent_pool_profiles,
+            hosted_system_profile=self.models.ManagedClusterHostedSystemProfile(enabled=True),
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        with patch.object(
+            dec_1.agentpool_decorator,
+            "update_agentpool_profile_preview",
+        ) as update_agentpool_profile:
+            result_1 = dec_1.update_agentpool_profile(mc_1)
+
+        self.assertIs(result_1, mc_1)
+        self.assertEqual(result_1.agent_pool_profiles, agent_pool_profiles)
+        update_agentpool_profile.assert_not_called()
 
     def test_update_agentpool_profile_with_none_agent_pool_profiles_no_hosted_system(
         self,

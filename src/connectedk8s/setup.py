@@ -13,7 +13,7 @@ from setuptools import find_packages, setup
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = "1.11.1"
+VERSION = "1.11.2"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -59,7 +59,7 @@ setup(
     extras_require={
         "linting": [
             "mypy>=1.13.0",
-            "ruff>=0.7.2",
+            "ruff>=0.7.2,<0.16.0",
             "types-jmespath>=1.0.2",
             "types-psutil>=6.1.0",
             "types-pyyaml>=6.0.12",

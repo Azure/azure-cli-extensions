@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get information about a mongo cluster.

@@ -136,6 +136,10 @@ def load_command_table(self, _):
         w.command('keys regenerate', 'regenerate_keys')
         w.command('update', 'enable_keys')
 
+    with self.command_group('quantum workspace user', workspace_ops) as u:
+        u.command('create', 'add_user', validator=validate_workspace_info)
+        u.command('delete', 'remove_user', validator=validate_workspace_info, confirmation=True)
+
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
         t.show_command('show', 'target_show', validator=validate_target_info)
@@ -149,6 +153,8 @@ def load_command_table(self, _):
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)
         j.command('cancel', 'cancel', validator=validate_workspace_info, table_transformer=transform_job)
+        j.command('delete', 'delete', validator=validate_workspace_info, confirmation=True)
+        j.command('update', 'update', validator=validate_workspace_info, table_transformer=transform_job)
 
     with self.command_group('quantum', job_ops, is_preview=True) as q:
         q.command('run', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)

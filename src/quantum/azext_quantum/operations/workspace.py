@@ -18,7 +18,8 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError,
+                                       MutuallyExclusiveArgumentError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
@@ -38,6 +39,10 @@ DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 300
+
+# Built-in "Quantum Workspace Data Contributor" role. This is the role granted to
+# users when they are added to a workspace in the Azure Quantum portal.
+QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -201,7 +206,7 @@ def _enum_to_value(value):
 
 
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
-           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None):
     """
     Create a new Azure Quantum workspace.
     """
@@ -221,6 +226,8 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         quantum_workspace.properties.api_key_enabled = True
+        if workspace_kind:
+            quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -277,6 +284,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         'storageAccountAllowSharedKeyAccess': storage_account_allow_shared_key_access,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
+
+    if workspace_kind:
+        parameters['workspaceKind'] = workspace_kind
+
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
     deployment_properties = {
@@ -446,3 +457,43 @@ def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=N
         ws = lropoller.result()
         info.save(cmd, ws.properties.endpoint_uri)
     return ws
+
+
+def _get_workspace_resource_id(info):
+    return (f"/subscriptions/{info.subscription}"
+            f"/resourceGroups/{info.resource_group}"
+            f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
+
+
+def _validate_assignee_args(assignee, assignee_object_id):
+    if not assignee and not assignee_object_id:
+        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
+    if assignee and assignee_object_id:
+        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+
+
+def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+    """
+    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import create_role_assignment
+
+    _validate_assignee_args(assignee, assignee_object_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
+    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
+                                  assignee_principal_type=assignee_principal_type)
+
+
+def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+    """
+    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import delete_role_assignments
+
+    _validate_assignee_args(assignee, assignee_object_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
+    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
