@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -104,6 +104,12 @@ class Update(AAZCommand):
             help="Redis eviction policy - default is VolatileLRU",
             nullable=True,
             enum={"AllKeysLFU": "AllKeysLFU", "AllKeysLRU": "AllKeysLRU", "AllKeysRandom": "AllKeysRandom", "NoEviction": "NoEviction", "VolatileLFU": "VolatileLFU", "VolatileLRU": "VolatileLRU", "VolatileRandom": "VolatileRandom", "VolatileTTL": "VolatileTTL"},
+        )
+        _args_schema.notify_keyspace_events = AAZStrArg(
+            options=["--notify-keyspace-events"],
+            arg_group="Properties",
+            help="Specifies which keyspace events should trigger notifications. Default is an empty string, meaning this feature is disabled. When enabled, at least 'K' (keyspace events) or 'E' (keyevent events) must be present. For example, 'AKE' enables all standard events. See https://redis.io/docs/latest/develop/use/keyspace-notifications/ for the complete list of event types.",
+            nullable=True,
         )
         _args_schema.persistence = AAZObjectArg(
             options=["--persistence"],
@@ -219,7 +225,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -322,7 +328,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -389,6 +395,7 @@ class Update(AAZCommand):
                 properties.set_prop("clusteringPolicy", AAZStrType, ".clustering_policy")
                 properties.set_prop("deferUpgrade", AAZStrType, ".defer_upgrade")
                 properties.set_prop("evictionPolicy", AAZStrType, ".eviction_policy")
+                properties.set_prop("notifyKeyspaceEvents", AAZStrType, ".notify_keyspace_events")
                 properties.set_prop("persistence", AAZObjectType, ".persistence")
 
             persistence = _builder.get(".properties.persistence")
@@ -464,6 +471,9 @@ class _UpdateHelper:
             serialized_name="geoReplication",
         )
         properties.modules = AAZListType()
+        properties.notify_keyspace_events = AAZStrType(
+            serialized_name="notifyKeyspaceEvents",
+        )
         properties.persistence = AAZObjectType()
         properties.port = AAZIntType()
         properties.provisioning_state = AAZStrType(

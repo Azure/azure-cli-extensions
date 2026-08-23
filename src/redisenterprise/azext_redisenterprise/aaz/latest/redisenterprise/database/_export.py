@@ -19,9 +19,9 @@ class Export(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/export", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/export", "2026-05-01-preview"],
         ]
     }
 
@@ -68,11 +68,14 @@ class Export(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.sas_uri = AAZStrArg(
+        _args_schema.sas_uri = AAZPasswordArg(
             options=["--sas-uri"],
             arg_group="Parameters",
             help="SAS URI for the target directory to export to",
             required=True,
+            blank=AAZPromptPasswordInput(
+                msg="SAS URI:",
+            ),
         )
         return cls._args_schema
 
@@ -157,7 +160,7 @@ class Export(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

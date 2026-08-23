@@ -12,26 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise list-skus-for-scaling",
+    "redisenterprise migration undo",
 )
-class ListSkusForScaling(AAZCommand):
-    """Lists the available SKUs for scaling the Redis Enterprise cluster.
-
-    :example: RedisEnterpriseListSkusForScaling
-        az redisenterprise list-skus-for-scaling --resource-group rg1 --cluster-name cache1
+class Undo(AAZCommand):
+    """Cancel or rollback the migration operation in a Redis Enterprise cluster.
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/listskusforscaling", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/cancel", "2026-05-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -60,7 +58,7 @@ class ListSkusForScaling(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RedisEnterpriseListSkusForScaling(ctx=self.ctx)()
+        yield self.MigrationCancel(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,25 +69,28 @@ class ListSkusForScaling(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class RedisEnterpriseListSkusForScaling(AAZHttpOperation):
+    class MigrationCancel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/listSkusForScaling",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/migrations/default/cancel",
                 **self.url_parameters
             )
 
@@ -129,52 +130,9 @@ class ListSkusForScaling(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.skus = AAZListType()
-
-            skus = cls._schema_on_200.skus
-            skus.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.skus.Element
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.size_in_gb = AAZFloatType(
-                serialized_name="sizeInGB",
-                flags={"read_only": True},
-            )
-
-            return cls._schema_on_200
+class _UndoHelper:
+    """Helper class for Undo"""
 
 
-class _ListSkusForScalingHelper:
-    """Helper class for ListSkusForScaling"""
-
-
-__all__ = ["ListSkusForScaling"]
+__all__ = ["Undo"]

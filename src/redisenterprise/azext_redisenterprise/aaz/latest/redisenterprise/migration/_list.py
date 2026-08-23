@@ -12,26 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise list-skus-for-scaling",
+    "redisenterprise migration list",
 )
-class ListSkusForScaling(AAZCommand):
-    """Lists the available SKUs for scaling the Redis Enterprise cluster.
-
-    :example: RedisEnterpriseListSkusForScaling
-        az redisenterprise list-skus-for-scaling --resource-group rg1 --cluster-name cache1
+class List(AAZCommand):
+    """List information about all migrations attempts in a Redis Enterprise cluster.
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/listskusforscaling", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations", "2026-05-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -48,7 +46,6 @@ class ListSkusForScaling(AAZCommand):
             options=["--cluster-name"],
             help="The name of the Redis Enterprise cluster. Name must be 1-60 characters long. Allowed characters(A-Z, a-z, 0-9) and hyphen(-). There can be no leading nor trailing nor consecutive hyphens",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
@@ -60,7 +57,7 @@ class ListSkusForScaling(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RedisEnterpriseListSkusForScaling(ctx=self.ctx)()
+        self.MigrationList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,10 +69,11 @@ class ListSkusForScaling(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class RedisEnterpriseListSkusForScaling(AAZHttpOperation):
+    class MigrationList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,13 +87,13 @@ class ListSkusForScaling(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/listSkusForScaling",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/migrations",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -156,25 +154,100 @@ class ListSkusForScaling(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.skus = AAZListType()
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
-            skus = cls._schema_on_200.skus
-            skus.Element = AAZObjectType()
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.skus.Element
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.size_in_gb = AAZFloatType(
-                serialized_name="sizeInGB",
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
                 flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+                flags={"read_only": True},
+            )
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.source_type = AAZStrType(
+                serialized_name="sourceType",
+                flags={"required": True},
+            )
+            properties.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"read_only": True},
+            )
+            properties.target_resource_id = AAZStrType(
+                serialized_name="targetResourceId",
+                flags={"read_only": True},
+            )
+
+            disc_azure_cache_for_redis = cls._schema_on_200.value.Element.properties.discriminate_by("source_type", "AzureCacheForRedis")
+            disc_azure_cache_for_redis.force_migrate = AAZBoolType(
+                serialized_name="forceMigrate",
+            )
+            disc_azure_cache_for_redis.skip_data_migration = AAZBoolType(
+                serialized_name="skipDataMigration",
+                flags={"required": True},
+            )
+            disc_azure_cache_for_redis.source_resource_id = AAZStrType(
+                serialized_name="sourceResourceId",
+                flags={"required": True},
+            )
+            disc_azure_cache_for_redis.switch_dns = AAZBoolType(
+                serialized_name="switchDns",
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _ListSkusForScalingHelper:
-    """Helper class for ListSkusForScaling"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ListSkusForScaling"]
+__all__ = ["List"]

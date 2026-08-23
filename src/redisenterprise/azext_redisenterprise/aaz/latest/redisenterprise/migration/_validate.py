@@ -12,24 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database regenerate-key",
+    "redisenterprise migration validate",
 )
-class RegenerateKey(AAZCommand):
-    """Regenerates the RedisEnterprise database's access keys.
+class Validate(AAZCommand):
+    """Validates if a source Azure Cache for Redis resource can be migrated to a target Azure Managed Redis resource.
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/regeneratekey", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/validate", "2026-05-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -44,19 +43,9 @@ class RegenerateKey(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            help="The name of the Redis Enterprise cluster. Name must be 1-60 characters long. Allowed characters(A-Z, a-z, 0-9) and hyphen(-). There can be no leading nor trailing nor consecutive hyphens",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=True,
-            id_part="child_name_1",
-            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
@@ -65,21 +54,30 @@ class RegenerateKey(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.key_type = AAZStrArg(
-            options=["--key-type"],
-            arg_group="Parameters",
-            help="Which access key to regenerate.",
+        _args_schema.force_migrate = AAZBoolArg(
+            options=["--force-migrate"],
+            arg_group="Body",
+            help="Sets whether to ignore warnings when validating if the source cache can be migrated to the target cache. If this property is true, the isValid property in the response will ignore warning-level disparities between the source and target resource. The default value is false.",
+        )
+        _args_schema.skip_data_migration = AAZBoolArg(
+            options=["--skip-data-migration"],
+            arg_group="Body",
+            help="Sets whether the data is migrated from source to target or not. The default value is true.",
+        )
+        _args_schema.source_resource_id = AAZResourceIdArg(
+            options=["--source-resource-id"],
+            arg_group="Body",
+            help="The source resource ID to validate migration from. This is the resource ID of the Azure Cache for Redis.",
             required=True,
-            enum={"Primary": "Primary", "Secondary": "Secondary"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DatabasesRegenerateKey(ctx=self.ctx)()
+        self.MigrationsValidate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -94,37 +92,21 @@ class RegenerateKey(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DatabasesRegenerateKey(AAZHttpOperation):
+    class MigrationsValidate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/regenerateKey",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/migrations/default/validate",
                 **self.url_parameters
             )
 
@@ -141,10 +123,6 @@ class RegenerateKey(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "databaseName", self.ctx.args.database_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -187,7 +165,9 @@ class RegenerateKey(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("keyType", AAZStrType, ".key_type", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("forceMigrate", AAZBoolType, ".force_migrate")
+            _builder.set_prop("skipDataMigration", AAZBoolType, ".skip_data_migration")
+            _builder.set_prop("sourceResourceId", AAZStrType, ".source_resource_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -209,20 +189,64 @@ class RegenerateKey(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.primary_key = AAZStrType(
-                serialized_name="primaryKey",
-                flags={"read_only": True},
+            _schema_on_200.errors = AAZListType()
+            _schema_on_200.is_valid = AAZBoolType(
+                serialized_name="isValid",
+                flags={"required": True},
             )
-            _schema_on_200.secondary_key = AAZStrType(
-                serialized_name="secondaryKey",
-                flags={"read_only": True},
+            _schema_on_200.warnings = AAZListType()
+
+            errors = cls._schema_on_200.errors
+            errors.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.errors.Element
+            _element.disparities = AAZListType(
+                flags={"required": True},
             )
+
+            disparities = cls._schema_on_200.errors.Element.disparities
+            disparities.Element = AAZObjectType()
+            _ValidateHelper._build_schema_migration_validation_disparity_read(disparities.Element)
+
+            warnings = cls._schema_on_200.warnings
+            warnings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.warnings.Element
+            _element.disparities = AAZListType(
+                flags={"required": True},
+            )
+
+            disparities = cls._schema_on_200.warnings.Element.disparities
+            disparities.Element = AAZObjectType()
+            _ValidateHelper._build_schema_migration_validation_disparity_read(disparities.Element)
 
             return cls._schema_on_200
 
 
-class _RegenerateKeyHelper:
-    """Helper class for RegenerateKey"""
+class _ValidateHelper:
+    """Helper class for Validate"""
+
+    _schema_migration_validation_disparity_read = None
+
+    @classmethod
+    def _build_schema_migration_validation_disparity_read(cls, _schema):
+        if cls._schema_migration_validation_disparity_read is not None:
+            _schema.category = cls._schema_migration_validation_disparity_read.category
+            _schema.message = cls._schema_migration_validation_disparity_read.message
+            return
+
+        cls._schema_migration_validation_disparity_read = _schema_migration_validation_disparity_read = AAZObjectType()
+
+        migration_validation_disparity_read = _schema_migration_validation_disparity_read
+        migration_validation_disparity_read.category = AAZStrType(
+            flags={"required": True},
+        )
+        migration_validation_disparity_read.message = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.category = cls._schema_migration_validation_disparity_read.category
+        _schema.message = cls._schema_migration_validation_disparity_read.message
 
 
-__all__ = ["RegenerateKey"]
+__all__ = ["Validate"]

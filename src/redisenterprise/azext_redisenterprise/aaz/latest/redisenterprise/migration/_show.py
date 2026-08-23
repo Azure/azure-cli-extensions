@@ -12,24 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database regenerate-key",
+    "redisenterprise migration show",
 )
-class RegenerateKey(AAZCommand):
-    """Regenerates the RedisEnterprise database's access keys.
+class Show(AAZCommand):
+    """Get information about a migration in a Redis Enterprise cluster.
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/regeneratekey", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-05-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -44,19 +43,9 @@ class RegenerateKey(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            help="The name of the Redis Enterprise cluster. Name must be 1-60 characters long. Allowed characters(A-Z, a-z, 0-9) and hyphen(-). There can be no leading nor trailing nor consecutive hyphens",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=True,
-            id_part="child_name_1",
-            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
@@ -64,22 +53,11 @@ class RegenerateKey(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.key_type = AAZStrArg(
-            options=["--key-type"],
-            arg_group="Parameters",
-            help="Which access key to regenerate.",
-            required=True,
-            enum={"Primary": "Primary", "Secondary": "Secondary"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DatabasesRegenerateKey(ctx=self.ctx)()
+        self.MigrationGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -94,43 +72,27 @@ class RegenerateKey(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DatabasesRegenerateKey(AAZHttpOperation):
+    class MigrationGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/regenerateKey",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/migrations/default",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -141,10 +103,6 @@ class RegenerateKey(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "databaseName", self.ctx.args.database_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -172,24 +130,10 @@ class RegenerateKey(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("keyType", AAZStrType, ".key_type", typ_kwargs={"flags": {"required": True}})
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -209,20 +153,89 @@ class RegenerateKey(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.primary_key = AAZStrType(
-                serialized_name="primaryKey",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.secondary_key = AAZStrType(
-                serialized_name="secondaryKey",
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+                flags={"read_only": True},
+            )
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.source_type = AAZStrType(
+                serialized_name="sourceType",
+                flags={"required": True},
+            )
+            properties.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"read_only": True},
+            )
+            properties.target_resource_id = AAZStrType(
+                serialized_name="targetResourceId",
+                flags={"read_only": True},
+            )
+
+            disc_azure_cache_for_redis = cls._schema_on_200.properties.discriminate_by("source_type", "AzureCacheForRedis")
+            disc_azure_cache_for_redis.force_migrate = AAZBoolType(
+                serialized_name="forceMigrate",
+            )
+            disc_azure_cache_for_redis.skip_data_migration = AAZBoolType(
+                serialized_name="skipDataMigration",
+                flags={"required": True},
+            )
+            disc_azure_cache_for_redis.source_resource_id = AAZStrType(
+                serialized_name="sourceResourceId",
+                flags={"required": True},
+            )
+            disc_azure_cache_for_redis.switch_dns = AAZBoolType(
+                serialized_name="switchDns",
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _RegenerateKeyHelper:
-    """Helper class for RegenerateKey"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["RegenerateKey"]
+__all__ = ["Show"]

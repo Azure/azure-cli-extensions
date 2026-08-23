@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an existing (overwrite/recreate, with potential downtime) cache cluster
-
-    :example: Updates cluster SKU
-        az redisenterprise update --cluster-name "cache1" --sku "ComputeOptimized_X5" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -145,6 +142,12 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        _args_schema.maintenance_configuration = AAZObjectArg(
+            options=["--maintenance-config", "--maintenance-configuration"],
+            arg_group="Properties",
+            help="Cluster-level maintenance configuration.",
+            nullable=True,
+        )
         _args_schema.minimum_tls_version = AAZStrArg(
             options=["--minimum-tls-version"],
             arg_group="Properties",
@@ -158,6 +161,49 @@ class Update(AAZCommand):
             help="Whether or not public network traffic can access the Redis cluster. Only 'Enabled' or 'Disabled' can be set. null is returned only for clusters created using an old API version which do not have this property and cannot be set.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        maintenance_configuration = cls._args_schema.maintenance_configuration
+        maintenance_configuration.maintenance_windows = AAZListArg(
+            options=["maintenance-windows"],
+            help="Custom maintenance windows that apply to the cluster.",
+            nullable=True,
+        )
+
+        maintenance_windows = cls._args_schema.maintenance_configuration.maintenance_windows
+        maintenance_windows.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.maintenance_configuration.maintenance_windows.Element
+        _element.duration = AAZStrArg(
+            options=["duration"],
+            help="Duration in ISO-8601 format, for example 'PT5H'.",
+        )
+        _element.schedule = AAZObjectArg(
+            options=["schedule"],
+            help="Recurring schedule for the maintenance window.",
+        )
+        _element.start_hour_utc = AAZIntArg(
+            options=["start-hour-utc"],
+            help="Start hour (0-23) in UTC when the maintenance window begins.",
+            fmt=AAZIntArgFormat(
+                maximum=23,
+                minimum=0,
+            ),
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="Maintenance window type.",
+            enum={"Weekly": "Weekly"},
+        )
+
+        schedule = cls._args_schema.maintenance_configuration.maintenance_windows.Element.schedule
+        schedule.day_of_week = AAZStrArg(
+            options=["day-of-week"],
+            help="Day of week. Required when the maintenance window type is 'Weekly'.",
+            nullable=True,
+            enum={"Friday": "Friday", "Monday": "Monday", "Saturday": "Saturday", "Sunday": "Sunday", "Thursday": "Thursday", "Tuesday": "Tuesday", "Wednesday": "Wednesday"},
         )
 
         # define Arg Group "Sku"
@@ -255,7 +301,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -354,7 +400,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -431,6 +477,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("highAvailability", AAZStrType, ".high_availability")
+                properties.set_prop("maintenanceConfiguration", AAZObjectType, ".maintenance_configuration")
                 properties.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access", typ_kwargs={"flags": {"required": True}, "nullable": True})
 
@@ -447,6 +494,25 @@ class Update(AAZCommand):
             if key_encryption_key_identity is not None:
                 key_encryption_key_identity.set_prop("identityType", AAZStrType, ".key_encryption_identity_type")
                 key_encryption_key_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
+
+            maintenance_configuration = _builder.get(".properties.maintenanceConfiguration")
+            if maintenance_configuration is not None:
+                maintenance_configuration.set_prop("maintenanceWindows", AAZListType, ".maintenance_windows")
+
+            maintenance_windows = _builder.get(".properties.maintenanceConfiguration.maintenanceWindows")
+            if maintenance_windows is not None:
+                maintenance_windows.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.maintenanceConfiguration.maintenanceWindows[]")
+            if _elements is not None:
+                _elements.set_prop("duration", AAZStrType, ".duration", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("schedule", AAZObjectType, ".schedule", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("startHourUtc", AAZIntType, ".start_hour_utc", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+            schedule = _builder.get(".properties.maintenanceConfiguration.maintenanceWindows[].schedule")
+            if schedule is not None:
+                schedule.set_prop("dayOfWeek", AAZStrType, ".day_of_week")
 
             sku = _builder.get(".sku")
             if sku is not None:
@@ -487,6 +553,7 @@ class _UpdateHelper:
             _schema.name = cls._schema_cluster_read.name
             _schema.properties = cls._schema_cluster_read.properties
             _schema.sku = cls._schema_cluster_read.sku
+            _schema.system_data = cls._schema_cluster_read.system_data
             _schema.tags = cls._schema_cluster_read.tags
             _schema.type = cls._schema_cluster_read.type
             _schema.zones = cls._schema_cluster_read.zones
@@ -514,6 +581,11 @@ class _UpdateHelper:
         cluster_read.sku = AAZObjectType(
             flags={"required": True},
         )
+        cluster_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        cls._build_schema_system_data_read(cluster_read.system_data)
         cluster_read.tags = AAZDictType()
         cluster_read.type = AAZStrType(
             flags={"read_only": True},
@@ -556,6 +628,13 @@ class _UpdateHelper:
         )
         properties.host_name = AAZStrType(
             serialized_name="hostName",
+            flags={"read_only": True},
+        )
+        properties.maintenance_configuration = AAZObjectType(
+            serialized_name="maintenanceConfiguration",
+        )
+        properties.migrated_endpoint = AAZStrType(
+            serialized_name="migratedEndpoint",
             flags={"read_only": True},
         )
         properties.minimum_tls_version = AAZStrType(
@@ -608,6 +687,34 @@ class _UpdateHelper:
             serialized_name="userAssignedIdentityResourceId",
         )
 
+        maintenance_configuration = _schema_cluster_read.properties.maintenance_configuration
+        maintenance_configuration.maintenance_windows = AAZListType(
+            serialized_name="maintenanceWindows",
+        )
+
+        maintenance_windows = _schema_cluster_read.properties.maintenance_configuration.maintenance_windows
+        maintenance_windows.Element = AAZObjectType()
+
+        _element = _schema_cluster_read.properties.maintenance_configuration.maintenance_windows.Element
+        _element.duration = AAZStrType(
+            flags={"required": True},
+        )
+        _element.schedule = AAZObjectType(
+            flags={"required": True},
+        )
+        _element.start_hour_utc = AAZIntType(
+            serialized_name="startHourUtc",
+            flags={"required": True},
+        )
+        _element.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        schedule = _schema_cluster_read.properties.maintenance_configuration.maintenance_windows.Element.schedule
+        schedule.day_of_week = AAZStrType(
+            serialized_name="dayOfWeek",
+        )
+
         private_endpoint_connections = _schema_cluster_read.properties.private_endpoint_connections
         private_endpoint_connections.Element = AAZObjectType()
 
@@ -621,11 +728,20 @@ class _UpdateHelper:
         _element.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
+        _element.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        cls._build_schema_system_data_read(_element.system_data)
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
         properties = _schema_cluster_read.properties.private_endpoint_connections.Element.properties
+        properties.group_ids = AAZListType(
+            serialized_name="groupIds",
+            flags={"read_only": True},
+        )
         properties.private_endpoint = AAZObjectType(
             serialized_name="privateEndpoint",
         )
@@ -637,6 +753,9 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+
+        group_ids = _schema_cluster_read.properties.private_endpoint_connections.Element.properties.group_ids
+        group_ids.Element = AAZStrType()
 
         private_endpoint = _schema_cluster_read.properties.private_endpoint_connections.Element.properties.private_endpoint
         private_endpoint.id = AAZStrType(
@@ -669,9 +788,54 @@ class _UpdateHelper:
         _schema.name = cls._schema_cluster_read.name
         _schema.properties = cls._schema_cluster_read.properties
         _schema.sku = cls._schema_cluster_read.sku
+        _schema.system_data = cls._schema_cluster_read.system_data
         _schema.tags = cls._schema_cluster_read.tags
         _schema.type = cls._schema_cluster_read.type
         _schema.zones = cls._schema_cluster_read.zones
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Update"]

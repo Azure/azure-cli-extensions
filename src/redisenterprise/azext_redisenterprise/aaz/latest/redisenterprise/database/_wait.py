@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -203,6 +203,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="geoReplication",
             )
             properties.modules = AAZListType()
+            properties.notify_keyspace_events = AAZStrType(
+                serialized_name="notifyKeyspaceEvents",
+            )
             properties.persistence = AAZObjectType()
             properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(

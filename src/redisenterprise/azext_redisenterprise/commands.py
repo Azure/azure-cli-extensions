@@ -34,3 +34,6 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["redisenterprise database show"] = DatabaseShow(loader=self)
         self.command_table["redisenterprise database update"] = DatabaseUpdate(loader=self)
         self.command_table["redisenterprise database wait"] = DatabaseWait(loader=self)
+    with self.command_group("redisenterprise migration"):
+        from .custom import MigrationStart
+        self.command_table["redisenterprise migration start"] = MigrationStart(loader=self)

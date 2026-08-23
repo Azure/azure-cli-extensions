@@ -20,9 +20,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -83,9 +83,16 @@ class Update(AAZCommand):
             options=["--access-policy-name"],
             arg_group="Properties",
             help="Name of access policy under specific access policy assignment. Only \"default\" policy is supported for now.",
+            nullable=True,
             fmt=AAZStrArgFormat(
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[a-zA-Z0-9])$",
             ),
+        )
+        _args_schema.access_string = AAZStrArg(
+            options=["--access-string"],
+            arg_group="Properties",
+            help="The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Defaults to `+@all ~*` if not specified.",
+            nullable=True,
         )
 
         # define Arg Group "User"
@@ -185,7 +192,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -292,7 +299,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -354,7 +361,8 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name")
+                properties.set_prop("accessString", AAZStrType, ".access_string")
                 properties.set_prop("user", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             user = _builder.get(".properties.user")
@@ -383,6 +391,7 @@ class _UpdateHelper:
             _schema.id = cls._schema_access_policy_assignment_read.id
             _schema.name = cls._schema_access_policy_assignment_read.name
             _schema.properties = cls._schema_access_policy_assignment_read.properties
+            _schema.system_data = cls._schema_access_policy_assignment_read.system_data
             _schema.type = cls._schema_access_policy_assignment_read.type
             return
 
@@ -398,6 +407,10 @@ class _UpdateHelper:
         access_policy_assignment_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
+        access_policy_assignment_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
         access_policy_assignment_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -405,7 +418,13 @@ class _UpdateHelper:
         properties = _schema_access_policy_assignment_read.properties
         properties.access_policy_name = AAZStrType(
             serialized_name="accessPolicyName",
-            flags={"required": True},
+        )
+        properties.access_string = AAZStrType(
+            serialized_name="accessString",
+        )
+        properties.provisioning_error = AAZObjectType(
+            serialized_name="provisioningError",
+            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
@@ -415,14 +434,44 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
+        provisioning_error = _schema_access_policy_assignment_read.properties.provisioning_error
+        provisioning_error.code = AAZStrType(
+            flags={"required": True},
+        )
+        provisioning_error.message = AAZStrType(
+            flags={"required": True},
+        )
+        provisioning_error.target = AAZStrType()
+
         user = _schema_access_policy_assignment_read.properties.user
         user.object_id = AAZStrType(
             serialized_name="objectId",
         )
 
+        system_data = _schema_access_policy_assignment_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
         _schema.id = cls._schema_access_policy_assignment_read.id
         _schema.name = cls._schema_access_policy_assignment_read.name
         _schema.properties = cls._schema_access_policy_assignment_read.properties
+        _schema.system_data = cls._schema_access_policy_assignment_read.system_data
         _schema.type = cls._schema_access_policy_assignment_read.type
 
 
