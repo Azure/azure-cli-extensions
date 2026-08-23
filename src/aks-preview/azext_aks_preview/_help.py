@@ -1591,26 +1591,26 @@ helps['aks update'] = """
           type: bool
           short-summary: (Automatic SKU) Convert an existing Automatic cluster to use a Managed System Pool.
           long-summary: |
-              Only valid for clusters with the Automatic SKU. Optionally provide the bring-your-own
-              VNet subnet trio (`--system-node-subnet-id`, `--node-subnet-id`, `--apiserver-subnet-id`)
-              to move the cluster onto an existing VNet at the same time. Supplying the full trio also
-              implies this flag.
+              Only valid for clusters with the Automatic SKU. Required to request the conversion.
+              Use it on its own to convert the cluster while keeping its current AKS-managed
+              networking, or combine it with the bring-your-own VNet subnet flags
+              (`--system-node-subnet-id`, `--node-subnet-id`, `--apiserver-subnet-id`) to move the
+              cluster onto an existing VNet at the same time.
         - name: --system-node-subnet-id
           type: string
           short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by the Managed System Pool.
           long-summary: |
-              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
-              `--system-node-subnet-id` (this flag, for the Managed System Pool), `--node-subnet-id`
-              (for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
-              All three subnets must belong to the same VNet.
+              Requires `--enable-hosted-system`. Unlike `az aks create`, the other bring-your-own
+              VNet subnets are optional here: `--node-subnet-id` (for user node pools) and
+              `--apiserver-subnet-id` (for the control plane API server) can be omitted, in which
+              case the cluster keeps its current node and API server networking. Any subnets you do
+              supply must belong to the same VNet.
         - name: --node-subnet-id
           type: string
           short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by user node pools.
           long-summary: |
-              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
-              `--system-node-subnet-id` (for the Managed System Pool), `--node-subnet-id` (this flag,
-              for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
-              All three subnets must belong to the same VNet.
+              Requires `--enable-hosted-system` and `--system-node-subnet-id`, and all supplied
+              subnets must belong to the same VNet.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1706,7 +1706,9 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs-traces
       - name: Convert an existing Automatic cluster to use a Managed System Pool.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system
-      - name: Convert an existing Automatic cluster to use a Managed System Pool with a bring-your-own VNet.
+      - name: Convert an existing Automatic cluster to use a Managed System Pool in a bring-your-own VNet.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID>
+      - name: Convert an existing Automatic cluster to use a Managed System Pool, also moving node pools and the API server onto a bring-your-own VNet.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID> --node-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID>
 """
 
