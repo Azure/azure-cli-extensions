@@ -3,6 +3,23 @@
 Release History
 ===============
 
+1.0.0b22
++++++++++++++++
+* Added the ``az quantum job file list`` command to list the files stored in a job's output storage container.
+* Added the ``az quantum job file download`` command to download a file from a job's output storage container.
+
+1.0.0b21
+++++++++++++++
+* Added the ``az quantum job update`` command to update a submitted job's name, priority, and tags.
+
+1.0.0b20
++++++++++++++++
+* Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
+
+1.0.0b19
++++++++++++++++
+* Added the ``az quantum job delete`` command to delete a job from an Azure Quantum workspace.
+
 1.0.0b18
 +++++++++++++++
 * Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.

@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template list-subscriptions",
+    "workload-orchestration-preview solution-template list-subscriptions",
 )
 class List(AAZCommand):
     """List by subscription
     :example: List Solution Templates
-        az workload-orchestration solution-template list-subscriptions
+        az workload-orchestration-preview solution-template list-subscriptions
     """
 
     _aaz_info = {

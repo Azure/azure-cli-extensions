@@ -69,6 +69,8 @@ from azext_aks_preview._consts import (
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_BASTION_SKU_STANDARD,
+    CONST_BASTION_SKU_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
@@ -109,6 +111,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
     CONST_OS_SKU_WINDOWS2025,
@@ -216,6 +219,7 @@ from azext_aks_preview._validators import (
     validate_message_of_the_day,
     validate_node_public_ip_prefix_ids,
     validate_node_public_ip_tags,
+    validate_bastion_public_ip_id,
     validate_nodepool_id,
     validate_nodepool_labels,
     validate_nodepool_taints,
@@ -285,6 +289,34 @@ from .action import (
 )
 
 from knack.arguments import CLIArgumentType
+from knack.deprecation import Deprecated
+
+
+class _SizedDeprecated(Deprecated):
+    """A Deprecated option that reports a length.
+
+    knack computes the preview target with sorted(options_list, key=len). A plain Deprecated
+    has no __len__, so combining is_preview=True with a deprecated option name raises
+    TypeError. Reporting the length of the option name keeps both status tags usable and
+    makes the longest (current) option name the preview target.
+    """
+
+    def __len__(self):
+        return len(self.target)
+
+
+def _deprecate_option(c, target, redirect):
+    """Deprecate a single option name and keep it compatible with is_preview.
+
+    Builds the Deprecated object through c.deprecate() so that the message, the object type
+    and the applicability checks stay identical to every other deprecated option, then only
+    adds the __len__ behaviour that knack needs for the preview tag.
+    """
+    deprecated = c.deprecate(target=target, redirect=redirect)
+    if deprecated is not None:
+        deprecated.__class__ = _SizedDeprecated
+    return deprecated
+
 
 # candidates for enumeration
 # consts for AgentPool
@@ -310,6 +342,7 @@ node_os_skus_create = [
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
@@ -327,6 +360,7 @@ node_os_skus_update = [
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
+    CONST_OS_SKU_UBUNTU2604,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
@@ -569,6 +603,11 @@ gpu_mig_strategies = [
 upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_ROLLING,
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
+]
+
+bastion_skus = [
+    CONST_BASTION_SKU_STANDARD,
+    CONST_BASTION_SKU_PREMIUM,
 ]
 
 # AKS backup strategy presets exposed by --backup-strategy.
@@ -1162,9 +1201,19 @@ def load_arguments(self, _):
                    validator=validate_azure_monitor_and_opentelemetry_for_create
                    )
         c.argument("opentelemetry_metrics_port",
+                   options_list=[
+                       "--opentelemetry-metrics-port-http",
+                       _deprecate_option(c, "--opentelemetry-metrics-port", "--opentelemetry-metrics-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry metrics collection"
+                   help="HTTP/protobuf port for OpenTelemetry metrics collection"
+                   )
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
@@ -1172,20 +1221,37 @@ def load_arguments(self, _):
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
-                   options_list=["--enable-opentelemetry-logs"],
+                   options_list=[
+                       "--enable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--enable-opentelemetry-logs", "--enable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Enable OpenTelemetry logs collection"
+                   help="Enable OpenTelemetry logs and traces collection"
                    )
         c.argument("opentelemetry_logs_port",
+                   options_list=[
+                       "--opentelemetry-logs-traces-port-http",
+                       _deprecate_option(c, "--opentelemetry-logs-port", "--opentelemetry-logs-traces-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry logs collection"
+                   help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
+                   )
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
                    )
         c.argument("disable_opentelemetry_logs",
+                   options_list=[
+                       "--disable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--disable-opentelemetry-logs", "--disable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Disable OpenTelemetry logs collection"
+                   help="Disable OpenTelemetry logs and traces collection"
                    )
         c.argument("enable_cost_analysis",
                    action="store_true"
@@ -1766,9 +1832,19 @@ def load_arguments(self, _):
                    validator=validate_azure_monitor_and_opentelemetry_for_update
                    )
         c.argument("opentelemetry_metrics_port",
+                   options_list=[
+                       "--opentelemetry-metrics-port-http",
+                       _deprecate_option(c, "--opentelemetry-metrics-port", "--opentelemetry-metrics-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry metrics collection"
+                   help="HTTP/protobuf port for OpenTelemetry metrics collection"
+                   )
+        c.argument("opentelemetry_metrics_port_grpc",
+                   options_list=["--opentelemetry-metrics-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry metrics collection"
                    )
         c.argument("disable_opentelemetry_metrics",
                    is_preview=True,
@@ -1776,19 +1852,37 @@ def load_arguments(self, _):
                    help="Disable OpenTelemetry metrics collection"
                    )
         c.argument("enable_opentelemetry_logs",
+                   options_list=[
+                       "--enable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--enable-opentelemetry-logs", "--enable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Enable OpenTelemetry logs collection"
+                   help="Enable OpenTelemetry logs and traces collection"
                    )
         c.argument("opentelemetry_logs_port",
+                   options_list=[
+                       "--opentelemetry-logs-traces-port-http",
+                       _deprecate_option(c, "--opentelemetry-logs-port", "--opentelemetry-logs-traces-port-http"),
+                   ],
                    is_preview=True,
                    type=int,
-                   help="Port for OpenTelemetry logs collection"
+                   help="HTTP/protobuf port for OpenTelemetry logs and traces collection"
+                   )
+        c.argument("opentelemetry_logs_traces_port_grpc",
+                   options_list=["--opentelemetry-logs-traces-port-grpc"],
+                   is_preview=True,
+                   type=int,
+                   help="gRPC port for OpenTelemetry logs and traces collection"
                    )
         c.argument("disable_opentelemetry_logs",
+                   options_list=[
+                       "--disable-opentelemetry-logs-traces",
+                       _deprecate_option(c, "--disable-opentelemetry-logs", "--disable-opentelemetry-logs-traces"),
+                   ],
                    is_preview=True,
                    action="store_true",
-                   help="Disable OpenTelemetry logs collection"
+                   help="Disable OpenTelemetry logs and traces collection"
                    )
         c.argument(
             "enable_vpa",
@@ -2094,6 +2188,18 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_disruption_policies),
             is_preview=True,
             help="Set the node disruption policy for the cluster.",
+        )
+        c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "system_node_subnet_id",
+            validator=validate_system_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
+            "node_subnet_id",
+            options_list=["--node-subnet-id"],
+            validator=validate_node_subnet_id,
+            is_preview=True,
         )
 
     with self.argument_context("aks delete") as c:
@@ -2698,6 +2804,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_eviction_policies),
             validator=validate_eviction_policy,
         )
+        c.argument("labels", nargs="*", validator=validate_nodepool_labels)
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
 
     with self.argument_context("aks machine update") as c:
         c.argument(
@@ -2706,6 +2815,12 @@ def load_arguments(self, _):
         c.argument("tags", tags_type, help="The tags to set on the machine.")
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("labels", nargs="*", help="Labels to set on the machine.")
+        c.argument(
+            "kubernetes_version",
+            options_list=["--kubernetes-version"],
+            validator=validate_k8s_version,
+            help="Kubernetes version to use for a FlexNode machine.",
+        )
 
     with self.argument_context("aks operation") as c:
         c.argument(
@@ -2794,6 +2909,15 @@ def load_arguments(self, _):
                 "start_time",
                 validator=validate_start_time,
                 help="The start time of the maintenance window. e.g. 09:30.",
+            )
+            c.argument(
+                "maintenance_window_id",
+                help=(
+                    "Resource ID of a shared MaintenanceWindow resource to link this maintenance "
+                    "configuration to. When set, the schedule lives in the referenced MaintenanceWindow "
+                    "and inline schedule arguments cannot be used. Cannot be combined with --config-file "
+                    "(set the maintenanceWindowId property in the JSON instead). Omit for no shared resource."
+                ),
             )
 
     for scope in [
@@ -3635,7 +3759,33 @@ def load_arguments(self, _):
                 help="Name of the load balancer configuration. Required.",
             )
 
-    with self.argument_context("aks bastion") as c:
+    for scope in ['aks bastion enable',
+                  'aks bastion update']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "bastion_sku",
+                options_list=["--bastion-sku", "-s"],
+                arg_type=get_enum_type(bastion_skus),
+                help="set bastion sku for Azure Bastion host",
+            )
+            c.argument(
+                "bastion_scale_units",
+                options_list=["--bastion-scale-units"],
+                type=int,
+                help="Scale units for the Azure Bastion host.",
+            )
+            c.argument("aks_custom_headers")
+
+    for scope in ['aks bastion enable']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                "bastion_public_ip",
+                options_list=["--bastion-public-ip"],
+                validator=validate_bastion_public_ip_id,
+                help="Optional public IP address for the Azure Bastion host.",
+            )
+
+    with self.argument_context("aks bastion tunnel") as c:
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")

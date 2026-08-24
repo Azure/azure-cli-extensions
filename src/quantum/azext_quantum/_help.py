@@ -104,6 +104,38 @@ helps['quantum job output'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
 """
 
+helps['quantum job file'] = """
+    type: group
+    short-summary: Manage a quantum job's associated files.
+"""
+
+helps['quantum job file list'] = """
+    type: command
+    short-summary: List the files stored in a job's output storage container.
+    long-summary: >
+        Returns one entry per file, each reporting the file name, its size in bytes,
+        and the last-modified time as an ISO 8601 timestamp. Use "-o table" for a
+        condensed view.
+    examples:
+      - name: List the files in an Azure Quantum job's output container.
+        text: |-
+            az quantum job file list -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
+"""
+
+helps['quantum job file download'] = """
+    type: command
+    short-summary: Download a file from a job's output storage container.
+    examples:
+      - name: Download a file from an Azure Quantum job's output container.
+        text: |-
+            az quantum job file download -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData
+      - name: Download a file to a specific directory.
+        text: |-
+            az quantum job file download -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData --dest ./downloads
+"""
 helps['quantum job show'] = """
     type: command
     short-summary: Get the job's status and details.
@@ -154,6 +186,34 @@ helps['quantum job cancel'] = """
         text: |-
             az quantum job cancel -g MyResourceGroup -w MyWorkspace \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+"""
+
+helps['quantum job delete'] = """
+    type: command
+    short-summary: Delete a job from an Azure Quantum workspace.
+    examples:
+      - name: Delete an Azure Quantum job by id.
+        text: |-
+            az quantum job delete -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+"""
+
+helps['quantum job update'] = """
+    type: command
+    short-summary: Update a submitted job's name, priority, and/or tags.
+    examples:
+      - name: Rename an Azure Quantum job.
+        text: |-
+            az quantum job update -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-name "My new job name"
+      - name: Change the priority of an Azure Quantum job.
+        text: |-
+            az quantum job update -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-priority High
+      - name: Replace the tags of an Azure Quantum job.
+        text: |-
+            az quantum job update -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-tags tag1 tag2
 """
 
 helps['quantum offerings'] = """
@@ -329,6 +389,46 @@ helps['quantum workspace update'] = """
 helps['quantum workspace keys'] = """
     type: group
     short-summary: Manage Azure Quantum Workspace api keys.
+"""
+
+helps['quantum workspace user'] = """
+    type: group
+    short-summary: Manage users of an Azure Quantum workspace.
+"""
+
+helps['quantum workspace user create'] = """
+    type: command
+    short-summary: Grant a user, group, or service principal access to an Azure Quantum workspace.
+    long-summary: >-
+        Assigns the 'Quantum Workspace Data Contributor' role (by default) at the scope of the given
+        (or current) Azure Quantum workspace.
+    examples:
+      - name: Grant a user access to a workspace using their sign-in name.
+        text: |-
+            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
+                --assignee user@contoso.com
+      - name: Grant a user access to a workspace using their object id.
+        text: |-
+            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
+                --assignee-object-id 00000000-0000-0000-0000-000000000000
+      - name: Grant a group access to a workspace using its object id and principal type.
+        text: |-
+            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
+                --assignee-object-id 00000000-0000-0000-0000-000000000000 --assignee-principal-type Group
+"""
+
+helps['quantum workspace user delete'] = """
+    type: command
+    short-summary: Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    examples:
+      - name: Remove a user's access to a workspace using their sign-in name.
+        text: |-
+            az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
+                --assignee user@contoso.com
+      - name: Remove a user's access to a workspace using their object id.
+        text: |-
+            az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
+                --assignee-object-id 00000000-0000-0000-0000-000000000000
 """
 
 helps['quantum workspace keys list'] = """

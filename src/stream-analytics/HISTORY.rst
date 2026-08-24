@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.6
++++++++++++++++
+* Regenerate `stream-analytics output` AAZ commands for `2021-10-01-preview` and fix managed identity outputs such as Cosmos DB.
+
 1.0.5
 +++++++++++++++
 * Migrate ``stream-analytics input`` commands to the aaz framework, upgrading the input API version to 2021-10-01-preview.

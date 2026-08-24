@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.
+    """Update a mongo cluster. Only the properties specified in the request are modified; all other properties are left unchanged (HTTP PATCH). Generic update arguments (--set, --add, --remove) are supported.
 
     :example: Update a mongo cluster's compute tier.
         az documentdb mongocluster update -n MyCluster -g MyResourceGroup --tier M40
@@ -66,7 +67,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.admin_password = AAZPasswordArg(
-            options=["-p", "--admin-password"],
+            options=["-p", "--password", "--admin-password"],
             arg_group="Administrator",
             help="The administrator password.",
             nullable=True,
@@ -150,7 +151,7 @@ class Update(AAZCommand):
         _args_schema.preview_features = AAZListArg(
             options=["--preview-features"],
             arg_group="Properties",
-            help="List of private endpoint connections.",
+            help="Space-separated list of preview features to enable on the cluster. Preview feature names are free-form strings; refer to the mongo cluster feature documentation for the currently available values.",
             nullable=True,
         )
         _args_schema.public_network_access = AAZStrArg(
@@ -202,7 +203,6 @@ class Update(AAZCommand):
         preview_features = cls._args_schema.preview_features
         preview_features.Element = AAZStrArg(
             nullable=True,
-            enum={"GeoReplicas": "GeoReplicas"},
         )
 
         # define Arg Group "Resource"
@@ -255,7 +255,7 @@ class Update(AAZCommand):
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.MongoClustersCreateOrUpdate(ctx=self.ctx)()
+        yield self.MongoClustersUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -361,7 +361,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class MongoClustersCreateOrUpdate(AAZHttpOperation):
+    class MongoClustersUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -371,18 +371,18 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "original-uri"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "original-uri"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -397,7 +397,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -452,25 +452,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_mongo_cluster_read(cls._schema_on_200_201)
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_mongo_cluster_read(cls._schema_on_200)
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 

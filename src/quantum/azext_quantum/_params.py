@@ -8,6 +8,7 @@
 import argparse
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
+from azure.cli.core.commands.parameters import get_enum_type
 from azure.cli.core.util import shell_safe_json_parse
 
 
@@ -38,6 +39,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
+    file_name_type = CLIArgumentType(options_list=['--file-name', '-n'], help="The name of the file (blob) in the job's output storage container.")
+    dest_type = CLIArgumentType(options_list=['--dest'], help="Destination directory. The file is saved using its blob name in this directory (the current directory if omitted).")
+    job_name_update_type = CLIArgumentType(options_list=['--job-name'], help='The updated friendly name of the job.')
+    job_priority_type = CLIArgumentType(options_list=['--job-priority'], help='The updated priority of the job.', arg_type=get_enum_type(['Standard', 'High']))
+    job_tags_type = CLIArgumentType(options_list=['--job-tags'], help='Space-separated list of tags to associate with the job. Replaces any existing tags. Pass "" to clear all tags.', nargs='+')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the program on the given target.')
@@ -67,6 +73,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
+    assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user, group, or service principal. Supported formats: object id, user sign-in name, or service principal name.')
+    assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with object ids for users, groups, service principals, and managed identities. For managed identities use the principal id. For service principals, use the object id and not the app id.")
+    role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role granted to the user; for 'delete', the role assignment to remove. Defaults to the 'Quantum Workspace Data Contributor' role.")
+    assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="Use with '--assignee-object-id' to avoid errors caused by propagation latency in Microsoft Graph.")
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -77,6 +87,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('auto_accept', auto_accept_type)
         c.argument('skip_autoadd', skip_autoadd_type)
         c.argument('workspace_kind', workspace_kind_type)
+
+    with self.argument_context('quantum workspace user') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('assignee', assignee_type)
+        c.argument('assignee_object_id', assignee_object_id_type)
+        c.argument('role', role_type)
+
+    with self.argument_context('quantum workspace user create') as c:
+        c.argument('assignee_principal_type', assignee_principal_type_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -115,6 +134,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
+
+    with self.argument_context('quantum job file download') as c:
+        c.argument('file_name', file_name_type)
+        c.argument('dest', dest_type)
+
+    with self.argument_context('quantum job update') as c:
+        c.argument('job_name', job_name_update_type)
+        c.argument('job_priority', job_priority_type)
+        c.argument('job_tags', job_tags_type)
 
     with self.argument_context('quantum execute') as c:
         c.argument('workspace_name', workspace_name_type)

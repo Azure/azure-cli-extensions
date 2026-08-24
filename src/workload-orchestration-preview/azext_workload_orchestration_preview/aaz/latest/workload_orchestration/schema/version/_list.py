@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema version list",
+    "workload-orchestration-preview schema version list",
 )
 class List(AAZCommand):
     """List by specified resource group
