@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Start(AAZCommand):
     """Create a new migration
+
+    :example: Start a migration from an Azure Cache for Redis source
+        az redisenterprise migration start --cluster-name "cache1" --resource-group "rg1" --source-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache" --skip-data-migration true --switch-dns true
     """
 
     _aaz_info = {

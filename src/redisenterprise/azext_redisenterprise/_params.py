@@ -58,8 +58,8 @@ def load_arguments(self, _):
         c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
                    'for the cluster to support, e.g. \'1.2\'')
         c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'],
-                   type=str, help='Key encryption key Url, versioned only.'
-                   'Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78',
+                   type=str, help='Key encryption key Url, versioned only. '
+                   'Ex: `https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78`',
                    arg_group='Encryption')
         c.argument('identity_type', options_list=['--identity-type'],
                    arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']),
@@ -118,7 +118,7 @@ def load_arguments(self, _):
                    'for the cluster to support, e.g. \'1.2\'')
         c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], type=str,
                    help='Key encryption key Url, versioned only. '
-                   'Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78',
+                   'Ex: `https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78`',
                    arg_group='Encryption')
         c.argument('identity_type', options_list=['--identity-type'],
                    arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']),

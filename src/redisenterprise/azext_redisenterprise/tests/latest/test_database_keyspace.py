@@ -25,7 +25,7 @@ def step_create(test, checks=None):
     test.cmd('az redisenterprise create '
              '--cluster-name "{cluster}" '
              '--sku "Balanced_B1" '
-             '--location "centraluseuap" '
+             '--location "centralindia" '
              '--public-network-access "Enabled" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -117,7 +117,7 @@ class RedisEnterpriseKeyspaceEventsScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-ke-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_notify_keyspace_events(self, rg):
         call_keyspace_scenario(self, rg)
         calc_coverage(__file__)

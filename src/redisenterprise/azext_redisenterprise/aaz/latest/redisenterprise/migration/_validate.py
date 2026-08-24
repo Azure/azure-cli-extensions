@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Validate(AAZCommand):
     """Validates if a source Azure Cache for Redis resource can be migrated to a target Azure Managed Redis resource.
+
+    :example: Validate a migration from an Azure Cache for Redis source
+        az redisenterprise migration validate --cluster-name "cache1" --resource-group "rg1" --source-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache"
     """
 
     _aaz_info = {

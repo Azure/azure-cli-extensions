@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Undo(AAZCommand):
     """Cancel or rollback the migration operation in a Redis Enterprise cluster.
+
+    :example: Undo the migration on a Redis Enterprise cluster
+        az redisenterprise migration undo --cluster-name "cache1" --resource-group "rg1"
     """
 
     _aaz_info = {

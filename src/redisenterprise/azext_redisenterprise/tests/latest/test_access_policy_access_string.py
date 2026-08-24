@@ -25,7 +25,7 @@ def step_create(test, checks=None):
     test.cmd('az redisenterprise create '
              '--cluster-name "{cluster}" '
              '--sku "Balanced_B1" '
-             '--location "centraluseuap" '
+             '--location "centralindia" '
              '--public-network-access "Enabled" '
              '--access-keys-auth Disabled '
              '--resource-group "{rg}"',
@@ -156,7 +156,7 @@ class RedisEnterpriseAccessStringScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-as-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_access_string(self, rg):
         call_access_string_scenario(self, rg)
         calc_coverage(__file__)
