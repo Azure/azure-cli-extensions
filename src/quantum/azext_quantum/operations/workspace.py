@@ -515,9 +515,17 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = []
-    for role_id in (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID):
+    roles = (
+        (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, "Quantum Workspace Data Contributor"),
+        (QUANTUM_WORKSPACE_OWNER_ROLE_ID, "Quantum Workspace Owner"),
+    )
+    for role_id, role_name in roles:
         # fill_principal_name=False avoids a per-call Microsoft Graph lookup that _fill_user_display_names already does in one batch.
-        assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited, fill_principal_name=False)
+        role_assignments = list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited,
+                                                 fill_principal_name=False, fill_role_definition_name=False)
+        for assignment in role_assignments:
+            assignment["roleDefinitionName"] = role_name
+        assignments += role_assignments
     users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
     _fill_user_display_names(cmd, users)
     return users
