@@ -17319,14 +17319,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNone(dec_mc_1.hosted_system_profile.system_node_subnet_id)
         self.assertIsNone(dec_mc_1.hosted_system_profile.node_subnet_id)
 
-        # BYO conversion, the full subnet trio implies enablement
+        # BYO conversion
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
+                "enable_hosted_system": True,
                 "system_node_subnet_id": system_node_subnet_id,
                 "node_subnet_id": node_subnet_id,
-                "apiserver_subnet_id": apiserver_subnet_id,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -17340,13 +17340,51 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_2.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
         self.assertEqual(dec_mc_2.hosted_system_profile.node_subnet_id, node_subnet_id)
 
-        # partial subnet trio is rejected
-        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+        # --node-subnet-id and --apiserver-subnet-id are optional
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_hosted_system": True,
                 "system_node_subnet_id": system_node_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_6.context.attach_mc(mc_6)
+        dec_mc_6 = dec_6.update_hosted_system_profile(mc_6)
+        self.assertTrue(dec_mc_6.hosted_system_profile.enabled)
+        self.assertEqual(dec_mc_6.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
+        self.assertIsNone(dec_mc_6.hosted_system_profile.node_subnet_id)
+
+        # the subnet flags require --enable-hosted-system
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+        )
+        dec_9.context.attach_mc(mc_9)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_9.update_hosted_system_profile(mc_9)
+
+        # --node-subnet-id requires --system-node-subnet-id
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "node_subnet_id": node_subnet_id,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -17357,6 +17395,32 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_3.context.attach_mc(mc_3)
         with self.assertRaises(RequiredArgumentMissingError):
             dec_3.update_hosted_system_profile(mc_3)
+
+        # --apiserver-subnet-id may still be supplied alongside the node subnets
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_hosted_system": True,
+                "system_node_subnet_id": system_node_subnet_id,
+                "node_subnet_id": node_subnet_id,
+                "apiserver_subnet_id": apiserver_subnet_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(name="Automatic"),
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                enable_vnet_integration=True,
+                subnet_id=apiserver_subnet_id,
+            ),
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_hosted_system_profile(mc_5)
+        self.assertTrue(dec_mc_5.hosted_system_profile.enabled)
+        self.assertEqual(dec_mc_5.hosted_system_profile.system_node_subnet_id, system_node_subnet_id)
+        self.assertEqual(dec_mc_5.hosted_system_profile.node_subnet_id, node_subnet_id)
 
         # non-Automatic SKU is rejected
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(

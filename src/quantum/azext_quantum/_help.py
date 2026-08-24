@@ -104,6 +104,38 @@ helps['quantum job output'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
 """
 
+helps['quantum job file'] = """
+    type: group
+    short-summary: Manage a quantum job's associated files.
+"""
+
+helps['quantum job file list'] = """
+    type: command
+    short-summary: List the files stored in a job's output storage container.
+    long-summary: >
+        Returns one entry per file, each reporting the file name, its size in bytes,
+        and the last-modified time as an ISO 8601 timestamp. Use "-o table" for a
+        condensed view.
+    examples:
+      - name: List the files in an Azure Quantum job's output container.
+        text: |-
+            az quantum job file list -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
+"""
+
+helps['quantum job file download'] = """
+    type: command
+    short-summary: Download a file from a job's output storage container.
+    examples:
+      - name: Download a file from an Azure Quantum job's output container.
+        text: |-
+            az quantum job file download -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData
+      - name: Download a file to a specific directory.
+        text: |-
+            az quantum job file download -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData --dest ./downloads
+"""
 helps['quantum job show'] = """
     type: command
     short-summary: Get the job's status and details.

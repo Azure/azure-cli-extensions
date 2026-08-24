@@ -56,6 +56,17 @@ def transform_jobs(results):
     return [transform_job(job) for job in results]
 
 
+def transform_file_list(results):
+    return [
+        OrderedDict([
+            ('Name', f['name']),
+            ('Size (bytes)', f['size']),
+            ('Last modified', f['lastModified'])
+        ])
+        for f in results
+    ]
+
+
 def transform_offerings(offerings):
     def one(offering):
         return OrderedDict([
@@ -152,6 +163,8 @@ def load_command_table(self, _):
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)
+        j.command('file list', 'list_files', validator=validate_workspace_info, table_transformer=transform_file_list)
+        j.command('file download', 'download_file', validator=validate_workspace_info)
         j.command('cancel', 'cancel', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('delete', 'delete', validator=validate_workspace_info, confirmation=True)
         j.command('update', 'update', validator=validate_workspace_info, table_transformer=transform_job)
