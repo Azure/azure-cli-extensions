@@ -551,7 +551,7 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
         self.assertEqual(rows[0]["Name"], "Contoso User")
         self.assertEqual(rows[0]["Email"], "user@contoso.com")
         self.assertEqual(rows[0]["Role"], "Quantum Workspace Data Contributor")
-        self.assertEqual(rows[0]["Time Created"], "2026-06-24T16:53:26.107178+00:00")
+        self.assertEqual(rows[0]["Time Added"], "2026-06-24T16:53:26.107178+00:00")
 
         # Email falls back to the principal name when Graph did not return a mail address.
         fallback = transform_users([{"principalName": "fallback@contoso.com"}])
