@@ -39,6 +39,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
+    file_name_type = CLIArgumentType(options_list=['--file-name', '-n'], help="The name of the file (blob) in the job's output storage container.")
+    dest_type = CLIArgumentType(options_list=['--dest'], help="Destination directory. The file is saved using its blob name in this directory (the current directory if omitted).")
     job_name_update_type = CLIArgumentType(options_list=['--job-name'], help='The updated friendly name of the job.')
     job_priority_type = CLIArgumentType(options_list=['--job-priority'], help='The updated priority of the job.', arg_type=get_enum_type(['Standard', 'High']))
     job_tags_type = CLIArgumentType(options_list=['--job-tags'], help='Space-separated list of tags to associate with the job. Replaces any existing tags. Pass "" to clear all tags.', nargs='+')
@@ -132,6 +134,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
+
+    with self.argument_context('quantum job file download') as c:
+        c.argument('file_name', file_name_type)
+        c.argument('dest', dest_type)
 
     with self.argument_context('quantum job update') as c:
         c.argument('job_name', job_name_update_type)
