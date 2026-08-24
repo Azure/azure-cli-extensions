@@ -173,6 +173,9 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
     from azure.core.exceptions import HttpResponseError, ResourceExistsError
 
     assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
+    # Unwrap AAZ values (e.g. instance.identity.principal_id) to a plain str so the
+    # authorization SDK can JSON-serialize the request body.
+    principal_id = str(principal_id)
     principal_types = [p.value for p in PrincipalType]
     current_principal_type = principal_types.pop(0)
 
