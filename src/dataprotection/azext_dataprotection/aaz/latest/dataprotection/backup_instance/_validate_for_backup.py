@@ -539,7 +539,7 @@ class ValidateForBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

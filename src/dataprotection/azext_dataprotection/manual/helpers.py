@@ -57,7 +57,8 @@ datasource_map = {
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
     "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
-    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts",
+    "AzureElasticSAN": "Microsoft.ElasticSan/elasticSans/volumeGroups"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -574,6 +575,15 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
 
+    if datasource_type == "AzureElasticSAN":
+        if restore_configuration is not None:
+            restore_criteria = restore_configuration
+        else:
+            raise RequiredArgumentMissingError("Please input parameter restore_configuration for AzureElasticSAN restore.\n\
+                                               Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_criteria)
+        return restore_criteria_list
+
     # implicit else:
     # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
     # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
@@ -1004,6 +1014,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "MySQL server"
         if datasource_type == 'AzureCosmosDB':
             helptext_dsname = "Cosmos DB account"
+        if datasource_type == 'AzureElasticSAN':
+            helptext_dsname = "Elastic SAN volume group"
 
         return helptext_dsname
 
