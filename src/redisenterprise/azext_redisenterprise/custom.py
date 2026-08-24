@@ -26,6 +26,7 @@ from .aaz.latest.redisenterprise import Show as _ClusterShow
 from .aaz.latest.redisenterprise import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import Update as _Update
 from .aaz.latest.redisenterprise.migration import Start as _MigrationStart
+from .aaz.latest.redisenterprise.migration import Undo as _MigrationUndo
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
@@ -505,6 +506,46 @@ class MigrationStart(_MigrationStart):
         args.azure_cache_for_redis.switch_dns = args.switch_dns
         if has_value(args.force_migrate):
             args.azure_cache_for_redis.force_migrate = args.force_migrate
+
+
+class MigrationUndo(_MigrationUndo):
+    """Override ``redisenterprise migration undo`` to avoid an AAZ-generated
+    ``NoneType`` crash on successful LRO completion.
+
+    The service's ``Migrations_Cancel`` operation is a 202 LRO declared with
+    ``final-state-via: location`` in swagger, but the ``Location`` header points
+    at the migration resource itself, so the final GET returns a non-empty body.
+    The generated ``MigrationsCancel.__call__`` passes ``None`` as the LRO
+    success deserializer to ``build_lro_polling``; azure-core's
+    ``base_polling._parse_resource`` then tries to call that ``None`` on the
+    non-empty final response and raises
+    ``TypeError: 'NoneType' object is not callable``. The cancel returns no
+    resource of interest, so we pass a no-op deserializer (``on_200``) instead,
+    mirroring how the generated ``delete`` handles its empty response.
+
+    Remove this subclass (and the ``commands.py`` registration) once the
+    ``Migrations_Cancel`` swagger contract is fixed to use
+    ``final-state-via: azure-async-operation`` like the other bodyless actions.
+    """
+
+    class MigrationsCancel(_MigrationUndo.MigrationsCancel):
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            return self.on_error(session.http_response)
+
+        def on_200(self, session):
+            pass
 
 
 def _get_cluster_with_databases(cluster,

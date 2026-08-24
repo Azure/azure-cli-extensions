@@ -19,9 +19,9 @@ class Start(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-06-01-preview"],
         ]
     }
 
@@ -87,7 +87,7 @@ class Start(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MigrationStart(ctx=self.ctx)()
+        yield self.MigrationsStart(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +102,7 @@ class Start(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MigrationStart(AAZHttpOperation):
+    class MigrationsStart(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -166,7 +166,7 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-06-01-preview",
                     required=True,
                 ),
             }

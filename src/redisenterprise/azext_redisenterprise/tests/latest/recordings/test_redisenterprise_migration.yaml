@@ -1,0 +1,1144 @@
+interactions:
+- request:
+    body: '{"location": "centralindia", "properties": {"redisConfiguration": {}, "tenantSettings":
+      {}, "sku": {"name": "Premium", "family": "p", "capacity": 1}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redis create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '150'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --sku --vm-size --location --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002?api-version=2024-11-01
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/Redis/clitest-src-000002\"\
+        ,\r\n  \"location\": \"Central India\",\r\n  \"name\": \"clitest-src-000002\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/Redis\",\r\n  \"tags\": {},\r\n  \"properties\"\
+        : {\r\n    \"provisioningState\": \"Creating\",\r\n    \"redisVersion\": \"\
+        6.0\",\r\n    \"sku\": {\r\n      \"name\": \"Premium\",\r\n      \"family\"\
+        : \"P\",\r\n      \"capacity\": 1\r\n    },\r\n    \"enableNonSslPort\": false,\r\
+        \n    \"instances\": [\r\n      {\r\n        \"sslPort\": 15000,\r\n     \
+        \   \"isMaster\": false,\r\n        \"isPrimary\": false\r\n      },\r\n \
+        \     {\r\n        \"sslPort\": 15001,\r\n        \"isMaster\": false,\r\n\
+        \        \"isPrimary\": false\r\n      }\r\n    ],\r\n    \"minimumTlsVersion\"\
+        : \"1.2\",\r\n    \"publicNetworkAccess\": \"Enabled\",\r\n    \"tenantSettings\"\
+        : {},\r\n    \"redisConfiguration\": {\r\n      \"maxclients\": \"7500\",\r\
+        \n      \"maxmemory-reserved\": \"642\",\r\n      \"maxfragmentationmemory-reserved\"\
+        : \"642\",\r\n      \"maxmemory-delta\": \"642\"\r\n    },\r\n    \"accessKeys\"\
+        : {\r\n      \"primaryKey\": \"veryFakeSanitizedAccessKeyABCDEFGHIJKLMNOP0=\"\
+        ,\r\n      \"secondaryKey\": \"veryFakeSanitizedAccessKeyABCDEFGHIJKLMNOP0=\"\
+        \r\n    },\r\n    \"hostName\": \"clitest-src-000002.redis.cache.windows.net\"\
+        ,\r\n    \"port\": 6379,\r\n    \"sslPort\": 6380,\r\n    \"linkedServers\"\
+        : [],\r\n    \"updateChannel\": \"Stable\",\r\n    \"zonalAllocationPolicy\"\
+        : \"Automatic\",\r\n    \"disableAccessKeyAuthentication\": false\r\n  }\r\
+        \n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/asyncOperations/d8fa7a97-08f4-4acd-8e40-8d2c5173b908?api-version=2024-11-01&t=639231106137979107&c=MIIHlTCCBn2gAwIBAgIRAKqOfhU4uXZ5zhA8N8mJLtswDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTcwNTE2NDlaFw0yNzAyMTIxMTE2NDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtxGfLM87xopMwEhRKoMAciGJgVOBxIJaX4dan0lPl5oWuJ9zQcVl9bd2UP7fa-QW96DuFgPR_b29eBcjV0eozwOjTzFvwEQd2K_CsTzKhHvvkeS3SQ8_kOZRfsumA3SyPGYm0U5--wvqDrr9vXfD009Nf0Q7NYraQTnXJP3uaosfOcwNk8ephKd9aoD1L2Hhnwb3--A8VG_z8Bj07QpUeWfHAzdaEGQii51dUsthli--YiC2Ff1AhKcC0T-CIABPo2prNLIYpOsMkQdccVnJ9aJscpfH1jj4jhSmNoGnmuUHuTAD-Da31qrDDFrEPpJE-_VwPlWgR8uKRtY73_PUMQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUhzj67l9CqV-OA96rFXFZbuAeD6YwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAZqm5aTA4vz1jdq-uXHA6WmskCnzmpYh4CCm3inHgkb2Ok2FgGHQ9H3pkIf8PVmlkboH_jdNKAtlY34Hq3cH4m5NCd-FxXCfD0ZTqt8RDJ8T4Fi8nUQvIFcoLJL5r6u6uIJl9y_-AgCI5H-neSaiQW0lx7NUJ9XDHcKQ2Ie5tsrEIfRus_YzigJe9v2MsMVhRFXqkLAgVNGBnIMnZ7uZc0Ue9xYeJVJUeiAC8D22MqgxgSwd2zYVe2NYjmfQwc9P84H9jAUcCzK9rq7SFcYu9hRuYBmELd-lmZU-gyZwRk3VGB2RztqYDVzIMqmWeIlRV3FlX5_JVkPhLI8DSEZ9ctg&s=TmHBs6_GFSEKe_TItg4Qax9-Z1zYjL3QswbL6hGIDxe-eFRkdLQxDtvUnWOMkyVsLe3YEI9o6lFAjHarphVgAYZylSx-bLOaG3A3LZRpgijsrM0uaJomXGha1tLKTQgsbNUGTaUxy6XOQTgutwhNCoe6mE6jnwSDPAS2OBoJmSLvNF_nrWrALAz8qJd3uIfgp8-lvWb_QSchnenV67cAF02e16f-Hz3P6Hy6fXXT8gULZpWXzThEyArgzu0w4gMUg4SxUIJXkmiZejMzwGEE9pCYzvadUEkBngIpd19MRW--iWie-E2KJtGSWmQI_JOARRU47O6H2sLpMGrX0blByw&h=Z72D_5Fpl3_KSFZXzufBgdmUQ-YHj06-dYT0VpMalzk
+      cache-control:
+      - no-cache
+      content-length:
+      - '1429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:36:53 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002?api-version=2024-11-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/westindia/d831baa8-e4d1-4e9f-98b5-8710fbc44687
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: B60C79F77D6644328AE10CAB684AFE08 Ref B: PNQ231110908034 Ref C: 2026-08-23T19:36:51Z'
+      x-rp-server-mvid:
+      - 5c4b12ac-28ed-4ee9-a62d-cac00d5f001e
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redis create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --sku --vm-size --location --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/asyncOperations/d8fa7a97-08f4-4acd-8e40-8d2c5173b908?api-version=2024-11-01&t=639231106137979107&c=MIIHlTCCBn2gAwIBAgIRAKqOfhU4uXZ5zhA8N8mJLtswDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTcwNTE2NDlaFw0yNzAyMTIxMTE2NDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtxGfLM87xopMwEhRKoMAciGJgVOBxIJaX4dan0lPl5oWuJ9zQcVl9bd2UP7fa-QW96DuFgPR_b29eBcjV0eozwOjTzFvwEQd2K_CsTzKhHvvkeS3SQ8_kOZRfsumA3SyPGYm0U5--wvqDrr9vXfD009Nf0Q7NYraQTnXJP3uaosfOcwNk8ephKd9aoD1L2Hhnwb3--A8VG_z8Bj07QpUeWfHAzdaEGQii51dUsthli--YiC2Ff1AhKcC0T-CIABPo2prNLIYpOsMkQdccVnJ9aJscpfH1jj4jhSmNoGnmuUHuTAD-Da31qrDDFrEPpJE-_VwPlWgR8uKRtY73_PUMQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUhzj67l9CqV-OA96rFXFZbuAeD6YwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAZqm5aTA4vz1jdq-uXHA6WmskCnzmpYh4CCm3inHgkb2Ok2FgGHQ9H3pkIf8PVmlkboH_jdNKAtlY34Hq3cH4m5NCd-FxXCfD0ZTqt8RDJ8T4Fi8nUQvIFcoLJL5r6u6uIJl9y_-AgCI5H-neSaiQW0lx7NUJ9XDHcKQ2Ie5tsrEIfRus_YzigJe9v2MsMVhRFXqkLAgVNGBnIMnZ7uZc0Ue9xYeJVJUeiAC8D22MqgxgSwd2zYVe2NYjmfQwc9P84H9jAUcCzK9rq7SFcYu9hRuYBmELd-lmZU-gyZwRk3VGB2RztqYDVzIMqmWeIlRV3FlX5_JVkPhLI8DSEZ9ctg&s=TmHBs6_GFSEKe_TItg4Qax9-Z1zYjL3QswbL6hGIDxe-eFRkdLQxDtvUnWOMkyVsLe3YEI9o6lFAjHarphVgAYZylSx-bLOaG3A3LZRpgijsrM0uaJomXGha1tLKTQgsbNUGTaUxy6XOQTgutwhNCoe6mE6jnwSDPAS2OBoJmSLvNF_nrWrALAz8qJd3uIfgp8-lvWb_QSchnenV67cAF02e16f-Hz3P6Hy6fXXT8gULZpWXzThEyArgzu0w4gMUg4SxUIJXkmiZejMzwGEE9pCYzvadUEkBngIpd19MRW--iWie-E2KJtGSWmQI_JOARRU47O6H2sLpMGrX0blByw&h=Z72D_5Fpl3_KSFZXzufBgdmUQ-YHj06-dYT0VpMalzk
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central\
+        \ India/asyncOperations/d8fa7a97-08f4-4acd-8e40-8d2c5173b908\",\r\n  \"name\"\
+        : \"d8fa7a97-08f4-4acd-8e40-8d2c5173b908\",\r\n  \"status\": \"Succeeded\"\
+        ,\r\n  \"startTime\": null,\r\n  \"endTime\": null,\r\n  \"percentComplete\"\
+        : null,\r\n  \"properties\": null,\r\n  \"error\": null\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/asyncOperations/d8fa7a97-08f4-4acd-8e40-8d2c5173b908?api-version=2024-11-01&t=639231112995361508&c=MIIHlTCCBn2gAwIBAgIRAKqOfhU4uXZ5zhA8N8mJLtswDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTcwNTE2NDlaFw0yNzAyMTIxMTE2NDlaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtxGfLM87xopMwEhRKoMAciGJgVOBxIJaX4dan0lPl5oWuJ9zQcVl9bd2UP7fa-QW96DuFgPR_b29eBcjV0eozwOjTzFvwEQd2K_CsTzKhHvvkeS3SQ8_kOZRfsumA3SyPGYm0U5--wvqDrr9vXfD009Nf0Q7NYraQTnXJP3uaosfOcwNk8ephKd9aoD1L2Hhnwb3--A8VG_z8Bj07QpUeWfHAzdaEGQii51dUsthli--YiC2Ff1AhKcC0T-CIABPo2prNLIYpOsMkQdccVnJ9aJscpfH1jj4jhSmNoGnmuUHuTAD-Da31qrDDFrEPpJE-_VwPlWgR8uKRtY73_PUMQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUhzj67l9CqV-OA96rFXFZbuAeD6YwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAZqm5aTA4vz1jdq-uXHA6WmskCnzmpYh4CCm3inHgkb2Ok2FgGHQ9H3pkIf8PVmlkboH_jdNKAtlY34Hq3cH4m5NCd-FxXCfD0ZTqt8RDJ8T4Fi8nUQvIFcoLJL5r6u6uIJl9y_-AgCI5H-neSaiQW0lx7NUJ9XDHcKQ2Ie5tsrEIfRus_YzigJe9v2MsMVhRFXqkLAgVNGBnIMnZ7uZc0Ue9xYeJVJUeiAC8D22MqgxgSwd2zYVe2NYjmfQwc9P84H9jAUcCzK9rq7SFcYu9hRuYBmELd-lmZU-gyZwRk3VGB2RztqYDVzIMqmWeIlRV3FlX5_JVkPhLI8DSEZ9ctg&s=YoCF3Zfu9XTG8kMg-s_furTHmng3XDI30yBb-SFnWO3BChsq4bufxUyNgS3GgZBZJ2FS2sZ9FHMEcFn7Zp_7mzEuxJix3uKnB_ahrobffcjztmAlvs91lmD8UL8T5MxNTZ_Jg-7L2jtZxfPLWHPxCkmyY-oZ3QA-ywSebkr8CNAoXpXGSu5wySD_VgHKHV9pn4yG1VX_5tD_uCbmRLoO6aqDuWQnUNFgoQj_UFjY4xzL-931o6C4kLYwywj4uuM_Z5YFWEKyUP9K2mQXegwhFP87M1-bOZwztFBSD57DZ2dLGaKG7JM1NCDHT_nTmeUc2oDSeL0qryYxR0tHYEPivQ&h=wu9Iz0GdBz59Fk1SJpwVNLI4O3hxSkFR7kL69df3s2E
+      cache-control:
+      - no-cache
+      content-length:
+      - '358'
+      content-type:
+      - application/json
+      date:
+      - Sun, 23 Aug 2026 19:48:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/westindia/9d100b51-fe43-42d2-972f-86d07c1563f1
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1EE5E07B0C6547CAA635EAA2D261A728 Ref B: PNQ231110906025 Ref C: 2026-08-23T19:48:19Z'
+      x-rp-server-mvid:
+      - 5c4b12ac-28ed-4ee9-a62d-cac00d5f001e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redis create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --sku --vm-size --location --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/Redis/clitest-src-000002","location":"Central
+        India","name":"clitest-src-000002","type":"Microsoft.Cache/Redis","tags":{},"properties":{"provisioningState":"Succeeded","redisVersion":"6.0","sku":{"name":"Premium","family":"P","capacity":1},"enableNonSslPort":false,"instances":[{"sslPort":15000,"shardId":0,"isMaster":true,"isPrimary":true},{"sslPort":15001,"shardId":0,"isMaster":false,"isPrimary":false}],"minimumTlsVersion":"1.2","publicNetworkAccess":"Enabled","tenantSettings":{},"redisConfiguration":{"maxclients":"7500","maxmemory-reserved":"642","maxfragmentationmemory-reserved":"642","maxmemory-delta":"642"},"accessKeys":null,"hostName":"clitest-src-000002.redis.cache.windows.net","port":6379,"sslPort":6380,"replicasPerMaster":1,"linkedServers":[],"replicasPerPrimary":1,"updateChannel":"Stable","zonalAllocationPolicy":"Automatic","disableAccessKeyAuthentication":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1020'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:48:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 945EE64DCA814DDF9CED42CA652064F5 Ref B: PNQ231110909036 Ref C: 2026-08-23T19:48:20Z'
+      x-rp-server-mvid:
+      - 5c4b12ac-28ed-4ee9-a62d-cac00d5f001e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralindia", "properties": {"publicNetworkAccess": "Enabled"},
+      "sku": {"name": "Balanced_B1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '110'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --sku --location --clustering-policy --public-network-access
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"Central India\",\r\n  \"name\": \"clitest-mig-000001\"\
+        ,\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise\",\r\n  \"kind\": \"v2\"\
+        ,\r\n  \"tags\": null,\r\n  \"sku\": {\r\n    \"name\": \"Balanced_B1\"\r\n\
+        \  },\r\n  \"properties\": {\r\n    \"minimumTlsVersion\": \"1.2\",\r\n  \
+        \  \"hostName\": \"clitest-mig-000001.centralindia.redis.azure.net\",\r\n\
+        \    \"provisioningState\": \"Creating\",\r\n    \"resourceState\": \"Creating\"\
+        ,\r\n    \"privateEndpointConnections\": [],\r\n    \"highAvailability\":\
+        \ \"Enabled\",\r\n    \"redundancyMode\": \"ZR\",\r\n    \"publicNetworkAccess\"\
+        : \"Enabled\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"None\"\r\n \
+        \ }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/5c0226cb-7382-4f95-bfc8-b2b9be728789?api-version=2026-06-01-preview&t=639231113036082501&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=W-lIONlI6lYFMOS-YyLLvW4d0NTN_gm5RgRwz8iM6RXjBgW6jhFswVITRIEBkwrHWa5bVrclJBSgb7oRQLghd_E-RiNoKGGMgvNPi1EVaQUNKmPsaf3ci4VN5Fpavm7c8hAzn02Fg-oIh-01oZzhFKkn97n5tzJo1Gvtr9O5zM0KWdB6FaFM9Rj9Yz25AS_8uwYaKCnptV6umba1kqjT8rrrT8jEMjFhqXpe8w_F9M_RBPLkuPV7DAaIs0MjHoyzrWtCuTMZXxVqyDkRZ66D8-ZrfY8YmPJag4lrvTLKRZh7q6zUqeVm28UTxlFnrwul7aD2OHD8yuBWusioP_tDgA&h=pXrRhl-a2to9je_W5qZF9rZl9ff_FOB5_w23Y855S74
+      cache-control:
+      - no-cache
+      content-length:
+      - '751'
+      content-type:
+      - application/json
+      date:
+      - Sun, 23 Aug 2026 19:48:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/operationresults/5c0226cb-7382-4f95-bfc8-b2b9be728789?api-version=2026-06-01-preview&t=639231113036082501&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=oPiCF0Ley8aWSuAKKiz-idGY-gfvslDOovppceLDR-AzLM6CBY4KmmUC-xDQ95PWVm1tiROTZG4KzpmJtYcc8dHQU3BXOl0ATMrkNhD-wMqd_Y9SkETlu6WOiZdqgeQkRCbUCtxZjBBDtAg0x6OpTcHu69ZSf-ckraewj2BfSXW_HuNXwSSuTA2Qz1F8ltEZYPDob8YKgTdHRa3---cx04UsUYS6jowzvJ-iwNmttMNgp5OpFNQ2DXmej0QfKqGm21mqTTt6AP3k5hT-VKX8MGbekqIkjcDahxNFTmnj8kcfTL5g7jYuXRon5OnGovnhsFf-TkOKnLpTfb6_C8LCIA&h=vNdm9gm3YdSij_2WR0gh6ASS8ORvVjI1yoJCNOPnRSY
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/59671833-818d-4330-b376-fbd147b6292f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 49C9325F304D458B95C355920B43CD3D Ref B: PNQ231110908040 Ref C: 2026-08-23T19:48:22Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --sku --location --clustering-policy --public-network-access
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/5c0226cb-7382-4f95-bfc8-b2b9be728789?api-version=2026-06-01-preview&t=639231113036082501&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=W-lIONlI6lYFMOS-YyLLvW4d0NTN_gm5RgRwz8iM6RXjBgW6jhFswVITRIEBkwrHWa5bVrclJBSgb7oRQLghd_E-RiNoKGGMgvNPi1EVaQUNKmPsaf3ci4VN5Fpavm7c8hAzn02Fg-oIh-01oZzhFKkn97n5tzJo1Gvtr9O5zM0KWdB6FaFM9Rj9Yz25AS_8uwYaKCnptV6umba1kqjT8rrrT8jEMjFhqXpe8w_F9M_RBPLkuPV7DAaIs0MjHoyzrWtCuTMZXxVqyDkRZ66D8-ZrfY8YmPJag4lrvTLKRZh7q6zUqeVm28UTxlFnrwul7aD2OHD8yuBWusioP_tDgA&h=pXrRhl-a2to9je_W5qZF9rZl9ff_FOB5_w23Y855S74
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central\
+        \ India/operationsStatus/5c0226cb-7382-4f95-bfc8-b2b9be728789\",\r\n  \"name\"\
+        : \"5c0226cb-7382-4f95-bfc8-b2b9be728789\",\r\n  \"status\": \"Succeeded\"\
+        ,\r\n  \"startTime\": \"2026-08-23T19:48:23.4981864+00:00\",\r\n  \"endTime\"\
+        : \"2026-08-23T19:55:05.9183776+00:00\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '352'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:55:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/419e9c02-507b-4c9f-871b-025420edf593
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9A41C5653D914F0B9616C744314EF7C0 Ref B: PNQ231110906034 Ref C: 2026-08-23T19:55:09Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --sku --location --clustering-policy --public-network-access
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"location\": \"Central India\",\r\n  \"name\": \"clitest-mig-000001\"\
+        ,\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise\",\r\n  \"kind\": \"v2\"\
+        ,\r\n  \"tags\": {},\r\n  \"sku\": {\r\n    \"name\": \"Balanced_B1\"\r\n\
+        \  },\r\n  \"properties\": {\r\n    \"minimumTlsVersion\": \"1.2\",\r\n  \
+        \  \"hostName\": \"clitest-mig-000001.centralindia.redis.azure.net\",\r\n\
+        \    \"provisioningState\": \"Succeeded\",\r\n    \"resourceState\": \"Running\"\
+        ,\r\n    \"privateEndpointConnections\": [],\r\n    \"highAvailability\":\
+        \ \"Enabled\",\r\n    \"redundancyMode\": \"ZR\",\r\n    \"publicNetworkAccess\"\
+        : \"Enabled\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"None\"\r\n \
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '749'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:55:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8AD99158075344719E2E0095EA6F13B1 Ref B: PNQ231110906054 Ref C: 2026-08-23T19:55:10Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"clusteringPolicy": "NoCluster"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '49'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --sku --location --clustering-policy --public-network-access
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/databases/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/databases/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/databases\",\r\n  \"properties\"\
+        : {\r\n    \"clientProtocol\": \"Encrypted\",\r\n    \"port\": 10000,\r\n\
+        \    \"provisioningState\": \"Creating\",\r\n    \"resourceState\": \"Creating\"\
+        ,\r\n    \"clusteringPolicy\": \"NoCluster\",\r\n    \"evictionPolicy\": \"\
+        VolatileLRU\",\r\n    \"notifyKeyspaceEvents\": \"\",\r\n    \"deferUpgrade\"\
+        : \"NotDeferred\",\r\n    \"redisVersion\": \"7.4\",\r\n    \"accessKeysAuthentication\"\
+        : \"Disabled\"\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/05a97783-b15f-433c-ac56-14aaca4e4bd5?api-version=2026-06-01-preview&t=639231117139619745&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=csQwh89tdGJzthEbFuXrJjLzMfvGDcGCgGpLtIqM4NcmNkymk71WZqKffZxnAcd2vsSUsqt9IQiGPUmwYusOX4MA4x5yHRs8fhT7aG9D8UKvxI4cV4J618KYdiRi-Oyldgbkje0fZCuo2vM3oy_I94W4Qc0wxYWlufHelsqylT60-4SuzoK1UCzecpY964xMVAnHoXUt_e0TqEyGLrj_Gzk7iTS6eGnWs5GamhnlSmB21rxlr7SGsqWvdPxMydK5tAKXFXarkp6vOVPDnduweLa0kgFi888EaOluWtvv-DHjTn_bkarVWkW9HAI9hyqun_QPmLh9jC9JhAjvK25E9A&h=dLq7zYTQMU88eQYg2OrZatf9BzkTm06Ls8lDLeZc3WU
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json
+      date:
+      - Sun, 23 Aug 2026 19:55:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/databases/default/operationresults/05a97783-b15f-433c-ac56-14aaca4e4bd5?api-version=2026-06-01-preview&t=639231117139619745&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=r-EoNJD6JameKVxfzkqqqKQIRt55zuDongz02JMqVXUiomZ3Kwhs6PnPk2PQXXv4f1aECPAgAbLrRz6oX0Iyi24hDDcgh2WgFe4k8geB3d-LpYZFR5tq4he6RDuewe89o7uebpMSYrfQJwlBpwf5GQ1TfJhrqEdCzkeqck3fcRWU0h6VkpEFR_MsL2JiMaEryHJNhRPnlhw8x5TsSnxGCPO4BsBrLS-oXUT-zmejzMZOycyQXD2VKrWlMGC6jbvYXi27xvV7xEicGrsiNDEg20G_ggPH-kj2DdcPA1gyfzlZUhQR0gc8KcfxAn7hFAd97VB6eu2b4OcG_sMpPbo75A&h=FaDuMbO8flYqp0LDtwqMA-Zl94FjVDC41UVgJxRUuNE
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/093ec692-b0e5-4840-a6fc-f401b0beeed3
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 9CCAD84F86AD400F8A3F90B40C574549 Ref B: PNQ231110906023 Ref C: 2026-08-23T19:55:12Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --sku --location --clustering-policy --public-network-access
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/05a97783-b15f-433c-ac56-14aaca4e4bd5?api-version=2026-06-01-preview&t=639231117139619745&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=csQwh89tdGJzthEbFuXrJjLzMfvGDcGCgGpLtIqM4NcmNkymk71WZqKffZxnAcd2vsSUsqt9IQiGPUmwYusOX4MA4x5yHRs8fhT7aG9D8UKvxI4cV4J618KYdiRi-Oyldgbkje0fZCuo2vM3oy_I94W4Qc0wxYWlufHelsqylT60-4SuzoK1UCzecpY964xMVAnHoXUt_e0TqEyGLrj_Gzk7iTS6eGnWs5GamhnlSmB21rxlr7SGsqWvdPxMydK5tAKXFXarkp6vOVPDnduweLa0kgFi888EaOluWtvv-DHjTn_bkarVWkW9HAI9hyqun_QPmLh9jC9JhAjvK25E9A&h=dLq7zYTQMU88eQYg2OrZatf9BzkTm06Ls8lDLeZc3WU
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central\
+        \ India/operationsStatus/05a97783-b15f-433c-ac56-14aaca4e4bd5\",\r\n  \"name\"\
+        : \"05a97783-b15f-433c-ac56-14aaca4e4bd5\",\r\n  \"status\": \"Succeeded\"\
+        ,\r\n  \"startTime\": \"2026-08-23T19:55:13.8763042+00:00\",\r\n  \"endTime\"\
+        : \"2026-08-23T19:55:19.4785268+00:00\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '352'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:55:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/96a59a90-a098-4a19-86cb-9f8f63bd5481
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 40B064ED07D74631A19C08CEC1206BCA Ref B: PNQ231110908034 Ref C: 2026-08-23T19:55:47Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --sku --location --clustering-policy --public-network-access
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/databases/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/databases/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/databases\",\r\n  \"properties\"\
+        : {\r\n    \"clientProtocol\": \"Encrypted\",\r\n    \"port\": 10000,\r\n\
+        \    \"provisioningState\": \"Succeeded\",\r\n    \"resourceState\": \"Running\"\
+        ,\r\n    \"clusteringPolicy\": \"NoCluster\",\r\n    \"evictionPolicy\": \"\
+        VolatileLRU\",\r\n    \"notifyKeyspaceEvents\": \"\",\r\n    \"deferUpgrade\"\
+        : \"NotDeferred\",\r\n    \"redisVersion\": \"7.4\",\r\n    \"accessKeysAuthentication\"\
+        : \"Disabled\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:55:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/1d5d5a2c-8fd4-4c23-a6c5-e541412b5e78
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C62ED5CB78E24F349C3F1F4A26F3C174 Ref B: PNQ231110909034 Ref C: 2026-08-23T19:55:48Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"forceMigrate": true, "skipDataMigration": true, "sourceResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration validate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '225'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --source-resource-id --skip-data-migration --force-migrate
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default/validate?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"isValid\": true,\r\n  \"errors\": [\r\n    {\r\n      \"disparities\"\
+        : []\r\n    }\r\n  ],\r\n  \"warnings\": [\r\n    {\r\n      \"disparities\"\
+        : []\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '145'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 19:55:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/99200aab-3e08-4998-b40c-e3df3bc88302
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 4097DAF472FC401292DA7C78B2A21B30 Ref B: PNQ231110906062 Ref C: 2026-08-23T19:55:51Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"sourceType": "AzureCacheForRedis", "forceMigrate": true,
+      "skipDataMigration": true, "sourceResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002",
+      "switchDns": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '296'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --source-resource-id --skip-data-migration --switch-dns --force-migrate
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"clitest-mig-000001/default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/migrations\",\r\n  \"properties\"\
+        : {\r\n    \"creationTime\": \"2026-08-23T19:55:57.23+00:00\",\r\n    \"sourceType\"\
+        : \"AzureCacheForRedis\",\r\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002\"\
+        ,\r\n    \"targetResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n    \"switchDns\": true,\r\n    \"skipDataMigration\": true,\r\n    \"\
+        provisioningState\": \"Accepted\",\r\n    \"statusDetails\": null,\r\n   \
+        \ \"lastModifiedTime\": \"2026-08-23T19:55:57.23+00:00\"\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/cd677fee-912c-49ff-85fe-c995673ee17a?api-version=2026-06-01-preview&t=639231117574322904&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=U7AKwPR0UMD9qivWoALiviPHboGkSPWVwqQ87IZkUVyCCE0vBXNpBNVveBiugzR-xkM5gyvqSDyx3wx8HBQb-KDT24065MPlY4lX1JavzOw5L5g_fMaFyFERTVqEK-uzFBuYOAFhAGNv68YILqtncCtAHyhiL2rJJ0m9opl2sdZPhIssSnLsrWbmALm7cRyueA531SfaNqLNLAfPBRxLeNIMDPUHFlkZMbkfbVs42Oy7kCZ1qJV8ZnhgA0E5W1QzJhEWas2yhsZIZJEdOlSXQZxqinFn-6DfVxmog9a3jeihpyOhg-sBXvCC0fQXKWiCntS_xgwlM6y9f_k1tLO-uA&h=k0WNGp3G7T0xx2RrQnz5quLRxWz0yzsHZeW9HQYxCQQ
+      cache-control:
+      - no-cache
+      content-length:
+      - '964'
+      content-type:
+      - application/json
+      date:
+      - Sun, 23 Aug 2026 19:55:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/803783d1-68fb-4110-8e06-84fe745ed602
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: A4E48BED23CB47EEA4ED04FE580F0BB0 Ref B: PNQ231110908052 Ref C: 2026-08-23T19:55:54Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --source-resource-id --skip-data-migration --switch-dns --force-migrate
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/cd677fee-912c-49ff-85fe-c995673ee17a?api-version=2026-06-01-preview&t=639231117574322904&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=U7AKwPR0UMD9qivWoALiviPHboGkSPWVwqQ87IZkUVyCCE0vBXNpBNVveBiugzR-xkM5gyvqSDyx3wx8HBQb-KDT24065MPlY4lX1JavzOw5L5g_fMaFyFERTVqEK-uzFBuYOAFhAGNv68YILqtncCtAHyhiL2rJJ0m9opl2sdZPhIssSnLsrWbmALm7cRyueA531SfaNqLNLAfPBRxLeNIMDPUHFlkZMbkfbVs42Oy7kCZ1qJV8ZnhgA0E5W1QzJhEWas2yhsZIZJEdOlSXQZxqinFn-6DfVxmog9a3jeihpyOhg-sBXvCC0fQXKWiCntS_xgwlM6y9f_k1tLO-uA&h=k0WNGp3G7T0xx2RrQnz5quLRxWz0yzsHZeW9HQYxCQQ
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central\
+        \ India/operationsStatus/cd677fee-912c-49ff-85fe-c995673ee17a\",\r\n  \"name\"\
+        : \"cd677fee-912c-49ff-85fe-c995673ee17a\",\r\n  \"status\": \"Succeeded\"\
+        ,\r\n  \"startTime\": \"2026-08-23T19:55:57.2247006+00:00\",\r\n  \"endTime\"\
+        : \"2026-08-23T20:01:12.1395103+00:00\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '352'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:01:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/southindia/1f33135d-69d2-4656-b4b7-778aed563749
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DCE5727A69B3463C8786ACA5AEE59278 Ref B: PNQ231110906040 Ref C: 2026-08-23T20:01:39Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --source-resource-id --skip-data-migration --switch-dns --force-migrate
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"clitest-mig-000001/default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/migrations\",\r\n  \"properties\"\
+        : {\r\n    \"creationTime\": \"2026-08-23T19:55:57.23+00:00\",\r\n    \"sourceType\"\
+        : \"AzureCacheForRedis\",\r\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002\"\
+        ,\r\n    \"targetResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n    \"switchDns\": true,\r\n    \"skipDataMigration\": true,\r\n    \"\
+        provisioningState\": \"Succeeded\",\r\n    \"statusDetails\": null,\r\n  \
+        \  \"lastModifiedTime\": \"2026-08-23T20:01:12.1266667+00:00\",\r\n    \"\
+        rollbackEligibleUntil\": \"2026-09-22T20:01:12.1251322+00:00\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1037'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:01:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/9c719e39-6462-43d7-8cc6-0cfff675dfe4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E0B06ADD179C4FED9FCFFF9CB5F4E9A0 Ref B: PNQ231110906060 Ref C: 2026-08-23T20:01:41Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --custom
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"clitest-mig-000001/default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/migrations\",\r\n  \"properties\"\
+        : {\r\n    \"creationTime\": \"2026-08-23T19:55:57.23+00:00\",\r\n    \"sourceType\"\
+        : \"AzureCacheForRedis\",\r\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002\"\
+        ,\r\n    \"targetResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n    \"switchDns\": true,\r\n    \"skipDataMigration\": true,\r\n    \"\
+        provisioningState\": \"Succeeded\",\r\n    \"statusDetails\": null,\r\n  \
+        \  \"lastModifiedTime\": \"2026-08-23T20:01:12.1266667+00:00\",\r\n    \"\
+        rollbackEligibleUntil\": \"2026-09-22T20:01:12.1251322+00:00\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1037'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:01:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/dee1c68d-9674-4417-a07c-763dc173aebc
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9F7349CC02BC4A03931A21DE92146270 Ref B: PNQ231110907034 Ref C: 2026-08-23T20:01:44Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"clitest-mig-000001/default\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default\"\
+        ,\r\n      \"type\": \"Microsoft.Cache/redisEnterprise/migrations\",\r\n \
+        \     \"properties\": {\r\n        \"creationTime\": \"2026-08-23T19:55:57.23+00:00\"\
+        ,\r\n        \"sourceType\": \"AzureCacheForRedis\",\r\n        \"sourceResourceId\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002\"\
+        ,\r\n        \"targetResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n        \"switchDns\": true,\r\n        \"skipDataMigration\": true,\r\
+        \n        \"provisioningState\": \"Succeeded\",\r\n        \"statusDetails\"\
+        : null,\r\n        \"lastModifiedTime\": \"2026-08-23T20:01:12.1266667+00:00\"\
+        ,\r\n        \"rollbackEligibleUntil\": \"2026-09-22T20:01:12.1251322+00:00\"\
+        \r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1130'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:01:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/13ffea3c-ed05-4bbe-a59f-6029760ccf71
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BCCCCA9BB3C049F5A50D6881080D3E65 Ref B: PNQ231110909052 Ref C: 2026-08-23T20:01:46Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"clitest-mig-000001/default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/migrations\",\r\n  \"properties\"\
+        : {\r\n    \"creationTime\": \"2026-08-23T19:55:57.23+00:00\",\r\n    \"sourceType\"\
+        : \"AzureCacheForRedis\",\r\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002\"\
+        ,\r\n    \"targetResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n    \"switchDns\": true,\r\n    \"skipDataMigration\": true,\r\n    \"\
+        provisioningState\": \"Succeeded\",\r\n    \"statusDetails\": null,\r\n  \
+        \  \"lastModifiedTime\": \"2026-08-23T20:01:12.1266667+00:00\",\r\n    \"\
+        rollbackEligibleUntil\": \"2026-09-22T20:01:12.1251322+00:00\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1037'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:01:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/48234125-109e-4641-92d5-4e26ac72604c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6501BD47846942B08C7BE912033B3B98 Ref B: PNQ231110908040 Ref C: 2026-08-23T20:01:48Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration undo
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default/cancel?api-version=2026-06-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/8b9cc776-c76f-43dd-ae66-c9fe2c1fea3a?api-version=2026-06-01-preview&t=639231121113916837&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=HwMWihZPrLkeid-bsvod-5UViV72CkJ6LSsu3MVTwrDJVESKzP9ms3LBg_OKgmmrzqavgTxeQnZXlQFWCNWcfBGTiqto_ePKh7iizTcUVhJflGCpe8hFN_V8R5JKeRqgKoK3HAT_GM6I21e_CXV3RmRjOQ3WQQgemZ8YW2l3UsPpyX37ux7L_ONYTPzXRQGPxS5WOrzl1V-RHZubc7VDgxzAl0zHaJEI--Ig64bcByafj8btTgldjtxHs0RxncwhQ6MRH9_HBk5lEsDjuqrm0Rl1jDT40K45xiz19WmZU87Zzve6ERKQIb4qKvlOaUDqCvaAIE-66bfRoudjAWjkcQ&h=7kusfPg7wrc7OUxyWzJTdobYjElN10kqC8Tj7GpUJqc
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Sun, 23 Aug 2026 20:01:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/c9b1fb20-c1a7-4169-b8ed-53876c21f9c8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F84CAE8214414787937FABECC204A859 Ref B: PNQ231110909060 Ref C: 2026-08-23T20:01:49Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration undo
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central%20India/operationsStatus/8b9cc776-c76f-43dd-ae66-c9fe2c1fea3a?api-version=2026-06-01-preview&t=639231121113916837&c=MIIHlDCCBnygAwIBAgIQSel6vxplVFkOEN4XtSZkvTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MDgxMTE2MDMyNloXDTI3MDIwNjIyMDMyNlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYSz9wBFvuaJPhL6YdKnf9g8_SRrLTamSZzVRfmUVWEi4PJtdJrs9iDKjXcKgAlbZQfnbG-ma-w2e5mLuf5s8zXed3AurBikniqnbR8ZjTYzOfJLnJvQUNVby6rLScq5XHezubv-8iW3Ztqf-jwV7iIQvPxWXaCOtfkBAtG0GFBgA3SAQMFC0j3wdRWn427x05i0Fl410kBmJom3y2IfpbMEx8RaRjDsJxvqE0NvUm4laodsZqmddOB58iaA7pecO_BlSwI_9VVXcx2MKkofN8D6NI4dHvgwg8vvFy14JglPcRzhcVnTNoMnfbILK0KGl4spvTgHv-KjxiJnJHR-GdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTPySg_XPaBkVMFSZKWeqMaowPwlDAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzYyL2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjIvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Mi9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBWhlPBiMOWekUXxG7vU3ZKwt-BpC_Tobr6NsaHMwAihyjvywEsB-AgXfp49kwW6Ci3owVXTBFVqmt2okFw6JD7doHur7jSOJn7CwD88FKt2bgCUMIpQPcPjWkDtMgjFMShd5rRS-WNbvS1Fys8_z6dV7IPcaNV585WJ5qA9YcmtAq92PKhWr1PBx1_vEPwIOg7Njrl_W5W38UnTek5fO6JmKo-UTzJ09OMk8KfF5EpKDzdZoFPtbO6FYKfiexEWTvX390Lanx-RzA9yNrGSMszPfI_yJ-DUrak7_D6tECbzvVpCUD304pLu7GbXSf56fcDBV-mNPWGesz884bMUfDH&s=HwMWihZPrLkeid-bsvod-5UViV72CkJ6LSsu3MVTwrDJVESKzP9ms3LBg_OKgmmrzqavgTxeQnZXlQFWCNWcfBGTiqto_ePKh7iizTcUVhJflGCpe8hFN_V8R5JKeRqgKoK3HAT_GM6I21e_CXV3RmRjOQ3WQQgemZ8YW2l3UsPpyX37ux7L_ONYTPzXRQGPxS5WOrzl1V-RHZubc7VDgxzAl0zHaJEI--Ig64bcByafj8btTgldjtxHs0RxncwhQ6MRH9_HBk5lEsDjuqrm0Rl1jDT40K45xiz19WmZU87Zzve6ERKQIb4qKvlOaUDqCvaAIE-66bfRoudjAWjkcQ&h=7kusfPg7wrc7OUxyWzJTdobYjElN10kqC8Tj7GpUJqc
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cache/locations/Central\
+        \ India/operationsStatus/8b9cc776-c76f-43dd-ae66-c9fe2c1fea3a\",\r\n  \"name\"\
+        : \"8b9cc776-c76f-43dd-ae66-c9fe2c1fea3a\",\r\n  \"status\": \"Succeeded\"\
+        ,\r\n  \"startTime\": \"2026-08-23T20:01:51.2781266+00:00\",\r\n  \"endTime\"\
+        : \"2026-08-23T20:07:04.6042652+00:00\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '352'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:07:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/jioindiawest/845f83d5-233b-4986-9a90-e22a2067dc9b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 30FD1D9A01BC40378FB08676005D0327 Ref B: PNQ231110909034 Ref C: 2026-08-23T20:07:34Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - redisenterprise migration undo
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: "{\r\n  \"name\": \"clitest-mig-000001/default\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001/migrations/default\"\
+        ,\r\n  \"type\": \"Microsoft.Cache/redisEnterprise/migrations\",\r\n  \"properties\"\
+        : {\r\n    \"creationTime\": \"2026-08-23T19:55:57.23+00:00\",\r\n    \"sourceType\"\
+        : \"AzureCacheForRedis\",\r\n    \"sourceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redis/clitest-src-000002\"\
+        ,\r\n    \"targetResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-redisenterprise-mig-000003/providers/Microsoft.Cache/redisEnterprise/clitest-mig-000001\"\
+        ,\r\n    \"switchDns\": true,\r\n    \"skipDataMigration\": true,\r\n    \"\
+        provisioningState\": \"Cancelled\",\r\n    \"statusDetails\": null,\r\n  \
+        \  \"lastModifiedTime\": \"2026-08-23T20:07:04.5833333+00:00\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '970'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Aug 2026 20:07:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=4a61ce1e-5539-4162-b647-101733293495/centralindia/12f2e979-a668-4bd4-a13e-b6c6ad67ad1f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3A68E402D4794A95BDCFF9337618E85B Ref B: PNQ231110909036 Ref C: 2026-08-23T20:07:35Z'
+      x-rp-server-mvid:
+      - bc8392dc-779d-46f4-9ee6-b350b5b37669
+    status:
+      code: 200
+      message: OK
+version: 1

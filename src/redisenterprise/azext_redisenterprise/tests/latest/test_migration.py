@@ -6,7 +6,7 @@
 import os
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .. import (
     try_manual,
@@ -26,7 +26,7 @@ def step_source_redis_create(test, checks=None):
              '--name "{source_redis}" '
              '--sku "Premium" '
              '--vm-size "P1" '
-             '--location "centraluseuap" '
+             '--location "centralindia" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -39,7 +39,8 @@ def step_target_cluster_create(test, checks=None):
     test.cmd('az redisenterprise create '
              '--cluster-name "{cluster}" '
              '--sku "Balanced_B1" '
-             '--location "centraluseuap" '
+             '--location "centralindia" '
+             '--clustering-policy "NoCluster" '
              '--public-network-access "Enabled" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -82,7 +83,7 @@ def step_migration_wait(test, checks=None):
     test.cmd('az redisenterprise migration wait '
              '--cluster-name "{cluster}" '
              '--resource-group "{rg}" '
-             '--custom "provisioningState==\'Completed\'"',
+             '--custom "properties.provisioningState==\'Succeeded\' || properties.provisioningState==\'Completed\'"',
              checks=checks)
 
 
@@ -119,26 +120,7 @@ def step_migration_undo(test, checks=None):
              checks=checks)
 
 
-# Step: Delete the target cluster
-@try_manual
-def step_cluster_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise delete -y '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Delete the source cache
-@try_manual
-def step_source_redis_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redis delete -y '
-             '--name "{source_redis}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+# Step: (teardown handled by ResourceGroupPreparer)
 
 
 def call_migration_scenario(test, rg):
@@ -150,34 +132,28 @@ def call_migration_scenario(test, rg):
         test.check("name", "default"),
         test.check("provisioningState", "Succeeded"),
     ])
-    # NOTE: `az redisenterprise migration validate` is intentionally skipped (commented out).
-    # It currently fails with HTTP 400 InvalidRequestBody because the deployed Redis Enterprise
-    # RP requires a `properties` envelope on the validate action body, while the swagger (and
-    # therefore the generated CLI) sends a flat, ARM-correct body. This is a server-side (RP)
-    # contract bug, NOT a CLI bug, tracked in ADO #38848036 (validate envelope mismatch) and
-    # ADO #38847788 (validate `forceMigrate` ignored / hardcoded false). We deliberately do NOT
-    # add a CLI-side workaround, since sending the wrapped body would be non-ARM-conforming and
-    # would break once the RP is fixed. Re-enable this step once the RP accepts the flat body.
-    # step_migration_validate(test, checks=[])
+
+    step_migration_validate(test, checks=[
+        test.exists("isValid"),
+    ])
     step_migration_start(test, checks=[
-        test.check("sourceType", "AzureCacheForRedis"),
-        test.check("sourceResourceId", "{source_id}", case_sensitive=False),
+        test.check("properties.sourceType", "AzureCacheForRedis"),
+        test.check("properties.sourceResourceId", "{source_id}", case_sensitive=False),
+        test.check("properties.provisioningState", "Succeeded"),
     ])
     step_migration_wait(test, checks=[])
     step_migration_list(test, checks=[
         test.check("length(@)", 1),
-        test.check("[0].sourceType", "AzureCacheForRedis"),
-        test.check("[0].sourceResourceId", "{source_id}", case_sensitive=False),
+        test.check("[0].properties.sourceType", "AzureCacheForRedis"),
+        test.check("[0].properties.sourceResourceId", "{source_id}", case_sensitive=False),
     ])
     step_migration_show(test, checks=[
-        test.check("sourceType", "AzureCacheForRedis"),
-        test.check("sourceResourceId", "{source_id}", case_sensitive=False),
-        test.check("targetResourceId", "{target_id}", case_sensitive=False),
-        test.check("provisioningState", "Completed"),
+        test.check("properties.sourceType", "AzureCacheForRedis"),
+        test.check("properties.sourceResourceId", "{source_id}", case_sensitive=False),
+        test.check("properties.targetResourceId", "{target_id}", case_sensitive=False),
+        test.check("properties.provisioningState", "Succeeded"),
     ])
     step_migration_undo(test, checks=[])
-    step_cluster_delete(test, checks=[])
-    step_source_redis_delete(test, checks=[])
 
 
 class RedisEnterpriseMigrationScenarioTest(ScenarioTest):
@@ -189,14 +165,9 @@ class RedisEnterpriseMigrationScenarioTest(ScenarioTest):
             'source_redis': self.create_random_name(prefix='clitest-src-', length=21),
         })
 
-    # Marked live_only because there is no committed playback recording yet: the live recording
-    # is blocked on a transient AMR cluster provisioning failure (the `validate` step is also
-    # skipped pending RP bugs #38848036 / #38847788). This mirrors test_test_connection.py.
-    # Once a clean live run is recorded, remove @live_only() and commit the sanitized cassette.
-    @live_only()
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-mig-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_migration(self, rg):
         subscription = self.get_subscription_id()
         self.kwargs.update({

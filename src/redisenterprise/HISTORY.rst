@@ -3,7 +3,7 @@
 Release History
 ===============
 1.5.0b1
-- Preview release. Adds support for the 2025-08-01-preview, 2026-02-01-preview, and 2026-05-01-preview API versions.
+- Preview release. Adds support for the 2025-08-01-preview, 2026-02-01-preview, and 2026-06-01-preview API versions.
 - Added a new command group `az redisenterprise migration` to migrate an existing Azure Cache for Redis instance into an Azure Managed Redis (Redis Enterprise) cluster:
   - `start`: start a migration from a source Azure Cache for Redis resource. The source properties are exposed as flat arguments: `--source-resource-id`, `--skip-data-migration`, `--switch-dns`, and `--force-migrate`.
   - `validate`: validate whether a source Azure Cache for Redis resource can be migrated to the target cluster.
