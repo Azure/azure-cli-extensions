@@ -134,7 +134,7 @@ def call_migration_scenario(test, rg):
     ])
 
     step_migration_validate(test, checks=[
-        test.exists("isValid"),
+        test.check("isValid", True),
     ])
     step_migration_start(test, checks=[
         test.check("properties.sourceType", "AzureCacheForRedis"),
@@ -154,6 +154,9 @@ def call_migration_scenario(test, rg):
         test.check("properties.provisioningState", "Succeeded"),
     ])
     step_migration_undo(test, checks=[])
+    step_migration_show(test, checks=[
+        test.check("properties.provisioningState", "Cancelled"),
+    ])
 
 
 class RedisEnterpriseMigrationScenarioTest(ScenarioTest):
