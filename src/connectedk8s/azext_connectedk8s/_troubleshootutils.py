@@ -21,6 +21,10 @@ from kubernetes import client, config, utils, watch
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
+from azext_connectedk8s._logutils import (
+    normalize_container_log,
+    split_container_log,
+)
 from azext_connectedk8s._utils import get_utctimestring
 
 if TYPE_CHECKING:
@@ -242,6 +246,7 @@ def retrieve_arc_agents_logs(
                     container_log = corev1_api_instance.read_namespaced_pod_log(
                         name=agent_name, container=container_name, namespace="azure-arc"
                     )
+                    container_log = normalize_container_log(container_log)
                     # Path to add the arc agents container logs.
                     arc_agent_container_logs_path = os.path.join(
                         agent_name_logs_path, container_name + ".txt"
@@ -249,7 +254,7 @@ def retrieve_arc_agents_logs(
                     with open(
                         arc_agent_container_logs_path, "w+", encoding="utf-8"
                     ) as container_file:
-                        container_file.write(str(container_log))
+                        container_file.write(container_log)
 
         return consts.Diagnostic_Check_Passed, storage_space_available
 
@@ -521,6 +526,7 @@ def retrieve_arc_workload_identity_pod_logs(
                         container=container_name,
                         namespace="arc-workload-identity",
                     )
+                    container_log = normalize_container_log(container_log)
                     # Path to add the arc agents container logs.
                     arc_workload_identity_container_logs_path = os.path.join(
                         agent_name_logs_path, container_name + ".txt"
@@ -530,7 +536,7 @@ def retrieve_arc_workload_identity_pod_logs(
                         "w+",
                         encoding="utf-8",
                     ) as container_file:
-                        container_file.write(str(container_log))
+                        container_file.write(container_log)
 
         return consts.Diagnostic_Check_Passed, storage_space_available
 
@@ -1100,8 +1106,7 @@ def check_diagnoser_container(
         )
         # If diagnoser_container_log is not empty then only we will check for the results
         if diagnoser_container_log is not None and diagnoser_container_log != "":
-            diagnoser_container_log_list = diagnoser_container_log.split("\n")
-            diagnoser_container_log_list.pop(-1)
+            diagnoser_container_log_list = split_container_log(diagnoser_container_log)
             dns_check_log = ""
             counter_container_logs = 1
             # For retrieving only diagnoser logs from the diagnoser output
@@ -1531,6 +1536,9 @@ def executing_diagnoser_job(
                     name=pod_name,
                     container="azure-arc-diagnoser-container",
                     namespace="azure-arc",
+                )
+                diagnoser_container_log = normalize_container_log(
+                    diagnoser_container_log
                 )
 
         # Clearing all the resources after fetching the diagnoser container logs
