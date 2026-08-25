@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the mongo clusters in a given subscription.

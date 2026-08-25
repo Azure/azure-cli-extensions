@@ -9,7 +9,7 @@ import shlex
 import os
 import re
 from json import loads
-import pkgutil
+import importlib.util
 import requests
 
 from knack.log import get_logger
@@ -30,9 +30,8 @@ def _get_cloud_init_script():
     SCRIPTS_DIR_NAME = 'scripts'
     CLOUD_INIT = 'linux-build_setup-cloud-init.txt'
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
+    mod_spec = importlib.util.find_spec(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod_spec.origin)
     return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
 
 
@@ -141,8 +140,15 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
     # and the '&' would be parsed as a command separator. To prevent command injection
     # from untrusted interpolated values (for example source VM tags), build the command
-    # line explicitly and wrap every token in double quotes so cmd.exe treats
+    # line explicitly and wrap every argument in double quotes so cmd.exe treats
     # metacharacters as literal text.
+    #
+    # The 'az' token itself must stay unquoted. Quoting it makes cmd.exe treat it as a
+    # literal path instead of a PATH search, so '%~dp0' inside az.cmd no longer expands to
+    # the launcher directory, the bundled python.exe is not found, and every nested call
+    # fails with 'Failed to load python executable.' on stdout and an empty stderr. The
+    # first token is validated to be exactly 'az' above, so it never carries untrusted
+    # input and does not need quoting.
     #
     # The whole command is additionally wrapped in one outer pair of quotes and invoked
     # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
@@ -152,7 +158,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # per-token quote balanced. See MSRC 115198 / VULN-185362.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
-        quoted_command = ' '.join(_quote_cmd_arg(token) for token in tokenized_command)
+        quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
+        quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'
     else:
         command_to_run = tokenized_command
@@ -163,7 +170,17 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     if not run_async:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
-            raise AzCommandError(stderr)
+            # A failing launcher (for example a broken CLI install) reports on stdout and
+            # leaves stderr empty, which used to surface an error with no message at all.
+            error_message = (stderr or '').strip() or (stdout or '').strip()
+            if not error_message:
+                error_message = 'The az command failed with exit code {code} and produced no output.' \
+                    .format(code=process.returncode)
+            if secure_params:
+                for param in secure_params:
+                    if param:
+                        error_message = error_message.replace(param, '********')
+            raise AzCommandError(error_message)
 
         logger.debug('Success.\n')
 
@@ -182,9 +199,8 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
 
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
+    mod_spec = importlib.util.find_spec(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod_spec.origin)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, script_name)
 
     if is_linux:
@@ -239,8 +255,16 @@ def check_extension_version(extension_name):
 
     extension_to_check = extension_to_check[0]
 
+    # On some Azure CLI versions (e.g. 2.87) the installed extension metadata is missing because
+    # newer setuptools no longer generates 'metadata.json', so the version resolves to None. Skip
+    # the up-to-date check instead of crashing the command on a None comparison (fixed in CLI 2.88).
+    installed_version = extension_to_check.get('version')
+    if not installed_version:
+        logger.debug('Could not determine the installed version of the %s extension; skipping version check.', extension_name)
+        return
+
     for ext in available_extensions:
-        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+        if ext['name'] == extension_name and ext.get('version') and ext['version'] > installed_version:
             logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
             return
 
