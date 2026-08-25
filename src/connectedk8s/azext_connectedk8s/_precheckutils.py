@@ -82,11 +82,9 @@ def _parse_entra_check_result(entra_check_log: str) -> str:
 
     The diagnostic container outputs a line like:
       "Entra Authentication Endpoint Connectivity Check Result : https://login.microsoftonline.com : 200"
-    A 200 or 404 response means the endpoint is reachable. 404 is expected because the
-    diagnostic container curls the base login.microsoftonline.com path without a valid
-    tenant/resource URL suffix (e.g. /{tenant-id}/oauth2/v2.0/token), so the server
-    returns 404 — but receiving any HTTP response confirms network reachability.
-    Any other response code indicates a connectivity failure.
+    Any HTTP response (200, 302, 403, 404, etc.) confirms network reachability — the
+    endpoint was reached. Only response code 000 (curl failed to connect at all) indicates a
+    genuine connectivity failure. This aligns with the diagnostic chart's own pass/fail logic.
     """
     if not entra_check_log:
         # Entra check not present in logs — older helm chart version, not applicable
@@ -96,7 +94,7 @@ def _parse_entra_check_result(entra_check_log: str) -> str:
     parts = entra_check_log.strip().split(" : ")
     if len(parts) >= 3:
         entra_response_code = parts[-1].strip()
-        if entra_response_code in ("200", "404"):
+        if entra_response_code != "000":
             return consts.Diagnostic_Check_Passed
         diagnoser_output.append(
             f"Error: Entra authentication endpoint connectivity check failed. "
@@ -443,6 +441,22 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             prediagnostic_outbound_check = outbound_connectivity_check
 
             prediagnostic_entra_check = _parse_entra_check_result(entra_check_log)
+            # If a proxy is configured, the diagnostic pod may not have HTTPS_PROXY/HTTP_PROXY
+            # injected as container env vars (chart-side gap in clusterdiagnosticchecks >=1.36.1).
+            # A failed Entra check in that scenario is a false positive: the cluster may be
+            # perfectly able to reach login.microsoftonline.com through the proxy once the Arc
+            # agent is installed. Downgrade to Not_Applicable to avoid blocking onboarding, but
+            # emit a warning so it is known that the check was skipped.
+            if (
+                prediagnostic_entra_check == consts.Diagnostic_Check_Failed
+                and (https_proxy or http_proxy)
+            ):
+                logger.warning(
+                    "Skipping Entra connectivity check: the pre-onboarding diagnostic pod does not have "
+                    "access to the configured proxy. Please verify that your cluster can reach "
+                    "login.microsoftonline.com through your proxy."
+                )
+                prediagnostic_entra_check = consts.Diagnostic_Check_Not_Applicable
             prediagnostic_crd_check = _parse_crd_check_result(crd_check_log)
         else:
             # Empty log — if job didn't complete (e.g., pod never scheduled), treat as Incomplete not Passed
