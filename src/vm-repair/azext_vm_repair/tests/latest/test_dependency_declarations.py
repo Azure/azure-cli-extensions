@@ -6,6 +6,7 @@
 import ast
 import os
 import sys
+import sysconfig
 import unittest
 
 
@@ -64,11 +65,40 @@ class DependencyDeclarationTests(unittest.TestCase):
                         modules.add(node.module.split('.')[0])
         return modules
 
+    @staticmethod
+    def _stdlib_module_names():
+        # sys.stdlib_module_names is 3.10+, and setup.py still advertises 3.9.
+        names = getattr(sys, 'stdlib_module_names', None)
+        if names is not None:
+            return set(names)
+
+        names = set(sys.builtin_module_names)
+        paths = sysconfig.get_paths()
+        directories = [paths.get('stdlib'), paths.get('platstdlib')]
+        directories = [d for d in directories if d]
+        # Extension modules live outside the stdlib root: DLLs on Windows, lib-dynload elsewhere.
+        directories += [os.path.join(d, 'lib-dynload') for d in list(directories)]
+        # base_prefix differs from prefix inside a virtualenv, which is how CI runs.
+        directories += [os.path.join(p, 'DLLs') for p in {sys.prefix, sys.base_prefix}]
+
+        for directory in directories:
+            if not os.path.isdir(directory):
+                continue
+            for entry in os.listdir(directory):
+                if entry.startswith('.'):
+                    continue
+                if entry.endswith(('.py', '.pyd', '.so')):
+                    names.add(entry.split('.')[0])
+                elif os.path.isfile(os.path.join(directory, entry, '__init__.py')):
+                    names.add(entry)
+        return names
+
     def _third_party_imports(self):
         modules = self._imported_modules()
+        stdlib = self._stdlib_module_names()
         return {
             module for module in modules
-            if module not in sys.stdlib_module_names
+            if module not in stdlib
             and module not in self.CLI_PROVIDED
             and module != 'azext_vm_repair'
         }
