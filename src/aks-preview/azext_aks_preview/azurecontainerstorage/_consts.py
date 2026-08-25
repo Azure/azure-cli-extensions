@@ -20,7 +20,7 @@ CONST_ACSTOR_K8S_EXTENSION_NAME = "microsoft.azurecontainerstoragev2"
 # Distributed cache (Distributed Accelerator for Cloud Storage) install controller.
 CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME = "distributedcache"
 CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAMESPACE = "kube-system"
-CONST_DISTRIBUTED_CACHE_K8S_EXTENSION_NAME = "microsoft.dacs"
+CONST_DISTRIBUTED_CACHE_K8S_EXTENSION_NAME = "microsoft.distributedaccelerator"
 CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension._client_factory"
 CONST_K8S_EXTENSION_CUSTOM_MOD_NAME = "azext_k8s_extension.custom"
 CONST_K8S_EXTENSION_NAME = "k8s-extension"
