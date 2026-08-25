@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.5.1
+++++++
+* ``az aimanager create`` and ``az aimanager namespace add``: When the caller role grant is
+  skipped under ``--no-wait``, the warning now prints the exact ``az role assignment create``
+  commands to grant the roles manually, instead of suggesting a re-run.
+
 1.5.0
 ++++++
 * ``az aimanager create`` and ``az aimanager namespace add``: On success, grant the caller the
