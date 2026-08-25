@@ -145,7 +145,7 @@ def load_command_table(self, _):
         w.command('quotas', 'quotas', validator=validate_workspace_info)
         w.command('keys list', 'list_keys')
         w.command('keys regenerate', 'regenerate_keys')
-        w.command('update', 'enable_keys')
+        w.command('update', 'update')
 
     with self.command_group('quantum workspace user', workspace_ops) as u:
         u.command('create', 'add_user', validator=validate_workspace_info)
