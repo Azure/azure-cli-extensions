@@ -511,6 +511,8 @@ ManagedEnvironmentStorageProperties = {
 AzureFileProperties = {
     "accountName": None,
     "accountKey": None,
+    "accountKeyVaultProperties": None,
+    "identity": None,
     "accessMode": None,
     "shareName": None
 }
