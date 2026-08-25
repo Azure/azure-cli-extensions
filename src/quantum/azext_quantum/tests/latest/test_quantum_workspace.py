@@ -12,7 +12,8 @@ from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, AzureInternalError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, AzureInternalError, ForbiddenError
+from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
 from datetime import datetime
@@ -510,17 +511,62 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         assignments = [{"principalId": "u", "principalType": "User"}]
         stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com"}]
+        response = SimpleNamespace(status_code=429, headers={"Retry-After": "3"})
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
-                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
-                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[Exception("temporary"), stubs]) as get_object_stubs, \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()) as graph_client_factory, \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", response), stubs]) as get_object_stubs, \
                 patch("azext_quantum.operations.workspace.time.sleep") as sleep:
             cmd = SimpleNamespace(cli_ctx=object())
             result = list_users(cmd, "rg", "ws")
 
         self.assertEqual(result[0]["displayName"], "User One")
+        graph_client_factory.assert_called_once_with(cmd.cli_ctx)
         self.assertEqual(get_object_stubs.call_count, 2)
+        sleep.assert_called_once_with(3.0)
+
+    def test_list_users_uses_exponential_backoff_without_retry_after(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One"}]
+        response = SimpleNamespace(status_code=503, headers={})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", response), stubs]), \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
         sleep.assert_called_once_with(1)
+
+    def test_list_users_does_not_retry_permanent_graph_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        response = SimpleNamespace(status_code=403, headers={})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=GraphError("forbidden", response)) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            with self.assertRaises(ForbiddenError):
+                list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        get_object_stubs.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_list_users_does_not_retry_unexpected_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=ValueError("unexpected")) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            with self.assertRaises(ValueError):
+                list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        get_object_stubs.assert_called_once()
+        sleep.assert_not_called()
 
     def test_list_users_raises_when_graph_cannot_resolve_users(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)

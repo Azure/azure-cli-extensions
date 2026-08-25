@@ -17,7 +17,8 @@ from azure.cli.command_modules.storage.operations.account import list_storage_ac
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
-from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
+from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError,
+                                       ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError,
                                        MutuallyExclusiveArgumentError)
 
@@ -541,21 +542,36 @@ def _fill_user_display_names(cmd, users):
         return
 
     from azure.cli.command_modules.role import graph_client_factory
-    from azure.cli.command_modules.role.custom import _get_object_stubs
+    from azure.cli.command_modules.role.custom import GraphError, HttpResponseError, _get_object_stubs
 
+    graph_client = graph_client_factory(cmd.cli_ctx)
     directory_objects = {}
     for attempt in range(MAX_RETRIES_USER_LOOKUP):
+        retry_after = None
         try:
-            graph_client = graph_client_factory(cmd.cli_ctx)
             directory_objects = {obj.get("id"): obj for obj in _get_object_stubs(graph_client, principal_ids)}
             if principal_ids.issubset(directory_objects):
                 break
-        except Exception:  # pylint: disable=broad-except
-            directory_objects = {}
+        except (GraphError, HttpResponseError) as ex:
+            response = getattr(ex, "response", None)
+            status_code = getattr(ex, "status_code", None) or getattr(response, "status_code", None)
+            if status_code not in (408, 429) and not (status_code is not None and 500 <= status_code < 600):
+                error_type = {400: ClientRequestError, 401: UnauthorizedError, 403: ForbiddenError}.get(status_code, AzureResponseError)
+                raise error_type(str(ex)) from ex
+
+            if attempt == MAX_RETRIES_USER_LOOKUP - 1:
+                logger.debug("Microsoft Graph user lookup failed after retries.", exc_info=True)
+                raise AzureInternalError("Could not resolve user names and email addresses from Microsoft Graph. Please try again later.") from ex
+            retry_after = getattr(response, "headers", {}).get("Retry-After") if response else None
 
         if attempt < MAX_RETRIES_USER_LOOKUP - 1:
-            time.sleep(1)
+            try:
+                retry_delay = float(retry_after) if retry_after is not None else 2 ** attempt
+            except ValueError:
+                retry_delay = 2 ** attempt
+            time.sleep(retry_delay)
     else:
+        logger.debug("Microsoft Graph did not return objects for principal IDs: %s", principal_ids - directory_objects.keys())
         raise AzureInternalError("Could not resolve user names and email addresses from Microsoft Graph. Please try again later.")
 
     for user in users:
