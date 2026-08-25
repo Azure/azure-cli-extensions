@@ -3,6 +3,13 @@
 Release History
 ===============
 
+10.0.0b2
+++++++++
+* Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).
+* [Breaking Change] Command `bootstrapinterface list` will be will have parameter `bootstrap_device` added, and required parameter `network_bootstrap_device_name` removed.
+* [Breaking Change] Command `bootstrapinterface show` will be will have parameter `bootstrap_device` added, and required parameter `network_bootstrap_device_name` removed.
+* [Breaking Change] Command `bootstrapinterface wait` will be will have parameter `bootstrap_device` added, and required parameter `network_bootstrap_device_name` removed.
+
 10.0.0b1
 ++++++++
 * New preview CLI version for latest api 2026-01-15-preview.
