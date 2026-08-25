@@ -58,7 +58,7 @@ class DashboardV2DetectionTests(unittest.TestCase):
         self.assertEqual(dv2.dashboard_folder_uid(classic), "cf")
 
     def test_is_dashboard_provisioned(self):
-        managed = _v2_resource(extra_annotations={"grafana.app/managerKind": "repo"})
+        managed = _v2_resource(extra_annotations={"grafana.app/managedBy": "repo"})
         self.assertTrue(dv2.is_dashboard_provisioned(managed))
         self.assertFalse(dv2.is_dashboard_provisioned(_v2_resource(
             extra_annotations={"grafana.app/createdBy": "user:x"})))

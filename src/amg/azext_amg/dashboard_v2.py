@@ -194,9 +194,9 @@ def remap_v2_datasource_uids(node, uid_mapping):
 def is_dashboard_provisioned(content):
     # Whether a dashboard is externally managed (file provisioning, repo, terraform, kubectl, ...)
     # and therefore should not be synced/overwritten. Classic exposes this as meta.provisioned; v2
-    # carries the grafana.app/managerKind annotation (absent on user-created dashboards).
+    # carries the grafana.app/managedBy annotation (absent on user-created dashboards).
     if is_v2_dashboard_definition(content):
-        return bool(content.get("metadata", {}).get("annotations", {}).get("grafana.app/managerKind"))
+        return bool(content.get("metadata", {}).get("annotations", {}).get("grafana.app/managedBy"))
     return bool(content.get("meta", {}).get("provisioned"))
 
 

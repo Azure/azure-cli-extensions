@@ -13,7 +13,7 @@ from .utils import search_snapshot, get_snapshot
 from .utils import search_folders, get_folder, get_folder_permissions
 from .utils import search_datasource
 from .utils import search_annotations
-from .dashboard_v2 import resolve_dashboard_v2_api_version, read_v2_dashboard
+from .dashboard_v2 import resolve_dashboard_v2_api_version, read_v2_dashboard, is_dashboard_provisioned
 
 logger = get_logger(__name__)
 
@@ -94,6 +94,12 @@ def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
             # v2 resource from the apiserver instead of the down-converted legacy payload.
             v2_dashboard = (read_v2_dashboard(grafana_url, http_headers, uid, version=v2_version)
                             if v2_version else None)
+            # The classic read only reports meta.provisioned for file-provisioned dashboards; a
+            # v2-stored dashboard managed via repo/terraform/kubectl exposes that solely through its
+            # grafana.app/managedBy annotation, so skip those too and never back up managed content.
+            if v2_dashboard is not None and is_dashboard_provisioned(v2_dashboard):
+                logger.warning("Dashboard: \"%s\" is externally managed, skipping...", board['title'])
+                continue
             all_individual_dashboards.append(v2_dashboard if v2_dashboard is not None else content)
 
     return all_individual_dashboards

@@ -49,6 +49,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
         all_source_folders, all_destination_folders, restore_url, restore_headers, dry_run, overwrite)
 
     valid_folder_uids = set(folder[0]['uid'] for folder in all_source_folders + all_destination_folders)
+    source_folder_titles = {folder[0]['uid']: folder[0]['title'] for folder in all_source_folders}
     all_source_dashboards = get_all_dashboards(backup_url,
                                                backup_headers,
                                                folders_to_include=folders_to_include,
@@ -68,7 +69,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
                                                                             restore_url,
                                                                             restore_headers,
                                                                             dry_run,
-                                                                            overwrite)
+                                                                            overwrite, source_folder_titles)
 
     # get the list of snapshots to backup
     all_source_snapshots = get_all_snapshots(backup_url, backup_headers)
@@ -185,7 +186,7 @@ def _migrate_folders(all_source_folders, all_destination_folders, restore_url, r
 
 
 def _migrate_library_panels_and_dashboards(all_source_dashboards, all_library_panels_filtered, restore_url,
-                                           restore_headers, dry_run, overwrite):
+                                           restore_headers, dry_run, overwrite, source_folder_titles=None):
     library_panels_created_summary = {}
     library_panels_overwrote_summary = {}
     dashboards_created_summary = {}
@@ -255,7 +256,10 @@ def _migrate_library_panels_and_dashboards(all_source_dashboards, all_library_pa
         if not is_successful:
             continue
 
-        folder_title = dashboard_folder_uid(dashboard) if is_v2 else dashboard['meta']['folderTitle']
+        if is_v2:
+            folder_title = (source_folder_titles or {}).get(dashboard_folder_uid(dashboard)) or "General"
+        else:
+            folder_title = dashboard['meta']['folderTitle']
         update_summary_dict(exists_before,
                             folder_title,
                             dashboard_title,
