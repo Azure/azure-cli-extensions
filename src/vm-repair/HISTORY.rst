@@ -2,6 +2,11 @@
 Release History
 ===============
 
+2.2.6
+++++++
+Fixing ``az extension add --name vm-repair`` failing with ``Pip failed with status code 2`` on 32-bit Windows installations of the Azure CLI. The extension declared ``opencensus`` as a dependency but never imported it. Because extensions are installed with ``pip --target``, that unused dependency pulled roughly twenty extra packages into the extension folder, including ``cryptography``, which stopped publishing 32-bit Windows wheels in version 49.0.0. On a 32-bit CLI, pip had no compatible wheel, fell back to building ``cryptography`` from source, and failed. Removing the unused ``opencensus`` dependency removes that entire dependency tree.
+Also declaring ``applicationinsights``, which the telemetry module imports on every command but which was never listed as a dependency. It previously resolved only because the Azure CLI happened to ship it, even though no Azure CLI package requires it, so any future CLI that dropped it would have broken every ``vm repair`` command at import time.
+
 2.2.5
 ++++++
 Fixing a regression introduced in 2.2.1 that could break every ``vm repair`` command on Windows when ``az`` resolves to the ``az.cmd`` launcher (the default for MSI installations). The command-injection hardening quoted every token of the nested ``az`` call, including the ``az`` program name itself. cmd.exe then treated it as a literal path instead of a PATH search, so ``%~dp0`` inside ``az.cmd`` no longer pointed at the launcher directory, the bundled Python interpreter was not found, and the call failed with ``Failed to load python executable.`` and exit code 1. The ``az`` token is no longer quoted; all arguments are still individually quoted, so the injection protection added in 2.2.1 (MSRC 115198) is unchanged.
