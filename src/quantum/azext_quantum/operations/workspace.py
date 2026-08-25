@@ -534,47 +534,51 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
 
 def _fill_user_display_names(cmd, users):
     """
-    Enrich user role assignments with the display name and email resolved from Microsoft Graph
-    in a single batched lookup. This avoids a per-user Microsoft Graph lookup that would be slow and could hit throttling limits.
+    Enrich user role assignments with the Name and Email resolved from Microsoft Graph in a single
+    batched lookup. Principals the directory cannot resolve fall back to the principal name.
     """
     principal_ids = {user["principalId"] for user in users if user.get("principalId")}
     if not principal_ids:
         return
 
+    directory_objects = _resolve_directory_objects(cmd, principal_ids)
+
+    for user in users:
+        obj = directory_objects.get(user.get("principalId"), {})
+        principal_name = user.get("principalName")
+        user["displayName"] = obj.get("displayName") or obj.get("userPrincipalName") or principal_name or user.get("principalId")
+        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or principal_name
+
+
+def _resolve_directory_objects(cmd, principal_ids):
+    """
+    Resolve principal IDs to Microsoft Graph objects in one batched call, keyed by object id. Only
+    transient failures are retried; a principal the directory cannot resolve is simply absent from
+    the result, so the caller can fall back to the principal name rather than failing the command.
+    """
     from azure.cli.command_modules.role import graph_client_factory
     from azure.cli.command_modules.role.custom import GraphError, HttpResponseError, _get_object_stubs
 
     graph_client = graph_client_factory(cmd.cli_ctx)
-    directory_objects = {}
+    last_error = None
     for attempt in range(MAX_RETRIES_USER_LOOKUP):
-        retry_after = None
         try:
-            directory_objects = {obj.get("id"): obj for obj in _get_object_stubs(graph_client, principal_ids)}
-            if principal_ids.issubset(directory_objects):
-                break
+            return {obj.get("id"): obj for obj in _get_object_stubs(graph_client, principal_ids)}
         except (GraphError, HttpResponseError) as ex:
             response = getattr(ex, "response", None)
             status_code = getattr(ex, "status_code", None) or getattr(response, "status_code", None)
-            if status_code not in (408, 429) and not (status_code is not None and 500 <= status_code < 600):
+            transient = status_code in (408, 429) or (status_code is not None and 500 <= status_code < 600)
+            if not transient:
                 error_type = {400: ClientRequestError, 401: UnauthorizedError, 403: ForbiddenError}.get(status_code, AzureResponseError)
                 raise error_type(str(ex)) from ex
+            last_error = ex
+            if attempt < MAX_RETRIES_USER_LOOKUP - 1:
+                retry_after = getattr(response, "headers", {}).get("Retry-After") if response else None
+                try:
+                    retry_delay = float(retry_after) if retry_after is not None else 2 ** attempt
+                except ValueError:
+                    retry_delay = 2 ** attempt
+                time.sleep(retry_delay)
 
-            if attempt == MAX_RETRIES_USER_LOOKUP - 1:
-                logger.debug("Microsoft Graph user lookup failed after retries.", exc_info=True)
-                raise AzureInternalError("Could not resolve user names and email addresses from Microsoft Graph. Please try again later.") from ex
-            retry_after = getattr(response, "headers", {}).get("Retry-After") if response else None
-
-        if attempt < MAX_RETRIES_USER_LOOKUP - 1:
-            try:
-                retry_delay = float(retry_after) if retry_after is not None else 2 ** attempt
-            except ValueError:
-                retry_delay = 2 ** attempt
-            time.sleep(retry_delay)
-    else:
-        logger.debug("Microsoft Graph did not return objects for principal IDs: %s", principal_ids - directory_objects.keys())
-        raise AzureInternalError("Could not resolve user names and email addresses from Microsoft Graph. Please try again later.")
-
-    for user in users:
-        obj = directory_objects.get(user.get("principalId"), {})
-        user["displayName"] = obj.get("displayName") or obj.get("userPrincipalName")
-        user["mail"] = obj.get("mail") or obj.get("userPrincipalName")
+    logger.debug("Microsoft Graph user lookup failed after retries.", exc_info=last_error)
+    raise AzureInternalError("Could not reach Microsoft Graph to resolve user names and email addresses. Please try again later.") from last_error

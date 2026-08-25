@@ -439,8 +439,9 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
             result = list_users(cmd, "rg", "ws")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_OWNER_ROLE_ID, scope=expected_scope, include_inherited=True, fill_principal_name=False, fill_role_definition_name=False)
-        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=True, fill_principal_name=False, fill_role_definition_name=False)
+        queried = {call.kwargs["role"]: (call.kwargs["scope"], call.kwargs["include_inherited"]) for call in list_role_assignments.call_args_list}
+        self.assertEqual(queried[QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID], (expected_scope, True))
+        self.assertEqual(queried[QUANTUM_WORKSPACE_OWNER_ROLE_ID], (expected_scope, True))
         self.assertEqual(result[0]["displayName"], "Contoso User")
         self.assertEqual(result[0]["mail"], "user@contoso.com")
         self.assertEqual(result[0]["roleDefinitionName"], "Quantum Workspace Data Contributor")
@@ -470,8 +471,9 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
             list_users(cmd, "rg", "ws", include_inherited=False)
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_OWNER_ROLE_ID, scope=expected_scope, include_inherited=False, fill_principal_name=False, fill_role_definition_name=False)
-        list_role_assignments.assert_any_call(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, include_inherited=False, fill_principal_name=False, fill_role_definition_name=False)
+        queried = {call.kwargs["role"]: (call.kwargs["scope"], call.kwargs["include_inherited"]) for call in list_role_assignments.call_args_list}
+        self.assertEqual(queried[QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID], (expected_scope, False))
+        self.assertEqual(queried[QUANTUM_WORKSPACE_OWNER_ROLE_ID], (expected_scope, False))
 
     def test_list_users_excludes_groups_and_service_principals(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
@@ -568,13 +570,31 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
         get_object_stubs.assert_called_once()
         sleep.assert_not_called()
 
-    def test_list_users_raises_when_graph_cannot_resolve_users(self):
+    def test_list_users_falls_back_when_principal_not_in_directory(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
-        assignments = [{"principalId": "u", "principalType": "User"}]
+        assignments = [{"principalId": "missing", "principalName": "ghost@contoso.com", "principalType": "User"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
                 patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=[]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        # A principal Graph cannot resolve falls back to the principal name; the command still succeeds.
+        self.assertEqual(result[0]["displayName"], "ghost@contoso.com")
+        self.assertEqual(result[0]["mail"], "ghost@contoso.com")
+        get_object_stubs.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_list_users_raises_after_persistent_transient_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        response = SimpleNamespace(status_code=429, headers={})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=GraphError("throttled", response)) as get_object_stubs, \
                 patch("azext_quantum.operations.workspace.time.sleep") as sleep:
             cmd = SimpleNamespace(cli_ctx=object())
             with self.assertRaisesRegex(AzureInternalError, "Please try again later"):
