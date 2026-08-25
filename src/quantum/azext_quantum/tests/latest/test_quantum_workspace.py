@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import argparse
 import pytest
 import unittest
 import time
@@ -11,11 +12,13 @@ import time
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
+from ..._params import QuotaAction
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, _autoadd_providers, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, update, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -190,6 +193,49 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
     @live_only()
+    def test_workspace_v2_create_destroy(self):
+        # initialize values
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_storage_account = get_test_workspace_storage()
+        # V2 workspaces use a different provider model than V1. The e2e pipeline
+        # supplies the V2 providers per-location via AZURE_QUANTUM_WORKSPACE_V2_PROVIDERS
+        # (each paired with the "default" SKU), not via the V1 provider/capabilities
+        # variables. Use those params so this test creates the same kind of V2
+        # workspace the pipeline expects.
+        test_provider_sku_list = get_test_workspace_v2_provider_sku_list()
+
+        if not test_provider_sku_list:
+            self.skipTest(f"Skipping test_workspace_v2_create_destroy: No V2 providers configured for location '{test_location}' in AZURE_QUANTUM_WORKSPACE_V2_PROVIDERS")
+
+        # Create V2 workspace via ARM template path
+        test_workspace_temp = get_test_workspace_random_name()
+        self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_provider_sku_list}" -o json', checks=[
+            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp)
+        ])
+        self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("properties.workspaceKind", "V2")
+        ])
+        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("properties.provisioningState", "Deleting")
+        ])
+
+        # Create a V2 workspace via --skip-role-assignment path
+        test_workspace_temp = get_test_workspace_random_name()
+        self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept --skip-role-assignment -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_provider_sku_list}" -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("properties.provisioningState", "Accepted")
+        ])
+        self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("properties.workspaceKind", "V2")
+        ])
+        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("properties.provisioningState", "Deleting")
+        ])
+
+
+    @live_only()
     def test_workspace_keys(self):
         # initialize values
         test_location = get_test_workspace_location()
@@ -235,6 +281,47 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # delete
+        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("properties.provisioningState", "Deleting")
+        ])
+
+    @live_only()
+    def test_workspace_user(self):
+        import random
+        # initialize values
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = get_test_workspace_random_name()
+        test_storage_account = get_test_workspace_storage()
+        test_provider_sku_list = get_test_workspace_provider_sku_list()
+        test_identity_name = "e2e-test-id" + str(random.randint(1000000, 9999999))
+
+        # create a workspace to manage users on
+        self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+            self.check("properties.provisioningState", "Succeeded")
+        ])
+
+        # Create a user-assigned managed identity to use as the assignee. Using its
+        # object id (and '--assignee-object-id') keeps the test runnable under both
+        # user and service-principal logins, since no Microsoft Graph lookup is needed.
+        identity = self.cmd(f'az identity create -g {test_resource_group} -n {test_identity_name} -l {test_location} -o json').get_output_in_json()
+        test_object_id = identity["principalId"]
+
+        # grant access using the object id, relying on the default role. Verify the
+        # default 'Quantum Workspace Data Contributor' role was assigned.
+        self.cmd(f'az quantum workspace user create -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} -o json', checks=[
+            self.check("principalId", test_object_id),
+            self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
+        ])
+
+        # remove access using the object id and an explicit role
+        self.cmd(f'az quantum workspace user delete -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} --role c1410b24-3e69-4857-8f86-4d0a2e603250 --yes')
+
+        # clean up the managed identity
+        self.cmd(f'az identity delete -g {test_resource_group} -n {test_identity_name}')
+
+        # delete the workspace
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
             self.check("name", test_workspace_temp),
             self.check("properties.provisioningState", "Deleting")
@@ -299,6 +386,230 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         except InvalidArgumentValueError as e:
             assert str(e) == "Storage account kind 'BlobStorage' is not supported.\nStorage account kinds currently supported: Storage, StorageV2"
 
+    def test_quota_validation(self):
+        allocation = QuotaAction._validate({
+            'providerId': 'provider',
+            'targetId': 'provider.target-1',
+            'standardMinutesLifetime': '500',
+            'highMinutesLifetime': 50
+        }, '--quota')
+        assert allocation == {
+            'providerId': 'provider',
+            'targetId': 'provider.target-1',
+            'standardMinutesLifetime': 500,
+            'highMinutesLifetime': 50
+        }
+
+        with self.assertRaises(InvalidArgumentValueError):
+            QuotaAction._validate({
+                'providerId': 'provider',
+                'targetId': 'invalid target',
+                'standardMinutesLifetime': 500
+            }, '--quota')
+
+        with self.assertRaises(InvalidArgumentValueError):
+            QuotaAction._validate({
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': -1
+            }, '--quota')
+
+    def test_quota_action_repeated_allocations(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--quota', action=QuotaAction, nargs='+')
+
+        result = parser.parse_args([
+            '--quota',
+            'providerId=provider',
+            'targetId=provider.target-1',
+            'standardMinutesLifetime=500',
+            '--quota',
+            'providerId=provider',
+            'targetId=provider.target-2',
+            'standardMinutesLifetime=250'
+        ])
+
+        assert len(result.quota) == 2
+        assert result.quota[0]['targetId'] == 'provider.target-1'
+        assert result.quota[1]['targetId'] == 'provider.target-2'
+
+        with self.assertRaises(InvalidArgumentValueError):
+            parser.parse_args([
+                '--quota',
+                'providerId=provider',
+                'targetId=provider.target',
+                'standardMinutesLifetime=500',
+                '--quota',
+                'providerId=PROVIDER',
+                'targetId=PROVIDER.TARGET',
+                'standardMinutesLifetime=250'
+            ])
+
+    def test_quota_key_aliases(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--quota', action=QuotaAction, nargs='+')
+
+        result = parser.parse_args([
+            '--quota',
+            'provider-id=provider',
+            'target-id=provider.target-1',
+            'standard-minutes-lifetime=500',
+            'high-minutes-lifetime=50',
+            '--quota',
+            'Provider_Id=provider',
+            'Target_Id=provider.target-2',
+            'Standard_Minutes_Lifetime=250'
+        ])
+
+        assert result.quota[0] == {
+            'providerId': 'provider',
+            'targetId': 'provider.target-1',
+            'standardMinutesLifetime': 500,
+            'highMinutesLifetime': 50
+        }
+        assert result.quota[1] == {
+            'providerId': 'provider',
+            'targetId': 'provider.target-2',
+            'standardMinutesLifetime': 250
+        }
+
+    def test_quota_rejects_duplicate_key_in_single_flag(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--quota', action=QuotaAction, nargs='+')
+
+        # Two targets crammed into a single --quota must not be silently merged.
+        with self.assertRaises(InvalidArgumentValueError):
+            parser.parse_args([
+                '--quota',
+                'providerId=provider',
+                'targetId=provider.target-1',
+                'standardMinutesLifetime=500',
+                'providerId=provider',
+                'targetId=provider.target-2',
+                'standardMinutesLifetime=250'
+            ])
+
+        # camelCase and kebab-case spellings of the same key also collide.
+        with self.assertRaises(InvalidArgumentValueError):
+            parser.parse_args([
+                '--quota',
+                'targetId=provider.target-1',
+                'target-id=provider.target-2',
+                'providerId=provider',
+                'standardMinutesLifetime=500'
+            ])
+
+    def test_quota_rejects_float(self):
+        with self.assertRaises(InvalidArgumentValueError):
+            QuotaAction._validate({
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': 500.5
+            }, '--quota')
+
+        with self.assertRaises(InvalidArgumentValueError):
+            QuotaAction._validate({
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': '500.5'
+            }, '--quota')
+
+    def test_apply_target_quotas(self):
+        provider = Provider(provider_id='provider', provider_sku='default')
+
+        _apply_target_quotas([provider], [{
+            'providerId': 'provider',
+            'targetId': 'provider.target',
+            'standardMinutesLifetime': 500,
+            'highMinutesLifetime': 50
+        }])
+
+        assert len(provider.target_quotas) == 1
+        assert provider.target_quotas[0].target_id == 'provider.target'
+        assert provider.target_quotas[0].standard_minutes_lifetime == 500
+        assert provider.target_quotas[0].high_minutes_lifetime == 50
+
+    def test_apply_target_quotas_preserves_omitted_values(self):
+        provider = Provider(
+            provider_id='provider',
+            provider_sku='default',
+            target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target',
+                standard_minutes_lifetime=500,
+                high_minutes_lifetime=50
+            )]
+        )
+
+        _apply_target_quotas([provider], [{
+            'providerId': 'provider',
+            'targetId': 'provider.target',
+            'standardMinutesLifetime': 0
+        }], preserve_existing=True)
+
+        assert provider.target_quotas[0].standard_minutes_lifetime == 0
+        assert provider.target_quotas[0].high_minutes_lifetime == 50
+
+    def test_target_quota_validation_errors(self):
+        with self.assertRaises(InvalidArgumentValueError):
+            _require_v2_workspace('V1')
+
+        with self.assertRaises(InvalidArgumentValueError):
+            _apply_target_quotas([Provider(provider_id='provider')], [{
+                'providerId': 'other-provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': 500
+            }])
+
+        with self.assertRaises(InvalidArgumentValueError):
+            _apply_target_quotas([Provider(provider_id='provider')], [{
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'highMinutesLifetime': 50
+            }])
+
+    @unittest.mock.patch('azext_quantum.operations.workspace.WorkspaceInfo')
+    @unittest.mock.patch('azext_quantum.operations.workspace.cf_workspaces')
+    def test_update_target_quota_and_api_key(self, mock_cf_workspaces, mock_workspace_info):
+        provider = Provider(
+            provider_id='provider',
+            provider_sku='default',
+            target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target',
+                standard_minutes_lifetime=500,
+                high_minutes_lifetime=50
+            )]
+        )
+        workspace = unittest.mock.MagicMock()
+        workspace.properties.workspace_kind = 'V2'
+        workspace.properties.providers = [provider]
+        workspace.properties.api_key_enabled = False
+        workspace.properties.endpoint_uri = 'https://workspace.quantum.azure.com'
+
+        client = mock_cf_workspaces.return_value
+        client.get.return_value = workspace
+        client.begin_create_or_update.return_value.result.return_value = workspace
+        info = mock_workspace_info.return_value
+        info.resource_group = 'group'
+        info.name = 'workspace'
+
+        result = update(
+            unittest.mock.MagicMock(),
+            resource_group_name='group',
+            workspace_name='workspace',
+            enable_key='true',
+            quota=[{
+                'providerId': 'provider',
+                'targetId': 'provider.target',
+                'standardMinutesLifetime': 0
+            }]
+        )
+
+        assert result is workspace
+        assert workspace.properties.api_key_enabled is True
+        assert provider.target_quotas[0].standard_minutes_lifetime == 0
+        assert provider.target_quotas[0].high_minutes_lifetime == 50
+        client.begin_create_or_update.assert_called_once_with('group', 'workspace', workspace)
+
     def test_autoadd_providers(self):
         print("test_autoadd_providers")
         test_managed_application = TestManagedApplicationDescription(None, None)
@@ -319,3 +630,16 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         workspace_location = None
         _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
         assert providers_selected[0] == {"provider_id": "foo", "sku": "foo_credits_for_all_plan", "offer_id": "foo_offer", "publisher_id": "foo0123456789"}
+
+    def test_get_workspace_resource_id(self):
+        print("test_get_workspace_resource_id")
+        from ...operations.workspace import _get_workspace_resource_id
+
+        class TestWorkspaceInfo(object):
+            subscription = "00000000-0000-0000-0000-000000000000"
+            resource_group = "MyResourceGroup"
+            name = "MyWorkspace"
+            __test__ = False
+
+        resource_id = _get_workspace_resource_id(TestWorkspaceInfo())
+        assert resource_id == "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Quantum/Workspaces/MyWorkspace"

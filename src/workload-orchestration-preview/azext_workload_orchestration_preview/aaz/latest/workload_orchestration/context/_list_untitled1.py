@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context list",
+    "workload-orchestration-preview context list",
     is_preview=False,
 )
 class ListUntitled1(AAZCommand):
     """List by specified resource group
     :example: List Contexts
-        az workload-orchestration context list -g myResourceGroup
+        az workload-orchestration-preview context list -g myResourceGroup
     """
 
     _aaz_info = {

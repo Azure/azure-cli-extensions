@@ -6,8 +6,10 @@
 # pylint: disable=line-too-long,protected-access,too-many-statements
 
 import argparse
+import re
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
+from azure.cli.core.commands.parameters import get_enum_type
 from azure.cli.core.util import shell_safe_json_parse
 
 
@@ -31,6 +33,127 @@ class JobParamsAction(argparse._AppendAction):
         return params
 
 
+class QuotaAction(argparse._AppendAction):
+    # targetId: leading alphanumeric followed by up to 199 more alphanumeric, '-', '.', or '_' characters.
+    _TARGET_ID_PATTERN = re.compile(r'[a-zA-Z0-9][-._a-zA-Z0-9]{0,199}')
+    # Maximum value accepted for minutes-lifetime fields (Int32 max, matching the service contract).
+    _MAX_MINUTES_LIFETIME = 2147483647
+
+    _allowed_keys = {
+        'providerId',
+        'targetId',
+        'standardMinutesLifetime',
+        'highMinutesLifetime'
+    }
+
+    # Accept az-style kebab-case and snake_case keys (case-insensitive) as aliases of the camelCase keys.
+    _key_aliases = {
+        'providerid': 'providerId',
+        'targetid': 'targetId',
+        'standardminuteslifetime': 'standardMinutesLifetime',
+        'highminuteslifetime': 'highMinutesLifetime'
+    }
+
+    @classmethod
+    def _canonical_key(cls, key):
+        if not isinstance(key, str):
+            return key
+        normalized = key.strip().lower().replace('-', '').replace('_', '')
+        return cls._key_aliases.get(normalized, key.strip())
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        allocations = list(getattr(namespace, self.dest, None) or [])
+        parsed_values = []
+        current = {}
+
+        def add_to_current(key, value):
+            canonical = self._canonical_key(key)
+            if canonical in current:
+                raise InvalidArgumentValueError(
+                    f'{option_string} got multiple values for "{key}" in a single allocation. '
+                    f'Specify a separate {option_string} for each target.'
+                )
+            current[canonical] = value
+
+        for item in values:
+            try:
+                parsed = shell_safe_json_parse(item)
+                if isinstance(parsed, list):
+                    parsed_values.extend(parsed)
+                elif isinstance(parsed, dict):
+                    for key, value in parsed.items():
+                        add_to_current(key, value)
+                else:
+                    raise InvalidArgumentValueError(
+                        f'Usage error: {option_string} expects key=value pairs, a JSON object or array, or @file.'
+                    )
+            except CLIError:
+                try:
+                    key, value = item.split('=', 1)
+                except ValueError as ex:
+                    raise InvalidArgumentValueError(
+                        f'Usage error: {option_string} expects key=value pairs, a JSON object or array, or @file.'
+                    ) from ex
+                add_to_current(key, value)
+
+        if current:
+            parsed_values.append(current)
+
+        allocations.extend(self._validate(allocation, option_string) for allocation in parsed_values)
+        pairs = [(item['providerId'].lower(), item['targetId'].lower()) for item in allocations]
+        if len(pairs) != len(set(pairs)):
+            raise InvalidArgumentValueError(f'Duplicate providerId/targetId pair specified for {option_string}.')
+
+        setattr(namespace, self.dest, allocations)
+
+    @classmethod
+    def _validate(cls, allocation, option_string):
+        if not isinstance(allocation, dict):
+            raise InvalidArgumentValueError(f'Each {option_string} allocation must be a JSON object.')
+
+        allocation = {cls._canonical_key(key): value for key, value in allocation.items()}
+
+        unknown_keys = set(allocation) - cls._allowed_keys
+        if unknown_keys:
+            raise InvalidArgumentValueError(
+                f'Unsupported key(s) for {option_string}: {", ".join(sorted(unknown_keys))}.'
+            )
+
+        for required_key in ('providerId', 'targetId'):
+            if not allocation.get(required_key):
+                raise InvalidArgumentValueError(f'{option_string} requires {required_key}.')
+
+        target_id = allocation['targetId']
+        if not isinstance(target_id, str) or not cls._TARGET_ID_PATTERN.fullmatch(target_id):
+            raise InvalidArgumentValueError(f'{option_string} targetId is not valid: {target_id}')
+
+        if not any(key in allocation for key in ('standardMinutesLifetime', 'highMinutesLifetime')):
+            raise InvalidArgumentValueError(
+                f'{option_string} requires standardMinutesLifetime and/or highMinutesLifetime.'
+            )
+
+        result = {
+            'providerId': str(allocation['providerId']),
+            'targetId': target_id
+        }
+        for key in ('standardMinutesLifetime', 'highMinutesLifetime'):
+            if key not in allocation:
+                continue
+            allocation_value = allocation[key]
+            if isinstance(allocation_value, (bool, float)):
+                raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.')
+            try:
+                value = int(allocation_value)
+            except (TypeError, ValueError) as ex:
+                raise InvalidArgumentValueError(f'{option_string} {key} must be an integer.') from ex
+            if value < 0 or value > cls._MAX_MINUTES_LIFETIME:
+                raise InvalidArgumentValueError(
+                    f'{option_string} {key} must be between 0 and {cls._MAX_MINUTES_LIFETIME}.'
+                )
+            result[key] = value
+        return result
+
+
 def load_arguments(self, _):  # pylint: disable=too-many-locals
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
@@ -38,6 +161,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
+    file_name_type = CLIArgumentType(options_list=['--file-name', '-n'], help="The name of the file (blob) in the job's output storage container.")
+    dest_type = CLIArgumentType(options_list=['--dest'], help="Destination directory. The file is saved using its blob name in this directory (the current directory if omitted).")
+    job_name_update_type = CLIArgumentType(options_list=['--job-name'], help='The updated friendly name of the job.')
+    job_priority_type = CLIArgumentType(options_list=['--job-priority'], help='The updated priority of the job.', arg_type=get_enum_type(['Standard', 'High']))
+    job_tags_type = CLIArgumentType(options_list=['--job-tags'], help='Space-separated list of tags to associate with the job. Replaces any existing tags. Pass "" to clear all tags.', nargs='+')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the program on the given target.')
@@ -55,6 +183,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_output_format_type = CLIArgumentType(help='The expected job output format')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
+    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', choices=['V1', 'V2'])
+    quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation as provider-id, target-id, standard-minutes-lifetime, and optional high-minutes-lifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. standard-minutes-lifetime is required for a new allocation. camelCase keys (providerId, targetId, ...) are also accepted. Repeat --quota once per target.', action=QuotaAction, nargs='+')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
     job_type_type = CLIArgumentType(options_list=['--job-type'], help='Job type to be listed, example "QuantumComputing".')
@@ -66,6 +196,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
+    assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user, group, or service principal. Supported formats: object id, user sign-in name, or service principal name.')
+    assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with object ids for users, groups, service principals, and managed identities. For managed identities use the principal id. For service principals, use the object id and not the app id.")
+    role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role granted to the user; for 'delete', the role assignment to remove. Defaults to the 'Quantum Workspace Data Contributor' role.")
+    assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="Use with '--assignee-object-id' to avoid errors caused by propagation latency in Microsoft Graph.")
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -75,6 +209,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('provider_sku_list', provider_sku_list_type)
         c.argument('auto_accept', auto_accept_type)
         c.argument('skip_autoadd', skip_autoadd_type)
+        c.argument('workspace_kind', workspace_kind_type)
+        c.argument('quota', quota_type)
+
+    with self.argument_context('quantum workspace user') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('assignee', assignee_type)
+        c.argument('assignee_object_id', assignee_object_id_type)
+        c.argument('role', role_type)
+
+    with self.argument_context('quantum workspace user create') as c:
+        c.argument('assignee_principal_type', assignee_principal_type_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -113,6 +258,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
+
+    with self.argument_context('quantum job file download') as c:
+        c.argument('file_name', file_name_type)
+        c.argument('dest', dest_type)
+
+    with self.argument_context('quantum job update') as c:
+        c.argument('job_name', job_name_update_type)
+        c.argument('job_priority', job_priority_type)
+        c.argument('job_tags', job_tags_type)
 
     with self.argument_context('quantum execute') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -157,3 +311,4 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     with self.argument_context('quantum workspace update') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('enable_key', enable_key_type)
+        c.argument('quota', quota_type)

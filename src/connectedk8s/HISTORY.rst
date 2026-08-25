@@ -2,6 +2,21 @@
 
 Release History
 ===============
+1.11.2
++++++++
+* Fix telemetry `Unknown` errors: wrap string exceptions, add missing instrumentation, and catch-all decorator for unhandled exceptions.
+* Propagate correlation ID end-to-end for `az connectedk8s proxy`.
+* [MultiCloudConnector] Allow AgentNotInstalled to Agent conversion in connected clusters.
+* Add debug log for helm binary location.
+* Add diagnosis logic for helm timeouts to improve failure classification.
+* Move kubeadm distribution detection to be evaluated last to prevent incorrect cluster distribution classification.
+* Updated CLIENT_PROXY_VERSION to 1.3.034631.
+* Removed workload identity preview feature flag.
+* Added telemetry for pre-onboarding diagnostic results, including diagnostics execution failures.
+* Add `Arc` to `--proxy-skip-range` default values for Azure Arc private-link endpoints.
+* Fix pre-onboarding diagnostic checks incorrectly grading a NotCompleted job as Passed when partial container output is present.
+* Updated clusterdiagnosticchecks image to 1.36.1.
+
 1.11.1
 +++++++
 * Added ARM64 support for Helm binary installation.

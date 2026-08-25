@@ -10,7 +10,7 @@ from .defaults import get_default_dce_name
 
 def create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region):
     from azure.cli.core.util import send_raw_request
-    dce_name = get_default_dce_name(cmd, mac_region, cluster_name)
+    dce_name = get_default_dce_name(mac_region, cluster_name)
     dce_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionEndpoints/{dce_name}"
     try:
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager

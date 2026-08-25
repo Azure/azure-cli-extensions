@@ -56,6 +56,17 @@ def transform_jobs(results):
     return [transform_job(job) for job in results]
 
 
+def transform_file_list(results):
+    return [
+        OrderedDict([
+            ('Name', f['name']),
+            ('Size (bytes)', f['size']),
+            ('Last modified', f['lastModified'])
+        ])
+        for f in results
+    ]
+
+
 def transform_offerings(offerings):
     def one(offering):
         return OrderedDict([
@@ -134,7 +145,11 @@ def load_command_table(self, _):
         w.command('quotas', 'quotas', validator=validate_workspace_info)
         w.command('keys list', 'list_keys')
         w.command('keys regenerate', 'regenerate_keys')
-        w.command('update', 'enable_keys')
+        w.command('update', 'update')
+
+    with self.command_group('quantum workspace user', workspace_ops) as u:
+        u.command('create', 'add_user', validator=validate_workspace_info)
+        u.command('delete', 'remove_user', validator=validate_workspace_info, confirmation=True)
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
@@ -148,7 +163,11 @@ def load_command_table(self, _):
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)
+        j.command('file list', 'list_files', validator=validate_workspace_info, table_transformer=transform_file_list)
+        j.command('file download', 'download_file', validator=validate_workspace_info)
         j.command('cancel', 'cancel', validator=validate_workspace_info, table_transformer=transform_job)
+        j.command('delete', 'delete', validator=validate_workspace_info, confirmation=True)
+        j.command('update', 'update', validator=validate_workspace_info, table_transformer=transform_job)
 
     with self.command_group('quantum', job_ops, is_preview=True) as q:
         q.command('run', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)

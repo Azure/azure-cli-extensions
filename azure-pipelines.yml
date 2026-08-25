@@ -79,9 +79,7 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      # test_index.py imports scripts/ci/util.py, which reads wheel metadata via azdev's
-      # pkginfo-based metadata module (decoupled from wheel==0.30.0), so azdev must be installed here.
-      pip install --upgrade "azdev==0.2.12"
+      pip install --upgrade azdev==0.2.13
       pip install requests packaging setuptools
       export CI="ADO"
       python ./scripts/ci/test_index.py -v

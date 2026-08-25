@@ -89,6 +89,139 @@ def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
     return ext_file
 
 
+def get_sha256sum(a_file):
+    """Compute the SHA-256 hex digest of a file."""
+    import hashlib
+    sha256 = hashlib.sha256()
+    with open(a_file, 'rb') as f:
+        for chunk in iter(lambda: f.read(65536), b''):
+            sha256.update(chunk)
+    return sha256.hexdigest()
+
+
+def fetch_github_index(repo, branch, token=None):
+    """Fetch index.json from GitHub raw content.
+
+    Args:
+        repo: GitHub repo in owner/repo format (e.g. 'Azure/azure-cli-extensions')
+        branch: Branch name (e.g. 'main')
+        token: Optional GitHub PAT for private repos
+
+    Returns:
+        dict: Parsed index.json content
+
+    Raises:
+        RuntimeError: If the fetch fails
+    """
+    import requests
+    # external-url-exempt: This function fetches index.json from GitHub raw content, which is necessary for the operation of the script. It is called in pipeline code only.
+    url = 'https://raw.githubusercontent.com/{}/{}/src/index.json'.format(repo, branch)
+    headers = {}
+    if token:
+        headers['Authorization'] = 'token {}'.format(token)
+    try:
+        r = requests.get(url, headers=headers, timeout=30)
+        if r.status_code != 200:
+            raise RuntimeError("Failed to fetch index.json from GitHub: HTTP {}".format(r.status_code))
+        try:
+            return r.json()
+        except ValueError as exc:
+            raise RuntimeError(
+                "Failed to parse index.json from GitHub ({}): {}".format(url, exc)
+            ) from exc
+    except requests.exceptions.RequestException as exc:
+        raise RuntimeError(
+            "Failed to fetch index.json from GitHub ({}): {}".format(url, exc)
+        ) from exc
+
+
+def upload_wheel_no_overwrite(whl_path, storage_account, storage_container, blob_prefix=None):
+    """Upload a wheel to Azure Blob Storage without overwriting.
+
+    Returns:
+        str: The blob URL if upload succeeded (new blob created).
+        None: If the blob already exists (upload was rejected).
+
+    Raises:
+        RuntimeError: On unexpected upload failure.
+    """
+    from subprocess import run as subprocess_run
+    whl_file = os.path.basename(whl_path)
+    blob_name = '{}/{}'.format(blob_prefix, whl_file) if blob_prefix else whl_file
+
+    cmd = [
+        'az', 'storage', 'blob', 'upload',
+        '--container-name', storage_container,
+        '--account-name', storage_account,
+        '--name', blob_name,
+        '--file', os.path.abspath(whl_path),
+        '--auth-mode', 'login',
+        '--overwrite', 'false',
+    ]
+    logger.info("Uploading wheel (no overwrite): %s", whl_file)
+    result = subprocess_run(cmd, capture_output=True, text=True)
+
+    if result.returncode == 0:
+        url = get_blob_url(storage_account, storage_container, blob_name)
+        return url
+
+    stderr = result.stderr or ''
+    # Azure CLI returns error when blob already exists with --overwrite false
+    if 'BlobAlreadyExists' in stderr or 'ResourceExistsError' in stderr or '409' in stderr:
+        logger.info("Blob '%s' already exists. Skipping upload.", blob_name)
+        return None
+
+    raise RuntimeError("Failed to upload '{}': {}".format(whl_file, stderr))
+
+
+def download_blob(storage_account, storage_container, blob_name, dest_path):
+    """Download a blob from Azure Blob Storage to a local path.
+
+    Raises:
+        RuntimeError: On download failure.
+    """
+    from subprocess import run as subprocess_run
+    cmd = [
+        'az', 'storage', 'blob', 'download',
+        '--container-name', storage_container,
+        '--account-name', storage_account,
+        '--name', blob_name,
+        '--file', dest_path,
+        '--auth-mode', 'login',
+    ]
+    logger.info("Downloading blob '%s' to '%s'", blob_name, dest_path)
+    result = subprocess_run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError("Failed to download blob '{}': {}".format(
+            blob_name, result.stderr))
+    logger.info("Download complete: %s", dest_path)
+
+
+def get_blob_url(storage_account, storage_container, blob_name):
+    """Get the public URL of a blob.
+
+    Returns:
+        str: The blob URL.
+
+    Raises:
+        RuntimeError: On failure.
+    """
+    from subprocess import run as subprocess_run
+    cmd = [
+        'az', 'storage', 'blob', 'url',
+        '--container-name', storage_container,
+        '--account-name', storage_account,
+        '--name', blob_name,
+        '--auth-mode', 'login',
+        '-otsv',
+    ]
+    result = subprocess_run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError("Failed to get blob URL for '{}': {}".format(
+            blob_name, result.stderr))
+    return result.stdout.strip()
+
+
 SRC_PATH = os.path.join(get_repo_root(), 'src')
 INDEX_PATH = os.path.join(SRC_PATH, 'index.json')
 

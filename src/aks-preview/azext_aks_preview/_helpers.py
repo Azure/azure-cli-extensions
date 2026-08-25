@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from collections.abc import MutableMapping
+
 import errno
 import os
 import platform
@@ -9,7 +11,7 @@ import re
 import stat
 import sys
 import tempfile
-from typing import List, TypeVar
+from typing import Dict, List, Mapping, TypeVar
 
 import yaml
 from azext_aks_preview._client_factory import (
@@ -42,6 +44,95 @@ logger = get_logger(__name__)
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
 allowed_extensions = ["microsoft.dataprotection.kubernetes"]
+
+# Resource identifiers and command controls do not describe FlexNodes capabilities.
+_FLEXNODES_COMMON_PARAMETERS = {
+    "resource_group_name",
+    "cluster_name",
+    "nodepool_name",
+    "machine_name",
+    "vm_set_type",
+    "no_wait",
+    "aks_custom_headers",
+    "yes",
+    "if_match",
+    "if_none_match",
+}
+
+
+def get_user_supplied_argument_options(cmd) -> Dict[str, str]:
+    """Return explicitly supplied command arguments and their canonical option names."""
+    safe_params = set(cmd.cli_ctx.data.get("safe_params") or [])
+    supplied_options = {}
+    for argument_name, argument in getattr(cmd, "arguments", {}).items():
+        options = [option for option in (getattr(argument, "options_list", None) or [])
+                   if isinstance(option, str)]
+        if any(option in safe_params for option in options):
+            supplied_options[argument_name] = next(
+                (option for option in options if option.startswith("--")), options[0]
+            )
+    return supplied_options
+
+
+def validate_flexnodes_options(
+    cmd,
+    command_parameters: Mapping[str, object],
+    supported_parameters: Mapping[str, str],
+) -> None:
+    """Reject explicitly supplied options outside an operation's FlexNodes capabilities."""
+    supplied_options = get_user_supplied_argument_options(cmd)
+    allowed_parameters = _FLEXNODES_COMMON_PARAMETERS | set(supported_parameters)
+    unsupported_options = sorted({
+        option for name, option in supplied_options.items()
+        if name in command_parameters and name not in allowed_parameters
+    })
+    if unsupported_options:
+        raise InvalidArgumentValueError(
+            "The following options are not supported for FlexNodes pools: {}. "
+            "Supported FlexNodes pool options are: {}.".format(
+                ", ".join(unsupported_options), ", ".join(supported_parameters.values())
+            )
+        )
+
+
+def _reset_mapping_fields(model, preserved_fields):
+    model.clear()
+    for field, value in preserved_fields.items():
+        model[field] = value
+    for attr in list(getattr(model, "__dict__", {})):
+        if not attr.startswith("_"):
+            setattr(model, attr, preserved_fields.get(attr))
+
+
+def reset_agentpool_to_name_and_mode(agentpool, mode):
+    """Remove all agent pool fields except the resource name and pool mode."""
+    if isinstance(agentpool, MutableMapping):
+        name = agentpool["name"]
+        properties = agentpool.get("properties")
+        if isinstance(properties, MutableMapping):
+            _reset_mapping_fields(properties, {"mode": mode})
+            preserved_fields = {"name": name, "properties": properties}
+        else:
+            preserved_fields = {"name": name, "mode": mode}
+        _reset_mapping_fields(agentpool, preserved_fields)
+        return agentpool
+
+    properties = getattr(agentpool, "properties", None)
+    if isinstance(properties, MutableMapping):
+        properties.clear()
+        properties["mode"] = mode
+        preserved_attributes = ("name", "properties")
+    else:
+        agentpool.mode = mode
+        preserved_attributes = ("name", "mode")
+    for attr in list(vars(agentpool)):
+        if (
+            attr not in preserved_attributes
+            and not attr.startswith("_")
+            and hasattr(agentpool, attr)
+        ):
+            setattr(agentpool, attr, None)
+    return agentpool
 
 
 def which(binary):

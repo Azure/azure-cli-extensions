@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database backup list",
 )
 class List(AAZCommand):
-    """List AutonomousDatabaseBackup resources by AutonomousDatabase
+    """List Autonomous Database backup resources by Autonomous Database
 
-    :example: List ADBS Backups
-        az az oracle-database autonomous-database backup list --autonomousdatabasename <ADBS name> --resource-group <resource_group>
+    :example: List Autonomous Database backups
+        az oracle-database autonomous-database backup list --autonomousdatabasename <ADBS name> --resource-group <resource_group>
     """
 
     _aaz_info = {

@@ -3,6 +3,36 @@
 Release History
 ===============
 
+1.0.0b23
+++++++++++++++
+* Added ``--quota`` support to ``az quantum workspace create`` and ``az quantum workspace update`` for managing V2 provider target quota allocations.
+* Updated control plane related commands to use API version 2026-06-15-preview.
+
+1.0.0b22
++++++++++++++++
+* Added the ``az quantum job file list`` command to list the files stored in a job's output storage container.
+* Added the ``az quantum job file download`` command to download a file from a job's output storage container.
+
+1.0.0b21
+++++++++++++++
+* Added the ``az quantum job update`` command to update a submitted job's name, priority, and tags.
+
+1.0.0b20
++++++++++++++++
+* Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.
+
+1.0.0b19
++++++++++++++++
+* Added the ``az quantum job delete`` command to delete a job from an Azure Quantum workspace.
+
+1.0.0b18
++++++++++++++++
+* Added support for the explicit V1 and V2 workspace creation through the ``--workspace-kind`` parameter on ``az quantum workspace create``.
+
+1.0.0b17
++++++++++++++++
+* Fixed bug where Quantum workspace creation flow uses plain (JSON-serializable) primitive values instead of SDK enum objects in ARM-template deployment parameters, preventing serialization issues and test failures.
+
 1.0.0b16
 +++++++++++++++
 * Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.

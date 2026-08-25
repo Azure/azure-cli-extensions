@@ -18,13 +18,14 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError,
+                                       MutuallyExclusiveArgumentError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
@@ -38,6 +39,10 @@ DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 300
+
+# Built-in "Quantum Workspace Data Contributor" role. This is the role granted to
+# users when they are added to a workspace in the Azure Quantum portal.
+QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -194,8 +199,68 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
+def _enum_to_value(value):
+    # ARM deployment parameters must use plain string values, not enum objects.
+    import enum
+    return value.value if isinstance(value, enum.Enum) else value
+
+
+def _require_v2_workspace(workspace_kind):
+    if str(_enum_to_value(workspace_kind)).upper() != 'V2':
+        raise InvalidArgumentValueError("--quota is supported only for V2 workspaces.")
+
+
+def _apply_target_quotas(providers, quota, preserve_existing=False):
+    if not quota:
+        return
+
+    providers_by_id = {
+        provider.provider_id.lower(): provider
+        for provider in providers or []
+        if provider.provider_id
+    }
+
+    for allocation in quota:
+        provider_id = allocation['providerId']
+        provider = providers_by_id.get(provider_id.lower())
+        if not provider:
+            raise InvalidArgumentValueError(
+                f"Provider '{provider_id}' from --quota is not configured in the workspace."
+            )
+
+        target_quotas = [item for item in (provider.target_quotas or [])]
+        existing = next(
+            (item for item in target_quotas if item.target_id.lower() == allocation['targetId'].lower()),
+            None
+        )
+
+        standard_minutes = allocation.get(
+            'standardMinutesLifetime',
+            existing.standard_minutes_lifetime if preserve_existing and existing else None
+        )
+        if standard_minutes is None:
+            raise InvalidArgumentValueError(
+                f"--quota requires standardMinutesLifetime for new target '{allocation['targetId']}'."
+            )
+        high_minutes = allocation.get(
+            'highMinutesLifetime',
+            existing.high_minutes_lifetime if preserve_existing and existing else None
+        )
+
+        updated = TargetQuotaAllocations(
+            target_id=allocation['targetId'],
+            standard_minutes_lifetime=standard_minutes,
+            high_minutes_lifetime=high_minutes
+        )
+        if existing:
+            target_quotas[target_quotas.index(existing)] = updated
+        else:
+            target_quotas.append(updated)
+        provider.target_quotas = target_quotas
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
-           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
     Create a new Azure Quantum workspace.
     """
@@ -210,11 +275,16 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace: QuantumWorkspace = _get_basic_quantum_workspace(location, info, storage_account)
+    if quota:
+        _require_v2_workspace(workspace_kind)
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        _apply_target_quotas(quantum_workspace.properties.providers, quota)
         quantum_workspace.properties.api_key_enabled = True
+        if workspace_kind:
+            quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -228,9 +298,24 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         template = json.load(template_file_fd)
 
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+    _apply_target_quotas(quantum_workspace.properties.providers, quota)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
-        validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
+        provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
+        if provider.target_quotas:
+            provider_data['targetQuotas'] = [
+                {
+                    key: value
+                    for key, value in {
+                        'targetId': target_quota.target_id,
+                        'standardMinutesLifetime': target_quota.standard_minutes_lifetime,
+                        'highMinutesLifetime': target_quota.high_minutes_lifetime
+                    }.items()
+                    if value is not None
+                }
+                for target_quota in provider.target_quotas
+            ]
+        validated_providers.append(provider_data)
 
     # Set default storage account parameters in case the storage account does not exist yet
     storage_account_sku = DEFAULT_STORAGE_SKU
@@ -244,9 +329,9 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if storage_account_list:
         for storage_account_info in storage_account_list:
             if storage_account_info.name == storage_account:
-                storage_account_sku = storage_account_info.sku.name
-                storage_account_sku_tier = storage_account_info.sku.tier
-                storage_account_kind = storage_account_info.kind
+                storage_account_sku = _enum_to_value(storage_account_info.sku.name)
+                storage_account_sku_tier = _enum_to_value(storage_account_info.sku.tier)
+                storage_account_kind = _enum_to_value(storage_account_info.kind)
                 storage_account_location = storage_account_info.location
                 # Preserve the existing account's setting to avoid breaking customers
                 # who rely on shared-key auth/connection strings for that account.
@@ -271,6 +356,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         'storageAccountAllowSharedKeyAccess': storage_account_allow_shared_key_access,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
+
+    if workspace_kind:
+        parameters['workspaceKind'] = workspace_kind
+
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
     deployment_properties = {
@@ -417,7 +506,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     return response
 
 
-def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=None):
+def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, quota=None):
     """
     Update the default Azure Quantum workspace.
     """
@@ -426,17 +515,64 @@ def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=N
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 
-    if enable_key not in ["True", "true", "False", "false"]:
-        raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
+    if enable_key is None and not quota:
+        raise RequiredArgumentMissingError("Please provide --enable-api-key and/or --quota.")
+
+    if enable_key is not None and enable_key not in ["True", "true", "False", "false"]:
+        raise InvalidArgumentValueError("Please set --enable-api-key to be True/true or False/false.")
 
     ws = client.get(info.resource_group, info.name)
 
-    if (enable_key in ["True", "true"]):
+    if quota:
+        _require_v2_workspace(ws.properties.workspace_kind)
+        _apply_target_quotas(ws.properties.providers, quota, preserve_existing=True)
+
+    if enable_key in ["True", "true"]:
         ws.properties.api_key_enabled = True
-    elif (enable_key in ["False", "false"]):
+    elif enable_key in ["False", "false"]:
         ws.properties.api_key_enabled = False
     lropoller = client.begin_create_or_update(info.resource_group, info.name, ws)
     if lropoller:
         ws = lropoller.result()
         info.save(cmd, ws.properties.endpoint_uri)
     return ws
+
+
+def _get_workspace_resource_id(info):
+    return (f"/subscriptions/{info.subscription}"
+            f"/resourceGroups/{info.resource_group}"
+            f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
+
+
+def _validate_assignee_args(assignee, assignee_object_id):
+    if not assignee and not assignee_object_id:
+        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
+    if assignee and assignee_object_id:
+        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+
+
+def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+    """
+    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import create_role_assignment
+
+    _validate_assignee_args(assignee, assignee_object_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
+    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
+                                  assignee_principal_type=assignee_principal_type)
+
+
+def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+    """
+    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import delete_role_assignments
+
+    _validate_assignee_args(assignee, assignee_object_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
+    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
