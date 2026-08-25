@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredAr
 from knack.log import get_logger
 
 from ._client_factory import handle_raw_exception
-from ._models import AzureFileProperties, NfsAzureFileProperties, ManagedEnvironmentStorageProperties
+from ._models import ManagedEnvironmentStorageProperties
 from ._constants import AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE
 logger = get_logger(__name__)
 
@@ -29,9 +29,6 @@ class ContainerappEnvStorageDecorator(BaseResource):
         self.azure_file_account_name = self.get_argument_azure_file_account_name()
         self.azure_file_share_name = self.get_argument_azure_file_share_name()
         self.azure_file_account_key = self.get_argument_azure_file_account_key()
-        self.azure_file_key_vault_secret_url = self.get_argument_azure_file_key_vault_secret_url()
-        self.azure_file_key_vault_identity = self.get_argument_azure_file_key_vault_identity()
-        self.azure_file_identity = self.get_argument_azure_file_identity()
         self.server = self.get_argument_server()
         self.access_mode = self.get_argument_access_mode()
 
@@ -74,46 +71,52 @@ class ContainerappEnvStorageDecorator(BaseResource):
     def construct_payload(self):
         storage_type = (self.storage_type or AZURE_FILE_STORAGE_TYPE).lower()
         if storage_type == AZURE_FILE_STORAGE_TYPE.lower():
-            storage_def = deepcopy(AzureFileProperties)
-            storage_def["accountName"] = self.azure_file_account_name
-            storage_def["shareName"] = self.azure_file_share_name
-            storage_def["accessMode"] = self.access_mode
+            key_vault_secret_url = self.get_argument_azure_file_key_vault_secret_url()
+            key_vault_identity = self.get_argument_azure_file_key_vault_identity()
+            azure_file_identity = self.get_argument_azure_file_identity()
+            storage_def = {
+                "accountName": self.azure_file_account_name,
+                "shareName": self.azure_file_share_name,
+                "accessMode": self.access_mode
+            }
 
             if self.azure_file_account_key:
                 storage_def["accountKey"] = self.azure_file_account_key
-            elif self.azure_file_key_vault_secret_url:
+            elif key_vault_secret_url:
                 storage_def["accountKeyVaultProperties"] = {
-                    "keyVaultUrl": self.azure_file_key_vault_secret_url,
-                    "identity": self._normalize_identity(self.azure_file_key_vault_identity or "system")
+                    "keyVaultUrl": key_vault_secret_url,
+                    "identity": self._normalize_identity(key_vault_identity or "system")
                 }
-            elif self.azure_file_identity:
-                storage_def["identity"] = self._normalize_identity(self.azure_file_identity)
+            elif azure_file_identity:
+                storage_def["identity"] = self._normalize_identity(azure_file_identity)
 
-            storage_def = {key: value for key, value in storage_def.items() if value is not None}
             self.managed_environment_storage_def["properties"] = {"azureFile": storage_def}
         elif storage_type == NFS_AZURE_FILE_STORAGE_TYPE.lower():
-            storage_def = deepcopy(NfsAzureFileProperties)
-            storage_def["server"] = self.server
-            storage_def["shareName"] = self.azure_file_share_name
-            storage_def["accessMode"] = self.access_mode
-            storage_def = {key: value for key, value in storage_def.items() if value is not None}
+            storage_def = {
+                "server": self.server,
+                "shareName": self.azure_file_share_name,
+                "accessMode": self.access_mode
+            }
             self.managed_environment_storage_def["properties"] = {"nfsAzureFile": storage_def}
 
     def validate_arguments(self):
         storage_type = (self.storage_type or AZURE_FILE_STORAGE_TYPE).lower()
+        key_vault_secret_url = self.get_argument_azure_file_key_vault_secret_url()
+        key_vault_identity = self.get_argument_azure_file_key_vault_identity()
+        azure_file_identity = self.get_argument_azure_file_identity()
         if storage_type == AZURE_FILE_STORAGE_TYPE.lower():
             if not self.azure_file_share_name or not self.azure_file_account_name or not self.access_mode:
                 raise RequiredArgumentMissingError(
                     "--azure-file-share-name/--file-share/-f, --azure-file-account-name/--account-name/-a, and --access-mode must be provided for AzureFile storage type")
 
-            if self.azure_file_key_vault_identity and not self.azure_file_key_vault_secret_url:
+            if key_vault_identity and not key_vault_secret_url:
                 raise RequiredArgumentMissingError(
                     "--azure-file-key-vault-secret-url must be provided with --azure-file-key-vault-identity")
 
             auth_modes = [
                 self.azure_file_account_key,
-                self.azure_file_key_vault_secret_url,
-                self.azure_file_identity
+                key_vault_secret_url,
+                azure_file_identity
             ]
             auth_mode_count = sum(bool(auth_mode) for auth_mode in auth_modes)
             if auth_mode_count == 0:
@@ -131,9 +134,9 @@ class ContainerappEnvStorageDecorator(BaseResource):
             if any([
                     self.azure_file_account_name,
                     self.azure_file_account_key,
-                    self.azure_file_key_vault_secret_url,
-                    self.azure_file_key_vault_identity,
-                    self.azure_file_identity]):
+                    key_vault_secret_url,
+                    key_vault_identity,
+                    azure_file_identity]):
                 raise MutuallyExclusiveArgumentError(
                     "AzureFile authentication arguments cannot be used with NfsAzureFile storage type")
             if not self.server or not self.access_mode or not self.azure_file_share_name:

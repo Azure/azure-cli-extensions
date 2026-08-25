@@ -9,6 +9,7 @@ from unittest import mock
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError
 
 from azext_containerapp._clients import StoragePreviewClient
+from azext_containerapp._models import AzureFileProperties
 from azext_containerapp._params import load_arguments
 from azext_containerapp.containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 
@@ -155,8 +156,8 @@ class TestContainerappEnvStorageDecorator(unittest.TestCase):
         }, decorator.managed_environment_storage_def["properties"]["nfsAzureFile"])
 
     def test_payloads_do_not_share_authentication_state(self):
-        self._construct_azure_file(azure_file_account_key="account-key")
-        azure_file = self._construct_azure_file(azure_file_identity="system")
+        with mock.patch.dict(AzureFileProperties, {"accountKey": "connected-environment-key"}):
+            azure_file = self._construct_azure_file(azure_file_identity="system")
 
         self.assertNotIn("accountKey", azure_file)
         self.assertEqual("system", azure_file["identity"])
@@ -199,14 +200,16 @@ class TestContainerappEnvStorageArguments(unittest.TestCase):
         load_arguments(loader, None)
         storage_arguments = loader.arguments["containerapp env storage"]
         expected_options = {
-            "azure_file_key_vault_secret_url": "--azure-file-key-vault-secret-url",
-            "azure_file_key_vault_identity": "--azure-file-key-vault-identity",
-            "azure_file_identity": "--azure-file-identity",
+            "azure_file_key_vault_secret_url": [
+                "--azure-file-key-vault-secret-url", "--key-vault-secret-url"],
+            "azure_file_key_vault_identity": [
+                "--azure-file-key-vault-identity", "--key-vault-identity"],
+            "azure_file_identity": ["--azure-file-identity"],
         }
 
-        for argument, option in expected_options.items():
+        for argument, options in expected_options.items():
             with self.subTest(argument=argument):
-                self.assertEqual([option], storage_arguments[argument]["options_list"])
+                self.assertEqual(options, storage_arguments[argument]["options_list"])
                 self.assertTrue(storage_arguments[argument]["is_preview"])
 
 
