@@ -527,6 +527,20 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
         self.assertEqual(get_object_stubs.call_count, 2)
         sleep.assert_called_once_with(3.0)
 
+    def test_list_users_clamps_retry_after(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One"}]
+        response = SimpleNamespace(status_code=429, headers={"Retry-After": "3600"})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", response), stubs]), \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        sleep.assert_called_once_with(60)
+
     def test_list_users_uses_exponential_backoff_without_retry_after(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         assignments = [{"principalId": "u", "principalType": "User"}]

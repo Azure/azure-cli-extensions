@@ -573,9 +573,9 @@ def _resolve_directory_objects(cmd, principal_ids):
                 raise error_type(str(ex)) from ex
             last_error = ex
             if attempt < MAX_RETRIES_USER_LOOKUP - 1:
-                retry_after = getattr(response, "headers", {}).get("Retry-After") if response else None
+                retry_after = (getattr(response, "headers", None) or {}).get("Retry-After") if response else None
                 try:
-                    retry_delay = float(retry_after) if retry_after is not None else 2 ** attempt
+                    retry_delay = min(float(retry_after), 60) if retry_after is not None else 2 ** attempt
                 except ValueError:
                     retry_delay = 2 ** attempt
                 time.sleep(retry_delay)
