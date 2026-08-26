@@ -6,9 +6,10 @@ Release History
 10.0.0b2
 ++++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).
-* [Breaking Change] Command `bootstrapinterface list` will be will have parameter `bootstrap_device` added, and required parameter `network_bootstrap_device_name` removed.
-* [Breaking Change] Command `bootstrapinterface show` will be will have parameter `bootstrap_device` added, and required parameter `network_bootstrap_device_name` removed.
-* [Breaking Change] Command `bootstrapinterface wait` will be will have parameter `bootstrap_device` added, and required parameter `network_bootstrap_device_name` removed.
+* [Breaking Change] The listed command groups will be updated such that required parameter `--bootstrap-device` will replace `--network-bootstrap-device-name`:
+*  - `bootstrapinterface list`
+*  - `bootstrapinterface show`
+*  - `bootstrapinterface show`
 
 10.0.0b1
 ++++++++
@@ -54,8 +55,8 @@ Release History
 ++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2025-07-15-stable CLI (9.0.x).
 * [Breaking Change] Command group `fabric identity` will be removed as current az-cli-core does not support GET-PATCH. This includes the `assign`, `remove`, `show` sub-commands.
-* [Breaking Change] Parameter `route-prefix-limit` will be removed from `l3domain create` and `l3domain update` commands.
-* [Breaking Change] Parameter `version` on `device upgrade` command will become required.
+* [Breaking Change] Parameter `--route-prefix-limit` will be removed from `l3domain create` and `l3domain update` commands.
+* [Breaking Change] Parameter `--version` on `device upgrade` command will become required.
 
 8.0.0
 ++++++
@@ -70,11 +71,11 @@ Release History
 8.0.0b6
 ++++++
 * Enables the `device refresh-configuration` command that was previously disabled/removed.
-* Renames the `network-device-name` parameter on `device refresh-configuration` and `device reboot` operations to `resource-name` for better overall consistency.
+* Renames the `--network-device-name` parameter on `device refresh-configuration` and `device reboot` operations to `--resource-name` for better overall consistency.
 
 8.0.0b5
 ++++++
-* Fixes `taprule create` command as the API cannot support float values for `polling-interval-in-seconds` option, i.e. - `30.0`.
+* Fixes `taprule create` command as the API cannot support float values for `--polling-interval-in-seconds` option, i.e. - `30.0`.
 * Fixes the response object model for validate-configuration operations that cause response of the operation to not show any output.
 * az core cli updated to version 2.70, aaz_dev updated to version 4.2.0, and azdev to version 0.2.4.
 

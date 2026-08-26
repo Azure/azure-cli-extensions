@@ -9,25 +9,25 @@ from azure.cli.core.breaking_change import (
 
 register_argument_deprecate(
     "networkfabric bootstrapinterface list",
-    "network_bootstrap_device_name",
+    "--network-bootstrap-device-name",
     target_version="10.0.x",
 )
 register_argument_deprecate(
     "networkfabric bootstrapinterface show",
-    "network_bootstrap_device_name",
+    "--network-bootstrap-device-name",
     target_version="10.0.x",
 )
 register_argument_deprecate(
     "networkfabric bootstrapinterface wait",
-    "network_bootstrap_device_name",
+    "--network-bootstrap-device-name",
     target_version="10.0.x",
 )
 register_required_flag_breaking_change(
-    "networkfabric bootstrapinterface list", "bootstrap_device", target_version="10.0.x"
+    "networkfabric bootstrapinterface list", "--bootstrap-device", target_version="10.0.x"
 )
 register_required_flag_breaking_change(
-    "networkfabric bootstrapinterface show", "bootstrap_device", target_version="10.0.x"
+    "networkfabric bootstrapinterface show", "--bootstrap-device", target_version="10.0.x"
 )
 register_required_flag_breaking_change(
-    "networkfabric bootstrapinterface wait", "bootstrap_device", target_version="10.0.x"
+    "networkfabric bootstrapinterface wait", "--bootstrap-device", target_version="10.0.x"
 )
