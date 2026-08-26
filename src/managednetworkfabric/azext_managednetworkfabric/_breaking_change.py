@@ -23,11 +23,17 @@ register_argument_deprecate(
     target_version="10.0.x",
 )
 register_required_flag_breaking_change(
-    "networkfabric bootstrapinterface list", "--bootstrap-device", target_version="10.0.x"
+    "networkfabric bootstrapinterface list",
+    "--bootstrap-device",
+    target_version="10.0.x",
 )
 register_required_flag_breaking_change(
-    "networkfabric bootstrapinterface show", "--bootstrap-device", target_version="10.0.x"
+    "networkfabric bootstrapinterface show",
+    "--bootstrap-device",
+    target_version="10.0.x",
 )
 register_required_flag_breaking_change(
-    "networkfabric bootstrapinterface wait", "--bootstrap-device", target_version="10.0.x"
+    "networkfabric bootstrapinterface wait",
+    "--bootstrap-device",
+    target_version="10.0.x",
 )
