@@ -3181,6 +3181,74 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         # vm_size should remain unchanged for VMs pools
         self.assertEqual(dec_agentpool_3.vm_size, "Standard_D2s_v3")
 
+    def common_update_zones(self):
+        # No zones provided: preserve both the value and list instance from the fetched pool.
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"zones": None},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_zones(None)
+
+        existing_zones = ["1", "2"]
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            availability_zones=existing_zones
+        )
+        stored_zones = agentpool_1.availability_zones
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_zones(agentpool_1)
+        self.assertIs(dec_agentpool_1.availability_zones, stored_zones)
+
+        # The automatic-zone token is passed through as a one-element list.
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"zones": ["auto"]},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            availability_zones=None
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_zones(agentpool_2)
+        self.assertEqual(dec_agentpool_2.availability_zones, ["auto"])
+
+        payload = dec_agentpool_2.as_dict()
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.STANDALONE:
+            payload = payload["properties"]
+        self.assertEqual(payload["availabilityZones"], ["auto"])
+
+        # Explicit zone lists compose with a VM-size update on the same payload.
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "zones": ["1", "2", "3"],
+                "node_vm_size": "Standard_D4s_v3",
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            availability_zones=None,
+            vm_size="Standard_D2s_v3",
+        )
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_vm_size(agentpool_3)
+        dec_agentpool_3 = dec_3.update_zones(dec_agentpool_3)
+        self.assertEqual(dec_agentpool_3.availability_zones, ["1", "2", "3"])
+        self.assertEqual(dec_agentpool_3.vm_size, "Standard_D4s_v3")
+
+        payload = dec_agentpool_3.as_dict()
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.STANDALONE:
+            payload = payload["properties"]
+        self.assertEqual(payload["availabilityZones"], ["1", "2", "3"])
+        self.assertEqual(payload["vmSize"], "Standard_D4s_v3")
+
     def common_update_upgrade_strategy(self):
         # Test case 1: No upgrade strategy provided (should not change agentpool)
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
@@ -3524,6 +3592,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     def test_update_vm_size(self):
         self.common_update_vm_size()
 
+    def test_update_zones(self):
+        self.common_update_zones()
+
     def test_update_upgrade_strategy(self):
         self.common_update_upgrade_strategy()
 
@@ -3559,6 +3630,8 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
             "nodepool_name",
         ]
         self.assertEqual(positional_params, ground_truth_positional_params)
+        self.assertIn("zones", optional_params)
+        self.assertIsNone(optional_params["zones"])
 
         # prepare a dictionary of default parameters
         raw_param_dict = {
@@ -3622,6 +3695,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_vm_size(self):
         self.common_update_vm_size()
+
+    def test_update_zones(self):
+        self.common_update_zones()
 
     def test_update_upgrade_strategy(self):
         self.common_update_upgrade_strategy()
