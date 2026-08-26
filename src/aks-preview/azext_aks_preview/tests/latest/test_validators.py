@@ -2791,14 +2791,6 @@ class TestValidateSshKey(unittest.TestCase):
 
 
 class TestValidateOsSku(unittest.TestCase):
-    def test_windows2022_does_not_raise(self):
-        namespace = SimpleNamespace(os_sku="Windows2022")
-        validators.validate_os_sku(namespace)
-
-    def test_windows2025_does_not_raise(self):
-        namespace = SimpleNamespace(os_sku="Windows2025")
-        validators.validate_os_sku(namespace)
-
     def test_nodepool_update_allows_windows2022_and_windows2025(self):
         # `az aks nodepool update --os-sku` allows in-place upgrades between
         # Windows Server 2022 and 2025.
