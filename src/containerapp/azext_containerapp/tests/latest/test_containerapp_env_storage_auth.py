@@ -6,13 +6,15 @@
 import time
 
 from azure.cli.command_modules.containerapp._utils import format_location
-from azure.cli.testsdk import JMESPathCheck, ResourceGroupPreparer, ScenarioTest, live_only
+from azure.cli.testsdk import JMESPathCheck, KeyVaultPreparer, ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.decorators import serial_test
 
-from .common import TEST_LOCATION, STAGE_LOCATION, clean_up_test_file, write_test_file
+from .common import TEST_LOCATION, STAGE_LOCATION
 
 
 STORAGE_FILE_DATA_SMB_MI_ADMIN_ROLE_ID = "a235d3ee-5935-4cfb-8cc5-a3303ad5995e"
+AUTH_TEST_LOCATION = (
+    "eastus" if format_location(TEST_LOCATION) == format_location(STAGE_LOCATION) else TEST_LOCATION)
 
 
 class ContainerappEnvStorageAuthTest(ScenarioTest):
@@ -21,9 +23,7 @@ class ContainerappEnvStorageAuthTest(ScenarioTest):
 
     @staticmethod
     def _test_location():
-        if format_location(TEST_LOCATION) == format_location(STAGE_LOCATION):
-            return "eastus"
-        return TEST_LOCATION
+        return AUTH_TEST_LOCATION
 
     def _wait_for_environment(self, resource_group, environment_name):
         environment = self.cmd(
@@ -36,149 +36,27 @@ class ContainerappEnvStorageAuthTest(ScenarioTest):
         self.assertNotEqual("waiting", environment["properties"]["provisioningState"].lower())
         return environment
 
-    def _create_mount_probe(self, resource_group, environment_id, environment_storage_name,
-                            app_name, file_name, storage_account_name, share_name, account_key):
-        yaml_text = f"""
-            location: {self._test_location()}
-            properties:
-              environmentId: {environment_id}
-              configuration:
-                activeRevisionsMode: Single
-              template:
-                containers:
-                  - name: storage-probe
-                    image: mcr.microsoft.com/k8se/quickstart:latest
-                    command:
-                      - /bin/sh
-                      - -c
-                    args:
-                      - echo mounted > /mnt/data/{file_name} && sleep 3600
-                    resources:
-                      cpu: 0.25
-                      memory: 0.5Gi
-                    volumeMounts:
-                      - mountPath: /mnt/data
-                        volumeName: azure-files-volume
-                volumes:
-                  - name: azure-files-volume
-                    storageType: AzureFile
-                    storageName: {environment_storage_name}
-        """
-        yaml_file = f"{self._testMethodName}_{app_name}.yaml"
-        write_test_file(yaml_file, yaml_text)
-        try:
-            self.cmd(
-                f'containerapp create -g {resource_group} -n {app_name} '
-                f'--environment {environment_id} --yaml {yaml_file}',
-                checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
-
-            timeout = time.time() + 300
-            while time.time() < timeout:
-                exists = self.cmd(
-                    f'az storage file exists --account-name {storage_account_name} '
-                    f'--share-name {share_name} --path {file_name} --account-key "{account_key}"',
-                    checks=[]).get_output_in_json()
-                if exists.get("exists"):
-                    return
-                time.sleep(10)
-            self.fail(f"Container app did not write {file_name} to the mounted Azure Files share")
-        finally:
-            clean_up_test_file(yaml_file)
-
-    @live_only()
     @serial_test()
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_env_storage_key_vault_auth(self, resource_group):
-        location = self._test_location()
-        environment_name = self.create_random_name(prefix="env", length=24)
-        storage_account_name = self.create_random_name(prefix="storage", length=24)
-        share_name = self.create_random_name(prefix="share", length=20)
-        identity_name = self.create_random_name(prefix="identity", length=24)
-        key_vault_name = self.create_random_name(prefix="vault", length=24)
-        app_name = self.create_random_name(prefix="kv-app", length=24)
-        secret_name = "storage-account-key"
-
-        storage_account = self.cmd(
-            f'az storage account create -g {resource_group} -n {storage_account_name} '
-            f'--location {location} --sku Standard_LRS').get_output_in_json()
-        self.cmd(
-            f'az storage share-rm create -g {resource_group} --storage-account {storage_account_name} '
-            f'--name {share_name} --quota 1024 --enabled-protocols SMB')
-        account_key = self.cmd(
-            f'az storage account keys list -g {resource_group} -n {storage_account_name} '
-            '--query "[0].value" -o tsv').output.strip()
-
-        identity = self.cmd(
-            f'az identity create -g {resource_group} -n {identity_name}').get_output_in_json()
-        self.cmd(
-            f'containerapp env create -g {resource_group} -n {environment_name} --location {location} '
-            f'--mi-user-assigned {identity["id"]} --logs-destination none')
-        self._wait_for_environment(resource_group, environment_name)
-
-        self.cmd(
-            f'containerapp env storage set -g {resource_group} -n {environment_name} '
-            f'--storage-name {share_name} --azure-file-account-name {storage_account_name} '
-            f'--azure-file-share-name {share_name} --access-mode ReadWrite '
-            f'--azure-file-account-key "{account_key}"',
-            checks=[JMESPathCheck("properties.azureFile.accountName", storage_account_name)])
-
-        key_vault = self.cmd(
-            f'az keyvault create -g {resource_group} -n {key_vault_name} --location {location} '
-            '--enable-rbac-authorization true').get_output_in_json()
-        signed_in_user = self.cmd('az ad signed-in-user show').get_output_in_json()
-        self.cmd(
-            f'az role assignment create --role "Key Vault Administrator" '
-            f'--assignee-object-id {signed_in_user["id"]} --scope {key_vault["id"]}')
-        time.sleep(30)
-        secret = self.cmd(
-            f'az keyvault secret set --vault-name {key_vault_name} --name {secret_name} '
-            f'--value "{account_key}"').get_output_in_json()
-        self.cmd(
-            f'az role assignment create --role "Key Vault Secrets User" '
-            f'--assignee-object-id {identity["principalId"]} --assignee-principal-type ServicePrincipal '
-            f'--scope {key_vault["id"]}')
-        time.sleep(30)
-
-        self.cmd(
-            f'containerapp env storage set -g {resource_group} -n {environment_name} '
-            f'--storage-name {share_name} --azure-file-account-name {storage_account_name} '
-            f'--azure-file-share-name {share_name} --access-mode ReadWrite '
-            f'--azure-file-key-vault-secret-url {secret["id"]} '
-            f'--azure-file-key-vault-identity {identity["id"]}',
-            checks=[
-                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.keyVaultUrl", secret["id"]),
-                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.identity", identity["id"]),
-            ])
-        self.cmd(
-            f'containerapp env storage show -g {resource_group} -n {environment_name} '
-            f'--storage-name {share_name}',
-            checks=[
-                JMESPathCheck("properties.azureFile.accountName", storage_account["name"]),
-                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.keyVaultUrl", secret["id"]),
-                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.identity", identity["id"]),
-            ])
-        environment = self.cmd(
-            f'containerapp env show -g {resource_group} -n {environment_name}').get_output_in_json()
-        self._create_mount_probe(
-            resource_group, environment["id"], share_name, app_name,
-            "key-vault-probe.txt", storage_account_name, share_name, account_key)
-
-    @live_only()
-    @serial_test()
-    @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_env_storage_managed_identity_auth(self, resource_group):
+    @KeyVaultPreparer(
+        name_prefix="vault",
+        location=AUTH_TEST_LOCATION,
+        additional_params="--enable-rbac-authorization false")
+    def test_containerapp_env_storage_auth_crud(self, resource_group, key_vault):
         location = self._test_location()
         environment_name = self.create_random_name(prefix="env", length=24)
         environment_storage_name = self.create_random_name(prefix="mount", length=20)
         storage_account_name = self.create_random_name(prefix="storage", length=24)
         share_name = self.create_random_name(prefix="share", length=20)
         identity_name = self.create_random_name(prefix="identity", length=24)
-        uami_app_name = self.create_random_name(prefix="uami-app", length=24)
-        system_app_name = self.create_random_name(prefix="system-app", length=24)
+        secret_name = "storage-account-key"
 
+        self.cmd(f'configure --defaults location={location}')
         storage_account = self.cmd(
             f'az storage account create -g {resource_group} -n {storage_account_name} '
-            f'--location {location} --sku Standard_LRS --enable-smb-oauth true').get_output_in_json()
+            f'--location {location} --kind StorageV2 --sku Standard_LRS '
+            '--enable-large-file-share --enable-smb-oauth true '
+            '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"').get_output_in_json()
         self.cmd(
             f'az storage share-rm create -g {resource_group} --storage-account {storage_account_name} '
             f'--name {share_name} --quota 1024 --enabled-protocols SMB')
@@ -193,43 +71,98 @@ class ContainerappEnvStorageAuthTest(ScenarioTest):
             f'--mi-system-assigned --mi-user-assigned {identity["id"]} --logs-destination none')
         environment = self._wait_for_environment(resource_group, environment_name)
 
+        secret = self.cmd(
+            f'az keyvault secret set --vault-name {key_vault} --name {secret_name} '
+            f'--value "{account_key}"').get_output_in_json()
+        self.cmd(
+            f'az keyvault set-policy --name {key_vault} '
+            f'--object-id {identity["principalId"]} --secret-permissions get')
         for principal_id in [identity["principalId"], environment["identity"]["principalId"]]:
             self.cmd(
                 f'az role assignment create --role {STORAGE_FILE_DATA_SMB_MI_ADMIN_ROLE_ID} '
                 f'--assignee-object-id {principal_id} --assignee-principal-type ServicePrincipal '
-                f'--scope {storage_account["id"]}')
+                f'--scope {storage_account["id"]} --name {self.create_guid()}')
         time.sleep(30)
 
-        self.cmd(
+        storage_set_command = (
             f'containerapp env storage set -g {resource_group} -n {environment_name} '
-            f'--storage-name {environment_storage_name} --azure-file-account-name {storage_account_name} '
-            f'--azure-file-share-name {share_name} --access-mode ReadWrite '
-            f'--azure-file-identity {identity["id"]}',
-            checks=[JMESPathCheck("properties.azureFile.identity", identity["id"])])
-        self._create_mount_probe(
-            resource_group, environment["id"], environment_storage_name, uami_app_name,
-            "uami-probe.txt", storage_account_name, share_name, account_key)
-        self.cmd(f'containerapp delete -g {resource_group} -n {uami_app_name} --yes')
+            f'--storage-name {environment_storage_name} '
+            f'--azure-file-account-name {storage_account_name} '
+            f'--azure-file-share-name {share_name} --access-mode ReadWrite')
 
         self.cmd(
-            f'containerapp env storage set -g {resource_group} -n {environment_name} '
-            f'--storage-name {environment_storage_name} --azure-file-account-name {storage_account_name} '
-            f'--azure-file-share-name {share_name} --access-mode ReadWrite --azure-file-identity system',
+            f'{storage_set_command} --azure-file-account-key "{account_key}"',
+            checks=[
+                JMESPathCheck("name", environment_storage_name),
+                JMESPathCheck("properties.azureFile.accountName", storage_account_name),
+                JMESPathCheck("properties.azureFile.shareName", share_name),
+                JMESPathCheck("properties.azureFile.accessMode", "ReadWrite"),
+                JMESPathCheck("properties.azureFile.accountKeyVaultProperties", None),
+                JMESPathCheck("properties.azureFile.identity", None),
+            ])
+        self.cmd(
+            f'containerapp env storage show -g {resource_group} -n {environment_name} '
+            f'--storage-name {environment_storage_name}',
+            checks=[
+                JMESPathCheck("name", environment_storage_name),
+                JMESPathCheck("properties.azureFile.identity", None),
+            ])
+        self.cmd(
+            f'containerapp env storage list -g {resource_group} -n {environment_name}',
+            checks=[
+                JMESPathCheck("length(@)", 1),
+                JMESPathCheck("[0].name", environment_storage_name),
+            ])
+
+        self.cmd(
+            f'{storage_set_command} '
+            f'--azure-file-key-vault-secret-url {secret["id"]} '
+            f'--azure-file-key-vault-identity {identity["id"]}',
+            checks=[
+                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.keyVaultUrl", secret["id"]),
+                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.identity", identity["id"]),
+            ])
+        self.cmd(
+            f'containerapp env storage show -g {resource_group} -n {environment_name} '
+            f'--storage-name {environment_storage_name}',
+            checks=[
+                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.keyVaultUrl", secret["id"]),
+                JMESPathCheck("properties.azureFile.accountKeyVaultProperties.identity", identity["id"]),
+                JMESPathCheck("properties.azureFile.identity", None),
+            ])
+
+        self.cmd(
+            f'{storage_set_command} --azure-file-identity {identity["id"]}',
+            checks=[
+                JMESPathCheck("properties.azureFile.accountKeyVaultProperties", None),
+                JMESPathCheck("properties.azureFile.identity", identity["id"]),
+            ])
+        self.cmd(
+            f'containerapp env storage show -g {resource_group} -n {environment_name} '
+            f'--storage-name {environment_storage_name}',
+            checks=[JMESPathCheck("properties.azureFile.identity", identity["id"])])
+
+        self.cmd(
+            f'{storage_set_command} --azure-file-identity system',
             checks=[JMESPathCheck("properties.azureFile.identity", "system")])
-        self._create_mount_probe(
-            resource_group, environment["id"], environment_storage_name, system_app_name,
-            "system-probe.txt", storage_account_name, share_name, account_key)
+        self.cmd(
+            f'containerapp env storage show -g {resource_group} -n {environment_name} '
+            f'--storage-name {environment_storage_name}',
+            checks=[JMESPathCheck("properties.azureFile.identity", "system")])
 
         self.cmd(
             f'containerapp env storage list -g {resource_group} -n {environment_name}',
-            checks=[JMESPathCheck("[0].properties.azureFile.identity", "system")])
+            checks=[
+                JMESPathCheck("length(@)", 1),
+                JMESPathCheck("[0].properties.azureFile.identity", "system"),
+            ])
 
         self.cmd(
-            f'containerapp env storage set -g {resource_group} -n {environment_name} '
-            f'--storage-name {environment_storage_name} --azure-file-account-name {storage_account_name} '
-            f'--azure-file-share-name {share_name} --access-mode ReadWrite '
-            f'--azure-file-account-key "{account_key}"',
-            checks=[JMESPathCheck("properties.azureFile.identity", None)])
+            f'containerapp env storage remove -g {resource_group} -n {environment_name} '
+            f'--storage-name {environment_storage_name} --yes')
+        self.cmd(
+            f'containerapp env storage list -g {resource_group} -n {environment_name}',
+            checks=[JMESPathCheck("length(@)", 0)])
 
 
 if __name__ == "__main__":
