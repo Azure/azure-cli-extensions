@@ -6,10 +6,18 @@ Release History
 10.0.0b2
 ++++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).
-* [Breaking Change] The listed command groups will be updated such that required parameter `--bootstrap-device` will replace `--network-bootstrap-device-name`:
-*  - `bootstrapinterface list`
-*  - `bootstrapinterface show`
-*  - `bootstrapinterface show`
+* [Breaking Change] The following commands will be renamed:
+*  - `device refresh-configuration` to `device refresh-config`.
+*  - `fabric commit-configuration` to `fabric commit-config`.
+*  - `fabric validate-configuration` to `fabric validate-config`.
+*  - `fabric view-device-configuration` to `fabric view-device-config`.
+* [Breaking Change] The `--network-bootstrap-device-name` alias will be removed from the following commands; use `--bootstrap-device` instead:
+*  - `bootstrapinterface list`.
+*  - `bootstrapinterface show`.
+*  - `bootstrapinterface wait`.
+* [Breaking Change] The `--network-device-name` alias will be removed from the following commands; use `--resource-name` instead:
+*  - `device reboot`.
+*  - `device refresh-config`.
 
 10.0.0b1
 ++++++++
