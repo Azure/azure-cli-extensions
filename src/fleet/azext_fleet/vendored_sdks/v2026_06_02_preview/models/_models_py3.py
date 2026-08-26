@@ -1222,14 +1222,14 @@ class FleetManagedNamespacePropertiesPatch(_serialization.Model):
      "Delete".
     :vartype delete_policy: str or ~azure.mgmt.containerservicefleet.models.DeletePolicy
     :ivar propagation_policy: The profile of the propagation to create the namespace.
-    :vartype propagation_policy: ~azure.mgmt.containerservicefleet.models.PropagationPolicy
+    :vartype propagation_policy: ~azure.mgmt.containerservicefleet.models.PropagationPolicyPatch
     """
 
     _attribute_map = {
         "managed_namespace_properties": {"key": "managedNamespaceProperties", "type": "ManagedNamespaceProperties"},
         "adoption_policy": {"key": "adoptionPolicy", "type": "str"},
         "delete_policy": {"key": "deletePolicy", "type": "str"},
-        "propagation_policy": {"key": "propagationPolicy", "type": "PropagationPolicy"},
+        "propagation_policy": {"key": "propagationPolicy", "type": "PropagationPolicyPatch"},
     }
 
     def __init__(
@@ -1238,7 +1238,7 @@ class FleetManagedNamespacePropertiesPatch(_serialization.Model):
         managed_namespace_properties: Optional["_models.ManagedNamespaceProperties"] = None,
         adoption_policy: Optional[Union[str, "_models.AdoptionPolicy"]] = None,
         delete_policy: Optional[Union[str, "_models.DeletePolicy"]] = None,
-        propagation_policy: Optional["_models.PropagationPolicy"] = None,
+        propagation_policy: Optional["_models.PropagationPolicyPatch"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1253,7 +1253,7 @@ class FleetManagedNamespacePropertiesPatch(_serialization.Model):
          and "Delete".
         :paramtype delete_policy: str or ~azure.mgmt.containerservicefleet.models.DeletePolicy
         :keyword propagation_policy: The profile of the propagation to create the namespace.
-        :paramtype propagation_policy: ~azure.mgmt.containerservicefleet.models.PropagationPolicy
+        :paramtype propagation_policy: ~azure.mgmt.containerservicefleet.models.PropagationPolicyPatch
         """
         super().__init__(**kwargs)
         self.managed_namespace_properties = managed_namespace_properties
@@ -2299,6 +2299,44 @@ class MetaV1LabelSelector(_serialization.Model):
         self.match_expressions = match_expressions
 
 
+class MetaV1LabelSelectorPatch(_serialization.Model):
+    """The label selector settings that can be patched.
+
+    :ivar match_labels: matchLabels is a map of {key,value} pairs. A single {key,value} in the
+     matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the
+     operator is "In", and the values array contains only "value". The requirements are ANDed.
+    :vartype match_labels: dict[str, str]
+    :ivar match_expressions: The label selector requirements that can be patched.
+    :vartype match_expressions:
+     list[~azure.mgmt.containerservicefleet.models.MetaV1LabelSelectorRequirementPatch]
+    """
+
+    _attribute_map = {
+        "match_labels": {"key": "matchLabels", "type": "{str}"},
+        "match_expressions": {"key": "matchExpressions", "type": "[MetaV1LabelSelectorRequirementPatch]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        match_labels: Optional[dict[str, str]] = None,
+        match_expressions: Optional[list["_models.MetaV1LabelSelectorRequirementPatch"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword match_labels: matchLabels is a map of {key,value} pairs. A single {key,value} in the
+         matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the
+         operator is "In", and the values array contains only "value". The requirements are ANDed.
+        :paramtype match_labels: dict[str, str]
+        :keyword match_expressions: The label selector requirements that can be patched.
+        :paramtype match_expressions:
+         list[~azure.mgmt.containerservicefleet.models.MetaV1LabelSelectorRequirementPatch]
+        """
+        super().__init__(**kwargs)
+        self.match_labels = match_labels
+        self.match_expressions = match_expressions
+
+
 class MetaV1LabelSelectorRequirement(_serialization.Model):
     """A label selector requirement is a selector that contains values, a key, and an operator that
     relates the key and values.
@@ -2342,6 +2380,53 @@ class MetaV1LabelSelectorRequirement(_serialization.Model):
         :keyword operator: operator represents a key's relationship to a set of values. Valid operators
          are In, NotIn, Exists and DoesNotExist. Required. Known values are: "In", "NotIn", "Exists",
          and "DoesNotExist".
+        :paramtype operator: str or ~azure.mgmt.containerservicefleet.models.LabelSelectorOperator
+        :keyword values: values is an array of string values. If the operator is In or NotIn, the
+         values array must be non-empty. If the operator is Exists or DoesNotExist, the values array
+         must be empty. This array is replaced during a strategic merge patch.
+        :paramtype values: list[str]
+        """
+        super().__init__(**kwargs)
+        self.key = key
+        self.operator = operator
+        self.values = values
+
+
+class MetaV1LabelSelectorRequirementPatch(_serialization.Model):
+    """A label selector requirement that can be patched.
+
+    :ivar key: key is the label key that the selector applies to.
+    :vartype key: str
+    :ivar operator: operator represents a key's relationship to a set of values. Valid operators
+     are In, NotIn, Exists and DoesNotExist. Known values are: "In", "NotIn", "Exists", and
+     "DoesNotExist".
+    :vartype operator: str or ~azure.mgmt.containerservicefleet.models.LabelSelectorOperator
+    :ivar values: values is an array of string values. If the operator is In or NotIn, the values
+     array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be
+     empty. This array is replaced during a strategic merge patch.
+    :vartype values: list[str]
+    """
+
+    _attribute_map = {
+        "key": {"key": "key", "type": "str"},
+        "operator": {"key": "operator", "type": "str"},
+        "values": {"key": "values", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        key: Optional[str] = None,
+        operator: Optional[Union[str, "_models.LabelSelectorOperator"]] = None,
+        values: Optional[list[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword key: key is the label key that the selector applies to.
+        :paramtype key: str
+        :keyword operator: operator represents a key's relationship to a set of values. Valid operators
+         are In, NotIn, Exists and DoesNotExist. Known values are: "In", "NotIn", "Exists", and
+         "DoesNotExist".
         :paramtype operator: str or ~azure.mgmt.containerservicefleet.models.LabelSelectorOperator
         :keyword values: values is an array of string values. If the operator is In or NotIn, the
          values array must be non-empty. If the operator is Exists or DoesNotExist, the values array
@@ -2643,6 +2728,38 @@ class PlacementProfile(_serialization.Model):
         self.default_cluster_resource_placement = default_cluster_resource_placement
 
 
+class PlacementProfilePatch(_serialization.Model):
+    """The placement profile settings that can be patched.
+
+    :ivar default_cluster_resource_placement: The default ClusterResourcePlacement policy
+     configuration that can be patched.
+    :vartype default_cluster_resource_placement:
+     ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterResourcePlacementSpecPatch
+    """
+
+    _attribute_map = {
+        "default_cluster_resource_placement": {
+            "key": "defaultClusterResourcePlacement",
+            "type": "PlacementV1ClusterResourcePlacementSpecPatch",
+        },
+    }
+
+    def __init__(
+        self,
+        *,
+        default_cluster_resource_placement: Optional["_models.PlacementV1ClusterResourcePlacementSpecPatch"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword default_cluster_resource_placement: The default ClusterResourcePlacement policy
+         configuration that can be patched.
+        :paramtype default_cluster_resource_placement:
+         ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterResourcePlacementSpecPatch
+        """
+        super().__init__(**kwargs)
+        self.default_cluster_resource_placement = default_cluster_resource_placement
+
+
 class PlacementV1Affinity(_serialization.Model):
     """Affinity is a group of cluster affinity scheduling rules. More to be added.
 
@@ -2663,6 +2780,30 @@ class PlacementV1Affinity(_serialization.Model):
          selected resources.
         :paramtype cluster_affinity:
          ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterAffinity
+        """
+        super().__init__(**kwargs)
+        self.cluster_affinity = cluster_affinity
+
+
+class PlacementV1AffinityPatch(_serialization.Model):
+    """The affinity settings that can be patched.
+
+    :ivar cluster_affinity: The cluster affinity settings that can be patched.
+    :vartype cluster_affinity:
+     ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterAffinityPatch
+    """
+
+    _attribute_map = {
+        "cluster_affinity": {"key": "clusterAffinity", "type": "PlacementV1ClusterAffinityPatch"},
+    }
+
+    def __init__(
+        self, *, cluster_affinity: Optional["_models.PlacementV1ClusterAffinityPatch"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword cluster_affinity: The cluster affinity settings that can be patched.
+        :paramtype cluster_affinity:
+         ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterAffinityPatch
         """
         super().__init__(**kwargs)
         self.cluster_affinity = cluster_affinity
@@ -2706,6 +2847,38 @@ class PlacementV1ClusterAffinity(_serialization.Model):
         self.required_during_scheduling_ignored_during_execution = required_during_scheduling_ignored_during_execution
 
 
+class PlacementV1ClusterAffinityPatch(_serialization.Model):
+    """The cluster affinity rules that can be patched.
+
+    :ivar required_during_scheduling_ignored_during_execution: The required cluster selector that
+     can be patched.
+    :vartype required_during_scheduling_ignored_during_execution:
+     ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterSelectorPatch
+    """
+
+    _attribute_map = {
+        "required_during_scheduling_ignored_during_execution": {
+            "key": "requiredDuringSchedulingIgnoredDuringExecution",
+            "type": "PlacementV1ClusterSelectorPatch",
+        },
+    }
+
+    def __init__(
+        self,
+        *,
+        required_during_scheduling_ignored_during_execution: Optional["_models.PlacementV1ClusterSelectorPatch"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword required_during_scheduling_ignored_during_execution: The required cluster selector
+         that can be patched.
+        :paramtype required_during_scheduling_ignored_during_execution:
+         ~azure.mgmt.containerservicefleet.models.PlacementV1ClusterSelectorPatch
+        """
+        super().__init__(**kwargs)
+        self.required_during_scheduling_ignored_during_execution = required_during_scheduling_ignored_during_execution
+
+
 class PlacementV1ClusterResourcePlacementSpec(_serialization.Model):
     """ClusterResourcePlacementSpec defines the desired state of ClusterResourcePlacement.
 
@@ -2742,27 +2915,93 @@ class PlacementV1ClusterResourcePlacementSpec(_serialization.Model):
         self.rollout_strategy = rollout_strategy
 
 
+class PlacementV1ClusterResourcePlacementSpecPatch(_serialization.Model):  # pylint: disable=name-too-long
+    """The ClusterResourcePlacement settings that can be patched.
+
+    :ivar policy: The placement policy that can be patched.
+    :vartype policy: ~azure.mgmt.containerservicefleet.models.PlacementV1PlacementPolicyPatch
+    :ivar rollout_strategy: The rollout strategy configuration that can be patched.
+    :vartype rollout_strategy: ~azure.mgmt.containerservicefleet.models.PlacementV1RolloutStrategy
+    """
+
+    _attribute_map = {
+        "policy": {"key": "policy", "type": "PlacementV1PlacementPolicyPatch"},
+        "rollout_strategy": {"key": "rolloutStrategy", "type": "PlacementV1RolloutStrategy"},
+    }
+
+    def __init__(
+        self,
+        *,
+        policy: Optional["_models.PlacementV1PlacementPolicyPatch"] = None,
+        rollout_strategy: Optional["_models.PlacementV1RolloutStrategy"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword policy: The placement policy that can be patched.
+        :paramtype policy: ~azure.mgmt.containerservicefleet.models.PlacementV1PlacementPolicyPatch
+        :keyword rollout_strategy: The rollout strategy configuration that can be patched.
+        :paramtype rollout_strategy:
+         ~azure.mgmt.containerservicefleet.models.PlacementV1RolloutStrategy
+        """
+        super().__init__(**kwargs)
+        self.policy = policy
+        self.rollout_strategy = rollout_strategy
+
+
 class PlacementV1ClusterSelector(_serialization.Model):
     """ClusterSelector.
 
+    All required parameters must be populated in order to send to server.
+
     :ivar cluster_selector_terms: ClusterSelectorTerms is a list of cluster selector terms. The
-     terms are ``ORed``.
+     terms are ``ORed``. Required.
     :vartype cluster_selector_terms:
      list[~azure.mgmt.containerservicefleet.models.PlacementV1ClusterSelectorTerm]
     """
+
+    _validation = {
+        "cluster_selector_terms": {"required": True},
+    }
 
     _attribute_map = {
         "cluster_selector_terms": {"key": "clusterSelectorTerms", "type": "[PlacementV1ClusterSelectorTerm]"},
     }
 
     def __init__(
-        self, *, cluster_selector_terms: Optional[list["_models.PlacementV1ClusterSelectorTerm"]] = None, **kwargs: Any
+        self, *, cluster_selector_terms: list["_models.PlacementV1ClusterSelectorTerm"], **kwargs: Any
     ) -> None:
         """
         :keyword cluster_selector_terms: ClusterSelectorTerms is a list of cluster selector terms. The
-         terms are ``ORed``.
+         terms are ``ORed``. Required.
         :paramtype cluster_selector_terms:
          list[~azure.mgmt.containerservicefleet.models.PlacementV1ClusterSelectorTerm]
+        """
+        super().__init__(**kwargs)
+        self.cluster_selector_terms = cluster_selector_terms
+
+
+class PlacementV1ClusterSelectorPatch(_serialization.Model):
+    """The cluster selector settings that can be patched.
+
+    :ivar cluster_selector_terms: The cluster selector terms that can be patched.
+    :vartype cluster_selector_terms:
+     list[~azure.mgmt.containerservicefleet.models.PlacementV1ClusterSelectorTermPatch]
+    """
+
+    _attribute_map = {
+        "cluster_selector_terms": {"key": "clusterSelectorTerms", "type": "[PlacementV1ClusterSelectorTermPatch]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        cluster_selector_terms: Optional[list["_models.PlacementV1ClusterSelectorTermPatch"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword cluster_selector_terms: The cluster selector terms that can be patched.
+        :paramtype cluster_selector_terms:
+         list[~azure.mgmt.containerservicefleet.models.PlacementV1ClusterSelectorTermPatch]
         """
         super().__init__(**kwargs)
         self.cluster_selector_terms = cluster_selector_terms
@@ -2810,6 +3049,40 @@ class PlacementV1ClusterSelectorTerm(_serialization.Model):
          property provider is enabled in the deployment.
         :paramtype property_selector:
          ~azure.mgmt.containerservicefleet.models.PlacementV1PropertySelector
+        """
+        super().__init__(**kwargs)
+        self.label_selector = label_selector
+        self.property_selector = property_selector
+
+
+class PlacementV1ClusterSelectorTermPatch(_serialization.Model):
+    """A cluster selector term that can be patched.
+
+    :ivar label_selector: The label selector that can be patched.
+    :vartype label_selector: ~azure.mgmt.containerservicefleet.models.MetaV1LabelSelectorPatch
+    :ivar property_selector: The property selector that can be patched.
+    :vartype property_selector:
+     ~azure.mgmt.containerservicefleet.models.PlacementV1PropertySelectorPatch
+    """
+
+    _attribute_map = {
+        "label_selector": {"key": "labelSelector", "type": "MetaV1LabelSelectorPatch"},
+        "property_selector": {"key": "propertySelector", "type": "PlacementV1PropertySelectorPatch"},
+    }
+
+    def __init__(
+        self,
+        *,
+        label_selector: Optional["_models.MetaV1LabelSelectorPatch"] = None,
+        property_selector: Optional["_models.PlacementV1PropertySelectorPatch"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword label_selector: The label selector that can be patched.
+        :paramtype label_selector: ~azure.mgmt.containerservicefleet.models.MetaV1LabelSelectorPatch
+        :keyword property_selector: The property selector that can be patched.
+        :paramtype property_selector:
+         ~azure.mgmt.containerservicefleet.models.PlacementV1PropertySelectorPatch
         """
         super().__init__(**kwargs)
         self.label_selector = label_selector
@@ -2896,6 +3169,54 @@ class PlacementV1PlacementPolicy(_serialization.Model):
         self.tolerations = tolerations
 
 
+class PlacementV1PlacementPolicyPatch(_serialization.Model):
+    """The placement policy settings that can be patched.
+
+    :ivar placement_type: The placement type that can be patched. Known values are: "PickAll" and
+     "PickFixed".
+    :vartype placement_type: str or ~azure.mgmt.containerservicefleet.models.PlacementType
+    :ivar cluster_names: The member cluster names that can be patched.
+    :vartype cluster_names: list[str]
+    :ivar affinity: The cluster affinity settings that can be patched.
+    :vartype affinity: ~azure.mgmt.containerservicefleet.models.PlacementV1AffinityPatch
+    :ivar tolerations: The tolerations that can be patched.
+    :vartype tolerations: list[~azure.mgmt.containerservicefleet.models.PlacementV1Toleration]
+    """
+
+    _attribute_map = {
+        "placement_type": {"key": "placementType", "type": "str"},
+        "cluster_names": {"key": "clusterNames", "type": "[str]"},
+        "affinity": {"key": "affinity", "type": "PlacementV1AffinityPatch"},
+        "tolerations": {"key": "tolerations", "type": "[PlacementV1Toleration]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        placement_type: Optional[Union[str, "_models.PlacementType"]] = None,
+        cluster_names: Optional[list[str]] = None,
+        affinity: Optional["_models.PlacementV1AffinityPatch"] = None,
+        tolerations: Optional[list["_models.PlacementV1Toleration"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword placement_type: The placement type that can be patched. Known values are: "PickAll"
+         and "PickFixed".
+        :paramtype placement_type: str or ~azure.mgmt.containerservicefleet.models.PlacementType
+        :keyword cluster_names: The member cluster names that can be patched.
+        :paramtype cluster_names: list[str]
+        :keyword affinity: The cluster affinity settings that can be patched.
+        :paramtype affinity: ~azure.mgmt.containerservicefleet.models.PlacementV1AffinityPatch
+        :keyword tolerations: The tolerations that can be patched.
+        :paramtype tolerations: list[~azure.mgmt.containerservicefleet.models.PlacementV1Toleration]
+        """
+        super().__init__(**kwargs)
+        self.placement_type = placement_type
+        self.cluster_names = cluster_names
+        self.affinity = affinity
+        self.tolerations = tolerations
+
+
 class PlacementV1PropertySelector(_serialization.Model):
     """PropertySelector helps user specify property requirements when picking clusters for resource
     placement.
@@ -2924,6 +3245,33 @@ class PlacementV1PropertySelector(_serialization.Model):
          requirements are AND'd. Required.
         :paramtype match_expressions:
          list[~azure.mgmt.containerservicefleet.models.PlacementV1PropertySelectorRequirement]
+        """
+        super().__init__(**kwargs)
+        self.match_expressions = match_expressions
+
+
+class PlacementV1PropertySelectorPatch(_serialization.Model):
+    """The property selector settings that can be patched.
+
+    :ivar match_expressions: The property selector requirements that can be patched.
+    :vartype match_expressions:
+     list[~azure.mgmt.containerservicefleet.models.PlacementV1PropertySelectorRequirementPatch]
+    """
+
+    _attribute_map = {
+        "match_expressions": {"key": "matchExpressions", "type": "[PlacementV1PropertySelectorRequirementPatch]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        match_expressions: Optional[list["_models.PlacementV1PropertySelectorRequirementPatch"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword match_expressions: The property selector requirements that can be patched.
+        :paramtype match_expressions:
+         list[~azure.mgmt.containerservicefleet.models.PlacementV1PropertySelectorRequirementPatch]
         """
         super().__init__(**kwargs)
         self.match_expressions = match_expressions
@@ -2979,6 +3327,47 @@ class PlacementV1PropertySelectorRequirement(_serialization.Model):
          https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity. If the operator is Gt
          (greater than), Ge (greater than or equal to), Lt (less than), or ``Le`` (less than or equal
          to), Eq (equal to), or Ne (ne), exactly one value must be specified in the list. Required.
+        :paramtype values: list[str]
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.operator = operator
+        self.values = values
+
+
+class PlacementV1PropertySelectorRequirementPatch(_serialization.Model):  # pylint: disable=name-too-long
+    """A property selector requirement that can be patched.
+
+    :ivar name: The property name that can be patched.
+    :vartype name: str
+    :ivar operator: The property selector operator that can be patched. Known values are: "Gt",
+     "Ge", "Eq", "Ne", "Lt", and "Le".
+    :vartype operator: str or ~azure.mgmt.containerservicefleet.models.PropertySelectorOperator
+    :ivar values: The property values that can be patched.
+    :vartype values: list[str]
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "operator": {"key": "operator", "type": "str"},
+        "values": {"key": "values", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        operator: Optional[Union[str, "_models.PropertySelectorOperator"]] = None,
+        values: Optional[list[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword name: The property name that can be patched.
+        :paramtype name: str
+        :keyword operator: The property selector operator that can be patched. Known values are: "Gt",
+         "Ge", "Eq", "Ne", "Lt", and "Le".
+        :paramtype operator: str or ~azure.mgmt.containerservicefleet.models.PropertySelectorOperator
+        :keyword values: The property values that can be patched.
         :paramtype values: list[str]
         """
         super().__init__(**kwargs)
@@ -3092,11 +3481,17 @@ class PlacementV1Toleration(_serialization.Model):
 class PropagationPolicy(_serialization.Model):
     """The propagation to be used for provisioning the namespace among the fleet.
 
-    :ivar type: The type of the policy to be used. Default is Placement. "Placement"
+    All required parameters must be populated in order to send to server.
+
+    :ivar type: The type of the policy to be used. Default is Placement. Required. "Placement"
     :vartype type: str or ~azure.mgmt.containerservicefleet.models.PropagationType
     :ivar placement_profile: The profile to be used for propagation via placement.
     :vartype placement_profile: ~azure.mgmt.containerservicefleet.models.PlacementProfile
     """
+
+    _validation = {
+        "type": {"required": True},
+    }
 
     _attribute_map = {
         "type": {"key": "type", "type": "str"},
@@ -3106,15 +3501,47 @@ class PropagationPolicy(_serialization.Model):
     def __init__(
         self,
         *,
-        type: Optional[Union[str, "_models.PropagationType"]] = None,
+        type: Union[str, "_models.PropagationType"],
         placement_profile: Optional["_models.PlacementProfile"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword type: The type of the policy to be used. Default is Placement. "Placement"
+        :keyword type: The type of the policy to be used. Default is Placement. Required. "Placement"
         :paramtype type: str or ~azure.mgmt.containerservicefleet.models.PropagationType
         :keyword placement_profile: The profile to be used for propagation via placement.
         :paramtype placement_profile: ~azure.mgmt.containerservicefleet.models.PlacementProfile
+        """
+        super().__init__(**kwargs)
+        self.type = type
+        self.placement_profile = placement_profile
+
+
+class PropagationPolicyPatch(_serialization.Model):
+    """The propagation settings that can be patched.
+
+    :ivar type: The type of the policy to be used. "Placement"
+    :vartype type: str or ~azure.mgmt.containerservicefleet.models.PropagationType
+    :ivar placement_profile: The placement profile that can be patched.
+    :vartype placement_profile: ~azure.mgmt.containerservicefleet.models.PlacementProfilePatch
+    """
+
+    _attribute_map = {
+        "type": {"key": "type", "type": "str"},
+        "placement_profile": {"key": "placementProfile", "type": "PlacementProfilePatch"},
+    }
+
+    def __init__(
+        self,
+        *,
+        type: Optional[Union[str, "_models.PropagationType"]] = None,
+        placement_profile: Optional["_models.PlacementProfilePatch"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword type: The type of the policy to be used. "Placement"
+        :paramtype type: str or ~azure.mgmt.containerservicefleet.models.PropagationType
+        :keyword placement_profile: The placement profile that can be patched.
+        :paramtype placement_profile: ~azure.mgmt.containerservicefleet.models.PlacementProfilePatch
         """
         super().__init__(**kwargs)
         self.type = type
@@ -3240,7 +3667,7 @@ class ScheduledStartProperties(_serialization.Model):
      Required.
     :vartype utc_offset: str
     :ivar absolute_start_time: The absolute UTC time when the gate will complete. Set when the gate
-     is created. Required.
+     is created.
     :vartype absolute_start_time: ~datetime.datetime
     """
 
@@ -3248,7 +3675,7 @@ class ScheduledStartProperties(_serialization.Model):
         "start_day": {"required": True},
         "start_time": {"required": True, "pattern": r"^([01][0-9]|2[0-3]):[0-5][0-9]$"},
         "utc_offset": {"required": True, "pattern": r"^[+-]((0[0-9]|1[0-3]):[0-5][0-9]|14:00)$"},
-        "absolute_start_time": {"required": True, "readonly": True},
+        "absolute_start_time": {"readonly": True},
     }
 
     _attribute_map = {
@@ -3411,18 +3838,17 @@ class UpdateGroup(_serialization.Model):
 
     All required parameters must be populated in order to send to server.
 
-    :ivar name: Name of the group. It serves as an identifier and must match a group name of an
-     existing fleet member unless MemberSelector is specified. When MemberSelector is set, Name is
-     only used as an identifier. Required.
+    :ivar name: Name of the group. It must match a group name of an existing fleet member.
+     Required.
     :vartype name: str
     :ivar max_allowed_failures: Limits the number of member (cluster) upgrade failures tolerated
      within this group. Failures are evaluated over members within this group only. Accepts either:
      • A fixed count n, where n >= 0 • A percentage p%, where 0 <= p <= 100 Percentage resolves at
-     stage start using: resolvedThreshold = ceil(p * N), where p is the percentage as als decimal
-     and N is the number of members in this group at scope start. Examples: • "3"   --> up to 3
-     member upgrade failures are tolerated within this group. The 4th failure would cause the entire
-     stage to fail. • "25%" --> up to 25% of the members in this group can fail their upgrade before
-     the group is considered failed.
+     stage start using: resolvedThreshold = ceil(p * N), where p is the percentage as a decimal and
+     N is the number of members in this group at scope start. Examples: • "3"   --> up to 3 member
+     upgrade failures are tolerated within this group. The 4th failure causes the group to fail. •
+     "25%" --> up to 25% of the members in this group can fail their upgrade before the group is
+     considered failed.
     :vartype max_allowed_failures: str
     :ivar max_concurrency: The max number of upgrades that can run concurrently in this specific
      group. Acts as a ceiling (and not a quota) for the number of concurrent upgrades within the
@@ -3438,8 +3864,10 @@ class UpdateGroup(_serialization.Model):
     :vartype max_concurrency: str
     :ivar member_selector: Select the members of the group.
 
-     * If specified, label-based selection will override group name based selection.
-     * If not specified, group name based selection will be used.
+     * If specified, label-based selection will override group name based selection,
+     and Name is only used as an identifier.
+     * If not specified, group name based selection will be used, and Name must match a
+     group name of an existing fleet member.
     :vartype member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
     :ivar before_gates: A list of Gates that will be created before this Group is executed.
     :vartype before_gates: list[~azure.mgmt.containerservicefleet.models.GateConfiguration]
@@ -3474,18 +3902,17 @@ class UpdateGroup(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword name: Name of the group. It serves as an identifier and must match a group name of an
-         existing fleet member unless MemberSelector is specified. When MemberSelector is set, Name is
-         only used as an identifier. Required.
+        :keyword name: Name of the group. It must match a group name of an existing fleet member.
+         Required.
         :paramtype name: str
         :keyword max_allowed_failures: Limits the number of member (cluster) upgrade failures tolerated
          within this group. Failures are evaluated over members within this group only. Accepts either:
          • A fixed count n, where n >= 0 • A percentage p%, where 0 <= p <= 100 Percentage resolves at
-         stage start using: resolvedThreshold = ceil(p * N), where p is the percentage as als decimal
-         and N is the number of members in this group at scope start. Examples: • "3"   --> up to 3
-         member upgrade failures are tolerated within this group. The 4th failure would cause the entire
-         stage to fail. • "25%" --> up to 25% of the members in this group can fail their upgrade before
-         the group is considered failed.
+         stage start using: resolvedThreshold = ceil(p * N), where p is the percentage as a decimal and
+         N is the number of members in this group at scope start. Examples: • "3"   --> up to 3 member
+         upgrade failures are tolerated within this group. The 4th failure causes the group to fail. •
+         "25%" --> up to 25% of the members in this group can fail their upgrade before the group is
+         considered failed.
         :paramtype max_allowed_failures: str
         :keyword max_concurrency: The max number of upgrades that can run concurrently in this specific
          group. Acts as a ceiling (and not a quota) for the number of concurrent upgrades within the
@@ -3501,8 +3928,10 @@ class UpdateGroup(_serialization.Model):
         :paramtype max_concurrency: str
         :keyword member_selector: Select the members of the group.
 
-          * If specified, label-based selection will override group name based selection.
-          * If not specified, group name based selection will be used.
+          * If specified, label-based selection will override group name based selection,
+          and Name is only used as an identifier.
+          * If not specified, group name based selection will be used, and Name must match a
+          group name of an existing fleet member.
         :paramtype member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
         :keyword before_gates: A list of Gates that will be created before this Group is executed.
         :paramtype before_gates: list[~azure.mgmt.containerservicefleet.models.GateConfiguration]
