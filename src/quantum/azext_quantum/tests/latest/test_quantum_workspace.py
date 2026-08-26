@@ -315,9 +315,9 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
         ])
 
-        # list users and verify the new assignment appears
+        # The managed identity has principalType ServicePrincipal, so the user-only list excludes it.
         self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} --include-inherited false -o json', checks=[
-            self.check(f"length([?principalId=='{test_object_id}'])", 1)
+            self.check(f"length([?principalId=='{test_object_id}'])", 0)
         ])
 
         # remove access using the object id and an explicit role
