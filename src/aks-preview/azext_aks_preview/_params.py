@@ -2629,6 +2629,14 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            is_preview=True,
+            help='Use "auto" to migrate a regional node pool to automatic zone placement. '
+                 'Other availability zone changes are subject to service restrictions.',
+        )
+        c.argument(
             "gpu_driver",
             arg_type=get_enum_type(gpu_driver_install_modes)
         )

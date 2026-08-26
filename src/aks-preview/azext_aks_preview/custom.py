@@ -2388,6 +2388,7 @@ def aks_agentpool_update(
     # local DNS
     localdns_config=None,
     node_vm_size=None,
+    zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
     # crg
