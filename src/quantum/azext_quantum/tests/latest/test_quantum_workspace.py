@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, AzureInternalError, ForbiddenError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
@@ -611,7 +611,7 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
                 patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=GraphError("throttled", response)) as get_object_stubs, \
                 patch("azext_quantum.operations.workspace.time.sleep") as sleep:
             cmd = SimpleNamespace(cli_ctx=object())
-            with self.assertRaisesRegex(AzureInternalError, "Please try again later"):
+            with self.assertRaisesRegex(ServiceError, "Please try again later"):
                 list_users(cmd, "rg", "ws")
 
         self.assertEqual(get_object_stubs.call_count, 3)

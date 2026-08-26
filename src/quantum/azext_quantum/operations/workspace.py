@@ -17,7 +17,7 @@ from azure.cli.command_modules.storage.operations.account import list_storage_ac
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
-from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError,
+from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError, ServiceError,
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError,
                                        MutuallyExclusiveArgumentError)
@@ -581,4 +581,4 @@ def _resolve_directory_objects(cmd, principal_ids):
                 time.sleep(retry_delay)
 
     logger.debug("Microsoft Graph user lookup failed after retries.", exc_info=last_error)
-    raise AzureInternalError("Could not reach Microsoft Graph to resolve user names and email addresses. Please try again later.") from last_error
+    raise ServiceError("Could not reach Microsoft Graph to resolve user names and email addresses. Please try again later.") from last_error
