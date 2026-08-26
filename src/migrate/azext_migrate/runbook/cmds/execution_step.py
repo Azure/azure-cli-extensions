@@ -6,7 +6,7 @@
 
 Each command acts on a single step within an in-progress execution:
 
-* ``retry``    -> ``PerformAction`` with the integer ``RETRY`` (4) code.
+* ``retry``    -> ``PerformAction`` with the ``"Retry"`` action string.
 * ``approve``  -> ``ProvideApproval`` with the ``"Approve"`` action string.
 * ``complete`` -> ``UpdateStepStatus`` with the ``"Complete"`` action
   string (a comment is required).

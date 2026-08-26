@@ -9,10 +9,6 @@ from collections import OrderedDict
 from azext_migrate.runbook import deps as dep_utils
 from azext_migrate.runbook.constants import ENTITY_COMPLETED_STATES
 
-# Placeholder shown for the "Applications" column, which the runbook
-# definition does not currently model (steps carry entities, not apps).
-_APPLICATIONS_PLACEHOLDER = '-'
-
 
 def runbook_table(result):
     """Project a runbook (or a list of runbooks) into table rows."""
@@ -68,8 +64,8 @@ def _empty_workstream_row(workstream_id):
         ('Step Name', '(no steps)'),
         ('Depends On', ''),
         ('Configuration Status', ''),
-        ('Workloads', ''),
-        ('Applications', _APPLICATIONS_PLACEHOLDER),
+        ('Entities', ''),
+        ('Applications', ''),
     ])
 
 
@@ -81,8 +77,8 @@ def _step_row(step, workstream_id=None, labels=None):
         ('Step Name', step.get('displayName') or step.get('stepName')),
         ('Depends On', '\n'.join(dep_utils.label_deps(step, labels or {}))),
         ('Configuration Status', step.get('configurationStatus')),
-        ('Workloads', len(step.get('entities') or [])),
-        ('Applications', _APPLICATIONS_PLACEHOLDER),
+        ('Entities', len(step.get('entities') or [])),
+        ('Applications', len(step.get('affectedEntityGroups') or [])),
     ])
 
 

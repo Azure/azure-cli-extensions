@@ -11,7 +11,7 @@ from azext_migrate.runbook.constants import (
     WAVE_ID_TEMPLATE,
     STEP_TYPE_APPROVAL,
     STEP_REF_BY_TYPE,
-    STEP_DEPENDENCY_MODE_STEP,
+    STEP_WAITFOR_STEP,
     STEP_ACTION_APPROVE,
     STEP_ACTION_COMPLETE,
     ARTIFACT_DOWNLOAD_MODE_FILE,
@@ -74,10 +74,11 @@ def _depends_on_refs(depends_on):
     """Map CLI ``--depends-on`` entries to write-model dependency objects.
 
     The AddStep/UpdateStep write model expects a list of
-    ``RunbookStepDependency`` objects ``{"mode": <string>, "stepId": <id>}``.
-    ``mode`` is the ``RunbookStepDependencyMode`` string; a plain
-    ``--depends-on <stepId>`` maps to a Step gate. Entries that are already
-    dicts (e.g. carrying an ``entityMap``) are passed through unchanged.
+    ``RunbookStepDependency`` objects ``{"waitFor": <string>, "stepId": <id>}``.
+    ``waitFor`` (the polymorphic discriminator) is a
+    ``RunbookStepDependencyMode`` string; a plain ``--depends-on <stepId>``
+    maps to a ``Step`` gate. Entries that are already dicts (e.g. carrying
+    ``entityPairs``) are passed through unchanged.
     """
     refs = []
     for entry in depends_on or []:
@@ -85,7 +86,7 @@ def _depends_on_refs(depends_on):
             refs.append(entry)
         else:
             refs.append(
-                {"mode": STEP_DEPENDENCY_MODE_STEP, "stepId": entry})
+                {"waitFor": STEP_WAITFOR_STEP, "stepId": entry})
     return refs
 
 
@@ -97,7 +98,8 @@ def build_add_step_body(step_type, step_name, workstream_id,
     Mirrors the service ``RunbookStepAddRequest``. ``step_type`` selects
     the ``stepRef`` binding (Approval -> ``common.approval``, Manual ->
     ``common.manual``); the step is added to ``workstream_id``.
-    ``migrationEntityIds`` is only carried by the Approval step variant.
+    ``entities`` (bare migration-entity GUIDs) is only carried by the
+    Approval step variant.
     """
     body = {
         "workstreamId": workstream_id,
@@ -107,7 +109,7 @@ def build_add_step_body(step_type, step_name, workstream_id,
         "dependsOn": _depends_on_refs(depends_on),
     }
     if step_type == STEP_TYPE_APPROVAL:
-        body["migrationEntityIds"] = migration_entity_ids or []
+        body["entities"] = migration_entity_ids or []
     return body
 
 
@@ -135,12 +137,12 @@ def build_split_workstream_body(source_workstream_id, new_workstream_name,
 
     ``step_ids`` are the steps moved from the source workstream into the
     new one. Mirrors service ``RunbookWorkstreamSplitRequest``
-    (sourceWorkstreamId / stepIds / newWorkstreamName).
+    (sourceWorkstreamId / stepIds / displayName).
     """
     return {
         "sourceWorkstreamId": source_workstream_id,
         "stepIds": step_ids or [],
-        "newWorkstreamName": new_workstream_name,
+        "displayName": new_workstream_name,
     }
 
 
@@ -149,33 +151,30 @@ def build_merge_workstreams_body(source_workstream_ids,
     """Build the MergeWorkstreams POST body.
 
     ``source_workstream_ids`` serializes as the ``workstreamIds`` array and
-    ``new_workstream_name`` as ``newWorkstreamName``; both are required by
+    ``new_workstream_name`` as ``displayName``; both are required by
     the service ``RunbookWorkstreamsMergeRequest``.
     """
     return {
         "workstreamIds": source_workstream_ids or [],
-        "newWorkstreamName": new_workstream_name,
+        "displayName": new_workstream_name,
     }
 
 
-def build_start_execution_body():
-    """Build the StartRunbookExecution (PUT) body."""
-    return {"properties": {}}
+def build_artifact_download_url_body(mode, path=None):
+    """Build the GenerateDownloadUrl request body.
 
-
-def build_artifact_download_url_body(
-        path="runbook.json", mode=ARTIFACT_DOWNLOAD_MODE_FILE,
-        include_metadata=True):
-    """Build the Artifact Service GenerateDownloadUrl request body.
-
-    Omitting ``version``/``versionId`` requests the latest committed
-    version. File mode targets a single blob within the artifact by
-    ``path``.
+    Directory mode returns the whole artifact as a ZIP and takes no path;
+    File mode targets a single blob within the artifact by ``path``.
     """
-    body = {"mode": mode, "path": path}
-    if include_metadata is not None:
-        body["includeMetadata"] = include_metadata
+    body = {"mode": mode}
+    if mode == ARTIFACT_DOWNLOAD_MODE_FILE:
+        body["path"] = path
     return body
+
+
+def build_artifact_upload_url_body(path):
+    """Build the GenerateUploadUrl request body (single file by ``path``)."""
+    return {"path": path}
 
 
 def build_perform_action_body(action, target_id=None, entity_ids=None):
@@ -184,7 +183,7 @@ def build_perform_action_body(action, target_id=None, entity_ids=None):
         "action": action.value if isinstance(action, ExecutionAction)
         else action,
         "targetId": target_id or "",
-        "migrationEntityIds": entity_ids or [],
+        "entities": entity_ids or [],
     }
 
 
@@ -202,13 +201,13 @@ def build_approve_step_body(step_id, entity_ids=None):
     """Build the ProvideApproval POST body for an approval step.
 
     ``ProvideApproval`` sends the PascalCase ``"Approve"`` action string.
-    ``migrationEntityIds`` carries the per-entity approvals for a Partial
+    ``entities`` carries the per-entity approval GUIDs for a Partial
     step; a Full step (or ``--all-ready``) sends an empty list.
     """
     return {
         "action": STEP_ACTION_APPROVE,
         "targetId": step_id,
-        "migrationEntityIds": entity_ids or [],
+        "entities": entity_ids or [],
     }
 
 
@@ -222,6 +221,6 @@ def build_complete_step_body(step_id, comment, entity_ids=None):
     return {
         "action": STEP_ACTION_COMPLETE,
         "targetId": step_id,
-        "migrationEntityIds": entity_ids or [],
+        "entities": entity_ids or [],
         "comment": comment,
     }

@@ -74,20 +74,23 @@ behavior are updated in the SAME change and the suite is green.
 
 ## Domain facts to preserve
 
-- Downloaded runbook archive members:
-  - `runbook.json` → the **definition** (`{"runbookSpec": {...}}`).
-  - `user-input(s).json` → the **parameters** (`{"runbookInputs": {...}}`). `definition download`
+- Downloaded runbook archive members (service renamed 2026-08-25):
+  - `spec.json` → the **definition** (`{"runbookSpec": {...}}`).
+  - `inputs.json` → the **parameters** (`{"runbookInputs": {...}}`). `definition download`
     writes this alongside the definition (per-step `configurationStatus` is derived from it), but
     table/CLI output (`show`, `visualize` grid) still renders the definition only.
-  - `derived-input(s).json` → same shape as user-inputs; **never downloaded/rendered** by any CLI.
-    It is distinguishable from user-inputs ONLY by filename, so it is excluded by name.
+  - `system-derived-inputs.json` → same shape as inputs; **never downloaded/rendered** by any CLI.
+    It is distinguishable from the user inputs ONLY by filename, so it is excluded by name
+    (`shared/files.py::_DERIVED_INPUTS_NAMES`).
+  - `executionStatus.json` → the per-execution status document (File-mode SAS download).
 - Archive members are classified by **content**, not filename suffix (member naming varies across
-  services, e.g. `rb-<name>-spec.json` vs `runbook.json`). See `shared/files.py::_classify_archive`
-  as the single source of truth.
-- **UpdateStep/AddStep `dependsOn` write contract (verified against live service):** each entry is a
-  System.Text.Json polymorphic `RunbookStepDependency`. The discriminator property is the verbatim
-  (non-camelCased) `"Mode"` whose value is the integer enum ordinal (`0` = step gate,
-  `1` = migration-entity gate), and it must appear first. A `--depends-on <stepId>` maps to
-  `{"Mode": 0, "stepId": "<id>"}`. See `models.py::_depends_on_refs`. NOTE: the GET (read) model
-  differs — it emits `{"step": "<id>", "mode": "migrationEntity"}` (property `step`, string `mode`).
-  Read/write are NOT symmetric; do not assume round-trip.
+  services, e.g. `rb-<name>-spec.json` vs `spec.json`). See `shared/files.py::_classify_archive`
+  as the single source of truth. Only the derived-inputs exclusion and the File-mode download/upload
+  **paths** (`inputs.json`, `executionStatus.json`; `runbook/constants.py`) are name-sensitive.
+- **UpdateStep/AddStep `dependsOn` write contract (verified against live service 2026-08-23):** each
+  entry is a System.Text.Json polymorphic `RunbookStepDependency`. The discriminator property is the
+  string `"waitFor"` (first key), one of `Step` / `Entity` / `MappedEntities` (`Entity` and
+  `MappedEntities` are invalid for Manual steps and carry an `entityPairs`
+  `[{"dependentEntity", "waitsFor"}]` list). A `--depends-on <stepId>` maps to
+  `{"waitFor": "Step", "stepId": "<id>"}`. See `models.py::_depends_on_refs`. The CLI authors `Step`
+  gates only; `Entity`/`MappedEntities` are passed through when a caller supplies a dict.

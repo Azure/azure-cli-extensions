@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<!--
+  MOCK ONLY - Phase F execution visualizer (success/error experience).
+  Static, offline, no backend. Renders an executionStatus.json: overall status,
+  a "needs attention" summary, a workstream/step grid, and a step drawer that
+  surfaces per-entity executions, attempt/retry timelines and error details.
+  All runbook-derived text is escaped (models the renderer's XSS guard).
+  Not shipped.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Execution status - Migrate runbook (mock)</title>
+<style>
+  :root {
+    --azure-blue: #0078d4; --bg: #faf9f8; --surface: #ffffff;
+    --border: #edebe9; --border-strong: #e1dfdd; --ink: #201f1e;
+    --muted: #605e5c; --link: #0067b8; --accent: #2899f5;
+    --ok: #107c10; --okbg: #dff6dd; --err: #a4262c; --errbg: #fde7e9;
+    --warnbg: #fff4ce; --warn: #8a6a00; --infobg: #cfe4fa; --info: #004e8c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); font-size: 14px; }
+  .azure-bar { display: flex; align-items: center; gap: 10px; height: 46px;
+    padding: 0 20px; background: #0c2c54; color: #fff; }
+  .azure-bar__brand { font-size: 15px; font-weight: 600; }
+  .azure-bar a.back { color: #cfe4fa; font-size: 12px; text-decoration: none; }
+  .azure-bar .pill { margin-left: auto; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .4px; color: #ffd27a; border: 1px solid #6b5a2a;
+    background: #16233b; border-radius: 10px; padding: 2px 10px; }
+  header { padding: 16px 28px 8px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  header h1 { margin: 0 0 6px; font-size: 21px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+  .tab-meta { display: flex; flex-wrap: wrap; gap: 12px 30px; padding: 10px 28px;
+    border-bottom: 1px solid var(--border); background: var(--surface); }
+  .meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .meta__label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .4px; }
+  .meta__value { font-weight: 600; font-size: 12.5px; max-width: 340px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+
+  /* status pills */
+  .pill-s { display: inline-block; border-radius: 10px; padding: 2px 10px; font-size: 11px; font-weight: 600; }
+  .s-Completed, .s-Succeeded { background: var(--okbg); color: var(--ok); }
+  .s-InProgress, .s-Running { background: var(--infobg); color: var(--info); }
+  .s-NotStarted { background: #f3f2f1; color: var(--muted); }
+  .s-Failed { background: var(--errbg); color: var(--err); }
+  .s-AwaitingUserAction, .s-Paused, .s-Blocked { background: var(--warnbg); color: var(--warn); }
+
+  /* summary cards + progress */
+  .summary { display: flex; flex-wrap: wrap; gap: 12px; padding: 16px 28px 6px; align-items: stretch; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 16px; min-width: 104px; }
+  .stat__n { font-size: 22px; font-weight: 600; display: block; }
+  .stat__l { font-size: 12px; color: var(--muted); }
+  .stat.ok .stat__n { color: var(--ok); } .stat.info .stat__n { color: var(--info); }
+  .stat.err .stat__n { color: var(--err); } .stat.warn .stat__n { color: var(--warn); }
+  .progress-wrap { padding: 4px 28px 8px; }
+  .pbar { height: 8px; border-radius: 4px; background: #edebe9; overflow: hidden; display: flex; }
+  .pbar i { display: block; height: 100%; }
+  .pbar .pc { background: var(--ok); } .pbar .pi { background: var(--accent); }
+  .pbar .pf { background: var(--err); } .pbar .pa { background: #e3a008; }
+  .plabel { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  /* needs attention */
+  .attn { margin: 8px 28px 4px; border-radius: 8px; border: 1px solid #f0d999;
+    background: var(--warnbg); padding: 10px 14px; }
+  .attn.none { background: var(--okbg); border-color: #b6e0b6; }
+  .attn h3 { margin: 0 0 6px; font-size: 13px; }
+  .attn ul { margin: 0; padding-left: 18px; }
+  .attn li { font-size: 12.5px; margin: 2px 0; }
+  .attn a { color: var(--link); cursor: pointer; text-decoration: none; font-weight: 600; }
+
+  .view { padding: 12px 28px 40px; }
+  .grid { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .grid__head, .row { display: grid;
+    grid-template-columns: minmax(260px,2fr) 140px 130px 150px 110px;
+    align-items: center; gap: 12px; padding: 10px 16px; }
+  .grid__head { font-weight: 600; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--border-strong); }
+  .group__head { padding: 11px 16px; font-weight: 600; background: #f3f2f1;
+    border-bottom: 1px solid var(--border); font-size: 14px; display: flex; align-items: center; gap: 10px; }
+  .row { border-bottom: 1px solid var(--border); cursor: pointer; }
+  .row:hover { background: #f3f9fd; }
+  .row.failed { background: #fef6f7; }
+  .cell-step { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .row__name { color: var(--link); font-weight: 600; }
+  .id-badge { color: var(--muted); font-size: 10px; background: #ecebe9; font-family: Consolas, monospace;
+    padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+  .retry { color: var(--warn); font-size: 11px; background: var(--warnbg); border-radius: 8px; padding: 1px 7px; }
+  .miniprog { height: 6px; border-radius: 3px; background: #edebe9; overflow: hidden; margin-top: 4px; }
+  .miniprog i { display: block; height: 100%; background: var(--ok); }
+  .col-sub { color: var(--muted); font-size: 12px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; padding: 12px 28px; color: var(--muted); font-size: 12px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 11px; height: 11px; border-radius: 3px; display: block; }
+
+  /* drawer */
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.32); display: none; z-index: 50; }
+  .scrim.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 520px; max-width: 96vw;
+    background: var(--surface); z-index: 51; border-left: 1px solid var(--border-strong);
+    box-shadow: -8px 0 24px rgba(0,0,0,.18); transform: translateX(100%); transition: transform .18s ease; overflow-y: auto; }
+  .drawer.open { transform: translateX(0); }
+  .d-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  .d-title { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+  .d-sub { color: var(--muted); font-size: 12px; word-break: break-all; }
+  .d-close { border: none; background: transparent; font-size: 16px; cursor: pointer; color: var(--muted); }
+  .d-body { padding: 16px 20px 40px; }
+  .sec { margin: 16px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--muted); border-top: 1px solid var(--border); padding-top: 12px; }
+  .sec:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+  .kv { display: flex; gap: 10px; margin: 4px 0; font-size: 13px; }
+  .kv .k { color: var(--muted); min-width: 130px; } .kv .v { word-break: break-word; }
+  .callout { border-radius: 8px; padding: 10px 12px; font-size: 12.5px; margin: 8px 0; }
+  .callout.err { background: var(--errbg); border: 1px solid #f3c3c7; }
+  .callout.warn { background: var(--warnbg); border: 1px solid #f0d999; }
+  .callout.ok { background: var(--okbg); border: 1px solid #b6e0b6; }
+  .callout.info { background: var(--infobg); border: 1px solid #bcd9f5; }
+  .callout .code { font-family: Consolas, monospace; font-weight: 700; color: var(--err); }
+  .ent { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .ent__h { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #faf9f8;
+    cursor: pointer; border-bottom: 1px solid var(--border); }
+  .ent__h .nm { font-weight: 600; }
+  .ent__h .sp { margin-left: auto; color: var(--muted); font-size: 11px; }
+  .ent__b { padding: 10px 12px; display: none; }
+  .ent.open .ent__b { display: block; }
+  .ent__h .caret { color: var(--muted); font-size: 11px; transition: transform .15s; }
+  .ent.open .ent__h .caret { transform: rotate(90deg); }
+  .recov { color: var(--warn); font-size: 11px; background: var(--warnbg); border-radius: 8px; padding: 1px 8px; }
+  .att { border-left: 3px solid var(--border-strong); padding: 4px 0 4px 12px; margin: 8px 0; }
+  .att.failed { border-left-color: var(--err); }
+  .att.completed { border-left-color: var(--ok); }
+  .att__h { font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .out { background: #f6f6f5; border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-size: 12px; }
+  .out .row2 { display: flex; justify-content: space-between; gap: 10px; padding: 1px 0; }
+  .out .row2 .k { color: var(--muted); } .out .row2 .v { font-weight: 600; }
+  .dep { font-size: 12.5px; margin: 3px 0; }
+  .dep code { font-family: Consolas, monospace; background: #f3f2f1; border-radius: 3px; padding: 1px 5px; }
+  .muted { color: var(--muted); }
+  /* Grid/Diagram tabs + SVG dependency DAG (mirrors the real visualizer) */
+  .tabs { display: flex; gap: 8px; padding: 10px 28px 0; }
+  .tab { font: inherit; font-size: 13px; cursor: pointer; padding: 6px 14px;
+    border-radius: 6px 6px 0 0; border: 1px solid var(--border-strong);
+    border-bottom: none; background: transparent; color: var(--muted); }
+  .tab.is-active { background: var(--surface); color: var(--ink); }
+  .hidden { display: none !important; }
+  .canvas { padding: 10px 28px 24px; overflow: auto; }
+  svg { display: block; }
+  .lane rect { fill: #f6f6f5; stroke: var(--border-strong); stroke-width: 1; }
+  .lane text { fill: var(--muted); font-size: 12px; font-weight: 600; }
+  .node { cursor: pointer; }
+  .node rect { fill: #fff; stroke: #c8c6c4; stroke-width: 1; }
+  .node text { fill: var(--ink); font-size: 13px; }
+  .node .sub { fill: var(--muted); font-size: 11px; }
+  .node.st-Completed rect, .node.st-Succeeded rect { stroke: #2da44e; stroke-width: 2; }
+  .node.st-InProgress rect { stroke: var(--accent); stroke-width: 2; }
+  .node.st-Failed rect { stroke: #d13438; stroke-width: 2; }
+  .node.st-AwaitingUserAction rect, .node.st-Paused rect { stroke: #e3a008; stroke-width: 2; }
+  .node.st-NotStarted rect { stroke: #c8c6c4; stroke-width: 1; }
+  .node .retryg { fill: #8a6a00; font-size: 13px; }
+  .edge { stroke: #b3b0ad; stroke-width: 1.5; fill: none; }
+</style>
+</head>
+<body>
+<div class="azure-bar">
+  <span>&#9729;</span>
+  <span class="azure-bar__brand">Azure Migrate &middot; Execution status</span>
+  <a class="back" href="index.html">&larr; all mocks</a>
+  <span class="pill">Mock &middot; Execution viz</span>
+</div>
+<header><h1 id="title"></h1></header>
+<div class="tab-meta" id="meta"></div>
+<div class="summary" id="summary"></div>
+<div class="progress-wrap" id="progress"></div>
+<div class="attn" id="attn"></div>
+<div class="tabs">
+  <button type="button" class="tab is-active" data-view="grid">Grid</button>
+  <button type="button" class="tab" data-view="diagram">Diagram</button>
+</div>
+<div id="gridView" class="view">
+  <div class="grid" id="grid"></div>
+</div>
+<div id="diagramView" class="view hidden">
+  <div class="canvas" id="svgHost"></div>
+</div>
+<div class="legend">
+  <span><i style="background:var(--ok)"></i> Completed</span>
+  <span><i style="background:var(--accent)"></i> In progress</span>
+  <span><i style="background:#e3a008"></i> Awaiting / blocked</span>
+  <span><i style="background:var(--err)"></i> Failed</span>
+  <span><i style="background:#c8c6c4"></i> Not started</span>
+  <span class="muted">&#8635; = retried after a failure</span>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="d-head">
+    <div><h2 class="d-title" id="dTitle"></h2><div class="d-sub" id="dSub"></div></div>
+    <button class="d-close" id="dClose">&#10005;</button>
+  </div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+
+<script>
+const STATUS = {"$schema":"./execution-status.schema.json","generatedAt":"2026-08-21T10:30:00Z","executionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/runbooks/demo-runbook/executions/exec-001","runbookId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/runbooks/demo-runbook","waveId":".../waves/wave-1","migrateProjectId":".../migrateProjects/demoProject","executionStatus":{"stepsCompleted":2,"stepsInProgress":1,"stepsAwaitingUserAction":0,"stepsFailed":0,"stepsNotStarted":1,"status":"InProgress","startTime":"2026-08-21T10:00:00Z","lastUpdatedTime":"2026-08-21T10:30:00Z","entities":[{"displayName":"web-vm-01","workloadType":"VirtualMachine"},{"displayName":"db-vm-02","workloadType":"Database"}],"workstreams":[{"id":"workstream-0","displayName":"Initialization","status":"Completed","startTime":"2026-08-21T10:00:00Z","endTime":"2026-08-21T10:02:00Z","steps":[{"stepId":"vm.agentless.setup-1","displayName":"Setup (Shared Tool Setup)","description":"One-time shared tool setup for the wave.","stepRef":"vm.agentless.setup","inputStatus":"fullyConfigured","entities":[],"prerequisites":[],"dependsOn":[],"entitiesCompleted":0,"status":"Completed","startTime":"2026-08-21T10:00:00Z","endTime":"2026-08-21T10:02:00Z","totalAttempts":1,"attempts":[],"outputs":{"applianceValidated":true,"storageValidated":true},"entityExecutions":[]}]},{"id":"workstream-1","displayName":"waveapp","status":"InProgress","startTime":"2026-08-21T10:02:00Z","steps":[{"stepId":"vm.agentless.dataSync-1","displayName":"Data Sync","description":"Replicate entity data to the target region.","stepRef":"vm.agentless.dataSync","inputStatus":"fullyConfigured","entities":["web-vm-01","db-vm-02"],"affectedEntityGroups":["group-app"],"prerequisites":[{"stepId":"vm.agentless.setup-1","waitFor":"step"}],"dependsOn":[],"entitiesCompleted":2,"status":"Completed","startTime":"2026-08-21T10:02:00Z","endTime":"2026-08-21T10:20:00Z","totalAttempts":1,"attempts":[],"entityExecutions":[{"entity":"web-vm-01","status":"Completed","startTime":"2026-08-21T10:02:00Z","endTime":"2026-08-21T10:12:00Z","totalAttempts":1,"attempts":[],"outputs":{"migrationState":"Replicating","initialSeedingProgressPercentage":100}},{"entity":"db-vm-02","status":"Completed","startTime":"2026-08-21T10:02:00Z","endTime":"2026-08-21T10:20:00Z","totalAttempts":2,"attempts":[{"attemptNumber":1,"startTime":"2026-08-21T10:02:00Z","endTime":"2026-08-21T10:05:00Z","status":"Failed","errorDetails":{"code":"NETWORK_TIMEOUT","message":"Connection timeout during data sync","details":"Failed to connect to storage endpoint; retried."}},{"attemptNumber":2,"startTime":"2026-08-21T10:05:00Z","endTime":"2026-08-21T10:20:00Z","status":"Completed"}],"outputs":{"migrationState":"Replicating","initialSeedingProgressPercentage":100}}]},{"stepId":"vm.agentless.migration-1","displayName":"Migration","description":"Migrate the synced entities.","stepRef":"vm.agentless.migration","inputStatus":"partiallyConfigured","entities":["web-vm-01","db-vm-02"],"prerequisites":[{"stepId":"vm.agentless.dataSync-1","waitFor":"entity"}],"dependsOn":[{"stepId":"vm.agentless.dataSync-1","waitFor":"entity","appliesTo":["web-vm-01"]}],"entitiesCompleted":1,"status":"InProgress","startTime":"2026-08-21T10:20:00Z","totalAttempts":1,"attempts":[],"entityExecutions":[{"entity":"web-vm-01","status":"Completed","startTime":"2026-08-21T10:20:00Z","endTime":"2026-08-21T10:28:00Z","totalAttempts":1,"attempts":[],"outputs":{"migrationState":"MigrationSucceeded","targetVmProvisioningState":"Succeeded"}},{"entity":"db-vm-02","status":"InProgress","startTime":"2026-08-21T10:20:00Z","totalAttempts":1,"attempts":[]}]},{"stepId":"vm.agentless.cutover-1","displayName":"Cutover","description":"Cut over to the migrated targets.","stepRef":"vm.agentless.cutover","inputStatus":"pendingConfiguration","entities":["web-vm-01","db-vm-02"],"prerequisites":[],"dependsOn":[{"stepId":"vm.agentless.migration-1","waitFor":"mappedEntities","entityPairs":[{"dependentEntity":"web-vm-01","waitsFor":"db-vm-02"}]}],"entitiesCompleted":0,"userComment":"Holding cutover until DBA sign-off.","status":"NotStarted","statusReason":"Waiting On Dependency","totalAttempts":0,"attempts":[],"entityExecutions":[]}]}]}};
+
+const es = STATUS.executionStatus;
+
+// ---- helpers (esc = XSS guard, models renderer.py) ------------------------
+function esc(v) { return v == null ? '' : String(v).replace(/[&<>"']/g, c =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function sc(s) { return 's-' + esc(s || 'NotStarted'); }
+function pill(s) { return `<span class="pill-s ${sc(s)}">${esc(s || 'NotStarted')}</span>`; }
+function shortId(id) { const p = String(id).split('/'); return p[p.length - 1]; }
+function tt(t) { return t ? new Date(t).toLocaleString() : '—'; }
+function dur(a, b) {
+  if (!a || !b) return '';
+  const ms = new Date(b) - new Date(a); if (ms < 0) return '';
+  const m = Math.round(ms / 60000);
+  return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+function failedAttempts(step) {
+  let n = 0;
+  (step.entityExecutions || []).forEach(e => (e.attempts || []).forEach(a => { if (a.status === 'Failed') n++; }));
+  (step.attempts || []).forEach(a => { if (a.status === 'Failed') n++; });
+  return n;
+}
+function allSteps() {
+  const out = [];
+  es.workstreams.forEach(w => (w.steps || []).forEach(s => out.push({ ws: w, step: s })));
+  return out;
+}
+
+// ---- header / summary -----------------------------------------------------
+function renderHeader() {
+  document.getElementById('title').innerHTML =
+    `${esc(shortId(STATUS.runbookId))} &middot; execution ${pill(es.status)}`;
+  document.getElementById('meta').innerHTML = [
+    ['Execution', shortId(STATUS.executionId)],
+    ['Wave', shortId(STATUS.waveId)],
+    ['Started', tt(es.startTime)],
+    ['Last updated', tt(es.lastUpdatedTime)],
+    ['Entities', (es.entities || []).length]
+  ].map(([l, v]) => `<div class="meta"><span class="meta__label">${esc(l)}</span>
+     <span class="meta__value">${esc(v)}</span></div>`).join('');
+
+  const cards = [
+    ['ok', es.stepsCompleted, 'Completed'], ['info', es.stepsInProgress, 'In progress'],
+    ['warn', es.stepsAwaitingUserAction, 'Awaiting action'], ['err', es.stepsFailed, 'Failed'],
+    ['', es.stepsNotStarted, 'Not started']
+  ];
+  document.getElementById('summary').innerHTML = cards.map(([c, n, l]) =>
+    `<div class="stat ${c}"><span class="stat__n">${n}</span><span class="stat__l">${l}</span></div>`).join('');
+
+  const total = cards.reduce((a, [, n]) => a + (n || 0), 0) || 1;
+  const pct = k => (100 * (k || 0) / total).toFixed(1) + '%';
+  document.getElementById('progress').innerHTML =
+    `<div class="pbar">
+       <i class="pc" style="width:${pct(es.stepsCompleted)}"></i>
+       <i class="pi" style="width:${pct(es.stepsInProgress)}"></i>
+       <i class="pf" style="width:${pct(es.stepsFailed)}"></i>
+       <i class="pa" style="width:${pct(es.stepsAwaitingUserAction)}"></i>
+     </div>
+     <div class="plabel">${es.stepsCompleted} of ${total} steps completed
+       &middot; recovered failures are shown per step (&#8635;).</div>`;
+}
+
+// ---- needs attention ------------------------------------------------------
+function renderAttention() {
+  const items = [];
+  allSteps().forEach(({ step }) => {
+    const s = step.status;
+    // Only user-actionable states belong here. Waiting-on-dependency is normal
+    // flow (starts automatically), so it is NOT surfaced as attention.
+    if (s === 'Failed') items.push([step, 'err', 'Failed']);
+    else if (s === 'AwaitingUserAction') items.push([step, 'warn', 'Awaiting user action']);
+  });
+  const box = document.getElementById('attn');
+  if (!items.length) {
+    box.className = 'attn none';
+    box.innerHTML = `<h3>&#10003; No blocking issues</h3>
+      <div class="muted" style="font-size:12.5px">All steps are completed or progressing. Steps waiting on a dependency start automatically; past failures were retried.</div>`;
+    return;
+  }
+  box.className = 'attn';
+  box.innerHTML = `<h3>Needs attention (${items.length})</h3><ul>` + items.map(([step, , label]) =>
+    `<li><a data-open="${esc(step.stepId)}">${esc(step.displayName)}</a> &mdash; ${label}</li>`).join('') + `</ul>`;
+  box.querySelectorAll('[data-open]').forEach(a =>
+    a.addEventListener('click', () => openStep(a.dataset.open)));
+}
+
+// ---- grid -----------------------------------------------------------------
+function renderGrid() {
+  document.getElementById('grid').innerHTML =
+    `<div class="grid__head"><span>Step</span><span>Status</span><span>Entities</span>
+       <span>Progress</span><span>Duration</span></div>` +
+    es.workstreams.map(w => {
+      const rows = (w.steps || []).map(s => {
+        const total = (s.entities || []).length;
+        const done = s.entitiesCompleted || 0;
+        const pctv = total ? Math.round(100 * done / total) : (s.status === 'Completed' ? 100 : 0);
+        const fa = failedAttempts(s);
+        const retry = fa ? `<span class="retry" title="Retried after ${fa} failed attempt(s)">&#8635; ${fa}</span>` : '';
+        return `<div class="row ${s.status === 'Failed' ? 'failed' : ''}" data-step="${esc(s.stepId)}">
+          <div class="cell-step"><span class="row__name">${esc(s.displayName)}</span>
+            <span class="id-badge">${esc(s.stepRef)}</span>${retry}</div>
+          <div>${pill(s.status)}${s.statusReason ? `<div class="col-sub">${esc(s.statusReason)}</div>` : ''}</div>
+          <div class="col-sub">${total ? `${done}/${total}` : '&mdash;'}</div>
+          <div>${total ? `<div class="miniprog"><i style="width:${pctv}%"></i></div>` : '<span class="col-sub">run once</span>'}</div>
+          <div class="col-sub">${dur(s.startTime, s.endTime) || (s.status === 'InProgress' ? 'running' : '—')}</div>
+        </div>`;
+      }).join('');
+      return `<div class="group__head">${esc(w.displayName)} <span class="id-badge">${esc(w.id)}</span> ${pill(w.status)}</div>${rows}`;
+    }).join('');
+  document.querySelectorAll('.row[data-step]').forEach(r =>
+    r.addEventListener('click', () => openStep(r.dataset.step)));
+}
+
+// ---- dependency + drawer --------------------------------------------------
+function depText(d) {
+  if (d.waitFor === 'mappedEntities' && d.entityPairs)
+    return `<code>${esc(d.stepId)}</code> &middot; mapped: ` +
+      d.entityPairs.map(p => `${esc(p.dependentEntity)} waits for ${esc(p.waitsFor)}`).join(', ');
+  if (d.waitFor === 'entity')
+    return `<code>${esc(d.stepId)}</code> &middot; per entity${d.appliesTo ? ` (applies to ${d.appliesTo.map(esc).join(', ')})` : ''}`;
+  return `<code>${esc(d.stepId)}</code> &middot; waits for ${esc(d.waitFor || 'step')}`;
+}
+function outputsBlock(o) {
+  if (!o || !Object.keys(o).length) return '';
+  return `<div class="out">` + Object.entries(o).map(([k, v]) =>
+    `<div class="row2"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('') + `</div>`;
+}
+function attemptsBlock(attempts) {
+  return (attempts || []).map(a => {
+    const cls = a.status === 'Failed' ? 'failed' : (a.status === 'Completed' ? 'completed' : '');
+    let err = '';
+    if (a.errorDetails) err = `<div class="callout err"><span class="code">${esc(a.errorDetails.code)}</span>
+      &nbsp;${esc(a.errorDetails.message)}<div class="muted" style="margin-top:4px">${esc(a.errorDetails.details)}</div></div>`;
+    return `<div class="att ${cls}"><div class="att__h">Attempt ${esc(a.attemptNumber)} ${pill(a.status)}
+      <span class="muted" style="font-weight:400">${dur(a.startTime, a.endTime) || ''}</span></div>${err}</div>`;
+  }).join('');
+}
+function entityBlock(ee) {
+  const failed = (ee.attempts || []).some(a => a.status === 'Failed');
+  const recovered = failed && ee.status === 'Completed';
+  return `<div class="ent"><div class="ent__h">
+      <span class="caret">&#9654;</span><span class="nm">${esc(ee.entity)}</span>
+      ${pill(ee.status)} ${recovered ? '<span class="recov">&#8635; recovered</span>' : ''}
+      <span class="sp">${dur(ee.startTime, ee.endTime) || (ee.status === 'InProgress' ? 'running' : '')} &middot; ${ee.totalAttempts || 1} attempt(s)</span>
+    </div><div class="ent__b">
+      <div class="kv"><span class="k">Started</span><span class="v">${tt(ee.startTime)}</span></div>
+      <div class="kv"><span class="k">Ended</span><span class="v">${tt(ee.endTime)}</span></div>
+      ${(ee.attempts && ee.attempts.length) ? '<div class="sec">Attempts</div>' + attemptsBlock(ee.attempts) : ''}
+      ${outputsBlock(ee.outputs)}
+    </div></div>`;
+}
+function openStep(stepId) {
+  const found = allSteps().find(x => x.step.stepId === stepId);
+  if (!found) return;
+  const s = found.step;
+  document.getElementById('dTitle').innerHTML = `${esc(s.displayName)} ${pill(s.status)}`;
+  document.getElementById('dSub').innerHTML =
+    `<span class="id-badge">${esc(s.stepId)}</span> &middot; ${esc(s.stepRef)} &middot; workstream ${esc(found.ws.displayName)}`;
+
+  const deps = [].concat((s.prerequisites || []).map(p => ['Prerequisite', p]),
+                         (s.dependsOn || []).map(d => ['Depends on', d]));
+  const fa = failedAttempts(s);
+  let html = '';
+
+  if (s.status === 'Failed')
+    html += `<div class="callout err"><b>This step failed.</b> Review the failed attempt(s) below for the error and re-run with <code>execution step retry</code>.</div>`;
+  else if (s.status === 'NotStarted' && s.statusReason)
+    html += `<div class="callout info"><b>${esc(s.statusReason)}.</b> Normal &mdash; this step starts automatically once its dependencies below are satisfied.</div>`;
+  else if (fa)
+    html += `<div class="callout ok">&#8635; Recovered: ${fa} attempt(s) failed but the step retried and succeeded.</div>`;
+
+  if (s.errorDetails)
+    html += `<div class="callout err"><span class="code">${esc(s.errorDetails.code)}</span>
+      &nbsp;${esc(s.errorDetails.message)}${s.errorDetails.details ? `<div class="muted" style="margin-top:4px">${esc(s.errorDetails.details)}</div>` : ''}</div>`;
+
+  html += `<div class="sec">Overview</div>
+    ${s.description ? `<div class="kv"><span class="k">Description</span><span class="v">${esc(s.description)}</span></div>` : ''}
+    <div class="kv"><span class="k">Input status</span><span class="v">${esc(s.inputStatus)}</span></div>
+    ${s.userComment ? `<div class="kv"><span class="k">User comment</span><span class="v">${esc(s.userComment)}</span></div>` : ''}
+    <div class="kv"><span class="k">Started</span><span class="v">${tt(s.startTime)}</span></div>
+    <div class="kv"><span class="k">Ended</span><span class="v">${tt(s.endTime)}</span></div>
+    <div class="kv"><span class="k">Duration</span><span class="v">${dur(s.startTime, s.endTime) || (s.status === 'InProgress' ? 'running' : '—')}</span></div>`;
+
+  if (deps.length) {
+    html += `<div class="sec">Dependencies</div>`;
+    deps.forEach(([label, d]) => html += `<div class="dep">${label}: ${depText(d)}</div>`);
+  }
+  if (s.outputs && Object.keys(s.outputs).length) {
+    html += `<div class="sec">Step outputs</div>${outputsBlock(s.outputs)}`;
+  }
+  if ((s.entityExecutions || []).length) {
+    html += `<div class="sec">Entities (${s.entitiesCompleted || 0}/${(s.entities || []).length} completed)</div>`;
+    html += s.entityExecutions.map(entityBlock).join('');
+  } else if (!(s.entities || []).length) {
+    html += `<div class="sec">Execution</div><div class="muted" style="font-size:12.5px">Runs once for the wave (no per-entity execution).</div>`;
+  } else {
+    html += `<div class="sec">Entities</div><div class="muted" style="font-size:12.5px">No per-entity execution yet.</div>`;
+  }
+
+  document.getElementById('dBody').innerHTML = html;
+  document.querySelectorAll('#dBody .ent__h').forEach(h =>
+    h.addEventListener('click', () => h.parentElement.classList.toggle('open')));
+  document.getElementById('scrim').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+document.getElementById('dClose').addEventListener('click', closeDrawer);
+document.getElementById('scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+// ---- diagram (SVG dependency DAG: layers=depth, bands=workstreams) --------
+function renderDiagram() {
+  const M = 24, NW = 220, NH = 56, CG = 80, RG = 24, BL = 26, BG = 18;
+  const steps = allSteps().map(x => x.step);
+  const byId = {}; steps.forEach(s => byId[s.stepId] = s);
+  const depsOf = s => [...new Set([].concat(
+    (s.prerequisites || []).map(p => p.stepId),
+    (s.dependsOn || []).map(d => d.stepId)).filter(id => byId[id]))];
+  const memo = {};
+  function layer(id, seen) {
+    if (memo[id] != null) return memo[id];
+    seen = seen || {}; if (seen[id]) return 0; seen[id] = true;
+    const ds = depsOf(byId[id]);
+    const L = ds.length ? 1 + Math.max(...ds.map(d => layer(d, seen))) : 0;
+    memo[id] = L; return L;
+  }
+  steps.forEach(s => layer(s.stepId));
+  const layerCount = Math.max(0, ...steps.map(s => memo[s.stepId])) + 1;
+  const width = M * 2 + layerCount * NW + Math.max(layerCount - 1, 0) * CG;
+  const pos = {}, bands = []; let y = M;
+  es.workstreams.forEach(w => {
+    const nodes = w.steps || [];
+    const top = y, contentTop = top + BL, rows = {}; let maxRows = 0;
+    nodes.forEach(s => {
+      const L = memo[s.stepId], r = rows[L] || 0; rows[L] = r + 1;
+      pos[s.stepId] = [M + L * (NW + CG), contentTop + r * (NH + RG)];
+      maxRows = Math.max(maxRows, r + 1);
+    });
+    const bh = BL + Math.max(maxRows, 1) * (NH + RG);
+    bands.push([w, top, bh, nodes.length]); y = top + bh + BG;
+  });
+  const height = y + M - BG;
+  let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img">`;
+  bands.forEach(([w, top, bh, count]) => {
+    svg += `<g class="lane"><rect x="${M / 2}" y="${top}" width="${width - M}" height="${bh}" rx="8"/>`
+      + `<text x="${M / 2 + 12}" y="${top + 16}">Workstream: ${esc(w.displayName)} (${count})</text></g>`;
+  });
+  steps.forEach(s => depsOf(s).forEach(src => {
+    if (!pos[src] || !pos[s.stepId]) return;
+    const [sx, sy] = pos[src], [tx, ty] = pos[s.stepId];
+    const x1 = sx + NW, y1 = sy + NH / 2, x2 = tx, y2 = ty + NH / 2, mid = (x1 + x2) / 2;
+    svg += `<path class="edge" d="M${x1} ${y1} C${mid} ${y1} ${mid} ${y2} ${x2} ${y2}"/>`;
+  }));
+  steps.forEach(s => {
+    const [x, yy] = pos[s.stepId], fa = failedAttempts(s);
+    svg += `<g class="node st-${esc(s.status || 'NotStarted')}" data-step="${esc(s.stepId)}">`
+      + `<rect x="${x}" y="${yy}" width="${NW}" height="${NH}" rx="6"/>`
+      + `<text x="${x + 12}" y="${yy + 24}">${esc(s.displayName)}</text>`
+      + `<text class="sub" x="${x + 12}" y="${yy + 42}">${esc(s.stepRef)}</text>`
+      + (fa ? `<text class="retryg" x="${x + NW - 18}" y="${yy + 22}">\u21bb</text>` : '')
+      + `</g>`;
+  });
+  svg += `</svg>`;
+  document.getElementById('svgHost').innerHTML = svg;
+  document.querySelectorAll('#svgHost .node[data-step]').forEach(n =>
+    n.addEventListener('click', () => openStep(n.dataset.step)));
+}
+
+renderHeader();
+renderAttention();
+renderGrid();
+renderDiagram();
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  const v = t.dataset.view;
+  document.getElementById('gridView').classList.toggle('hidden', v !== 'grid');
+  document.getElementById('diagramView').classList.toggle('hidden', v !== 'diagram');
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('is-active', x === t));
+}));
+</script>
+</body>
+</html>

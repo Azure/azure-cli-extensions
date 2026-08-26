@@ -238,6 +238,7 @@ def _grid_row(kind, index, step):
     ref = ('<span class="row__ref">%s</span>' % _esc(step.step_ref)
            if step.step_ref else '')
     dep = ', '.join(step.deps) if step.deps else '-'
+    apps = len(step.entity_groups)
     if kind == viewmodel.KIND_EXECUTION:
         status = step.status or 'NotStarted'
         count = step.workload_progress or '-'
@@ -252,9 +253,11 @@ def _grid_row(kind, index, step):
         '<div class="col-status"><span class="pill%s">%s</span></div>'
         '<div class="col-dep">%s</div>'
         '<div class="col-count">%s</div>'
+        '<div class="col-apps">%s</div>'
         '</div>'
         % (index, _esc(step.name), ref,
-           _status_class(status), _esc(status), _esc(dep), _esc(count)))
+           _status_class(status), _esc(status), _esc(dep),
+           _esc(count), _esc(apps)))
 
 
 def _iter_indexed_steps(view):
@@ -277,7 +280,9 @@ def _portal_grid(view):
         '<div class="col-step">Steps</div>'
         '<div class="col-status">%s</div>'
         '<div class="col-dep">Step dependency</div>'
-        '<div class="col-count">%s</div></div>' % (status_head, count_head)]
+        '<div class="col-count">%s</div>'
+        '<div class="col-apps">Applications</div></div>' % (
+            status_head, count_head)]
     index = 0
     for workstream in view.workstreams:
         head = 'Workstream: %s%s (%d)' % (
@@ -332,6 +337,7 @@ def _detail_html(workstream_name, step, kind):
             + _status_field('Step status', step.status, 'NotStarted')
             + _field('Workload progress', step.workload_progress)
             + _chip_field('Entities (%d)' % len(entities), entities)
+            + _chip_field('Applications', step.entity_groups)
             + _chip_field('Depends on', step.deps))
     else:
         entities = step.entity_names
@@ -340,6 +346,7 @@ def _detail_html(workstream_name, step, kind):
             + _field('Step ID', step.id)
             + _status_field('Configuration status', step.status, 'Unknown')
             + _chip_field('Entities (%d)' % len(entities), entities)
+            + _chip_field('Applications', step.entity_groups)
             + _chip_field('Pre-requisites', step.prereqs)
             + _chip_field('Depends on', step.dep_details))
     return (

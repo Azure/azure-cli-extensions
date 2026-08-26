@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<!--
+  MOCK ONLY - Phase F / item 11 for `az migrate runbook parameter configure`.
+  Static, offline, no backend. Visualizer look; vertical tab per step.
+  Layout: left = steps; middle = the step's inputs (edit the DEFAULT that
+  applies to all entities); right-top = PER-ENTITY overrides (pick an entity,
+  edit all of its inputs; blank = inherit the default); right-bottom = JSON.
+  Fields + validation are driven by the `schema` rules in inputs.json.
+  Not shipped.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parameter configure - Migrate runbook (mock)</title>
+<style>
+  :root {
+    --azure-blue: #0078d4; --bg: #faf9f8; --surface: #ffffff;
+    --border: #edebe9; --border-strong: #e1dfdd; --ink: #201f1e;
+    --muted: #605e5c; --link: #0067b8; --ok: #107c10; --err: #a4262c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); font-size: 14px; }
+  .azure-bar { display: flex; align-items: center; gap: 10px; height: 44px;
+    padding: 0 18px; background: #0c2c54; color: #fff; }
+  .azure-bar__brand { font-size: 15px; font-weight: 600; }
+  .azure-bar a.back { color: #cfe4fa; font-size: 12px; text-decoration: none; }
+  .azure-bar .pill { margin-left: auto; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .4px; color: #ffd27a; border: 1px solid #6b5a2a;
+    background: #16233b; border-radius: 10px; padding: 2px 10px; }
+  header { padding: 12px 24px 8px; border-bottom: 1px solid var(--border);
+    background: var(--surface); }
+  header h1 { margin: 0; font-size: 19px; font-weight: 600; }
+  .tab-meta { display: flex; flex-wrap: wrap; gap: 10px 26px; padding: 8px 24px;
+    border-bottom: 1px solid var(--border); background: var(--surface); }
+  .meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .meta__label { color: var(--muted); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .4px; }
+  .meta__value { font-weight: 600; font-size: 12.5px; max-width: 320px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .toolbar { display: flex; align-items: center; gap: 12px; padding: 8px 24px;
+    border-bottom: 1px solid var(--border); background: var(--surface); }
+  .toolbar .vsummary { flex: 1; margin: 0; }
+  .vsummary { border-radius: 6px; padding: 6px 12px; font-size: 12.5px; }
+  .vsummary.bad2 { background: #fde7e9; color: var(--err); }
+  .vsummary.good { background: #dff6dd; color: var(--ok); }
+  .btn { font: inherit; font-size: 13px; cursor: pointer; border-radius: 4px;
+    border: 1px solid var(--azure-blue); background: var(--azure-blue); color: #fff;
+    padding: 7px 16px; }
+  .btn.ghost { background: #fff; color: var(--link); }
+  .btn.sm { padding: 4px 10px; font-size: 12px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .rulebar { padding: 6px 24px; background: #f3f9fd; border-bottom: 1px solid #cfe4f7;
+    color: #204a6b; font-size: 12px; }
+  .rulebar b { font-weight: 600; }
+
+  .layout { display: grid;
+    grid-template-columns: var(--left, 180px) 6px minmax(240px, 1fr) 6px var(--right, 440px);
+    height: calc(100vh - 196px); }
+  .gutter { cursor: col-resize; background: transparent; position: relative; }
+  .gutter::after { content: ''; position: absolute; left: 2px; top: 0; bottom: 0;
+    width: 2px; background: var(--border); }
+  .gutter:hover::after, .gutter.drag::after { background: var(--azure-blue); width: 3px; }
+  nav.steps { border-right: 1px solid var(--border); background: var(--surface);
+    padding: 10px 0; overflow: auto; }
+  .steptab { display: flex; align-items: center; gap: 7px;
+    padding: 9px 12px 9px 16px; cursor: pointer;
+    border-left: 3px solid transparent; font-size: 12.5px; }
+  .steptab:hover { background: #f3f2f1; }
+  .steptab.on { background: #eef6fc; border-left-color: var(--azure-blue); font-weight: 600; }
+  .steptab .idx { width: 18px; height: 18px; border-radius: 50%; background: #edebe9;
+    color: var(--muted); font-size: 10px; display: inline-flex; align-items: center;
+    justify-content: center; flex: none; }
+  .steptab.on .idx { background: var(--azure-blue); color: #fff; }
+  .steptab .nm { flex: 1; }
+  .badge { font-size: 10px; border-radius: 9px; padding: 0 6px; font-weight: 600;
+    background: #fde7e9; color: var(--err); }
+  .badge.ok { background: #dff6dd; color: var(--ok); }
+
+  main { padding: 14px 22px 30px; overflow: auto; }
+  .step-h { margin: 0 0 2px; font-size: 17px; font-weight: 600; }
+  .step-sub { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+  .step-sub code, code.inl { background: #f3f2f1; border-radius: 3px; padding: 1px 6px;
+    font-family: Consolas, monospace; font-size: 11.5px; }
+  .sec-h { font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--muted); margin: 16px 0 6px; padding-bottom: 4px;
+    border-bottom: 1px solid var(--border); }
+  .irow { padding: 8px 10px; border-radius: 6px; margin-bottom: 4px; }
+  .irow__top { display: flex; align-items: center; gap: 8px; }
+  .irow__nm { font-weight: 600; font-size: 13px; }
+  .irow__nm .req { color: var(--err); margin-left: 2px; }
+  .irow__nm .lock { color: var(--muted); font-size: 11px; margin-left: 6px; }
+  .ovr-chip { margin-left: auto; font-size: 11px; color: #5c2e91;
+    background: #ece4ff; border-radius: 9px; padding: 1px 9px; white-space: nowrap; }
+  .ovr-chip.none { color: var(--muted); background: #f3f2f1; }
+  .irow__meta { color: var(--muted); font-size: 10.5px; margin: 2px 0 4px; }
+  .irow__desc { color: var(--muted); font-size: 11px; margin-top: 3px; }
+  .dlabel { color: var(--muted); font-size: 10.5px; margin: 2px 0; }
+  input[type=text], select, textarea {
+    padding: 6px 8px; font: inherit; border: 1px solid var(--border-strong);
+    border-radius: 4px; background: #fff; width: 100%; max-width: 420px; }
+  textarea { min-height: 54px; font-family: Consolas, monospace; font-size: 12px; }
+  input:disabled, select:disabled { background: #f3f2f1; color: var(--muted); }
+  .bad { border-color: var(--err) !important; background: #fff6f7 !important; }
+  .err { color: var(--err); font-size: 11px; margin-top: 3px; }
+  .dirty-star { color: #8a5a00; font-weight: 700; margin-left: 4px; }
+  .dirty-star[title] { cursor: help; }
+  .scope-pill { font-size: 10px; border-radius: 8px; padding: 1px 7px; font-weight: 600; }
+  .scope-Appliance { background: #ece4ff; color: #5c2e91; }
+  .scope-Entity { background: #e0f0e6; color: #0e700e; }
+
+  aside { border-left: 1px solid var(--border); background: var(--surface);
+    display: flex; flex-direction: column; min-height: 0; }
+  .ov-pane { flex: 1 1 52%; min-height: 0; overflow: auto; padding: 14px 16px;
+    border-bottom: 1px solid var(--border-strong); }
+  .json-pane { flex: 1 1 48%; min-height: 0; overflow: auto; padding: 12px 16px;
+    display: flex; flex-direction: column; }
+  .pane-h { font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--muted); margin: 0 0 8px; }
+  .ent-tools { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .ent-tools label { font-size: 12px; color: var(--muted); display: flex;
+    align-items: center; gap: 6px; }
+  .ent-tools input[type=text] { width: 160px; }
+  .ent-tools select { min-width: 150px; max-width: 230px; }
+  .ent-summary { color: var(--muted); font-size: 11.5px; margin-bottom: 10px; }
+  .frow { padding: 7px 0; border-bottom: 1px solid #f2f1f0; }
+  .frow__nm { font-weight: 600; font-size: 12.5px; }
+  .frow__nm .req { color: var(--err); margin-left: 2px; }
+  .frow__meta { color: var(--muted); font-size: 10.5px; margin: 1px 0 4px; }
+  .frow .tag { display: inline-block; font-size: 10px; color: #5c2e91;
+    background: #ece4ff; border-radius: 8px; padding: 0 6px; margin-top: 3px; }
+  .inh { color: var(--muted); font-size: 10.5px; margin-top: 3px; }
+  .ov-empty { color: var(--muted); font-size: 12.5px; padding: 8px 0; }
+  pre { flex: 1; margin: 6px 0 0; padding: 10px; background: #0f0f0f; color: #d7f0ff;
+    border-radius: 6px; overflow: auto; font-size: 11.5px; font-family: Consolas, monospace;
+    white-space: pre-wrap; word-break: break-word; }
+  .toast { color: var(--muted); font-size: 12px; min-height: 14px; }
+
+  .pop-scrim { position: fixed; inset: 0; background: rgba(0,0,0,.32); display: none; z-index: 60; }
+  .pop-scrim.open { display: block; }
+  .pop { position: fixed; z-index: 61; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 580px; max-width: 92vw; background: var(--surface); border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.28); padding: 20px 22px; display: none; }
+  .pop.open { display: block; }
+  .pop__h { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .pop__p { color: var(--muted); font-size: 12.5px; margin: 0 0 12px; line-height: 1.5; }
+  .toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 10px; }
+  .cmd { background: #1b1a19; color: #d7f0ff; border-radius: 6px; padding: 10px 12px;
+    font-family: Consolas, monospace; font-size: 12px; word-break: break-all; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="azure-bar">
+  <span>&#9729;</span>
+  <span class="azure-bar__brand">Azure Migrate</span>
+  <a class="back" href="index.html">&larr; all mocks</a>
+  <span class="pill">Mock &middot; Item 11</span>
+</div>
+<header><h1 id="title">Runbook parameters</h1></header>
+<div class="tab-meta" id="meta"></div>
+<div class="toolbar">
+  <div class="vsummary" id="vsummary"></div>
+  <span class="toast" id="toast"></span>
+  <button class="btn ghost" id="resetBtn" title="Revert all edits back to the downloaded inputs.json (does not re-download from the service)">Discard changes</button>
+  <button class="btn ghost" id="validateBtn">Validate &amp; save</button>
+  <button class="btn" id="uploadBtn">Upload</button>
+</div>
+<div class="rulebar">Validation runs against the <b>schema</b> embedded in this runbook&rsquo;s
+  <code class="inl">inputs.json</code> (required, allowed values, type, editable) &mdash;
+  not against the live service.</div>
+
+<div class="layout" id="layout">
+  <nav class="steps" id="steps"></nav>
+  <div class="gutter" id="gutterL" title="Drag to resize the steps pane"></div>
+  <main id="form"></main>
+  <div class="gutter" id="gutterR" title="Drag to resize the overrides pane"></div>
+  <aside>
+    <div class="ov-pane" id="ovPane"></div>
+    <div class="json-pane">
+      <div class="pane-h">Updated inputs.json (defaults + overrides)</div>
+      <pre id="json"></pre>
+    </div>
+  </aside>
+</div>
+
+<div class="pop-scrim" id="popScrim"></div>
+<div class="pop" id="uploadPop">
+  <div class="pop__h">Saved to inputs.json</div>
+  <p class="pop__p">This page was generated by the CLI offline, so it can&rsquo;t run
+     the upload for you. Your edits were written to
+     <code class="inl">./inputs.json</code>. Run this command to upload them:</p>
+  <label class="toggle"><input type="checkbox" id="useDefaults" />
+    Omit <code class="inl">-g</code>/<code class="inl">-p</code> (az config defaults set)</label>
+  <div class="cmd" id="cmd"></div>
+  <div>
+    <button class="btn" id="copyBtn">Copy command</button>
+    <button class="btn ghost" id="popClose">Close</button>
+  </div>
+</div>
+
+<script>
+// ---- Runbook (spec + inputs), from the saved contract files ---------------
+// spec.json supplies the authoritative per-step entity list (so entities with
+// no overrides yet still render). inputs.json supplies schema + stepInputs.
+const INFRA = ['infra-vm1', 'infra-vm2', 'infra-vm3'];
+const APP = ['app-vm1', 'app-vm2', 'app-vm3'];
+const SPEC = {
+  entities: [...INFRA, ...APP].map(n => ({ id: n, displayName: n })),
+  workstreams: [
+    { id: 'workstream-0', displayName: 'Initialization',
+      steps: [{ stepId: 'vm.agentless.setup-001', entities: [] }] },
+    { id: 'workstream-1', displayName: 'Infra tier', steps: [
+      { stepId: 'vm.agentless.dataSync-001', entities: INFRA },
+      { stepId: 'vm.agentless.testMigration-001', entities: INFRA },
+      { stepId: 'vm.agentless.testMigrationCleanup-001', entities: INFRA },
+      { stepId: 'vm.agentless.migration-001', entities: INFRA },
+      { stepId: 'vm.agentless.cutover-001', entities: INFRA }] },
+    { id: 'workstream-2', displayName: 'App tier', steps: [
+      { stepId: 'vm.agentless.dataSync-002', entities: APP },
+      { stepId: 'vm.agentless.testMigration-002', entities: APP },
+      { stepId: 'vm.agentless.testMigrationCleanup-002', entities: APP },
+      { stepId: 'vm.agentless.migration-002', entities: APP },
+      { stepId: 'vm.agentless.cutover-002', entities: APP },
+      { stepId: 'vm.agentless.cleanup-001', entities: [...INFRA, ...APP] }] }
+  ]
+};
+const STEP_ENTITIES = {};
+SPEC.workstreams.forEach(w => w.steps.forEach(s => { STEP_ENTITIES[s.stepId] = s.entities; }));
+function entitiesFor(sid) { return (STEP_ENTITIES[sid] || []).map(n => ({ id: n, name: n })); }
+
+// Short ARM ids to keep the sample readable.
+const SUB = '/subscriptions/4bd2aa0f-2bd2-4d67-91a8-5a4533d58600';
+const SA = SUB + '/resourceGroups/gangadirg/providers/Microsoft.Storage/storageAccounts/nsxcachesa01';
+const PRODVNET = SUB + '/resourceGroups/gangadirg/providers/Microsoft.Network/virtualNetworks/prod-vnet';
+const TESTVNET = SUB + '/resourceGroups/gangadirg/providers/Microsoft.Network/virtualNetworks/test-vnet';
+const TARGETRG = SUB + '/resourceGroups/target-rg';
+
+const DOC = {
+  "runbookId": "/subscriptions/00000000-0000-0000-0000-000000000001/resourcegroups/demo-rg/providers/microsoft.migrate/migrateprojects/demo-project/runbooks/kl-local-test-runbook",
+  "waveId": "/subscriptions/00000000-0000-0000-0000-000000000001/resourcegroups/demo-rg/providers/microsoft.migrate/migrateprojects/demo-project/waves/demo-wave",
+  "migrateProjectId": "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/demo-rg/providers/Microsoft.Migrate/migrateProjects/demo-project",
+  // schema keyed by step TYPE (no -00N); every instance resolves its rules here.
+  "schema": {
+    "vm.agentless.setup": {
+      "applianceName": { "type": "string", "required": true, "scope": "Appliance", "isEditable": false, "description": "Azure Migrate VMware appliance name; predetermined, not customer-selectable." },
+      "storageAccountId": { "type": "string", "required": true, "scope": "Appliance", "isEditable": true, "description": "Log/cache storage account ARM ID." },
+      "targetRegionName": { "type": "string", "required": true, "scope": "Appliance", "isEditable": true, "description": "Azure region; immutable post replication start." }
+    },
+    "vm.agentless.dataSync": {
+      "disks": { "type": "array", "required": true, "scope": "Entity", "isEditable": true, "description": "Per-disk target SKUs (diskId / isOSDisk / diskType)." },
+      "licenseType": { "type": "string", "required": true, "scope": "Entity", "isEditable": true, "allowedValues": ["NoLicenseType", "WindowsServer"] },
+      "targetNetworkId": { "type": "string", "required": true, "scope": "Entity", "isEditable": true, "description": "Production VNet; per entity, editable until cutover." },
+      "targetResourceGroupId": { "type": "string", "required": true, "scope": "Entity", "isEditable": true },
+      "targetSubnetName": { "type": "string", "required": true, "scope": "Entity", "isEditable": true },
+      "targetVmName": { "type": "string", "required": true, "scope": "Entity", "isEditable": true, "description": "Usually overridden per entity." },
+      "targetVmSize": { "type": "string", "required": true, "scope": "Entity", "isEditable": true, "description": "Azure VM SKU." },
+      "availabilityZone": { "type": "integer", "required": false, "scope": "Entity", "isEditable": true, "allowedValues": [1, 2, 3] },
+      "isRunningSqlServer": { "type": "boolean", "required": false, "scope": "Entity", "isEditable": true },
+      "linuxLicenseType": { "type": "string", "required": false, "scope": "Entity", "isEditable": true, "allowedValues": ["NoLicenseType", "LinuxServer"] },
+      "tags": { "type": "object", "required": false, "scope": "Entity", "isEditable": true },
+      "targetVmSecurityType": { "type": "string", "required": false, "scope": "Entity", "isEditable": true, "allowedValues": ["Standard", "TrustedLaunch", "ConfidentialVM"] },
+      "testNetworkId": { "type": "string", "required": false, "scope": "Entity", "isEditable": true },
+      "testSubnetName": { "type": "string", "required": false, "scope": "Entity", "isEditable": true }
+    },
+    "vm.agentless.testMigration": {
+      "osUpgradeVersion": { "type": "string", "required": false, "scope": "Entity", "isEditable": true },
+      "testNetworkId": { "type": "string", "required": false, "scope": "Entity", "isEditable": true, "description": "Isolated test VNet; per entity at each Test Migration." },
+      "testSubnetName": { "type": "string", "required": false, "scope": "Entity", "isEditable": true }
+    },
+    "vm.agentless.migration": {
+      "performShutdown": { "type": "boolean", "required": true, "scope": "Entity", "isEditable": true, "description": "Per-entity flag passed to the migrate call." },
+      "availabilityZone": { "type": "integer", "required": false, "scope": "Entity", "isEditable": true, "allowedValues": [1, 2, 3] },
+      "licenseType": { "type": "string", "required": false, "scope": "Entity", "isEditable": true, "allowedValues": ["NoLicenseType", "WindowsServer"] },
+      "osUpgradeVersion": { "type": "string", "required": false, "scope": "Entity", "isEditable": true },
+      "tags": { "type": "object", "required": false, "scope": "Entity", "isEditable": true },
+      "targetVmName": { "type": "string", "required": false, "scope": "Entity", "isEditable": true },
+      "targetVmSize": { "type": "string", "required": false, "scope": "Entity", "isEditable": true }
+    }
+  },
+  // stepInputs keyed by INSTANCE (-00N). Appliance step = flat values; entity
+  // steps = step-level defaults + workloadOverrides (only the overridden fields).
+  "stepInputs": {
+    "vm.agentless.setup-001": { "applianceName": "nsx-appliance-01", "storageAccountId": SA, "targetRegionName": "eastus2" },
+    "vm.agentless.dataSync-001": {
+      "disks": [{ "diskId": "disk-os", "isOSDisk": true, "diskType": "Premium_LRS" }],
+      "licenseType": "WindowsServer", "targetNetworkId": PRODVNET, "targetResourceGroupId": TARGETRG,
+      "targetSubnetName": "infra-subnet", "targetVmName": null, "targetVmSize": "Standard_D2s_v5",
+      "availabilityZone": null, "isRunningSqlServer": false, "linuxLicenseType": "NoLicenseType",
+      "tags": { "tier": "infra" }, "targetVmSecurityType": "TrustedLaunch",
+      "testNetworkId": TESTVNET, "testSubnetName": "test-subnet",
+      "workloadOverrides": {
+        "infra-vm1": { "targetVmName": "infra-vm1-az", "availabilityZone": 1, "targetVmSize": "Standard_D4s_v5" },
+        "infra-vm2": { "targetVmName": "infra-vm2-az", "availabilityZone": 2 }
+      }
+    },
+    "vm.agentless.dataSync-002": {
+      "disks": [{ "diskId": "disk-os", "isOSDisk": true, "diskType": "Premium_LRS" }],
+      "licenseType": "WindowsServer", "targetNetworkId": PRODVNET, "targetResourceGroupId": TARGETRG,
+      "targetSubnetName": "app-subnet", "targetVmName": null, "targetVmSize": "Standard_D2s_v5",
+      "availabilityZone": null, "isRunningSqlServer": false, "linuxLicenseType": "NoLicenseType",
+      "tags": { "tier": "app" }, "targetVmSecurityType": "TrustedLaunch",
+      "testNetworkId": TESTVNET, "testSubnetName": "test-subnet",
+      "workloadOverrides": {
+        "app-vm1": { "targetVmName": "app-vm1-az", "availabilityZone": 1 }
+      }
+    },
+    "vm.agentless.testMigration-001": {
+      "osUpgradeVersion": null, "testNetworkId": TESTVNET, "testSubnetName": "test-subnet",
+      "workloadOverrides": { "infra-vm1": { "osUpgradeVersion": "WindowsServer2022" } }
+    },
+    "vm.agentless.testMigration-002": {
+      "osUpgradeVersion": null, "testNetworkId": TESTVNET, "testSubnetName": "test-subnet",
+      "workloadOverrides": {}
+    },
+    "vm.agentless.testMigrationCleanup-001": {},
+    "vm.agentless.testMigrationCleanup-002": {},
+    "vm.agentless.migration-001": {
+      "performShutdown": true, "availabilityZone": null, "licenseType": "WindowsServer",
+      "osUpgradeVersion": null, "tags": { "tier": "infra" }, "targetVmName": null, "targetVmSize": "Standard_D2s_v5",
+      "workloadOverrides": { "infra-vm1": { "availabilityZone": 1, "targetVmName": "infra-vm1-az" } }
+    },
+    "vm.agentless.migration-002": {
+      "performShutdown": true, "availabilityZone": null, "licenseType": "WindowsServer",
+      "osUpgradeVersion": null, "tags": { "tier": "app" }, "targetVmName": null, "targetVmSize": "Standard_D2s_v5",
+      "workloadOverrides": {}
+    },
+    "vm.agentless.cutover-001": {},
+    "vm.agentless.cutover-002": {},
+    "vm.agentless.cleanup-001": {}
+  }
+};
+
+// -g/-p/-n parsed from the runbookId ARM id (no metadata block in the contract).
+function armSeg(id, seg) { const m = new RegExp('/' + seg + '/([^/]+)', 'i').exec(id || ''); return m ? m[1] : ''; }
+const META = {
+  runbook: armSeg(DOC.runbookId, 'runbooks'),
+  resourceGroup: armSeg(DOC.runbookId, 'resourcegroups'),
+  project: armSeg(DOC.runbookId, 'migrateprojects'),
+  wave: armSeg(DOC.waveId, 'waves')
+};
+// Snapshot of what was downloaded, to flag changed (dirty) fields + reset.
+const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
+const DSTAR = '<span class="dirty-star" title="Changed from the downloaded inputs.json">*</span>';
+
+const STEP_LABELS = {
+  'vm.agentless.setup': 'Setup', 'vm.agentless.dataSync': 'Data sync',
+  'vm.agentless.testMigration': 'Test migration', 'vm.agentless.testMigrationCleanup': 'Test cleanup',
+  'vm.agentless.migration': 'Migration', 'vm.agentless.cutover': 'Cutover', 'vm.agentless.cleanup': 'Cleanup'
+};
+
+// ---- helpers --------------------------------------------------------------
+const stepType = sid => sid.replace(/-\d+$/, '');
+const rulesFor = sid => DOC.schema[stepType(sid)] || {};
+const stepFields = sid => Object.keys(rulesFor(sid));
+// A step is entity-level if any input is entity-scoped; then EVERY input is
+// overridable per entity (no mixed steps). Otherwise all inputs are appliance-level.
+const stepIsEntity = sid => stepFields(sid).some(f => rulesFor(sid)[f].scope === 'Entity');
+const entityFields = sid => stepIsEntity(sid) ? stepFields(sid) : [];
+const applianceFields = sid => stepIsEntity(sid) ? [] : stepFields(sid);
+const isEmpty = v => v === null || v === undefined || v === '';
+const has = (o, k) => !!(o && Object.prototype.hasOwnProperty.call(o, k));
+function fieldError(rule, v) {
+  if (rule.required && isEmpty(v)) return 'Required';
+  if (!isEmpty(v) && rule.allowedValues && !rule.allowedValues.map(String).includes(String(v)))
+    return 'Not an allowed value';
+  if ((rule.type === 'array' || rule.type === 'object') && typeof v === 'string') return 'Invalid JSON';
+  return null;
+}
+function woFor(sid, eid) { return (DOC.stepInputs[sid].workloadOverrides || {})[eid]; }
+function hasOverride(sid, eid, f) { return has(woFor(sid, eid), f); }
+function effective(sid, eid, f) { const wo = woFor(sid, eid); return has(wo, f) ? wo[f] : DOC.stepInputs[sid][f]; }
+function overrideCount(sid, f) { return entitiesFor(sid).filter(e => hasOverride(sid, e.id, f)).length; }
+function entityOverrideCount(sid, eid) { return entityFields(sid).filter(f => hasOverride(sid, eid, f)).length; }
+function entityErrors(sid, eid) { return entityFields(sid).filter(f => fieldError(rulesFor(sid)[f], effective(sid, eid, f))).length; }
+function stepEntity(delta) {
+  const es = entitiesFor(current); if (!es.length) return;
+  const i = es.findIndex(e => e.id === selEntity);
+  selEntity = es[(i + delta + es.length) % es.length].id;
+  renderOverrides();
+}
+function fmt(v) { return v == null ? '(empty)' : (typeof v === 'object' ? JSON.stringify(v) : String(v)); }
+function stepErrors(sid) {
+  let n = 0; const data = DOC.stepInputs[sid], rules = rulesFor(sid);
+  applianceFields(sid).forEach(f => { if (fieldError(rules[f], data[f])) n++; });
+  entityFields(sid).forEach(f => entitiesFor(sid).forEach(e => { if (fieldError(rules[f], effective(sid, e.id, f))) n++; }));
+  return n;
+}
+const eqv = (a, b) => JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
+function dirtyTop(sid, f) { return !eqv(DOC.stepInputs[sid][f], (ORIGINAL[sid] || {})[f]); }
+function dirtyOverride(sid, eid, f) {
+  const ow = (ORIGINAL[sid] || {}).workloadOverrides || {};
+  const oHas = has(ow[eid], f), cHas = hasOverride(sid, eid, f);
+  if (oHas !== cHas) return true;
+  return cHas ? !eqv(woFor(sid, eid)[f], ow[eid][f]) : false;
+}
+
+// ---- state ----------------------------------------------------------------
+let current = Object.keys(DOC.stepInputs)[0];
+let selEntity = null;
+
+// ---- meta / tabs ----------------------------------------------------------
+function renderMeta() {
+  const m = META;
+  document.getElementById('title').textContent = 'Runbook parameters \u2014 ' + m.runbook;
+  document.getElementById('meta').innerHTML = [
+    ['Runbook', m.runbook], ['Resource group', m.resourceGroup], ['Project', m.project],
+    ['Wave', m.wave], ['Entities', SPEC.entities.length]
+  ].map(([l, v]) => `<div class="meta"><span class="meta__label">${l}</span>
+     <span class="meta__value">${v}</span></div>`).join('');
+}
+function renderTabs() {
+  document.getElementById('steps').innerHTML = Object.keys(DOC.stepInputs).map((sid, i) => {
+    const n = stepErrors(sid);
+    const badge = Object.keys(rulesFor(sid)).length === 0 ? ''
+      : (n > 0 ? `<span class="badge">${n}</span>` : `<span class="badge ok">&#10003;</span>`);
+    return `<div class="steptab ${sid === current ? 'on' : ''}" data-sid="${sid}">
+      <span class="idx">${i + 1}</span><span class="nm">${STEP_LABELS[stepType(sid)] || sid}</span>${badge}</div>`;
+  }).join('');
+  document.querySelectorAll('.steptab').forEach(t =>
+    t.addEventListener('click', () => { current = t.dataset.sid; renderAll(); }));
+}
+
+// ---- editors --------------------------------------------------------------
+function scalarCtrl(path, rule, value, lockable) {
+  const dis = lockable && rule.isEditable === false ? 'disabled' : '';
+  const v = value == null ? '' : value;
+  if (rule.allowedValues) return selCtrl(path, rule, v, dis, '-- unset --', '');
+  if (rule.type === 'boolean') return boolCtrl(path, v, dis, '-- unset --', '');
+  if (rule.type === 'array' || rule.type === 'object')
+    return `<textarea data-path="${path}" ${dis}>${value == null ? '' : JSON.stringify(value, null, 2)}</textarea>`;
+  return `<input type="text" data-path="${path}" value="${v}" ${dis} placeholder="${rule.type}" />`;
+}
+function overrideCtrl(path, rule, value, defVal, hasOvr) {
+  const ph = '= ' + fmt(defVal);
+  if (rule.allowedValues) return selCtrl(path, rule, hasOvr ? value : '__inh__', '', '(inherit default)', '__inh__');
+  if (rule.type === 'boolean') return boolCtrl(path, hasOvr ? value : '__inh__', '', '(inherit default)', '__inh__');
+  if (rule.type === 'array' || rule.type === 'object')
+    return `<textarea data-path="${path}" placeholder="inherit default">${hasOvr ? JSON.stringify(value, null, 2) : ''}</textarea>`;
+  return `<input type="text" data-path="${path}" value="${hasOvr ? (value == null ? '' : value) : ''}" placeholder="${ph}" />`;
+}
+function selCtrl(path, rule, v, dis, firstLabel, firstVal) {
+  return `<select data-path="${path}" ${dis}><option value="${firstVal}">${firstLabel}</option>` +
+    rule.allowedValues.map(o => `<option value="${o}" ${String(o) === String(v) ? 'selected' : ''}>${o}</option>`).join('') +
+    `</select>`;
+}
+function boolCtrl(path, v, dis, firstLabel, firstVal) {
+  const s = x => String(v) === x ? 'selected' : '';
+  return `<select data-path="${path}" ${dis}><option value="${firstVal}">${firstLabel}</option>
+    <option value="true" ${s('true')}>true</option><option value="false" ${s('false')}>false</option></select>`;
+}
+
+// ---- middle: step defaults ------------------------------------------------
+function renderForm() {
+  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
+  const ec = entitiesFor(sid).length;
+  let html = `<h2 class="step-h">${STEP_LABELS[stepType(sid)] || sid}</h2>
+    <p class="step-sub">Step id <code>${sid}</code> &middot; ${ec ? ec + ' entities' : 'appliance-scope'}</p>`;
+  if (Object.keys(rules).length === 0) {
+    document.getElementById('form').innerHTML = html + `<p class="step-sub">This step has no configurable inputs.</p>`;
+    renderOverrides(); return;
+  }
+  if (applianceFields(sid).length) {
+    html += `<div class="sec-h">Appliance-scope (one value for the step)</div>`;
+    applianceFields(sid).forEach(f => {
+      const r = rules[f], req = r.required ? '<span class="req">*</span>' : '';
+      const lock = r.isEditable === false ? '<span class="lock">&#128274;</span>' : '';
+      html += `<div class="irow"><div class="irow__top"><span class="irow__nm">${f}${req}${lock}${dirtyTop(sid, f) ? DSTAR : ''}</span></div>
+        <div class="irow__meta"><span class="scope-pill scope-Appliance">Appliance</span>
+          &middot; ${r.type}${r.allowedValues ? ' &middot; enum' : ''}</div>
+        ${scalarCtrl(`A|${sid}|${f}`, r, data[f], true)}
+        <div class="err" data-err="A|${sid}|${f}"></div></div>`;
+    });
+  }
+  if (entityFields(sid).length) {
+    html += `<div class="sec-h">Entity-scope defaults (apply to every entity unless overridden)</div>`;
+    entityFields(sid).forEach(f => {
+      const r = rules[f], req = r.required ? '<span class="req">*</span>' : '';
+      const c = overrideCount(sid, f);
+      const chip = c > 0 ? `<span class="ovr-chip">${c}/${entitiesFor(sid).length} overridden</span>`
+                         : `<span class="ovr-chip none">no overrides</span>`;
+      html += `<div class="irow"><div class="irow__top"><span class="irow__nm">${f}${req}${dirtyTop(sid, f) ? DSTAR : ''}</span>${chip}</div>
+        <div class="irow__meta"><span class="scope-pill scope-Entity">Entity</span>
+          &middot; ${r.type}${r.allowedValues ? ' &middot; enum' : ''}</div>
+        <div class="dlabel">Default (all entities)</div>
+        ${scalarCtrl(`D|${sid}|${f}`, r, data[f], false)}
+        ${r.description ? `<div class="irow__desc">${r.description}</div>` : ''}
+        <div class="err" data-err="D|${sid}|${f}"></div></div>`;
+    });
+  }
+  document.getElementById('form').innerHTML = html;
+  bindInputs('#form');
+  renderOverrides();
+  refreshValidation();
+}
+
+// ---- right-top: per-ENTITY overrides (pick entity, edit all its inputs) ----
+function renderOverrides() {
+  const pane = document.getElementById('ovPane');
+  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
+  const fields = entityFields(sid);
+  if (!fields.length) {
+    pane.innerHTML = `<div class="pane-h">Per-entity overrides</div>
+      <div class="ov-empty">This step has no per-entity inputs.</div>`;
+    return;
+  }
+  const es = entitiesFor(sid);
+  if (!es.length) { pane.innerHTML = `<div class="pane-h">Per-entity overrides</div>
+      <div class="ov-empty">This step has no entities.</div>`; return; }
+  const cur = es.find(e => e.id === selEntity) || es[0];
+  selEntity = cur.id;
+  const ovCount = entityOverrideCount(sid, cur.id);
+  const rows = fields.map(f => {
+    const r = rules[f], req = r.required ? '<span class="req">*</span>' : '';
+    const ov = hasOverride(sid, cur.id, f);
+    return `<div class="frow" data-fld="${f}">
+      <div class="frow__nm">${f}${req}${dirtyOverride(sid, cur.id, f) ? DSTAR : ''}</div>
+      <div class="frow__meta">${r.type}${r.allowedValues ? ' &middot; enum' : ''}</div>
+      ${overrideCtrl(`O|${sid}|${cur.id}|${f}`, r, ov ? woFor(sid, cur.id)[f] : null, data[f], ov)}
+      ${ov ? '<span class="tag">override</span>' : ''}
+      <div class="inh" data-inh="${sid}|${cur.id}|${f}"></div>
+      <div class="err" data-err="O|${sid}|${cur.id}|${f}"></div>
+    </div>`;
+  }).join('');
+  pane.innerHTML = `<div class="pane-h">Per-entity overrides</div>
+    <div class="ent-tools">
+      <button class="btn ghost sm" id="entPrev" title="Previous entity">&#9664;</button>
+      <label>Entity
+        <select id="entSel">${es.map(e => {
+          const oc = entityOverrideCount(sid, e.id), er = entityErrors(sid, e.id);
+          const tail = (oc ? ` \u2022 ${oc} override${oc > 1 ? 's' : ''}` : '') + (er ? ` \u2022 ${er} missing` : '');
+          return `<option value="${e.id}" ${e.id === cur.id ? 'selected' : ''}>${e.name}${tail}</option>`;
+        }).join('')}</select>
+      </label>
+      <button class="btn ghost sm" id="entNext" title="Next entity">&#9654;</button>
+      <button class="btn ghost sm" id="entClear">Clear overrides</button>
+    </div>
+    <div class="ent-summary">Editing <b>${cur.name}</b> <code class="inl">${cur.id}</code> &middot;
+      overriding ${ovCount} of ${fields.length} inputs; the rest inherit the defaults.</div>
+    ${rows}`;
+
+  bindInputs('#ovPane');
+  document.getElementById('entSel').addEventListener('change', e => { selEntity = e.target.value; renderOverrides(); });
+  document.getElementById('entPrev').addEventListener('click', () => stepEntity(-1));
+  document.getElementById('entNext').addEventListener('click', () => stepEntity(1));
+  document.getElementById('entClear').addEventListener('click', () => {
+    const w = woFor(sid, cur.id); if (w) fields.forEach(f => delete w[f]);
+    renderForm();
+  });
+  refreshValidation();
+}
+
+function bindInputs(scope) {
+  document.querySelectorAll(`${scope} [data-path]`).forEach(el => {
+    const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+    el.addEventListener(ev, () => setValue(el.dataset.path, el));
+  });
+}
+
+// ---- edit + validate ------------------------------------------------------
+function coerce(raw, rule) {
+  if (raw === '' || raw === '__inh__') return null;
+  if (rule.type === 'boolean') return raw === 'true';
+  if (rule.type === 'integer') return parseInt(raw, 10);
+  if (rule.type === 'array' || rule.type === 'object') { try { return JSON.parse(raw); } catch (e) { return raw; } }
+  return raw;
+}
+function ensureWo(sid, eid) {
+  const s = DOC.stepInputs[sid];
+  if (!s.workloadOverrides) s.workloadOverrides = {};
+  if (!s.workloadOverrides[eid]) s.workloadOverrides[eid] = {};
+  return s.workloadOverrides[eid];
+}
+function setValue(path, el) {
+  const p = path.split('|'), kind = p[0], sid = p[1], raw = el.value;
+  if (kind === 'A' || kind === 'D') {
+    DOC.stepInputs[sid][p[2]] = coerce(raw, rulesFor(sid)[p[2]]);
+    if (kind === 'D') { updateOvrChip(sid, p[2]); refreshValidation(); renderTabs(); return; }
+  } else {
+    const eid = p[2], f = p[3];
+    if (raw === '' || raw === '__inh__') { const w = woFor(sid, eid); if (w) delete w[f]; renderOverrides(); }
+    else { ensureWo(sid, eid)[f] = coerce(raw, rulesFor(sid)[f]); }
+    updateOvrChip(sid, p[3]); refreshValidation(); renderTabs(); return;
+  }
+  refreshValidation(); renderTabs();
+}
+function updateOvrChip(sid, f) {
+  const chip = document.querySelector(`#form .irow [data-err="D|${sid}|${f}"]`);
+  // simplest: re-derive chip via full row lookup
+  const rows = document.querySelectorAll('#form .irow');
+  rows.forEach(row => {
+    const err = row.querySelector(`[data-err="D|${sid}|${f}"]`);
+    if (!err) return;
+    const c = overrideCount(sid, f), el = row.querySelector('.ovr-chip');
+    if (el) { el.textContent = c > 0 ? `${c}/${entitiesFor(sid).length} overridden` : 'no overrides';
+      el.className = 'ovr-chip' + (c > 0 ? '' : ' none'); }
+  });
+}
+function ctrlEl(path) { return document.querySelector(`[data-path="${path}"]`); }
+function mark(path, err) {
+  const el = ctrlEl(path); if (el) el.classList.toggle('bad', !!err);
+  const e = document.querySelector(`[data-err="${path}"]`); if (e) e.textContent = err || '';
+}
+function refreshValidation() {
+  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
+  applianceFields(sid).forEach(f => mark(`A|${sid}|${f}`, fieldError(rules[f], data[f])));
+  entityFields(sid).forEach(f => {
+    const r = rules[f];
+    const inheritingBad = entitiesFor(sid).some(e => !hasOverride(sid, e.id, f)) && !!fieldError(r, data[f]);
+    mark(`D|${sid}|${f}`, inheritingBad ? fieldError(r, data[f]) : null);
+    // right pane shows the selected entity's inputs
+    const ov = hasOverride(sid, selEntity, f), err = fieldError(r, effective(sid, selEntity, f));
+    mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null);
+    const inh = document.querySelector(`[data-inh="${sid}|${selEntity}|${f}"]`);
+    if (inh) { inh.textContent = ov ? '' : (err ? `inherits default \u2014 ${err}` : `inherits default (${fmt(data[f])})`);
+      inh.style.color = (!ov && err) ? 'var(--err)' : 'var(--muted)'; }
+  });
+  sync();
+}
+function sync() {
+  const m = META;
+  document.getElementById('json').textContent = JSON.stringify({ stepInputs: DOC.stepInputs }, null, 2);
+  const omit = document.getElementById('useDefaults').checked;
+  document.getElementById('cmd').textContent =
+    `az migrate runbook parameter upload${omit ? '' : ` -g ${m.resourceGroup} -p ${m.project}`} -n ${m.runbook} --file ./inputs.json`;
+  const total = Object.keys(DOC.stepInputs).reduce((a, s) => a + stepErrors(s), 0);
+  const vs = document.getElementById('vsummary');
+  if (total > 0) { vs.className = 'vsummary bad2'; vs.textContent = `${total} field(s) still empty/invalid \u2014 you can still upload a partial update.`; }
+  else { vs.className = 'vsummary good'; vs.textContent = 'All required fields satisfied for every entity.'; }
+  document.getElementById('uploadBtn').disabled = false; // partial upload allowed
+}
+function renderAll() { renderTabs(); renderForm(); }
+
+// ---- toolbar / popover ----------------------------------------------------
+function firstFailingStep() { return Object.keys(DOC.stepInputs).find(s => stepErrors(s) > 0); }
+function saveFile() { sync(); return true; } // mock: page writes edited inputs to ./inputs.json
+function validate() {
+  saveFile(); // Validate persists the current (possibly partial) inputs to the file.
+  const total = Object.keys(DOC.stepInputs).reduce((a, s) => a + stepErrors(s), 0);
+  if (total > 0) {
+    const bad = firstFailingStep();
+    if (bad && bad !== current) { current = bad; renderAll(); }
+    toast(`Saved ./inputs.json \u2014 ${total} field(s) still empty (partial upload allowed).`);
+  } else { toast('Saved ./inputs.json \u2014 all inputs valid.'); }
+}
+function upload() {
+  saveFile(); // ensure the file reflects the latest edits, even if partial
+  document.getElementById('popScrim').classList.add('open');
+  document.getElementById('uploadPop').classList.add('open');
+}
+function closePop() {
+  document.getElementById('popScrim').classList.remove('open');
+  document.getElementById('uploadPop').classList.remove('open');
+}
+document.getElementById('validateBtn').addEventListener('click', validate);
+document.getElementById('uploadBtn').addEventListener('click', upload);
+document.getElementById('resetBtn').addEventListener('click', () => {
+  DOC.stepInputs = JSON.parse(JSON.stringify(ORIGINAL));
+  renderAll(); toast('Reverted to the downloaded inputs.json.');
+});
+document.getElementById('popClose').addEventListener('click', closePop);
+document.getElementById('popScrim').addEventListener('click', closePop);
+document.getElementById('useDefaults').addEventListener('change', sync);
+document.getElementById('copyBtn').addEventListener('click', () => {
+  navigator.clipboard && navigator.clipboard.writeText(document.getElementById('cmd').textContent);
+  toast('Command copied.');
+});
+let toastT;
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg;
+  clearTimeout(toastT); toastT = setTimeout(() => { t.textContent = ''; }, 3200); }
+
+renderMeta();
+renderAll();
+
+// ---- resizable panes (drag the gutters to widen the left/right panes) ------
+(function () {
+  const layout = document.getElementById('layout');
+  function bind(id, varName, edge) {
+    const g = document.getElementById(id);
+    g.addEventListener('mousedown', e => {
+      e.preventDefault();
+      g.classList.add('drag');
+      document.body.style.userSelect = 'none';
+      const move = ev => {
+        const r = layout.getBoundingClientRect();
+        let w = edge === 'left' ? ev.clientX - r.left : r.right - ev.clientX;
+        w = Math.max(140, Math.min(w, r.width - 320));
+        layout.style.setProperty(varName, w + 'px');
+      };
+      const up = () => {
+        g.classList.remove('drag');
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+      };
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    });
+  }
+  bind('gutterL', '--left', 'left');
+  bind('gutterR', '--right', 'right');
+})();
+</script>
+</body>
+</html>

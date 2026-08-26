@@ -23,7 +23,10 @@ def load_runbook_arguments(self, _):
         c.argument(
             'project_name',
             options_list=['--project-name', '-p'],
-            help='Name of the Azure Migrate project.')
+            configured_default='migrate_project',
+            help='Name of the Azure Migrate project. You can configure the '
+                 'default using `az configure --defaults '
+                 'migrate_project=<name>`.')
         c.argument(
             'runbook_name',
             options_list=['--name', '-n', '--runbook-name'],
@@ -36,6 +39,22 @@ def load_runbook_arguments(self, _):
             validator=validate_generate,
             help='Name of the wave to generate the runbook from '
                  '(required).')
+        c.argument(
+            'no_visualize',
+            options_list=['--no-visualize'],
+            action='store_true',
+            help='Do not open the runbook definition HTML view after the '
+                 'runbook is generated. Useful for automation and '
+                 'non-interactive environments.')
+
+    with self.argument_context('migrate runbook regenerate') as c:
+        c.argument(
+            'no_visualize',
+            options_list=['--no-visualize'],
+            action='store_true',
+            help='Do not open the runbook definition HTML view after the '
+                 'runbook is regenerated. Useful for automation and '
+                 'non-interactive environments.')
 
     with self.argument_context('migrate runbook update') as c:
         c.argument(
@@ -93,7 +112,7 @@ def load_runbook_arguments(self, _):
         c.argument(
             'migration_entity_ids',
             options_list=['--migration-entity-ids'], nargs='*',
-            help='Space-separated migration entity ids to associate '
+            help='Space-separated migration entity GUIDs to associate '
                  'with the step.')
 
     with self.argument_context(
@@ -146,6 +165,16 @@ def load_runbook_arguments(self, _):
             help='Display name for the merged workstream.')
 
     with self.argument_context(
+            'migrate runbook execution start') as c:
+        c.argument(
+            'no_visualize',
+            options_list=['--no-visualize'],
+            action='store_true',
+            help='Do not open the live execution watch view after the '
+                 'execution starts. Useful for automation and '
+                 'non-interactive environments.')
+
+    with self.argument_context(
             'migrate runbook execution show') as c:
         c.argument(
             'execution_id', options_list=['--execution-id'], required=True,
@@ -159,7 +188,7 @@ def load_runbook_arguments(self, _):
                  'execution reaches a terminal state.')
         c.argument(
             'interval', options_list=['--interval'], type=int,
-            help='Refresh interval in seconds for --watch (default: 5).')
+            help='Refresh interval in seconds for --watch (default: 60).')
 
     with self.argument_context(
             'migrate runbook execution pause') as c:
@@ -211,8 +240,8 @@ def load_runbook_arguments(self, _):
             help='Output path for the generated HTML file '
                  '(default: current directory).')
         c.argument(
-            'open_file', options_list=['--open'], action='store_true',
-            help='Open the generated HTML file in the default browser.')
+            'no_open', options_list=['--no-open'], action='store_true',
+            help='Write the HTML file but do not open it in a browser.')
         c.argument(
             'from_file', options_list=['--from-file'],
             help='Render from a local runbook definition JSON file '
@@ -232,8 +261,8 @@ def load_runbook_arguments(self, _):
             help='Output path for the generated HTML file '
                  '(default: current directory).')
         c.argument(
-            'open_file', options_list=['--open'], action='store_true',
-            help='Open the generated HTML file in the default browser.')
+            'no_open', options_list=['--no-open'], action='store_true',
+            help='Write the HTML file but do not open it in a browser.')
         c.argument(
             'from_file', options_list=['--from-file'],
             help='Render from a local execution status JSON file '
@@ -244,7 +273,7 @@ def load_runbook_arguments(self, _):
                  'execution reaches a terminal state.')
         c.argument(
             'interval', options_list=['--interval'], type=int,
-            help='Refresh interval in seconds for --watch (default: 5).')
+            help='Refresh interval in seconds for --watch (default: 60).')
 
     with self.argument_context(
             'migrate runbook execution step retry') as c:
@@ -286,8 +315,8 @@ def load_runbook_arguments(self, _):
 
     with self.argument_context('migrate runbook parameter download') as c:
         c.argument(
-            'file', options_list=['--file'],
-            help='Output path for the parameters file '
+            'directory', options_list=['--directory'],
+            help='Output directory for the downloaded parameter files '
                  '(default: current directory).')
 
     with self.argument_context('migrate runbook parameter upload') as c:
@@ -301,8 +330,8 @@ def load_runbook_arguments(self, _):
             'execution_id', options_list=['--execution-id'], required=True,
             help='Id of the runbook execution.')
         c.argument(
-            'file', options_list=['--file'],
-            help='Output path for the input-parameters file '
+            'directory', options_list=['--directory'],
+            help='Output directory for the downloaded parameter files '
                  '(default: current directory).')
 
     with self.argument_context(
@@ -313,3 +342,36 @@ def load_runbook_arguments(self, _):
         c.argument(
             'file', options_list=['--file'], required=True,
             help='Path to the input-parameters JSON file to upload.')
+
+    with self.argument_context(
+            'migrate runbook parameter configure') as c:
+        c.argument(
+            'file', options_list=['--file'],
+            help='Output path for the generated HTML editor '
+                 '(default: current directory).')
+        c.argument(
+            'from_file', options_list=['--from-file'],
+            help='Render from a local parameters (inputs.json) file '
+                 'instead of fetching from the service.')
+        c.argument(
+            'spec_file', options_list=['--spec-file'],
+            help='Optional local spec JSON file supplying the per-step '
+                 'entity list when rendering from --from-file.')
+
+    with self.argument_context(
+            'migrate runbook execution parameter configure') as c:
+        c.argument(
+            'execution_id', options_list=['--execution-id'],
+            help='Id of the runbook execution.')
+        c.argument(
+            'file', options_list=['--file'],
+            help='Output path for the generated HTML editor '
+                 '(default: current directory).')
+        c.argument(
+            'from_file', options_list=['--from-file'],
+            help='Render from a local parameters (inputs.json) file '
+                 'instead of fetching from the service.')
+        c.argument(
+            'spec_file', options_list=['--spec-file'],
+            help='Optional local spec JSON file supplying the per-step '
+                 'entity list when rendering from --from-file.')

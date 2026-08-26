@@ -34,7 +34,7 @@ def merged_dep_ids(step):
     step = step or {}
     ids = []
     seen = set()
-    for key in ('prerequisite', 'dependsOn'):
+    for key in ('prerequisites', 'dependsOn'):
         for dep in step.get(key) or []:
             dep_id = _dep_id(dep)
             if dep_id and dep_id not in seen:

@@ -34,7 +34,7 @@ class StepRow:
     def __init__(self, step_id, name, deps=None, status=None,
                  workloads=None, workload_progress=None, entities=None,
                  step_ref=None, entity_names=None, prereqs=None,
-                 dep_details=None):
+                 dep_details=None, entity_groups=None):
         self.id = step_id
         self.name = name
         self.deps = deps or []
@@ -48,6 +48,8 @@ class StepRow:
         self.entity_names = entity_names or []
         self.prereqs = prereqs or []
         self.dep_details = dep_details or []
+        # Affected entity groups ("applications"), as display names.
+        self.entity_groups = entity_groups or []
 
 
 class Workstream:
@@ -139,18 +141,44 @@ def _entity_name_map(root):
     return names
 
 
+def _entity_group_map(root):
+    """Map every entity-group id to its display name (the "applications")."""
+    names = {}
+    for group in root.get('entityGroups') or []:
+        if isinstance(group, dict):
+            gid = group.get('id') or group.get('name')
+            if gid:
+                names[gid] = (
+                    group.get('displayName') or group.get('name') or gid)
+    return names
+
+
+def _step_groups(step, group_map):
+    """A step's ``affectedEntityGroups`` resolved to display names."""
+    return [group_map.get(gid, gid)
+            for gid in step.get('affectedEntityGroups') or []]
+
+
+_WAIT_FOR_LABELS = {
+    'wholeStep': 'Blocking',
+    'sameEntity': 'Soft',
+    'mappedEntities': 'Mapped',
+}
+
+
 def _dep_entries(raw, id_to_name):
     """Label a prerequisite/dependsOn list with resolved names and mode."""
     entries = []
     for dep in raw or []:
         if isinstance(dep, dict):
-            dep_id = dep.get('step') or dep.get('stepId')
-            mode = dep.get('mode')
+            dep_id = dep.get('stepId') or dep.get('step')
+            mode = dep.get('waitFor') or dep.get('mode')
         else:
             dep_id, mode = dep, None
         if not dep_id:
             continue
         name = id_to_name.get(dep_id, dep_id)
+        mode = _WAIT_FOR_LABELS.get(mode, mode)
         entries.append('%s (%s)' % (name, mode) if mode else name)
     return entries
 
@@ -161,6 +189,7 @@ def build_definition_view(document, title):
     id_to_name = _step_name_map(root)
     dep_labels = dep_utils.build_dep_labels(root)
     entity_map = _entity_name_map(root)
+    group_map = _entity_group_map(root)
     workstreams = []
     status_counts = {}
     for name, ws_id, steps in _iter_workstreams(root):
@@ -180,8 +209,9 @@ def build_definition_view(document, title):
                 step_ref=step.get('stepRef'),
                 entity_names=[entity_map.get(eid, eid)
                               for eid in entity_ids],
-                prereqs=_dep_entries(step.get('prerequisite'), id_to_name),
-                dep_details=_dep_entries(step.get('dependsOn'), id_to_name)))
+                prereqs=_dep_entries(step.get('prerequisites'), id_to_name),
+                dep_details=_dep_entries(step.get('dependsOn'), id_to_name),
+                entity_groups=_step_groups(step, group_map)))
         workstreams.append(Workstream(name, rows, ws_id))
 
     step_total = sum(len(ws.steps) for ws in workstreams)
@@ -198,23 +228,24 @@ def _definition_meta(root):
 
     Returns ``(meta, generated)`` where ``meta`` is a list of
     ``(label, value)`` header fields and ``generated`` is the
-    source-declared generation timestamp (or ``None``).
+    source-declared generation timestamp (or ``None``). The identifiers
+    (generatedAt / runbookId / waveId) live on the document envelope and are
+    carried onto the payload by the loading command.
     """
-    metadata = root.get('metadata') if isinstance(
-        root.get('metadata'), dict) else {}
-    generated = metadata.get('generatedAt')
+    generated = root.get('generatedAt')
     meta = []
     versions = root.get('stepLibraryVersions')
-    if isinstance(versions, dict) and versions:
+    if isinstance(versions, list) and versions:
         meta.append(('Runbook version', ', '.join(
-            '%s %s' % (name, ver) for name, ver in sorted(versions.items()))))
+            '%s %s' % (v.get('namespace'), v.get('version'))
+            for v in versions if isinstance(v, dict))))
     if generated:
         meta.append(('Generated', generated))
-    meta.append(('Data source', 'runbook.json'))
-    resource_id = root.get('runbookResourceId')
+    meta.append(('Data source', 'spec.json'))
+    resource_id = root.get('runbookId')
     if resource_id:
         meta.append(('Runbook resource id', resource_id))
-    wave_id = metadata.get('waveId')
+    wave_id = root.get('waveId')
     if wave_id:
         meta.append(('Wave id', wave_id))
     return meta, generated
@@ -228,10 +259,14 @@ def _entity_status(entity):
 
 
 def _progress_text(step):
-    """Return a "n/m completed" summary from ``entityExecutions``."""
+    """Return a "n/m completed" summary for an execution step."""
     explicit = step.get('workloadProgress')
     if explicit is not None:
         return str(explicit)
+    total = len(step.get('entities') or [])
+    done = step.get('entitiesCompleted')
+    if isinstance(done, int) and total:
+        return '%d/%d completed' % (done, total)
     entities = step.get('entityExecutions')
     if not isinstance(entities, list) or not entities:
         return None
@@ -252,6 +287,7 @@ def build_execution_view(document, title):
     """Build the grid view model for a runbook execution status document."""
     root = _unwrap(document)
     dep_labels = dep_utils.build_dep_labels(root)
+    group_map = _entity_group_map(root)
     workstreams = []
     status_counts = {}
     for name, ws_id, steps in _iter_workstreams(root):
@@ -265,7 +301,8 @@ def build_execution_view(document, title):
                             if isinstance(e, dict)]
             entities = [
                 EntityProgress(
-                    e.get('displayName') or e.get('entityId') or e.get('name'),
+                    e.get('entity') or e.get('displayName')
+                    or e.get('entityId') or e.get('name'),
                     _entity_status(e))
                 for e in entity_execs]
             rows.append(StepRow(
@@ -274,13 +311,14 @@ def build_execution_view(document, title):
                 deps=dep_utils.label_deps(step, dep_labels),
                 status=status,
                 workload_progress=_progress_text(step),
-                entities=entities))
+                entities=entities,
+                entity_groups=_step_groups(step, group_map)))
         workstreams.append(Workstream(name, rows, ws_id))
 
     summary = []
-    overall = root.get('state') or root.get('status')
+    overall = root.get('status') or root.get('state')
     if overall:
         summary.append(('State', overall))
     summary.extend(sorted(status_counts.items()))
-    meta = [('Data source', 'status.json')]
+    meta = [('Data source', 'executionStatus.json')]
     return RunbookView(title, KIND_EXECUTION, workstreams, summary, meta=meta)

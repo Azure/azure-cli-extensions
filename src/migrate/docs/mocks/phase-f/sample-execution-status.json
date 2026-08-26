@@ -1,0 +1,196 @@
+{
+    "$schema": "./execution-status.schema.json",
+    "generatedAt": "2026-08-21T10:30:00Z",
+    "executionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/runbooks/demo-runbook/executions/exec-001",
+    "runbookId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/runbooks/demo-runbook",
+    "waveId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/waves/wave-1",
+    "migrateProjectId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject",
+    "executionStatus": {
+        "stepLibraryVersions": [
+            { "namespace": "vm.agentless", "version": "1.0" },
+            { "namespace": "common", "version": "1.0" }
+        ],
+        "concurrencyConfig": [
+            { "stepRef": "vm.agentless.dataSync", "maxParallelExecutions": 300 },
+            { "stepRef": "vm.agentless.migration", "maxParallelExecutions": 50 },
+            { "stepRef": "vm.agentless.setup", "maxParallelExecutions": 1 }
+        ],
+        "entities": [
+            {
+                "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/migrationEntities/web-vm-01",
+                "displayName": "web-vm-01",
+                "workloadType": "VirtualMachine"
+            },
+            {
+                "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-demo/providers/Microsoft.Migrate/migrateProjects/demoProject/migrationEntities/db-vm-02",
+                "displayName": "db-vm-02",
+                "workloadType": "Database"
+            }
+        ],
+        "entityGroups": [
+            { "id": "group-app", "name": "group-app", "displayName": "Application Tier" }
+        ],
+        "stepsCompleted": 2,
+        "stepsInProgress": 1,
+        "stepsAwaitingUserAction": 0,
+        "stepsFailed": 0,
+        "stepsNotStarted": 1,
+        "status": "InProgress",
+        "startTime": "2026-08-21T10:00:00Z",
+        "lastUpdatedTime": "2026-08-21T10:30:00Z",
+        "workstreams": [
+            {
+                "id": "workstream-0",
+                "displayName": "Initialization",
+                "dependsOn": [],
+                "status": "Completed",
+                "startTime": "2026-08-21T10:00:00Z",
+                "endTime": "2026-08-21T10:02:00Z",
+                "steps": [
+                    {
+                        "stepId": "vm.agentless.setup-1",
+                        "displayName": "Setup (Shared Tool Setup)",
+                        "description": "One-time shared tool setup for the wave.",
+                        "stepRef": "vm.agentless.setup",
+                        "inputStatus": "fullyConfigured",
+                        "entities": [],
+                        "affectedEntityGroups": [],
+                        "prerequisites": [],
+                        "dependsOn": [],
+                        "entitiesCompleted": 0,
+                        "status": "Completed",
+                        "startTime": "2026-08-21T10:00:00Z",
+                        "endTime": "2026-08-21T10:02:00Z",
+                        "totalAttempts": 1,
+                        "attempts": [],
+                        "outputs": { "applianceValidated": true, "storageValidated": true },
+                        "entityExecutions": []
+                    }
+                ]
+            },
+            {
+                "id": "workstream-1",
+                "displayName": "waveapp",
+                "dependsOn": [ "workstream-0" ],
+                "status": "InProgress",
+                "startTime": "2026-08-21T10:02:00Z",
+                "steps": [
+                    {
+                        "stepId": "vm.agentless.dataSync-1",
+                        "displayName": "Data Sync",
+                        "description": "Replicate entity data to the target region.",
+                        "stepRef": "vm.agentless.dataSync",
+                        "inputStatus": "fullyConfigured",
+                        "entities": [ "web-vm-01", "db-vm-02" ],
+                        "affectedEntityGroups": [ "group-app" ],
+                        "prerequisites": [ { "stepId": "vm.agentless.setup-1", "waitFor": "step" } ],
+                        "dependsOn": [],
+                        "entitiesCompleted": 2,
+                        "status": "Completed",
+                        "startTime": "2026-08-21T10:02:00Z",
+                        "endTime": "2026-08-21T10:20:00Z",
+                        "totalAttempts": 1,
+                        "attempts": [],
+                        "entityExecutions": [
+                            {
+                                "entity": "web-vm-01",
+                                "status": "Completed",
+                                "startTime": "2026-08-21T10:02:00Z",
+                                "endTime": "2026-08-21T10:12:00Z",
+                                "totalAttempts": 1,
+                                "attempts": [],
+                                "outputs": { "migrationState": "Replicating", "initialSeedingProgressPercentage": 100 }
+                            },
+                            {
+                                "entity": "db-vm-02",
+                                "status": "Completed",
+                                "startTime": "2026-08-21T10:02:00Z",
+                                "endTime": "2026-08-21T10:20:00Z",
+                                "totalAttempts": 2,
+                                "attempts": [
+                                    {
+                                        "attemptNumber": 1,
+                                        "startTime": "2026-08-21T10:02:00Z",
+                                        "endTime": "2026-08-21T10:05:00Z",
+                                        "status": "Failed",
+                                        "errorDetails": {
+                                            "code": "NETWORK_TIMEOUT",
+                                            "message": "Connection timeout during data sync",
+                                            "details": "Failed to connect to storage endpoint; retried."
+                                        }
+                                    },
+                                    {
+                                        "attemptNumber": 2,
+                                        "startTime": "2026-08-21T10:05:00Z",
+                                        "endTime": "2026-08-21T10:20:00Z",
+                                        "status": "Completed"
+                                    }
+                                ],
+                                "outputs": { "migrationState": "Replicating", "initialSeedingProgressPercentage": 100 }
+                            }
+                        ]
+                    },
+                    {
+                        "stepId": "vm.agentless.migration-1",
+                        "displayName": "Migration",
+                        "description": "Migrate the synced entities.",
+                        "stepRef": "vm.agentless.migration",
+                        "inputStatus": "partiallyConfigured",
+                        "entities": [ "web-vm-01", "db-vm-02" ],
+                        "affectedEntityGroups": [],
+                        "prerequisites": [ { "stepId": "vm.agentless.dataSync-1", "waitFor": "entity" } ],
+                        "dependsOn": [
+                            { "stepId": "vm.agentless.dataSync-1", "waitFor": "entity", "appliesTo": [ "web-vm-01" ] }
+                        ],
+                        "entitiesCompleted": 1,
+                        "status": "InProgress",
+                        "startTime": "2026-08-21T10:20:00Z",
+                        "totalAttempts": 1,
+                        "attempts": [],
+                        "entityExecutions": [
+                            {
+                                "entity": "web-vm-01",
+                                "status": "Completed",
+                                "startTime": "2026-08-21T10:20:00Z",
+                                "endTime": "2026-08-21T10:28:00Z",
+                                "totalAttempts": 1,
+                                "attempts": [],
+                                "outputs": { "migrationState": "MigrationSucceeded", "targetVmProvisioningState": "Succeeded" }
+                            },
+                            {
+                                "entity": "db-vm-02",
+                                "status": "InProgress",
+                                "startTime": "2026-08-21T10:20:00Z",
+                                "totalAttempts": 1,
+                                "attempts": []
+                            }
+                        ]
+                    },
+                    {
+                        "stepId": "vm.agentless.cutover-1",
+                        "displayName": "Cutover",
+                        "description": "Cut over to the migrated targets.",
+                        "stepRef": "vm.agentless.cutover",
+                        "inputStatus": "pendingConfiguration",
+                        "entities": [ "web-vm-01", "db-vm-02" ],
+                        "affectedEntityGroups": [],
+                        "prerequisites": [],
+                        "dependsOn": [
+                            {
+                                "stepId": "vm.agentless.migration-1",
+                                "waitFor": "mappedEntities",
+                                "entityPairs": [ { "dependentEntity": "web-vm-01", "waitsFor": "db-vm-02" } ]
+                            }
+                        ],
+                        "entitiesCompleted": 0,
+                        "status": "NotStarted",
+                        "statusReason": "Waiting On Dependency",
+                        "totalAttempts": 0,
+                        "attempts": [],
+                        "entityExecutions": []
+                    }
+                ]
+            }
+        ]
+    }
+}

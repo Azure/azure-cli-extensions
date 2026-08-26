@@ -14,6 +14,11 @@ helps['migrate runbook'] = """
         executions. This command group is in preview and under active
         development; additional subgroups and commands are added
         incrementally.
+
+        To avoid repeating --resource-group/-g and --project-name/-p on
+        every command, set defaults once. For example:
+        `az configure --defaults group=<rg> migrate_project=<name>`.
+        Once set, -g and -p can be omitted; an explicit flag always wins.
 """
 
 
@@ -136,10 +141,14 @@ helps['migrate runbook definition visualize'] = """
     type: command
     short-summary: Render the runbook definition as a self-contained HTML page.
     examples:
-        - name: Visualize a runbook definition and open it in the browser.
+        - name: Visualize a runbook definition (opens in the browser).
           text: |
             az migrate runbook definition visualize -g myRg \\
-              --project-name myProject -n myRunbook --open
+              --project-name myProject -n myRunbook
+        - name: Write the HTML without opening a browser.
+          text: |
+            az migrate runbook definition visualize -g myRg \\
+              --project-name myProject -n myRunbook --no-open
         - name: Visualize from a local definition file.
           text: |
             az migrate runbook definition visualize \\
@@ -348,11 +357,11 @@ helps['migrate runbook execution visualize'] = """
     type: command
     short-summary: Render an execution's status as a self-contained HTML graph.
     examples:
-        - name: Visualize an execution's status and open it in the browser.
+        - name: Visualize an execution's status (opens in the browser).
           text: |
             az migrate runbook execution visualize -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --open
+              --execution-id myExecution
         - name: Regenerate the snapshot on an interval until it completes.
           text: |
             az migrate runbook execution visualize -g myRg \\
@@ -412,18 +421,26 @@ helps['migrate runbook execution step complete'] = """
 
 helps['migrate runbook parameter'] = """
     type: group
-    short-summary: Download and upload a runbook's parameters (inputs) file.
+    short-summary: Download, upload, and configure a runbook's parameters (inputs) file.
 """
 
 
 helps['migrate runbook parameter download'] = """
     type: command
-    short-summary: Download the runbook's parameters file.
+    short-summary: Download the runbook's parameters files.
+    long-summary: >
+        Downloads the parameters file (inputs.json) and, when the validation
+        schema is shipped separately, schema.json, into a directory.
     examples:
-        - name: Download the parameters file to the current directory.
+        - name: Download the parameters files to the current directory.
           text: |
             az migrate runbook parameter download -g myRg \\
               --project-name myProject --runbook-name myRunbook
+        - name: Download the parameters files to a directory.
+          text: |
+            az migrate runbook parameter download -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --directory ./params
 """
 
 
@@ -439,21 +456,44 @@ helps['migrate runbook parameter upload'] = """
 """
 
 
+helps['migrate runbook parameter configure'] = """
+    type: command
+    short-summary: Generate an offline HTML editor for the parameters file.
+    long-summary: >
+        Downloads the runbook's inputs and renders a self-contained HTML page
+        for editing them, with fields and validation driven by the schema in
+        the parameters file. The page cannot call Azure; it writes
+        inputs.json locally and shows the parameter upload command to run.
+    examples:
+        - name: Open the parameters editor for a runbook.
+          text: |
+            az migrate runbook parameter configure -g myRg \\
+              --project-name myProject --runbook-name myRunbook
+        - name: Render from a local inputs.json without contacting Azure.
+          text: |
+            az migrate runbook parameter configure \\
+              --from-file ./inputs.json --spec-file ./spec.json
+"""
+
+
 helps['migrate runbook execution parameter'] = """
     type: group
-    short-summary: Download and upload an execution's input-parameters file.
+    short-summary: Download, upload, and configure an execution's input-parameters file.
 """
 
 
 helps['migrate runbook execution parameter download'] = """
     type: command
-    short-summary: Download an execution's input-parameters file.
+    short-summary: Download an execution's parameters files.
+    long-summary: >
+        Downloads the parameters file (inputs.json) and, when the validation
+        schema is shipped separately, schema.json, into a directory.
     examples:
-        - name: Download the execution input file.
+        - name: Download the execution parameters files.
           text: |
             az migrate runbook execution parameter download -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution
+              --execution-id myExecution --directory ./params
 """
 
 
@@ -466,4 +506,25 @@ helps['migrate runbook execution parameter upload'] = """
             az migrate runbook execution parameter upload -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
               --execution-id myExecution --file ./input.json
+"""
+
+
+helps['migrate runbook execution parameter configure'] = """
+    type: command
+    short-summary: Generate an offline HTML editor for an execution's parameters.
+    long-summary: >
+        Downloads the execution's inputs and renders a self-contained HTML
+        page for editing them, with fields and validation driven by the
+        schema in the parameters file. The page cannot call Azure; it writes
+        inputs.json locally and shows the parameter upload command to run.
+    examples:
+        - name: Open the parameters editor for an execution.
+          text: |
+            az migrate runbook execution parameter configure -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution
+        - name: Render from a local inputs.json without contacting Azure.
+          text: |
+            az migrate runbook execution parameter configure \\
+              --from-file ./inputs.json
 """

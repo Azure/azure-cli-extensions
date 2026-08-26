@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+  MOCK ONLY - Phase F design artifact for `az migrate runbook`.
+  Static, offline, no backend. Not shipped; lives under docs/mocks.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Migrate runbook - Phase F mocks</title>
+<style>
+  :root {
+    --azure-blue: #0078d4; --bg: #faf9f8; --surface: #ffffff;
+    --border: #edebe9; --border-strong: #e1dfdd; --ink: #201f1e;
+    --muted: #605e5c; --link: #0067b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); font-size: 14px;
+  }
+  header {
+    padding: 22px 28px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  header h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+  header .meta { color: var(--muted); font-size: 13px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 28px; }
+  .pill {
+    display: inline-block; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .4px; color: #8a5a00; background: #fff4ce;
+    border: 1px solid #f0d999; border-radius: 10px; padding: 2px 10px;
+  }
+  .cards { display: grid; gap: 16px; margin-top: 18px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; text-decoration: none;
+    color: inherit; display: block;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  .card:hover { border-color: var(--azure-blue); }
+  .card h2 { margin: 0 0 6px; font-size: 17px; color: var(--link); }
+  .card p { margin: 0; color: var(--muted); }
+  .card .tag { font-size: 12px; color: var(--muted); }
+  code {
+    background: #f3f2f1; border-radius: 3px; padding: 1px 6px;
+    font-family: Consolas, "Cascadia Code", monospace; font-size: 12px;
+  }
+  .note {
+    margin-top: 22px; padding: 12px 16px; border-radius: 8px;
+    background: #f3f9fd; border: 1px solid #cfe4f7; color: #204a6b;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Azure Migrate runbook &mdash; Phase F UX mocks <span class="pill">Mock</span></h1>
+  <div class="meta">Static, offline design artifacts. No backend, no network calls.</div>
+</header>
+<div class="wrap">
+  <p>Two related features that turn error-prone manual JSON/flag entry into a
+     guided HTML experience &mdash; both built into the existing
+     <b>runbook visualizer</b> look &amp; feel. Each ends by emitting the exact
+     <code>az migrate runbook &hellip;</code> command, populated with your real
+     values, ready to copy.</p>
+
+  <div class="cards">
+    <a class="card" href="execution-visualizer.html">
+      <div class="tag">Execution visualizer &mdash; success/error UX</div>
+      <h2>Execution status &mdash; steps, retries &amp; errors</h2>
+      <p>Renders <code>executionStatus.json</code>: overall status + counts, a
+         &ldquo;needs attention&rdquo; list, and a step drawer with per-entity
+         executions, attempt/retry timelines and error details (recovered
+         failures, blocked-on-dependency, in-progress).</p>
+    </a>
+    <a class="card" href="parameter-configure.html">
+      <div class="tag">Item 11 &mdash; preferred UX</div>
+      <h2>Parameter configure &mdash; schema-driven form</h2>
+      <p>Renders <code>inputs.json</code> with a vertical tab per step. Fields are
+         driven by the <code>schema</code> rules in the same file
+         (type / required / scope / editable / allowed values) and validated live.
+         Per-entity overrides; partial upload; Validate &amp; save.</p>
+    </a>
+    <a class="card" href="visualizer.html">
+      <div class="tag">Item 10 &mdash; parked (needs context)</div>
+      <h2>Command builder in the visualizer (WIP)</h2>
+      <p>Parked: clicking a step should show that step&rsquo;s execution/definition
+         detail, and &ldquo;how to generate&rdquo; should open a dedicated command
+         screen with a generate/copy button. Revisit once the full context is defined.</p>
+    </a>
+  </div>
+
+  <div class="note">
+    These mocks reflect Phase D: a &ldquo;Use configured defaults&rdquo; toggle
+    omits <code>-g</code>/<code>-p</code> when
+    <code>az configure --defaults group=&hellip; migrate_project=&hellip;</code>
+    is set. Nothing here is wired to the service.
+  </div>
+</div>
+</body>
+</html>

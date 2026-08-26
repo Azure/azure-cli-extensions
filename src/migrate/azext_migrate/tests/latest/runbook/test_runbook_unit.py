@@ -43,6 +43,7 @@ from azext_migrate.runbook.cmds import (
 from azext_migrate.runbook.visualize import graph as visualize_graph
 from azext_migrate.runbook.visualize import renderer as visualize_renderer
 from azext_migrate.runbook.visualize import viewmodel as visualize_viewmodel
+from azext_migrate.runbook.configure import renderer as configure_renderer
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     RUNBOOK_STATUS_VALUES,
@@ -279,6 +280,28 @@ class ArmClientLroTests(unittest.TestCase):
 
         self.assertEqual(self.send.call_count, 1)
 
+    def test_list_reroutes_foreign_next_link_to_arm(self):
+        # Migrate paging can return a nextLink on an internal backend host;
+        # called directly it 500s (missing partition-key header). list()
+        # must re-route the follow-up page through the ARM endpoint.
+        page1 = _fake_response(200, body={
+            "value": [{"name": "a"}],
+            "nextLink": (
+                "https://wave.ecy.prod.migration.windowsazure.com"
+                "/subscriptions/s/resourceGroups/rg/providers/"
+                "Microsoft.Migrate/migrateProjects/p/runbooks"
+                "?api-version=2020-06-01-preview&continuationToken=TOKEN")})
+        page2 = _fake_response(200, body={"value": [{"name": "b"}]})
+        self.send.side_effect = [page1, page2]
+
+        items = _arm_client().list("/runbooks")
+
+        self.assertEqual([i["name"] for i in items], ["a", "b"])
+        page2_url = self.send.call_args_list[1][0][2]
+        self.assertTrue(page2_url.startswith("https://management.azure.com/"))
+        self.assertIn("continuationToken=TOKEN", page2_url)
+        self.assertNotIn("windowsazure.com", page2_url)
+
 
 class RunbookWaitTests(unittest.TestCase):
 
@@ -380,6 +403,29 @@ class RunbookUpdateRegenerateTests(unittest.TestCase):
         with self.assertRaises(CLIError):
             runbook_cmds.regenerate(mock.Mock(), RG, PROJECT, RUNBOOK)
 
+    def test_regenerate_opens_definition_view_by_default(self):
+        wave_id = (arm_ids.migrate_project_id(SUB, RG, PROJECT)
+                   + '/waves/w')
+        self.client.get.return_value = {
+            "properties": {"scope": {"waveId": wave_id}}}
+        self.client.put.return_value = {"ok": True}
+        with mock.patch.object(
+                runbook_cmds, '_open_definition_view') as ov:
+            runbook_cmds.regenerate(mock.Mock(), RG, PROJECT, RUNBOOK)
+        ov.assert_called_once()
+
+    def test_regenerate_no_visualize_skips_view(self):
+        wave_id = (arm_ids.migrate_project_id(SUB, RG, PROJECT)
+                   + '/waves/w')
+        self.client.get.return_value = {
+            "properties": {"scope": {"waveId": wave_id}}}
+        self.client.put.return_value = {"ok": True}
+        with mock.patch.object(
+                runbook_cmds, '_open_definition_view') as ov:
+            runbook_cmds.regenerate(
+                mock.Mock(), RG, PROJECT, RUNBOOK, no_visualize=True)
+        ov.assert_not_called()
+
 
 class RunbookDefinitionTransformerTests(unittest.TestCase):
 
@@ -387,8 +433,8 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         definition = {"workstreams": [
             {"id": "w1", "steps": [
                 {"stepId": "s1", "displayName": "Step One",
-                 "prerequisite": [{"step": "b"}],
-                 "dependsOn": [{"step": "a"}],
+                 "prerequisites": [{"stepId": "b"}],
+                 "dependsOn": [{"stepId": "a"}],
                  "configurationStatus": "Configured",
                  "entities": ["e1", "e2"]}]},
             {"id": "w2", "steps": [{"stepId": "s2"}]},
@@ -399,8 +445,20 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         self.assertEqual(rows[0]["Step Name"], "Step One")
         self.assertEqual(rows[0]["Depends On"], "b\na")
         self.assertEqual(rows[0]["Configuration Status"], "Configured")
-        self.assertEqual(rows[0]["Workloads"], 2)
-        self.assertEqual(rows[0]["Applications"], "-")
+        self.assertEqual(rows[0]["Entities"], 2)
+        self.assertEqual(rows[0]["Applications"], 0)
+
+    def test_applications_count_from_affected_entity_groups(self):
+        definition = {
+            "workstreams": [{"id": "w1", "steps": [
+                {"stepId": "s1",
+                 "affectedEntityGroups": ["group-app", "group-db"]},
+                {"stepId": "s2", "affectedEntityGroups": ["group-app"]},
+                {"stepId": "s3"}]}]}
+        rows = transformers.definition_table(definition)
+        self.assertEqual(rows[0]["Applications"], 2)
+        self.assertEqual(rows[1]["Applications"], 1)
+        self.assertEqual(rows[2]["Applications"], 0)
 
     def test_single_workstream(self):
         rows = transformers.definition_table(
@@ -497,10 +555,10 @@ class FilesTests(unittest.TestCase):
     def test_read_spec_json_prefers_spec_suffix(self):
         zip_bytes = _make_zip({
             "extra.json": '{"a": 1}',
-            "rb-x-spec.json": '{"runbookSpec": {"id": "r"}}',
+            "rb-x-spec.json": '{"spec": {"id": "r"}}',
         })
         spec = files.read_spec_json(zip_bytes)
-        self.assertEqual(spec, {"runbookSpec": {"id": "r"}})
+        self.assertEqual(spec, {"spec": {"id": "r"}})
 
     def test_read_status_json_raw_status_doc(self):
         raw = json.dumps({"state": "InProgress"}).encode('utf-8')
@@ -508,15 +566,15 @@ class FilesTests(unittest.TestCase):
             files.read_status_json(raw), {"state": "InProgress"})
 
     def test_read_status_json_raw_rejects_parameters(self):
-        raw = json.dumps({"runbookInputs": {"schema": {}}}).encode('utf-8')
+        raw = json.dumps({"inputs": {"schema": {}}}).encode('utf-8')
         with self.assertRaises(CLIInternalError):
             files.read_status_json(raw)
 
     def test_read_status_json_zip_prefers_status_member(self):
         zip_bytes = _make_zip({
-            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
-            "status.json": '{"workstreams": [{"steps": []}]}',
+            "spec.json": '{"runbookSpec": {"workstreams": []}}',
+            "inputs.json": '{"runbookInputs": {"schema": {}}}',
+            "executionStatus.json": '{"workstreams": [{"steps": []}]}',
         })
         self.assertEqual(
             files.read_status_json(zip_bytes),
@@ -526,9 +584,9 @@ class FilesTests(unittest.TestCase):
         # A not-yet-run execution archive (definition + parameters, no
         # status) must not be mistaken for a status document.
         zip_bytes = _make_zip({
-            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
-            "derived-input.json": '{"runbookInputs": {"schema": {}}}',
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "system-derived-inputs.json": '{"inputs": {"schema": {}}}',
         })
         with self.assertRaises(CLIInternalError):
             files.read_status_json(zip_bytes)
@@ -549,8 +607,8 @@ class FilesTests(unittest.TestCase):
 
     def test_extract_definition_files_round_trip(self):
         zip_bytes = _make_zip({
-            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "rb-x-input.json": '{"runbookInputs": {"a": 1}}',
+            "rb-x-spec.json": '{"spec": {"workstreams": []}}',
+            "rb-x-input.json": '{"inputs": {"a": 1}}',
             "docs/readme.md": "# hello",
         })
         with tempfile.TemporaryDirectory() as tmp:
@@ -566,7 +624,7 @@ class FilesTests(unittest.TestCase):
 
     def test_extract_definition_files_flattens_paths(self):
         zip_bytes = _make_zip({
-            "../evil-spec.json": '{"runbookSpec": {}}',
+            "../evil-spec.json": '{"spec": {}}',
             "../../notes.md": "# n",
         })
         with tempfile.TemporaryDirectory() as tmp:
@@ -580,32 +638,31 @@ class FilesTests(unittest.TestCase):
 
     def test_extract_parameters_file_by_content(self):
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {}}',
-            "user-inputs.json": '{"runbookInputs": {"stepInputs": {}}}',
+            "runbook.json": '{"spec": {}}',
+            "user-inputs.json": '{"inputs": {"stepInputs": {}}}',
         })
         name, data = files.extract_parameters_file(zip_bytes)
         self.assertEqual(name, "user-inputs.json")
-        self.assertIn(b"runbookInputs", data)
+        self.assertIn(b"inputs", data)
 
     def test_extract_parameters_file_none_when_only_spec(self):
         zip_bytes = _make_zip({"rb-x-spec.json": '{"runbookSpec": {}}'})
         self.assertIsNone(files.extract_parameters_file(zip_bytes))
 
     def test_read_spec_json_selects_spec_by_content(self):
-        # Real service names the members runbook.json / user-inputs.json,
-        # neither of which carries a -spec.json suffix. Selection must fall
-        # back to content so the parameters file is never returned as the
-        # definition.
+        # The service members carry no -spec.json suffix, so selection must
+        # fall back to content (name-agnostic) rather than a filename match,
+        # ensuring the parameters file is never returned as the definition.
         for members in (
-                {"user-inputs.json": '{"runbookInputs": {"schema": {}}}',
+                {"user-inputs.json": '{"inputs": {"schema": {}}}',
                  "runbook.json":
-                     '{"runbookSpec": {"workstreams": []}}'},
+                     '{"spec": {"workstreams": []}}'},
                 {"runbook.json":
-                     '{"runbookSpec": {"workstreams": []}}',
-                 "user-inputs.json": '{"runbookInputs": {"schema": {}}}'}):
+                     '{"spec": {"workstreams": []}}',
+                 "user-inputs.json": '{"inputs": {"schema": {}}}'}):
             spec = files.read_spec_json(_make_zip(members))
-            self.assertIn("runbookSpec", spec)
-            self.assertIn("workstreams", spec["runbookSpec"])
+            self.assertIn("spec", spec)
+            self.assertIn("workstreams", spec["spec"])
 
     def test_read_spec_json_none_when_only_parameters(self):
         zip_bytes = _make_zip({
@@ -618,66 +675,68 @@ class FilesTests(unittest.TestCase):
         # regardless of member ordering or non-standard names.
         for members in (
                 {"runbook.json":
-                 '{"runbookSpec": {"workstreams": []}}',
+                 '{"spec": {"workstreams": []}}',
                  "user-inputs.json":
-                 '{"runbookInputs": {"schema": {}}}'},
+                 '{"inputs": {"schema": {}}}'},
                 {"user-inputs.json":
-                 '{"runbookInputs": {"schema": {}}}',
+                 '{"inputs": {"schema": {}}}',
                  "runbook.json":
-                 '{"runbookSpec": {"workstreams": []}}'}):
+                 '{"spec": {"workstreams": []}}'}):
             name, data = files.extract_parameters_file(_make_zip(members))
             self.assertEqual(name, "user-inputs.json")
-            self.assertIn("runbookInputs", json.loads(data.decode()))
+            self.assertIn("inputs", json.loads(data.decode()))
 
     def test_read_parameters_json_by_content(self):
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {"workstreams": []}}',
+            "runbook.json": '{"spec": {"workstreams": []}}',
             "user-inputs.json":
-                '{"runbookInputs": {"stepInputs": {"s1": {}}}}'})
+                '{"inputs": {"stepInputs": {"s1": {}}}}'})
         params = files.read_parameters_json(zip_bytes)
         self.assertEqual(params, {"stepInputs": {"s1": {}}})
 
     def test_parameters_excludes_derived_input(self):
-        # The real archive ships runbook.json (spec), user-inputs.json and
-        # derived-input.json (both runbookInputs-shaped). Only user-inputs
-        # is the parameters file; derived-input must never be selected.
+        # The real archive ships spec.json (spec), inputs.json and
+        # system-derived-inputs.json (both runbookInputs-shaped). Only the
+        # user inputs file is the parameters file; the derived inputs must
+        # never be selected.
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {"workstreams": []}}',
-            "derived-input.json":
-                '{"runbookInputs": {"stepInputs": {"d": {}}}}',
-            "user-inputs.json":
-                '{"runbookInputs": {"stepInputs": {"u": {}}}}'})
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "system-derived-inputs.json":
+                '{"inputs": {"stepInputs": {"d": {}}}}',
+            "inputs.json":
+                '{"inputs": {"stepInputs": {"u": {}}}}'})
         name, data = files.extract_parameters_file(zip_bytes)
-        self.assertEqual(name, "user-inputs.json")
+        self.assertEqual(name, "inputs.json")
         self.assertEqual(
             files.read_parameters_json(zip_bytes), {"stepInputs": {"u": {}}})
         self.assertNotIn("derived", data.decode())
 
     def test_read_spec_ignores_input_documents(self):
         zip_bytes = _make_zip({
-            "derived-input.json": '{"runbookInputs": {"schema": {}}}',
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
-            "runbook.json":
-                '{"runbookSpec": {"workstreams": [{"id": "w1"}]}}'})
+            "system-derived-inputs.json": '{"inputs": {"schema": {}}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "spec.json":
+                '{"spec": {"workstreams": [{"id": "w1"}]}}'})
         spec = files.read_spec_json(zip_bytes)
-        self.assertIn("runbookSpec", spec)
+        self.assertIn("spec", spec)
 
     def test_extract_definition_files_includes_inputs_not_derived(self):
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {"workstreams": []}}',
-            "user-inputs.json": '{"runbookInputs": {}}',
-            "derived-input.json": '{"runbookInputs": {}}',
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {}}',
+            "system-derived-inputs.json": '{"inputs": {}}',
             "runbook.md": "# docs",
         })
         with tempfile.TemporaryDirectory() as tmp:
             written = files.extract_definition_files(zip_bytes, tmp)
             names = sorted(os.path.basename(p) for p in written)
             self.assertEqual(
-                names, ["runbook.json", "runbook.md", "user-inputs.json"])
+                names, ["inputs.json", "runbook.md", "spec.json"])
             self.assertTrue(
-                os.path.exists(os.path.join(tmp, "user-inputs.json")))
+                os.path.exists(os.path.join(tmp, "inputs.json")))
             self.assertFalse(
-                os.path.exists(os.path.join(tmp, "derived-input.json")))
+                os.path.exists(
+                    os.path.join(tmp, "system-derived-inputs.json")))
 
     def test_read_spec_json_accepts_raw_blob(self):
         raw = b'{"runbookSpec": {"workstreams": [{"id": "w1"}]}}'
@@ -721,7 +780,7 @@ class DefinitionCommandTests(unittest.TestCase):
             "downloadUrl": "https://blob/x"}
         zip_bytes = _make_zip({
             "rb-x-spec.json":
-                '{"runbookSpec": {"workstreams": '
+                '{"spec": {"workstreams": '
                 '[{"id": "w1", "steps": []}]}}'})
         with mock.patch.object(
                 definition_cmds.files, 'download_bytes',
@@ -732,7 +791,7 @@ class DefinitionCommandTests(unittest.TestCase):
         project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
         self.client.post_action.assert_called_once_with(
             arm_ids.artifact_id(project, ARTIFACT), 'generateDownloadUrl',
-            {"mode": "directory", "path": "/", "includeMetadata": True},
+            {"mode": "Directory"},
             return_final_poll=True)
         self.assertEqual(result["id"], "w1")
 
@@ -764,7 +823,7 @@ class DefinitionCommandTests(unittest.TestCase):
         with mock.patch.object(
                 definition_cmds.files, 'download_bytes',
                 return_value=_make_zip({
-                    "s.json": '{"runbookSpec": {"workstreams": []}}'})):
+                    "s.json": '{"spec": {"workstreams": []}}'})):
             definition_cmds.show(mock.Mock(), RG, PROJECT, RUNBOOK)
         called_id = self.client.post_action.call_args[0][0]
         self.assertEqual(called_id, full_id)
@@ -809,8 +868,8 @@ class StepModelTests(unittest.TestCase):
             "displayName": "Approve",
             "description": "desc",
             "stepRef": "common.approval",
-            "dependsOn": [{"mode": "Step", "stepId": "s0"}],
-            "migrationEntityIds": ["e1", "e2"],
+            "dependsOn": [{"waitFor": "Step", "stepId": "s0"}],
+            "entities": ["e1", "e2"],
         })
 
     def test_build_update_step_body_minimal(self):
@@ -824,7 +883,7 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "stepId": "s1", "displayName": "New",
             "description": "d",
-            "dependsOn": [{"mode": "Step", "stepId": "s0"}]})
+            "dependsOn": [{"waitFor": "Step", "stepId": "s0"}]})
 
     def test_build_delete_step_body(self):
         self.assertEqual(
@@ -836,13 +895,13 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "sourceWorkstreamId": "ws1",
             "stepIds": ["e1", "e2"],
-            "newWorkstreamName": "new"})
+            "displayName": "new"})
 
     def test_build_merge_workstreams_body(self):
         body = models.build_merge_workstreams_body(["w1", "w2"], "merged")
         self.assertEqual(body, {
             "workstreamIds": ["w1", "w2"],
-            "newWorkstreamName": "merged"})
+            "displayName": "merged"})
 
     def test_build_merge_workstreams_body_requires_name(self):
         with self.assertRaises(TypeError):
@@ -866,20 +925,40 @@ class StepCommandTests(unittest.TestCase):
 
     def test_add_posts_add_step(self):
         self.client.post_action.return_value = {"ok": True}
-        result = step_cmds.add(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Step 1", "ws1")
-        self.assertEqual(result, {"ok": True})
+        definition = {"workstreams": [{"id": "ws1", "steps": [
+            {"stepId": "s-new", "displayName": "Step 1"}]}]}
+        with mock.patch.object(
+                step_cmds, '_load_definition', return_value=definition):
+            result = step_cmds.add(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Step 1", "ws1")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'AddStep',
             models.build_add_step_body("Manual", "Step 1", "ws1"))
+        # Returns the freshly-added step (projected), not the raw response.
+        self.assertEqual(result.get("stepId"), "s-new")
+
+    def test_add_falls_back_to_workstream(self):
+        self.client.post_action.return_value = {"ok": True}
+        definition = {"workstreams": [{"id": "ws1", "displayName": "Init",
+                                       "steps": [{"stepId": "other"}]}]}
+        with mock.patch.object(
+                step_cmds, '_load_definition', return_value=definition):
+            result = step_cmds.add(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Absent", "ws1")
+        self.assertEqual(result.get("id"), "ws1")
 
     def test_update_posts_update_step(self):
         self.client.post_action.return_value = {"ok": True}
-        step_cmds.update(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "s1", step_name="New")
+        definition = {"workstreams": [{"id": "ws1", "steps": [
+            {"stepId": "s1", "displayName": "New"}]}]}
+        with mock.patch.object(
+                step_cmds, '_load_definition', return_value=definition):
+            result = step_cmds.update(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "s1", step_name="New")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'UpdateStep',
             {"stepId": "s1", "displayName": "New"})
+        self.assertEqual(result.get("stepId"), "s1")
 
     def test_remove_posts_delete_step(self):
         self.client.post_action.return_value = {"ok": True}
@@ -905,39 +984,50 @@ class WorkstreamCommandTests(unittest.TestCase):
 
     def test_split_posts_split_workstream(self):
         self.client.post_action.return_value = {"ok": True}
-        workstream_cmds.split(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "ws1", "new", ["e1"])
+        definition = {"workstreams": [
+            {"id": "ws1", "displayName": "src", "steps": []},
+            {"id": "ws-new", "displayName": "new",
+             "steps": [{"stepId": "e1"}]}]}
+        with mock.patch.object(
+                workstream_cmds, '_load_definition',
+                return_value=definition):
+            result = workstream_cmds.split(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "ws1", "new", ["e1"])
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'SplitWorkstream',
             models.build_split_workstream_body("ws1", "new", ["e1"]))
+        # Shows the new workstream (matched by name), projected.
+        self.assertEqual(result.get("id"), "ws-new")
 
     def test_merge_posts_merge_workstreams(self):
         self.client.post_action.return_value = {"ok": True}
-        workstream_cmds.merge(
-            mock.Mock(), RG, PROJECT, RUNBOOK, ["w1", "w2"], "merged")
+        definition = {"workstreams": [
+            {"id": "w1", "displayName": "merged", "steps": []}]}
+        with mock.patch.object(
+                workstream_cmds, '_load_definition',
+                return_value=definition):
+            result = workstream_cmds.merge(
+                mock.Mock(), RG, PROJECT, RUNBOOK, ["w1", "w2"], "merged")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'MergeWorkstreams',
             {"workstreamIds": ["w1", "w2"],
-             "newWorkstreamName": "merged"})
+             "displayName": "merged"})
+        self.assertEqual(result.get("id"), "w1")
 
 
 class ExecutionModelTests(unittest.TestCase):
 
-    def test_start_body_is_empty_properties(self):
-        self.assertEqual(
-            models.build_start_execution_body(), {"properties": {}})
-
     def test_build_artifact_download_url_body(self):
         self.assertEqual(
-            models.build_artifact_download_url_body(),
-            {"mode": "file", "path": "runbook.json",
-             "includeMetadata": True})
+            models.build_artifact_download_url_body(mode="Directory"),
+            {"mode": "Directory"})
         self.assertEqual(
             models.build_artifact_download_url_body(
-                path="reports/r.xlsx", mode="directory",
-                include_metadata=False),
-            {"mode": "directory", "path": "reports/r.xlsx",
-             "includeMetadata": False})
+                mode="File", path="inputs.json"),
+            {"mode": "File", "path": "inputs.json"})
+        self.assertEqual(
+            models.build_artifact_upload_url_body("inputs.json"),
+            {"path": "inputs.json"})
 
     def test_action_enum_values(self):
         self.assertEqual(ExecutionAction.START.value, "Start")
@@ -951,7 +1041,7 @@ class ExecutionModelTests(unittest.TestCase):
         self.assertEqual(
             body,
             {"action": "Pause", "targetId": "",
-             "migrationEntityIds": []})
+             "entities": []})
         self.assertIsInstance(body["action"], str)
 
     def test_perform_action_body_with_target(self):
@@ -960,7 +1050,7 @@ class ExecutionModelTests(unittest.TestCase):
         self.assertEqual(
             body,
             {"action": "Resume", "targetId": "t1",
-             "migrationEntityIds": ["e1"]})
+             "entities": ["e1"]})
 
 
 class ExecutionTransformerTests(unittest.TestCase):
@@ -1035,6 +1125,14 @@ class ExecutionCommandTests(unittest.TestCase):
         client_patch = mock.patch.object(execution_cmds, 'ArmClient')
         self.addCleanup(client_patch.stop)
         self.client = client_patch.start().return_value
+        open_patch = mock.patch.object(
+            execution_cmds, '_open_execution_view')
+        self.addCleanup(open_patch.stop)
+        self.open_view = open_patch.start()
+        emit_patch = mock.patch.object(
+            execution_cmds, '_emit_execution')
+        self.addCleanup(emit_patch.stop)
+        self.emit = emit_patch.start()
 
     def _runbook_id(self):
         project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
@@ -1045,8 +1143,7 @@ class ExecutionCommandTests(unittest.TestCase):
         result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
         self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
-            self._runbook_id(), 'execute', {"properties": {}},
-            no_wait=False)
+            self._runbook_id(), 'execute', no_wait=False)
 
     def test_start_no_wait(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1057,21 +1154,56 @@ class ExecutionCommandTests(unittest.TestCase):
 
     def test_start_final_get_reads_execution(self):
         # After the execute action settles, start re-reads the created
-        # execution resource so the caller sees the latest status rather
-        # than the initial (stale) accepted body.
+        # execution, emits it to stdout, then opens the live watch view.
         self.client.post_action.return_value = {"name": "e5"}
         fresh = {"name": "e5", "properties": {"status": "InProgress"}}
         self.client.get.return_value = fresh
         result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
-        self.assertEqual(result, fresh)
+        self.assertIsNone(result)
         self.client.get.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e5"))
+        self.emit.assert_called_once_with(mock.ANY, fresh)
 
     def test_start_no_wait_skips_final_get(self):
         self.client.post_action.return_value = {"name": "e5"}
         execution_cmds.start(
             mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
         self.client.get.assert_not_called()
+
+    def test_start_uses_execution_id_from_resource_id(self):
+        # Async path: the final operation status carries the full resource
+        # id (no bare 'name'); start extracts the trailing GUID from it.
+        exec_arm = arm_ids.execution_id(self._runbook_id(), "exec-guid-9")
+        self.client.post_action.return_value = {"id": exec_arm}
+        fresh = {"name": "exec-guid-9"}
+        self.client.get.return_value = fresh
+        execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
+        self.client.get.assert_called_once_with(exec_arm)
+        self.emit.assert_called_once_with(mock.ANY, fresh)
+
+    def test_start_opens_execution_view(self):
+        self.client.post_action.return_value = {"name": "e5"}
+        self.client.get.return_value = {"name": "e5"}
+        execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
+        self.open_view.assert_called_once()
+
+    def test_start_no_wait_skips_execution_view(self):
+        self.client.post_action.return_value = {"name": "e5"}
+        execution_cmds.start(
+            mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
+        self.open_view.assert_not_called()
+
+    def test_start_no_visualize_returns_execution_without_view(self):
+        # --no-visualize re-reads the execution and returns it for normal
+        # output, but never opens the blocking watch view.
+        self.client.post_action.return_value = {"name": "e5"}
+        fresh = {"name": "e5", "properties": {"status": "InProgress"}}
+        self.client.get.return_value = fresh
+        result = execution_cmds.start(
+            mock.Mock(), RG, PROJECT, RUNBOOK, no_visualize=True)
+        self.assertEqual(result, fresh)
+        self.open_view.assert_not_called()
+        self.emit.assert_not_called()
 
     def test_list_calls_executions_collection(self):
         self.client.list.return_value = []
@@ -1090,7 +1222,8 @@ class ExecutionCommandTests(unittest.TestCase):
         self.assertEqual(result, status)
         self.client.post_action.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e1"),
-            'GenerateDownloadUrl')
+            'GenerateDownloadUrl',
+            {"mode": "Directory"})
         dl.assert_called_once_with("https://b/x")
 
     def test_show_projects_step(self):
@@ -1113,7 +1246,7 @@ class ExecutionCommandTests(unittest.TestCase):
         # inputs blob as if it were a status document.
         self.client.post_action.return_value = {"downloadUrl": "https://b/x"}
         inputs_zip = _make_zip({
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}'})
+            "user-inputs.json": '{"inputs": {"schema": {}}}'})
         with mock.patch.object(
                 execution_cmds.files, 'download_bytes',
                 return_value=inputs_zip):
@@ -1129,7 +1262,7 @@ class ExecutionCommandTests(unittest.TestCase):
             arm_ids.execution_id(self._runbook_id(), "e1"),
             'PerformAction',
             {"action": "Pause", "targetId": "",
-             "migrationEntityIds": []})
+             "entities": []})
 
     def test_resume_posts_perform_action(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1150,25 +1283,25 @@ class ExecutionStepModelTests(unittest.TestCase):
         body = models.build_retry_step_body("step1")
         self.assertEqual(body, {
             "action": "Retry", "targetId": "step1",
-            "migrationEntityIds": []})
+            "entities": []})
         self.assertIsInstance(body["action"], str)
 
     def test_build_approve_step_body_full(self):
         body = models.build_approve_step_body("step1")
         self.assertEqual(body, {
             "action": "Approve", "targetId": "step1",
-            "migrationEntityIds": []})
+            "entities": []})
 
     def test_build_approve_step_body_partial(self):
         body = models.build_approve_step_body(
             "step1", entity_ids=["e1", "e2"])
-        self.assertEqual(body["migrationEntityIds"], ["e1", "e2"])
+        self.assertEqual(body["entities"], ["e1", "e2"])
 
     def test_build_complete_step_body(self):
         body = models.build_complete_step_body("step1", "done")
         self.assertEqual(body, {
             "action": "Complete", "targetId": "step1",
-            "migrationEntityIds": [], "comment": "done"})
+            "entities": [], "comment": "done"})
 
 
 class ExecutionStepValidatorTests(unittest.TestCase):
@@ -1222,7 +1355,7 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'PerformAction',
             {"action": "Retry", "targetId": "step1",
-             "migrationEntityIds": []})
+             "entities": []})
 
     def test_approve_posts_provide_approval(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1232,7 +1365,7 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'ProvideApproval',
             {"action": "Approve", "targetId": "step1",
-             "migrationEntityIds": ["ent1"]})
+             "entities": ["ent1"]})
 
     def test_complete_posts_update_step_status(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1241,7 +1374,28 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'UpdateStepStatus',
             {"action": "Complete", "targetId": "step1",
-             "migrationEntityIds": [], "comment": "done"})
+             "entities": [], "comment": "done"})
+
+
+_CFG_INPUTS = {
+    "runbookId": (
+        "/subscriptions/s/resourceGroups/myRg/providers/Microsoft.Migrate"
+        "/migrateProjects/myProject/runbooks/testrunbook"),
+    "waveId": (
+        "/subscriptions/s/resourceGroups/myRg/providers/Microsoft.Migrate"
+        "/migrateProjects/myProject/waves/wave-1"),
+    "inputs": {
+        "schema": {"vm.agentless.setup": {"applianceName": {
+            "type": "string", "required": True, "scope": "Appliance",
+            "isEditable": False}}},
+        "stepInputs": {"vm.agentless.setup-001": {
+            "applianceName": "appl-1"}},
+    },
+}
+_CFG_SPEC = {"spec": {
+    "entities": [{"displayName": "vm1"}],
+    "workstreams": [{"steps": [
+        {"stepId": "vm.agentless.setup-001", "entities": []}]}]}}
 
 
 class ParameterCommandTests(unittest.TestCase):
@@ -1265,45 +1419,105 @@ class ParameterCommandTests(unittest.TestCase):
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {}}',
-            "user-inputs.json": '{"runbookInputs": {"stepInputs": {}}}',
-        })
+            "inputs.json": json.dumps(_CFG_INPUTS),
+            "schema.json": json.dumps({"vm.agentless.setup": {}})})
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(
                     parameter_cmds.files, 'download_bytes',
                     return_value=zip_bytes) as dl:
                 result = parameter_cmds.download(
-                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
+                    mock.Mock(), RG, PROJECT, RUNBOOK, directory=tmp)
             dl.assert_called_once_with("https://blob/x")
             project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
             self.client.post_action.assert_called_once_with(
                 arm_ids.artifact_id(project, ARTIFACT),
                 'generateDownloadUrl',
-                {"mode": "directory", "path": "/",
-                 "includeMetadata": True},
+                {"mode": "Directory"},
                 return_final_poll=True)
-            expected = os.path.join(tmp, "user-inputs.json")
-            self.assertEqual(result, {"path": expected})
-            with open(expected) as handle:
-                self.assertEqual(
-                    handle.read(), '{"runbookInputs": {"stepInputs": {}}}')
+            names = sorted(os.path.basename(r['path']) for r in result)
+            self.assertEqual(names, ['inputs.json', 'schema.json'])
+            for row in result:
+                self.assertEqual(row['kind'], 'parameters')
+                self.assertTrue(os.path.isfile(row['path']))
 
-    def test_download_writes_raw_input_blob(self):
+    def test_upload_posts_generate_upload_url(self):
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        runbook_id = arm_ids.runbook_id(project, RUNBOOK)
+        with mock.patch.object(parameter_cmds, 'ArmClient') as client_cls:
+            client = client_cls.return_value
+            client.post_action.side_effect = [
+                {"uploadUrl": "https://blob/u"}, {"status": "ok"}]
+            client.get.return_value = {"name": RUNBOOK, "latest": True}
+            with tempfile.TemporaryDirectory() as tmp:
+                src = os.path.join(tmp, "inputs.json")
+                with open(src, "wb") as handle:
+                    handle.write(b'{"runbookInputs": {}}')
+                with mock.patch.object(
+                        parameter_cmds.files, 'upload_bytes') as up:
+                    result = parameter_cmds.upload(
+                        mock.Mock(), RG, PROJECT, RUNBOOK, src)
+                up.assert_called_once_with(
+                    "https://blob/u", b'{"runbookInputs": {}}')
+            self.assertEqual(
+                client.post_action.call_args_list[0],
+                mock.call(runbook_id, 'GenerateUploadUrl',
+                          {"path": "inputs.json"}))
+            self.assertEqual(
+                client.post_action.call_args_list[1],
+                mock.call(runbook_id, 'ValidateInput'))
+            # Upload returns a fresh GET of the runbook, not the echoed body.
+            client.get.assert_called_once_with(runbook_id)
+            self.assertEqual(result, {"name": RUNBOOK, "latest": True})
+
+    def test_configure_writes_html(self):
         self.client.get.return_value = {
             "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        raw = b'{"runbookInputs": {"stepInputs": {}}}'
+        zip_bytes = _make_zip({
+            "inputs.json": json.dumps(_CFG_INPUTS),
+            "spec.json": json.dumps(_CFG_SPEC)})
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(
                     parameter_cmds.files, 'download_bytes',
-                    return_value=raw):
-                result = parameter_cmds.download(
+                    return_value=zip_bytes), \
+                    mock.patch.object(
+                        parameter_cmds.files, 'open_in_browser') as op:
+                result = parameter_cmds.configure(
                     mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
-            expected = os.path.join(tmp, "input.json")
-            self.assertEqual(result, {"path": expected})
-            with open(expected, "rb") as handle:
-                self.assertEqual(handle.read(), raw)
+            path = result['path']
+            self.assertTrue(path.endswith('.html'))
+            self.assertTrue(os.path.isfile(path))
+            # A real, editable inputs.json is written next to the editor and
+            # its path is surfaced (so upload --file points at a real file).
+            inputs_path = result['inputsPath']
+            self.assertTrue(inputs_path.endswith('inputs.json'))
+            self.assertTrue(os.path.isfile(inputs_path))
+            with open(path, encoding='utf-8') as handle:
+                html_text = handle.read()
+            self.assertIn('vm.agentless.setup-001', html_text)
+            self.assertIn('inputsPath', html_text)
+            self.assertNotIn('__RUNBOOK_DATA__', html_text)
+            op.assert_called_once()
+
+    def test_configure_from_file_skips_service(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ip = os.path.join(tmp, 'inputs.json')
+            sp = os.path.join(tmp, 'spec.json')
+            with open(ip, 'w', encoding='utf-8') as handle:
+                json.dump(_CFG_INPUTS, handle)
+            with open(sp, 'w', encoding='utf-8') as handle:
+                json.dump(_CFG_SPEC, handle)
+            with mock.patch.object(parameter_cmds, 'ArmClient') as client, \
+                    mock.patch.object(
+                        parameter_cmds.files, 'download_bytes') as dl, \
+                    mock.patch.object(
+                        parameter_cmds.files, 'open_in_browser'):
+                result = parameter_cmds.configure(
+                    mock.Mock(), file=tmp, from_file=ip, spec_file=sp)
+            client.assert_not_called()
+            dl.assert_not_called()
+            self.assertTrue(result['path'].endswith('.html'))
 
 
 class ExecutionParameterCommandTests(unittest.TestCase):
@@ -1326,20 +1540,20 @@ class ExecutionParameterCommandTests(unittest.TestCase):
     def test_download_writes_input_file(self):
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        raw = b'{"runbookInputs": {"stepInputs": {}}}'
+        zip_bytes = _make_zip({"inputs.json": json.dumps(_CFG_INPUTS)})
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(
                     execution_parameter_cmds.files, 'download_bytes',
-                    return_value=raw) as dl:
+                    return_value=zip_bytes) as dl:
                 result = execution_parameter_cmds.download(
-                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", file=tmp)
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", directory=tmp)
             dl.assert_called_once_with("https://blob/x")
             self.client.post_action.assert_called_once_with(
-                self._execution_id(), 'GenerateInputDownloadUrl')
-            expected = os.path.join(tmp, "input.json")
-            self.assertEqual(result, {"path": expected})
-            with open(expected, "rb") as handle:
-                self.assertEqual(handle.read(), raw)
+                self._execution_id(), 'GenerateDownloadUrl',
+                {"mode": "Directory"})
+            names = sorted(os.path.basename(r['path']) for r in result)
+            self.assertEqual(names, ['inputs.json'])
+            self.assertEqual(result[0]['kind'], 'parameters')
 
     def test_upload_puts_input_file(self):
         self.client.post_action.return_value = {
@@ -1353,10 +1567,95 @@ class ExecutionParameterCommandTests(unittest.TestCase):
                 result = execution_parameter_cmds.upload(
                     mock.Mock(), RG, PROJECT, RUNBOOK, "e1", src)
             self.client.post_action.assert_called_once_with(
-                self._execution_id(), 'GenerateInputUploadUrl')
+                self._execution_id(), 'GenerateUploadUrl',
+                {"path": "inputs.json"})
             up.assert_called_once_with(
                 "https://blob/u", b'{"runbookInputs": {}}')
             self.assertEqual(result, {"status": "uploaded"})
+
+    def test_configure_writes_html(self):
+        self.client.post_action.return_value = {
+            "downloadUrl": "https://blob/x"}
+        blob = json.dumps(_CFG_INPUTS).encode('utf-8')
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(
+                    execution_parameter_cmds.files, 'download_bytes',
+                    return_value=blob), \
+                    mock.patch.object(
+                        execution_parameter_cmds.files,
+                        'open_in_browser') as op:
+                result = execution_parameter_cmds.configure(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", file=tmp)
+            path = result['path']
+            self.assertTrue(path.endswith('.html'))
+            with open(path, encoding='utf-8') as handle:
+                self.assertIn('vm.agentless.setup-001', handle.read())
+            op.assert_called_once()
+
+    def test_configure_from_file_skips_service(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ip = os.path.join(tmp, 'inputs.json')
+            with open(ip, 'w', encoding='utf-8') as handle:
+                json.dump(_CFG_INPUTS, handle)
+            with mock.patch.object(
+                    execution_parameter_cmds.files, 'download_bytes') as dl, \
+                    mock.patch.object(
+                        execution_parameter_cmds.files, 'open_in_browser'):
+                result = execution_parameter_cmds.configure(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp,
+                    from_file=ip)
+            dl.assert_not_called()
+            self.assertTrue(result['path'].endswith('.html'))
+
+
+class ConfigureRendererTests(unittest.TestCase):
+
+    def test_build_meta_parses_ids_when_args_absent(self):
+        meta = configure_renderer.build_meta(
+            None, None, None, _CFG_INPUTS)
+        self.assertEqual(meta['resourceGroup'], 'myRg')
+        self.assertEqual(meta['project'], 'myProject')
+        self.assertEqual(meta['runbook'], 'testrunbook')
+        self.assertEqual(meta['wave'], 'wave-1')
+
+    def test_build_meta_prefers_explicit_args(self):
+        meta = configure_renderer.build_meta(
+            'argRg', 'argProj', 'argRb', _CFG_INPUTS)
+        self.assertEqual(meta['resourceGroup'], 'argRg')
+        self.assertEqual(meta['project'], 'argProj')
+        self.assertEqual(meta['runbook'], 'argRb')
+
+    def test_render_embeds_data_and_escapes_script(self):
+        root = {"runbookId": "/x", "inputs": {"schema": {},
+                "stepInputs": {"s-1": {"note": "</script><b>x"}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertNotIn('__RUNBOOK_DATA__', html_text)
+        self.assertNotIn('</script><b>x', html_text)
+        self.assertIn('\\u003c', html_text)
+        self.assertIn('s-1', html_text)
+
+    def test_normalize_doc_unwraps_inputs(self):
+        doc = configure_renderer._normalize_doc(_CFG_INPUTS)
+        self.assertEqual(
+            doc['stepInputs'], {"vm.agentless.setup-001": {
+                "applianceName": "appl-1"}})
+        self.assertIn('vm.agentless.setup', doc['schema'])
+        self.assertTrue(doc['runbookId'].endswith('testrunbook'))
+
+    def test_normalize_spec_unwraps_payload(self):
+        spec = configure_renderer._normalize_spec(_CFG_SPEC)
+        self.assertEqual(spec['entities'], [{"displayName": "vm1"}])
+        self.assertEqual(len(spec['workstreams']), 1)
+
+    def test_render_uses_separate_schema_doc(self):
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"vm.agentless.setup-001": {}}}}
+        schema = {"vm.agentless.setup": {"applianceName": {
+            "type": "string", "required": True}}}
+        html_text = configure_renderer.render(
+            root, None, {"runbook": "r"}, schema_doc=schema)
+        self.assertIn('applianceName', html_text)
+        self.assertIn('vm.agentless.setup-001', html_text)
 
 
 _DEFINITION_DOC = {
@@ -1557,11 +1856,53 @@ class VisualizeCommandTests(unittest.TestCase):
             execution_cmds, 'get_subscription_id', return_value=SUB)
         self.addCleanup(exec_sub_patch.stop)
         exec_sub_patch.start()
+        # visualize opens by default; stub the launch so tests never spawn a
+        # browser (and never fail on a headless CI agent).
+        for module in (definition_cmds, execution_cmds):
+            open_patch = mock.patch.object(
+                module.files, 'open_in_browser', return_value=True)
+            self.addCleanup(open_patch.stop)
+            open_patch.start()
+
+    def test_definition_visualize_fails_when_browser_cannot_open(self):
+        zip_bytes = _make_zip({"rb-x-spec.json": json.dumps(
+            {"spec": _DEFINITION_DOC})})
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(definition_cmds, 'ArmClient') as client, \
+                    mock.patch.object(
+                        definition_cmds.files, 'download_bytes',
+                        return_value=zip_bytes), \
+                    mock.patch.object(
+                        definition_cmds.files, 'open_in_browser',
+                        side_effect=CLIInternalError('no browser')):
+                client.return_value.post_action.return_value = {
+                    "downloadUrl": "https://blob/x"}
+                with self.assertRaises(CLIInternalError):
+                    definition_cmds.visualize(
+                        mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
+
+    def test_definition_visualize_no_open_skips_browser(self):
+        zip_bytes = _make_zip({"rb-x-spec.json": json.dumps(
+            {"spec": _DEFINITION_DOC})})
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(definition_cmds, 'ArmClient') as client, \
+                    mock.patch.object(
+                        definition_cmds.files, 'download_bytes',
+                        return_value=zip_bytes), \
+                    mock.patch.object(
+                        definition_cmds.files, 'open_in_browser') as op:
+                client.return_value.post_action.return_value = {
+                    "downloadUrl": "https://blob/x"}
+                result = definition_cmds.visualize(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp,
+                    no_open=True)
+            op.assert_not_called()
+            self.assertTrue(result['path'].endswith('.html'))
 
     def test_definition_visualize_writes_html(self):
         zip_bytes = _make_zip({
             "rb-x-spec.json": json.dumps(
-                {"runbookSpec": _DEFINITION_DOC}),
+                {"spec": _DEFINITION_DOC}),
         })
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(definition_cmds, 'ArmClient') as client, \
@@ -1601,7 +1942,7 @@ class VisualizeCommandTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             spec_path = os.path.join(tmp, 'rb-local-spec.json')
             with open(spec_path, 'w', encoding='utf-8') as handle:
-                json.dump({"runbookSpec": _DEFINITION_DOC}, handle)
+                json.dump({"spec": _DEFINITION_DOC}, handle)
             with mock.patch.object(
                     definition_cmds, 'ArmClient') as client, \
                     mock.patch.object(
@@ -1621,9 +1962,9 @@ class VisualizeCommandTests(unittest.TestCase):
             spec_path = os.path.join(tmp, 'rb-local-spec.json')
             params_path = os.path.join(tmp, 'rb-local-parameters.json')
             with open(spec_path, 'w', encoding='utf-8') as handle:
-                json.dump({"runbookSpec": _REAL_DEFINITION}, handle)
+                json.dump({"spec": _REAL_DEFINITION}, handle)
             with open(params_path, 'w', encoding='utf-8') as handle:
-                json.dump({"runbookInputs": _REAL_PARAMS}, handle)
+                json.dump({"inputs": _REAL_PARAMS}, handle)
             result = definition_cmds.visualize(
                 mock.Mock(), file=tmp, from_file=spec_path,
                 parameters_file=params_path)
@@ -1673,28 +2014,28 @@ _REAL_DEFINITION = {
         {"id": "workstream-0", "displayName": "Initialization", "steps": [
             {"stepId": "vm.agentless.setup-1", "displayName": "Setup",
              "stepRef": "vm.agentless.setup", "entities": [],
-             "prerequisite": [], "dependsOn": []},
+             "prerequisites": [], "dependsOn": []},
         ]},
         {"id": "workstream-1", "displayName": "waveapp", "steps": [
             {"stepId": "vm.agentless.prepareEntity-1",
              "displayName": "Prepare Entity",
              "stepRef": "vm.agentless.prepareEntity",
              "entities": [_ENT_A, _ENT_B],
-             "prerequisite": [
-                 {"step": "vm.agentless.setup-1", "mode": "step"}],
+             "prerequisites": [
+                 {"stepId": "vm.agentless.setup-1", "waitFor": "wholeStep"}],
              "dependsOn": []},
             {"stepId": "common.approval-1", "displayName": "Approval Gate",
              "stepRef": "common.approval", "entities": [_ENT_A, _ENT_B],
-             "prerequisite": [],
-             "dependsOn": [{"step": "vm.agentless.prepareEntity-1",
-                            "mode": "migrationEntity"}]},
+             "prerequisites": [],
+             "dependsOn": [{"stepId": "vm.agentless.prepareEntity-1",
+                            "waitFor": "sameEntity"}]},
             {"stepId": "vm.agentless.migration-1", "displayName": "Migration",
              "stepRef": "vm.agentless.migration",
              "entities": [_ENT_A, _ENT_B],
-             "prerequisite": [{"step": "vm.agentless.prepareEntity-1",
-                               "mode": "migrationEntity"}],
-             "dependsOn": [{"step": "common.approval-1",
-                            "mode": "migrationEntity"}]},
+             "prerequisites": [{"stepId": "vm.agentless.prepareEntity-1",
+                               "waitFor": "sameEntity"}],
+             "dependsOn": [{"stepId": "common.approval-1",
+                            "waitFor": "sameEntity"}]},
         ]},
     ],
 }
@@ -1749,13 +2090,13 @@ def _annotated_definition():
 class DepsHelperTests(unittest.TestCase):
 
     def test_merges_prerequisite_and_depends_on(self):
-        step = {"prerequisite": [{"step": "a"}],
-                "dependsOn": [{"step": "b"}]}
+        step = {"prerequisites": [{"stepId": "a"}],
+                "dependsOn": [{"stepId": "b"}]}
         self.assertEqual(deps_mod.merged_dep_ids(step), ["a", "b"])
 
     def test_dedupes_preserving_order(self):
-        step = {"prerequisite": [{"step": "a"}, {"step": "b"}],
-                "dependsOn": [{"step": "b"}, "c"]}
+        step = {"prerequisites": [{"stepId": "a"}, {"stepId": "b"}],
+                "dependsOn": [{"stepId": "b"}, "c"]}
         self.assertEqual(deps_mod.merged_dep_ids(step), ["a", "b", "c"])
 
     def test_handles_missing_and_blank(self):
@@ -1829,8 +2170,8 @@ class DefinitionTableRealShapeTests(unittest.TestCase):
         rows = transformers.definition_table(_annotated_definition())
         by_id = {row["Step Id"]: row for row in rows}
         migration = by_id["vm.agentless.migration-1"]
-        self.assertEqual(migration["Workloads"], 2)
-        self.assertEqual(migration["Applications"], "-")
+        self.assertEqual(migration["Entities"], 2)
+        self.assertEqual(migration["Applications"], 0)
         self.assertEqual(migration["Configuration Status"], "Configured")
         self.assertIn(
             "waveapp:Prepare Entity", migration["Depends On"])
@@ -1887,12 +2228,11 @@ class VisualizeGridTests(unittest.TestCase):
 
     def test_definition_metadata_header_renders(self):
         document = {
-            "runbookResourceId": "/subscriptions/s/rb/testrunbook",
-            "metadata": {
-                "waveId": "/subscriptions/s/waves/testwave",
-                "generatedAt": "2026-07-25T06:51:42.6972548Z",
-            },
-            "stepLibraryVersions": {"vm.agentless": "1.0"},
+            "runbookId": "/subscriptions/s/rb/testrunbook",
+            "waveId": "/subscriptions/s/waves/testwave",
+            "generatedAt": "2026-07-25T06:51:42.6972548Z",
+            "stepLibraryVersions": [
+                {"namespace": "vm.agentless", "version": "1.0"}],
             "workstreams": [
                 {"id": "w0", "displayName": "Init", "steps": [
                     {"stepId": "s1", "displayName": "Setup"}]},
@@ -1915,8 +2255,8 @@ class VisualizeGridTests(unittest.TestCase):
 
     def test_definition_rows_open_detail_drawer(self):
         document = {
-            "runbookResourceId": "/subscriptions/s/rb/tr",
-            "metadata": {"generatedAt": "2026-01-01T00:00:00Z"},
+            "runbookId": "/subscriptions/s/rb/tr",
+            "generatedAt": "2026-01-01T00:00:00Z",
             "entities": [{"id": "e1", "displayName": "VM-App01"}],
             "workstreams": [
                 {"id": "w0", "displayName": "Init", "steps": [
@@ -1924,8 +2264,8 @@ class VisualizeGridTests(unittest.TestCase):
                      "stepRef": "vm.prep"},
                     {"stepId": "s2", "displayName": "Migrate",
                      "stepRef": "vm.migrate", "entities": ["e1"],
-                     "prerequisite": [{"step": "s1", "mode": "Blocking"}],
-                     "dependsOn": [{"step": "s1", "mode": "Soft"}]}]},
+                     "prerequisites": [{"stepId": "s1", "waitFor": "wholeStep"}],
+                     "dependsOn": [{"stepId": "s1", "waitFor": "sameEntity"}]}]},
             ],
         }
         view = visualize_viewmodel.build_definition_view(
@@ -1947,6 +2287,29 @@ class VisualizeGridTests(unittest.TestCase):
         # Everything stays offline/self-contained.
         self.assertNotIn("https://", html_text)
         self.assertNotIn("http://", html_text)
+
+    def test_definition_grid_and_drawer_show_applications(self):
+        document = {
+            "entityGroups": [
+                {"id": "group-app", "displayName": "Application Tier"},
+                {"id": "group-db", "displayName": "DB Tier"}],
+            "workstreams": [{"id": "w0", "displayName": "Init", "steps": [
+                {"stepId": "s1", "displayName": "Migrate",
+                 "affectedEntityGroups": ["group-app", "group-db"]},
+                {"stepId": "s2", "displayName": "Setup"}]}],
+        }
+        view = visualize_viewmodel.build_definition_view(
+            document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph, view=view)
+        # Grid header + per-step Applications COUNT (not the full list).
+        self.assertIn('class="col-apps">Applications<', html_text)
+        self.assertIn('class="col-apps">2<', html_text)
+        self.assertIn('class="col-apps">0<', html_text)
+        # The full application list appears only in the detail drawer.
+        self.assertNotIn('class="col-apps">Application Tier', html_text)
+        self.assertIn("Application Tier", html_text)
+        self.assertIn("DB Tier", html_text)
 
     def test_definition_renders_brand_bar_and_cli_help(self):
         document = {
