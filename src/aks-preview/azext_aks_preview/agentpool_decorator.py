@@ -675,7 +675,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
     def get_managed_gpu_driver_mode(self) -> Union[str, None]:
         """Obtain the value of managed_gpu_driver_mode."""
         managed_gpu_driver_mode = self.raw_param.get("managed_gpu_driver_mode")
-        enable_managed_gpu = self.raw_param.get("enable_managed_gpu")
+        enable_managed_gpu = self.get_enable_managed_gpu()
 
         if managed_gpu_driver_mode is not None and enable_managed_gpu is not True:
             raise ArgumentUsageError(
