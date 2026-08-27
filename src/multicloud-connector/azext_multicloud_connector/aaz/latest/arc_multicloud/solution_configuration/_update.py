@@ -24,9 +24,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-12-01",
+        "version": "2027-01-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-12-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2027-01-01"],
         ]
     }
 
@@ -140,7 +140,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }

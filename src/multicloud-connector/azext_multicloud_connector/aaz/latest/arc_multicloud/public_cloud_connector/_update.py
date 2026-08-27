@@ -24,9 +24,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-12-01",
+        "version": "2027-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2027-01-01"],
         ]
     }
 
@@ -67,6 +67,11 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Cloud profile for AWS.",
         )
+        _args_schema.gcp_cloud_profile = AAZObjectArg(
+            options=["--gcp-cloud-profile"],
+            arg_group="Properties",
+            help="Cloud profile for GCP.",
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Properties",
@@ -81,6 +86,28 @@ class Update(AAZCommand):
 
         excluded_accounts = cls._args_schema.aws_cloud_profile.excluded_accounts
         excluded_accounts.Element = AAZStrArg()
+
+        gcp_cloud_profile = cls._args_schema.gcp_cloud_profile
+        gcp_cloud_profile.organization_properties = AAZObjectArg(
+            options=["organization-properties"],
+            help="The organization properties of the GCP organization.",
+        )
+
+        organization_properties = cls._args_schema.gcp_cloud_profile.organization_properties
+        organization_properties.excluded_folder_ids = AAZListArg(
+            options=["excluded-folder-ids"],
+            help="List of GCP folders which need to be excluded.",
+        )
+        organization_properties.excluded_project_numbers = AAZListArg(
+            options=["excluded-project-numbers"],
+            help="List of GCP projects which need to be excluded.",
+        )
+
+        excluded_folder_ids = cls._args_schema.gcp_cloud_profile.organization_properties.excluded_folder_ids
+        excluded_folder_ids.Element = AAZStrArg()
+
+        excluded_project_numbers = cls._args_schema.gcp_cloud_profile.organization_properties.excluded_project_numbers
+        excluded_project_numbers.Element = AAZStrArg()
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
@@ -151,7 +178,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }
@@ -182,6 +209,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("awsCloudProfile", AAZObjectType, ".aws_cloud_profile")
+                properties.set_prop("gcpCloudProfile", AAZObjectType, ".gcp_cloud_profile")
 
             aws_cloud_profile = _builder.get(".properties.awsCloudProfile")
             if aws_cloud_profile is not None:
@@ -190,6 +218,23 @@ class Update(AAZCommand):
             excluded_accounts = _builder.get(".properties.awsCloudProfile.excludedAccounts")
             if excluded_accounts is not None:
                 excluded_accounts.set_elements(AAZStrType, ".")
+
+            gcp_cloud_profile = _builder.get(".properties.gcpCloudProfile")
+            if gcp_cloud_profile is not None:
+                gcp_cloud_profile.set_prop("organizationProperties", AAZObjectType, ".organization_properties")
+
+            organization_properties = _builder.get(".properties.gcpCloudProfile.organizationProperties")
+            if organization_properties is not None:
+                organization_properties.set_prop("excludedFolderIds", AAZListType, ".excluded_folder_ids")
+                organization_properties.set_prop("excludedProjectNumbers", AAZListType, ".excluded_project_numbers")
+
+            excluded_folder_ids = _builder.get(".properties.gcpCloudProfile.organizationProperties.excludedFolderIds")
+            if excluded_folder_ids is not None:
+                excluded_folder_ids.set_elements(AAZStrType, ".")
+
+            excluded_project_numbers = _builder.get(".properties.gcpCloudProfile.organizationProperties.excludedProjectNumbers")
+            if excluded_project_numbers is not None:
+                excluded_project_numbers.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -218,6 +263,9 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.kind = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -237,11 +285,13 @@ class Update(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.aws_cloud_profile = AAZObjectType(
                 serialized_name="awsCloudProfile",
-                flags={"required": True},
             )
             properties.connector_primary_identifier = AAZStrType(
                 serialized_name="connectorPrimaryIdentifier",
                 flags={"read_only": True},
+            )
+            properties.gcp_cloud_profile = AAZObjectType(
+                serialized_name="gcpCloudProfile",
             )
             properties.host_type = AAZStrType(
                 serialized_name="hostType",
@@ -266,6 +316,50 @@ class Update(AAZCommand):
 
             excluded_accounts = cls._schema_on_200.properties.aws_cloud_profile.excluded_accounts
             excluded_accounts.Element = AAZStrType()
+
+            gcp_cloud_profile = cls._schema_on_200.properties.gcp_cloud_profile
+            gcp_cloud_profile.organization_properties = AAZObjectType(
+                serialized_name="organizationProperties",
+            )
+            gcp_cloud_profile.project_properties = AAZObjectType(
+                serialized_name="projectProperties",
+            )
+
+            organization_properties = cls._schema_on_200.properties.gcp_cloud_profile.organization_properties
+            organization_properties.excluded_folder_ids = AAZListType(
+                serialized_name="excludedFolderIds",
+            )
+            organization_properties.excluded_project_numbers = AAZListType(
+                serialized_name="excludedProjectNumbers",
+            )
+            organization_properties.management_project_id = AAZStrType(
+                serialized_name="managementProjectId",
+                flags={"required": True},
+            )
+            organization_properties.management_project_number = AAZStrType(
+                serialized_name="managementProjectNumber",
+                flags={"required": True},
+            )
+            organization_properties.organization_id = AAZStrType(
+                serialized_name="organizationId",
+                flags={"required": True},
+            )
+
+            excluded_folder_ids = cls._schema_on_200.properties.gcp_cloud_profile.organization_properties.excluded_folder_ids
+            excluded_folder_ids.Element = AAZStrType()
+
+            excluded_project_numbers = cls._schema_on_200.properties.gcp_cloud_profile.organization_properties.excluded_project_numbers
+            excluded_project_numbers.Element = AAZStrType()
+
+            project_properties = cls._schema_on_200.properties.gcp_cloud_profile.project_properties
+            project_properties.project_id = AAZStrType(
+                serialized_name="projectId",
+                flags={"required": True},
+            )
+            project_properties.project_number = AAZStrType(
+                serialized_name="projectNumber",
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

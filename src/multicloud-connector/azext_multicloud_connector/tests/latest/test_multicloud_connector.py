@@ -105,6 +105,71 @@ class MulticloudConnectorScenario(ScenarioTest):
             '-y'
         )
 
+    # GCP connectors are not yet available in the test recordings; run live to record.
+    @live_only()
+    @ResourceGroupPreparer()
+    def test_gcp_public_cloud_connector(self, resource_group):
+        sub = self.get_subscription_id()
+        connector_name = "testGcpConnector"
+        self.kwargs.update({
+            'name': f'{connector_name}',
+            'rg': resource_group,
+            'sub': f'{sub}',
+            'loc': 'eastus',
+            'profile': '{project-properties:{project-number:123456789123,project-id:my-project},'
+                       'organization-properties:{organization-id:123456789123,'
+                       'management-project-number:123456789124,'
+                       'management-project-id:my-management-project}}',
+        })
+
+        # test public-cloud-connector create with a GCP cloud profile
+        self.cmd(
+            'arc-multicloud public-cloud-connector create '
+            '--name {name} '
+            '--resource-group {rg} '
+            '--subscription {sub} '
+            '--host-type GCP '
+            '--gcp-cloud-profile "{profile}" '
+            '--location {loc}',
+            checks=[self.check('name', 'testGcpConnector'),
+                    self.check('properties.hostType', 'GCP'),
+                    self.check('properties.gcpCloudProfile.projectProperties.projectId', 'my-project')]
+        )
+
+        self.kwargs.update({
+            'cid': f'subscriptions/{sub}/resourceGroups/{resource_group}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{connector_name}',
+            'update_profile': '{organization-properties:{excluded-project-numbers:[123456789125],'
+                              'excluded-folder-ids:[folder-1]}}',
+        })
+
+        # test public-cloud-connector update of the GCP organization exclusion lists
+        self.cmd(
+            'arc-multicloud public-cloud-connector update '
+            '--name {name} '
+            '--resource-group {rg} '
+            '--subscription {sub} '
+            '--gcp-cloud-profile "{update_profile}"',
+            checks=[self.check('name', 'testGcpConnector')]
+        )
+
+        # test generate-gcp-template
+        self.cmd(
+            'arc-multicloud generate-gcp-template '
+            '--connector-id {cid} '
+            '--subscription {sub} '
+            '--gcp-template-format terraform',
+            checks=[self.check('status', 'success')]
+        )
+
+        # test public-cloud-connector delete
+        self.cmd(
+            'arc-multicloud public-cloud-connector delete '
+            '--name {name} '
+            '--resource-group {rg} '
+            '--subscription {sub} '
+            '-y'
+        )
+
     @ResourceGroupPreparer()
     def test_solution_configuration(self, resource_group):
         sub = self.get_subscription_id()
