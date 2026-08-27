@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
 * Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
 * `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
 

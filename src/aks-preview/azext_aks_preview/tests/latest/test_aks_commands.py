@@ -8005,6 +8005,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check(
                     "gpuProfile.nvidia.managementMode", "Managed"
                 ),
+                self.check("gpuProfile.nvidia.driverMode", "DevicePlugin"),
             ],
         )
 
@@ -18561,13 +18562,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group} "
             "--cluster-name={name} "
             "--name={node_pool_name} "
-            "--enable-managed-gpu=true ",
+            "--enable-managed-gpu=true "
+            "--managed-gpu-driver-mode=dra ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("gpuProfile.driver", "Install"),
                 self.check(
                     "gpuProfile.nvidia.managementMode", "Managed"
                 ),
+                self.check("gpuProfile.nvidia.driverMode", "DRA"),
             ],
         )
 

@@ -2580,6 +2580,9 @@ helps['aks nodepool add'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2814,6 +2817,9 @@ helps['aks nodepool update'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.

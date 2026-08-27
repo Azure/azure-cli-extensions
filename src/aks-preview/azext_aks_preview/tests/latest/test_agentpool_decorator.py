@@ -37,6 +37,7 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_MANAGEMENT_MODE_MANAGED,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
     CONST_FLEX_NODES,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
@@ -1924,11 +1925,46 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             gpu_profile=self.models.GPUProfile(
                 driver=CONST_GPU_DRIVER_INSTALL,
                 nvidia=self.models.NvidiaGPUProfile(
-                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED
+                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED,
+                    driver_mode=CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
                 )
             )
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_gpu": True, "managed_gpu_driver_mode": "DRA"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.set_up_managed_gpu(agentpool_2)
+        dec_agentpool_2 = self._restore_defaults_in_agentpool(dec_agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL,
+                nvidia=self.models.NvidiaGPUProfile(
+                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED,
+                    driver_mode="DRA",
+                )
+            )
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        dec_3 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_gpu": False, "managed_gpu_driver_mode": "DRA"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_3.context.attach_agentpool(agentpool_3)
+        with self.assertRaises(ArgumentUsageError):
+            dec_3.set_up_managed_gpu(agentpool_3)
 
     def common_set_up_skip_gpu_driver_install(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
@@ -3005,7 +3041,8 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             gpu_profile=self.models.GPUProfile(
                 driver=CONST_GPU_DRIVER_INSTALL,
                 nvidia=self.models.NvidiaGPUProfile(
-                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED
+                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED,
+                    driver_mode=CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
                 )
             )
         )
