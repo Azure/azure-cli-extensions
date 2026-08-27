@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+22.0.0b5
++++++++++
+* Vendor new SDK and bump API version to `2026-06-02-preview`.
+
 22.0.0b4
 +++++++++
 * `az aks nodepool update`: Add preview `--zones`/`-z` support for migrating a regional node pool to automatic zone placement with `--zones auto`. Other availability zone changes are subject to service restrictions. Omitted zones remain unchanged, and the option can be combined with `--node-vm-size`.
