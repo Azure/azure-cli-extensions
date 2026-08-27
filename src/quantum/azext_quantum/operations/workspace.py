@@ -552,9 +552,9 @@ def _fill_user_display_names(cmd, users):
 
 def _resolve_directory_objects(cmd, principal_ids):
     """
-    Resolve principal IDs to Microsoft Graph objects in one batched call, keyed by object id. Only
-    transient failures are retried; a principal the directory cannot resolve is simply absent from
-    the result, so the caller can fall back to the principal name rather than failing the command.
+    Resolve principal IDs using a batched Microsoft Graph lookup, keyed by object ID. Transient
+    failures are retried. Principals Graph cannot resolve are omitted so the caller can fall back
+    to the principal name.
     """
     from azure.cli.command_modules.role import graph_client_factory
     from azure.cli.command_modules.role.custom import GraphError, HttpResponseError, _get_object_stubs
