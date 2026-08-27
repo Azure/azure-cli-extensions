@@ -3235,7 +3235,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
         )
         mc_3 = self.models.ManagedCluster(location="test_location")
-        mc_3.properties["enableNodeHardening"] = True
+        mc_3.enable_node_hardening = True
         ctx_3.attach_mc(mc_3)
         self.assertEqual(ctx_3.get_enable_node_hardening(), True)
 
@@ -15284,7 +15284,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(location="test_location")
-        mc_3.properties["enableNodeHardening"] = True
+        mc_3.enable_node_hardening = True
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_enable_node_hardening(mc_3)
         ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
