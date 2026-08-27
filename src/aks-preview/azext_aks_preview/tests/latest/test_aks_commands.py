@@ -9352,6 +9352,70 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # Cluster-level node hardening is gated by Microsoft.ContainerService/CustomNodeConfigPreview AFEC.
+    # The AKSHTTPCustomFeatures header bypass only carries CREATE; UPDATE transitions require the AFEC
+    # to be registered on the target subscription, so this scenario is live-only.
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_update_cluster_node_hardening(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create with --enable-node-hardening; use custom header so the sub does not need CustomNodeConfigPreview registered
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--enable-node-hardening "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodeHardening", True),
+            ],
+        )
+
+        # update: disable at cluster level
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --disable-node-hardening "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodeHardening", False),
+            ],
+        )
+
+        # update: re-enable
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --enable-node-hardening "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodeHardening", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     # this case relatively frequently requires updating the corresponding recording file after network/virtualnetwork
     # bumps its default API version in core azure-cli, thereby blocking some PRs that are not related to it.
     # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
