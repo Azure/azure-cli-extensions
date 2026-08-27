@@ -63,14 +63,15 @@ def _ensure_k8s_extension(cmd, yes=False):
     add_extension_to_path(K8S_EXTENSION_NAME)
 
 
-def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity", max_retries=3, retry_delay=10):
+def _check_and_assign_role(
+        cmd, role, assignee_object_id, scope, identity_name="identity", max_retries=3, retry_delay=10):
     """
     Check if a role assignment already exists, and create it if not.
 
     Args:
         cmd: CLI command context
         role: Role name (e.g., 'Contributor', 'Reader')
-        assignee: Principal ID of the identity to assign the role to
+        assignee_object_id: Object ID of the managed identity to assign the role to
         scope: Resource ID scope for the role assignment
         identity_name: Friendly name for log messages
         max_retries: Max retries for transient failures
@@ -82,15 +83,16 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     import time
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
+    # AKS backup assigns roles only to managed identities; use their object IDs to avoid Graph lookup.
     manual_command = (
-        f'az role assignment create --role "{role}" --assignee-object-id "{assignee}" '
+        f'az role assignment create --role "{role}" --assignee-object-id "{assignee_object_id}" '
         f'--assignee-principal-type "ServicePrincipal" --scope "{scope}"'
     )
 
     # Check if role assignment already exists
     try:
         if list_role_assignments(
-                cmd, assignee_object_id=assignee, role=role, scope=scope, include_inherited=True):
+                cmd, assignee_object_id=assignee_object_id, role=role, scope=scope, include_inherited=True):
             logger.warning("\tRole '%s' already assigned to %s", role, identity_name)
             return True
     except Exception as e:  # pylint: disable=broad-exception-caught
@@ -103,7 +105,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
             create_role_assignment(
                 cmd,
                 role=role,
-                assignee_object_id=assignee,
+                assignee_object_id=assignee_object_id,
                 assignee_principal_type="ServicePrincipal",
                 scope=scope)
             logger.warning("\tRole '%s' assigned to %s", role, identity_name)
@@ -453,7 +455,7 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
     _check_and_assign_role(
         cmd,
         role="Contributor",
-        assignee=cluster_identity_principal_id,
+        assignee_object_id=cluster_identity_principal_id,
         scope=backup_resource_group.id,
         identity_name="cluster identity")
     logger.warning("[OK] Resource group ready")
@@ -579,7 +581,7 @@ def _install_backup_extension(cmd, cluster_subscription_id,
     _check_and_assign_role(
         cmd,
         role="Storage Blob Data Contributor",
-        assignee=backup_extension.aks_assigned_identity.principal_id,
+        assignee_object_id=backup_extension.aks_assigned_identity.principal_id,
         scope=backup_storage_account.id,
         identity_name="backup extension identity")
     logger.warning("[OK] Backup extension ready")
@@ -815,21 +817,21 @@ def _setup_backup_vault(
     _check_and_assign_role(
         cmd,
         role="Reader",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=cluster_resource.id,
         identity_name="backup vault identity (on cluster)")
 
     _check_and_assign_role(
         cmd,
         role="Reader",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=backup_resource_group.id,
         identity_name="backup vault identity (on resource group)")
 
     _check_and_assign_role(
         cmd,
         role="Disk Snapshot Contributor",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=backup_resource_group.id,
         identity_name="backup vault identity (snapshot contributor on resource group)")
     logger.warning("[OK] Backup vault ready")
@@ -1111,7 +1113,7 @@ def _setup_extension_and_storage(
         _check_and_assign_role(
             cmd,
             role="Storage Blob Data Contributor",
-            assignee=existing_extension.aks_assigned_identity.principal_id,
+            assignee_object_id=existing_extension.aks_assigned_identity.principal_id,
             scope=backup_storage_account.id,
             identity_name="backup extension identity")
         logger.warning("[OK] Storage account ready")
@@ -1215,7 +1217,7 @@ def dataprotection_enable_backup_helper(
     _check_and_assign_role(
         cmd,
         role="Storage Blob Data Reader",
-        assignee=backup_vault["identity"]["principalId"],
+        assignee_object_id=backup_vault["identity"]["principalId"],
         scope=backup_storage_account.id,
         identity_name="backup vault identity (on storage account)")
 

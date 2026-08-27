@@ -255,7 +255,7 @@ class TestCheckAndAssignRole(unittest.TestCase):
     @patch(f"{ROLE_MODULE}.list_role_assignments", return_value=[{"id": "existing"}])
     def test_existing_role_returns_true(self, mock_list, mock_create):
         cmd = MagicMock()
-        result = _check_and_assign_role(cmd, "Reader", "pid", "/scope")
+        result = _check_and_assign_role(cmd, "Reader", assignee_object_id="pid", scope="/scope")
         self.assertTrue(result)
         mock_list.assert_called_once_with(
             cmd, assignee_object_id="pid", role="Reader", scope="/scope", include_inherited=True)
@@ -265,7 +265,7 @@ class TestCheckAndAssignRole(unittest.TestCase):
     @patch(f"{ROLE_MODULE}.list_role_assignments", return_value=[])
     def test_creates_role_when_missing(self, mock_list, mock_create):
         cmd = MagicMock()
-        result = _check_and_assign_role(cmd, "Reader", "pid", "/scope")
+        result = _check_and_assign_role(cmd, "Reader", assignee_object_id="pid", scope="/scope")
         self.assertTrue(result)
         mock_create.assert_called_once_with(
             cmd,
@@ -278,7 +278,7 @@ class TestCheckAndAssignRole(unittest.TestCase):
     @patch(f"{ROLE_MODULE}.list_role_assignments", return_value=[])
     def test_conflict_treated_as_success(self, mock_list, mock_create):
         cmd = MagicMock()
-        result = _check_and_assign_role(cmd, "Reader", "pid", "/scope")
+        result = _check_and_assign_role(cmd, "Reader", assignee_object_id="pid", scope="/scope")
         self.assertTrue(result)
 
     @patch(f"{ROLE_MODULE}.create_role_assignment", side_effect=Exception("Authorization failed: forbidden"))
@@ -288,7 +288,7 @@ class TestCheckAndAssignRole(unittest.TestCase):
         with self.assertRaisesRegex(
                 InvalidArgumentValueError,
                 "--assignee-object-id.*--assignee-principal-type"):
-            _check_and_assign_role(cmd, "Reader", "pid", "/scope")
+            _check_and_assign_role(cmd, "Reader", assignee_object_id="pid", scope="/scope")
 
 
 # ---------------------------------------------------------------------------
