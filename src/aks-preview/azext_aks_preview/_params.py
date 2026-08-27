@@ -2445,6 +2445,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "managed_gpu_driver_mode",
+            options_list=["--managed-gpu-driver-mode", "--gpu-driver-mode"],
             arg_type=get_enum_type(managed_gpu_driver_modes),
             is_preview=True,
             help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin. The default is DevicePlugin. Requires --enable-managed-gpu to be set to true.",
@@ -2595,6 +2596,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "managed_gpu_driver_mode",
+            options_list=["--managed-gpu-driver-mode", "--gpu-driver-mode"],
             arg_type=get_enum_type(managed_gpu_driver_modes),
             is_preview=True,
             help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin.",
