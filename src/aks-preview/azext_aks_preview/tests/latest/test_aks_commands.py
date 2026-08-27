@@ -14815,7 +14815,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        role_assignment_cmd = 'role assignment create --role "DNS Zone Contributor" --assignee {web_app_routing_identity_obj_id} --scope {dns_zone_id}'
+        role_assignment_cmd = (
+            'role assignment create --role "DNS Zone Contributor" '
+            "--assignee-object-id {web_app_routing_identity_obj_id} "
+            "--assignee-principal-type ServicePrincipal --scope {dns_zone_id}"
+        )
         self.cmd(role_assignment_cmd)
 
         addon_update_cmd = "aks addon update -g {resource_group} -n {name} --addon web_application_routing --dns-zone-resource-ids={dns_zone_id}"

@@ -82,19 +82,30 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     import time
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 
+    manual_command = (
+        f'az role assignment create --role "{role}" --assignee-object-id "{assignee}" '
+        f'--assignee-principal-type "ServicePrincipal" --scope "{scope}"'
+    )
+
     # Check if role assignment already exists
     try:
-        if list_role_assignments(cmd, assignee=assignee, role=role, scope=scope, include_inherited=True):
+        if list_role_assignments(
+                cmd, assignee_object_id=assignee, role=role, scope=scope, include_inherited=True):
             logger.warning("\tRole '%s' already assigned to %s", role, identity_name)
             return True
     except Exception as e:  # pylint: disable=broad-exception-caught
         logger.warning("\tWarning: Could not list role assignments for %s: %s", identity_name, str(e)[:100])
         # Continue to try creating the assignment
 
-    # Try to create with retries for identity propagation delay
+    # Try to create with retries for transient identity propagation errors
     for attempt in range(max_retries):
         try:
-            create_role_assignment(cmd, role=role, assignee=assignee, scope=scope)
+            create_role_assignment(
+                cmd,
+                role=role,
+                assignee_object_id=assignee,
+                assignee_principal_type="ServicePrincipal",
+                scope=scope)
             logger.warning("\tRole '%s' assigned to %s", role, identity_name)
             return True
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -121,7 +132,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
                 raise InvalidArgumentValueError(
                     f"Insufficient permissions to assign '{role}' role to {identity_name}.\n"
                     f"Run manually:\n\n"
-                    f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n"
+                    f"  {manual_command}\n"
                 )
 
             # Non-retryable error — break and raise
@@ -130,7 +141,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     raise InvalidArgumentValueError(
         f"Failed to assign '{role}' role to {identity_name}.\n"
         f"Run manually:\n\n"
-        f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n"
+        f"  {manual_command}\n"
     )
 
 

@@ -257,6 +257,8 @@ class TestCheckAndAssignRole(unittest.TestCase):
         cmd = MagicMock()
         result = _check_and_assign_role(cmd, "Reader", "pid", "/scope")
         self.assertTrue(result)
+        mock_list.assert_called_once_with(
+            cmd, assignee_object_id="pid", role="Reader", scope="/scope", include_inherited=True)
         mock_create.assert_not_called()
 
     @patch(f"{ROLE_MODULE}.create_role_assignment")
@@ -265,7 +267,12 @@ class TestCheckAndAssignRole(unittest.TestCase):
         cmd = MagicMock()
         result = _check_and_assign_role(cmd, "Reader", "pid", "/scope")
         self.assertTrue(result)
-        mock_create.assert_called_once()
+        mock_create.assert_called_once_with(
+            cmd,
+            role="Reader",
+            assignee_object_id="pid",
+            assignee_principal_type="ServicePrincipal",
+            scope="/scope")
 
     @patch(f"{ROLE_MODULE}.create_role_assignment", side_effect=Exception("Conflict: already exists"))
     @patch(f"{ROLE_MODULE}.list_role_assignments", return_value=[])
@@ -278,7 +285,9 @@ class TestCheckAndAssignRole(unittest.TestCase):
     @patch(f"{ROLE_MODULE}.list_role_assignments", return_value=[])
     def test_permission_denied_raises(self, mock_list, mock_create):
         cmd = MagicMock()
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError,
+                "--assignee-object-id.*--assignee-principal-type"):
             _check_and_assign_role(cmd, "Reader", "pid", "/scope")
 
 
