@@ -1271,11 +1271,11 @@ def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
 def validate_nat_gateway_v2_params(namespace):
     """Validate V2-only NAT gateway params.
 
-    V2-only params (managed IPv6 count, BYO outbound IPs / IP prefixes) are valid with the GA
-    managed NAT gateway outbound type (``managedNATGateway``, with V2 selected via
-    ``--outbound-type-sku StandardV2``) or the legacy preview ``managedNATGatewayV2`` outbound
-    type. On update, ``--outbound-type`` may be omitted when the cluster is already V2; only reject
-    when it is explicitly set to a value that cannot carry a V2 NAT gateway.
+    V2-only params (managed IPv6 count, BYO outbound IPs / IP prefixes) are valid with the managed
+    NAT gateway outbound type (``managedNATGateway``, with V2 selected via
+    ``--outbound-type-sku StandardV2``). On update, ``--outbound-type`` may be omitted when the
+    cluster is already managed NAT gateway; only reject when it is explicitly set to a value that
+    cannot carry a V2 NAT gateway.
     """
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
@@ -1284,15 +1284,12 @@ def validate_nat_gateway_v2_params(namespace):
     ]
     if any(p is not None for p in v2_params):
         outbound_type = getattr(namespace, 'outbound_type', None)
-        if outbound_type is not None and outbound_type not in (
-            'managedNATGateway', 'managedNATGatewayV2',
-        ):
+        if outbound_type is not None and outbound_type != 'managedNATGateway':
             raise InvalidArgumentValueError(
                 "--nat-gateway-managed-outbound-ipv6-count, "
                 "--nat-gateway-outbound-ips, and "
                 "--nat-gateway-outbound-ip-prefixes are only valid with "
-                "--outbound-type managedNATGateway (V2 via --outbound-type-sku StandardV2) "
-                "or the legacy --outbound-type managedNATGatewayV2."
+                "--outbound-type managedNATGateway (V2 via --outbound-type-sku StandardV2)."
             )
 
 
@@ -1317,16 +1314,14 @@ def validate_outbound_type_sku(namespace):
     """Validate --outbound-type-sku (managed NAT gateway SKU).
 
     The SKU is only meaningful with the managed NAT gateway outbound type. When set, an explicit
-    --outbound-type must be managedNATGateway (or the legacy managedNATGatewayV2). Region
-    availability and downgrade (StandardV2 -> Standard) rules are enforced server-side by the RP.
+    --outbound-type must be managedNATGateway. Region availability and downgrade
+    (StandardV2 -> Standard) rules are enforced server-side by the RP.
     """
     sku = getattr(namespace, 'nat_gateway_sku', None)
     if sku is None:
         return
     outbound_type = getattr(namespace, 'outbound_type', None)
-    if outbound_type is not None and outbound_type not in (
-        'managedNATGateway', 'managedNATGatewayV2',
-    ):
+    if outbound_type is not None and outbound_type != 'managedNATGateway':
         raise InvalidArgumentValueError(
             "--outbound-type-sku is only valid with --outbound-type managedNATGateway."
         )

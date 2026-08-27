@@ -279,14 +279,17 @@ class TestValidateNatGatewayV2Params(unittest.TestCase):
         defaults.update(kwargs)
         return SimpleNamespace(**defaults)
 
-    def test_v2_params_allowed_when_outbound_type_is_v2(self):
+    def test_v2_params_rejected_when_outbound_type_is_legacy_v2(self):
+        # managedNATGatewayV2 is unknown to the 2026-06-02-preview API (dropped from OutboundType);
+        # V2 params must now go with managedNATGateway (+ --outbound-type-sku StandardV2).
+        from azure.cli.core.azclierror import InvalidArgumentValueError
         from azext_aks_preview._validators import validate_nat_gateway_v2_params
         ns = self._make_namespace(
             nat_gateway_managed_outbound_ipv6_count=4,
             outbound_type='managedNATGatewayV2',
         )
-        # Should not raise
-        validate_nat_gateway_v2_params(ns)
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_nat_gateway_v2_params(ns)
 
     def test_v2_params_allowed_when_outbound_type_not_specified(self):
         """On update, outbound_type may be None if cluster is already V2."""
@@ -341,10 +344,13 @@ class TestValidateOutboundTypeSku(unittest.TestCase):
         ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type='managedNATGateway')
         validate_outbound_type_sku(ns)
 
-    def test_sku_allowed_with_legacy_managed_nat_gateway_v2(self):
+    def test_sku_rejected_with_legacy_managed_nat_gateway_v2(self):
+        # managedNATGatewayV2 is not a valid outbound type on the 2026-06-02-preview API.
+        from azure.cli.core.azclierror import InvalidArgumentValueError
         from azext_aks_preview._validators import validate_outbound_type_sku
         ns = self._make_namespace(nat_gateway_sku='Standard', outbound_type='managedNATGatewayV2')
-        validate_outbound_type_sku(ns)
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_outbound_type_sku(ns)
 
     def test_sku_allowed_when_outbound_type_not_specified(self):
         """On update the outbound type may be omitted when the cluster is already managed NAT gw."""
