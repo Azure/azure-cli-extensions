@@ -555,6 +555,21 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
 
         sleep.assert_called_once_with(1)
 
+    def test_list_users_retries_graph_error_without_status_code(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", None), stubs]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            result = list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        self.assertEqual(result[0]["displayName"], "User One")
+        self.assertEqual(get_object_stubs.call_count, 2)
+        sleep.assert_called_once_with(1)
+
     def test_list_users_does_not_retry_permanent_graph_error(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         assignments = [{"principalId": "u", "principalType": "User"}]

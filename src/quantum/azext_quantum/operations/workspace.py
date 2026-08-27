@@ -567,7 +567,7 @@ def _resolve_directory_objects(cmd, principal_ids):
         except (GraphError, HttpResponseError) as ex:
             response = getattr(ex, "response", None)
             status_code = getattr(ex, "status_code", None) or getattr(response, "status_code", None)
-            transient = status_code in (408, 429) or (status_code is not None and 500 <= status_code < 600)
+            transient = status_code is None or status_code in (408, 429) or 500 <= status_code < 600
             if not transient:
                 error_type = {400: ClientRequestError, 401: UnauthorizedError, 403: ForbiddenError}.get(status_code, AzureResponseError)
                 raise error_type(str(ex)) from ex
