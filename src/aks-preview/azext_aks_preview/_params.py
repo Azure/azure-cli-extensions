@@ -2447,7 +2447,7 @@ def load_arguments(self, _):
             "managed_gpu_driver_mode",
             arg_type=get_enum_type(managed_gpu_driver_modes),
             is_preview=True,
-            help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin.",
+            help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin. The default is DevicePlugin. Requires --enable-managed-gpu to be set to true.",
         )
         c.argument(
             "node_public_ip_tags",
