@@ -40,6 +40,7 @@ from azext_aks_preview._consts import (
     CONST_FLEX_NODES,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
+    CONST_OS_SKU_WINDOWS2025,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import (
@@ -48,6 +49,7 @@ from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockCmd,
 )
 from azure.cli.core.azclierror import (
+    ArgumentUsageError,
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
@@ -685,6 +687,63 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         agentpool_5 = self.create_initialized_agentpool_instance(os_sku="test_os_sku")
         ctx_5.attach_agentpool(agentpool_5)
         self.assertEqual(ctx_5.get_os_sku(), None)
+
+    def common_get_enable_fips_image_windows2025_required(self):
+        # Windows2025 requires FIPS-enabled OS image, so it is always enabled on create
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": CONST_OS_SKU_WINDOWS2025}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_fips_image(), True)
+
+        # other os_sku values are not forced to enable FIPS
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": "Windows2022"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_fips_image(), False)
+
+        # explicit --enable-fips-image is respected regardless of os_sku
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": "Ubuntu", "enable_fips_image": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_3.get_enable_fips_image(), True)
+
+        # --disable-fips-image cannot be used with Windows2025, since FIPS is required
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "os_sku": CONST_OS_SKU_WINDOWS2025,
+                    "disable_fips_image": True,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_4.get_enable_fips_image()
+
+        # the Windows2025 requirement only applies in create mode
+        ctx_5 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": CONST_OS_SKU_WINDOWS2025}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_5.get_enable_fips_image(), False)
 
     def common_get_enable_secure_boot(self):
         # default
@@ -1374,6 +1433,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_os_sku(self):
         self.common_get_os_sku()
 
+    def test_get_enable_fips_image_windows2025_required(self):
+        self.common_get_enable_fips_image_windows2025_required()
+
     def test_get_skip_gpu_driver_install(self):
         self.common_get_skip_gpu_driver_install()
 
@@ -1485,6 +1547,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
+
+    def test_get_enable_fips_image_windows2025_required(self):
+        self.common_get_enable_fips_image_windows2025_required()
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()

@@ -287,10 +287,10 @@ helps['aks create'] = f"""
           short-summary: The ID of a PPG.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if k8s version is less than 1.37 or Windows2025 if k8s is 1.37 or greater.
         - name: --enable-fips-image
           type: bool
-          short-summary: Use FIPS-enabled OS on agent nodes.
+          short-summary: Use FIPS-enabled OS on agent nodes. Required and always enabled when --os-sku is Windows2025; cannot be disabled for these node pools.
         - name: --enable-fips
           type: bool
           short-summary: Enable FIPS mode at the cluster level.
@@ -2470,7 +2470,7 @@ helps['aks nodepool add'] = """
           short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
-          short-summary: Use FIPS-enabled OS on agent nodes.
+          short-summary: Use FIPS-enabled OS on agent nodes. Required and always enabled when --os-sku is Windows2025; cannot be disabled for these node pools.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.

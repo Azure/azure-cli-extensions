@@ -53,6 +53,7 @@ from azext_aks_preview._consts import (
     CONST_GPU_MANAGEMENT_MODE_UNMANAGED,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
+    CONST_OS_SKU_WINDOWS2025,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
@@ -957,6 +958,15 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.enable_fips is not None
             ):
                 enable_fips_image = self.agentpool.enable_fips
+            # Windows2025 requires a FIPS-enabled OS image, so it cannot be disabled and is
+            # always turned on for these node pools, regardless of what was passed in.
+            elif self.get_os_sku() == CONST_OS_SKU_WINDOWS2025:
+                if self.get_disable_fips_image():
+                    raise ArgumentUsageError(
+                        '"--disable-fips-image" cannot be used with "--os-sku Windows2025", '
+                        "which requires a FIPS-enabled OS image."
+                    )
+                enable_fips_image = True
 
         # Verify both flags have not been set
         if enable_fips_image and self.get_disable_fips_image():
