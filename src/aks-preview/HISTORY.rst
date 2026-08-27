@@ -11,8 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+22.0.0b6
++++++++++
 * Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
 * `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+* `az aks nodepool add/update`: Add preview `--enable-managed-dranet` to enable Managed DRANET on a node pool.
 
 22.0.0b5
 +++++++++

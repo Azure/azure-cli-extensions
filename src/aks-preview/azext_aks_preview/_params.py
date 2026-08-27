@@ -2508,6 +2508,11 @@ def load_arguments(self, _):
                  'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
             is_preview=True,
         )
+        c.argument(
+            "enable_managed_dranet",
+            action="store_true",
+            is_preview=True,
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -2561,6 +2566,11 @@ def load_arguments(self, _):
         )
         c.argument(
             "asg_ids", validator=validate_application_security_groups, is_preview=True
+        )
+        c.argument(
+            "enable_managed_dranet",
+            action="store_true",
+            is_preview=True,
         )
         c.argument(
             "enable_artifact_streaming",
