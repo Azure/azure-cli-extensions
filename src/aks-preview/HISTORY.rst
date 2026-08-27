@@ -13,7 +13,7 @@ Pending
 +++++++
 * Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
 * `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
-* `az aks create` and `az aks update`: Add `--outbound-type-sku` (alias `--nat-gateway-sku`) to select the managed NAT gateway SKU (`Standard` or `StandardV2`) with `--outbound-type managedNATGateway`, the GA shape of NAT Gateway V2. `StandardV2` supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+* `az aks create` and `az aks update`: Add `--outbound-type-sku` to select the managed NAT gateway SKU (`Standard` or `StandardV2`) with `--outbound-type managedNATGateway`, the GA shape of NAT Gateway V2. `StandardV2` supports IPv6, user-provided public IPs, and user-provided IP prefixes.
 
 22.0.0b5
 +++++++++

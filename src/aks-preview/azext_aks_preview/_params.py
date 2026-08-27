@@ -773,7 +773,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "nat_gateway_sku",
-            options_list=["--outbound-type-sku", "--nat-gateway-sku"],
+            options_list=["--outbound-type-sku"],
             arg_type=get_enum_type(nat_gateway_skus),
             validator=validate_outbound_type_sku,
             help="SKU of the managed NAT Gateway: Standard or StandardV2. Only valid with "
@@ -1539,7 +1539,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "nat_gateway_sku",
-            options_list=["--outbound-type-sku", "--nat-gateway-sku"],
+            options_list=["--outbound-type-sku"],
             arg_type=get_enum_type(nat_gateway_skus),
             validator=validate_outbound_type_sku,
             help="SKU of the managed NAT Gateway: Standard or StandardV2. Only valid with "
