@@ -6,11 +6,9 @@ Release History
 +++++	
 **Breaking Changes**
 
-* `az connectedmachine run-command create/update`: Script parameters restructured into `--source` object:
-  * `--command-id` → `--source command-id=<value>`
-  * `--script` → `--source script=<value>`
-  * `--script-uri` → `--source script-uri=<value>`
-  * `--script-uri-managed-identity` → `--source script-uri-managed-identity=<value>`
+* `az connectedmachine run-command create/update`: Script parameters restructured into `--source` object (backward-compatible aliases added):
+  * `--command-id`, `--script`, `--script-uri`, `--script-uri-managed-identity` still work as top-level parameters
+  * New structured syntax also supported: `--source command-id=<value> script=<value> ...`
 * `az connectedmachine run-command create/update`: Blob identity parameters renamed (backward-compatible aliases added):
   * `--error-blob-id` → `--error-blob-identity` (both work)
   * `--output-blob-id` → `--output-blob-identity` (both work)
