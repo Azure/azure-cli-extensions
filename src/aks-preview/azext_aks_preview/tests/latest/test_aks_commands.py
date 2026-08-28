@@ -25966,8 +25966,8 @@ spec:
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        # Disabled mode exercises CRUD without materializing the Managed alert definitions.
-        # Managed mode remains blocked by an RP metric-name mismatch.
+        # Use Disabled mode to validate alert-config CRUD independently of managed alert
+        # materialization.
         add_cmd = (
             "aks alert-config add --resource-group={resource_group} --cluster-name={name} "
             "--name={alert_config_name} --mode Disabled --action-group-id={action_group_id} "
