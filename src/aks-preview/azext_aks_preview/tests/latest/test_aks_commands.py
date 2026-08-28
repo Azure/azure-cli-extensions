@@ -25929,12 +25929,6 @@ spec:
         random_name_length=17, name_prefix="clitest", location="eastus2euap",
         preserve_default_location=True,
     )
-    # live_only: the recording toolchain works through the internal package proxy, but the
-    # alert configuration operation currently fails in the RP with ListLoadBalancerError /
-    # InvalidAuthenticationTokenTenant after the cluster is created. Once the RP no longer
-    # uses a token from the wrong tenant for the managed resource group lookup, record this
-    # scenario and drop the marker.
-    @live_only()
     def test_aks_alert_config_cmds(self, resource_group, resource_group_location):
         # The alertConfigurations RP endpoint is only deployed to selected regions, so this
         # test pins its location and opts out of the AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION
@@ -25952,6 +25946,10 @@ spec:
             'action_group_name': action_group_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
+            'aks_custom_headers': (
+                'AKSHTTPCustomFeatures='
+                'AKSEarlyBirdTraffic-978512ba0e7711ee90a3000d3ac715d4'
+            ),
         })
 
         action_group = self.cmd(
@@ -25968,40 +25966,25 @@ spec:
             self.check('provisioningState', 'Succeeded'),
         ])
 
+        # Disabled mode exercises CRUD without materializing the Managed alert definitions.
+        # Managed mode remains blocked by an RP metric-name mismatch.
         add_cmd = (
             "aks alert-config add --resource-group={resource_group} --cluster-name={name} "
-            "--name={alert_config_name} --mode Managed --action-group-id={action_group_id} "
+            "--name={alert_config_name} --mode Disabled --action-group-id={action_group_id} "
+            "--aks-custom-headers={aks_custom_headers} "
         )
         self.cmd(add_cmd, checks=[
             self.check('name', '{alert_config_name}'),
             self.check('properties.provisioningState', 'Succeeded'),
-            self.check('properties.mode', 'Managed'),
+            self.check('properties.mode', 'Disabled'),
             self.check('properties.notification.actionGroupId', '{action_group_id}'),
         ])
 
         self.cmd(
             "aks alert-config show --resource-group={resource_group} --cluster-name={name} "
-            "--name={alert_config_name} ",
+            "--name={alert_config_name} --aks-custom-headers={aks_custom_headers} ",
             checks=[
                 self.check('name', '{alert_config_name}'),
-                self.check('properties.mode', 'Managed'),
-                self.check('properties.notification.actionGroupId', '{action_group_id}'),
-            ],
-        )
-
-        self.cmd(
-            "aks alert-config list --resource-group={resource_group} --cluster-name={name} ",
-            checks=[
-                self.check('length(@)', 1),
-                self.check('[0].name', '{alert_config_name}'),
-            ],
-        )
-
-        # Update only the mode; the action group must be preserved by read-modify-write.
-        self.cmd(
-            "aks alert-config update --resource-group={resource_group} --cluster-name={name} "
-            "--name={alert_config_name} --mode Disabled ",
-            checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
                 self.check('properties.mode', 'Disabled'),
                 self.check('properties.notification.actionGroupId', '{action_group_id}'),
@@ -26009,13 +25992,35 @@ spec:
         )
 
         self.cmd(
+            "aks alert-config list --resource-group={resource_group} --cluster-name={name} "
+            "--aks-custom-headers={aks_custom_headers} ",
+            checks=[
+                self.check('length(@)', 1),
+                self.check('[0].name', '{alert_config_name}'),
+            ],
+        )
+
+        # Clear only the action group; the mode must be preserved by read-modify-write.
+        self.cmd(
+            "aks alert-config update --resource-group={resource_group} --cluster-name={name} "
+            "--name={alert_config_name} --action-group-id \"\" "
+            "--aks-custom-headers={aks_custom_headers} ",
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.mode', 'Disabled'),
+                self.check('properties.notification.actionGroupId', ''),
+            ],
+        )
+
+        self.cmd(
             "aks alert-config delete --resource-group={resource_group} --cluster-name={name} "
-            "--name={alert_config_name} --yes ",
+            "--name={alert_config_name} --aks-custom-headers={aks_custom_headers} --yes ",
             checks=[self.is_empty()],
         )
 
         self.cmd(
-            "aks alert-config list --resource-group={resource_group} --cluster-name={name} ",
+            "aks alert-config list --resource-group={resource_group} --cluster-name={name} "
+            "--aks-custom-headers={aks_custom_headers} ",
             checks=[self.check('length(@)', 0)],
         )
 
