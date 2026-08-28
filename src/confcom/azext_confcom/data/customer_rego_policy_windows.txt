@@ -4,7 +4,7 @@ import future.keywords.every
 import future.keywords.in
 
 api_version := %s
-framework_version := "0.4.1"
+framework_version := "0.5.0"
 
 fragments := %s
 
@@ -15,6 +15,10 @@ allow_dump_stacks := %s
 allow_runtime_logging := %s
 allow_environment_variable_dropping := %s
 allow_log_provider_dropping := %s
+allow_host_network := %s
+allow_unencrypted_scratch := %s
+allow_capability_dropping := %s
+allow_registry_changes_dropping := %s
 
 allowed_log_providers := %s
 
@@ -27,7 +31,11 @@ get_properties := data.framework.get_properties
 dump_stacks := data.framework.dump_stacks
 runtime_logging := data.framework.runtime_logging
 log_provider := data.framework.log_provider
-load_fragment := data.framework.load_fragment
+registry_changes := data.framework.registry_changes
+unmount_cims := data.framework.unmount_cims
+host_network := data.framework.host_network
+load_transparency_trust_list := data.framework.load_transparency_trust_list
+%sload_fragment := data.framework.load_fragment
 scratch_mount := data.framework.scratch_mount
 mount_cims := data.framework.mount_cims
 
