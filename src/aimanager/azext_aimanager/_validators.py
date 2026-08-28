@@ -9,7 +9,8 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 def _validate_name(namespace, attr, label):
     name = getattr(namespace, attr, None)
     if name is not None and not name.strip():
-        raise InvalidArgumentValueError(f"--name/-n is not a valid {label}.")
+        raise InvalidArgumentValueError(f"{label} is not a valid.")
+
 
 def validate_ai_manager_name(namespace):
     _validate_name(namespace, "ai_manager_name", "AI Manager name")
