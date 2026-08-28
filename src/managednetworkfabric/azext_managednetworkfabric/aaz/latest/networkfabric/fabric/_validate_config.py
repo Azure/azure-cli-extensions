@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric fabric view-device-configuration",
+    "networkfabric fabric validate-config",
 )
-class ViewDeviceConfiguration(AAZCommand):
-    """Post action: Triggers view of network fabric configuration.
+class ValidateConfig(AAZCommand):
+    """Validates the configuration of the underlying resources in the given Network Fabric instance.
 
-    :example: View device configuration on the Network Fabric
-        az networkfabric fabric view-device-configuration --resource-group example-rg --resource-name example-fabric
+    :example: Validate the configuration on the Network Fabric
+        az networkfabric fabric validate-config -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
     """
 
     _aaz_info = {
         "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/viewdeviceconfiguration", "2026-07-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/validateconfiguration", "2026-07-15-preview"],
         ]
     }
 
@@ -45,8 +45,8 @@ class ViewDeviceConfiguration(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_fabric_name = AAZStrArg(
-            options=["--resource-name", "--network-fabric-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Fabric.",
             required=True,
             id_part="name",
@@ -57,11 +57,21 @@ class ViewDeviceConfiguration(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.validate_action = AAZStrArg(
+            options=["--validate-action"],
+            arg_group="Body",
+            help="Validate action that to be performed",
+            enum={"Cabling": "Cabling", "Configuration": "Configuration", "Connectivity": "Connectivity"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkFabricsViewDeviceConfiguration(ctx=self.ctx)()
+        yield self.NetworkFabricsValidateConfiguration(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +86,7 @@ class ViewDeviceConfiguration(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkFabricsViewDeviceConfiguration(AAZHttpOperation):
+    class NetworkFabricsValidateConfiguration(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +116,7 @@ class ViewDeviceConfiguration(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabrics/{networkFabricName}/viewDeviceConfiguration",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabrics/{networkFabricName}/validateConfiguration",
                 **self.url_parameters
             )
 
@@ -122,7 +132,7 @@ class ViewDeviceConfiguration(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.network_fabric_name,
+                    "networkFabricName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -150,10 +160,24 @@ class ViewDeviceConfiguration(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("validateAction", AAZStrType, ".validate_action")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -177,7 +201,7 @@ class ViewDeviceConfiguration(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _ViewDeviceConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _ValidateConfigHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType(
                 nullable=True,
             )
@@ -201,18 +225,20 @@ class ViewDeviceConfiguration(AAZCommand):
 
             operations = cls._schema_on_200.operations
             operations.Element = AAZObjectType()
-            _ViewDeviceConfigurationHelper._build_schema_operation_status_result_read(operations.Element)
+            _ValidateConfigHelper._build_schema_operation_status_result_read(operations.Element)
 
             properties = cls._schema_on_200.properties
-            properties.device_configuration_url = AAZStrType(
-                serialized_name="deviceConfigurationUrl",
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
             )
+            properties.url = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ViewDeviceConfigurationHelper:
-    """Helper class for ViewDeviceConfiguration"""
+class _ValidateConfigHelper:
+    """Helper class for ValidateConfig"""
 
     _schema_error_detail_read = None
 
@@ -326,4 +352,4 @@ class _ViewDeviceConfigurationHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["ViewDeviceConfiguration"]
+__all__ = ["ValidateConfig"]

@@ -43,7 +43,7 @@ def step_view_device_configuration_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric view-device-configuration --resource-name {name} --resource-group {resourceGroup}"
+        "az networkfabric fabric view-device-config --resource-name {name} --resource-group {resourceGroup}"
     )
 
 
@@ -52,7 +52,7 @@ def step_view_device_configuration_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric view-device-configuration --network-fabric-name {name} --resource-group {resourceGroup}"
+        "az networkfabric fabric view-device-config --network-fabric-name {name} --resource-group {resourceGroup}"
     )
 
 

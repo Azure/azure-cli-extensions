@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric device reboot",
+    "networkfabric bootstrapinterface update-admin-state",
 )
-class Reboot(AAZCommand):
-    """Reboot the Network Device.
+class UpdateAdminState(AAZCommand):
+    """Update the admin state of the Network Interface.
 
-    :example: Reboot the Network Device
-        az networkfabric device reboot --resource-group example-rg --resource-name example-device --reboot-type GracefulRebootWithZTP
+    :example: Update the admin state of the Bootstrap Interface
+        az networkfabric bootstrapinterface update-admin-state --resource-group example-rg --bootstrap-device example-device --resource-name example-interface --resource-ids "[]" --state Enable
     """
 
     _aaz_info = {
         "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/reboot", "2026-07-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces/{}/updateadministrativestate", "2026-07-15-preview"],
         ]
     }
 
@@ -45,11 +45,20 @@ class Reboot(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
-            help="Name of the Network Device.",
+        _args_schema.bootstrap_device = AAZStrArg(
+            options=["--bootstrap-device"],
+            help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
+            ),
+        )
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
+            help="Name of the Network Bootstrap Interface.",
+            required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
             ),
@@ -61,17 +70,31 @@ class Reboot(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.reboot_type = AAZStrArg(
-            options=["--reboot-type"],
+        _args_schema.force = AAZStrArg(
+            options=["-f", "--force"],
             arg_group="Body",
-            help="Type of reboot to be performed. Example: GracefulRebootWithZTP",
-            enum={"GracefulRebootWithZTP": "GracefulRebootWithZTP", "GracefulRebootWithoutZTP": "GracefulRebootWithoutZTP", "UngracefulRebootWithZTP": "UngracefulRebootWithZTP", "UngracefulRebootWithoutZTP": "UngracefulRebootWithoutZTP"},
+            help="Break-glass revocation without successful consumer coordination. Default value is False.",
+            enum={"False": "False", "True": "True"},
         )
+        _args_schema.resource_ids = AAZListArg(
+            options=["--resource-ids"],
+            arg_group="Body",
+            help="Network Fabrics or Network Rack resource Id.",
+        )
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
+            arg_group="Body",
+            help="Administrative state.",
+            enum={"Disable": "Disable", "Enable": "Enable", "UnderMaintenance": "UnderMaintenance"},
+        )
+
+        resource_ids = cls._args_schema.resource_ids
+        resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkDevicesReboot(ctx=self.ctx)()
+        yield self.NetworkBootstrapInterfacesUpdateAdministrativeState(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +109,7 @@ class Reboot(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkDevicesReboot(AAZHttpOperation):
+    class NetworkBootstrapInterfacesUpdateAdministrativeState(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +139,7 @@ class Reboot(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/reboot",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/{networkBootstrapDeviceName}/networkBootstrapInterfaces/{networkBootstrapInterfaceName}/updateAdministrativeState",
                 **self.url_parameters
             )
 
@@ -132,7 +155,11 @@ class Reboot(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkDeviceName", self.ctx.args.resource_name,
+                    "networkBootstrapDeviceName", self.ctx.args.bootstrap_device,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkBootstrapInterfaceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -175,7 +202,13 @@ class Reboot(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("rebootType", AAZStrType, ".reboot_type")
+            _builder.set_prop("force", AAZStrType, ".force")
+            _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
+            _builder.set_prop("state", AAZStrType, ".state")
+
+            resource_ids = _builder.get(".resourceIds")
+            if resource_ids is not None:
+                resource_ids.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -195,13 +228,20 @@ class Reboot(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _RebootHelper._build_schema_operation_status_result_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            _schema_on_200.error = AAZObjectType()
+            _UpdateAdminStateHelper._build_schema_error_detail_read(_schema_on_200.error)
 
             return cls._schema_on_200
 
 
-class _RebootHelper:
-    """Helper class for Reboot"""
+class _UpdateAdminStateHelper:
+    """Helper class for UpdateAdminState"""
 
     _schema_error_detail_read = None
 
@@ -259,60 +299,5 @@ class _RebootHelper:
         _schema.message = cls._schema_error_detail_read.message
         _schema.target = cls._schema_error_detail_read.target
 
-    _schema_operation_status_result_read = None
 
-    @classmethod
-    def _build_schema_operation_status_result_read(cls, _schema):
-        if cls._schema_operation_status_result_read is not None:
-            _schema.end_time = cls._schema_operation_status_result_read.end_time
-            _schema.error = cls._schema_operation_status_result_read.error
-            _schema.id = cls._schema_operation_status_result_read.id
-            _schema.name = cls._schema_operation_status_result_read.name
-            _schema.operations = cls._schema_operation_status_result_read.operations
-            _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
-            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
-            _schema.start_time = cls._schema_operation_status_result_read.start_time
-            _schema.status = cls._schema_operation_status_result_read.status
-            return
-
-        cls._schema_operation_status_result_read = _schema_operation_status_result_read = AAZObjectType()
-
-        operation_status_result_read = _schema_operation_status_result_read
-        operation_status_result_read.end_time = AAZStrType(
-            serialized_name="endTime",
-        )
-        operation_status_result_read.error = AAZObjectType()
-        cls._build_schema_error_detail_read(operation_status_result_read.error)
-        operation_status_result_read.id = AAZStrType()
-        operation_status_result_read.name = AAZStrType()
-        operation_status_result_read.operations = AAZListType()
-        operation_status_result_read.percent_complete = AAZFloatType(
-            serialized_name="percentComplete",
-        )
-        operation_status_result_read.resource_id = AAZStrType(
-            serialized_name="resourceId",
-            flags={"read_only": True},
-        )
-        operation_status_result_read.start_time = AAZStrType(
-            serialized_name="startTime",
-        )
-        operation_status_result_read.status = AAZStrType(
-            flags={"required": True},
-        )
-
-        operations = _schema_operation_status_result_read.operations
-        operations.Element = AAZObjectType()
-        cls._build_schema_operation_status_result_read(operations.Element)
-
-        _schema.end_time = cls._schema_operation_status_result_read.end_time
-        _schema.error = cls._schema_operation_status_result_read.error
-        _schema.id = cls._schema_operation_status_result_read.id
-        _schema.name = cls._schema_operation_status_result_read.name
-        _schema.operations = cls._schema_operation_status_result_read.operations
-        _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
-        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
-        _schema.start_time = cls._schema_operation_status_result_read.start_time
-        _schema.status = cls._schema_operation_status_result_read.status
-
-
-__all__ = ["Reboot"]
+__all__ = ["UpdateAdminState"]

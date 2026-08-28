@@ -36,7 +36,7 @@ def step_validateconfiguration(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric validate-configuration --resource-name {name} --resource-group {resourceGroup} --validate-action {validateAction}"
+        "az networkfabric fabric validate-config --resource-name {name} --resource-group {resourceGroup} --validate-action {validateAction}"
     )
 
 

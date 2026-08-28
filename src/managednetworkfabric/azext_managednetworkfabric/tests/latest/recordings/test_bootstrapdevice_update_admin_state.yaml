@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: '{"resourceIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab3LabNF-5-1/providers/microsoft.managednetworkfabric/networkfabrics/nffab3-5-1"], "state": "Enable"}'
+    headers:
+      CommandName:
+      - networkfabric bootstrapdevice update-admin-state
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --state --resource-ids
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/updateAdministrativeState?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"bootstrapdevice-admin-operation","name":"bootstrapdevice-admin-operation","status":"Succeeded"}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

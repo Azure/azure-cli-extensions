@@ -3,9 +3,15 @@
 Release History
 ===============
 
-10.0.0b2
+10.0.0b3
 ++++++++
 * New preview CLI version for latest api 2026-07-15-preview wihch includes 'Bring your own fabric (BYOF)' updates.
+* Adds the following new commands for command group `bootstrapdevice`:
+*  - `reboot`
+*  - `refresh-config`
+*  - `resync-password`
+*  - `update-admin-state`
+* Adds the new command `update-admin-state` for command group `bootstrapinterface `.
 * New `bootstrapdevice` commands introduced: `bootstrapdevice run-ro-rommand` and `bootstrapdevice run-rw-rommand`.
 * New `device` commands introduced: `device run-diagnostic` and `device run-validation`.
 * New `fabric` commands introduced: `fabric run-diagnostic` and `fabric run-validation`.
@@ -20,6 +26,21 @@ Release History
 *  - `fabric-v2 vrf peering` with `create`, `update`, `show`, `list`, and `delete` commands.
 *  - `fabric-v2 vrf servicepeer` with `create`, `update`, `show`, `list`, `delete`, `confirm-attachment`, `prepare-attachment`, and `revoke` commands.
 
+10.0.0b2
+++++++++
+* Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).
+* [Breaking Change] The following commands will be renamed:
+*  - `device refresh-configuration` to `device refresh-config`.
+*  - `fabric commit-configuration` to `fabric commit-config`.
+*  - `fabric validate-configuration` to `fabric validate-config`.
+*  - `fabric view-device-configuration` to `fabric view-device-config`.
+* [Breaking Change] The `--network-bootstrap-device-name` alias will be removed from the following commands; use `--bootstrap-device` instead:
+*  - `bootstrapinterface list`.
+*  - `bootstrapinterface show`.
+*  - `bootstrapinterface wait`.
+* [Breaking Change] The `--network-device-name` alias will be removed from the following commands; use `--resource-name` instead:
+*  - `device reboot`.
+*  - `device refresh-config`.
 
 10.0.0b1
 ++++++++
@@ -65,8 +86,8 @@ Release History
 ++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2025-07-15-stable CLI (9.0.x).
 * [Breaking Change] Command group `fabric identity` will be removed as current az-cli-core does not support GET-PATCH. This includes the `assign`, `remove`, `show` sub-commands.
-* [Breaking Change] Parameter `route-prefix-limit` will be removed from `l3domain create` and `l3domain update` commands.
-* [Breaking Change] Parameter `version` on `device upgrade` command will become required.
+* [Breaking Change] Parameter `--route-prefix-limit` will be removed from `l3domain create` and `l3domain update` commands.
+* [Breaking Change] Parameter `--version` on `device upgrade` command will become required.
 
 8.0.0
 ++++++
@@ -81,11 +102,11 @@ Release History
 8.0.0b6
 ++++++
 * Enables the `device refresh-configuration` command that was previously disabled/removed.
-* Renames the `network-device-name` parameter on `device refresh-configuration` and `device reboot` operations to `resource-name` for better overall consistency.
+* Renames the `--network-device-name` parameter on `device refresh-configuration` and `device reboot` operations to `--resource-name` for better overall consistency.
 
 8.0.0b5
 ++++++
-* Fixes `taprule create` command as the API cannot support float values for `polling-interval-in-seconds` option, i.e. - `30.0`.
+* Fixes `taprule create` command as the API cannot support float values for `--polling-interval-in-seconds` option, i.e. - `30.0`.
 * Fixes the response object model for validate-configuration operations that cause response of the operation to not show any output.
 * az core cli updated to version 2.70, aaz_dev updated to version 4.2.0, and azdev to version 0.2.4.
 

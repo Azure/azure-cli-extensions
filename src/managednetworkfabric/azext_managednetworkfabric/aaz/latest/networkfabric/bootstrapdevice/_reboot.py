@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric device reboot",
+    "networkfabric bootstrapdevice reboot",
 )
 class Reboot(AAZCommand):
-    """Reboot the Network Device.
+    """Reboot the Network Bootstrap Device.
 
-    :example: Reboot the Network Device
-        az networkfabric device reboot --resource-group example-rg --resource-name example-device --reboot-type GracefulRebootWithZTP
+    :example: Reboot the Bootstrap Device
+        az networkfabric bootstrapdevice reboot --resource-group example-rg --resource-name example-device
     """
 
     _aaz_info = {
         "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/reboot", "2026-07-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/reboot", "2026-07-15-preview"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Reboot(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Device.",
+            help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,21 +57,11 @@ class Reboot(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.reboot_type = AAZStrArg(
-            options=["--reboot-type"],
-            arg_group="Body",
-            help="Type of reboot to be performed. Example: GracefulRebootWithZTP",
-            enum={"GracefulRebootWithZTP": "GracefulRebootWithZTP", "GracefulRebootWithoutZTP": "GracefulRebootWithoutZTP", "UngracefulRebootWithZTP": "UngracefulRebootWithZTP", "UngracefulRebootWithoutZTP": "UngracefulRebootWithoutZTP"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkDevicesReboot(ctx=self.ctx)()
+        yield self.NetworkBootstrapDevicesReboot(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +76,7 @@ class Reboot(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkDevicesReboot(AAZHttpOperation):
+    class NetworkBootstrapDevicesReboot(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +106,7 @@ class Reboot(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/reboot",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/{networkBootstrapDeviceName}/reboot",
                 **self.url_parameters
             )
 
@@ -132,7 +122,7 @@ class Reboot(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkDeviceName", self.ctx.args.resource_name,
+                    "networkBootstrapDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -160,24 +150,10 @@ class Reboot(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("rebootType", AAZStrType, ".reboot_type")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -195,7 +171,36 @@ class Reboot(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _RebootHelper._build_schema_operation_status_result_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
+            )
+            _schema_on_200.error = AAZObjectType()
+            _RebootHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.id = AAZStrType(
+                nullable=True,
+            )
+            _schema_on_200.name = AAZStrType()
+            _schema_on_200.operations = AAZListType()
+            _schema_on_200.percent_complete = AAZFloatType(
+                serialized_name="percentComplete",
+            )
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            operations = cls._schema_on_200.operations
+            operations.Element = AAZObjectType()
+            _RebootHelper._build_schema_operation_status_result_read(operations.Element)
 
             return cls._schema_on_200
 

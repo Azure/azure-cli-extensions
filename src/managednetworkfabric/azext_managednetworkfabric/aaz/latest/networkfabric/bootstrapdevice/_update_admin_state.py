@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric fabric validate-configuration",
+    "networkfabric bootstrapdevice update-admin-state",
 )
-class ValidateConfiguration(AAZCommand):
-    """Validates the configuration of the underlying resources in the given Network Fabric instance.
+class UpdateAdminState(AAZCommand):
+    """Updates the Administrative state of the Network Bootstrap Device.
 
-    :example: Validate the configuration on the Network Fabric
-        az networkfabric fabric validate-configuration -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
+    :example: Updates the Administrative state of the Network Bootstrap Device
+        az networkfabric bootstrapdevice update-admin-state --resource-group example-rg --resource-name example-device --resource-ids "[/Subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device-1]" --state RMA
     """
 
     _aaz_info = {
         "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/validateconfiguration", "2026-07-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/updateadministrativestate", "2026-07-15-preview"],
         ]
     }
 
@@ -47,7 +47,7 @@ class ValidateConfiguration(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Fabric.",
+            help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -61,17 +61,25 @@ class ValidateConfiguration(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.validate_action = AAZStrArg(
-            options=["--validate-action"],
+        _args_schema.resource_ids = AAZListArg(
+            options=["--resource-ids"],
             arg_group="Body",
-            help="Validate action that to be performed",
-            enum={"Cabling": "Cabling", "Configuration": "Configuration", "Connectivity": "Connectivity"},
+            help="Network Fabrics or Network Rack resource Id.",
         )
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
+            arg_group="Body",
+            help="Administrative state.",
+            enum={"Disable": "Disable", "Enable": "Enable", "GracefulQuarantine": "GracefulQuarantine", "Quarantine": "Quarantine", "RMA": "RMA", "Resync": "Resync", "UnderMaintenance": "UnderMaintenance", "UngracefulQuarantine": "UngracefulQuarantine", "UngracefulRMA": "UngracefulRMA"},
+        )
+
+        resource_ids = cls._args_schema.resource_ids
+        resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkFabricsValidateConfiguration(ctx=self.ctx)()
+        yield self.NetworkBootstrapDevicesUpdateAdministrativeState(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +94,7 @@ class ValidateConfiguration(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkFabricsValidateConfiguration(AAZHttpOperation):
+    class NetworkBootstrapDevicesUpdateAdministrativeState(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +124,7 @@ class ValidateConfiguration(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabrics/{networkFabricName}/validateConfiguration",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/{networkBootstrapDeviceName}/updateAdministrativeState",
                 **self.url_parameters
             )
 
@@ -132,7 +140,7 @@ class ValidateConfiguration(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.resource_name,
+                    "networkBootstrapDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -175,7 +183,12 @@ class ValidateConfiguration(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("validateAction", AAZStrType, ".validate_action")
+            _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
+            _builder.set_prop("state", AAZStrType, ".state")
+
+            resource_ids = _builder.get(".resourceIds")
+            if resource_ids is not None:
+                resource_ids.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -201,7 +214,7 @@ class ValidateConfiguration(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _ValidateConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _UpdateAdminStateHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType(
                 nullable=True,
             )
@@ -210,7 +223,6 @@ class ValidateConfiguration(AAZCommand):
             _schema_on_200.percent_complete = AAZFloatType(
                 serialized_name="percentComplete",
             )
-            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
                 nullable=True,
@@ -225,20 +237,13 @@ class ValidateConfiguration(AAZCommand):
 
             operations = cls._schema_on_200.operations
             operations.Element = AAZObjectType()
-            _ValidateConfigurationHelper._build_schema_operation_status_result_read(operations.Element)
-
-            properties = cls._schema_on_200.properties
-            properties.configuration_state = AAZStrType(
-                serialized_name="configurationState",
-                flags={"read_only": True},
-            )
-            properties.url = AAZStrType()
+            _UpdateAdminStateHelper._build_schema_operation_status_result_read(operations.Element)
 
             return cls._schema_on_200
 
 
-class _ValidateConfigurationHelper:
-    """Helper class for ValidateConfiguration"""
+class _UpdateAdminStateHelper:
+    """Helper class for UpdateAdminState"""
 
     _schema_error_detail_read = None
 
@@ -352,4 +357,4 @@ class _ValidateConfigurationHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["ValidateConfiguration"]
+__all__ = ["UpdateAdminState"]
