@@ -22,9 +22,9 @@ class UpgradeExtension(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/upgradeextensions", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/upgradeextensions", "2026-07-15"],
         ]
     }
 
@@ -60,12 +60,12 @@ class UpgradeExtension(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
+        # define Arg Group "ExtensionUpgradeParameters"
 
         _args_schema = cls._args_schema
         _args_schema.extension_targets = AAZDictArg(
             options=["--extension-targets"],
-            arg_group="Body",
+            arg_group="ExtensionUpgradeParameters",
             help="Describes the Extension Target Properties.",
         )
 
@@ -81,7 +81,7 @@ class UpgradeExtension(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MachinesUpgradeExtensions(ctx=self.ctx)()
+        yield self.UpgradeExtensions(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -92,7 +92,7 @@ class UpgradeExtension(AAZCommand):
     def post_operations(self):
         pass
 
-    class MachinesUpgradeExtensions(AAZHttpOperation):
+    class UpgradeExtensions(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -156,7 +156,7 @@ class UpgradeExtension(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }

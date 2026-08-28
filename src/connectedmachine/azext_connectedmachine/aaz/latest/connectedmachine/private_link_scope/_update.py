@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-07-15"],
         ]
     }
 
@@ -57,6 +57,21 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="[a-zA-Z0-9-_\\.]+",
             ),
+        )
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Parameters",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
         )
 
         # define Arg Group "Properties"
@@ -93,31 +108,16 @@ class Update(AAZCommand):
             help="The name of the Azure Arc Extension.",
             nullable=True,
         )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HybridComputePrivateLinkScopesGet(ctx=self.ctx)()
+        self.PrivateLinkScopesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.HybridComputePrivateLinkScopesCreateOrUpdate(ctx=self.ctx)()
+        self.PrivateLinkScopesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -140,7 +140,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class HybridComputePrivateLinkScopesGet(AAZHttpOperation):
+    class PrivateLinkScopesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -188,7 +188,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -219,133 +219,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.private_endpoint_connections = AAZListType(
-                serialized_name="privateEndpointConnections",
-                flags={"read_only": True},
-            )
-            properties.private_link_scope_id = AAZStrType(
-                serialized_name="privateLinkScopeId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.public_network_access = AAZStrType(
-                serialized_name="publicNetworkAccess",
-            )
-            properties.service_extensions = AAZListType(
-                serialized_name="serviceExtensions",
-            )
-
-            private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
-            private_endpoint_connections.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.private_endpoint_connections.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties.private_endpoint_connections.Element.properties
-            properties.group_ids = AAZListType(
-                serialized_name="groupIds",
-                flags={"read_only": True},
-            )
-            properties.private_endpoint = AAZObjectType(
-                serialized_name="privateEndpoint",
-            )
-            properties.private_link_service_connection_state = AAZObjectType(
-                serialized_name="privateLinkServiceConnectionState",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            group_ids = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.group_ids
-            group_ids.Element = AAZStrType()
-
-            private_endpoint = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_endpoint
-            private_endpoint.id = AAZStrType()
-
-            private_link_service_connection_state = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-            private_link_service_connection_state.actions_required = AAZStrType(
-                serialized_name="actionsRequired",
-                flags={"read_only": True},
-            )
-            private_link_service_connection_state.description = AAZStrType(
-                flags={"required": True},
-            )
-            private_link_service_connection_state.status = AAZStrType(
-                flags={"required": True},
-            )
-
-            service_extensions = cls._schema_on_200.properties.service_extensions
-            service_extensions.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.service_extensions.Element
-            _element.service_extension_public_network_access = AAZStrType(
-                serialized_name="serviceExtensionPublicNetworkAccess",
-            )
-            _element.service_extension_type = AAZStrType(
-                serialized_name="serviceExtensionType",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_hybrid_compute_private_link_scope_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class HybridComputePrivateLinkScopesCreateOrUpdate(AAZHttpOperation):
+    class PrivateLinkScopesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -393,7 +271,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -436,129 +314,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.private_endpoint_connections = AAZListType(
-                serialized_name="privateEndpointConnections",
-                flags={"read_only": True},
-            )
-            properties.private_link_scope_id = AAZStrType(
-                serialized_name="privateLinkScopeId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.public_network_access = AAZStrType(
-                serialized_name="publicNetworkAccess",
-            )
-            properties.service_extensions = AAZListType(
-                serialized_name="serviceExtensions",
-            )
-
-            private_endpoint_connections = cls._schema_on_200_201.properties.private_endpoint_connections
-            private_endpoint_connections.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.private_endpoint_connections.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties
-            properties.group_ids = AAZListType(
-                serialized_name="groupIds",
-                flags={"read_only": True},
-            )
-            properties.private_endpoint = AAZObjectType(
-                serialized_name="privateEndpoint",
-            )
-            properties.private_link_service_connection_state = AAZObjectType(
-                serialized_name="privateLinkServiceConnectionState",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            group_ids = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.group_ids
-            group_ids.Element = AAZStrType()
-
-            private_endpoint = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.private_endpoint
-            private_endpoint.id = AAZStrType()
-
-            private_link_service_connection_state = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-            private_link_service_connection_state.actions_required = AAZStrType(
-                serialized_name="actionsRequired",
-                flags={"read_only": True},
-            )
-            private_link_service_connection_state.description = AAZStrType(
-                flags={"required": True},
-            )
-            private_link_service_connection_state.status = AAZStrType(
-                flags={"required": True},
-            )
-
-            service_extensions = cls._schema_on_200_201.properties.service_extensions
-            service_extensions.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.service_extensions.Element
-            _element.service_extension_public_network_access = AAZStrType(
-                serialized_name="serviceExtensionPublicNetworkAccess",
-            )
-            _element.service_extension_type = AAZStrType(
-                serialized_name="serviceExtensionType",
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_hybrid_compute_private_link_scope_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -607,6 +363,153 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_hybrid_compute_private_link_scope_read = None
+
+    @classmethod
+    def _build_schema_hybrid_compute_private_link_scope_read(cls, _schema):
+        if cls._schema_hybrid_compute_private_link_scope_read is not None:
+            _schema.id = cls._schema_hybrid_compute_private_link_scope_read.id
+            _schema.location = cls._schema_hybrid_compute_private_link_scope_read.location
+            _schema.name = cls._schema_hybrid_compute_private_link_scope_read.name
+            _schema.properties = cls._schema_hybrid_compute_private_link_scope_read.properties
+            _schema.system_data = cls._schema_hybrid_compute_private_link_scope_read.system_data
+            _schema.tags = cls._schema_hybrid_compute_private_link_scope_read.tags
+            _schema.type = cls._schema_hybrid_compute_private_link_scope_read.type
+            return
+
+        cls._schema_hybrid_compute_private_link_scope_read = _schema_hybrid_compute_private_link_scope_read = AAZObjectType()
+
+        hybrid_compute_private_link_scope_read = _schema_hybrid_compute_private_link_scope_read
+        hybrid_compute_private_link_scope_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        hybrid_compute_private_link_scope_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        hybrid_compute_private_link_scope_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        hybrid_compute_private_link_scope_read.properties = AAZObjectType()
+        hybrid_compute_private_link_scope_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        hybrid_compute_private_link_scope_read.tags = AAZDictType()
+        hybrid_compute_private_link_scope_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_hybrid_compute_private_link_scope_read.properties
+        properties.private_endpoint_connections = AAZListType(
+            serialized_name="privateEndpointConnections",
+            flags={"read_only": True},
+        )
+        properties.private_link_scope_id = AAZStrType(
+            serialized_name="privateLinkScopeId",
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.public_network_access = AAZStrType(
+            serialized_name="publicNetworkAccess",
+        )
+        properties.service_extensions = AAZListType(
+            serialized_name="serviceExtensions",
+        )
+
+        private_endpoint_connections = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections
+        private_endpoint_connections.Element = AAZObjectType()
+
+        _element = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.properties = AAZObjectType()
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties
+        properties.group_ids = AAZListType(
+            serialized_name="groupIds",
+            flags={"read_only": True},
+        )
+        properties.private_endpoint = AAZObjectType(
+            serialized_name="privateEndpoint",
+        )
+        properties.private_link_service_connection_state = AAZObjectType(
+            serialized_name="privateLinkServiceConnectionState",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        group_ids = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties.group_ids
+        group_ids.Element = AAZStrType()
+
+        private_endpoint = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties.private_endpoint
+        private_endpoint.id = AAZStrType()
+
+        private_link_service_connection_state = _schema_hybrid_compute_private_link_scope_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+        private_link_service_connection_state.actions_required = AAZStrType(
+            serialized_name="actionsRequired",
+            flags={"read_only": True},
+        )
+        private_link_service_connection_state.description = AAZStrType(
+            flags={"required": True},
+        )
+        private_link_service_connection_state.status = AAZStrType(
+            flags={"required": True},
+        )
+
+        service_extensions = _schema_hybrid_compute_private_link_scope_read.properties.service_extensions
+        service_extensions.Element = AAZObjectType()
+
+        _element = _schema_hybrid_compute_private_link_scope_read.properties.service_extensions.Element
+        _element.service_extension_public_network_access = AAZStrType(
+            serialized_name="serviceExtensionPublicNetworkAccess",
+        )
+        _element.service_extension_type = AAZStrType(
+            serialized_name="serviceExtensionType",
+        )
+
+        system_data = _schema_hybrid_compute_private_link_scope_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_hybrid_compute_private_link_scope_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_hybrid_compute_private_link_scope_read.id
+        _schema.location = cls._schema_hybrid_compute_private_link_scope_read.location
+        _schema.name = cls._schema_hybrid_compute_private_link_scope_read.name
+        _schema.properties = cls._schema_hybrid_compute_private_link_scope_read.properties
+        _schema.system_data = cls._schema_hybrid_compute_private_link_scope_read.system_data
+        _schema.tags = cls._schema_hybrid_compute_private_link_scope_read.tags
+        _schema.type = cls._schema_hybrid_compute_private_link_scope_read.type
 
 
 __all__ = ["Update"]

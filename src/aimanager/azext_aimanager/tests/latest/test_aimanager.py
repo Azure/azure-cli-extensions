@@ -41,18 +41,21 @@ class TestCallerRoleWiring(unittest.TestCase):
         self.assertEqual(scope, AIMANAGER_SCOPE)
         self.assertEqual(roles, AIMANAGER_CALLER_ROLE_IDS)
 
-    @patch.object(custom, "logger")
+    @patch.object(custom, "warn_roles_skipped_no_wait")
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
     @patch.object(custom, "assign_caller_roles")
     @patch.object(custom, "_construct_aimanager", return_value=object())
-    def test_create_skips_roles_with_no_wait(self, _construct, mock_assign, _sub, mock_lro, mock_logger):
+    def test_create_skips_roles_with_no_wait(self, _construct, mock_assign, _sub, mock_lro, mock_warn):
         custom.create_aimanager(
             self.cmd, self.client, "rg", "aim", location="eastus2", no_wait=True)
 
         mock_assign.assert_not_called()
         mock_lro.assert_not_called()
-        mock_logger.warning.assert_called_once()  # warns that the grant was skipped under --no-wait
+        mock_warn.assert_called_once()  # prints the manual-grant remediation under --no-wait
+        _cmd, scope, roles = mock_warn.call_args.args
+        self.assertEqual(scope, AIMANAGER_SCOPE)
+        self.assertEqual(roles, AIMANAGER_CALLER_ROLE_IDS)
 
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
@@ -69,18 +72,21 @@ class TestCallerRoleWiring(unittest.TestCase):
         self.assertEqual(scope, NAMESPACE_SCOPE)
         self.assertEqual(roles, AIMANAGER_CALLER_ROLE_IDS)
 
-    @patch.object(custom, "logger")
+    @patch.object(custom, "warn_roles_skipped_no_wait")
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
     @patch.object(custom, "assign_caller_roles")
     @patch.object(custom, "_construct_namespace", return_value=object())
-    def test_namespace_add_skips_roles_with_no_wait(self, _construct, mock_assign, _sub, mock_lro, mock_logger):
+    def test_namespace_add_skips_roles_with_no_wait(self, _construct, mock_assign, _sub, mock_lro, mock_warn):
         custom.add_aimanager_namespace(
             self.cmd, self.client, "rg", "aim", "team-alpha", no_wait=True)
 
         mock_assign.assert_not_called()
         mock_lro.assert_not_called()
-        mock_logger.warning.assert_called_once()  # warns that the grant was skipped under --no-wait
+        mock_warn.assert_called_once()  # prints the manual-grant remediation under --no-wait
+        _cmd, scope, roles = mock_warn.call_args.args
+        self.assertEqual(scope, NAMESPACE_SCOPE)
+        self.assertEqual(roles, AIMANAGER_CALLER_ROLE_IDS)
 
     @patch.object(custom, "LongRunningOperation")
     @patch(SUB_PATCH, return_value="sub")
