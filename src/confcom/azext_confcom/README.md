@@ -749,6 +749,11 @@ This rule determines whether unencrypted writable storage from the UVM to the co
 
 Whether to allow capabilities to be dropped in the same manner as allow_environment_variable_dropping.
 
+## allowed_log_providers and allow_log_provider_dropping
+
+These control the log_provider enforcement point for C-WCOW (Confidential WCOW) policies. `allowed_log_providers` is the list of ETW log provider names that containers are permitted to keep. There is no ARM property for it, so it is only settable through the `--input` JSON (`allowedLogProviders`).
+`allow_log_provider_dropping` (`allowLogProviderDropping` in the input JSON) works the same way as allow_environment_variable_dropping: when set, log providers that are not in `allowed_log_providers` are dropped instead of causing a denial. It defaults to true so that generation does not deny containers that request providers outside the allow-list.
+
 ## Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples
 
 Run `az confcom acifragmentgen --help` to see a list of supported arguments along with explanations. The following commands demonstrate the usage of different arguments to generate confidential computing security fragments.

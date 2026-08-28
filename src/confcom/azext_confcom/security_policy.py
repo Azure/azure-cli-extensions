@@ -71,6 +71,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         is_vn2: bool = False,
         fragment_contents: Any = None,
         container_definitions: Optional[list] = None,
+        allowed_log_providers: Optional[list] = None,
+        allow_log_provider_dropping: Optional[bool] = None,
     ) -> None:
         self._rootfs_proxy = None
         self._platform = None
@@ -117,6 +119,17 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             self._allow_environment_variable_dropping = True
             self._allow_unencrypted_scratch = False
             self._allow_capability_dropping = True
+
+        # allowed_log_providers is the list of ETW log providers that CWCOW
+        # containers may keep. It has no ARM property, so it is only settable
+        # through the --input JSON. allow_log_provider_dropping mirrors the
+        # other *_dropping switches (defaults to True) so that providers not in
+        # the allow-list are dropped rather than denied.
+        self._allowed_log_providers = allowed_log_providers or []
+        if allow_log_provider_dropping is not None:
+            self._allow_log_provider_dropping = allow_log_provider_dropping
+        else:
+            self._allow_log_provider_dropping = True
 
         self.version = case_insensitive_dict_get(
             deserialized_config, config.ACI_FIELD_VERSION
@@ -252,6 +265,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 pretty_print_func(self._allow_dump_stacks),
                 pretty_print_func(self._allow_runtime_logging),
                 pretty_print_func(self._allow_environment_variable_dropping),
+                pretty_print_func(self._allow_log_provider_dropping),
+                pretty_print_func(self._allowed_log_providers),
             )
         eprint(f'Unsupported platform: "{self._platform}". '
                f'Supported platforms are linux/amd64 and windows/amd64.')
@@ -1101,6 +1116,14 @@ def load_policy_from_json(
         policy_input_json, config.ACI_FIELD_SCENARIO
     ) or ""
 
+    allowed_log_providers = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_ALLOWED_LOG_PROVIDERS
+    ) or []
+
+    allow_log_provider_dropping = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_ALLOW_LOG_PROVIDER_DROPPING
+    )
+
     # 3) Process rego_fragments
     standalone_rego_fragments = case_insensitive_dict_get(
         policy_input_json, config.ACI_FIELD_TEMPLATE_STANDALONE_REGO_FRAGMENTS
@@ -1223,6 +1246,8 @@ def load_policy_from_json(
         rego_fragments=rego_fragments,
         debug_mode=debug_mode,
         is_vn2=scenario.lower() == config.VN2,
+        allowed_log_providers=allowed_log_providers,
+        allow_log_provider_dropping=allow_log_provider_dropping,
     )
 
 

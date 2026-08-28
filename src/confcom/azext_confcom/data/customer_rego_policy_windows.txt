@@ -14,6 +14,9 @@ allow_properties_access := %s
 allow_dump_stacks := %s
 allow_runtime_logging := %s
 allow_environment_variable_dropping := %s
+allow_log_provider_dropping := %s
+
+allowed_log_providers := %s
 
 create_container := data.framework.create_container
 exec_in_container := data.framework.exec_in_container
@@ -23,6 +26,7 @@ signal_container_process := data.framework.signal_container_process
 get_properties := data.framework.get_properties
 dump_stacks := data.framework.dump_stacks
 runtime_logging := data.framework.runtime_logging
+log_provider := data.framework.log_provider
 load_fragment := data.framework.load_fragment
 scratch_mount := data.framework.scratch_mount
 mount_cims := data.framework.mount_cims
