@@ -12,7 +12,7 @@ Release History
 * `az connectedmachine run-command create/update`: Blob identity parameters renamed (backward-compatible aliases added):
   * `--error-blob-id` → `--error-blob-identity` (both work)
   * `--output-blob-id` → `--output-blob-identity` (both work)
-* `az connectedmachine update`: Removed `--identity` parameter. Use dedicated identity commands instead:
+* `az connectedmachine update`: `--identity` parameter available for identity type management. For user-assigned identities, use dedicated commands:
   * `az connectedmachine identity assign`
   * `az connectedmachine identity remove`
 * `az connectedmachine private-link-scope network-security-perimeter-configuration reconcile`: Removed `--no-wait` parameter (no corresponding wait command exists)
