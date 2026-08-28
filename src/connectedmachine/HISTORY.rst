@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.0.0
++++++	
+* 2026-07-15 API version is used for aaz generation.
+
 3.0.0b1
 +++++	
 * 2026/06/19-preview is used for aaz generation. Migrated to aaz.

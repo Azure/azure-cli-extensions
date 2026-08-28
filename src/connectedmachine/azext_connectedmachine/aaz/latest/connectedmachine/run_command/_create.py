@@ -24,9 +24,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2026-07-15"],
         ]
     }
 
@@ -79,9 +79,9 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.error_blob_managed_identity = AAZObjectArg(
-            options=["--error-blob-id", "--error-blob-managed-identity"],
+            options=["--error-blob-identity", "--error-blob-managed-identity"],
             arg_group="Properties",
-            help="The managed identity used to access the error blob.",
+            help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
         _args_schema.error_blob_uri = AAZStrArg(
             options=["--error-blob-uri"],
@@ -89,11 +89,11 @@ class Create(AAZCommand):
             help="Specifies the Azure storage blob where script error stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer errorBlobManagedIdentity parameter.",
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-blob-id", "--output-blob-managed-identity"],
+            options=["--output-blob-identity", "--output-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
-        cls._build_args_runcommandmanagedidentity_create_or_update_create(_args_schema.output_blob_managed_identity)
+        cls._build_args_run_command_managed_identity_create(_args_schema.output_blob_managed_identity)
         _args_schema.output_blob_uri = AAZStrArg(
             options=["--output-blob-uri"],
             arg_group="Properties",
@@ -109,15 +109,23 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The parameters used by the script.",
         )
-        _args_schema.run_as_password = AAZStrArg(
+        _args_schema.run_as_password = AAZPasswordArg(
             options=["--run-as-password"],
             arg_group="Properties",
             help="Specifies the user account password on the machine when executing the run command.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.run_as_user = AAZStrArg(
             options=["--run-as-user"],
             arg_group="Properties",
             help="Specifies the user account on the machine when executing the run command.",
+        )
+        _args_schema.source = AAZObjectArg(
+            options=["--source"],
+            arg_group="Properties",
+            help="The source of the run command script.",
         )
         _args_schema.timeout_in_seconds = AAZIntArg(
             options=["--timeout-in-seconds"],
@@ -137,17 +145,36 @@ class Create(AAZCommand):
 
         parameters = cls._args_schema.parameters
         parameters.Element = AAZObjectArg()
-        cls._build_args_runcommandinputparameter_create_or_update_create(parameters.Element)
+        cls._build_args_run_command_input_parameter_create(parameters.Element)
 
         protected_parameters = cls._args_schema.protected_parameters
         protected_parameters.Element = AAZObjectArg()
-        cls._build_args_runcommandinputparameter_create_or_update_create(protected_parameters.Element)
+        cls._build_args_run_command_input_parameter_create(protected_parameters.Element)
 
-        # define Arg Group "Resource"
+        source = cls._args_schema.source
+        source.command_id = AAZStrArg(
+            options=["command-id"],
+            help="Specifies the commandId of predefined built-in script.",
+        )
+        source.script = AAZStrArg(
+            options=["script"],
+            help="Specifies the script content to be executed on the machine.",
+        )
+        source.script_uri = AAZStrArg(
+            options=["script-uri"],
+            help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
+        )
+        source.script_uri_managed_identity = AAZObjectArg(
+            options=["script-uri-managed-identity"],
+            help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
+        )
+        cls._build_args_run_command_managed_identity_create(source.script_uri_managed_identity)
+
+        # define Arg Group "RunCommandProperties"
 
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
+            arg_group="RunCommandProperties",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
@@ -156,88 +183,63 @@ class Create(AAZCommand):
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Resource",
+            arg_group="RunCommandProperties",
             help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Source"
-
-        _args_schema = cls._args_schema
-        _args_schema.command_id = AAZStrArg(
-            options=["--command-id"],
-            arg_group="Source",
-            help="Specifies the commandId of predefined built-in script.",
-        )
-        _args_schema.script = AAZStrArg(
-            options=["--script"],
-            arg_group="Source",
-            help="Specifies the script content to be executed on the machine.",
-        )
-        _args_schema.script_uri = AAZStrArg(
-            options=["--script-uri"],
-            arg_group="Source",
-            help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
-        )
-        _args_schema.script_uri_managed_identity = AAZObjectArg(
-            options=["--script-uri-id", "--script-uri-managed-identity"],
-            arg_group="Source",
-            help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
-        )
-        cls._build_args_runcommandmanagedidentity_create_or_update_create(_args_schema.script_uri_managed_identity)
         return cls._args_schema
 
-    _args_runcommandinputparameter_create_or_update_create = None
+    _args_run_command_input_parameter_create = None
 
     @classmethod
-    def _build_args_runcommandinputparameter_create_or_update_create(cls, _schema):
-        if cls._args_runcommandinputparameter_create_or_update_create is not None:
-            _schema.name = cls._args_runcommandinputparameter_create_or_update_create.name
-            _schema.value = cls._args_runcommandinputparameter_create_or_update_create.value
+    def _build_args_run_command_input_parameter_create(cls, _schema):
+        if cls._args_run_command_input_parameter_create is not None:
+            _schema.name = cls._args_run_command_input_parameter_create.name
+            _schema.value = cls._args_run_command_input_parameter_create.value
             return
 
-        cls._args_runcommandinputparameter_create_or_update_create = AAZObjectArg()
+        cls._args_run_command_input_parameter_create = AAZObjectArg()
 
-        runcommandinputparameter_create_or_update_create = cls._args_runcommandinputparameter_create_or_update_create
-        runcommandinputparameter_create_or_update_create.name = AAZStrArg(
+        run_command_input_parameter_create = cls._args_run_command_input_parameter_create
+        run_command_input_parameter_create.name = AAZStrArg(
             options=["name"],
             help="The run command parameter name.",
             required=True,
         )
-        runcommandinputparameter_create_or_update_create.value = AAZStrArg(
+        run_command_input_parameter_create.value = AAZStrArg(
             options=["value"],
             help="The run command parameter value.",
             required=True,
         )
 
-        _schema.name = cls._args_runcommandinputparameter_create_or_update_create.name
-        _schema.value = cls._args_runcommandinputparameter_create_or_update_create.value
+        _schema.name = cls._args_run_command_input_parameter_create.name
+        _schema.value = cls._args_run_command_input_parameter_create.value
 
-    _args_runcommandmanagedidentity_create_or_update_create = None
+    _args_run_command_managed_identity_create = None
 
     @classmethod
-    def _build_args_runcommandmanagedidentity_create_or_update_create(cls, _schema):
-        if cls._args_runcommandmanagedidentity_create_or_update_create is not None:
-            _schema.client_id = cls._args_runcommandmanagedidentity_create_or_update_create.client_id
-            _schema.object_id = cls._args_runcommandmanagedidentity_create_or_update_create.object_id
+    def _build_args_run_command_managed_identity_create(cls, _schema):
+        if cls._args_run_command_managed_identity_create is not None:
+            _schema.client_id = cls._args_run_command_managed_identity_create.client_id
+            _schema.object_id = cls._args_run_command_managed_identity_create.object_id
             return
 
-        cls._args_runcommandmanagedidentity_create_or_update_create = AAZObjectArg()
+        cls._args_run_command_managed_identity_create = AAZObjectArg()
 
-        runcommandmanagedidentity_create_or_update_create = cls._args_runcommandmanagedidentity_create_or_update_create
-        runcommandmanagedidentity_create_or_update_create.client_id = AAZStrArg(
+        run_command_managed_identity_create = cls._args_run_command_managed_identity_create
+        run_command_managed_identity_create.client_id = AAZStrArg(
             options=["client-id"],
             help="Client Id (GUID value) of the user-assigned managed identity. ObjectId should not be used if this is provided.",
         )
-        runcommandmanagedidentity_create_or_update_create.object_id = AAZStrArg(
+        run_command_managed_identity_create.object_id = AAZStrArg(
             options=["object-id"],
             help="Object Id (GUID value) of the user-assigned managed identity. ClientId should not be used if this is provided.",
         )
 
-        _schema.client_id = cls._args_runcommandmanagedidentity_create_or_update_create.client_id
-        _schema.object_id = cls._args_runcommandmanagedidentity_create_or_update_create.object_id
+        _schema.client_id = cls._args_run_command_managed_identity_create.client_id
+        _schema.object_id = cls._args_run_command_managed_identity_create.object_id
 
     def _execute_operations(self):
         self.pre_operations()
@@ -324,7 +326,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -358,13 +360,13 @@ class Create(AAZCommand):
                 properties.set_prop("asyncExecution", AAZBoolType, ".async_execution")
                 properties.set_prop("errorBlobManagedIdentity", AAZObjectType, ".error_blob_managed_identity")
                 properties.set_prop("errorBlobUri", AAZStrType, ".error_blob_uri")
-                _CreateHelper._build_schema_runcommandmanagedidentity_create_or_update_create(properties.set_prop("outputBlobManagedIdentity", AAZObjectType, ".output_blob_managed_identity"))
+                _CreateHelper._build_schema_run_command_managed_identity_create(properties.set_prop("outputBlobManagedIdentity", AAZObjectType, ".output_blob_managed_identity"))
                 properties.set_prop("outputBlobUri", AAZStrType, ".output_blob_uri")
                 properties.set_prop("parameters", AAZListType, ".parameters")
                 properties.set_prop("protectedParameters", AAZListType, ".protected_parameters")
                 properties.set_prop("runAsPassword", AAZStrType, ".run_as_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("runAsUser", AAZStrType, ".run_as_user")
-                properties.set_prop("source", AAZObjectType)
+                properties.set_prop("source", AAZObjectType, ".source")
                 properties.set_prop("timeoutInSeconds", AAZIntType, ".timeout_in_seconds")
 
             error_blob_managed_identity = _builder.get(".properties.errorBlobManagedIdentity")
@@ -374,18 +376,18 @@ class Create(AAZCommand):
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
-                _CreateHelper._build_schema_runcommandinputparameter_create_or_update_create(parameters.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_run_command_input_parameter_create(parameters.set_elements(AAZObjectType, "."))
 
             protected_parameters = _builder.get(".properties.protectedParameters")
             if protected_parameters is not None:
-                _CreateHelper._build_schema_runcommandinputparameter_create_or_update_create(protected_parameters.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_run_command_input_parameter_create(protected_parameters.set_elements(AAZObjectType, "."))
 
             source = _builder.get(".properties.source")
             if source is not None:
                 source.set_prop("commandId", AAZStrType, ".command_id")
                 source.set_prop("script", AAZStrType, ".script")
                 source.set_prop("scriptUri", AAZStrType, ".script_uri")
-                _CreateHelper._build_schema_runcommandmanagedidentity_create_or_update_create(source.set_prop("scriptUriManagedIdentity", AAZObjectType, ".script_uri_managed_identity"))
+                _CreateHelper._build_schema_run_command_managed_identity_create(source.set_prop("scriptUriManagedIdentity", AAZObjectType, ".script_uri_managed_identity"))
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -439,7 +441,7 @@ class Create(AAZCommand):
             properties.error_blob_managed_identity = AAZObjectType(
                 serialized_name="errorBlobManagedIdentity",
             )
-            _CreateHelper._build_schema_runcommandmanagedidentity_read(properties.error_blob_managed_identity)
+            _CreateHelper._build_schema_run_command_managed_identity_read(properties.error_blob_managed_identity)
             properties.error_blob_uri = AAZStrType(
                 serialized_name="errorBlobUri",
             )
@@ -450,7 +452,7 @@ class Create(AAZCommand):
             properties.output_blob_managed_identity = AAZObjectType(
                 serialized_name="outputBlobManagedIdentity",
             )
-            _CreateHelper._build_schema_runcommandmanagedidentity_read(properties.output_blob_managed_identity)
+            _CreateHelper._build_schema_run_command_managed_identity_read(properties.output_blob_managed_identity)
             properties.output_blob_uri = AAZStrType(
                 serialized_name="outputBlobUri",
             )
@@ -508,11 +510,11 @@ class Create(AAZCommand):
 
             parameters = cls._schema_on_200_201.properties.parameters
             parameters.Element = AAZObjectType()
-            _CreateHelper._build_schema_runcommandinputparameter_read(parameters.Element)
+            _CreateHelper._build_schema_run_command_input_parameter_read(parameters.Element)
 
             protected_parameters = cls._schema_on_200_201.properties.protected_parameters
             protected_parameters.Element = AAZObjectType()
-            _CreateHelper._build_schema_runcommandinputparameter_read(protected_parameters.Element)
+            _CreateHelper._build_schema_run_command_input_parameter_read(protected_parameters.Element)
 
             source = cls._schema_on_200_201.properties.source
             source.command_id = AAZStrType(
@@ -525,7 +527,7 @@ class Create(AAZCommand):
             source.script_uri_managed_identity = AAZObjectType(
                 serialized_name="scriptUriManagedIdentity",
             )
-            _CreateHelper._build_schema_runcommandmanagedidentity_read(source.script_uri_managed_identity)
+            _CreateHelper._build_schema_run_command_managed_identity_read(source.script_uri_managed_identity)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -557,62 +559,62 @@ class _CreateHelper:
     """Helper class for Create"""
 
     @classmethod
-    def _build_schema_runcommandinputparameter_create_or_update_create(cls, _builder):
+    def _build_schema_run_command_input_parameter_create(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
     @classmethod
-    def _build_schema_runcommandmanagedidentity_create_or_update_create(cls, _builder):
+    def _build_schema_run_command_managed_identity_create(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("clientId", AAZStrType, ".client_id")
         _builder.set_prop("objectId", AAZStrType, ".object_id")
 
-    _schema_runcommandinputparameter_read = None
+    _schema_run_command_input_parameter_read = None
 
     @classmethod
-    def _build_schema_runcommandinputparameter_read(cls, _schema):
-        if cls._schema_runcommandinputparameter_read is not None:
-            _schema.name = cls._schema_runcommandinputparameter_read.name
-            _schema.value = cls._schema_runcommandinputparameter_read.value
+    def _build_schema_run_command_input_parameter_read(cls, _schema):
+        if cls._schema_run_command_input_parameter_read is not None:
+            _schema.name = cls._schema_run_command_input_parameter_read.name
+            _schema.value = cls._schema_run_command_input_parameter_read.value
             return
 
-        cls._schema_runcommandinputparameter_read = _schema_runcommandinputparameter_read = AAZObjectType()
+        cls._schema_run_command_input_parameter_read = _schema_run_command_input_parameter_read = AAZObjectType()
 
-        runcommandinputparameter_read = _schema_runcommandinputparameter_read
-        runcommandinputparameter_read.name = AAZStrType(
+        run_command_input_parameter_read = _schema_run_command_input_parameter_read
+        run_command_input_parameter_read.name = AAZStrType(
             flags={"required": True},
         )
-        runcommandinputparameter_read.value = AAZStrType(
+        run_command_input_parameter_read.value = AAZStrType(
             flags={"required": True},
         )
 
-        _schema.name = cls._schema_runcommandinputparameter_read.name
-        _schema.value = cls._schema_runcommandinputparameter_read.value
+        _schema.name = cls._schema_run_command_input_parameter_read.name
+        _schema.value = cls._schema_run_command_input_parameter_read.value
 
-    _schema_runcommandmanagedidentity_read = None
+    _schema_run_command_managed_identity_read = None
 
     @classmethod
-    def _build_schema_runcommandmanagedidentity_read(cls, _schema):
-        if cls._schema_runcommandmanagedidentity_read is not None:
-            _schema.client_id = cls._schema_runcommandmanagedidentity_read.client_id
-            _schema.object_id = cls._schema_runcommandmanagedidentity_read.object_id
+    def _build_schema_run_command_managed_identity_read(cls, _schema):
+        if cls._schema_run_command_managed_identity_read is not None:
+            _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
+            _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
             return
 
-        cls._schema_runcommandmanagedidentity_read = _schema_runcommandmanagedidentity_read = AAZObjectType()
+        cls._schema_run_command_managed_identity_read = _schema_run_command_managed_identity_read = AAZObjectType()
 
-        runcommandmanagedidentity_read = _schema_runcommandmanagedidentity_read
-        runcommandmanagedidentity_read.client_id = AAZStrType(
+        run_command_managed_identity_read = _schema_run_command_managed_identity_read
+        run_command_managed_identity_read.client_id = AAZStrType(
             serialized_name="clientId",
         )
-        runcommandmanagedidentity_read.object_id = AAZStrType(
+        run_command_managed_identity_read.object_id = AAZStrType(
             serialized_name="objectId",
         )
 
-        _schema.client_id = cls._schema_runcommandmanagedidentity_read.client_id
-        _schema.object_id = cls._schema_runcommandmanagedidentity_read.object_id
+        _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
+        _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
 
 
 __all__ = ["Create"]
