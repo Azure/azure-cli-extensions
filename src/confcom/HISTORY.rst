@@ -8,6 +8,8 @@ Release History
 * Add log provider support for C-WCOW policies (``allowedLogProviders`` and ``allowLogProviderDropping``)
 * Update C-WCOW policy support for hcsshim PR #2842: bump api_version to 0.12.0 and framework_version to 0.5.0, and add the registry_changes, unmount_cims, host_network and load_transparency_trust_list enforcement points
 * Add confcom-owned ``--input`` fields for the PR #2842 enforcement points: ``allowHostNetwork``, ``allowRegistryChangesDropping``, per-container ``registryChanges``, and ``mappedDirectories`` (which conditionally wires mapped_directory_mount/unmount)
+* Add elasticSan volume mount type for Elastic SAN volumes on Confidential ACI
+* Enable host_network for Linux policies that mount an Elastic SAN volume (matches Compute-ACI, which puts such pods on the host network)
 
 2.2.0a1
 +++++++
