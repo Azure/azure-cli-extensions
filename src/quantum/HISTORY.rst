@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b24
+++++++++++++++
+* Added the ``az quantum suite-offer list`` command to list the suite offers available to the subscription, including provider, location, and subscription-level quota allocations.
+
 1.0.0b23
 ++++++++++++++
 * Added ``--quota`` support to ``az quantum workspace create`` and ``az quantum workspace update`` for managing V2 provider target quota allocations.
