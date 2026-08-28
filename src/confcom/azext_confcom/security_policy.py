@@ -135,11 +135,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             self._allow_log_provider_dropping = True
 
         # C-WCOW enforcement points added in hcsshim PR #2842. These default to
-        # C-WCOW enforcement points added in hcsshim PR #2842. These default to
         # False, matching the hcsshim policy producer, and have no ARM property
         # so they are only settable through the --input JSON. allow_host_network
         # has no framework default, so it must always be emitted when
-        # host_network is wired in the policy template.
+        # host_network is wired in the policy template. On Linux it is forced on
+        # when an elasticSan mount is present (see _has_elastic_san_mount).
         if allow_host_network is not None:
             self._allow_host_network = allow_host_network
         else:
@@ -272,6 +272,20 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             "mapped_directory_unmount := data.framework.mapped_directory_unmount\n"
         )
 
+    def _has_elastic_san_mount(self) -> bool:
+        # Compute-ACI puts a Linux pod that mounts an Elastic SAN volume on the
+        # host network (iscsid needs the UVM init netns), so its generated
+        # policy must allow host_network. Detect the elasticSan mount type here
+        # and force allow_host_network on for that case.
+        for image in self._images:
+            for mount in image.get_mounts():
+                mount_type = case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE
+                )
+                if mount_type == config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE_ELASTIC_SAN:
+                    return True
+        return False
+
     def _add_rego_boilerplate(self, output: str) -> str:
         # determine if we're outputting for a sidecar or not
         if self._images and self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
@@ -294,7 +308,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 pretty_print_func(self._allow_environment_variable_dropping),
                 pretty_print_func(self._allow_unencrypted_scratch),
                 pretty_print_func(self._allow_capability_dropping),
-                pretty_print_func(self._allow_host_network),
+                pretty_print_func(self._allow_host_network or self._has_elastic_san_mount()),
             )
         if self._platform.startswith("windows"):
             return config.CUSTOMER_REGO_POLICY_WINDOWS % (
