@@ -168,6 +168,16 @@ def extract_command(container_json: Any) -> List[str]:
     return command
 
 
+def extract_registry_changes(container_json: Any) -> Any:
+    # registry_changes is a Windows-only, --input-only field passed through in
+    # the hcsshim framework shape ({"add_values": [...], "delete_keys": [...]}).
+    # There is no ARM property for it, so it is emitted per container only when
+    # supplied on the input.
+    return case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_REGISTRY_CHANGES
+    )
+
+
 def extract_mounts(container_json: Any) -> List:
     # parse mounts
     mounts = case_insensitive_dict_get(
@@ -562,6 +572,7 @@ class ContainerImage:
         seccomp_profile_sha256 = extract_seccomp_profile_sha256(container_json)
         allow_stdio_access = extract_allow_stdio_access(container_json)
         allow_privilege_escalation = extract_allow_privilege_escalation(container_json)
+        registry_changes = extract_registry_changes(container_json)
         return ContainerImage(
             containerImage=container_image,
             containerName=container_name,
@@ -581,6 +592,7 @@ class ContainerImage:
             allowStdioAccess=allow_stdio_access,
             allowPrivilegeEscalation=allow_privilege_escalation,
             id_val=id_val,
+            registryChanges=registry_changes,
         )
 
     def __init__(
@@ -603,6 +615,7 @@ class ContainerImage:
         execProcesses: List = None,
         signals: List = None,
         containerName: str = "",
+        registryChanges: Any = None,
     ) -> None:
         self.containerImage = containerImage
         self.containerName = containerName
@@ -628,6 +641,7 @@ class ContainerImage:
         self._signals = signals or []
         self._extraEnvironmentRules = extraEnvironmentRules
         self._platform = platform
+        self._registry_changes = registryChanges
 
     def get_policy_json(self, omit_id: bool = False) -> str:
         return self._populate_policy_json_elements(omit_id=omit_id)
@@ -803,6 +817,9 @@ class ContainerImage:
             # Add mounted_cim for Windows if present
             if self._mounted_cim:
                 elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM] = self._mounted_cim
+            # registry_changes is Windows-only and emitted only when supplied
+            if self._registry_changes:
+                elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGISTRY_CHANGES] = self._registry_changes
 
         if not omit_id:
             elements[config.POLICY_FIELD_CONTAINERS_ID] = self._identifier

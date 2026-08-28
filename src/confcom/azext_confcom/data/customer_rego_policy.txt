@@ -4,7 +4,7 @@ import future.keywords.every
 import future.keywords.in
 
 api_version := %s
-framework_version := "0.2.3"
+framework_version := "0.5.0"
 
 fragments := %s
 
@@ -16,6 +16,7 @@ allow_runtime_logging := %s
 allow_environment_variable_dropping := %s
 allow_unencrypted_scratch := %s
 allow_capability_dropping := %s
+allow_host_network := %s
 
 mount_device := data.framework.mount_device
 unmount_device := data.framework.unmount_device
@@ -35,5 +36,7 @@ load_fragment := data.framework.load_fragment
 scratch_mount := data.framework.scratch_mount
 scratch_unmount := data.framework.scratch_unmount
 rw_mount_device := data.framework.rw_mount_device
+host_network := data.framework.host_network
+load_transparency_trust_list := data.framework.load_transparency_trust_list
 
 reason := {"errors": data.framework.errors}

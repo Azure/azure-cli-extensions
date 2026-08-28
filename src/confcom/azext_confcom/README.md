@@ -399,7 +399,7 @@ package policy
 import future.keywords.every
 import future.keywords.in
 
-api_version := "0.11.0"
+api_version := "0.12.0"
 framework_version := "0.1.0"
 
 fragments := [...]
@@ -753,6 +753,22 @@ Whether to allow capabilities to be dropped in the same manner as allow_environm
 
 These control the log_provider enforcement point for C-WCOW (Confidential WCOW) policies. `allowed_log_providers` is the list of ETW log provider names that containers are permitted to keep. There is no ARM property for it, so it is only settable through the `--input` JSON (`allowedLogProviders`).
 `allow_log_provider_dropping` (`allowLogProviderDropping` in the input JSON) works the same way as allow_environment_variable_dropping: when set, log providers that are not in `allowed_log_providers` are dropped instead of causing a denial. It defaults to true so that generation does not deny containers that request providers outside the allow-list.
+
+## allow_host_network
+
+Controls the host_network enforcement point. When set, the container group is permitted to use the host network namespace. There is no ARM property for it, so it is only settable through the `--input` JSON (`allowHostNetwork`). It defaults to false. On Linux it is forced on when an elastic SAN volume mount is present, since that mount requires host networking.
+
+## allow_registry_changes_dropping
+
+Controls the registry_changes enforcement point for C-WCOW policies in the same manner as allow_environment_variable_dropping: when set, registry changes that are not in a container's allow-list are dropped instead of causing a denial. There is no ARM property for it, so it is only settable through the `--input` JSON (`allowRegistryChangesDropping`). It defaults to false to match the hcsshim policy producer.
+
+## registry_changes
+
+A Windows-only, per-container list of registry changes that the container is permitted to make, passed through in the hcsshim framework shape (`{"add_values": [...], "delete_keys": [...]}`). There is no ARM property for it, so it is only settable through the `--input` JSON (`registryChanges`, inside a container's `properties`). It is emitted per container only when supplied.
+
+## mapped_directories
+
+Backs the mapped_directory_mount/mapped_directory_unmount enforcement points (a dynamic ModifyGuestSettings VSMB-share hot-add on Windows). It is a list of directories the container group may mount, each with a `containerPath` and an optional `readOnly` flag. There is no ARM property for it, so it is only settable through the `--input` JSON (`mappedDirectories`). The wiring and the list are emitted together only when the list is non-empty; an undeclared hot-add is denied by the framework either way.
 
 ## Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples
 
