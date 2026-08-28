@@ -447,9 +447,8 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
             # perfectly able to reach login.microsoftonline.com through the proxy once the Arc
             # agent is installed. Downgrade to Not_Applicable to avoid blocking onboarding, but
             # emit a warning so it is known that the check was skipped.
-            if (
-                prediagnostic_entra_check == consts.Diagnostic_Check_Failed
-                and (https_proxy or http_proxy)
+            if prediagnostic_entra_check == consts.Diagnostic_Check_Failed and (
+                https_proxy or http_proxy
             ):
                 logger.warning(
                     "Skipping Entra connectivity check: the pre-onboarding diagnostic pod does not have "

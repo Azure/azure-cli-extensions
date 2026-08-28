@@ -115,8 +115,7 @@ def test_process_helm_error_detail():
     proxy_url = _build_test_proxy_url("proxy", "pass")
     redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
     input_text = (
-        f"Some text\n{_header}\nkey\n{_footer}\n"
-        f"with proxy URL {proxy_url} in it"
+        f"Some text\n{_header}\nkey\n{_footer}\nwith proxy URL {proxy_url} in it"
     )
     expected_output = (
         "Some text\n[RSA PRIVATE KEY REMOVED]\n"
@@ -383,9 +382,7 @@ def test_get_advanced_helm_timeout_fault_type_from_error_message():
     ],
 )
 def test_should_use_secret_injection_flow(release_train, agent_version, expected):
-    assert (
-        should_use_secret_injection_flow(release_train, agent_version) is expected
-    )
+    assert should_use_secret_injection_flow(release_train, agent_version) is expected
 
 
 def test_arc_error_requires_code_name_message_and_fault_type():
