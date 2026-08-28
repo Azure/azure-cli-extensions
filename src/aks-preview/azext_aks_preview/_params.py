@@ -363,6 +363,8 @@ node_os_skus_update = [
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
     CONST_OS_SKU_AZURECONTAINERLINUX,
+    CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWS2025,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
@@ -2627,6 +2629,14 @@ def load_arguments(self, _):
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
             is_preview=True,
+        )
+        c.argument(
+            "zones",
+            zones_type,
+            options_list=["--zones", "-z"],
+            is_preview=True,
+            help='Use "auto" to migrate a regional node pool to automatic zone placement. '
+                 'Other availability zone changes are subject to service restrictions.',
         )
         c.argument(
             "gpu_driver",

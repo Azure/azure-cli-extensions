@@ -287,10 +287,10 @@ helps['aks create'] = f"""
           short-summary: The ID of a PPG.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if k8s version is less than 1.37 or Windows2025 if k8s is 1.37 or greater.
         - name: --enable-fips-image
           type: bool
-          short-summary: Use FIPS-enabled OS on agent nodes.
+          short-summary: Use FIPS-enabled OS on agent nodes. Required and always enabled when --os-sku is Windows2025; cannot be disabled for these node pools.
         - name: --enable-fips
           type: bool
           short-summary: Enable FIPS mode at the cluster level.
@@ -1591,26 +1591,26 @@ helps['aks update'] = """
           type: bool
           short-summary: (Automatic SKU) Convert an existing Automatic cluster to use a Managed System Pool.
           long-summary: |
-              Only valid for clusters with the Automatic SKU. Optionally provide the bring-your-own
-              VNet subnet trio (`--system-node-subnet-id`, `--node-subnet-id`, `--apiserver-subnet-id`)
-              to move the cluster onto an existing VNet at the same time. Supplying the full trio also
-              implies this flag.
+              Only valid for clusters with the Automatic SKU. Required to request the conversion.
+              Use it on its own to convert the cluster while keeping its current AKS-managed
+              networking, or combine it with the bring-your-own VNet subnet flags
+              (`--system-node-subnet-id`, `--node-subnet-id`, `--apiserver-subnet-id`) to move the
+              cluster onto an existing VNet at the same time.
         - name: --system-node-subnet-id
           type: string
           short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by the Managed System Pool.
           long-summary: |
-              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
-              `--system-node-subnet-id` (this flag, for the Managed System Pool), `--node-subnet-id`
-              (for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
-              All three subnets must belong to the same VNet.
+              Requires `--enable-hosted-system`. Unlike `az aks create`, the other bring-your-own
+              VNet subnets are optional here: `--node-subnet-id` (for user node pools) and
+              `--apiserver-subnet-id` (for the control plane API server) can be omitted, in which
+              case the cluster keeps its current node and API server networking. Any subnets you do
+              supply must belong to the same VNet.
         - name: --node-subnet-id
           type: string
           short-summary: (Automatic SKU) The ID of a subnet in an existing VNet to be used by user node pools.
           long-summary: |
-              Bring-your-own VNet for an Automatic cluster requires three subnets supplied together:
-              `--system-node-subnet-id` (for the Managed System Pool), `--node-subnet-id` (this flag,
-              for user node pools), and `--apiserver-subnet-id` (for the control plane API server).
-              All three subnets must belong to the same VNet.
+              Requires `--enable-hosted-system` and `--system-node-subnet-id`, and all supplied
+              subnets must belong to the same VNet.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1706,7 +1706,9 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs-traces
       - name: Convert an existing Automatic cluster to use a Managed System Pool.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system
-      - name: Convert an existing Automatic cluster to use a Managed System Pool with a bring-your-own VNet.
+      - name: Convert an existing Automatic cluster to use a Managed System Pool in a bring-your-own VNet.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID>
+      - name: Convert an existing Automatic cluster to use a Managed System Pool, also moving node pools and the API server onto a bring-your-own VNet.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID> --node-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID>
 """
 
@@ -2468,7 +2470,7 @@ helps['aks nodepool add'] = """
           short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, Ubuntu2604, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
-          short-summary: Use FIPS-enabled OS on agent nodes.
+          short-summary: Use FIPS-enabled OS on agent nodes. Required and always enabled when --os-sku is Windows2025; cannot be disabled for these node pools.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
@@ -2851,6 +2853,9 @@ helps['aks nodepool update'] = """
         - name: --node-vm-size -s
           type: string
           short-summary: VM size for Kubernetes nodes. For VMSS pools, changing this triggers a rolling upgrade to replace nodes with the new size (preview). For VirtualMachines pools, only configurable when updating autoscale settings.
+        - name: --zones -z
+          type: string array
+          short-summary: Use `auto` to migrate a regional node pool to automatic zone placement. Other availability zone changes are subject to service restrictions.
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2890,6 +2895,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
       - name: Resize VM size for a VMSS node pool (preview, requires AFEC registration)
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-vm-size Standard_D4s_v3
+      - name: Migrate a regional node pool to automatic zone placement.
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --zones auto
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
       - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
