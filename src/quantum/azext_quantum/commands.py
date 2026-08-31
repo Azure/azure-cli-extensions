@@ -94,7 +94,7 @@ def transform_suite_offers(suite_offers):
     def one(offer):
         properties = offer['properties']
         return OrderedDict([
-            ('Provider Id', properties['providerId']),
+            ('Provider ID', properties['providerId']),
             ('Provider Name', properties['providerName']),
             ('Company', properties['companyName']),
             ('Location', properties['location'])

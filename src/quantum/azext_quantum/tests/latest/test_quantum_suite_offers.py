@@ -30,8 +30,8 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
 
         self.assertEqual(len(table), 1)
         row = table[0]
-        self.assertEqual(list(row.keys()), ['Provider Id', 'Provider Name', 'Company', 'Location'])
-        self.assertEqual(row['Provider Id'], 'ionq')
+        self.assertEqual(list(row.keys()), ['Provider ID', 'Provider Name', 'Company', 'Location'])
+        self.assertEqual(row['Provider ID'], 'ionq')
         self.assertEqual(row['Provider Name'], 'IonQ')
         self.assertEqual(row['Company'], 'IonQ, Inc.')
         self.assertEqual(row['Location'], 'eastus')
