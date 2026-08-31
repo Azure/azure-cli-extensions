@@ -17,14 +17,15 @@ from azure.cli.command_modules.storage.operations.account import list_storage_ac
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
-from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
+from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError, ServiceError,
+                                       ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 from knack.log import get_logger
@@ -41,14 +42,13 @@ DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
+MAX_RETRIES_USER_LOOKUP = 3
 MAX_POLLS_CREATE_WORKSPACE = 300
 
-# Built-in "Quantum Workspace Data Contributor" role. This is the role granted to
-# users when they are added to a workspace in the Azure Quantum portal.
+# Built-in "Quantum Workspace Data Contributor" role.
 QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
 
-# Built-in "Quantum Workspace Owner" role. The Azure Quantum portal labels users
-# holding this role as workspace administrators.
+# Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
@@ -212,8 +212,62 @@ def _enum_to_value(value):
     return value.value if isinstance(value, enum.Enum) else value
 
 
+def _require_v2_workspace(workspace_kind):
+    if str(_enum_to_value(workspace_kind)).upper() != 'V2':
+        raise InvalidArgumentValueError("--quota is supported only for V2 workspaces.")
+
+
+def _apply_target_quotas(providers, quota, preserve_existing=False):
+    if not quota:
+        return
+
+    providers_by_id = {
+        provider.provider_id.lower(): provider
+        for provider in providers or []
+        if provider.provider_id
+    }
+
+    for allocation in quota:
+        provider_id = allocation['providerId']
+        provider = providers_by_id.get(provider_id.lower())
+        if not provider:
+            raise InvalidArgumentValueError(
+                f"Provider '{provider_id}' from --quota is not configured in the workspace."
+            )
+
+        target_quotas = [item for item in (provider.target_quotas or [])]
+        existing = next(
+            (item for item in target_quotas if item.target_id.lower() == allocation['targetId'].lower()),
+            None
+        )
+
+        standard_minutes = allocation.get(
+            'standardMinutesLifetime',
+            existing.standard_minutes_lifetime if preserve_existing and existing else None
+        )
+        if standard_minutes is None:
+            raise InvalidArgumentValueError(
+                f"--quota requires standardMinutesLifetime for new target '{allocation['targetId']}'."
+            )
+        high_minutes = allocation.get(
+            'highMinutesLifetime',
+            existing.high_minutes_lifetime if preserve_existing and existing else None
+        )
+
+        updated = TargetQuotaAllocations(
+            target_id=allocation['targetId'],
+            standard_minutes_lifetime=standard_minutes,
+            high_minutes_lifetime=high_minutes
+        )
+        if existing:
+            target_quotas[target_quotas.index(existing)] = updated
+        else:
+            target_quotas.append(updated)
+        provider.target_quotas = target_quotas
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
-           provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None):
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
     Create a new Azure Quantum workspace.
     """
@@ -228,10 +282,13 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace: QuantumWorkspace = _get_basic_quantum_workspace(location, info, storage_account)
+    if quota:
+        _require_v2_workspace(workspace_kind)
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        _apply_target_quotas(quantum_workspace.properties.providers, quota)
         quantum_workspace.properties.api_key_enabled = True
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
@@ -248,9 +305,24 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         template = json.load(template_file_fd)
 
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+    _apply_target_quotas(quantum_workspace.properties.providers, quota)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
-        validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
+        provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
+        if provider.target_quotas:
+            provider_data['targetQuotas'] = [
+                {
+                    key: value
+                    for key, value in {
+                        'targetId': target_quota.target_id,
+                        'standardMinutesLifetime': target_quota.standard_minutes_lifetime,
+                        'highMinutesLifetime': target_quota.high_minutes_lifetime
+                    }.items()
+                    if value is not None
+                }
+                for target_quota in provider.target_quotas
+            ]
+        validated_providers.append(provider_data)
 
     # Set default storage account parameters in case the storage account does not exist yet
     storage_account_sku = DEFAULT_STORAGE_SKU
@@ -441,7 +513,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     return response
 
 
-def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=None):
+def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, quota=None):
     """
     Update the default Azure Quantum workspace.
     """
@@ -450,14 +522,21 @@ def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=N
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 
-    if enable_key not in ["True", "true", "False", "false"]:
-        raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
+    if enable_key is None and not quota:
+        raise RequiredArgumentMissingError("Please provide --enable-api-key and/or --quota.")
+
+    if enable_key is not None and enable_key not in ["True", "true", "False", "false"]:
+        raise InvalidArgumentValueError("Please set --enable-api-key to be True/true or False/false.")
 
     ws = client.get(info.resource_group, info.name)
 
-    if (enable_key in ["True", "true"]):
+    if quota:
+        _require_v2_workspace(ws.properties.workspace_kind)
+        _apply_target_quotas(ws.properties.providers, quota, preserve_existing=True)
+
+    if enable_key in ["True", "true"]:
         ws.properties.api_key_enabled = True
-    elif (enable_key in ["False", "false"]):
+    elif enable_key in ["False", "false"]:
         ws.properties.api_key_enabled = False
     lropoller = client.begin_create_or_update(info.resource_group, info.name, ws)
     if lropoller:
@@ -519,30 +598,69 @@ def list_users(cmd, resource_group_name=None, workspace_name=None, include_inher
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = []
-    for role_id in (QUANTUM_WORKSPACE_OWNER_ROLE_ID, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID):
-        assignments += list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited)
+    roles = (
+        (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, "Quantum Workspace Data Contributor"),
+        (QUANTUM_WORKSPACE_OWNER_ROLE_ID, "Quantum Workspace Owner"),
+    )
+    for role_id, role_name in roles:
+        # fill_principal_name=False avoids a per-call Microsoft Graph lookup that _fill_user_display_names already does in one batch.
+        role_assignments = list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited,
+                                                 fill_principal_name=False, fill_role_definition_name=False)
+        for assignment in role_assignments:
+            assignment["roleDefinitionName"] = role_name
+        assignments += role_assignments
     users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
     _fill_user_display_names(cmd, users)
     return users
 
 
 def _fill_user_display_names(cmd, users):
-    """Add each user's display name and email from Microsoft Graph; best-effort, falls back to the principal name."""
+    """
+    Enrich user role assignments with the Name and Email resolved from Microsoft Graph in a single
+    batched lookup. Principals the directory cannot resolve fall back to the principal name.
+    """
     principal_ids = {user["principalId"] for user in users if user.get("principalId")}
     if not principal_ids:
         return
 
-    from azure.cli.command_modules.role.custom import _graph_client_factory, _get_object_stubs
-
-    directory_objects = {}
-    try:
-        graph_client = _graph_client_factory(cmd.cli_ctx)
-        for obj in _get_object_stubs(graph_client, principal_ids):
-            directory_objects[obj.get("id")] = obj
-    except Exception as ex:  # pylint: disable=broad-except
-        logger.warning("Could not resolve user display names from Microsoft Graph: %s", ex)
+    directory_objects = _resolve_directory_objects(cmd, principal_ids)
 
     for user in users:
         obj = directory_objects.get(user.get("principalId"), {})
-        user["displayName"] = obj.get("displayName")
-        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or user.get("principalName")
+        principal_name = user.get("principalName")
+        user["displayName"] = obj.get("displayName") or obj.get("userPrincipalName") or principal_name or user.get("principalId")
+        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or principal_name
+
+
+def _resolve_directory_objects(cmd, principal_ids):
+    """
+    Resolve principal IDs using a batched Microsoft Graph lookup, keyed by object ID. Transient
+    failures are retried. Principals Graph cannot resolve are omitted so the caller can fall back
+    to the principal name.
+    """
+    from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import GraphError, HttpResponseError, _get_object_stubs
+
+    graph_client = graph_client_factory(cmd.cli_ctx)
+    last_error = None
+    for attempt in range(MAX_RETRIES_USER_LOOKUP):
+        try:
+            return {obj.get("id"): obj for obj in _get_object_stubs(graph_client, principal_ids)}
+        except (GraphError, HttpResponseError) as ex:
+            response = getattr(ex, "response", None)
+            status_code = getattr(ex, "status_code", None) or getattr(response, "status_code", None)
+            transient = status_code is None or status_code in (408, 429) or 500 <= status_code < 600
+            if not transient:
+                error_type = {400: ClientRequestError, 401: UnauthorizedError, 403: ForbiddenError}.get(status_code, AzureResponseError)
+                raise error_type(str(ex)) from ex
+            last_error = ex
+            if attempt < MAX_RETRIES_USER_LOOKUP - 1:
+                retry_after = (getattr(response, "headers", None) or {}).get("Retry-After") if response else None
+                try:
+                    retry_delay = min(float(retry_after), 60) if retry_after is not None else 2 ** attempt
+                except ValueError:
+                    retry_delay = 2 ** attempt
+                time.sleep(retry_delay)
+
+    logger.debug("Microsoft Graph user lookup failed after retries.", exc_info=last_error)
+    raise ServiceError("Could not reach Microsoft Graph to resolve user names and email addresses. Please try again later.") from last_error

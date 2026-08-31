@@ -104,6 +104,38 @@ helps['quantum job output'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
 """
 
+helps['quantum job file'] = """
+    type: group
+    short-summary: Manage a quantum job's associated files.
+"""
+
+helps['quantum job file list'] = """
+    type: command
+    short-summary: List the files stored in a job's output storage container.
+    long-summary: >
+        Returns one entry per file, each reporting the file name, its size in bytes,
+        and the last-modified time as an ISO 8601 timestamp. Use "-o table" for a
+        condensed view.
+    examples:
+      - name: List the files in an Azure Quantum job's output container.
+        text: |-
+            az quantum job file list -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
+"""
+
+helps['quantum job file download'] = """
+    type: command
+    short-summary: Download a file from a job's output storage container.
+    examples:
+      - name: Download a file from an Azure Quantum job's output container.
+        text: |-
+            az quantum job file download -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData
+      - name: Download a file to a specific directory.
+        text: |-
+            az quantum job file download -g MyResourceGroup -w MyWorkspace \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData --dest ./downloads
+"""
 helps['quantum job show'] = """
     type: command
     short-summary: Get the job's status and details.
@@ -288,6 +320,12 @@ helps['quantum workspace create'] = """
                 -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" --skip-autoadd -a MyStorageAccountName\n
             To display a list of available providers and their SKUs, use the following command:
                 az quantum offerings list -l MyLocation -o table
+      - name: Create a V2 workspace with quota allocations for provider targets.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+                --workspace-kind V2 -r "MyProvider/default" --skip-autoadd -a MyStorageAccountName \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=500 high-minutes-lifetime=50 \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target2 standard-minutes-lifetime=250
 """
 
 helps['quantum workspace delete'] = """
@@ -352,6 +390,10 @@ helps['quantum workspace update'] = """
       - name: Disable a provided Azure Quantum workspace api keys.
         text: |-
             az quantum workspace update --enable-api-key False
+      - name: Update a target quota allocation on a V2 workspace.
+        text: |-
+            az quantum workspace update -g MyResourceGroup -w MyWorkspace \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=1000
 """
 
 helps['quantum workspace keys'] = """

@@ -11,6 +11,24 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
+* `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+
+22.0.0b5
++++++++++
+* Vendor new SDK and bump API version to `2026-06-02-preview`.
+
+22.0.0b4
++++++++++
+* `az aks nodepool update`: Add preview `--zones`/`-z` support for migrating a regional node pool to automatic zone placement with `--zones auto`. Other availability zone changes are subject to service restrictions. Omitted zones remain unchanged, and the option can be combined with `--node-vm-size`.
+
+22.0.0b3
++++++++++
+* `az aks update`: Relax the bring-your-own VNet subnet validation for converting non-HOBO to HOBO Automatic cluster. `--apiserver-subnet-id` is no longer required, and `--system-node-subnet-id` can be supplied on its own; omitted subnets keep their current networking. `--enable-hosted-system` is still required to request the conversion, and `--node-subnet-id` still requires `--system-node-subnet-id`.
+
+22.0.0b2
+++++++++
+* `az aks update`: Fix load balancer options such as `--load-balancer-backend-pool-type` being silently ignored on clusters whose `outboundType` is not `loadBalancer` (for example `userDefinedRouting` or a NAT gateway). Passing `--outbound-type` to switch away from `loadBalancer` now only drops the load balancer outbound settings instead of the whole load balancer profile, so options requested in the same command are still applied.
 
 22.0.0b1
 ++++++++
