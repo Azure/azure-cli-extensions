@@ -99,17 +99,11 @@ def customized_generate_aws_template(cmd, connector_id, output_directory=None):
                 raise ValidationError(f"Failed to write response to file: {e}")
 
         def _output(self, *args, **kwargs):
-            try:
-                self.output_response_to_file()
-                return {
-                    "status": "success",
-                    "message": "AWS template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
-                }
-            except Exception as e:
-                return {
-                    "status": "error",
-                    "message": f"An error occurred: {str(e)}"
-                }
+            self.output_response_to_file()
+            return {
+                "status": "success",
+                "message": "AWS template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
+            }
 
     return OutputAwsTemplateToFile(cli_ctx=cmd.cli_ctx)(command_args={
         "connector_id": connector_id,
@@ -173,17 +167,11 @@ class CustomizedGenerateGcpTemplate(_GenGcpTemplate):
             raise ValidationError(f"Failed to write response to file: {e}")
 
     def _output(self, *args, **kwargs):
-        try:
-            self.output_response_to_file()
-            return {
-                "status": "success",
-                "message": "GCP template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"An error occurred: {str(e)}"
-            }
+        self.output_response_to_file()
+        return {
+            "status": "success",
+            "message": "GCP template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
+        }
 
 
 # Inheritance - Register required RPs before execute each command
