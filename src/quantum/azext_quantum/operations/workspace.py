@@ -17,7 +17,8 @@ from azure.cli.command_modules.storage.operations.account import list_storage_ac
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.deployments.models import DeploymentMode
 
-from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
+from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError, ServiceError,
+                                       ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError,
                                        MutuallyExclusiveArgumentError)
 
@@ -27,6 +28,10 @@ from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
+
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 DEFAULT_STORAGE_SKU = 'Standard_LRS'
@@ -38,11 +43,14 @@ DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
+MAX_RETRIES_USER_LOOKUP = 3
 MAX_POLLS_CREATE_WORKSPACE = 300
 
-# Built-in "Quantum Workspace Data Contributor" role. This is the role granted to
-# users when they are added to a workspace in the Azure Quantum portal.
+# Built-in "Quantum Workspace Data Contributor" role.
 QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e603250"
+
+# Built-in "Quantum Workspace Owner" role.
+QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -576,3 +584,80 @@ def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=Non
     scope = _get_workspace_resource_id(info)
     role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
     return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+
+
+def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):
+    """
+    List the users with access to an Azure Quantum workspace.
+    """
+    from azure.cli.command_modules.role.custom import list_role_assignments
+
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    scope = _get_workspace_resource_id(info)
+    assignments = []
+    roles = (
+        (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, "Quantum Workspace Data Contributor"),
+        (QUANTUM_WORKSPACE_OWNER_ROLE_ID, "Quantum Workspace Owner"),
+    )
+    for role_id, role_name in roles:
+        # fill_principal_name=False avoids a per-call Microsoft Graph lookup that _fill_user_display_names already does in one batch.
+        role_assignments = list_role_assignments(cmd, role=role_id, scope=scope, include_inherited=include_inherited,
+                                                 fill_principal_name=False, fill_role_definition_name=False)
+        for assignment in role_assignments:
+            assignment["roleDefinitionName"] = role_name
+        assignments += role_assignments
+    users = [assignment for assignment in assignments if assignment.get("principalType") == "User"]
+    _fill_user_display_names(cmd, users)
+    return users
+
+
+def _fill_user_display_names(cmd, users):
+    """
+    Enrich user role assignments with the Name and Email resolved from Microsoft Graph in a single
+    batched lookup. Principals the directory cannot resolve fall back to the principal name.
+    """
+    principal_ids = {user["principalId"] for user in users if user.get("principalId")}
+    if not principal_ids:
+        return
+
+    directory_objects = _resolve_directory_objects(cmd, principal_ids)
+
+    for user in users:
+        obj = directory_objects.get(user.get("principalId"), {})
+        principal_name = user.get("principalName")
+        user["displayName"] = obj.get("displayName") or obj.get("userPrincipalName") or principal_name or user.get("principalId")
+        user["mail"] = obj.get("mail") or obj.get("userPrincipalName") or principal_name
+
+
+def _resolve_directory_objects(cmd, principal_ids):
+    """
+    Resolve principal IDs using a batched Microsoft Graph lookup, keyed by object ID. Transient
+    failures are retried. Principals Graph cannot resolve are omitted so the caller can fall back
+    to the principal name.
+    """
+    from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import GraphError, HttpResponseError, _get_object_stubs
+
+    graph_client = graph_client_factory(cmd.cli_ctx)
+    last_error = None
+    for attempt in range(MAX_RETRIES_USER_LOOKUP):
+        try:
+            return {obj.get("id"): obj for obj in _get_object_stubs(graph_client, principal_ids)}
+        except (GraphError, HttpResponseError) as ex:
+            response = getattr(ex, "response", None)
+            status_code = getattr(ex, "status_code", None) or getattr(response, "status_code", None)
+            transient = status_code is None or status_code in (408, 429) or 500 <= status_code < 600
+            if not transient:
+                error_type = {400: ClientRequestError, 401: UnauthorizedError, 403: ForbiddenError}.get(status_code, AzureResponseError)
+                raise error_type(str(ex)) from ex
+            last_error = ex
+            if attempt < MAX_RETRIES_USER_LOOKUP - 1:
+                retry_after = (getattr(response, "headers", None) or {}).get("Retry-After") if response else None
+                try:
+                    retry_delay = min(float(retry_after), 60) if retry_after is not None else 2 ** attempt
+                except ValueError:
+                    retry_delay = 2 ** attempt
+                time.sleep(retry_delay)
+
+    logger.debug("Microsoft Graph user lookup failed after retries.", exc_info=last_error)
+    raise ServiceError("Could not reach Microsoft Graph to resolve user names and email addresses. Please try again later.") from last_error
