@@ -27,6 +27,9 @@ class Create(AAZCommand):
 
     :example: PublicCloudConnectors_CreateOrUpdate
         az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile "{project-properties:{project-number:123456789123,project-id:my-project},organization-properties:{organization-id:123456789123,management-project-number:123456789124,management-project-id:my-management-project}}" --host-type GCP --tags a=b --location eastus
+
+    :example: PublicCloudConnectors_CreateOrUpdate
+        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile project-properties={project-number:123456789123,project-id:my-project} organization-properties={organization-id:123456789123,management-project-number:123456789124,management-project-id:my-management-project} --host-type GCP --tags a=b --location eastus
     """
 
     _aaz_info = {
