@@ -88,6 +88,12 @@ def aks_alert_config_update_internal(cmd, client, raw_parameters, headers, no_wa
         action_group_id if action_group_id is not None else existing_action_group_id
     )
 
+    if merged_mode is None:
+        raise RequiredArgumentMissingError(
+            "Unable to determine the existing alert configuration mode. "
+            "Please specify --mode to update this alert configuration."
+        )
+
     alert_config = AlertConfiguration(
         properties=AlertConfigurationProperties(
             mode=merged_mode,

@@ -218,6 +218,21 @@ class TestAlertConfigUpdate(unittest.TestCase):
         self.assertEqual(model.properties.mode, "Managed")
         self.assertEqual(model.properties.notification.action_group_id, new_id)
 
+    def test_update_action_group_only_without_existing_mode_raises(self):
+        client = self._client_with_existing(mode=None)
+        params = {
+            "resource_group_name": "rg",
+            "cluster_name": "cluster",
+            "name": "myalerts",
+            "mode": None,
+            "action_group_id": VALID_ACTION_GROUP_ID,
+        }
+
+        with self.assertRaises(RequiredArgumentMissingError) as error:
+            aks_alert_config_update_internal(None, client, params, {}, False)
+        self.assertIn("specify --mode", str(error.exception))
+        client.begin_create_or_update.assert_not_called()
+
     def test_update_can_clear_action_group_with_empty_string(self):
         client = self._client_with_existing()
         params = {
