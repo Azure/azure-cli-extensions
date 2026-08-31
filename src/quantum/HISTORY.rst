@@ -6,6 +6,7 @@ Release History
 1.0.0b22
 +++++++++++++++
 * Added the ``az quantum workspace user list`` command to list the users with access to an Azure Quantum workspace.
+* Renamed ``az quantum workspace user create/delete`` to ``add/remove`` and limited both commands to users identified by principal name or object ID.
 
 1.0.0b21
 +++++++++++++++

@@ -71,7 +71,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
-    email_type = CLIArgumentType(options_list=['--email'], help='The user to grant or remove access. Provide the user sign-in name (email); an object id is also accepted.')
+    user_type = CLIArgumentType(options_list=['--user'], help='The object ID or principal name of the user to grant or remove access.')
     include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], arg_type=get_three_state_flag(), help='Include role assignments inherited from the parent resource group and subscription. Enabled by default; use "--include-inherited false" to list only assignments scoped directly to the workspace.')
 
     with self.argument_context('quantum workspace') as c:
@@ -86,7 +86,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum workspace user') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('email', email_type)
+        c.argument('user', user_type)
 
     with self.argument_context('quantum workspace user list') as c:
         c.argument('include_inherited', include_inherited_type)

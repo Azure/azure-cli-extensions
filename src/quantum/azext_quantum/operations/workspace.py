@@ -472,33 +472,42 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_email_arg(email):
-    if not email:
-        raise RequiredArgumentMissingError("Please provide '--email' (the user's sign-in name/email or object id).")
+def _validate_user_arg(user):
+    if not user:
+        raise RequiredArgumentMissingError("Please provide '--user' (the user's principal name or object ID).")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
+def _resolve_user_id(cmd, user):
+    from azure.cli.command_modules.role import graph_client_factory
+
+    _validate_user_arg(user)
+    return graph_client_factory(cmd.cli_ctx).user_get(user)["id"]
+
+
+def add_user(cmd, resource_group_name=None, workspace_name=None, user=None):
     """
     Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_email_arg(email)
+    user_id = _resolve_user_id(cmd, user)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=email)
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
+                                  assignee_object_id=user_id, assignee_principal_type="User")
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, user=None):
     """
     Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_email_arg(email)
+    user_id = _resolve_user_id(cmd, user)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope, assignee=email)
+    return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
+                                   assignee_object_id=user_id)
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):
