@@ -21,6 +21,15 @@ class Update(AAZCommand):
 
     :example: publicCloudConnectors_Update
         az arc-multicloud public-cloud-connector update --resource-group multiCloudRG --name awsConnector --aws-cloud-profile "{excluded-accounts:[123456789123,123456789124]}" --tags "{}"
+
+    :example: publicCloudConnectors_Update
+        az arc-multicloud public-cloud-connector update --resource-group multiCloudRG --name awsConnector --aws-cloud-profile excluded-accounts[0]=123456789123 excluded-accounts[1]=123456789124
+
+    :example: publicCloudConnectors_Update
+        az arc-multicloud public-cloud-connector update --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile "{organization-properties:{excluded-project-numbers:[123456789123,123456789124],excluded-folder-ids:[folders/555,folders/666]}}"
+
+    :example: publicCloudConnectors_Update
+        az arc-multicloud public-cloud-connector update --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile organization-properties.excluded-project-numbers[0]=123456789123 organization-properties.excluded-folder-ids[0]=folders/555
     """
 
     _aaz_info = {

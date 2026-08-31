@@ -24,6 +24,9 @@ class GenerateGcpTemplate(AAZCommand):
 
     :example: GenerateGcpTemplate_Post
         az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --gcp-template-format shellscript --gcp-cloud-profile "{project-properties:{project-number:1234567890,project-id:my-project},organization-properties:{organization-id:123456789,management-project-number:1234567890,management-project-id:my-project}}"
+
+    :example: GenerateGcpTemplate_Post
+        az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --gcp-template-format shellscript --gcp-cloud-profile project-properties.project-number=1234567890 project-properties.project-id=my-project organization-properties.organization-id=123456789 organization-properties.management-project-number=1234567890 organization-properties.management-project-id=my-project
     """
 
     _aaz_info = {
