@@ -7,6 +7,7 @@
 
 import os.path
 import json
+import re
 import sys
 
 import time
@@ -50,6 +51,8 @@ QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e6032
 
 # Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
+
+EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -551,38 +554,40 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_user_arg(user):
-    if not user:
-        raise RequiredArgumentMissingError("Please provide '--user' (the user's principal name or object ID).")
+def _validate_email_arg(email):
+    if not email:
+        raise RequiredArgumentMissingError("Please provide '--email' (the user's email address).")
+    if not EMAIL_PATTERN.fullmatch(email):
+        raise InvalidArgumentValueError(f"'{email}' is not a valid email address.")
 
 
-def _resolve_user_id(cmd, user):
+def _resolve_user_id(cmd, email):
     from azure.cli.command_modules.role import graph_client_factory
 
-    _validate_user_arg(user)
-    return graph_client_factory(cmd.cli_ctx).user_get(user)["id"]
+    _validate_email_arg(email)
+    return graph_client_factory(cmd.cli_ctx).user_get(email)["id"]
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, user=None):
+def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
     Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    user_id = _resolve_user_id(cmd, user)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
                                   assignee_object_id=user_id, assignee_principal_type="User")
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, user=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
     Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    user_id = _resolve_user_id(cmd, user)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     return delete_role_assignments(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
