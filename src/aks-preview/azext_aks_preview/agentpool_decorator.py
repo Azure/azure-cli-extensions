@@ -1951,7 +1951,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         asg_ids = self.context.get_asg_ids()
         allowed_host_ports = self.context.get_allowed_host_ports()
         enable_managed_dranet = self.context.get_enable_managed_dranet()
-        if not agentpool.network_profile and (asg_ids or allowed_host_ports or enable_managed_dranet):
+        if not agentpool.network_profile and (asg_ids is not None or allowed_host_ports is not None or enable_managed_dranet):
             agentpool.network_profile = self.models.AgentPoolNetworkProfile()  # pylint: disable=no-member
         if asg_ids is not None:
             agentpool.network_profile.application_security_groups = asg_ids
