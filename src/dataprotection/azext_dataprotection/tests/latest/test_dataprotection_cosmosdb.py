@@ -22,10 +22,10 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
-SUBSCRIPTION_ID = '97cda027-4279-4cde-b4ff-19afa0021d87'
-RESOURCE_GROUP = 'cosmos-bugbash-CLIrg-2'
-SOURCE_COSMOS_NAME = 'cosmosbugbash-cli2-src'
-TARGET_COSMOS_NAME = 'cosmosbugbash-cli2-tgt'
+SUBSCRIPTION_ID = '38304e13-357e-405e-9e9a-220351dcce8c'
+RESOURCE_GROUP = 'cosmosbugbash-vijami-rg'
+SOURCE_COSMOS_NAME = 'cosmosbugbash-vijami-src'
+TARGET_COSMOS_NAME = 'cosmosbugbash-vijami-tgt'
 SOURCE_COSMOS_ID = (
     f'/subscriptions/{SUBSCRIPTION_ID}/resourceGroups/{RESOURCE_GROUP}'
     f'/providers/Microsoft.DocumentDB/databaseAccounts/{SOURCE_COSMOS_NAME}'
@@ -36,7 +36,7 @@ TARGET_COSMOS_ID = (
 )
 POLICY_ID = (
     f'/subscriptions/{SUBSCRIPTION_ID}/resourceGroups/{RESOURCE_GROUP}'
-    f'/providers/Microsoft.DataProtection/backupVaults/TestCosmosVault/backupPolicies/TestPolicy'
+    f'/providers/Microsoft.DataProtection/backupVaults/CosmosBackupVault/backupPolicies/CosmosWeeklyPolicy'
 )
 
 

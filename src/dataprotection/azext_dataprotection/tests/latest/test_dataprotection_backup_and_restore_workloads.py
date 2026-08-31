@@ -358,27 +358,27 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         track_job_to_completion(test)
 
-    # Uses persistent vault, policy, source DS and target DS pre-provisioned in cosmos-bugbash-CLIrg-2.
+    # Uses persistent vault, policy, source DS and target DS pre-provisioned in cosmosbugbash-vijami-rg.
     # Marked @live_only() because the persistent Cosmos accounts back live data and replaying a recording
     # against a different subscription is impractical for this workload.
     @live_only()
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_cosmosdb(test):
         test.kwargs.update({
-            # Persistent Cosmos accounts cosmosbugbash-cli2-src/-tgt live in eastus2euap.
+            # Persistent Cosmos accounts cosmosbugbash-vijami-src/-tgt live in eastus2euap.
             'location': 'eastus2euap',
             'restoreLocation': 'eastus2euap',
-            'rg': 'cosmos-bugbash-CLIrg-2',
-            'vaultName': 'TestCosmosVault',
+            'rg': 'cosmosbugbash-vijami-rg',
+            'vaultName': 'CosmosBackupVault',
             'dataSourceType': 'AzureCosmosDB',
             'sourceDataStore': 'VaultStore',
             'permissionsScope': 'ResourceGroup',
             'operation': 'Backup',
             'restoreOperation': 'Restore',
-            'cosmosDbName': 'cosmosbugbash-cli2-src',
-            'cosmosDbId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-2/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-cli2-src',
-            'targetCosmosDbId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-2/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-cli2-tgt',
-            'policyId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-2/providers/Microsoft.DataProtection/backupVaults/TestCosmosVault/backupPolicies/TestPolicy',
+            'cosmosDbName': 'cosmosbugbash-vijami-src',
+            'cosmosDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-vijami-src',
+            'targetCosmosDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-vijami-tgt',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DataProtection/backupVaults/CosmosBackupVault/backupPolicies/CosmosWeeklyPolicy',
             'policyRuleName': 'BackupWeekly',
         })
         backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
