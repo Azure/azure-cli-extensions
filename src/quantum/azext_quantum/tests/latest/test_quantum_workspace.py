@@ -291,6 +291,10 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     @live_only()
     def test_workspace_user(self):
+        account = self.cmd('az account show -o json').get_output_in_json()
+        if account.get("user", {}).get("type", "").lower() != "user":
+            self.skipTest("Workspace user management requires an interactive user login.")
+
         # initialize values
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
