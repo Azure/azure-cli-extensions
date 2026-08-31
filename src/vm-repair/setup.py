@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "2.2.5"
+VERSION = "2.2.6"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,7 +24,10 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['opencensus~=0.11.4']
+# Only declare packages that azure-cli-core does not already guarantee; extensions are
+# pip-installed with --target, so every entry here is vendored into the extension folder.
+# 'requests' is intentionally omitted: azure-cli-core pulls it in via msal/msrest.
+DEPENDENCIES = ['applicationinsights~=0.11.9']
 
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()

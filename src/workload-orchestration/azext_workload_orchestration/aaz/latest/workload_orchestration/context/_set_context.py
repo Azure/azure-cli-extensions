@@ -65,15 +65,11 @@ class SetContext(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
+        from azext_workload_orchestration.common.utils import set_current_context_config
+
         context_id = self.ctx.args.context_id.to_serialized_data()
-        parts = context_id.split('/')
-        context_name = parts[8]
-        resource_group = parts[4]
-        
-        self.ctx.cli_ctx.config.set_value('workload_orchestration', 'context_id', context_id)
-        self.ctx.cli_ctx.config.set_value('workload_orchestration', 'context_name', context_name)
-        self.ctx.cli_ctx.config.set_value('workload_orchestration', 'resource_group', resource_group)
-        
+        set_current_context_config(self.ctx.cli_ctx, context_id)
+
         return f"Successfully set current context using ID '{self.ctx.args.context_id}'"
 
 class _SetContextHelper:
