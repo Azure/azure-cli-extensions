@@ -218,7 +218,7 @@ helps['quantum job update'] = """
 
 helps['quantum suite-offer'] = """
     type: group
-    short-summary: Manage Azure Quantum suite offers available to the subscription.
+    short-summary: View Azure Quantum suite offers available to the subscription.
 """
 
 helps['quantum suite-offer list'] = """
