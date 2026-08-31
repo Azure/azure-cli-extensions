@@ -177,7 +177,8 @@ def constructMachine(cmd, raw_parameters, machine_name):
         hardware=set_machine_hardware_profile(cmd, raw_parameters),
         kubernetes=set_machine_kubernetes_profile(cmd, raw_parameters),
         operating_system=set_machine_os_profile(cmd, raw_parameters),
-        billing=set_machine_billing_profile(cmd, raw_parameters)
+        billing=set_machine_billing_profile(cmd, raw_parameters),
+        capacity_reservation=set_machine_capacity_reservation(cmd, raw_parameters)
     )
 
     Machine = cmd.get_models(
@@ -299,3 +300,19 @@ def set_machine_billing_profile(cmd, raw_parameters):
         spot_max_price=spot_max_price
     )
     return machineBillingProfile
+
+
+def set_machine_capacity_reservation(cmd, raw_parameters):
+    crg_id = raw_parameters.get("crg_id")
+    if crg_id is None:
+        return None
+
+    CapacityReservationGroup, CapacityReservation = cmd.get_models(
+        "CapacityReservationGroup",
+        "CapacityReservation",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    return CapacityReservation(
+        capacity_reservation_group=CapacityReservationGroup(id=crg_id)
+    )
