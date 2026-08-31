@@ -24,8 +24,8 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 SUBSCRIPTION_ID = '38304e13-357e-405e-9e9a-220351dcce8c'
 RESOURCE_GROUP = 'cosmosbugbash-vijami-rg'
-SOURCE_COSMOS_NAME = 'cosmosbugbash-vijami-src'
-TARGET_COSMOS_NAME = 'cosmosbugbash-vijami-tgt'
+SOURCE_COSMOS_NAME = 'cosmosbugbash-vijami-src3'
+TARGET_COSMOS_NAME = 'cosmosbugbash-vijami-tgt2'
 SOURCE_COSMOS_ID = (
     f'/subscriptions/{SUBSCRIPTION_ID}/resourceGroups/{RESOURCE_GROUP}'
     f'/providers/Microsoft.DocumentDB/databaseAccounts/{SOURCE_COSMOS_NAME}'

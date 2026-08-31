@@ -14,7 +14,18 @@ from datetime import datetime
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource
 
 
-def backup_instance_validate_create(test):
+def backup_instance_validate_create(test, reuse_existing=False):
+    if reuse_existing:
+        backup_instance = test.cmd(
+            'az dataprotection backup-instance show -g "{rg}" --vault-name "{vaultName}" '
+            '--backup-instance-name "{backupInstanceName}"',
+            checks=[test.check('properties.protectionStatus.status', "ProtectionConfigured")]
+        ).get_output_in_json()
+        test.kwargs.update({
+            'backupInstanceId': backup_instance['id']
+        })
+        return
+
     # Adding backup-instance delete as the cleanup command, will always run even if test fails.
     test.addCleanup(test.cmd, 'az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --yes --no-wait')
 
@@ -365,7 +376,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_cosmosdb(test):
         test.kwargs.update({
-            # Persistent Cosmos accounts cosmosbugbash-vijami-src/-tgt live in eastus2euap.
+            # Persistent Cosmos accounts cosmosbugbash-vijami-src3/-tgt2 live in eastus2euap.
             'location': 'eastus2euap',
             'restoreLocation': 'eastus2euap',
             'rg': 'cosmosbugbash-vijami-rg',
@@ -375,9 +386,9 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
             'permissionsScope': 'ResourceGroup',
             'operation': 'Backup',
             'restoreOperation': 'Restore',
-            'cosmosDbName': 'cosmosbugbash-vijami-src',
-            'cosmosDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-vijami-src',
-            'targetCosmosDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-vijami-tgt',
+            'cosmosDbName': 'cosmosbugbash-vijami-src3',
+            'cosmosDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-vijami-src3',
+            'targetCosmosDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-vijami-tgt2',
             'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cosmosbugbash-vijami-rg/providers/Microsoft.DataProtection/backupVaults/CosmosBackupVault/backupPolicies/CosmosWeeklyPolicy',
             'policyRuleName': 'BackupWeekly',
         })
@@ -399,7 +410,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         #          '--permissions-scope "{permissionsScope}" '
         #          '--operation "{operation}" --yes')
 
-        backup_instance_validate_create(test)
+        backup_instance_validate_create(test, reuse_existing=True)
 
         # Cosmos protection takes ~10-15 minutes to fully configure (well past the 120s used by
         # backup_instance_validate_create's wait). Poll explicitly until status is stably
