@@ -275,6 +275,7 @@ class TestValidateNatGatewayV2Params(unittest.TestCase):
             'nat_gateway_outbound_ip_ids': None,
             'nat_gateway_outbound_ip_prefix_ids': None,
             'outbound_type': None,
+            'nat_gateway_sku': None,
         }
         defaults.update(kwargs)
         return SimpleNamespace(**defaults)
@@ -326,6 +327,27 @@ class TestValidateNatGatewayV2Params(unittest.TestCase):
         # GA shape: V2 params are valid with managedNATGateway (+ --outbound-type-sku StandardV2)
         validate_nat_gateway_v2_params(ns)
 
+    def test_v2_params_rejected_when_sku_is_standard(self):
+        # V2-only params cannot ride on the Standard (V1) SKU; they require StandardV2.
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='managedNATGateway',
+            nat_gateway_sku='Standard',
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_nat_gateway_v2_params(ns)
+
+    def test_v2_params_allowed_when_sku_is_standardv2(self):
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='managedNATGateway',
+            nat_gateway_sku='StandardV2',
+        )
+        validate_nat_gateway_v2_params(ns)
+
 
 class TestValidateOutboundTypeSku(unittest.TestCase):
     """Test the --outbound-type-sku cross-parameter validator."""
@@ -352,11 +374,13 @@ class TestValidateOutboundTypeSku(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             validate_outbound_type_sku(ns)
 
-    def test_sku_allowed_when_outbound_type_not_specified(self):
-        """On update the outbound type may be omitted when the cluster is already managed NAT gw."""
+    def test_sku_rejected_when_outbound_type_omitted(self):
+        """On create --outbound-type must be set explicitly to managedNATGateway."""
+        from azure.cli.core.azclierror import InvalidArgumentValueError
         from azext_aks_preview._validators import validate_outbound_type_sku
         ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type=None)
-        validate_outbound_type_sku(ns)
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_outbound_type_sku(ns)
 
     def test_sku_rejected_with_non_nat_outbound_type(self):
         from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -369,6 +393,42 @@ class TestValidateOutboundTypeSku(unittest.TestCase):
         from azext_aks_preview._validators import validate_outbound_type_sku
         ns = self._make_namespace(outbound_type='loadBalancer')
         validate_outbound_type_sku(ns)
+
+
+class TestValidateOutboundTypeSkuForUpdate(unittest.TestCase):
+    """Test the --outbound-type-sku validator on update (omitted --outbound-type allowed)."""
+
+    def _make_namespace(self, **kwargs):
+        from types import SimpleNamespace
+        defaults = {
+            'nat_gateway_sku': None,
+            'outbound_type': None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_sku_allowed_when_outbound_type_omitted(self):
+        """On update the outbound type may be omitted when the cluster is already managed NAT gw."""
+        from azext_aks_preview._validators import validate_outbound_type_sku_for_update
+        ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type=None)
+        validate_outbound_type_sku_for_update(ns)
+
+    def test_sku_allowed_with_managed_nat_gateway(self):
+        from azext_aks_preview._validators import validate_outbound_type_sku_for_update
+        ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type='managedNATGateway')
+        validate_outbound_type_sku_for_update(ns)
+
+    def test_sku_rejected_with_non_nat_outbound_type(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_outbound_type_sku_for_update
+        ns = self._make_namespace(nat_gateway_sku='StandardV2', outbound_type='loadBalancer')
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_outbound_type_sku_for_update(ns)
+
+    def test_no_sku_passes_always(self):
+        from azext_aks_preview._validators import validate_outbound_type_sku_for_update
+        ns = self._make_namespace(outbound_type='loadBalancer')
+        validate_outbound_type_sku_for_update(ns)
 
 
 if __name__ == '__main__':

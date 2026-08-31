@@ -1271,26 +1271,28 @@ def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
 def validate_nat_gateway_v2_params(namespace):
     """Validate V2-only NAT gateway params.
 
-    V2-only params (managed IPv6 count, BYO outbound IPs / IP prefixes) are valid with the managed
-    NAT gateway outbound type (``managedNATGateway``, with V2 selected via
-    ``--outbound-type-sku StandardV2``). On update, ``--outbound-type`` may be omitted when the
-    cluster is already managed NAT gateway; only reject when it is explicitly set to a value that
-    cannot carry a V2 NAT gateway.
+    V2-only params (managed IPv6 count, BYO outbound IPs / IP prefixes) require the managed NAT
+    gateway outbound type with the StandardV2 SKU (``--outbound-type managedNATGateway
+    --outbound-type-sku StandardV2``); the Standard (V1) SKU cannot carry them. On update,
+    ``--outbound-type`` may be omitted when the cluster is already managed NAT gateway; only an
+    explicit non-managed-NAT-gateway outbound type or the Standard SKU is rejected.
     """
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
         getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
         getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
     ]
-    if any(p is not None for p in v2_params):
-        outbound_type = getattr(namespace, 'outbound_type', None)
-        if outbound_type is not None and outbound_type != 'managedNATGateway':
-            raise InvalidArgumentValueError(
-                "--nat-gateway-managed-outbound-ipv6-count, "
-                "--nat-gateway-outbound-ips, and "
-                "--nat-gateway-outbound-ip-prefixes are only valid with "
-                "--outbound-type managedNATGateway (V2 via --outbound-type-sku StandardV2)."
-            )
+    if not any(p is not None for p in v2_params):
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if (outbound_type is not None and outbound_type != 'managedNATGateway') or sku == 'Standard':
+        raise InvalidArgumentValueError(
+            "--nat-gateway-managed-outbound-ipv6-count, "
+            "--nat-gateway-outbound-ips, and "
+            "--nat-gateway-outbound-ip-prefixes are only valid with "
+            "--outbound-type managedNATGateway and --outbound-type-sku StandardV2."
+        )
 
 
 def validate_prepared_image_specification_id(namespace):
@@ -1311,11 +1313,29 @@ def validate_prepared_image_specification_id(namespace):
 
 
 def validate_outbound_type_sku(namespace):
-    """Validate --outbound-type-sku (managed NAT gateway SKU).
+    """Validate --outbound-type-sku on create (managed NAT gateway SKU).
 
-    The SKU is only meaningful with the managed NAT gateway outbound type. When set, an explicit
-    --outbound-type must be managedNATGateway. Region availability and downgrade
-    (StandardV2 -> Standard) rules are enforced server-side by the RP.
+    The SKU only applies to the managed NAT gateway outbound type and, on create, drives building a
+    NAT gateway profile. --outbound-type must therefore be set explicitly to managedNATGateway;
+    omitting it defaults the cluster to loadBalancer and produces an incompatible request. Region
+    availability and downgrade (StandardV2 -> Standard) rules are enforced server-side by the RP.
+    """
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if sku is None:
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    if outbound_type != 'managedNATGateway':
+        raise InvalidArgumentValueError(
+            "--outbound-type-sku is only valid with --outbound-type managedNATGateway; "
+            "specify --outbound-type managedNATGateway explicitly."
+        )
+
+
+def validate_outbound_type_sku_for_update(namespace):
+    """Validate --outbound-type-sku on update (managed NAT gateway SKU).
+
+    Unlike create, --outbound-type may be omitted when the cluster is already managed NAT gateway;
+    only an explicit non-managed-NAT-gateway outbound type is rejected.
     """
     sku = getattr(namespace, 'nat_gateway_sku', None)
     if sku is None:

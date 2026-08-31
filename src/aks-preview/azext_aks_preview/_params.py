@@ -38,6 +38,7 @@ from azext_aks_preview._validators import (
     validate_nat_gateway_managed_outbound_ipv6_count,
     validate_nat_gateway_v2_params,
     validate_outbound_type_sku,
+    validate_outbound_type_sku_for_update,
 )
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
@@ -1541,7 +1542,7 @@ def load_arguments(self, _):
             "nat_gateway_sku",
             options_list=["--outbound-type-sku"],
             arg_type=get_enum_type(nat_gateway_skus),
-            validator=validate_outbound_type_sku,
+            validator=validate_outbound_type_sku_for_update,
             help="SKU of the managed NAT Gateway: Standard or StandardV2. Only valid with "
                  "--outbound-type managedNATGateway. Omit to default to StandardV2 where the "
                  "region supports it.",
