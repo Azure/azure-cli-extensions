@@ -199,6 +199,7 @@ from azext_aks_preview._validators import (
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
+    validate_capacity_reservation_group,
     validate_create_parameters,
     validate_crg_id,
     validate_custom_ca_trust_certificates,
@@ -2813,7 +2814,11 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_eviction_policies),
             validator=validate_eviction_policy,
         )
-        c.argument("crg_id", validator=validate_crg_id, is_preview=True)
+        c.argument(
+            "capacity_reservation_group",
+            validator=validate_capacity_reservation_group,
+            is_preview=True,
+        )
         c.argument("labels", nargs="*", validator=validate_nodepool_labels)
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])

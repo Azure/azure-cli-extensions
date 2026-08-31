@@ -303,8 +303,8 @@ def set_machine_billing_profile(cmd, raw_parameters):
 
 
 def set_machine_capacity_reservation(cmd, raw_parameters):
-    crg_id = raw_parameters.get("crg_id")
-    if crg_id is None:
+    capacity_reservation_group = raw_parameters.get("capacity_reservation_group")
+    if capacity_reservation_group is None:
         return None
 
     CapacityReservationGroup, CapacityReservation = cmd.get_models(
@@ -314,5 +314,5 @@ def set_machine_capacity_reservation(cmd, raw_parameters):
         operation_group="machines"
     )
     return CapacityReservation(
-        capacity_reservation_group=CapacityReservationGroup(id=crg_id)
+        capacity_reservation_group=CapacityReservationGroup(id=capacity_reservation_group)
     )

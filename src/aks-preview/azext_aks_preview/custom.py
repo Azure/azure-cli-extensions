@@ -3297,7 +3297,7 @@ def aks_machine_add(
     spot_max_price=float("nan"),
     enable_ultra_ssd=False,
     eviction_policy=None,
-    crg_id=None,
+    capacity_reservation_group=None,
 ):
     existedMachine = None
     try:
