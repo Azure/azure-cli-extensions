@@ -31,6 +31,8 @@ def base_url(location):
 def base_url_v2(location):
     if 'AZURE_QUANTUM_BASEURL_V2' in os.environ:
         return os.environ['AZURE_QUANTUM_BASEURL_V2']
+    if is_env('canary'):
+        return "https://eastus2euap-v2.quantum.azure.com/"
     normalized_location = normalize_location(location)
     if is_env('dogfood'):
         return f"https://{normalized_location}-v2.quantum-test.azure.com/"
@@ -95,6 +97,7 @@ def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, end
 
 
 def cf_suite_offer_quota_usages(cli_ctx, subscription: str, endpoint: str):
+    # resource_group and workspace name are unused: the data-plane endpoint is supplied directly.
     return cf_quantum(cli_ctx, subscription, None, None, endpoint).services.suite_offers
 
 

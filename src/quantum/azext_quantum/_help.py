@@ -223,7 +223,7 @@ helps['quantum suite-offer'] = """
 
 helps['quantum suite-offer list'] = """
     type: command
-    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider, location, and subscription-level quota allocations.
+    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider ID, name, company, and location.
     examples:
       - name: List all suite offers available to the current subscription.
         text: |-

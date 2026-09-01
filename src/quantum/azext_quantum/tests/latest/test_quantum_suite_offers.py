@@ -189,3 +189,20 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
     def test_quantum_suite_offer_list(self):
         offers = self.cmd('az quantum suite-offer list').get_output_in_json()
         assert isinstance(offers, list)
+
+    @live_only()
+    def test_quantum_suite_offer_quotas(self):
+        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
+        if not offers:
+            self.skipTest('No suite offers available in the subscription.')
+
+        provider_id = offers[0]['properties']['providerId']
+        quotas = self.cmd(f'az quantum suite-offer quotas -p {provider_id}').get_output_in_json()
+
+        assert isinstance(quotas, list)
+        for row in quotas:
+            self.assertEqual(set(row.keys()), {'providerId', 'scope', 'targetId', 'allocation', 'usage'})
+            self.assertEqual(row['scope'], 'SubscriptionTarget')
+            self.assertEqual(row['providerId'], provider_id)
+            self.assertEqual(set(row['allocation'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
+            self.assertEqual(set(row['usage'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
