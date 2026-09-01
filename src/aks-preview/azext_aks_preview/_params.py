@@ -37,6 +37,7 @@ from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_aks_preview._validators import (
     validate_nat_gateway_managed_outbound_ipv6_count,
     validate_nat_gateway_v2_params,
+    validate_nat_gateway_v2_params_for_update,
     validate_outbound_type_sku,
     validate_outbound_type_sku_for_update,
 )
@@ -1727,7 +1728,7 @@ def load_arguments(self, _):
         c.argument(
             "outbound_type",
             arg_type=get_enum_type(outbound_types),
-            validator=validate_nat_gateway_v2_params,
+            validator=validate_nat_gateway_v2_params_for_update,
         )
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")

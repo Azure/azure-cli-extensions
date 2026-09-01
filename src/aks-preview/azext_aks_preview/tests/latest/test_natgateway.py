@@ -292,15 +292,16 @@ class TestValidateNatGatewayV2Params(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             validate_nat_gateway_v2_params(ns)
 
-    def test_v2_params_allowed_when_outbound_type_not_specified(self):
-        """On update, outbound_type may be None if cluster is already V2."""
+    def test_v2_params_rejected_when_outbound_type_omitted(self):
+        """On create --outbound-type must be set explicitly to managedNATGateway."""
+        from azure.cli.core.azclierror import InvalidArgumentValueError
         from azext_aks_preview._validators import validate_nat_gateway_v2_params
         ns = self._make_namespace(
             nat_gateway_managed_outbound_ipv6_count=3,
             outbound_type=None,
         )
-        # Should not raise — let RP validate
-        validate_nat_gateway_v2_params(ns)
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_nat_gateway_v2_params(ns)
 
     def test_v2_params_rejected_when_outbound_type_is_non_v2(self):
         from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -429,6 +430,62 @@ class TestValidateOutboundTypeSkuForUpdate(unittest.TestCase):
         from azext_aks_preview._validators import validate_outbound_type_sku_for_update
         ns = self._make_namespace(outbound_type='loadBalancer')
         validate_outbound_type_sku_for_update(ns)
+
+
+class TestValidateNatGatewayV2ParamsForUpdate(unittest.TestCase):
+    """Test the V2-only NAT gateway params validator on update."""
+
+    def _make_namespace(self, **kwargs):
+        from types import SimpleNamespace
+        defaults = {
+            'nat_gateway_managed_outbound_ipv6_count': None,
+            'nat_gateway_outbound_ip_ids': None,
+            'nat_gateway_outbound_ip_prefix_ids': None,
+            'outbound_type': None,
+            'nat_gateway_sku': None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_v2_params_allowed_when_outbound_type_omitted(self):
+        """On update the outbound type may be omitted when the cluster is already managed NAT gw."""
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
+        ns = self._make_namespace(nat_gateway_managed_outbound_ipv6_count=3, outbound_type=None)
+        validate_nat_gateway_v2_params_for_update(ns)
+
+    def test_v2_params_allowed_when_outbound_type_is_managed_nat_gateway(self):
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='managedNATGateway',
+        )
+        validate_nat_gateway_v2_params_for_update(ns)
+
+    def test_v2_params_rejected_when_outbound_type_is_non_nat(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='loadBalancer',
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_nat_gateway_v2_params_for_update(ns)
+
+    def test_v2_params_rejected_when_sku_is_standard(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='managedNATGateway',
+            nat_gateway_sku='Standard',
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_nat_gateway_v2_params_for_update(ns)
+
+    def test_no_v2_params_passes_always(self):
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
+        ns = self._make_namespace(outbound_type='loadBalancer')
+        validate_nat_gateway_v2_params_for_update(ns)
 
 
 if __name__ == '__main__':
