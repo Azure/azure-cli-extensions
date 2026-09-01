@@ -28,7 +28,7 @@ class NewRelicScenario(ScenarioTest):
             '--name {new_relic_monitor_name} '
             '--location {loc} '
             '--user-info {{"first-name":"Dipesh","last-name":"Bhakat","email-address":{user_email},"phone-number":"123456"}} '
-            '--plan-data {{"billing-cycle":"MONTHLY","effective-date":"\'2023-10-25T15:14:33+02:00\'","plan-details":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","usage-type":"PAYG"}} '
+            '--plan-data {{"billing-cycle":"MONTHLY","effective-date":"\'2026-06-01T00:00:00Z\'","plan-details":"newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025","usage-type":"PAYG"}} '
             '--account-creation-source "LIFTR" '
             '--org-creation-source "LIFTR" '
             '--tags {{"key6976":"oaxfhf"}}',
@@ -38,10 +38,10 @@ class NewRelicScenario(ScenarioTest):
                 self.check('orgCreationSource', 'LIFTR'),
                 self.check('location', '{loc}'),
                 self.check('planData.billingCycle', 'MONTHLY'),
-                self.check('planData.effectiveDate', '2023-10-25T13:14:33Z'),
+                self.check('planData.effectiveDate', '2026-06-01T00:00:00Z'),
                 self.check(
                     'planData.planDetails',
-                    'newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg'),
+                    'newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025'),
                 self.check('planData.usageType', 'PAYG'),
                 self.check('userInfo.emailAddress', '{user_email}'),
                 self.check('userInfo.firstName', 'Dipesh'),

@@ -18,7 +18,7 @@ class SwitchBilling(AAZCommand):
     """Switches the billing for the New Relic Monitor resource to be billed by Azure Marketplace.
 
     :example: Switches the billing for NewRelic monitor resource.
-        az new-relic monitor switch-billing --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --azure-resource-id resourceId --organization-id organizationId --user-email="UserEmail@123.com" --plan-data billing-cycle="MONTHLY" effective-date='2022-10-25T15:14:33+02:00' plan-details="newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg" usage-type="PAYG"
+        az new-relic monitor switch-billing --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --azure-resource-id resourceId --organization-id organizationId --user-email="UserEmail@123.com" --plan-data billing-cycle="MONTHLY" effective-date='2026-06-01T00:00:00Z' plan-details="newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025" usage-type="PAYG"
     """
 
     _aaz_info = {

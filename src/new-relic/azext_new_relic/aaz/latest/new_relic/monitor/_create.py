@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Creates a new New Relic monitor resource in your Azure subscription. This sets up the integration between Azure and your New Relic account, enabling observability and monitoring of your Azure resources through New Relic.
 
     :example: Create a New Relic monitor
-        az new-relic monitor create --resource-group myResourceGroup --name myNewRelicMonitor --location eastus --user-info first-name=FirstName last-name=LastName email-address=user@example.com phone-number=0000000000 --plan-data billing-cycle=MONTHLY effective-date=2026-06-01T00:00:00Z plan-details=newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg usage-type=PAYG --account-creation-source LIFTR --org-creation-source LIFTR --tags environment=Production
+        az new-relic monitor create --resource-group myResourceGroup --name myNewRelicMonitor --location eastus --user-info first-name=FirstName last-name=LastName email-address=user@example.com phone-number=0000000000 --plan-data billing-cycle=MONTHLY effective-date=2026-06-01T00:00:00Z plan-details=newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025 usage-type=PAYG --account-creation-source LIFTR --org-creation-source LIFTR --tags environment=Production
     """
 
     _aaz_info = {
