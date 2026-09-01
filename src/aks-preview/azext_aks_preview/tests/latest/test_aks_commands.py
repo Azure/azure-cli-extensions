@@ -12604,6 +12604,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         node_pool_name_second = self.create_random_name("c", 6)
+        machines_pool_name = self.create_random_name("c", 6)
         crg_id = (
             "/subscriptions/26fe00f8-9173-4872-9134-bb1d2e00343a/resourceGroups/STAGING-CRG-RG/providers"
             "/Microsoft.Compute/capacityReservationGroups/crg-3"
@@ -12623,6 +12624,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "identity": identity,
                 "node_pool_name": node_pool_name,
                 "node_pool_name_second": node_pool_name_second,
+                "machines_pool_name": machines_pool_name,
+                "machine_name": "machinetest1",
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "ssh_key_value": self.generate_ssh_keys(),
             }
@@ -12655,6 +12658,41 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "-c 1 ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # add a Machines nodepool and create a machine backed by the CRG
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={machines_pool_name} "
+            "--mode=Machines",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("mode", "Machines"),
+            ],
+        )
+        self.cmd(
+            "aks machine add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={machines_pool_name} "
+            "--machine-name={machine_name} "
+            "--vm-size={vm_size} "
+            "--capacity-reservation-group={crg_id}"
+        )
+        self.cmd(
+            "aks machine show "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={machines_pool_name} "
+            "--machine-name={machine_name}",
+            checks=[
+                self.check(
+                    "properties.capacityReservation.capacityReservationGroup.id",
+                    "{crg_id}",
+                ),
             ],
         )
 

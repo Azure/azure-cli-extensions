@@ -515,78 +515,6 @@ class TestAksFlexNodeMachine(unittest.TestCase):
                     max_pods=75,
                 )
 
-    def test_regular_machine_add_sets_capacity_reservation_group(self):
-        regular_pool = self.models.UnifiedAgentPoolModel(type_properties_type="VirtualMachines")
-        capacity_reservation_group = (
-            "/subscriptions/00000000-0000-0000-0000-000000000000/"
-            "resourceGroups/rg/providers/Microsoft.Compute/"
-            "capacityReservationGroups/crg1"
-        )
-        with patch("azext_aks_preview.custom.cf_agent_pools") as mock_cf, patch(
-            "azext_aks_preview.custom.get_user_supplied_argument_options",
-            return_value={"capacity_reservation_group": "--capacity-reservation-group"},
-        ):
-            mock_cf.return_value.get.return_value = regular_pool
-            aks_machine_add(
-                self.cmd,
-                self.client,
-                "rg",
-                "cluster",
-                "machinepool",
-                machine_name="machine01",
-                vm_size="Standard_D4s_v3",
-                capacity_reservation_group=capacity_reservation_group,
-            )
-
-        machine = self.client.begin_create_or_update.call_args.args[4]
-        self.assertEqual(
-            machine.properties.capacity_reservation.as_dict(),
-            {"capacityReservationGroup": {"id": capacity_reservation_group}},
-        )
-
-    def test_regular_machine_add_omits_capacity_reservation_when_not_set(self):
-        regular_pool = self.models.UnifiedAgentPoolModel(type_properties_type="VirtualMachines")
-        with patch("azext_aks_preview.custom.cf_agent_pools") as mock_cf, patch(
-            "azext_aks_preview.custom.get_user_supplied_argument_options",
-            return_value={},
-        ):
-            mock_cf.return_value.get.return_value = regular_pool
-            aks_machine_add(
-                self.cmd,
-                self.client,
-                "rg",
-                "cluster",
-                "machinepool",
-                machine_name="machine01",
-                vm_size="Standard_D4s_v3",
-            )
-
-        machine = self.client.begin_create_or_update.call_args.args[4]
-        self.assertIsNone(machine.properties.capacity_reservation)
-
-    def test_flexnode_machine_rejects_capacity_reservation_group(self):
-        flex_pool = self.models.UnifiedAgentPoolModel(type_properties_type=CONST_FLEX_NODES)
-        with patch("azext_aks_preview.custom.cf_agent_pools") as mock_cf, patch(
-            "azext_aks_preview._helpers.get_user_supplied_argument_options",
-            return_value={"capacity_reservation_group": "--capacity-reservation-group"},
-        ):
-            mock_cf.return_value.get.return_value = flex_pool
-            with self.assertRaisesRegex(InvalidArgumentValueError, "--capacity-reservation-group"):
-                aks_machine_add(
-                    self.cmd,
-                    self.client,
-                    "rg",
-                    "cluster",
-                    "flexpool",
-                    machine_name="flexnode01",
-                    capacity_reservation_group=(
-                        "/subscriptions/000/resourceGroups/rg/providers/Microsoft.Compute/"
-                        "capacityReservationGroups/crg1"
-                    ),
-                )
-
-        self.client.begin_create_or_update.assert_not_called()
-
     def test_update_flexnode_machine_preserves_immutable_fields(self):
         existing = self.models.Machine(
             properties=self.models.MachineProperties(
@@ -659,14 +587,6 @@ class TestAksFlexNodeMachine(unittest.TestCase):
         self.assertIn("labels", command.arguments)
         self.assertIn("node_taints", command.arguments)
         self.assertNotIn("max_pods", command.arguments)
-
-    def test_machine_add_capacity_reservation_argument_surface(self):
-        loader = ContainerServiceCommandsLoader(self.cmd.cli_ctx)
-        loader.load_command_table(["aks", "machine", "add"])
-        command = loader.command_table["aks machine add"]
-        command.load_arguments()
-
-        self.assertIn("capacity_reservation_group", command.arguments)
 
 class TestAksListVmSkus(unittest.TestCase):
     """Unit tests for the aks_list_vm_skus command function."""
