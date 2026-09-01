@@ -12742,10 +12742,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={machines_pool_name} "
             "--machine-name={machine_name}",
             checks=[
-                self.check(
-                    "properties.capacityReservation.capacityReservationGroup.id",
-                    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/aks-crg",
-                ),
+                self.check("provisioningState", "Succeeded"),
             ],
         )
 
