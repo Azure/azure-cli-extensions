@@ -186,7 +186,7 @@ class Import(AAZCommand):
 
             sas_uris = _builder.get(".sasUris")
             if sas_uris is not None:
-                sas_uris.set_elements(AAZStrType, ".")
+                sas_uris.set_elements(AAZStrType, ".", typ_kwargs={"flags": {"secret": True}})
 
             return self.serialize_content(_content_value)
 
