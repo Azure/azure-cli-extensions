@@ -13,18 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "new-relic monitor monitored-subscription delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete subscriptions being monitored by the New Relic monitor resource, removing their observability and monitoring capabilities.
 
     :example: Delete the subscriptions that are being monitored by the NewRelic monitor resource
-        az new-relic monitor monitored-subscription delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
+        az new-relic monitor monitored-subscription delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2026-06-01"],
         ]
     }
 
@@ -53,7 +54,7 @@ class Delete(AAZCommand):
             default="default",
             enum={"default": "default"},
             fmt=AAZStrArgFormat(
-                pattern="^.*$",
+                pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
         _args_schema.monitor_name = AAZStrArg(
@@ -66,8 +67,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
             required=True,
         )
         return cls._args_schema
@@ -95,18 +95,9 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -115,7 +106,16 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -162,15 +162,16 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
-            pass
         def on_204(self, session):
+            pass
+
+        def on_200_201(self, session):
             pass
 
 

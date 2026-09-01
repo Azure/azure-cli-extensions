@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2026-06-01"],
         ]
     }
 
@@ -48,7 +48,7 @@ class Wait(AAZWaitCommand):
             default="default",
             enum={"default": "default"},
             fmt=AAZStrArgFormat(
-                pattern="^.*$",
+                pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
         _args_schema.monitor_name = AAZStrArg(
@@ -61,8 +61,7 @@ class Wait(AAZWaitCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
             required=True,
         )
         return cls._args_schema
@@ -136,7 +135,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -176,6 +175,10 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -186,6 +189,7 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             monitored_subscription_list = cls._schema_on_200.properties.monitored_subscription_list
@@ -210,6 +214,7 @@ class Wait(AAZWaitCommand):
             )
             tag_rules.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules
@@ -244,6 +249,26 @@ class Wait(AAZWaitCommand):
             filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
             _WaitHelper._build_schema_filtering_tag_read(filtering_tags.Element)
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 

@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2026-06-01"],
         ]
     }
 
@@ -49,16 +49,20 @@ class Show(AAZCommand):
             help="Name of the Monitoring resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
             required=True,
         )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["-n", "--name", "--rule-set-name"],
+        _args_schema.name = AAZStrArg(
+            options=["--name"],
             help="Name of the TagRule",
             required=True,
             id_part="child_name_1",
+            default="default",
         )
         return cls._args_schema
 
@@ -117,7 +121,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
+                    "ruleSetName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -131,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -190,6 +194,7 @@ class Show(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules

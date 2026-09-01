@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor create",
+    "new-relic monitor update",
 )
-class Create(AAZCommand):
-    """Creates a new New Relic monitor resource in your Azure subscription. This sets up the integration between Azure and your New Relic account, enabling observability and monitoring of your Azure resources through New Relic.
+class Update(AAZCommand):
+    """Update an existing New Relic monitor resource from your Azure subscription
 
-    :example: Create a New Relic monitor
-        az new-relic monitor create --resource-group myResourceGroup --name myNewRelicMonitor --location eastus --user-info first-name=FirstName last-name=LastName email-address=user@example.com phone-number=0000000000 --plan-data billing-cycle=MONTHLY effective-date=2026-06-01T00:00:00Z plan-details=newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg usage-type=PAYG --account-creation-source LIFTR --org-creation-source LIFTR --tags environment=Production
+    :example: Update a New Relic monitor
+        az new-relic monitor update --resource-group myResourceGroup --monitor-name myNewRelicMonitor --user-info first-name=Example last-name=Customer email-address=customer@contoso.com phone-number="" --plan-data billing-cycle=MONTHLY effective-date=2026-08-27T00:00:00Z plan-details="newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025" usage-type=PAYG --saas-data saas-resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mySaaSResourceGroup/providers/Microsoft.SaaS/resources/myNewRelicSaaS" --tags environment=production
     """
 
     _aaz_info = {
@@ -45,18 +45,37 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            help="Name of the Monitoring resource",
+        _args_schema.monitor_name = AAZStrArg(
+            options=["-n", "--name", "--monitor-name"],
+            help="Name of the Monitors resource",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^.*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
             required=True,
         )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -67,10 +86,10 @@ class Create(AAZCommand):
             help="Source of account creation",
             enum={"LIFTR": "LIFTR", "NEWRELIC": "NEWRELIC"},
         )
-        _args_schema.new_relic_account = AAZObjectArg(
-            options=["--new-relic-account"],
+        _args_schema.new_relic_account_properties = AAZObjectArg(
+            options=["--new-relic-account", "--new-relic-account-properties"],
             arg_group="Properties",
-            help="MarketplaceSubscriptionStatus of the resource Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show",
+            help="MarketplaceSubscriptionStatus of the resource",
         )
         _args_schema.org_creation_source = AAZStrArg(
             options=["--org-creation-source"],
@@ -81,7 +100,7 @@ class Create(AAZCommand):
         _args_schema.plan_data = AAZObjectArg(
             options=["--plan-data"],
             arg_group="Properties",
-            help="Plan details Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
+            help="Plan details",
         )
         _args_schema.saas_data = AAZObjectArg(
             options=["--saas-data"],
@@ -91,51 +110,56 @@ class Create(AAZCommand):
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
             arg_group="Properties",
-            help="User Info Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
+            help="User Info",
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
-        new_relic_account = cls._args_schema.new_relic_account
-        new_relic_account.account_info = AAZObjectArg(
+        new_relic_account_properties = cls._args_schema.new_relic_account_properties
+        new_relic_account_properties.account_info = AAZObjectArg(
             options=["account-info"],
             help="NewRelic Account Information",
         )
-        new_relic_account.organization_info = AAZObjectArg(
+        new_relic_account_properties.organization_info = AAZObjectArg(
             options=["organization-info"],
             help="NewRelic Organization Information",
         )
-        new_relic_account.single_sign_on_properties = AAZObjectArg(
+        new_relic_account_properties.single_sign_on_properties = AAZObjectArg(
             options=["single-sign-on-properties"],
             help="date when plan was applied",
         )
-        new_relic_account.user_id = AAZStrArg(
+        new_relic_account_properties.user_id = AAZStrArg(
             options=["user-id"],
             help="User id",
         )
 
-        account_info = cls._args_schema.new_relic_account.account_info
+        account_info = cls._args_schema.new_relic_account_properties.account_info
         account_info.account_id = AAZStrArg(
             options=["account-id"],
             help="Account id",
         )
         account_info.ingestion_key = AAZPasswordArg(
             options=["ingestion-key"],
-            help="ingestion key of account",
+            help="Credential string.",
             blank=AAZPromptPasswordInput(
                 msg="Password:",
             ),
         )
         account_info.region = AAZStrArg(
             options=["region"],
-            help="NewRelic account region",
+            help="Region where New Relic account is present",
         )
 
-        organization_info = cls._args_schema.new_relic_account.organization_info
+        organization_info = cls._args_schema.new_relic_account_properties.organization_info
         organization_info.organization_id = AAZStrArg(
             options=["organization-id"],
             help="Organization id",
         )
 
-        single_sign_on_properties = cls._args_schema.new_relic_account.single_sign_on_properties
+        single_sign_on_properties = cls._args_schema.new_relic_account_properties.single_sign_on_properties
         single_sign_on_properties.enterprise_app_id = AAZStrArg(
             options=["enterprise-app-id"],
             help="The Id of the Enterprise App used for Single sign-on.",
@@ -158,7 +182,7 @@ class Create(AAZCommand):
         plan_data = cls._args_schema.plan_data
         plan_data.billing_cycle = AAZStrArg(
             options=["billing-cycle"],
-            help="Different billing cycles like MONTHLY/WEEKLY. this could be enum",
+            help="Different billing cycles like Monthly/Weekly.",
         )
         plan_data.effective_date = AAZDateTimeArg(
             options=["effective-date"],
@@ -190,7 +214,7 @@ class Create(AAZCommand):
         )
         user_info.email_address = AAZStrArg(
             options=["email-address"],
-            help="User Email",
+            help="Reusable representation of an email address",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
@@ -217,68 +241,13 @@ class Create(AAZCommand):
             ),
         )
 
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Resource",
-            help="The managed service identities assigned to this resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
-            default={"type": "SystemAssigned"},
-        )
-        _args_schema.location = AAZResourceLocationArg(
-            options=["--location"],
-            arg_group="Resource",
-            help="The geo-location where the resource lives When not specified, the location of the resource group will be used.",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
-        )
-
-        identity = cls._args_schema.identity
-        identity.mi_system_assigned = AAZStrArg(
-            options=["system-assigned", "mi-system-assigned"],
-            help="Set the system managed identity.",
-            blank="True",
-        )
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            required=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.mi_user_assigned = AAZListArg(
-            options=["user-assigned", "mi-user-assigned"],
-            help="Set the user managed identities.",
-            blank=[],
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-            nullable=True,
-        )
-
-        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
-        mi_user_assigned.Element = AAZStrArg()
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            blank={},
-        )
-
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MonitorsCreateOrUpdate(ctx=self.ctx)()
+        yield self.MonitorsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -293,7 +262,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsCreateOrUpdate(AAZHttpOperation):
+    class MonitorsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -303,18 +272,18 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -329,7 +298,7 @@ class Create(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -339,7 +308,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "monitorName", self.ctx.args.name,
+                    "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -382,21 +351,14 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("identity", AAZIdentityObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities", typ_kwargs={"nullable": True})
                 identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
                 identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
-
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             user_assigned = _builder.get(".identity.userAssigned")
             if user_assigned is not None:
@@ -405,7 +367,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accountCreationSource", AAZStrType, ".account_creation_source")
-                properties.set_prop("newRelicAccountProperties", AAZObjectType, ".new_relic_account")
+                properties.set_prop("newRelicAccountProperties", AAZObjectType, ".new_relic_account_properties")
                 properties.set_prop("orgCreationSource", AAZStrType, ".org_creation_source")
                 properties.set_prop("planData", AAZObjectType, ".plan_data")
                 properties.set_prop("saaSData", AAZObjectType, ".saas_data")
@@ -460,47 +422,47 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZIdentityObjectType()
-            _schema_on_200_201.location = AAZStrType(
+            _schema_on_200.identity = AAZIdentityObjectType()
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200_201.identity
+            identity = cls._schema_on_200.identity
             identity.principal_id = AAZStrType(
                 serialized_name="principalId",
                 flags={"read_only": True},
@@ -517,10 +479,10 @@ class Create(AAZCommand):
                 nullable=True,
             )
 
-            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
             user_assigned_identities.Element = AAZObjectType()
 
-            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
                 flags={"read_only": True},
@@ -530,7 +492,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.account_creation_source = AAZStrType(
                 serialized_name="accountCreationSource",
             )
@@ -580,7 +542,7 @@ class Create(AAZCommand):
                 serialized_name="userInfo",
             )
 
-            new_relic_account_properties = cls._schema_on_200_201.properties.new_relic_account_properties
+            new_relic_account_properties = cls._schema_on_200.properties.new_relic_account_properties
             new_relic_account_properties.account_info = AAZObjectType(
                 serialized_name="accountInfo",
             )
@@ -594,7 +556,7 @@ class Create(AAZCommand):
                 serialized_name="userId",
             )
 
-            account_info = cls._schema_on_200_201.properties.new_relic_account_properties.account_info
+            account_info = cls._schema_on_200.properties.new_relic_account_properties.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
             )
@@ -604,12 +566,12 @@ class Create(AAZCommand):
             )
             account_info.region = AAZStrType()
 
-            organization_info = cls._schema_on_200_201.properties.new_relic_account_properties.organization_info
+            organization_info = cls._schema_on_200.properties.new_relic_account_properties.organization_info
             organization_info.organization_id = AAZStrType(
                 serialized_name="organizationId",
             )
 
-            single_sign_on_properties = cls._schema_on_200_201.properties.new_relic_account_properties.single_sign_on_properties
+            single_sign_on_properties = cls._schema_on_200.properties.new_relic_account_properties.single_sign_on_properties
             single_sign_on_properties.enterprise_app_id = AAZStrType(
                 serialized_name="enterpriseAppId",
             )
@@ -623,7 +585,7 @@ class Create(AAZCommand):
                 serialized_name="singleSignOnUrl",
             )
 
-            plan_data = cls._schema_on_200_201.properties.plan_data
+            plan_data = cls._schema_on_200.properties.plan_data
             plan_data.billing_cycle = AAZStrType(
                 serialized_name="billingCycle",
             )
@@ -637,12 +599,12 @@ class Create(AAZCommand):
                 serialized_name="usageType",
             )
 
-            saa_s_data = cls._schema_on_200_201.properties.saa_s_data
+            saa_s_data = cls._schema_on_200.properties.saa_s_data
             saa_s_data.saa_s_resource_id = AAZStrType(
                 serialized_name="saaSResourceId",
             )
 
-            user_info = cls._schema_on_200_201.properties.user_info
+            user_info = cls._schema_on_200.properties.user_info
             user_info.country = AAZStrType()
             user_info.email_address = AAZStrType(
                 serialized_name="emailAddress",
@@ -657,7 +619,7 @@ class Create(AAZCommand):
                 serialized_name="phoneNumber",
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -677,14 +639,14 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
-__all__ = ["Create"]
+__all__ = ["Update"]

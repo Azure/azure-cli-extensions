@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule update",
 )
 class Update(AAZCommand):
-    """Updates the tag rules for a specific New Relic monitor resource, allowing you to modify the rules that control which Azure resources are monitored.
-
-    :example: Update a TagRule.
-        az new-relic monitor tag-rule update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules "{send-aad-logs:'Enabled',send-subscription-logs:'Enabled',send-activity-logs:'Enabled',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}" --metric-rules "{user-email:'UserEmail@123.com',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}"
+    """Update the tag rules for a specific New Relic monitor resource, allowing you to modify the rules that control which Azure resources are monitored
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2026-06-01"],
         ]
     }
 
@@ -49,6 +46,9 @@ class Update(AAZCommand):
             help="Name of the Monitors resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -111,7 +111,7 @@ class Update(AAZCommand):
         )
         metric_rules.user_email = AAZStrArg(
             options=["user-email"],
-            help="User Email",
+            help="Reusable representation of an email address",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
@@ -222,7 +222,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -321,6 +321,7 @@ class Update(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules

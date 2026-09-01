@@ -18,13 +18,13 @@ class ListConnectedPartnerResource(AAZCommand):
     """List all active deployments associated with the marketplace subscription linked to the given New Relic monitor resource.
 
     :example: List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
-        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
+        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --body UserEmail@123.com
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/listconnectedpartnerresources", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/listconnectedpartnerresources", "2026-06-01"],
         ]
     }
 
@@ -54,7 +54,7 @@ class ListConnectedPartnerResource(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
             required=True,
         )
         _args_schema.body = AAZStrArg(
@@ -132,7 +132,7 @@ class ListConnectedPartnerResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -180,7 +180,9 @@ class ListConnectedPartnerResource(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor get-metric-rule",
+    "new-relic activate-saas",
 )
-class GetMetricRule(AAZCommand):
-    """Retrieves the metric rules that are configured in the New Relic monitor resource.
+class ActivateSaas(AAZCommand):
+    """Resolve the token to get the SaaS resource ID and activate the SaaS resource
 
-    :example: Get metric rules.
-        az new-relic monitor get-metric-rule --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --user-email UserEmail@123.com
+    :example: Activate a New Relic SaaS resource
+        az new-relic activate-saas --publisher-id newrelicinc1635200720692 --saas-guid 00000000-0000-0000-0000-000005430000
     """
 
     _aaz_info = {
         "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getmetricrules", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/newrelic.observability/activatesaas", "2026-06-01"],
         ]
     }
 
@@ -43,38 +43,26 @@ class GetMetricRule(AAZCommand):
 
         # define Arg Group ""
 
-        _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
-            help="Name of the Monitoring resource",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^.*$",
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
-            required=True,
-        )
-
         # define Arg Group "Request"
 
         _args_schema = cls._args_schema
-        _args_schema.user_email = AAZStrArg(
-            options=["--user-email"],
+        _args_schema.publisher_id = AAZStrArg(
+            options=["--publisher-id"],
             arg_group="Request",
-            help="User Email",
+            help="Publisher Id for NewRelic resource",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
-            ),
+        )
+        _args_schema.saas_guid = AAZStrArg(
+            options=["--saas-guid"],
+            arg_group="Request",
+            help="SaaS guid for Activate and Validate SaaS Resource",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGetMetricRules(ctx=self.ctx)()
+        self.SaaSActivateResource(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +77,7 @@ class GetMetricRule(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsGetMetricRules(AAZHttpOperation):
+    class SaaSActivateResource(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +91,7 @@ class GetMetricRule(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/getMetricRules",
+                "/subscriptions/{subscriptionId}/providers/NewRelic.Observability/activateSaaS",
                 **self.url_parameters
             )
 
@@ -118,14 +106,6 @@ class GetMetricRule(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -162,7 +142,8 @@ class GetMetricRule(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("userEmail", AAZStrType, ".user_email", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("publisherId", AAZStrType, ".publisher_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("saasGuid", AAZStrType, ".saas_guid", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -184,29 +165,48 @@ class GetMetricRule(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.send_metrics = AAZStrType(
-                serialized_name="sendMetrics",
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.user_email = AAZStrType(
-                serialized_name="userEmail",
+            _schema_on_200.saas_id = AAZStrType(
+                serialized_name="saasId",
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
             )
 
-            filtering_tags = cls._schema_on_200.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.filtering_tags.Element
-            _element.action = AAZStrType()
-            _element.name = AAZStrType()
-            _element.value = AAZStrType()
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 
 
-class _GetMetricRuleHelper:
-    """Helper class for GetMetricRule"""
+class _ActivateSaasHelper:
+    """Helper class for ActivateSaas"""
 
 
-__all__ = ["GetMetricRule"]
+__all__ = ["ActivateSaas"]
