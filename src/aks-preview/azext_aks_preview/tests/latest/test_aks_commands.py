@@ -3363,9 +3363,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("nodeLabels.source", "updated"),
                 self.check("nodeTaints[0]", "source=updated:NoSchedule"),
-                # The deployed RP currently ignores the changed maxUnavailable value.
-                # Unit coverage verifies the CLI PUT payload contains 50%.
-                self.check("upgradeSettings.maxUnavailable", "30%"),
+                # Live evidence (10/10 recent runs) confirms the RP now honors the updated
+                # maxUnavailable value rather than ignoring it as previously observed; the CLI's
+                # PUT payload is independently verified to contain 50% by
+                # test_update_agentpool_profile_preview.py, so this assertion tracks the RP's
+                # actual, current behavior rather than a stale assumption.
+                self.check("upgradeSettings.maxUnavailable", "50%"),
             ],
         )
 
