@@ -14,9 +14,10 @@ class NewRelicScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_new_relic_monitor')
     def test_new_relic_monitor(self, resource_group):
+        user_email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
             'new_relic_monitor_name': 'test-new-relic-monitor',
-            'user_email': 'dipeshbhakat@microsoft.com',
+            'user_email': user_email,
             'loc': 'eastus',
             'monitored_subscription_id': '/subscriptions/{}'.format(
                 self.get_subscription_id())
