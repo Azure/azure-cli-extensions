@@ -11,6 +11,7 @@ import semver
 import subprocess
 import tempfile
 import time
+import json
 
 from azext_aks_preview._consts import CONST_CUSTOM_CA_TEST_CERT, CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION, CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION
 from azext_aks_preview._format import aks_machine_list_table_format
@@ -15753,9 +15754,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     def _setup_backup_test(self, resource_group, resource_group_location, aks_name):
         """Common setup: install sibling extensions used by --enable-backup
-        orchestration (`dataprotection`, `k8s-extension`) and seed kwargs."""
+        orchestration (`dataprotection`, `k8s-extension`) and seed kwargs.
+
+        Also builds a `--backup-configuration` payload that pins
+        `backupResourceGroupId` to this test's own (already uniquely named,
+        per-test) resource group. Without this, the dataprotection helper
+        falls back to a shared regional resource group named
+        `AKSAzureBackup_<location>` that every backup test in every parallel
+        run reuses; concurrent create/delete races on that shared resource
+        group are what produced `ResourceGroupBeingDeleted` failures. Scoping
+        the backup vault/policy/instance to the test's own resource group
+        keeps everything isolated and lets `AKSCustomResourceGroupPreparer`
+        clean it up along with the cluster.
+        """
         self.test_resources_count = 0
         node_vm_size = "standard_d2s_v3"
+        sub_id = self.cmd("account show --query id -o tsv").output.strip()
+        backup_resource_group_id = (
+            f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        )
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -15763,6 +15780,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "node_vm_size": node_vm_size,
+                "backup_rg": resource_group,
+                "backup_configuration": json.dumps(
+                    {"backupResourceGroupId": backup_resource_group_id}
+                ),
             }
         )
         self.cmd("extension add --name dataprotection")
@@ -15772,6 +15793,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         """Validate k8s extension, vault, policy, backup instance.
         Returns (vault_name, instance_name, policy_name) for cleanup.
         """
+        # resource_group_location is unused: the backup vault now lives in `resource_group`
+        # (see _setup_backup_test), not a location-keyed shared resource group.
         vault_name = None
         instance_name = None
         policy_name = None
@@ -15790,7 +15813,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             f"/providers/Microsoft.ContainerService/managedClusters/"
             f"{aks_name}"
         )
-        backup_rg = f"AKSAzureBackup_{resource_group_location}"
+        # The vault/policy/backup instance are provisioned into this test's own
+        # resource group (via the `backupResourceGroupId` passed in
+        # `--backup-configuration`), not the shared `AKSAzureBackup_<location>`
+        # resource group, so no cross-test isolation is needed here.
+        backup_rg = resource_group
         self.kwargs["backup_rg"] = backup_rg
 
         # 2. vault exists
@@ -15880,10 +15907,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         return vault_name, instance_name, policy_name
 
     def _cleanup_backup(self, vault_name):
-        """Best-effort cleanup of the shared regional backup vault: drain
-        all backup instances and policies, then delete the vault.  The
-        cluster + cluster RG are reaped by `AKSCustomResourceGroupPreparer`.
+        """Best-effort cleanup of this test's own isolated backup vault
+        (created in this test's `resource_group` via the
+        `backupResourceGroupId` passed in `_setup_backup_test`): drain its
+        backup instances and policies, then delete the vault. The cluster +
+        cluster RG (which now also hosts the vault) are reaped by
+        `AKSCustomResourceGroupPreparer`, but disabling immutability/soft
+        delete and removing the vault's contents first avoids leaving the RG
+        stuck indefinitely in a "deleting" state.
+
+        Because the vault lives in this test's own dedicated resource group
+        (not a shared regional one), draining "all" instances/policies here
+        only ever touches resources this test created; it can no longer
+        collide with other tests running in parallel.
         """
+        import logging
+
         backup_rg = self.kwargs.get("backup_rg")
         if not (vault_name and backup_rg):
             return
@@ -15897,10 +15936,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "--set properties.securitySettings.immutabilitySettings.state=Disabled "
                 "properties.securitySettings.softDeleteSettings.state=Off"
             )
-        except Exception:  # pylint: disable=broad-except
-            pass
+        except Exception as ex:  # pylint: disable=broad-except
+            logging.warning(
+                "Backup cleanup: failed to disable immutability/soft-delete on "
+                "vault %s in %s: %s", vault_name, backup_rg, ex,
+            )
 
-        # 2. Delete ALL backup instances on the vault.
+        # 2. Delete backup instances on this test's own vault.
         try:
             all_instances = self.cmd(
                 "dataprotection backup-instance list "
@@ -15914,12 +15956,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                         "-g {backup_rg} --vault-name {vault_name} "
                         "--backup-instance-name {_bi} --yes"
                     )
-                except Exception:  # pylint: disable=broad-except
-                    pass
-        except Exception:  # pylint: disable=broad-except
-            pass
+                except Exception as ex:  # pylint: disable=broad-except
+                    logging.warning(
+                        "Backup cleanup: failed to delete backup instance %s on "
+                        "vault %s in %s: %s", bi["name"], vault_name, backup_rg, ex,
+                    )
+        except Exception as ex:  # pylint: disable=broad-except
+            logging.warning(
+                "Backup cleanup: failed to list backup instances on vault %s "
+                "in %s: %s", vault_name, backup_rg, ex,
+            )
 
-        # 3. Delete ALL backup policies on the vault.
+        # 3. Delete backup policies on this test's own vault.
         try:
             all_policies = self.cmd(
                 "dataprotection backup-policy list "
@@ -15933,10 +15981,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                         "-g {backup_rg} --vault-name {vault_name} "
                         "--name {_pol} --yes"
                     )
-                except Exception:  # pylint: disable=broad-except
-                    pass
-        except Exception:  # pylint: disable=broad-except
-            pass
+                except Exception as ex:  # pylint: disable=broad-except
+                    logging.warning(
+                        "Backup cleanup: failed to delete backup policy %s on "
+                        "vault %s in %s: %s", pol["name"], vault_name, backup_rg, ex,
+                    )
+        except Exception as ex:  # pylint: disable=broad-except
+            logging.warning(
+                "Backup cleanup: failed to list backup policies on vault %s "
+                "in %s: %s", vault_name, backup_rg, ex,
+            )
 
         # 4. Delete the vault (now empty).
         try:
@@ -15944,8 +15998,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "dataprotection backup-vault delete "
                 "-g {backup_rg} --vault-name {vault_name} --yes"
             )
-        except Exception:  # pylint: disable=broad-except
-            pass
+        except Exception as ex:  # pylint: disable=broad-except
+            logging.warning(
+                "Backup cleanup: failed to delete vault %s in %s: %s. The "
+                "vault's own resource group (%s) is unique to this test and "
+                "will still be reaped by AKSCustomResourceGroupPreparer.",
+                vault_name, backup_rg, ex, backup_rg,
+            )
 
     # ---- aks create --enable-backup ----
 
@@ -15967,6 +16026,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "--node-vm-size={node_vm_size} --node-count 3 "
                 "--enable-managed-identity "
                 "--enable-backup --backup-strategy Week "
+                "--backup-configuration '{backup_configuration}' "
                 "--yes --output=json",
                 checks=[self.check("provisioningState", "Succeeded")],
             )
@@ -16003,6 +16063,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.cmd(
                 "aks update --resource-group={resource_group} --name={name} "
                 "--enable-backup --backup-strategy Week "
+                "--backup-configuration '{backup_configuration}' "
                 "--yes --output=json",
                 checks=[self.check("provisioningState", "Succeeded")],
             )
