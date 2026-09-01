@@ -8229,11 +8229,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # add nodepool with --enable-osdisk-full-caching
+        #
+        # Only assert provisioningState on the add LRO response here. RP
+        # FrontEndContextActivity for a live repro (operation
+        # 711b25d5-ab20-4410-836c-0778b24789fc) confirms the nodepool PUT
+        # request and the sanitized "futureAP" both already contain
+        # enableOSDiskFullCaching:true -- the RP itself is not dropping the
+        # field -- yet the LRO result surfaced to the CLI/test for that
+        # operation returns it as null. So checking this field on the add
+        # response is unreliable independent of anything this CLI/test
+        # controls; validate the actually persisted state with a follow-up
+        # 'aks nodepool show' instead, which is what a user would rely on.
         self.cmd(
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
             "--node-vm-size Standard_D8ds_v5 --node-osdisk-type Ephemeral "
             "--enable-osdisk-full-caching "
             "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/FullCachePreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # verify the persisted state via a follow-up show, since the add LRO
+        # response itself is not a reliable source for this field (see above)
+        self.cmd(
+            "aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("enableOSDiskFullCaching", True),
