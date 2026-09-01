@@ -11,9 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
 * Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
 * `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
 * `az aks create` and `az aks update`: Add `--outbound-type-sku` to select the managed NAT gateway SKU (`Standard` or `StandardV2`) with `--outbound-type managedNATGateway`, the GA shape of NAT Gateway V2. `StandardV2` supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+* `az aks create`, `az aks update`: Add `--enable-node-hardening` to enable cluster-level node hardening and `--disable-node-hardening` (update only) to disable it. Applies hardened defaults for soft eviction thresholds, kube-reserved, and system-reserved on Linux node pools. Requires AFEC registration `Microsoft.ContainerService/CustomNodeConfigPreview`.
 
 22.0.0b5
 +++++++++

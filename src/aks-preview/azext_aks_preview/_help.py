@@ -309,6 +309,17 @@ helps['aks create'] = f"""
             enables FIPS on the default node pool during cluster creation. Some
             addons and extensions aren't supported with cluster-wide FIPS. Verify
             addon and extension compatibility before enabling this preview feature.
+        - name: --enable-node-hardening
+          type: bool
+          short-summary: Enable node hardening at the cluster level.
+          long-summary: |-
+            Applies hardened defaults for soft eviction thresholds, kube-reserved,
+            and system-reserved on all Linux node pools in the cluster. Per-node-pool
+            kubeletConfig settings take precedence over hardening defaults. On agent
+            pools running Kubernetes 1.37 or later, node hardening is enabled by
+            default and cannot be disabled.
+            Requires the Microsoft.ContainerService/CustomNodeConfigPreview feature
+            to be registered on the subscription.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -1336,6 +1347,24 @@ helps['aks update'] = """
           long-summary: |-
             Disables cluster-wide FIPS enforcement for AKS-managed components.
             This doesn't disable FIPS on existing node pools.
+        - name: --enable-node-hardening
+          type: bool
+          short-summary: Enable node hardening at the cluster level.
+          long-summary: |-
+            Applies hardened defaults for soft eviction thresholds, kube-reserved,
+            and system-reserved on all Linux node pools in the cluster. Per-node-pool
+            kubeletConfig settings take precedence over hardening defaults. On agent
+            pools running Kubernetes 1.37 or later, node hardening is enabled by
+            default and cannot be disabled.
+            Requires the Microsoft.ContainerService/CustomNodeConfigPreview feature
+            to be registered on the subscription.
+        - name: --disable-node-hardening
+          type: bool
+          short-summary: Disable node hardening at the cluster level.
+          long-summary: |-
+            Turns off the cluster-level node hardening flag. Agent pools running
+            Kubernetes 1.37 or later remain hardened by default regardless of this
+            setting.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
@@ -2588,6 +2617,9 @@ helps['aks nodepool add'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --gpu-driver-mode --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2822,6 +2854,9 @@ helps['aks nodepool update'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --gpu-driver-mode --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.

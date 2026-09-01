@@ -124,6 +124,12 @@ def load_arguments(self, _):
                    help="Access mode for the AzureFile or nfs AzureFile storage.")
         c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"],
                    help="Name of the share on the AzureFile or nfs AzureFile storage.")
+        c.argument('azure_file_key_vault_secret_url', options_list=["--azure-file-key-vault-secret-url", "--key-vault-secret-url"],
+                   help="Azure Key Vault secret URL containing the Azure Files storage account key.", is_preview=True)
+        c.argument('azure_file_key_vault_identity', options_list=["--azure-file-key-vault-identity", "--key-vault-identity"],
+                   help="Managed identity to authenticate with Azure Key Vault. Use 'system' or a user-assigned identity. Defaults to 'system'.", is_preview=True)
+        c.argument('azure_file_identity', options_list=["--azure-file-identity"],
+                   help="Managed identity to authenticate with Azure Files. Use 'system' or a user-assigned identity. The identity must be assigned to the managed environment and have the Storage File Data SMB MI Admin role on the storage account. Managed Identity for SMB must be enabled on the storage account.", is_preview=True)
         c.argument('server', options_list=["--server", "-s"],
                    help="Server of the NfsAzureFile storage account.", is_preview=True)
 
