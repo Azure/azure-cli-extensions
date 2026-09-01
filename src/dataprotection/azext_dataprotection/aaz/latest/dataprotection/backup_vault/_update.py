@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2026-06-01"],
         ]
     }
 
@@ -47,6 +47,10 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_deleted_vault_id = AAZStrArg(
+            options=["--x-ms-deleted-vault-id"],
+            help="The ID of the deleted backup vault to restore from during undelete flow.",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -55,6 +59,17 @@ class Update(AAZCommand):
             help="The name of the backup vault.",
             required=True,
             id_part="name",
+        )
+
+        # define Arg Group "CostManagementSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cost_management_granularity = AAZStrArg(
+            options=["--cost-management-granularity"],
+            arg_group="CostManagementSettings",
+            help="Settings for cost management granularity level",
+            nullable=True,
+            enum={"ProtectedItemLevel": "ProtectedItemLevel", "ProtectedItemWithParentTag": "ProtectedItemWithParentTag", "VaultLevel": "VaultLevel"},
         )
 
         # define Arg Group "CrossRegionRestoreSettings"
@@ -280,7 +295,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -379,7 +394,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -388,6 +403,9 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-deleted-vault-id", self.ctx.args.x_ms_deleted_vault_id,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -452,10 +470,15 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("costManagementSettings", AAZObjectType)
                 properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
                 properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
                 properties.set_prop("securitySettings", AAZObjectType)
+
+            cost_management_settings = _builder.get(".properties.costManagementSettings")
+            if cost_management_settings is not None:
+                cost_management_settings.set_prop("granularityLevel", AAZStrType, ".cost_management_granularity")
 
             feature_settings = _builder.get(".properties.featureSettings")
             if feature_settings is not None:
@@ -606,6 +629,9 @@ class _UpdateHelper:
             serialized_name="bcdrSecurityLevel",
             flags={"read_only": True},
         )
+        properties.cost_management_settings = AAZObjectType(
+            serialized_name="costManagementSettings",
+        )
         properties.feature_settings = AAZObjectType(
             serialized_name="featureSettings",
         )
@@ -643,7 +669,11 @@ class _UpdateHelper:
         )
         properties.storage_settings = AAZListType(
             serialized_name="storageSettings",
-            flags={"required": True},
+        )
+
+        cost_management_settings = _schema_backup_vault_resource_read.properties.cost_management_settings
+        cost_management_settings.granularity_level = AAZStrType(
+            serialized_name="granularityLevel",
         )
 
         feature_settings = _schema_backup_vault_resource_read.properties.feature_settings

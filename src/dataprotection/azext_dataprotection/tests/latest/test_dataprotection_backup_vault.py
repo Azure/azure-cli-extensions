@@ -38,7 +38,8 @@ class BackupVaultScenarioTest(ScenarioTest):
                      test.check('properties.securitySettings.immutabilitySettings.state', "Locked"),
                      test.check('properties.storageSettings[0].datastoreType', "VaultStore"),
                      test.check('properties.storageSettings[0].type', "GeoRedundant"),
-                     test.check('properties.featureSettings.crossRegionRestoreSettings.state', "Enabled")
+                     test.check('properties.featureSettings.crossRegionRestoreSettings.state', "Enabled"),
+                     test.check('properties.costManagementSettings.granularityLevel', "VaultLevel")
                  ])
         test.cmd('az dataprotection backup-vault list -g "{rg}"', checks=[
             test.check("length([?name == '{vaultName}'])", 1),
@@ -165,5 +166,13 @@ class BackupVaultScenarioTest(ScenarioTest):
             test.check('properties.featureSettings.crossRegionRestoreSettings.state', "Enabled")
         ])
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cross-region-restore-state "Disabled"', expect_failure=True)
+
+        # Cost management settings updates
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cost-management-granularity "ProtectedItemWithParentTag"', checks=[
+            test.check('properties.costManagementSettings.granularityLevel', "ProtectedItemWithParentTag")
+        ])
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cost-management-granularity "ProtectedItemLevel"', checks=[
+            test.check('properties.costManagementSettings.granularityLevel', "ProtectedItemLevel")
+        ])
 
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
