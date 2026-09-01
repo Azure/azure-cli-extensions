@@ -164,6 +164,8 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_MANAGED_GPU_DRIVER_MODE_DRA,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
     CONST_GPU_MIG_STRATEGY_SINGLE,
     CONST_GPU_MIG_STRATEGY_MIXED,
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
@@ -596,6 +598,11 @@ gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_GRID,
 ]
 
+managed_gpu_driver_modes = [
+    CONST_MANAGED_GPU_DRIVER_MODE_DRA,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
+]
+
 gpu_mig_strategies = [
     CONST_GPU_MIG_STRATEGY_SINGLE,
     CONST_GPU_MIG_STRATEGY_MIXED,
@@ -990,6 +997,7 @@ def load_arguments(self, _):
         c.argument("enable_ultra_ssd", action="store_true")
         c.argument("enable_fips_image", action="store_true")
         c.argument("enable_fips", action="store_true", is_preview=True)
+        c.argument("enable_node_hardening", action="store_true", is_preview=True)
         c.argument("kubelet_config")
         c.argument("linux_os_config")
         c.argument("host_group_id", validator=validate_host_group_id)
@@ -1718,6 +1726,8 @@ def load_arguments(self, _):
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
         c.argument("enable_fips", action="store_true", is_preview=True)
         c.argument("disable_fips", action="store_true", is_preview=True)
+        c.argument("enable_node_hardening", action="store_true", is_preview=True)
+        c.argument("disable_node_hardening", action="store_true", is_preview=True)
         c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
@@ -2437,6 +2447,13 @@ def load_arguments(self, _):
             help="Enable the Managed GPU experience.",
         )
         c.argument(
+            "managed_gpu_driver_mode",
+            options_list=["--managed-gpu-driver-mode", "--gpu-driver-mode"],
+            arg_type=get_enum_type(managed_gpu_driver_modes),
+            is_preview=True,
+            help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin. The default is DevicePlugin. Requires --enable-managed-gpu to be set to true.",
+        )
+        c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
             validator=validate_node_public_ip_tags,
@@ -2589,6 +2606,13 @@ def load_arguments(self, _):
             arg_type=get_three_state_flag(),
             is_preview=True,
             help="Enable or disable the Managed GPU experience.",
+        )
+        c.argument(
+            "managed_gpu_driver_mode",
+            options_list=["--managed-gpu-driver-mode", "--gpu-driver-mode"],
+            arg_type=get_enum_type(managed_gpu_driver_modes),
+            is_preview=True,
+            help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin.",
         )
         c.argument(
             "os_sku",

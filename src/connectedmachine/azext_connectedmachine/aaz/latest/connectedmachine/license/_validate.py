@@ -22,9 +22,9 @@ class Validate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/validatelicense", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/validatelicense", "2026-07-15"],
         ]
     }
 
@@ -44,17 +44,69 @@ class Validate(AAZCommand):
 
         # define Arg Group ""
 
-        # define Arg Group "Body"
+        # define Arg Group "LicenseDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.edition = AAZStrArg(
+            options=["--edition"],
+            arg_group="LicenseDetails",
+            help="Describes the edition of the license. The values are either Standard or Datacenter.",
+            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
+        )
+        _args_schema.processors = AAZIntArg(
+            options=["--processors"],
+            arg_group="LicenseDetails",
+            help="Describes the number of processors.",
+        )
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
+            arg_group="LicenseDetails",
+            help="Describes the state of the license.",
+            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
+        )
+        _args_schema.target = AAZStrArg(
+            options=["--target"],
+            arg_group="LicenseDetails",
+            help="Describes the license target server.",
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
+        )
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="LicenseDetails",
+            help="Describes the license core type (pCore or vCore).",
+            enum={"pCore": "pCore", "vCore": "vCore"},
+        )
+        _args_schema.volume_license_details = AAZListArg(
+            options=["--volume-license-details"],
+            arg_group="LicenseDetails",
+            help="A list of volume license details.",
+        )
+
+        volume_license_details = cls._args_schema.volume_license_details
+        volume_license_details.Element = AAZObjectArg()
+
+        _element = cls._args_schema.volume_license_details.Element
+        _element.invoice_id = AAZStrArg(
+            options=["invoice-id"],
+            help="The invoice id for the volume license.",
+        )
+        _element.program_year = AAZStrArg(
+            options=["program-year"],
+            help="Describes the program year the volume license is for.",
+            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
+        )
+
+        # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
+            arg_group="Parameters",
             help="The geo-location where the resource lives",
             required=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Body",
+            arg_group="Parameters",
             help="Resource tags.",
         )
 
@@ -64,11 +116,6 @@ class Validate(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.license_details = AAZObjectArg(
-            options=["--license-details"],
-            arg_group="Properties",
-            help="Describes the properties of a License.",
-        )
         _args_schema.license_type = AAZStrArg(
             options=["--license-type"],
             arg_group="Properties",
@@ -80,55 +127,11 @@ class Validate(AAZCommand):
             arg_group="Properties",
             help="Describes the tenant id.",
         )
-
-        license_details = cls._args_schema.license_details
-        license_details.edition = AAZStrArg(
-            options=["edition"],
-            help="Describes the edition of the license. The values are either Standard or Datacenter.",
-            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
-        )
-        license_details.processors = AAZIntArg(
-            options=["processors"],
-            help="Describes the number of processors.",
-        )
-        license_details.state = AAZStrArg(
-            options=["state"],
-            help="Describes the state of the license.",
-            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
-        )
-        license_details.target = AAZStrArg(
-            options=["target"],
-            help="Describes the license target server.",
-            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
-        )
-        license_details.type = AAZStrArg(
-            options=["type"],
-            help="Describes the license core type (pCore or vCore).",
-            enum={"pCore": "pCore", "vCore": "vCore"},
-        )
-        license_details.volume_license_details = AAZListArg(
-            options=["volume-license-details"],
-            help="A list of volume license details.",
-        )
-
-        volume_license_details = cls._args_schema.license_details.volume_license_details
-        volume_license_details.Element = AAZObjectArg()
-
-        _element = cls._args_schema.license_details.volume_license_details.Element
-        _element.invoice_id = AAZStrArg(
-            options=["invoice-id"],
-            help="The invoice id for the volume license.",
-        )
-        _element.program_year = AAZStrArg(
-            options=["program-year"],
-            help="Describes the program year the volume license is for.",
-            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.LicensesOperationGroupValidateLicense(ctx=self.ctx)()
+        yield self.LicensesValidateLicense(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -143,7 +146,7 @@ class Validate(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LicensesOperationGroupValidateLicense(AAZHttpOperation):
+    class LicensesValidateLicense(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -199,7 +202,7 @@ class Validate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -230,7 +233,7 @@ class Validate(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("licenseDetails", AAZObjectType, ".license_details")
+                properties.set_prop("licenseDetails", AAZObjectType)
                 properties.set_prop("licenseType", AAZStrType, ".license_type")
                 properties.set_prop("tenantId", AAZStrType, ".tenant_id")
 
