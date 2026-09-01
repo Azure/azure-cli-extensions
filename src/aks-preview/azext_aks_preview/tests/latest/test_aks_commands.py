@@ -12604,7 +12604,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         node_pool_name_second = self.create_random_name("c", 6)
-        machines_pool_name = self.create_random_name("c", 6)
         crg_id = (
             "/subscriptions/26fe00f8-9173-4872-9134-bb1d2e00343a/resourceGroups/STAGING-CRG-RG/providers"
             "/Microsoft.Compute/capacityReservationGroups/crg-3"
@@ -12624,8 +12623,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "identity": identity,
                 "node_pool_name": node_pool_name,
                 "node_pool_name_second": node_pool_name_second,
-                "machines_pool_name": machines_pool_name,
-                "machine_name": "machinetest1",
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "ssh_key_value": self.generate_ssh_keys(),
             }
@@ -12656,6 +12653,62 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-vm-size {vm_size} "
             "--crg-id={crg_id} "
             "-c 1 ",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_machine_create_with_crg_id(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        machines_pool_name = self.create_random_name("c", 6)
+        vm_size = "Standard_D4s_v3"
+        crg_id = (
+            "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/CLI-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/aks-crg"
+        )
+        identity = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/cli-crg-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-crg-identity"
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "node_pool_name": node_pool_name,
+                "machines_pool_name": machines_pool_name,
+                "machine_name": "machinetest1",
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+                "identity": identity,
+                "crg_id": crg_id,
+                "vm_size": vm_size,
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--node-vm-size {vm_size} "
+            "--nodepool-name {node_pool_name} -c 1 "
+            "--enable-managed-identity "
+            "--assign-identity {identity} "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
             ],
@@ -12696,9 +12749,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # delete
+        # delete the cluster
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {name} --yes",
             checks=[self.is_empty()],
         )
 
