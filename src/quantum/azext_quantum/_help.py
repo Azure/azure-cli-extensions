@@ -233,6 +233,22 @@ helps['quantum suite-offer list'] = """
             az quantum suite-offer list --query "[].{provider:properties.providerId, location:properties.location}" -o table
 """
 
+helps['quantum suite-offer quotas'] = """
+    type: command
+    short-summary: View quota allocations and their consumed usages for a suite offer provider account in the current subscription.
+    long-summary: |
+        Returns the v2 quota allocations (limits) for the provider account merged with the consumed
+        usages, for both subscription-level and target-level scopes. Each entry reports the allocated,
+        used, and remaining standard and high priority minutes over the lifetime of the provider account.
+    examples:
+      - name: View the quota usages for a suite offer provider account.
+        text: |-
+            az quantum suite-offer quotas --provider-id MyProviderAccount -o table
+      - name: View the raw quota usage details for a suite offer provider account.
+        text: |-
+            az quantum suite-offer quotas -p MyProviderAccount
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.

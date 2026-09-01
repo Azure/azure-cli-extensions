@@ -28,6 +28,15 @@ def base_url(location):
     return f"https://{normalized_location}.quantum.azure.com/"
 
 
+def base_url_v2(location):
+    if 'AZURE_QUANTUM_BASEURL_V2' in os.environ:
+        return os.environ['AZURE_QUANTUM_BASEURL_V2']
+    normalized_location = normalize_location(location)
+    if is_env('dogfood'):
+        return f"https://{normalized_location}-v2.quantum-test.azure.com/"
+    return f"https://{normalized_location}-v2.quantum.azure.com/"
+
+
 def _get_data_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
@@ -83,6 +92,10 @@ def cf_jobs(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpo
 
 def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.quotas
+
+
+def cf_suite_offer_quota_usages(cli_ctx, subscription: str, endpoint: str):
+    return cf_quantum(cli_ctx, subscription, None, None, endpoint).services.suite_offers
 
 
 # Helper clients

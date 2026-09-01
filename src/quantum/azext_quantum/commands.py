@@ -103,6 +103,29 @@ def transform_suite_offers(suite_offers):
     return [one(offer) for offer in suite_offers]
 
 
+def transform_suite_offer_quotas(quotas):
+    def one(quota):
+        standard = quota.get('standardMinutesLifetime') or {}
+        high = quota.get('highMinutesLifetime') or {}
+
+        def cell(source, key):
+            value = source.get(key)
+            return '' if value is None else value
+
+        return OrderedDict([
+            ('Scope', quota.get('scope')),
+            ('Target', quota.get('targetId', '')),
+            ('Std Allocated', cell(standard, 'allocated')),
+            ('Std Used', cell(standard, 'used')),
+            ('Std Remaining', cell(standard, 'remaining')),
+            ('High Allocated', cell(high, 'allocated')),
+            ('High Used', cell(high, 'used')),
+            ('High Remaining', cell(high, 'remaining'))
+        ])
+
+    return [one(quota) for quota in quotas]
+
+
 def transform_output(results):
     def one(key, value):
         repeat = round(20 * value)
@@ -206,3 +229,4 @@ def load_command_table(self, _):
 
     with self.command_group('quantum suite-offer', suite_offers_ops) as s:
         s.command('list', 'list_suite_offers', table_transformer=transform_suite_offers)
+        s.command('quotas', 'suite_offer_quotas', table_transformer=transform_suite_offer_quotas)

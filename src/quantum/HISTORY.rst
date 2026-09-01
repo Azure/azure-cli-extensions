@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b26
+++++++++++++++
+* Added the ``az quantum suite-offer quotas`` command to view quota allocations merged with their consumed usages for a suite offer provider account in the subscription.
+
 1.0.0b25
 ++++++++++++++
 * Added the ``az quantum suite-offer list`` command to list the suite offers available to the subscription, including provider, location, and subscription-level quota allocations.

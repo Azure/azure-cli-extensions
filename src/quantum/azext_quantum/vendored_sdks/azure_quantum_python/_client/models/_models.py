@@ -531,6 +531,62 @@ class Quota(_Model):
      'None' is used for concurrent quotas. Required. Known values are: \"None\" and \"Monthly\"."""
 
 
+class QuotaUsageValues(_Model):
+    """The consumed quota usage values, measured in minutes over the lifetime of the provider
+    account.
+
+    :ivar standard_minutes_lifetime: The amount of standard priority minutes consumed over the
+     lifetime of the provider account.
+    :vartype standard_minutes_lifetime: float
+    :ivar high_minutes_lifetime: The amount of high priority minutes consumed over the lifetime of
+     the provider account.
+    :vartype high_minutes_lifetime: float
+    """
+
+    standard_minutes_lifetime: Optional[float] = rest_field(name="standardMinutesLifetime", visibility=["read"])
+    """The amount of standard priority minutes consumed over the lifetime of the provider account."""
+    high_minutes_lifetime: Optional[float] = rest_field(name="highMinutesLifetime", visibility=["read"])
+    """The amount of high priority minutes consumed over the lifetime of the provider account."""
+
+
+class QuotaUsage(_Model):
+    """Quota usage information for a suite offer provider account.
+
+    :ivar id: The unique identifier of the quota usage record. Required.
+    :vartype id: str
+    :ivar provider_id: The unique identifier for the provider account. Required.
+    :vartype provider_id: str
+    :ivar scope: The scope at which the quota usage is measured. Required.
+    :vartype scope: str
+    :ivar target_id: The identifier of the target the usage applies to, when the scope is
+     target-specific.
+    :vartype target_id: str
+    :ivar usage: The consumed quota usage values. Required.
+    :vartype usage: ~azure.quantum.models.QuotaUsageValues
+    :ivar last_modified_time: The timestamp of the last modification of the quota usage record.
+    :vartype last_modified_time: ~datetime.datetime
+    :ivar metadata: Additional metadata associated with the quota usage record.
+    :vartype metadata: dict[str, str]
+    """
+
+    id: str = rest_field(visibility=["read"])
+    """The unique identifier of the quota usage record. Required."""
+    provider_id: str = rest_field(name="providerId", visibility=["read"])
+    """The unique identifier for the provider account. Required."""
+    scope: str = rest_field(visibility=["read"])
+    """The scope at which the quota usage is measured. Required."""
+    target_id: Optional[str] = rest_field(name="targetId", visibility=["read"])
+    """The identifier of the target the usage applies to, when the scope is target-specific."""
+    usage: "_models.QuotaUsageValues" = rest_field(visibility=["read"])
+    """The consumed quota usage values. Required."""
+    last_modified_time: Optional[datetime.datetime] = rest_field(
+        name="lastModifiedTime", visibility=["read"], format="rfc3339"
+    )
+    """The timestamp of the last modification of the quota usage record."""
+    metadata: Optional[dict[str, str]] = rest_field(visibility=["read"])
+    """Additional metadata associated with the quota usage record."""
+
+
 class SasUriResponse(_Model):
     """SAS URI operation response.
 
