@@ -128,6 +128,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         return "already exists" in message.lower()
 
     @staticmethod
+    def _is_ambiguous_lro_status_error(ex):
+        """
+        Detect azure-core's generic `HttpResponseError` fallback message
+        ("Operation returned an invalid status 'OK'") that a poller raises when it
+        decides the tracked long-running operation "failed or canceled", but the
+        response it attaches (a 200 OK poll of the async-operation/resource URL) has
+        no OData-shaped error body for azure-core to surface instead
+        (azure.core.polling.base_polling.LROBasePolling._poll -> OperationFailed,
+        wrapped by HttpResponseError with no explicit message, so it falls back to
+        "Operation returned an invalid status '{reason}'"). This hides whether the
+        target resource actually finished successfully server-side, so callers
+        should verify the resource's real state via a follow-up 'show' rather than
+        trust this uninformative message at face value.
+        """
+        message = str(ex)
+        return (
+            "operation returned an invalid status" in message.lower() and
+            "'ok'" in message.lower()
+        )
+
+    @staticmethod
     def _extract_cli_option(command, *option_names):
         """Extract the value of the first matching --option=value / --option value CLI flag."""
         for option_name in option_names:
@@ -164,6 +185,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             )
         return None
 
+    @classmethod
+    def _build_show_command_for_machine(cls, command):
+        """
+        Build the equivalent 'aks machine show' command for an 'aks machine add' or
+        'aks machine update' command. Returns None if the command shape isn't
+        recognized (e.g. missing a required option), in which case the caller
+        should treat the original error as non-recoverable.
+        """
+        stripped = command.strip()
+        if not re.match(r"^aks\s+machine\s+(?:add|update)\b", stripped):
+            return None
+        resource_group = cls._extract_cli_option(command, "--resource-group", "-g")
+        cluster_name = cls._extract_cli_option(command, "--cluster-name")
+        nodepool_name = cls._extract_cli_option(command, "--nodepool-name")
+        machine_name = cls._extract_cli_option(command, "--machine-name")
+        if not resource_group or not cluster_name or not nodepool_name or not machine_name:
+            return None
+        return (
+            f"aks machine show --resource-group {resource_group} "
+            f"--cluster-name {cluster_name} --nodepool-name {nodepool_name} "
+            f"--machine-name {machine_name}"
+        )
+
     def _execute_with_transient_conflict_retry(self, command, expect_failure):
         from azure.cli.testsdk.base import execute
         import logging
@@ -196,6 +240,33 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                             show_command,
                         )
                         return execute(self.cli_ctx, show_command, expect_failure=False)
+                # An ambiguous poller failure can surface on the very first attempt (it is
+                # not a retry race like the "already exists" case above), so this check does
+                # not require attempt > 0. Verify what actually happened server-side instead
+                # of trusting azure-core's uninformative fallback message: if the resource
+                # settled into a terminal "Succeeded" state despite the confusing error,
+                # return that; otherwise, re-raise the original error so a genuine failure
+                # is never silently swallowed.
+                if not expect_failure and self._is_ambiguous_lro_status_error(ex):
+                    show_command = self._build_show_command_for_machine(command)
+                    if show_command is not None:
+                        try:
+                            show_result = execute(self.cli_ctx, show_command, expect_failure=False)
+                            show_data = show_result.get_output_in_json()
+                        except Exception:  # pylint: disable=broad-except
+                            show_data = None
+                        if (
+                            isinstance(show_data, dict) and
+                            show_data.get("properties", {}).get("provisioningState") == "Succeeded"
+                        ):
+                            logging.warning(
+                                "'%s' raised an ambiguous poller status error, but '%s' "
+                                "confirms the resource actually reached provisioningState "
+                                "'Succeeded'; treating the operation as successful.",
+                                command,
+                                show_command,
+                            )
+                            return show_result
                 if (
                     expect_failure or
                     not self._is_transient_operation_conflict(ex) or

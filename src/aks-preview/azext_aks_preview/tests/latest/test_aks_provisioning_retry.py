@@ -434,6 +434,208 @@ class TestAlreadyExistsConflictHandling(AKSRetryTestCase):
         mock_sleep.assert_not_called()
 
 
+class TestAmbiguousLroStatusHandling(AKSRetryTestCase):
+    """
+    Unit coverage for recovering from azure-core's generic
+    "Operation returned an invalid status 'OK'" poller error on `aks machine add` /
+    `aks machine update`: verify the machine's real state via 'aks machine show'
+    instead of trusting the uninformative message, but only trust that verification
+    when it confirms a terminal 'Succeeded' state; any other outcome must keep
+    failing with the original error.
+    """
+
+    def test_is_ambiguous_lro_status_error_detects_message(self):
+        instance = self._make_instance()
+
+        self.assertTrue(
+            instance._is_ambiguous_lro_status_error(
+                CLIError("Operation returned an invalid status 'OK'")
+            )
+        )
+        self.assertFalse(
+            instance._is_ambiguous_lro_status_error(
+                CLIError("Operation returned an invalid status 'Bad Request'")
+            )
+        )
+        self.assertFalse(
+            instance._is_ambiguous_lro_status_error(
+                CLIError("Another operation is in progress.")
+            )
+        )
+
+    def test_build_show_command_for_machine_add(self):
+        instance = self._make_instance()
+
+        show_command = instance._build_show_command_for_machine(
+            "aks machine add --resource-group=rg1 --cluster-name=cluster1 "
+            "--nodepool-name=pool1 --machine-name=machine1 --vm-size=Standard_D4s_v3"
+        )
+
+        self.assertEqual(
+            show_command,
+            "aks machine show --resource-group rg1 --cluster-name cluster1 "
+            "--nodepool-name pool1 --machine-name machine1",
+        )
+
+    def test_build_show_command_for_machine_update(self):
+        instance = self._make_instance()
+
+        show_command = instance._build_show_command_for_machine(
+            "aks machine update --resource-group rg1 --cluster-name cluster1 "
+            "--nodepool-name pool1 --machine-name machine1 --tags foo=bar"
+        )
+
+        self.assertEqual(
+            show_command,
+            "aks machine show --resource-group rg1 --cluster-name cluster1 "
+            "--nodepool-name pool1 --machine-name machine1",
+        )
+
+    def test_build_show_command_for_machine_returns_none_for_unrecognized_command(self):
+        instance = self._make_instance()
+
+        self.assertIsNone(
+            instance._build_show_command_for_machine(
+                "aks machine show --resource-group=rg1 --cluster-name=cluster1 "
+                "--nodepool-name=pool1 --machine-name=machine1"
+            )
+        )
+
+    def test_build_show_command_for_machine_returns_none_when_missing_required_options(self):
+        instance = self._make_instance()
+
+        # Missing --machine-name cannot be translated to a show command.
+        self.assertIsNone(
+            instance._build_show_command_for_machine(
+                "aks machine add --resource-group=rg1 --cluster-name=cluster1 "
+                "--nodepool-name=pool1"
+            )
+        )
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_ambiguous_status_error_recovers_when_show_confirms_succeeded(
+        self, mock_execute, mock_sleep
+    ):
+        settled_result = self._result(
+            {"properties": {"provisioningState": "Succeeded"}}
+        )
+        mock_execute.side_effect = [
+            CLIError("Operation returned an invalid status 'OK'"),
+            settled_result,
+        ]
+
+        instance = self._make_instance()
+        result = instance._execute_with_transient_conflict_retry(
+            "aks machine add --resource-group=rg1 --cluster-name=cluster1 "
+            "--nodepool-name=pool1 --machine-name=machine1 --vm-size=Standard_D4s_v3",
+            False,
+        )
+
+        self.assertIs(result, settled_result)
+        self.assertEqual(mock_execute.call_count, 2)
+        mock_execute.assert_called_with(
+            instance.cli_ctx,
+            "aks machine show --resource-group rg1 --cluster-name cluster1 "
+            "--nodepool-name pool1 --machine-name machine1",
+            expect_failure=False,
+        )
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_ambiguous_status_error_still_raises_when_show_reports_failure(
+        self, mock_execute, mock_sleep
+    ):
+        """
+        If 'show' confirms the machine genuinely did not succeed (or has no
+        provisioningState at all), the original ambiguous error must still be
+        raised: a real regression must never be silently tolerated.
+        """
+        original_error = CLIError("Operation returned an invalid status 'OK'")
+        mock_execute.side_effect = [
+            original_error,
+            self._result({"properties": {"provisioningState": "Failed"}}),
+        ]
+
+        with self.assertRaisesRegex(CLIError, "invalid status 'OK'"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks machine add --resource-group=rg1 --cluster-name=cluster1 "
+                "--nodepool-name=pool1 --machine-name=machine1 --vm-size=Standard_D4s_v3",
+                False,
+            )
+
+        self.assertEqual(mock_execute.call_count, 2)
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_ambiguous_status_error_still_raises_when_show_itself_fails(
+        self, mock_execute, mock_sleep
+    ):
+        """If the machine was never actually created, 'show' raises too (e.g. a 404);
+        the original ambiguous error must still be the one that propagates."""
+        original_error = CLIError("Operation returned an invalid status 'OK'")
+        mock_execute.side_effect = [
+            original_error,
+            CLIError("Machine 'machine1' could not be found."),
+        ]
+
+        with self.assertRaisesRegex(CLIError, "invalid status 'OK'"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks machine add --resource-group=rg1 --cluster-name=cluster1 "
+                "--nodepool-name=pool1 --machine-name=machine1 --vm-size=Standard_D4s_v3",
+                False,
+            )
+
+        self.assertEqual(mock_execute.call_count, 2)
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_ambiguous_status_error_on_unrelated_command_raises_immediately(
+        self, mock_execute, mock_sleep
+    ):
+        """Commands other than 'aks machine add/update' can't be translated to a
+        'show', so the ambiguous error must propagate without any recovery attempt."""
+        original_error = CLIError("Operation returned an invalid status 'OK'")
+        mock_execute.side_effect = original_error
+
+        with self.assertRaisesRegex(CLIError, "invalid status 'OK'"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks create --resource-group=rg1 --name=cluster1 --ssh-key-value=abc",
+                False,
+            )
+
+        mock_execute.assert_called_once()
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_ambiguous_status_error_raises_with_expect_failure(
+        self, mock_execute, mock_sleep
+    ):
+        """A deliberate negative test that expects failure must never be recovered
+        into a success via the 'show' fallback."""
+        original_error = CLIError("Operation returned an invalid status 'OK'")
+        mock_execute.side_effect = original_error
+
+        with self.assertRaisesRegex(CLIError, "invalid status 'OK'"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks machine add --resource-group=rg1 --cluster-name=cluster1 "
+                "--nodepool-name=pool1 --machine-name=machine1 --vm-size=Standard_D4s_v3",
+                True,
+            )
+
+        mock_execute.assert_called_once()
+        mock_sleep.assert_not_called()
+
+
 class TestOsSkuRetirementSkip(AKSRetryTestCase):
     """
     Unit coverage for `_cmd_or_skip_if_os_sku_retired`, which was broadened this session
