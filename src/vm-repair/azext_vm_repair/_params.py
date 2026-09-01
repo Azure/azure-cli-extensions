@@ -43,7 +43,8 @@ def load_arguments(self, _):
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
-        c.argument('yes', help='Deletes the repair resources without confirmation.')
+        c.argument('yes', help='Deletes the repair resources without confirmation. Mutually exclusive with --no.')
+        c.argument('no', help='Do not delete any resources created as part of the repair. Skips the confirmation prompt. Mutually exclusive with --yes.')
 
     with self.argument_context('vm repair run') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')

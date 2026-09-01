@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.2.7
+++++++
+Adding ``--no`` flag to ``az vm repair restore`` to automatically preserve the repair resources (repair VM, copied disk, and repair resource group) without prompting. This is the opposite of ``--yes`` and is intended for batch testing workflows (for example VMRepairMint and CSS-driven multi-VM validations) where the same repair environment is reused across many scripts and interactive prompts would stall the batch. ``--yes`` and ``--no`` are mutually exclusive; passing both raises a ``CLIError``. When neither flag is passed the existing interactive prompt behavior is unchanged. Preserved resource IDs are logged so the operator has an audit trail of what was kept behind. (ADO Bug 39509209)
+
 2.2.6
 ++++++
 Fixing ``az extension add --name vm-repair`` failing with ``Pip failed with status code 2`` on 32-bit Windows installations of the Azure CLI. The extension declared ``opencensus`` as a dependency but never imported it. Because extensions are installed with ``pip --target``, that unused dependency pulled roughly twenty extra packages into the extension folder, including ``cryptography``, which stopped publishing 32-bit Windows wheels in version 49.0.0. On a 32-bit CLI, pip had no compatible wheel, fell back to building ``cryptography`` from source, and failed. Removing the unused ``opencensus`` dependency removes that entire dependency tree.

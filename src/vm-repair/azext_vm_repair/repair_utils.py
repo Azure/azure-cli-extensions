@@ -271,9 +271,21 @@ def check_extension_version(extension_name):
     logger.debug('The extension with name %s does not exist within available extensions.', extension_name)
 
 
-def _clean_up_resources(resource_group_name, confirm):
+def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
 
     try:
+        # --no on the restore command sets skip_cleanup=True to preserve every repair resource
+        # (repair VM, copied disk, resource group) without prompting. Log the preserved resource
+        # IDs so the operator has an audit trail of what was kept behind.
+        if skip_cleanup:
+            preserved = _list_resource_ids_in_rg(resource_group_name)
+            logger.warning(
+                'Skipping clean-up. The following repair resources have been preserved in resource group \'%s\':\n%s',
+                resource_group_name,
+                '\n'.join(preserved) if preserved else '(no resources found)'
+            )
+            return
+
         if confirm:
             message = 'The clean-up will remove the resource group \'{rg}\' and all repair resources within:\n\n{r}' \
                       .format(rg=resource_group_name, r='\n'.join(_list_resource_ids_in_rg(resource_group_name)))

@@ -12,6 +12,7 @@ import requests
 
 from knack.log import get_logger
 
+from azure.cli.core.azclierror import CLIError
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from azure.mgmt.core.tools import parse_resource_id
@@ -497,11 +498,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
 
 # This method is responsible for restoring the VM after repair
-def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
+def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False, no=False):
 
     # Create an instance of the command helper object to facilitate logging and status tracking.
     command = command_helper(logger, cmd, 'vm repair restore')
     source_disk = None
+
+    # Validate that --yes and --no are not both specified. They are opposite choices for the
+    # post-restore cleanup prompt and cannot be combined.
+    if yes and no:
+        raise CLIError('--yes and --no are mutually exclusive.')
 
     try:
         # Fetch source and repair VM data
@@ -552,8 +558,9 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 logger.info('Attaching repaired data disk to source VM as an OS disk...')
                 _call_az_command(attach_unmanaged_command)
 
-            # Clean up the resources in the repair resource group
-            _clean_up_resources(repair_resource_group, confirm=not yes)
+            # Clean up the resources in the repair resource group. --yes bypasses the prompt and
+            # deletes; --no preserves the resources and skips both the prompt and the delete.
+            _clean_up_resources(repair_resource_group, confirm=not yes, skip_cleanup=no)
             command.set_status_success()  # Set the command status to success
     # Handle possible exceptions
     except KeyboardInterrupt:
