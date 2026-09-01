@@ -12744,7 +12744,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check(
                     "properties.capacityReservation.capacityReservationGroup.id",
-                    "{crg_id}",
+                    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/aks-crg",
                 ),
             ],
         )
