@@ -12677,7 +12677,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         node_pool_name = self.create_random_name("c", 6)
         machines_pool_name = self.create_random_name("c", 6)
-        vm_size = "Standard_D4s_v3"
+        vm_size = "Standard_E20bs_v6"
         crg_id = (
             "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/CLI-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/aks-crg"
         )
