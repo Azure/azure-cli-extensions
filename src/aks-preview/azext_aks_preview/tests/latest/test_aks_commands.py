@@ -13115,6 +13115,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
         )
 
+        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
+        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
+        # access) can lag behind by up to a minute or two. Give it a bounded head start
+        # before issuing the KMS-enabling create, instead of racing it immediately.
+        time.sleep(60)
+
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--assign-identity {identity_id} "
@@ -13379,6 +13385,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             disable_public_network_access,
             checks=[self.check("properties.provisioningState", "Succeeded")],
         ).get_output_in_json()
+
+        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
+        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
+        # access) can lag behind by up to a minute or two. Give it a bounded head start
+        # before issuing the KMS-enabling create, instead of racing it immediately.
+        time.sleep(60)
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
@@ -13702,6 +13714,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.check("properties.provisioningState", "Succeeded")],
         ).get_output_in_json()
 
+        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
+        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
+        # access) can lag behind by up to a minute or two. Give it a bounded head start
+        # before issuing the KMS-enabling create, instead of racing it immediately.
+        time.sleep(60)
+
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
@@ -13857,6 +13875,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
         )
+
+        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
+        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
+        # access) can lag behind by up to a minute or two. Give it a bounded head start
+        # before issuing the KMS-enabling create, instead of racing it immediately.
+        time.sleep(60)
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
