@@ -104,6 +104,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @staticmethod
     def _is_transient_operation_conflict(ex):
+        """
+        Detect error shapes that are worth a bounded retry of the *same* command,
+        either because another operation is genuinely still in progress (a real
+        conflict), or because a just-granted dependency (e.g. a KeyVault access
+        policy/RBAC role assignment) has not yet finished propagating and a
+        retry gives it a further bounded chance to become visible. Either way,
+        the caller must remain bounded and must re-raise the original error if
+        retries are exhausted; this predicate must never cause a genuine,
+        persistent failure to be skipped or reported as success.
+        """
         message = str(ex)
         return (
             "Another operation is in progress" in message or
@@ -119,6 +129,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             (
                 "CreateOrUpdateExtensionFailed" in message and
                 "conflicting operation in progress" in message
+            ) or
+            # A KeyVault access policy/RBAC role assignment granted immediately before a
+            # KMS-enabling command can still be propagating through AAD/RBAC when the AKS
+            # RP validates it, producing this exact, narrowly KeyVault-specific error shape.
+            # Retrying gives that propagation a further bounded chance to complete; if the
+            # KeyVault genuinely can't be validated (wrong name/vault, real permission gap),
+            # every retry will keep failing the same way and the loop still re-raises once
+            # exhausted, so a real misconfiguration is never hidden or reported as success.
+            (
+                "KeyVault '" in message and
+                "could not be validated or it is not found" in message
             )
         )
 
@@ -275,7 +296,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     raise
                 delay = min(base_delay * (2 ** attempt), max_delay) + random.uniform(0, 1)
                 logging.warning(
-                    "AKS operation is still in progress; retrying command in %.1f seconds (%d/%d)",
+                    "AKS operation hit a transient conflict or a dependency (e.g. a "
+                    "just-granted KeyVault access policy/role assignment) is not yet "
+                    "ready; retrying command in %.1f seconds (%d/%d)",
                     delay,
                     attempt + 1,
                     max_retries,
@@ -13115,12 +13138,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
         )
 
-        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
-        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
-        # access) can lag behind by up to a minute or two. Give it a bounded head start
-        # before issuing the KMS-enabling create, instead of racing it immediately.
-        time.sleep(60)
-
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--assign-identity {identity_id} "
@@ -13385,12 +13402,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             disable_public_network_access,
             checks=[self.check("properties.provisioningState", "Succeeded")],
         ).get_output_in_json()
-
-        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
-        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
-        # access) can lag behind by up to a minute or two. Give it a bounded head start
-        # before issuing the KMS-enabling create, instead of racing it immediately.
-        time.sleep(60)
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
@@ -13714,12 +13725,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.check("properties.provisioningState", "Succeeded")],
         ).get_output_in_json()
 
-        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
-        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
-        # access) can lag behind by up to a minute or two. Give it a bounded head start
-        # before issuing the KMS-enabling create, instead of racing it immediately.
-        time.sleep(60)
-
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
@@ -13875,12 +13880,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             set_policy, checks=[self.check("properties.provisioningState", "Succeeded")]
         )
-
-        # The access/RBAC grant above completes synchronously, but AAD/RBAC propagation
-        # to the KeyVault data plane (which the AKS RP relies on to validate KMS key
-        # access) can lag behind by up to a minute or two. Give it a bounded head start
-        # before issuing the KMS-enabling create, instead of racing it immediately.
-        time.sleep(60)
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "

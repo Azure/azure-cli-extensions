@@ -203,6 +203,7 @@ class TestTransientConflictRetry(AKSRetryTestCase):
             "(CreateOrUpdateExtensionFailed) Creating extension 'azuremonitor-metrics' failed with "
             "error: (Conflict) There is a conflicting operation in progress for this extension. "
             "Please retry the operation.",
+            "KeyVault 'mykv' could not be validated or it is not found.",
         ]
         for message in messages:
             with self.subTest(message=message):
@@ -273,6 +274,57 @@ class TestTransientConflictRetry(AKSRetryTestCase):
 
         mock_execute.assert_called_once()
         mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_does_not_retry_unrelated_keyvault_error(self, mock_execute, mock_sleep):
+        """
+        A KeyVault-related error is only treated as a transient dependency-readiness
+        issue when it matches the exact, narrowly-scoped shape observed live:
+        "KeyVault '<name>' could not be validated or it is not found." Any other
+        KeyVault error (firewall/network denial, malformed request, wrong key
+        permissions, etc.) is a genuine, persistent failure and must not be masked
+        by a retry loop.
+        """
+        mock_execute.side_effect = CLIError(
+            "KeyVault 'mykv': access is denied due to network firewall rules."
+        )
+
+        with self.assertRaisesRegex(CLIError, "network firewall rules"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks create", False
+            )
+
+        mock_execute.assert_called_once()
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {
+        "AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3",
+        "AZURE_CLI_TEST_OPERATION_BASE_DELAY": "0.01",
+    })
+    @patch("time.sleep", return_value=None)
+    @patch("random.uniform", return_value=0)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_keyvault_validation_error_reraises_when_retries_exhausted(
+        self, mock_execute, _mock_random, mock_sleep
+    ):
+        """
+        A KeyVault validation error that never clears (e.g. a genuine
+        misconfiguration rather than a propagation lag) must remain bounded by
+        max_retries and ultimately re-raise the original error, never silently
+        succeed or be skipped.
+        """
+        message = "KeyVault 'mykv' could not be validated or it is not found."
+        mock_execute.side_effect = CLIError(message)
+
+        with self.assertRaisesRegex(CLIError, "could not be validated"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks create", False
+            )
+
+        self.assertEqual(mock_execute.call_count, 3)
+        self.assertEqual(mock_sleep.call_count, 2)
 
 
 class TestAlreadyExistsConflictHandling(AKSRetryTestCase):
