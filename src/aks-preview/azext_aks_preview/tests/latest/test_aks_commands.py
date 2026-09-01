@@ -12682,6 +12682,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/CLI-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/aks-crg"
         )
         identity = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/cli-crg-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-crg-identity"
+        sanitized_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-crg-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-crg-identity"
 
         self.kwargs.update(
             {
@@ -12696,6 +12697,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "identity": identity,
                 "crg_id": crg_id,
                 "vm_size": vm_size,
+                "sanitized_id": sanitized_id,
             }
         )
 
@@ -12733,7 +12735,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={machines_pool_name} "
             "--machine-name={machine_name} "
             "--vm-size={vm_size} "
-            "--capacity-reservation-group={crg_id}"
+            "--crg={crg_id}"
         )
         self.cmd(
             "aks machine show "
@@ -12744,7 +12746,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check(
                     "properties.capacityReservation.capacityReservationGroup.id",
-                    "{crg_id}",
+                    "{sanitized_id}",
                 ),
             ],
         )

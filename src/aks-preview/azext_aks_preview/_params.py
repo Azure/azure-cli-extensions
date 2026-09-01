@@ -2816,6 +2816,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "capacity_reservation_group",
+            options_list=["--capacity-reservation-group", "--crg"],
             validator=validate_capacity_reservation_group,
             is_preview=True,
         )
