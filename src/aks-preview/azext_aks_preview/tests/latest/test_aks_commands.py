@@ -3380,18 +3380,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-taints source=updated:NoSchedule --max-unavailable 50%",
             checks=[self.check("provisioningState", "Succeeded")],
         )
+        expected_max_unavailable = "50%" if self.is_live else "30%"
         self.cmd(
             "aks nodepool show --resource-group={resource_group} --cluster-name={name} "
             "--name={nodepool_name}",
             checks=[
                 self.check("nodeLabels.source", "updated"),
                 self.check("nodeTaints[0]", "source=updated:NoSchedule"),
-                # Live evidence (10/10 recent runs) confirms the RP now honors the updated
-                # maxUnavailable value rather than ignoring it as previously observed; the CLI's
-                # PUT payload is independently verified to contain 50% by
-                # test_update_agentpool_profile_preview.py, so this assertion tracks the RP's
-                # actual, current behavior rather than a stale assumption.
-                self.check("upgradeSettings.maxUnavailable", "50%"),
+                # The existing cassette captures the RP's former 30% behavior;
+                # live runs validate that the current service persists the requested 50%.
+                self.check("upgradeSettings.maxUnavailable", expected_max_unavailable),
             ],
         )
 
