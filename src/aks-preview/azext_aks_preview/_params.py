@@ -2863,6 +2863,13 @@ def load_arguments(self, _):
             default="",
         )
 
+    with self.argument_context("aks operation list") as c:
+        c.argument(
+            "active_only",
+            action="store_true",
+            help="Only list operations that are currently active (not terminal). "
+        )
+
     with self.argument_context("aks maintenanceconfiguration") as c:
         c.argument("cluster_name", help="The cluster name.")
 

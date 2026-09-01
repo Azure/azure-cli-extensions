@@ -3345,6 +3345,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert operation_show["error"] is None
         assert operation_show["name"] == operation_id
 
+        # list historical operations on the cluster
+        list_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "-o json"
+        )
+        cluster_operations = self.cmd(list_cmd).get_output_in_json()
+        assert isinstance(cluster_operations, list)
+        assert any(op["name"] == operation_id for op in cluster_operations)
+
+        # list active operations on the cluster (filtered client-side)
+        list_cluster_active_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "--active-only -o json"
+        )
+        cluster_active_operations = self.cmd(list_cluster_active_cmd).get_output_in_json()
+        assert isinstance(cluster_active_operations, list)
+        assert all(
+            op["status"] not in ["Succeeded", "Failed", "Canceled"]
+            for op in cluster_active_operations
+        )
+
+        # list historical operations on the node pool
+        list_by_nodepool_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "--nodepool-name=nodepool1 -o json"
+        )
+        nodepool_operations = self.cmd(list_by_nodepool_cmd).get_output_in_json()
+        assert isinstance(nodepool_operations, list)
+
+        # list active operations on the node pool
+        list_active_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "--nodepool-name=nodepool1 --active-only -o json"
+        )
+        active_operations = self.cmd(list_active_cmd).get_output_in_json()
+        assert isinstance(active_operations, list)
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
