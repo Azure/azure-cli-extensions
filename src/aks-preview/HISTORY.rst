@@ -11,6 +11,19 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
+* Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
+* `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+* `az aks create`, `az aks update`: Add `--enable-node-hardening` to enable cluster-level node hardening and `--disable-node-hardening` (update only) to disable it. Applies hardened defaults for soft eviction thresholds, kube-reserved, and system-reserved on Linux node pools. Requires AFEC registration `Microsoft.ContainerService/CustomNodeConfigPreview`.
+
+22.0.0b5
++++++++++
+* Vendor new SDK and bump API version to `2026-06-02-preview`.
+
+22.0.0b4
++++++++++
+* `az aks nodepool update`: Add preview `--zones`/`-z` support for migrating a regional node pool to automatic zone placement with `--zones auto`. Other availability zone changes are subject to service restrictions. Omitted zones remain unchanged, and the option can be combined with `--node-vm-size`.
 
 22.0.0b3
 +++++++++
@@ -59,7 +72,6 @@ Pending
 21.0.0b12
 ++++++++
 * Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
-* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
 
 21.0.0b11
 ++++++++

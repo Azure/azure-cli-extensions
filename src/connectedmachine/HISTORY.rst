@@ -2,6 +2,36 @@
 
 Release History
 ===============
+3.0.0
++++++	
+**Breaking Changes**
+
+* `az connectedmachine run-command create/update`: Script parameters restructured into `--source` object (backward-compatible aliases added):
+  * `--command-id`, `--script`, `--script-uri`, `--script-uri-managed-identity` still work as top-level parameters
+  * New structured syntax also supported: `--source command-id=<value> script=<value> ...`
+* `az connectedmachine run-command create/update`: Blob identity parameters renamed (backward-compatible aliases added):
+  * `--error-blob-id` → `--error-blob-identity` (both work)
+  * `--output-blob-id` → `--output-blob-identity` (both work)
+* `az connectedmachine update`: `--identity` parameter available for identity type management. For user-assigned identities, use dedicated commands:
+  * `az connectedmachine identity assign`
+  * `az connectedmachine identity remove`
+* `az connectedmachine private-link-scope network-security-perimeter-configuration reconcile`: Removed `--no-wait` parameter (no corresponding wait command exists)
+* `az connectedmachine private-link-scope network-security-perimeter-configuration wait`: Command removed (reconcile operation is synchronous)
+* `az connectedmachine license validate`: Parameter `--license-details` flattened to individual parameters:
+  * `--edition`
+  * `--processors`
+  * `--state`
+  * `--target`
+  * `--type`
+  * `--volume-license-details`
+
+**Features**
+
+* Upgraded to stable API version 2026-07-15 (from preview 2026-06-16)
+* Fixed AAZ paging bugs in 14 list commands
+* Fixed reconcile output null-safety handling
+* Added short parameter abbreviations for update command (`--parent-cluster-id`, `--private-link-scope-id`)
+
 3.0.0b1
 +++++	
 * 2026/06/19-preview is used for aaz generation. Migrated to aaz.

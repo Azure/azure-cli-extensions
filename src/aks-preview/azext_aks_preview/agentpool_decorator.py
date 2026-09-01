@@ -51,8 +51,10 @@ from azext_aks_preview._consts import (
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_MANAGEMENT_MODE_MANAGED,
     CONST_GPU_MANAGEMENT_MODE_UNMANAGED,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
+    CONST_OS_SKU_WINDOWS2025,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
@@ -670,6 +672,21 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 )
         return enable_managed_gpu
 
+    def get_managed_gpu_driver_mode(self) -> Union[str, None]:
+        """Obtain the value of managed_gpu_driver_mode."""
+        managed_gpu_driver_mode = self.raw_param.get("managed_gpu_driver_mode")
+        enable_managed_gpu = self.get_enable_managed_gpu()
+
+        if managed_gpu_driver_mode is not None and enable_managed_gpu is not True:
+            raise ArgumentUsageError(
+                "--managed-gpu-driver-mode requires --enable-managed-gpu to be set to true."
+            )
+
+        if managed_gpu_driver_mode is None and enable_managed_gpu is True:
+            managed_gpu_driver_mode = CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN
+
+        return managed_gpu_driver_mode
+
     def get_disable_artifact_streaming(self) -> bool:
         """Obtain the value of disable_artifact_streaming.
         :return: bool
@@ -957,6 +974,15 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.enable_fips is not None
             ):
                 enable_fips_image = self.agentpool.enable_fips
+            # Windows2025 requires a FIPS-enabled OS image, so it cannot be disabled and is
+            # always turned on for these node pools, regardless of what was passed in.
+            elif self.get_os_sku() == CONST_OS_SKU_WINDOWS2025:
+                if self.get_disable_fips_image():
+                    raise ArgumentUsageError(
+                        '"--disable-fips-image" cannot be used with "--os-sku Windows2025", '
+                        "which requires a FIPS-enabled OS image."
+                    )
+                enable_fips_image = True
 
         # Verify both flags have not been set
         if enable_fips_image and self.get_disable_fips_image():
@@ -1477,6 +1503,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
 
         enable_managed_gpu = self.context.get_enable_managed_gpu()
+        managed_gpu_driver_mode = self.context.get_managed_gpu_driver_mode()
 
         if enable_managed_gpu:
             if agentpool.gpu_profile is None:
@@ -1484,6 +1511,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_MANAGED
+            agentpool.gpu_profile.nvidia.driver_mode = managed_gpu_driver_mode
             agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         return agentpool
 
@@ -1988,6 +2016,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         self._ensure_agentpool(agentpool)
 
         enable_managed_gpu = self.context.get_enable_managed_gpu()
+        managed_gpu_driver_mode = self.context.get_managed_gpu_driver_mode()
         if enable_managed_gpu is None:
             return agentpool
 
@@ -1997,6 +2026,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_MANAGED
+            agentpool.gpu_profile.nvidia.driver_mode = managed_gpu_driver_mode
             agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         else:
             if agentpool.gpu_profile and agentpool.gpu_profile.nvidia:
@@ -2119,6 +2149,23 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_zones(self, agentpool: AgentPool) -> AgentPool:
+        """Update availability zones for the AgentPool object when explicitly requested.
+
+        The inherited context getter prefers the value from the fetched AgentPool over
+        the command-line value. Read the raw parameter here so an update can replace an
+        existing value while an omitted ``--zones`` leaves it untouched.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        zones = self.context.raw_param.get("zones")
+        if zones is not None:
+            agentpool.availability_zones = zones
+
+        return agentpool
+
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
@@ -2197,6 +2244,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update vm size for VMSS pools
         agentpool = self.update_vm_size(agentpool)
+
+        # Older CLI versions do not handle availability zones in the default update flow.
+        if not hasattr(AKSAgentPoolUpdateDecorator, "update_zones"):
+            agentpool = self.update_zones(agentpool)
 
         # update local DNS profile
         agentpool = self.update_localdns_profile(agentpool)

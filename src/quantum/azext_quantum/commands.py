@@ -56,6 +56,17 @@ def transform_jobs(results):
     return [transform_job(job) for job in results]
 
 
+def transform_users(results):
+    def one(result):
+        return OrderedDict([
+            ('Name', result.get('displayName')),
+            ('Email', result.get('mail') or result.get('principalName')),
+            ('Role', result.get('roleDefinitionName')),
+            ('Time Added', result.get('createdOn'))
+        ])
+    return [one(result) for result in results]
+
+
 def transform_file_list(results):
     return [
         OrderedDict([
@@ -145,11 +156,12 @@ def load_command_table(self, _):
         w.command('quotas', 'quotas', validator=validate_workspace_info)
         w.command('keys list', 'list_keys')
         w.command('keys regenerate', 'regenerate_keys')
-        w.command('update', 'enable_keys')
+        w.command('update', 'update')
 
     with self.command_group('quantum workspace user', workspace_ops) as u:
         u.command('create', 'add_user', validator=validate_workspace_info)
         u.command('delete', 'remove_user', validator=validate_workspace_info, confirmation=True)
+        u.command('list', 'list_users', validator=validate_workspace_info, table_transformer=transform_users)
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)

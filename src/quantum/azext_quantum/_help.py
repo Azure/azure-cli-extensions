@@ -320,6 +320,12 @@ helps['quantum workspace create'] = """
                 -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" --skip-autoadd -a MyStorageAccountName\n
             To display a list of available providers and their SKUs, use the following command:
                 az quantum offerings list -l MyLocation -o table
+      - name: Create a V2 workspace with quota allocations for provider targets.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+                --workspace-kind V2 -r "MyProvider/default" --skip-autoadd -a MyStorageAccountName \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=500 high-minutes-lifetime=50 \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target2 standard-minutes-lifetime=250
 """
 
 helps['quantum workspace delete'] = """
@@ -384,6 +390,10 @@ helps['quantum workspace update'] = """
       - name: Disable a provided Azure Quantum workspace api keys.
         text: |-
             az quantum workspace update --enable-api-key False
+      - name: Update a target quota allocation on a V2 workspace.
+        text: |-
+            az quantum workspace update -g MyResourceGroup -w MyWorkspace \\
+                --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=1000
 """
 
 helps['quantum workspace keys'] = """
@@ -394,6 +404,23 @@ helps['quantum workspace keys'] = """
 helps['quantum workspace user'] = """
     type: group
     short-summary: Manage users of an Azure Quantum workspace.
+"""
+
+helps['quantum workspace user list'] = """
+    type: command
+    short-summary: List the users with access to an Azure Quantum workspace.
+    long-summary: >-
+        Lists user principals (excluding groups and service principals) assigned the 'Quantum Workspace Owner' or
+        'Quantum Workspace Data Contributor' role for the given (or current) workspace. Each user's Name and Email are
+        resolved from Microsoft Graph. By default this includes access inherited from the parent resource group and
+        subscription; pass '--include-inherited false' to list only assignments scoped directly to the workspace.
+    examples:
+      - name: List all users with access to a workspace.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace
+      - name: List only users assigned directly on the workspace (exclude inherited access).
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace --include-inherited false
 """
 
 helps['quantum workspace user create'] = """

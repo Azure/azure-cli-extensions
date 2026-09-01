@@ -8005,6 +8005,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check(
                     "gpuProfile.nvidia.managementMode", "Managed"
                 ),
+                self.check("gpuProfile.nvidia.driverMode", "DevicePlugin"),
             ],
         )
 
@@ -9350,6 +9351,70 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("kubeletConfig.containerLogMaxSizeMb", 20),
                 self.check("linuxOsConfig.sysctls.netCoreSomaxconn", 163849),
             ],
+        )
+
+    # Cluster-level node hardening is gated by Microsoft.ContainerService/CustomNodeConfigPreview AFEC.
+    # The AKSHTTPCustomFeatures header bypass only carries CREATE; UPDATE transitions require the AFEC
+    # to be registered on the target subscription, so this scenario is live-only.
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_update_cluster_node_hardening(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create with --enable-node-hardening; use custom header so the sub does not need CustomNodeConfigPreview registered
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--enable-node-hardening "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodeHardening", True),
+            ],
+        )
+
+        # update: disable at cluster level
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --disable-node-hardening "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodeHardening", False),
+            ],
+        )
+
+        # update: re-enable
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --enable-node-hardening "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodeHardening", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     # this case relatively frequently requires updating the corresponding recording file after network/virtualnetwork
@@ -14815,7 +14880,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        role_assignment_cmd = 'role assignment create --role "DNS Zone Contributor" --assignee {web_app_routing_identity_obj_id} --scope {dns_zone_id}'
+        role_assignment_cmd = (
+            'role assignment create --role "DNS Zone Contributor" '
+            "--assignee-object-id {web_app_routing_identity_obj_id} "
+            "--assignee-principal-type ServicePrincipal --scope {dns_zone_id}"
+        )
         self.cmd(role_assignment_cmd)
 
         addon_update_cmd = "aks addon update -g {resource_group} -n {name} --addon web_application_routing --dns-zone-resource-ids={dns_zone_id}"
@@ -18561,13 +18630,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group} "
             "--cluster-name={name} "
             "--name={node_pool_name} "
-            "--enable-managed-gpu=true ",
+            "--enable-managed-gpu=true "
+            "--gpu-driver-mode=dra ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("gpuProfile.driver", "Install"),
                 self.check(
                     "gpuProfile.nvidia.managementMode", "Managed"
                 ),
+                self.check("gpuProfile.nvidia.driverMode", "DRA"),
             ],
         )
 
