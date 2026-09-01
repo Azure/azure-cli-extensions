@@ -199,6 +199,10 @@ class TestTransientConflictRetry(AKSRetryTestCase):
             "Operation is not allowed: in-progress PutExtensionAddonHandler.PUT operation",
             "The managed cluster test is in Updating state, please wait for it to succeed.",
             "ProvisioningState of extension: Updating",
+            "ProvisioningState of extension: Creating",
+            "(CreateOrUpdateExtensionFailed) Creating extension 'azuremonitor-metrics' failed with "
+            "error: (Conflict) There is a conflicting operation in progress for this extension. "
+            "Please retry the operation.",
         ]
         for message in messages:
             with self.subTest(message=message):
@@ -222,6 +226,31 @@ class TestTransientConflictRetry(AKSRetryTestCase):
         mock_execute.side_effect = CLIError("Invalid parameter")
 
         with self.assertRaisesRegex(CLIError, "Invalid parameter"):
+            self._make_instance()._execute_with_transient_conflict_retry(
+                "aks update", False
+            )
+
+        mock_execute.assert_called_once()
+        mock_sleep.assert_not_called()
+
+    @patch.dict("os.environ", {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
+    @patch("time.sleep", return_value=None)
+    @patch("azure.cli.testsdk.base.execute")
+    def test_does_not_retry_unrelated_create_or_update_extension_failed(
+        self, mock_execute, mock_sleep
+    ):
+        """
+        A `CreateOrUpdateExtensionFailed` error is only a transient conflict when it
+        explicitly reports a conflicting operation already in progress. Other
+        CreateOrUpdateExtensionFailed causes (bad config, quota, etc.) must not be
+        retried and must keep propagating unchanged.
+        """
+        mock_execute.side_effect = CLIError(
+            "(CreateOrUpdateExtensionFailed) Creating extension 'azuremonitor-metrics' "
+            "failed with error: (BadRequest) The extension configuration is invalid."
+        )
+
+        with self.assertRaisesRegex(CLIError, "CreateOrUpdateExtensionFailed"):
             self._make_instance()._execute_with_transient_conflict_retry(
                 "aks update", False
             )

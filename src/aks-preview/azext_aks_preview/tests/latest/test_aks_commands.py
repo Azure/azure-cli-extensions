@@ -109,7 +109,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "Operation is not allowed because there's an in-progress" in message or
             "in-progress PutExtensionAddonHandler.PUT operation" in message or
             "is in Updating state, please wait for it to succeed" in message or
-            "ProvisioningState of extension: Updating" in message
+            "ProvisioningState of extension: Updating" in message or
+            "ProvisioningState of extension: Creating" in message or
+            # Nested CreateOrUpdateExtensionFailed errors are only transient when they
+            # explicitly report a conflicting operation already in progress for the
+            # extension; other CreateOrUpdateExtensionFailed causes (bad config, quota,
+            # etc.) must keep failing instead of being retried.
+            (
+                "CreateOrUpdateExtensionFailed" in message and
+                "conflicting operation in progress" in message
+            )
         )
 
     @staticmethod
