@@ -105,22 +105,19 @@ def transform_suite_offers(suite_offers):
 
 def transform_suite_offer_quotas(quotas):
     def one(quota):
-        standard = quota.get('standardMinutesLifetime') or {}
-        high = quota.get('highMinutesLifetime') or {}
+        allocation = quota.get('allocation') or {}
+        usage = quota.get('usage') or {}
 
         def cell(source, key):
             value = source.get(key)
             return '' if value is None else value
 
         return OrderedDict([
-            ('Scope', quota.get('scope')),
             ('Target', quota.get('targetId', '')),
-            ('Std Allocated', cell(standard, 'allocated')),
-            ('Std Used', cell(standard, 'used')),
-            ('Std Remaining', cell(standard, 'remaining')),
-            ('High Allocated', cell(high, 'allocated')),
-            ('High Used', cell(high, 'used')),
-            ('High Remaining', cell(high, 'remaining'))
+            ('Std Allocated', cell(allocation, 'standardMinutesLifetime')),
+            ('Std Used', cell(usage, 'standardMinutesLifetime')),
+            ('High Allocated', cell(allocation, 'highMinutesLifetime')),
+            ('High Used', cell(usage, 'highMinutesLifetime'))
         ])
 
     return [one(quota) for quota in quotas]

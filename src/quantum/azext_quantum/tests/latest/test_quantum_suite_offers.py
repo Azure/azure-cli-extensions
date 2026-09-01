@@ -74,9 +74,10 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         quotas = [
             {
                 'providerId': 'ionq',
-                'scope': 'Subscription',
-                'standardMinutesLifetime': {'allocated': 100, 'used': 40, 'remaining': 60},
-                'highMinutesLifetime': {'allocated': 50, 'used': 10, 'remaining': 40},
+                'scope': 'SubscriptionTarget',
+                'targetId': 'ionq.qpu',
+                'allocation': {'standardMinutesLifetime': 100, 'highMinutesLifetime': 50},
+                'usage': {'standardMinutesLifetime': 40, 'highMinutesLifetime': 10},
             }
         ]
 
@@ -85,15 +86,13 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(len(table), 1)
         row = table[0]
         self.assertEqual(list(row.keys()), [
-            'Scope', 'Target', 'Std Allocated', 'Std Used', 'Std Remaining',
-            'High Allocated', 'High Used', 'High Remaining'
+            'Target', 'Std Allocated', 'Std Used', 'High Allocated', 'High Used'
         ])
-        self.assertEqual(row['Scope'], 'Subscription')
-        self.assertEqual(row['Target'], '')
+        self.assertEqual(row['Target'], 'ionq.qpu')
         self.assertEqual(row['Std Allocated'], 100)
         self.assertEqual(row['Std Used'], 40)
-        self.assertEqual(row['Std Remaining'], 60)
         self.assertEqual(row['High Allocated'], 50)
+        self.assertEqual(row['High Used'], 10)
 
     def test_base_url_v2(self):
         self.assertEqual(base_url_v2('East US'), 'https://eastus-v2.quantum.azure.com/')
@@ -137,50 +136,54 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(usages[1].scope, 'SubscriptionTarget')
         self.assertEqual(usages[1].target_id, 'ionq.qpu')
 
-    def test_merge_quotas_allocation_and_usage(self):
+    def test_merge_quotas_target_with_usage(self):
         offer = _offer(
-            quotas=_allocation(standard=100, high=50),
-            target_quotas=[_allocation(standard=30, high=None, target_id='ionq.qpu')],
+            quotas=_allocation(standard=100, high=50),  # subscription-level allocation is ignored
+            target_quotas=[_allocation(standard=30, high=15, target_id='ionq.qpu')],
         )
         usages = [
-            _usage(target_id=None, standard=40, high=10),
-            _usage(target_id='ionq.qpu', standard=5),
+            _usage(target_id=None, standard=40, high=10),        # subscription-scope usage ignored
+            _usage(target_id='ionq.qpu', standard=5, high=2),
         ]
 
         rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
 
-        self.assertEqual(len(rows), 2)
-        sub = rows[0]
-        self.assertEqual(sub['scope'], 'Subscription')
-        self.assertNotIn('targetId', sub)
-        self.assertEqual(sub['standardMinutesLifetime'], {'allocated': 100, 'used': 40, 'remaining': 60})
-        self.assertEqual(sub['highMinutesLifetime'], {'allocated': 50, 'used': 10, 'remaining': 40})
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(list(row.keys()), ['providerId', 'scope', 'targetId', 'allocation', 'usage'])
+        self.assertEqual(row['providerId'], 'ionq')
+        self.assertEqual(row['scope'], 'SubscriptionTarget')
+        self.assertEqual(row['targetId'], 'ionq.qpu')
+        self.assertEqual(row['allocation'], {'standardMinutesLifetime': 30, 'highMinutesLifetime': 15})
+        self.assertEqual(row['usage'], {'standardMinutesLifetime': 5, 'highMinutesLifetime': 2})
 
-        target = rows[1]
-        self.assertEqual(target['scope'], 'SubscriptionTarget')
-        self.assertEqual(target['targetId'], 'ionq.qpu')
-        self.assertEqual(target['standardMinutesLifetime'], {'allocated': 30, 'used': 5, 'remaining': 25})
-        # High allocation absent, high usage absent -> omitted entirely.
-        self.assertNotIn('highMinutesLifetime', target)
-
-    def test_merge_quotas_allocation_only(self):
-        offer = _offer(quotas=_allocation(standard=100, high=50))
+    def test_merge_quotas_target_without_usage(self):
+        offer = _offer(
+            target_quotas=[_allocation(standard=30, high=None, target_id='ionq.qpu')],
+        )
 
         rows = _merge_suite_offer_quotas(offer, [], 'ionq')
 
         self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]['standardMinutesLifetime'], {'allocated': 100, 'used': None, 'remaining': None})
-        self.assertNotIn('lastModifiedTime', rows[0])
+        row = rows[0]
+        self.assertEqual(row['allocation'], {'standardMinutesLifetime': 30, 'highMinutesLifetime': None})
+        self.assertEqual(row['usage'], {'standardMinutesLifetime': None, 'highMinutesLifetime': None})
 
-    def test_merge_quotas_usage_only(self):
-        offer = _offer(quotas=None)
-        usages = [_usage(target_id=None, standard=40, high=10, last_modified_time='2026-01-15T00:00:00Z')]
+    def test_merge_quotas_ignores_subscription_and_unmatched_usage(self):
+        offer = _offer(
+            quotas=_allocation(standard=100, high=50),
+            target_quotas=[_allocation(standard=30, high=15, target_id='ionq.qpu')],
+        )
+        usages = [
+            _usage(target_id=None, standard=40, high=10),           # subscription scope -> ignored
+            _usage(target_id='other.target', standard=7, high=3),   # no matching allocation -> ignored
+        ]
 
         rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
 
         self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]['standardMinutesLifetime'], {'allocated': None, 'used': 40, 'remaining': None})
-        self.assertEqual(rows[0]['lastModifiedTime'], '2026-01-15T00:00:00Z')
+        self.assertEqual(rows[0]['targetId'], 'ionq.qpu')
+        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': None, 'highMinutesLifetime': None})
 
     @live_only()
     def test_quantum_suite_offer_list(self):

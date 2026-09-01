@@ -57,68 +57,41 @@ def suite_offer_quotas(cmd, provider_id):
     return _merge_suite_offer_quotas(offer, usages, provider_id)
 
 
-def _minutes_row(allocated, used):
-    """Build the per-priority {allocated, used, remaining} entry, or None if nothing is known."""
-    if allocated is None and used is None:
-        return None
-    remaining = None
-    if allocated is not None and used is not None:
-        remaining = allocated - used
-    return OrderedDict([("allocated", allocated), ("used", used), ("remaining", remaining)])
+def _minutes(standard, high):
+    """Build a {standardMinutesLifetime, highMinutesLifetime} block."""
+    return OrderedDict([
+        ("standardMinutesLifetime", standard),
+        ("highMinutesLifetime", high),
+    ])
 
 
 def _merge_suite_offer_quotas(offer, usages, provider_id):
     """
-    Combine the ARM quota allocations (limits) with the data-plane quota usages (consumed),
-    keyed by target id (None represents the subscription-level allocation).
+    Build one row per target quota allocation, attaching its matching data-plane usage.
+    Suite offer quotas are reported at the SubscriptionTarget scope only.
     """
-    props = offer.properties
-
-    # Allocations keyed by target id (None => subscription-level).
-    allocations = {}
-    if props.quotas is not None:
-        allocations[None] = props.quotas
-    for target_quota in props.target_quotas or []:
-        allocations[target_quota.target_id] = target_quota
-
-    # Usages keyed by target id (None => subscription-level).
-    usage_by_key = {}
-    for usage in usages or []:
-        usage_by_key[usage.target_id] = usage
+    # Data-plane usages keyed by target id.
+    usage_by_target = {
+        usage.target_id: usage for usage in (usages or []) if usage.target_id is not None
+    }
 
     rows = []
-    # Emit the subscription-level row first, then target rows sorted by target id.
-    keys = list(allocations.keys()) + [k for k in usage_by_key if k not in allocations]
-    ordered_keys = [None] if (None in allocations or None in usage_by_key) else []
-    ordered_keys += sorted(k for k in keys if k is not None)
-
-    for key in ordered_keys:
-        allocation = allocations.get(key)
-        usage = usage_by_key.get(key)
-
-        std_allocated = allocation.standard_minutes_lifetime if allocation is not None else None
-        high_allocated = allocation.high_minutes_lifetime if allocation is not None else None
-
+    for target_quota in sorted(offer.properties.target_quotas or [], key=lambda q: q.target_id or ""):
+        usage = usage_by_target.get(target_quota.target_id)
         usage_values = usage.usage if usage is not None else None
-        std_used = usage_values.standard_minutes_lifetime if usage_values is not None else None
-        high_used = usage_values.high_minutes_lifetime if usage_values is not None else None
 
         row = OrderedDict()
         row["providerId"] = provider_id
-        row["scope"] = "Subscription" if key is None else "SubscriptionTarget"
-        if key is not None:
-            row["targetId"] = key
-
-        std = _minutes_row(std_allocated, std_used)
-        if std is not None:
-            row["standardMinutesLifetime"] = std
-        high = _minutes_row(high_allocated, high_used)
-        if high is not None:
-            row["highMinutesLifetime"] = high
-
-        if usage is not None and usage.last_modified_time is not None:
-            row["lastModifiedTime"] = usage.last_modified_time
-
+        row["scope"] = "SubscriptionTarget"
+        row["targetId"] = target_quota.target_id
+        row["allocation"] = _minutes(
+            target_quota.standard_minutes_lifetime,
+            target_quota.high_minutes_lifetime,
+        )
+        row["usage"] = _minutes(
+            usage_values.standard_minutes_lifetime if usage_values is not None else None,
+            usage_values.high_minutes_lifetime if usage_values is not None else None,
+        )
         rows.append(row)
 
     return rows
