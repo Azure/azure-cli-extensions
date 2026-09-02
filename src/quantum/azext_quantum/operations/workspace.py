@@ -478,6 +478,10 @@ def quotas(cmd, resource_group_name, workspace_name):
     return _merge_workspace_quotas(workspace, usages)
 
 
+# Workspace quota allocations are always reported at the per-target scope.
+_WORKSPACE_QUOTA_SCOPE = "WorkspaceTarget"
+
+
 def _quota_minutes(standard, high):
     """Build a {standardMinutesLifetime, highMinutesLifetime} block."""
     return OrderedDict([
@@ -509,7 +513,7 @@ def _merge_workspace_quotas(workspace, usages):
 
             row = OrderedDict()
             row["providerId"] = provider.provider_id
-            row["scope"] = "WorkspaceTarget"
+            row["scope"] = _WORKSPACE_QUOTA_SCOPE
             row["targetId"] = target_quota.target_id
             row["allocation"] = _quota_minutes(
                 target_quota.standard_minutes_lifetime,

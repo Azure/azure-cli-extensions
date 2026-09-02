@@ -13,6 +13,9 @@ from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFound
 
 from .._client_factory import cf_suite_offers, cf_suite_offers_data_plane, base_url_v2
 
+# Suite offer quota allocations are always reported at the per-target scope.
+_SUITE_OFFER_QUOTA_SCOPE = "SubscriptionTarget"
+
 
 def list_suite_offers(cmd):
     """
@@ -118,7 +121,7 @@ def _merge_suite_offer_quotas(offer, usages, provider_id):
 
         row = OrderedDict()
         row["providerId"] = provider_id
-        row["scope"] = "SubscriptionTarget"
+        row["scope"] = _SUITE_OFFER_QUOTA_SCOPE
         row["targetId"] = target_quota.target_id
         row["allocation"] = _minutes(
             target_quota.standard_minutes_lifetime,
