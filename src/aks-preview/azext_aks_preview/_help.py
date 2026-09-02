@@ -2664,6 +2664,9 @@ helps['aks nodepool add'] = """
             Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
             Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
             Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
+        - name: --enable-managed-dranet
+          type: bool
+          short-summary: Enable Managed DRANET on the node pool.
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2837,6 +2840,9 @@ helps['aks nodepool update'] = """
         - name: --asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
+        - name: --enable-managed-dranet
+          type: bool
+          short-summary: Enable Managed DRANET on the node pool.
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
