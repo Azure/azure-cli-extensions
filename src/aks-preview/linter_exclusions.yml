@@ -577,6 +577,9 @@ aks identity-binding create:
         - option_length_too_long
 aks machine add:
   parameters:
+    capacity_reservation_group:
+      rule_exclusions:
+        - option_length_too_long
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long
