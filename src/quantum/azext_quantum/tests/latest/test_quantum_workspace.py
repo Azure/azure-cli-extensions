@@ -909,15 +909,29 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         graph_client = SimpleNamespace(user_get=Mock(return_value={"id": "oid"}))
         with patch("azure.cli.command_modules.role.graph_client_factory", return_value=graph_client):
             cmd = SimpleNamespace(cli_ctx=object())
-            result = _resolve_user_id(cmd, "user@contoso.com")
+            emails = (
+                "user@contoso.com",
+                "user_contoso.com#EXT#@fabrikam.onmicrosoft.com",
+                "o'brien@contoso.com",
+            )
+            for email in emails:
+                with self.subTest(email=email):
+                    result = _resolve_user_id(cmd, email)
 
-        self.assertEqual(result, "oid")
-        graph_client.user_get.assert_called_once_with("user@contoso.com")
+                    self.assertEqual(result, "oid")
+                    graph_client.user_get.assert_called_with(email)
 
-    def test_add_user_rejects_object_id(self):
+    def test_add_user_rejects_invalid_email(self):
         cmd = SimpleNamespace(cli_ctx=object())
-        with self.assertRaises(InvalidArgumentValueError):
-            add_user(cmd, "rg", "ws", email="00000000-0000-0000-0000-000000000000")
+        invalid_emails = (
+            "00000000-0000-0000-0000-000000000000",
+            "user.contoso.com",
+            "user @contoso.com",
+            "user@contoso",
+        )
+        for email in invalid_emails:
+            with self.subTest(email=email), self.assertRaises(InvalidArgumentValueError):
+                add_user(cmd, "rg", "ws", email=email)
 
     def test_add_user_requires_email(self):
         cmd = SimpleNamespace(cli_ctx=object())

@@ -52,7 +52,7 @@ QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e6032
 # Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
-EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+EMAIL_PATTERN = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
