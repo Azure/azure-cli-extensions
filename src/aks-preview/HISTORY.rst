@@ -12,8 +12,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
+
+22.0.0b6
++++++++++
+* `az aks nodepool add/update`: Add preview `--enable-managed-dranet` to enable Managed DRANET on a node pool.
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
 * Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
 * `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+* `az aks create`, `az aks update`: Add `--enable-node-hardening` to enable cluster-level node hardening and `--disable-node-hardening` (update only) to disable it. Applies hardened defaults for soft eviction thresholds, kube-reserved, and system-reserved on Linux node pools. Requires AFEC registration `Microsoft.ContainerService/CustomNodeConfigPreview`.
 
 22.0.0b5
 +++++++++
