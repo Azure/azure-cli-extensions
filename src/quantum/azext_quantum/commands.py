@@ -227,3 +227,6 @@ def load_command_table(self, _):
     with self.command_group('quantum suite-offer', suite_offers_ops) as s:
         s.command('list', 'list_suite_offers', table_transformer=transform_suite_offers)
         s.command('quotas', 'suite_offer_quotas', table_transformer=transform_suite_offer_quotas)
+
+    with self.command_group('quantum suite-offer target', suite_offers_ops) as st:
+        st.command('list', 'suite_offer_targets', table_transformer=transform_targets)

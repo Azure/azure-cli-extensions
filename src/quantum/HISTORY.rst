@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b27
+++++++++++++++
+* Added the ``az quantum suite-offer target list`` command to list the targets and their status available through a suite offer provider account, without requiring a workspace.
+
 1.0.0b26
 ++++++++++++++
 * Added the ``az quantum suite-offer quotas`` command to view quota allocations merged with their consumed usages for a suite offer provider account in the subscription.

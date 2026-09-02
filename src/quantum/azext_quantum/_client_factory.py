@@ -96,7 +96,7 @@ def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, end
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.quotas
 
 
-def cf_suite_offer_quota_usages(cli_ctx, subscription: str, endpoint: str):
+def cf_suite_offers_data_plane(cli_ctx, subscription: str, endpoint: str):
     # resource_group and workspace name are unused: the data-plane endpoint is supplied directly.
     return cf_quantum(cli_ctx, subscription, None, None, endpoint).services.suite_offers
 

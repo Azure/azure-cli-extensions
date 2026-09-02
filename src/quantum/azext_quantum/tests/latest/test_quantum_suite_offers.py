@@ -8,13 +8,15 @@ from types import SimpleNamespace
 from azure.cli.testsdk.scenario_tests import live_only
 from azure.cli.testsdk import ScenarioTest
 
-from ...commands import transform_suite_offers, transform_suite_offer_quotas
+from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_targets
 from ..._client_factory import base_url_v2
 from ...operations.suite_offers import _merge_suite_offer_quotas
-from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage
+from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus
 from ...vendored_sdks.azure_quantum_python._client._utils.model_base import _deserialize
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_suite_offers_list_quota_usages_request,
+    build_services_suite_offers_list_provider_status_request,
+    ServicesSuiteOffersOperations,
 )
 
 
@@ -136,6 +138,93 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(usages[1].scope, 'SubscriptionTarget')
         self.assertEqual(usages[1].target_id, 'ionq.qpu')
 
+    def test_build_suite_offers_list_provider_status_request(self):
+        request = build_services_suite_offers_list_provider_status_request(
+            subscription_id='00000000-0000-0000-0000-000000000000',
+            provider_id='ionq',
+        )
+        self.assertEqual(request.method, 'GET')
+        self.assertIn(
+            '/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/suiteOffers/ionq/providerStatus',
+            request.url,
+        )
+        self.assertIn('api-version=2026-01-15-preview', request.url)
+
+    def test_deserialize_provider_status_bare_array(self):
+        data = [
+            {
+                'id': 'ionq',
+                'currentAvailability': 'Available',
+                'targets': [
+                    {'id': 'ionq.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 42},
+                ],
+            }
+        ]
+
+        providers = _deserialize(list[ProviderStatus], data)
+
+        self.assertEqual(len(providers), 1)
+        self.assertEqual(providers[0].id, 'ionq')
+        self.assertEqual(providers[0].current_availability, 'Available')
+        self.assertEqual(len(providers[0].targets), 1)
+        self.assertEqual(providers[0].targets[0].id, 'ionq.qpu')
+        self.assertEqual(providers[0].targets[0].average_queue_time, 42)
+
+    def test_list_provider_status_wraps_single_object(self):
+        # The service returns a single ProviderStatus object, not a paged envelope or array.
+        single = {
+            'id': 'ionq',
+            'currentAvailability': 'Available',
+            'targets': [
+                {'id': 'ionq.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 7},
+            ],
+        }
+        http_response = SimpleNamespace(status_code=200, json=lambda: single)
+        pipeline_response = SimpleNamespace(http_response=http_response)
+        fake_client = SimpleNamespace(
+            _pipeline=SimpleNamespace(run=lambda request, **kwargs: pipeline_response),
+            format_url=lambda url, **kwargs: url,
+        )
+        fake_config = SimpleNamespace(api_version='2026-01-15-preview', endpoint='https://example')
+        fake_serialize = SimpleNamespace(url=lambda name, value, kind, **kwargs: value)
+
+        operations = ServicesSuiteOffersOperations(
+            fake_client, fake_config, fake_serialize, object()
+        )
+
+        result = operations.list_provider_status(
+            '00000000-0000-0000-0000-000000000000', 'ionq'
+        )
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].id, 'ionq')
+        self.assertEqual(result[0].current_availability, 'Available')
+        self.assertEqual(result[0].targets[0].id, 'ionq.qpu')
+        self.assertEqual(result[0].targets[0].average_queue_time, 7)
+
+    def test_transform_targets_suite_offer_shape(self):
+        providers = [
+            {
+                'id': 'ionq',
+                'currentAvailability': 'Available',
+                'targets': [
+                    {'id': 'ionq.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 42},
+                ],
+            }
+        ]
+
+        table = transform_targets(providers)
+
+        self.assertEqual(len(table), 1)
+        row = table[0]
+        self.assertEqual(list(row.keys()), [
+            'Provider', 'Target-id', 'Current Availability', 'Average Queue Time (seconds)'
+        ])
+        self.assertEqual(row['Provider'], 'ionq')
+        self.assertEqual(row['Target-id'], 'ionq.qpu')
+        self.assertEqual(row['Current Availability'], 'Available')
+        self.assertEqual(row['Average Queue Time (seconds)'], 42)
+
     def test_merge_quotas_target_with_usage(self):
         offer = _offer(
             quotas=_allocation(standard=100, high=50),  # subscription-level allocation is ignored
@@ -206,3 +295,21 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
             self.assertEqual(row['providerId'], provider_id)
             self.assertEqual(set(row['allocation'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
             self.assertEqual(set(row['usage'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
+
+    @live_only()
+    def test_quantum_suite_offer_target_list(self):
+        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
+        if not offers:
+            self.skipTest('No suite offers available in the subscription.')
+
+        provider_id = offers[0]['properties']['providerId']
+        providers = self.cmd(f'az quantum suite-offer target list -p {provider_id}').get_output_in_json()
+
+        assert isinstance(providers, list)
+        for provider in providers:
+            self.assertIn('id', provider)
+            self.assertIn('targets', provider)
+            for target in provider['targets']:
+                self.assertIn('id', target)
+                self.assertIn('currentAvailability', target)
+                self.assertIn('averageQueueTime', target)

@@ -11,7 +11,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoun
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_suite_offers, cf_suite_offer_quota_usages, base_url_v2
+from .._client_factory import cf_suite_offers, cf_suite_offers_data_plane, base_url_v2
 
 
 def list_suite_offers(cmd):
@@ -45,7 +45,7 @@ def suite_offer_quotas(cmd, provider_id):
 
     # 2. Data-plane (v2): fetch the consumed quota usages for that provider account.
     endpoint = base_url_v2(offer.properties.location)
-    client = cf_suite_offer_quota_usages(cmd.cli_ctx, subscription_id, endpoint)
+    client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, endpoint)
     try:
         usages = client.list_quota_usages(subscription_id, provider_id)
     except AzureResourceNotFoundError as ex:
@@ -55,6 +55,38 @@ def suite_offer_quotas(cmd, provider_id):
 
     # 3. Merge allocations (limits) with usages (consumed).
     return _merge_suite_offer_quotas(offer, usages, provider_id)
+
+
+def suite_offer_targets(cmd, provider_id):
+    """
+    List the targets and their status available through a suite offer provider account,
+    without requiring an Azure Quantum workspace.
+    """
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # 1. Control-plane: locate the suite offer to resolve its region.
+    offers = cf_suite_offers(cmd.cli_ctx).list_by_subscription()
+    offer = next(
+        (o for o in offers
+         if o.properties is not None
+         and o.properties.provider_id is not None
+         and o.properties.provider_id.lower() == provider_id.lower()),
+        None,
+    )
+    if offer is None:
+        raise InvalidArgumentValueError(
+            f"No suite offer was found for provider account '{provider_id}' in subscription '{subscription_id}'."
+        )
+
+    # 2. Data-plane (v2): fetch the provider/target statuses for that provider account.
+    endpoint = base_url_v2(offer.properties.location)
+    client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, endpoint)
+    try:
+        return client.list_provider_status(subscription_id, provider_id)
+    except AzureResourceNotFoundError as ex:
+        raise ResourceNotFoundError(
+            f"No target status was found for provider account '{provider_id}'."
+        ) from ex
 
 
 def _minutes(standard, high):

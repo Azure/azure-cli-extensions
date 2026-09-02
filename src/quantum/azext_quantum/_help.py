@@ -249,6 +249,27 @@ helps['quantum suite-offer quotas'] = """
             az quantum suite-offer quotas -p MyProviderAccount
 """
 
+helps['quantum suite-offer target'] = """
+    type: group
+    short-summary: List targets available through an Azure Quantum suite offer.
+"""
+
+helps['quantum suite-offer target list'] = """
+    type: command
+    short-summary: List the targets and their status available through a suite offer, without requiring a workspace.
+    long-summary: |
+        Returns each target exposed by the suite offer provider account together with its current
+        availability and average queue time, resolved directly from the data plane without requiring
+        an Azure Quantum workspace.
+    examples:
+      - name: List the targets available in a suite offer.
+        text: |-
+            az quantum suite-offer target list --provider-id MyProviderAccount -o table
+      - name: List the raw target status details for a suite offer provider account.
+        text: |-
+            az quantum suite-offer target list -p MyProviderAccount
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.

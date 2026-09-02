@@ -359,6 +359,33 @@ def build_services_suite_offers_list_quota_usages_request(  # pylint: disable=na
     return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
+def build_services_suite_offers_list_provider_status_request(  # pylint: disable=name-too-long
+    subscription_id: str, provider_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/suiteOffers/{providerId}/providerStatus"
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "providerId": _SERIALIZER.url("provider_id", provider_id, "str"),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
 def build_services_sessions_open_request(
     subscription_id: str, resource_group_name: str, workspace_name: str, session_id: str, **kwargs: Any
 ) -> HttpRequest:
@@ -1788,6 +1815,67 @@ class ServicesSuiteOffersOperations:
         if isinstance(deserialized, dict):
             deserialized = deserialized.get("value", [])
         list_of_elem = _deserialize(list[_models.QuotaUsage], deserialized)
+        if cls:
+            return cls(list_of_elem)  # type: ignore
+        return list_of_elem
+
+    @distributed_trace
+    def list_provider_status(
+        self, subscription_id: str, provider_id: str, **kwargs: Any
+    ) -> list["_models.ProviderStatus"]:
+        """List the target statuses for the given suite offer provider account.
+
+        :param subscription_id: The Azure subscription ID. Required.
+        :type subscription_id: str
+        :param provider_id: The unique identifier of the suite offer provider account. Required.
+        :type provider_id: str
+        :return: list of ProviderStatus
+        :rtype: list[~azure.quantum.models.ProviderStatus]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[list[_models.ProviderStatus]] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _request = build_services_suite_offers_list_provider_status_request(
+            subscription_id=subscription_id,
+            provider_id=provider_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url(
+                "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
+            ),
+        }
+        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        deserialized = response.json()
+        # The provider status endpoint returns a single ProviderStatus object (not a list or a
+        # paged envelope), so wrap it in a list. A paged envelope or bare array is tolerated too.
+        if isinstance(deserialized, dict):
+            deserialized = deserialized.get("value", [deserialized])
+        list_of_elem = _deserialize(list[_models.ProviderStatus], deserialized)
         if cls:
             return cls(list_of_elem)  # type: ignore
         return list_of_elem
