@@ -30,7 +30,10 @@ class MccScenario(ScenarioTest):
           'auto_update_day': '7',
           'auto_update_time': '05:35',
           'auto_update_week': '2',
-          'auto_update_ring': 'Stable'
+          'auto_update_ring': 'Stable',
+          # The service persists the legacy ring name for a node created on the Stable ring, and
+          # command output reports the stored value unmodified.
+          'stored_auto_update_ring': 'Slow'
         })
 
         # Create an MCC resource
@@ -86,7 +89,7 @@ class MccScenario(ScenarioTest):
                  checks=[
                      self.check('operationStatus', 'Succeeded'),
                      self.check('autoUpdateDay', '{auto_update_day}'),
-                     self.check('autoUpdateRing', '{auto_update_ring}'),
+                     self.check('autoUpdateRing', '{stored_auto_update_ring}'),
                      self.check('autoUpdateTime', '{auto_update_time}'),
                      self.check('autoUpdateWeek', '{auto_update_week}'),
                      self.check('driveConfiguration[0].physicalPath', '/var/mcc'),

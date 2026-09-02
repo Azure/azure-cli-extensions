@@ -26,8 +26,9 @@ Release History
   service stores the legacy ring name but rejects it on write, so the ring is now normalised on the
   instance before the request is sent.
 * ``az mcc ent node update``: ``--auto-update-day`` now rejects ``0``; the allowed range is ``1-7``.
-* ``az mcc ent node show/list``: the proxy state and update ring are reported using the customer
-  facing values rather than the values stored by the service.
+* ``az mcc ent node show/list``: the proxy state is reported using the customer facing value
+  rather than the value stored by the service. The update ring is reported exactly as the service
+  stores it, so an operator can see when a cache node is still on a legacy ring.
 * Hid ``--bgp-network-interface``, ``--runtime-account-type`` and the ``--open-firewall-port*``
   arguments. They are reserved for an upcoming feature and are not ready for use.
 * Improved help for ``--auto-update-ring``, ``--auto-update-day``, ``--auto-update-week``,

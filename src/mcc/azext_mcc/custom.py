@@ -42,14 +42,17 @@ SELECTABLE_AUTO_UPDATE_RINGS = {"Beta": "Beta", "Stable": "Stable"}
 SCHEDULED_AUTO_UPDATE_RINGS = ("Slow", "Stable")
 
 # From api-version 2026-06-01 the service renamed the customer selectable rings: "Stable" and
-# "Beta" replace the legacy "Slow" and "Fast". The service still stores and echoes the legacy
-# name, so translate it back to the new vocabulary on the way out.
-AUTO_UPDATE_RING_FROM_SERVICE = {"Slow": "Stable", "Fast": "Beta"}
+# "Beta" replace the legacy "Slow" and "Fast". The service still persists the legacy name, and then
+# rejects that same name on the next write with InvalidAutoUpdateRingTypeForApiVersion. A generic
+# update echoes the instance back, so the stored value has to be replaced before the request is
+# sent. This is only about making the request valid; command output reports whatever the service
+# holds, unmodified.
+AUTO_UPDATE_RING_WRITE_REPLACEMENTS = {"Slow": "Stable", "Fast": "Beta"}
 
 
-def _display_auto_update_ring(ring):
-    """Report the ring using the customer facing name the CLI accepts as input."""
-    return AUTO_UPDATE_RING_FROM_SERVICE.get(str(ring), ring)
+def _writable_auto_update_ring(ring):
+    """Return a ring name the service will accept on write."""
+    return AUTO_UPDATE_RING_WRITE_REPLACEMENTS.get(str(ring), ring)
 
 
 # The service models the proxy state as "None" / "Required" (swagger: the isProxyRequired property
@@ -456,11 +459,11 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
         try:
             serviceAutoUpdateRing = str(instance.properties.cacheNode.autoUpdateRingType)
-            instanceAutoUpdateRing = _display_auto_update_ring(serviceAutoUpdateRing)
+            instanceAutoUpdateRing = _writable_auto_update_ring(serviceAutoUpdateRing)
             if instanceAutoUpdateRing != serviceAutoUpdateRing:
-                # The service stores the legacy ring name but refuses to accept it on write, so a
+                # The service persists the legacy ring name but refuses to accept it on write, so a
                 # generic update that echoes the instance back would fail with
-                # InvalidAutoUpdateRingTypeForApiVersion. Rewrite it to the current name.
+                # InvalidAutoUpdateRingTypeForApiVersion. Replace it with the current name.
                 instance.properties.cacheNode.autoUpdateRingType = instanceAutoUpdateRing
         except KeyError:
             pass
@@ -657,7 +660,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
         try:
             hasAutoUpdateRing = result["properties"]["cacheNode"]["autoUpdateRingType"]
-            cleanOutput["autoUpdateRing"] = _display_auto_update_ring(hasAutoUpdateRing)
+            cleanOutput["autoUpdateRing"] = hasAutoUpdateRing
         except KeyError:
             pass
 
@@ -767,7 +770,7 @@ class MccEntNodeList(_MccEntNodeList):
 
             try:
                 hasAutoUpdateRing = cacheNode["properties"]["cacheNode"]["autoUpdateRingType"]
-                cleanCacheNode["autoUpdateRing"] = _display_auto_update_ring(hasAutoUpdateRing)
+                cleanCacheNode["autoUpdateRing"] = hasAutoUpdateRing
             except KeyError:
                 pass
 
@@ -912,7 +915,7 @@ class MccEntNodeShow(_MccEntNodeShow):
         hasAutoUpdateRing = None
 
         try:
-            cleanOutput["autoUpdateRing"] = _display_auto_update_ring(result["properties"]["cacheNode"]["autoUpdateRingType"])
+            cleanOutput["autoUpdateRing"] = result["properties"]["cacheNode"]["autoUpdateRingType"]
             hasAutoUpdateRing = result["properties"]["cacheNode"]["autoUpdateRingType"]
         except KeyError:
             pass
