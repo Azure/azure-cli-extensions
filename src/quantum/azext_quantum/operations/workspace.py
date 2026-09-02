@@ -563,9 +563,22 @@ def _validate_email_arg(email):
 
 def _resolve_user_id(cmd, email):
     from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import GraphError
 
     _validate_email_arg(email)
-    return graph_client_factory(cmd.cli_ctx).user_get(email)["id"]
+    try:
+        user = graph_client_factory(cmd.cli_ctx).user_get(email)
+    except GraphError as ex:
+        if getattr(ex.response, "status_code", None) == 404:
+            raise ResourceNotFoundError(
+                f"No user with the email address '{email}' was found in the directory."
+            ) from ex
+        raise
+
+    user_id = user.get("id") if isinstance(user, dict) else None
+    if not user_id:
+        raise AzureResponseError("Microsoft Graph returned an invalid response while resolving the user.")
+    return user_id
 
 
 def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
