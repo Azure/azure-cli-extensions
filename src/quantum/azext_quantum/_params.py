@@ -212,7 +212,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum workspace user') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('email', email_type)
+
+    with self.argument_context('quantum workspace user add') as c:
+        c.argument('email', email_type, required=True)
+
+    with self.argument_context('quantum workspace user remove') as c:
+        c.argument('email', email_type, required=True)
 
     with self.argument_context('quantum workspace user list') as c:
         c.argument('include_inherited', include_inherited_type)
