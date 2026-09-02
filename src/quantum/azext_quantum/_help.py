@@ -439,6 +439,9 @@ helps['quantum workspace user add'] = """
 helps['quantum workspace user remove'] = """
     type: command
     short-summary: Remove a user's access to an Azure Quantum workspace.
+    long-summary: >-
+        Removes the 'Quantum Workspace Data Contributor' role at the scope of the given
+        (or current) Azure Quantum workspace.
     examples:
       - name: Remove a user's access to a workspace using their email address.
         text: |-
