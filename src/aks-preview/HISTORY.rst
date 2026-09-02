@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks operation list` to list historical or active (`--active-only`) operations on a cluster (`--resource-group` and `--name`) or on a node pool (`--nodepool-name`).
 
 22.0.0b6
 +++++++++

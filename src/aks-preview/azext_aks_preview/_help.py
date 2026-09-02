@@ -3326,6 +3326,33 @@ helps['aks operation show-latest'] = """
           short-summary: Name of the resource group.
 """
 
+helps['aks operation list'] = """
+    type: command
+    short-summary: List operations on a managed Kubernetes cluster or one of its node pools.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster.
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool. When specified, operations are listed for the node pool instead of the cluster.
+        - name: --active-only
+          type: bool
+          short-summary: Only list operations that are currently active (not terminal).
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+    examples:
+        - name: List historical operations on a managed cluster.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster
+        - name: List active operations on a managed cluster.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster --active-only
+        - name: List historical operations on a node pool.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster --nodepool-name nodepool1
+        - name: List active operations on a node pool.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster --nodepool-name nodepool1 --active-only
+"""
+
 helps['aks operation-abort'] = """
     type: command
     short-summary: Abort last running operation on managed cluster.
