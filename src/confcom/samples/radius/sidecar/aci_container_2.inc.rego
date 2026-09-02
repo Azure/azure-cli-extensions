@@ -78,5 +78,9 @@
       "strategy": "re2",
       "required": false
     }
+  ],
+  "signals": [
+    9,
+    15
   ]
 }
