@@ -72,5 +72,9 @@
             "type": "bind"
         }
     ],
-    "name": "container2"
+    "name": "container2",
+    "signals": [
+        9,
+        15
+    ]
 }

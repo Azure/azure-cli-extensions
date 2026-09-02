@@ -309,6 +309,8 @@ SIGNALS = {
     "SIGSYS": 31,
     "SIGUNUSED": 31
 }
+DEFAULT_CONTAINER_SIGNALS = [SIGNALS["SIGKILL"], SIGNALS["SIGTERM"]]
+
 # these algorithms are the only supported ones in https://github.com/veraison/go-cose/blob/main/algorithm.go
 SUPPORTED_ALGOS = [
     "PS256",

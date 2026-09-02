@@ -78,5 +78,9 @@
             "pattern": "1234",
             "strategy": "id"
         }
-    }
+    },
+    "signals": [
+        9,
+        15
+    ]
 }

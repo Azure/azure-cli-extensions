@@ -23,6 +23,13 @@ _DEFAULT_MOUNTS = config.DEFAULT_MOUNTS_USER
 
 _DEFAULT_USER = config.DEFAULT_USER
 
+
+def _with_default_container_signals(signals: List) -> List:
+    signal_values = signals if isinstance(signals, list) else [signals]
+    translated_signals = translate_signals(list(signal_values or []))
+    return list(dict.fromkeys(config.DEFAULT_CONTAINER_SIGNALS + translated_signals))
+
+
 _INJECTED_CUSTOMER_ENV_RULES = (
     config.OPENGCS_ENV_RULES
     + config.FABRIC_ENV_RULES
@@ -638,7 +645,7 @@ class ContainerImage:
         self._allow_privilege_escalation = allowPrivilegeEscalation
         self._identifier = id_val
         self._exec_processes = execProcesses or []
-        self._signals = signals or []
+        self._signals = _with_default_container_signals(signals)
         self._extraEnvironmentRules = extraEnvironmentRules
         self._platform = platform
         self._registry_changes = registryChanges
@@ -659,8 +666,10 @@ class ContainerImage:
         return self._workingDir
 
     def set_signals(self, signals: List) -> None:
-        signals = translate_signals([signals] if not isinstance(signals, list) else signals)
-        self._signals = signals
+        signal_values = signals if isinstance(signals, list) else [signals]
+        self._signals = _with_default_container_signals(
+            self._signals + signal_values
+        )
 
     def set_working_dir(self, workingDir: str) -> None:
         self._workingDir = workingDir
