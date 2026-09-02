@@ -133,7 +133,7 @@ def transform_workspace_quotas(quotas):
             return '' if value is None else value
 
         return OrderedDict([
-            ('Provider', quota.get('providerId', '')),
+            ('Provider ID', quota.get('providerId', '')),
             ('Target', quota.get('targetId', '')),
             ('Std Allocated', cell(allocation, 'standardMinutesLifetime')),
             ('Std Used', cell(usage, 'standardMinutesLifetime')),

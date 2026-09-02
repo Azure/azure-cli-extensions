@@ -750,9 +750,9 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         self.assertEqual(len(table), 1)
         row = table[0]
         self.assertEqual(list(row.keys()), [
-            'Provider', 'Target', 'Std Allocated', 'Std Used', 'High Allocated', 'High Used'
+            'Provider ID', 'Target', 'Std Allocated', 'Std Used', 'High Allocated', 'High Used'
         ])
-        self.assertEqual(row['Provider'], 'ionq')
+        self.assertEqual(row['Provider ID'], 'ionq')
         self.assertEqual(row['Target'], 'ionq.qpu')
         self.assertEqual(row['Std Allocated'], 100)
         self.assertEqual(row['Std Used'], 40)
