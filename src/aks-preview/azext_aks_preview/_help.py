@@ -3226,7 +3226,7 @@ helps['aks machine add'] = """
        - name: --eviction-policy
          type: string
          short-summary: The eviction policy for machine. This cannot be specified unless the priority is 'Spot'. If not specified, the default is 'Delete'.
-       - name: --capacity-reservation-group
+       - name: --capacity-reservation-group --crg
          type: string
          short-summary: The fully qualified resource ID of the Capacity Reservation Group to associate with the machine.
 """
