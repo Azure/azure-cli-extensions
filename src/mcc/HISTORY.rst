@@ -21,6 +21,10 @@ Release History
 * Fixed ``az mcc ent node update``: switching to ``Stable`` now correctly requires
   ``--auto-update-day``, ``--auto-update-week`` and ``--auto-update-time``, and switching to
   ``Beta`` correctly rejects them. The install schedule of the ``Beta`` ring is managed by Microsoft.
+* Fixed ``az mcc ent node update``: after the update ring had been set, any later update that did
+  not restate ``--auto-update-ring`` failed with ``InvalidAutoUpdateRingTypeForApiVersion``. The
+  service stores the legacy ring name but rejects it on write, so the ring is now normalised on the
+  instance before the request is sent.
 * ``az mcc ent node update``: ``--auto-update-day`` now rejects ``0``; the allowed range is ``1-7``.
 * ``az mcc ent node show/list``: the proxy state and update ring are reported using the customer
   facing values rather than the values stored by the service.

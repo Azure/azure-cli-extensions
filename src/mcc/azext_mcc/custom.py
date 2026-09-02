@@ -455,7 +455,13 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
         instanceAutoUpdateRing = None
 
         try:
-            instanceAutoUpdateRing = _display_auto_update_ring(instance.properties.cacheNode.autoUpdateRingType)
+            serviceAutoUpdateRing = str(instance.properties.cacheNode.autoUpdateRingType)
+            instanceAutoUpdateRing = _display_auto_update_ring(serviceAutoUpdateRing)
+            if instanceAutoUpdateRing != serviceAutoUpdateRing:
+                # The service stores the legacy ring name but refuses to accept it on write, so a
+                # generic update that echoes the instance back would fail with
+                # InvalidAutoUpdateRingTypeForApiVersion. Rewrite it to the current name.
+                instance.properties.cacheNode.autoUpdateRingType = instanceAutoUpdateRing
         except KeyError:
             pass
 
