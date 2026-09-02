@@ -3,6 +3,15 @@
 Release History
 ===============
 
+1.0.0b24
++++++++++++++++
+* Added the ``az quantum workspace user list`` command to list the users with access to an Azure Quantum workspace.
+
+1.0.0b23
+++++++++++++++
+* Added ``--quota`` support to ``az quantum workspace create`` and ``az quantum workspace update`` for managing V2 provider target quota allocations.
+* Updated control plane related commands to use API version 2026-06-15-preview.
+
 1.0.0b22
 +++++++++++++++
 * Added the ``az quantum job file list`` command to list the files stored in a job's output storage container.

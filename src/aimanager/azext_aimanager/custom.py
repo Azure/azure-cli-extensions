@@ -19,7 +19,7 @@ from azext_aimanager._helpers import (
     parse_key_value_list,
     print_or_merge_credentials,
 )
-from azext_aimanager._roleassignments import assign_caller_roles
+from azext_aimanager._roleassignments import assign_caller_roles, warn_roles_skipped_no_wait
 from azext_aimanager.constants import AIMANAGER_CALLER_ROLE_IDS
 
 logger = get_logger(__name__)
@@ -54,9 +54,7 @@ def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
     the command returns before the operation completes and success cannot be confirmed.
     """
     if no_wait:
-        logger.warning(
-            "--no-wait was set, so the caller's role assignments on %s were skipped. Re-run "
-            "without --no-wait, or assign the roles manually.", scope)
+        warn_roles_skipped_no_wait(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
         return poller
     result = LongRunningOperation(cmd.cli_ctx)(poller)  # blocks until Succeeded; raises on failure
     try:

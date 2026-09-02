@@ -199,8 +199,8 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         # role assign
         roleAssignmentName1 = self.create_guid()
         roleAssignmentName2 = self.create_guid()
-        self.cmd(f'role assignment create --role acrpull --assignee {containerapp_env["identity"]["principalId"]} --scope {acr_id} --name {roleAssignmentName1}')
-        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id} --name {roleAssignmentName2}')
+        self.cmd(f'role assignment create --role acrpull --assignee-object-id {containerapp_env["identity"]["principalId"]} --assignee-principal-type ServicePrincipal --scope {acr_id} --name {roleAssignmentName1}')
+        self.cmd(f'role assignment create --role acrpull --assignee-object-id {identity_json["principalId"]} --assignee-principal-type ServicePrincipal --scope {acr_id} --name {roleAssignmentName2}')
         # upload image
         self.cmd(f'acr import -n {acr} --source {image_source}')
 
@@ -263,10 +263,10 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
     def test_containerappjob_identity_registry(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         # prepare env
@@ -293,7 +293,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         acr_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --location {location}').get_output_in_json()["id"]
         # role assign
         roleAssignmentName = self.create_guid()
-        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id} --name {roleAssignmentName}')
+        self.cmd(f'role assignment create --role acrpull --assignee-object-id {identity_json["principalId"]} --assignee-principal-type ServicePrincipal --scope {acr_id} --name {roleAssignmentName}')
         # upload image
         self.cmd(f'acr import -n {acr} --source {image_source}')
 

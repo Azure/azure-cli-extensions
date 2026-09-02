@@ -1935,6 +1935,42 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return bool(disable_fips)
 
+    def _get_enable_node_hardening_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_node_hardening") and self.mc.enable_node_hardening is not None:
+            return self.mc.enable_node_hardening
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableNodeHardening")
+        return None
+
+    def get_enable_node_hardening(self) -> bool:
+        """Obtain the value of enable_node_hardening.
+        :return: bool
+        """
+        enable_node_hardening = self.raw_param.get("enable_node_hardening", False)
+        if enable_node_hardening and self.get_disable_node_hardening():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-node-hardening and --disable-node-hardening at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_node_hardening_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_node_hardening = value_obtained_from_mc
+        return bool(enable_node_hardening)
+
+    def get_disable_node_hardening(self) -> bool:
+        """Obtain the value of disable_node_hardening.
+        :return: bool
+        """
+        disable_node_hardening = self.raw_param.get("disable_node_hardening", False)
+        if disable_node_hardening and self.raw_param.get("enable_node_hardening", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-node-hardening and --disable-node-hardening at the same time."
+            )
+        return bool(disable_node_hardening)
+
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
 
@@ -4778,6 +4814,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     agentpool.enable_fips = True
         return mc
 
+    def set_up_enable_node_hardening(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node hardening at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_hardening():
+            mc.enable_node_hardening = True
+        return mc
+
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -5833,6 +5877,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_integrity(mc)
         # set up FIPS mode at the cluster level
         mc = self.set_up_enable_fips(mc)
+        # set up node hardening at the cluster level
+        mc = self.set_up_enable_node_hardening(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -7398,6 +7444,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc.enable_fips = True
         return mc
 
+    def update_enable_node_hardening(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update node hardening at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_node_hardening():
+            mc.enable_node_hardening = False
+            return mc
+
+        if self.context.get_enable_node_hardening():
+            mc.enable_node_hardening = True
+        return mc
+
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -8934,6 +8992,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_integrity(mc)
         # update FIPS mode at the cluster level
         mc = self.update_enable_fips(mc)
+        # update node hardening at the cluster level
+        mc = self.update_enable_node_hardening(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption

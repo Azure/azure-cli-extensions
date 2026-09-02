@@ -180,6 +180,34 @@ class TestAssignCallerRoles(unittest.TestCase):
         self.assertIsNone(object_id)
         self.assertIsNone(principal_type)
 
+    @patch.object(ra, "logger")
+    @patch.object(ra, "_get_caller_identity", return_value=("oid-1", "User"))
+    def test_warn_roles_skipped_no_wait_prints_exact_commands(self, _ident, mock_logger):
+        ra.warn_roles_skipped_no_wait(self.cmd, SCOPE, [ROLE_A, ROLE_B])
+
+        mock_logger.warning.assert_called_once()
+        fmt, *args = mock_logger.warning.call_args.args
+        msg = fmt % tuple(args)
+        # One runnable command per role, targeting the caller's object id and the scope.
+        self.assertEqual(msg.count("az role assignment create --assignee-object-id oid-1"), 2)
+        self.assertIn(f"--scope {SCOPE}", msg)
+        self.assertIn(f'--role "{ra.AIMANAGER_ROLE_NAMES[ROLE_A]}"', msg)
+        self.assertIn(f'--role "{ra.AIMANAGER_ROLE_NAMES[ROLE_B]}"', msg)
+        # The old, broken remediation must not reappear.
+        self.assertNotIn("Re-run without --no-wait", msg)
+        # Sets expectations that the manual grant needs elevated permissions.
+        self.assertIn("Owner or User Access Administrator", msg)
+
+    @patch.object(ra, "logger")
+    @patch.object(ra, "_get_caller_identity", return_value=(None, None))
+    def test_warn_roles_skipped_no_wait_falls_back_when_oid_unknown(self, _ident, mock_logger):
+        ra.warn_roles_skipped_no_wait(self.cmd, SCOPE, [ROLE_A])
+
+        mock_logger.warning.assert_called_once()
+        fmt, *args = mock_logger.warning.call_args.args
+        msg = fmt % tuple(args)
+        self.assertIn("--assignee-object-id <caller-object-id>", msg)
+
 
 if __name__ == '__main__':
     unittest.main()
