@@ -24,13 +24,13 @@ class MccScenario(ScenarioTest):
           'cache_node_name': self.create_random_name(prefix='mcc_cli_ci_tst_node', length=25),
           'host_os': 'Windows',
           'cache_drive': '\"[{physical-path:/var/mcc,size-in-gb:50}]\"',
-          'proxy': 'enabled',
+          'proxy': 'Enabled',
           'proxy_host': '\"abc.xyz\"',
           'proxy_port': '80',
           'auto_update_day': '7',
           'auto_update_time': '05:35',
           'auto_update_week': '2',
-          'auto_update_ring': 'Slow'
+          'auto_update_ring': 'Stable'
         })
 
         # Create an MCC resource
@@ -94,6 +94,15 @@ class MccScenario(ScenarioTest):
                      self.check('proxyConfiguration.proxyHostName', 'abc.xyz'),
                      self.check('proxyConfiguration.proxyPort', '{proxy_port}'),
                  ])
+
+        # The proxy state is reported back with the customer facing alias rather than the
+        # "Required" / "None" values the service stores.
+        expanded_node_list = self.cmd('az mcc ent node list '
+                 '-g {rg} '
+                 '--mcc-resource-name {mcc_resource_name} '
+                 '--expand-output').get_output_in_json()
+        assert len(expanded_node_list) > 0
+        assert expanded_node_list[0]['proxy'] == 'Enabled'
 
         # Show MCC resource
         self.cmd('az mcc ent node show -g {rg} '
