@@ -81,7 +81,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud kubernetesversion delete --name {name} --resource-group {rg} -y"
+        "az networkcloud kubernetesversion delete --name {name} --resource-group {rg} --yes"
     )
 
 
