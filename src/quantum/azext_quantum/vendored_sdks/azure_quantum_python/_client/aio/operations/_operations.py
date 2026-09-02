@@ -49,7 +49,7 @@ from ...operations._operations import (
     build_services_sessions_listv2_request,
     build_services_sessions_open_request,
     build_services_storage_get_sas_uri_request,
-    build_services_suite_offers_list_provider_status_request,
+    build_services_suite_offers_get_provider_status_request,
     build_services_suite_offers_list_quota_usages_request,
     build_services_top_level_items_listv2_request,
 )
@@ -1283,23 +1283,23 @@ class ServicesSuiteOffersOperations:
         return list_of_elem
 
     @distributed_trace_async
-    async def list_provider_status(
+    async def get_provider_status(
         self, subscription_id: str, provider_id: str, **kwargs: Any
-    ) -> list["_models.ProviderStatus"]:
-        """List the target statuses for the given suite offer provider account.
+    ) -> "_models.ProviderStatus":
+        """Get the target status for the given suite offer provider account.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
         :param provider_id: The unique identifier of the suite offer provider account. Required.
         :type provider_id: str
-        :return: list of ProviderStatus
-        :rtype: list[~azure.quantum.models.ProviderStatus]
+        :return: ProviderStatus
+        :rtype: ~azure.quantum.models.ProviderStatus
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[list[_models.ProviderStatus]] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ProviderStatus] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -1309,7 +1309,7 @@ class ServicesSuiteOffersOperations:
         }
         error_map.update(kwargs.pop("error_map", {}) or {})
 
-        _request = build_services_suite_offers_list_provider_status_request(
+        _request = build_services_suite_offers_get_provider_status_request(
             subscription_id=subscription_id,
             provider_id=provider_id,
             api_version=self._config.api_version,
@@ -1333,15 +1333,11 @@ class ServicesSuiteOffersOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
-        deserialized = response.json()
-        # The provider status endpoint returns a single ProviderStatus object (not a list or a
-        # paged envelope), so wrap it in a list. A paged envelope or bare array is tolerated too.
-        if isinstance(deserialized, dict):
-            deserialized = deserialized.get("value", [deserialized])
-        list_of_elem = _deserialize(list[_models.ProviderStatus], deserialized)
+        # The provider status endpoint returns a single ProviderStatus object.
+        deserialized = _deserialize(_models.ProviderStatus, response.json())
         if cls:
-            return cls(list_of_elem)  # type: ignore
-        return list_of_elem
+            return cls(deserialized)  # type: ignore
+        return deserialized
 
 
 class ServicesSessionsOperations:

@@ -78,15 +78,19 @@ def suite_offer_targets(cmd, provider_id):
             f"No suite offer was found for provider account '{provider_id}' in subscription '{subscription_id}'."
         )
 
-    # 2. Data-plane (v2): fetch the provider/target statuses for that provider account.
+    # 2. Data-plane (v2): fetch the provider/target status for that provider account.
     endpoint = base_url_v2(offer.properties.location)
     client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, endpoint)
     try:
-        return client.list_provider_status(subscription_id, provider_id)
+        status = client.get_provider_status(subscription_id, provider_id)
     except AzureResourceNotFoundError as ex:
         raise ResourceNotFoundError(
             f"No target status was found for provider account '{provider_id}'."
         ) from ex
+
+    # The endpoint returns a single provider; wrap it so the table transformer shared with
+    # 'az quantum target list' can iterate provider rows.
+    return [status]
 
 
 def _minutes(standard, high):

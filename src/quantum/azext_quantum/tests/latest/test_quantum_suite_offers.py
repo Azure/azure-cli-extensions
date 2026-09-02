@@ -15,7 +15,7 @@ from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, Pro
 from ...vendored_sdks.azure_quantum_python._client._utils.model_base import _deserialize
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_suite_offers_list_quota_usages_request,
-    build_services_suite_offers_list_provider_status_request,
+    build_services_suite_offers_get_provider_status_request,
     ServicesSuiteOffersOperations,
 )
 
@@ -138,8 +138,8 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(usages[1].scope, 'SubscriptionTarget')
         self.assertEqual(usages[1].target_id, 'ionq.qpu')
 
-    def test_build_suite_offers_list_provider_status_request(self):
-        request = build_services_suite_offers_list_provider_status_request(
+    def test_build_suite_offers_get_provider_status_request(self):
+        request = build_services_suite_offers_get_provider_status_request(
             subscription_id='00000000-0000-0000-0000-000000000000',
             provider_id='ionq',
         )
@@ -150,27 +150,24 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         )
         self.assertIn('api-version=2026-01-15-preview', request.url)
 
-    def test_deserialize_provider_status_bare_array(self):
-        data = [
-            {
-                'id': 'ionq',
-                'currentAvailability': 'Available',
-                'targets': [
-                    {'id': 'ionq.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 42},
-                ],
-            }
-        ]
+    def test_deserialize_provider_status_single_object(self):
+        data = {
+            'id': 'ionq',
+            'currentAvailability': 'Available',
+            'targets': [
+                {'id': 'ionq.qpu', 'currentAvailability': 'Available', 'averageQueueTime': 42},
+            ],
+        }
 
-        providers = _deserialize(list[ProviderStatus], data)
+        provider = _deserialize(ProviderStatus, data)
 
-        self.assertEqual(len(providers), 1)
-        self.assertEqual(providers[0].id, 'ionq')
-        self.assertEqual(providers[0].current_availability, 'Available')
-        self.assertEqual(len(providers[0].targets), 1)
-        self.assertEqual(providers[0].targets[0].id, 'ionq.qpu')
-        self.assertEqual(providers[0].targets[0].average_queue_time, 42)
+        self.assertEqual(provider.id, 'ionq')
+        self.assertEqual(provider.current_availability, 'Available')
+        self.assertEqual(len(provider.targets), 1)
+        self.assertEqual(provider.targets[0].id, 'ionq.qpu')
+        self.assertEqual(provider.targets[0].average_queue_time, 42)
 
-    def test_list_provider_status_wraps_single_object(self):
+    def test_get_provider_status_returns_single_object(self):
         # The service returns a single ProviderStatus object, not a paged envelope or array.
         single = {
             'id': 'ionq',
@@ -192,15 +189,14 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
             fake_client, fake_config, fake_serialize, object()
         )
 
-        result = operations.list_provider_status(
+        result = operations.get_provider_status(
             '00000000-0000-0000-0000-000000000000', 'ionq'
         )
 
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].id, 'ionq')
-        self.assertEqual(result[0].current_availability, 'Available')
-        self.assertEqual(result[0].targets[0].id, 'ionq.qpu')
-        self.assertEqual(result[0].targets[0].average_queue_time, 7)
+        self.assertEqual(result.id, 'ionq')
+        self.assertEqual(result.current_availability, 'Available')
+        self.assertEqual(result.targets[0].id, 'ionq.qpu')
+        self.assertEqual(result.targets[0].average_queue_time, 7)
 
     def test_transform_targets_suite_offer_shape(self):
         providers = [
