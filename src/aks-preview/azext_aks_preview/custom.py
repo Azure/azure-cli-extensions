@@ -2289,6 +2289,7 @@ def aks_agentpool_add(
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     enable_managed_gpu=False,
@@ -2374,6 +2375,7 @@ def aks_agentpool_update(
     # extensions
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=False,
