@@ -123,6 +123,27 @@ def transform_suite_offer_quotas(quotas):
     return [one(quota) for quota in quotas]
 
 
+def transform_workspace_quotas(quotas):
+    def one(quota):
+        allocation = quota.get('allocation') or {}
+        usage = quota.get('usage') or {}
+
+        def cell(source, key):
+            value = source.get(key)
+            return '' if value is None else value
+
+        return OrderedDict([
+            ('Provider', quota.get('providerId', '')),
+            ('Target', quota.get('targetId', '')),
+            ('Std Allocated', cell(allocation, 'standardMinutesLifetime')),
+            ('Std Used', cell(usage, 'standardMinutesLifetime')),
+            ('High Allocated', cell(allocation, 'highMinutesLifetime')),
+            ('High Used', cell(usage, 'highMinutesLifetime'))
+        ])
+
+    return [one(quota) for quota in quotas]
+
+
 def transform_output(results):
     def one(key, value):
         repeat = round(20 * value)
@@ -187,7 +208,7 @@ def load_command_table(self, _):
         w.show_command('show', validator=validate_workspace_info)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
-        w.command('quotas', 'quotas', validator=validate_workspace_info)
+        w.command('quotas', 'quotas', validator=validate_workspace_info, table_transformer=transform_workspace_quotas)
         w.command('keys list', 'list_keys')
         w.command('keys regenerate', 'regenerate_keys')
         w.command('update', 'update')

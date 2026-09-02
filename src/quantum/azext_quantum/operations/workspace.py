@@ -11,6 +11,7 @@ import sys
 
 import time
 from builtins import set as builtin_set
+from collections import OrderedDict
 
 from azure.cli.command_modules.storage.operations.account import list_storage_accounts
 
@@ -21,9 +22,9 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError,
                                        MutuallyExclusiveArgumentError)
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
-from .._list_helper import repack_response_json
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials, base_url_v2
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
@@ -444,12 +445,83 @@ def get(cmd, resource_group_name=None, workspace_name=None):
 
 def quotas(cmd, resource_group_name, workspace_name):
     """
-    List the quotas for the given (or current) Azure Quantum workspace.
+    List the v2 target quota allocations for the given (or current) Azure Quantum workspace,
+    merged with their consumed usages.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
-    response = client.list(info.subscription, info.resource_group, info.name)
-    return repack_response_json(response)
+
+    # 1. Control-plane: fetch the workspace for its target quota allocations and region.
+    workspace = cf_workspaces(cmd.cli_ctx).get(info.resource_group, info.name)
+
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+
+    # 2. Data-plane (v2): fetch the consumed quota usages per provider in the workspace.
+    #    The workspace quotaUsages endpoint requires a providerId, so query each provider.
+    endpoint = base_url_v2(workspace.location)
+    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
+
+    usages = []
+    for provider in providers or []:
+        # Only providers with target quota allocations produce rows, so skip the rest.
+        if not provider.target_quotas:
+            continue
+        try:
+            provider_usages = client.list_quota_usages(
+                info.subscription, info.resource_group, info.name, provider.provider_id)
+        except AzureResourceNotFoundError:
+            # No usages have been recorded yet for this provider; report allocations only.
+            provider_usages = None
+        usages.extend(provider_usages or [])
+
+    # 3. Merge allocations (limits) with usages (consumed).
+    return _merge_workspace_quotas(workspace, usages)
+
+
+def _quota_minutes(standard, high):
+    """Build a {standardMinutesLifetime, highMinutesLifetime} block."""
+    return OrderedDict([
+        ("standardMinutesLifetime", standard),
+        ("highMinutesLifetime", high),
+    ])
+
+
+def _merge_workspace_quotas(workspace, usages):
+    """
+    Build one row per provider target quota allocation, attaching its matching data-plane usage.
+    Workspace quotas are reported at the WorkspaceTarget scope.
+    """
+    # Data-plane usages keyed by (provider id, target id).
+    usage_by_key = {
+        (usage.provider_id, usage.target_id): usage
+        for usage in (usages or [])
+        if usage.target_id is not None
+    }
+
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+
+    rows = []
+    for provider in sorted(providers or [], key=lambda p: p.provider_id or ""):
+        for target_quota in sorted(provider.target_quotas or [], key=lambda q: q.target_id or ""):
+            usage = usage_by_key.get((provider.provider_id, target_quota.target_id))
+            usage_values = usage.usage if usage is not None else None
+
+            row = OrderedDict()
+            row["providerId"] = provider.provider_id
+            row["scope"] = "WorkspaceTarget"
+            row["targetId"] = target_quota.target_id
+            row["allocation"] = _quota_minutes(
+                target_quota.standard_minutes_lifetime,
+                target_quota.high_minutes_lifetime,
+            )
+            row["usage"] = _quota_minutes(
+                usage_values.standard_minutes_lifetime if usage_values is not None else None,
+                usage_values.high_minutes_lifetime if usage_values is not None else None,
+            )
+            rows.append(row)
+
+    return rows
 
 
 def set(cmd, workspace_name, resource_group_name):
