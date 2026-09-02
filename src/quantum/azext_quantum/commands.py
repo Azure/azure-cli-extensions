@@ -103,21 +103,25 @@ def transform_suite_offers(suite_offers):
     return [one(offer) for offer in suite_offers]
 
 
+def _quota_hours(minutes):
+    """Convert lifetime quota minutes to hours (2 dp), matching the Quantum studio UI."""
+    return '' if minutes is None else round(minutes / 60, 2)
+
+
 def transform_suite_offer_quotas(quotas):
     def one(quota):
         allocation = quota.get('allocation') or {}
         usage = quota.get('usage') or {}
 
         def cell(source, key):
-            value = source.get(key)
-            return '' if value is None else value
+            return _quota_hours(source.get(key))
 
         return OrderedDict([
             ('Target', quota.get('targetId', '')),
-            ('Std Allocated', cell(allocation, 'standardMinutesLifetime')),
-            ('Std Used', cell(usage, 'standardMinutesLifetime')),
-            ('High Allocated', cell(allocation, 'highMinutesLifetime')),
-            ('High Used', cell(usage, 'highMinutesLifetime'))
+            ('Std Allocated (hrs)', cell(allocation, 'standardMinutesLifetime')),
+            ('Std Used (hrs)', cell(usage, 'standardMinutesLifetime')),
+            ('High Allocated (hrs)', cell(allocation, 'highMinutesLifetime')),
+            ('High Used (hrs)', cell(usage, 'highMinutesLifetime'))
         ])
 
     return [one(quota) for quota in quotas]
@@ -129,16 +133,15 @@ def transform_workspace_quotas(quotas):
         usage = quota.get('usage') or {}
 
         def cell(source, key):
-            value = source.get(key)
-            return '' if value is None else value
+            return _quota_hours(source.get(key))
 
         return OrderedDict([
             ('Provider ID', quota.get('providerId', '')),
             ('Target', quota.get('targetId', '')),
-            ('Std Allocated', cell(allocation, 'standardMinutesLifetime')),
-            ('Std Used', cell(usage, 'standardMinutesLifetime')),
-            ('High Allocated', cell(allocation, 'highMinutesLifetime')),
-            ('High Used', cell(usage, 'highMinutesLifetime'))
+            ('Std Allocated (hrs)', cell(allocation, 'standardMinutesLifetime')),
+            ('Std Used (hrs)', cell(usage, 'standardMinutesLifetime')),
+            ('High Allocated (hrs)', cell(allocation, 'highMinutesLifetime')),
+            ('High Used (hrs)', cell(usage, 'highMinutesLifetime'))
         ])
 
     return [one(quota) for quota in quotas]

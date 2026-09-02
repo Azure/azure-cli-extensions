@@ -750,14 +750,14 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         self.assertEqual(len(table), 1)
         row = table[0]
         self.assertEqual(list(row.keys()), [
-            'Provider ID', 'Target', 'Std Allocated', 'Std Used', 'High Allocated', 'High Used'
+            'Provider ID', 'Target', 'Std Allocated (hrs)', 'Std Used (hrs)', 'High Allocated (hrs)', 'High Used (hrs)'
         ])
         self.assertEqual(row['Provider ID'], 'ionq')
         self.assertEqual(row['Target'], 'ionq.qpu')
-        self.assertEqual(row['Std Allocated'], 100)
-        self.assertEqual(row['Std Used'], 40)
-        self.assertEqual(row['High Allocated'], 50)
-        self.assertEqual(row['High Used'], 10)
+        self.assertEqual(row['Std Allocated (hrs)'], 1.67)
+        self.assertEqual(row['Std Used (hrs)'], 0.67)
+        self.assertEqual(row['High Allocated (hrs)'], 0.83)
+        self.assertEqual(row['High Used (hrs)'], 0.17)
 
     def test_quotas_handler_queries_each_provider_and_merges(self):
         info = SimpleNamespace(subscription='sub', resource_group='rg', name='ws', endpoint=None)

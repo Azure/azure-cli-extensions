@@ -88,13 +88,13 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(len(table), 1)
         row = table[0]
         self.assertEqual(list(row.keys()), [
-            'Target', 'Std Allocated', 'Std Used', 'High Allocated', 'High Used'
+            'Target', 'Std Allocated (hrs)', 'Std Used (hrs)', 'High Allocated (hrs)', 'High Used (hrs)'
         ])
         self.assertEqual(row['Target'], 'ionq.qpu')
-        self.assertEqual(row['Std Allocated'], 100)
-        self.assertEqual(row['Std Used'], 40)
-        self.assertEqual(row['High Allocated'], 50)
-        self.assertEqual(row['High Used'], 10)
+        self.assertEqual(row['Std Allocated (hrs)'], 1.67)
+        self.assertEqual(row['Std Used (hrs)'], 0.67)
+        self.assertEqual(row['High Allocated (hrs)'], 0.83)
+        self.assertEqual(row['High Used (hrs)'], 0.17)
 
     def test_base_url_v2(self):
         self.assertEqual(base_url_v2('East US'), 'https://eastus-v2.quantum.azure.com/')
