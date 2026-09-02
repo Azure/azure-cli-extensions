@@ -12742,7 +12742,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={machines_pool_name} "
             "--machine-name={machine_name}",
             checks=[
-                self.check("provisioningState", "Succeeded"),
+                self.check("properties.provisioningState", "Succeeded"),
             ],
         )
 
