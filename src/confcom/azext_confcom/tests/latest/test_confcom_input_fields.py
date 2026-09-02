@@ -65,6 +65,20 @@ class HostNetworkInput(unittest.TestCase):
         self.assertIn("allow_host_network := true", boilerplate)
 
 
+class SignalsInput(unittest.TestCase):
+    def test_container_signals_default_to_kill_and_term(self):
+        policy = _load_policy(LINUX_IMAGE, "linux/amd64")
+        self.assertEqual(policy.get_images()[0]._signals, [9, 15])
+
+    def test_pause_container_signals_default_to_kill_and_term(self):
+        self.assertEqual(
+            config.DEFAULT_CONTAINERS[0][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES
+            ],
+            [9, 15],
+        )
+
+
 class RegistryChangesDroppingInput(unittest.TestCase):
     # allowRegistryChangesDropping is Windows-only and --input-only.
     def test_allow_registry_changes_dropping_true(self):
