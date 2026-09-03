@@ -18,13 +18,13 @@ class SwitchBilling(AAZCommand):
     """Switches the billing for the New Relic Monitor resource to be billed by Azure Marketplace.
 
     :example: Switches the billing for NewRelic monitor resource.
-        az new-relic monitor switch-billing --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --azure-resource-id resourceId --organization-id organizationId --user-email="UserEmail@123.com" --plan-data billing-cycle="MONTHLY" effective-date='2022-10-25T15:14:33+02:00' plan-details="nr-privateofferplan03-upfront@TID5xd5yfrmr6no@PUBIDnewrelicinc-privateoffers.nr-privateoffers1" usage-type="COMMITTED"
+        az new-relic monitor switch-billing --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --azure-resource-id resourceId --organization-id organizationId --user-email="UserEmail@123.com" --plan-data billing-cycle="MONTHLY" effective-date='2026-06-01T00:00:00Z' plan-details="newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025" usage-type="PAYG"
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/switchbilling", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/switchbilling", "2026-06-01"],
         ]
     }
 
@@ -49,9 +49,12 @@ class SwitchBilling(AAZCommand):
             help="Name of the Monitoring resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
             required=True,
         )
 
@@ -87,11 +90,13 @@ class SwitchBilling(AAZCommand):
         plan_data.billing_cycle = AAZStrArg(
             options=["billing-cycle"],
             help="Different billing cycles like MONTHLY/WEEKLY. this could be enum",
-            enum={"MONTHLY": "MONTHLY", "WEEKLY": "WEEKLY", "YEARLY": "YEARLY"},
         )
         plan_data.effective_date = AAZDateTimeArg(
             options=["effective-date"],
             help="date when plan was applied",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         plan_data.plan_details = AAZStrArg(
             options=["plan-details"],
@@ -173,7 +178,7 @@ class SwitchBilling(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -233,7 +238,7 @@ class SwitchBilling(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -266,6 +271,7 @@ class SwitchBilling(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
@@ -287,6 +293,7 @@ class SwitchBilling(AAZCommand):
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
+                flags={"read_only": True},
             )
             properties.liftr_resource_preference = AAZIntType(
                 serialized_name="liftrResourcePreference",
@@ -298,9 +305,11 @@ class SwitchBilling(AAZCommand):
             )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
+                flags={"read_only": True},
             )
             properties.monitoring_status = AAZStrType(
                 serialized_name="monitoringStatus",
+                flags={"read_only": True},
             )
             properties.new_relic_account_properties = AAZObjectType(
                 serialized_name="newRelicAccountProperties",
@@ -313,9 +322,13 @@ class SwitchBilling(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.saa_s_azure_subscription_status = AAZStrType(
                 serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.saa_s_data = AAZObjectType(
+                serialized_name="saaSData",
             )
             properties.subscription_state = AAZStrType(
                 serialized_name="subscriptionState",
@@ -379,6 +392,11 @@ class SwitchBilling(AAZCommand):
             )
             plan_data.usage_type = AAZStrType(
                 serialized_name="usageType",
+            )
+
+            saa_s_data = cls._schema_on_200.properties.saa_s_data
+            saa_s_data.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
             )
 
             user_info = cls._schema_on_200.properties.user_info

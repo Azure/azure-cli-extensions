@@ -22,9 +22,9 @@ class GetBillingInfo(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getbillinginfo", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getbillinginfo", "2026-06-01"],
         ]
     }
 
@@ -54,8 +54,7 @@ class GetBillingInfo(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group","--g"],
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
             required=True,
         )
         return cls._args_schema
@@ -125,7 +124,7 @@ class GetBillingInfo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -180,6 +179,12 @@ class GetBillingInfo(AAZCommand):
             )
             marketplace_saas_info.marketplace_subscription_name = AAZStrType(
                 serialized_name="marketplaceSubscriptionName",
+            )
+            marketplace_saas_info.offer_id = AAZStrType(
+                serialized_name="offerId",
+            )
+            marketplace_saas_info.publisher_id = AAZStrType(
+                serialized_name="publisherId",
             )
 
             partner_billing_entity = cls._schema_on_200.partner_billing_entity

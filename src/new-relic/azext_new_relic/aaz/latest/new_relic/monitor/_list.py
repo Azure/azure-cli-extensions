@@ -22,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/newrelic.observability/monitors", "2024-01-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/newrelic.observability/monitors", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors", "2026-06-01"],
         ]
     }
 
@@ -47,18 +47,18 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            options=["--resource-group"],
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.MonitorsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.MonitorsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.MonitorsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,6 +73,294 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class MonitorsListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/NewRelic.Observability/monitors",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2026-06-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZIdentityObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+                nullable=True,
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.account_creation_source = AAZStrType(
+                serialized_name="accountCreationSource",
+            )
+            properties.liftr_resource_category = AAZStrType(
+                serialized_name="liftrResourceCategory",
+                flags={"read_only": True},
+            )
+            properties.liftr_resource_preference = AAZIntType(
+                serialized_name="liftrResourcePreference",
+                flags={"read_only": True},
+            )
+            properties.marketplace_subscription_id = AAZStrType(
+                serialized_name="marketplaceSubscriptionId",
+                flags={"read_only": True},
+            )
+            properties.marketplace_subscription_status = AAZStrType(
+                serialized_name="marketplaceSubscriptionStatus",
+                flags={"read_only": True},
+            )
+            properties.monitoring_status = AAZStrType(
+                serialized_name="monitoringStatus",
+                flags={"read_only": True},
+            )
+            properties.new_relic_account_properties = AAZObjectType(
+                serialized_name="newRelicAccountProperties",
+            )
+            properties.org_creation_source = AAZStrType(
+                serialized_name="orgCreationSource",
+            )
+            properties.plan_data = AAZObjectType(
+                serialized_name="planData",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.saa_s_data = AAZObjectType(
+                serialized_name="saaSData",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
+            )
+            properties.user_info = AAZObjectType(
+                serialized_name="userInfo",
+            )
+
+            new_relic_account_properties = cls._schema_on_200.value.Element.properties.new_relic_account_properties
+            new_relic_account_properties.account_info = AAZObjectType(
+                serialized_name="accountInfo",
+            )
+            new_relic_account_properties.organization_info = AAZObjectType(
+                serialized_name="organizationInfo",
+            )
+            new_relic_account_properties.single_sign_on_properties = AAZObjectType(
+                serialized_name="singleSignOnProperties",
+            )
+            new_relic_account_properties.user_id = AAZStrType(
+                serialized_name="userId",
+            )
+
+            account_info = cls._schema_on_200.value.Element.properties.new_relic_account_properties.account_info
+            account_info.account_id = AAZStrType(
+                serialized_name="accountId",
+            )
+            account_info.ingestion_key = AAZStrType(
+                serialized_name="ingestionKey",
+                flags={"secret": True},
+            )
+            account_info.region = AAZStrType()
+
+            organization_info = cls._schema_on_200.value.Element.properties.new_relic_account_properties.organization_info
+            organization_info.organization_id = AAZStrType(
+                serialized_name="organizationId",
+            )
+
+            single_sign_on_properties = cls._schema_on_200.value.Element.properties.new_relic_account_properties.single_sign_on_properties
+            single_sign_on_properties.enterprise_app_id = AAZStrType(
+                serialized_name="enterpriseAppId",
+            )
+            single_sign_on_properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            single_sign_on_properties.single_sign_on_state = AAZStrType(
+                serialized_name="singleSignOnState",
+            )
+            single_sign_on_properties.single_sign_on_url = AAZStrType(
+                serialized_name="singleSignOnUrl",
+            )
+
+            plan_data = cls._schema_on_200.value.Element.properties.plan_data
+            plan_data.billing_cycle = AAZStrType(
+                serialized_name="billingCycle",
+            )
+            plan_data.effective_date = AAZStrType(
+                serialized_name="effectiveDate",
+            )
+            plan_data.plan_details = AAZStrType(
+                serialized_name="planDetails",
+            )
+            plan_data.usage_type = AAZStrType(
+                serialized_name="usageType",
+            )
+
+            saa_s_data = cls._schema_on_200.value.Element.properties.saa_s_data
+            saa_s_data.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
+            )
+
+            user_info = cls._schema_on_200.value.Element.properties.user_info
+            user_info.country = AAZStrType()
+            user_info.email_address = AAZStrType(
+                serialized_name="emailAddress",
+            )
+            user_info.first_name = AAZStrType(
+                serialized_name="firstName",
+            )
+            user_info.last_name = AAZStrType(
+                serialized_name="lastName",
+            )
+            user_info.phone_number = AAZStrType(
+                serialized_name="phoneNumber",
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class MonitorsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -118,7 +406,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -165,7 +453,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -198,6 +486,7 @@ class List(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
@@ -219,6 +508,7 @@ class List(AAZCommand):
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
+                flags={"read_only": True},
             )
             properties.liftr_resource_preference = AAZIntType(
                 serialized_name="liftrResourcePreference",
@@ -230,9 +520,11 @@ class List(AAZCommand):
             )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
+                flags={"read_only": True},
             )
             properties.monitoring_status = AAZStrType(
                 serialized_name="monitoringStatus",
+                flags={"read_only": True},
             )
             properties.new_relic_account_properties = AAZObjectType(
                 serialized_name="newRelicAccountProperties",
@@ -245,9 +537,13 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.saa_s_azure_subscription_status = AAZStrType(
                 serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.saa_s_data = AAZObjectType(
+                serialized_name="saaSData",
             )
             properties.subscription_state = AAZStrType(
                 serialized_name="subscriptionState",
@@ -313,279 +609,9 @@ class List(AAZCommand):
                 serialized_name="usageType",
             )
 
-            user_info = cls._schema_on_200.value.Element.properties.user_info
-            user_info.country = AAZStrType()
-            user_info.email_address = AAZStrType(
-                serialized_name="emailAddress",
-            )
-            user_info.first_name = AAZStrType(
-                serialized_name="firstName",
-            )
-            user_info.last_name = AAZStrType(
-                serialized_name="lastName",
-            )
-            user_info.phone_number = AAZStrType(
-                serialized_name="phoneNumber",
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class MonitorsListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/NewRelic.Observability/monitors",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-01-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.identity = AAZObjectType()
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.account_creation_source = AAZStrType(
-                serialized_name="accountCreationSource",
-            )
-            properties.liftr_resource_category = AAZStrType(
-                serialized_name="liftrResourceCategory",
-            )
-            properties.liftr_resource_preference = AAZIntType(
-                serialized_name="liftrResourcePreference",
-                flags={"read_only": True},
-            )
-            properties.marketplace_subscription_id = AAZStrType(
-                serialized_name="marketplaceSubscriptionId",
-                flags={"read_only": True},
-            )
-            properties.marketplace_subscription_status = AAZStrType(
-                serialized_name="marketplaceSubscriptionStatus",
-            )
-            properties.monitoring_status = AAZStrType(
-                serialized_name="monitoringStatus",
-            )
-            properties.new_relic_account_properties = AAZObjectType(
-                serialized_name="newRelicAccountProperties",
-            )
-            properties.org_creation_source = AAZStrType(
-                serialized_name="orgCreationSource",
-            )
-            properties.plan_data = AAZObjectType(
-                serialized_name="planData",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-            )
-            properties.saa_s_azure_subscription_status = AAZStrType(
-                serialized_name="saaSAzureSubscriptionStatus",
-            )
-            properties.subscription_state = AAZStrType(
-                serialized_name="subscriptionState",
-            )
-            properties.user_info = AAZObjectType(
-                serialized_name="userInfo",
-            )
-
-            new_relic_account_properties = cls._schema_on_200.value.Element.properties.new_relic_account_properties
-            new_relic_account_properties.account_info = AAZObjectType(
-                serialized_name="accountInfo",
-            )
-            new_relic_account_properties.organization_info = AAZObjectType(
-                serialized_name="organizationInfo",
-            )
-            new_relic_account_properties.single_sign_on_properties = AAZObjectType(
-                serialized_name="singleSignOnProperties",
-            )
-            new_relic_account_properties.user_id = AAZStrType(
-                serialized_name="userId",
-            )
-
-            account_info = cls._schema_on_200.value.Element.properties.new_relic_account_properties.account_info
-            account_info.account_id = AAZStrType(
-                serialized_name="accountId",
-            )
-            account_info.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
-                flags={"secret": True},
-            )
-            account_info.region = AAZStrType()
-
-            organization_info = cls._schema_on_200.value.Element.properties.new_relic_account_properties.organization_info
-            organization_info.organization_id = AAZStrType(
-                serialized_name="organizationId",
-            )
-
-            single_sign_on_properties = cls._schema_on_200.value.Element.properties.new_relic_account_properties.single_sign_on_properties
-            single_sign_on_properties.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
-            )
-            single_sign_on_properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-            )
-            single_sign_on_properties.single_sign_on_state = AAZStrType(
-                serialized_name="singleSignOnState",
-            )
-            single_sign_on_properties.single_sign_on_url = AAZStrType(
-                serialized_name="singleSignOnUrl",
-            )
-
-            plan_data = cls._schema_on_200.value.Element.properties.plan_data
-            plan_data.billing_cycle = AAZStrType(
-                serialized_name="billingCycle",
-            )
-            plan_data.effective_date = AAZStrType(
-                serialized_name="effectiveDate",
-            )
-            plan_data.plan_details = AAZStrType(
-                serialized_name="planDetails",
-            )
-            plan_data.usage_type = AAZStrType(
-                serialized_name="usageType",
+            saa_s_data = cls._schema_on_200.value.Element.properties.saa_s_data
+            saa_s_data.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
             )
 
             user_info = cls._schema_on_200.value.Element.properties.user_info

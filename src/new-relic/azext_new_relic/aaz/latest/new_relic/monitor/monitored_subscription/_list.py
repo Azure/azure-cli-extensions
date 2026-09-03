@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor monitored-subscription show",
+    "new-relic monitor monitored-subscription list",
 )
-class Show(AAZCommand):
-    """Get detailed information about all subscriptions currently being monitored by the New Relic monitor resource.
+class List(AAZCommand):
+    """List the subscriptions currently being monitored by the New Relic monitor resource.
 
     :example: List the subscriptions currently being monitored by the NewRelic monitor resource.
-        az new-relic monitor monitored-subscription show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
+        az new-relic monitor monitored-subscription list --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
     """
 
     _aaz_info = {
         "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions", "2026-06-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,22 +45,10 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="The configuration name. Only 'default' value is supported.",
-            required=True,
-            id_part="child_name_1",
-            default="default",
-            enum={"default": "default"},
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^.*$",
             ),
@@ -72,7 +61,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitoredSubscriptionsGet(ctx=self.ctx)()
+        self.MonitoredSubscriptionsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,10 +73,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class MonitoredSubscriptionsGet(AAZHttpOperation):
+    class MonitoredSubscriptionsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -101,7 +91,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/monitoredSubscriptions",
                 **self.url_parameters
             )
 
@@ -116,10 +106,6 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -172,22 +158,33 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.monitored_subscription_list = AAZListType(
                 serialized_name="monitoredSubscriptionList",
             )
@@ -196,10 +193,10 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            monitored_subscription_list = cls._schema_on_200.properties.monitored_subscription_list
+            monitored_subscription_list = cls._schema_on_200.value.Element.properties.monitored_subscription_list
             monitored_subscription_list.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.monitored_subscription_list.Element
+            _element = cls._schema_on_200.value.Element.properties.monitored_subscription_list.Element
             _element.error = AAZStrType()
             _element.status = AAZStrType()
             _element.subscription_id = AAZStrType(
@@ -209,7 +206,7 @@ class Show(AAZCommand):
                 serialized_name="tagRules",
             )
 
-            tag_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules
+            tag_rules = cls._schema_on_200.value.Element.properties.monitored_subscription_list.Element.tag_rules
             tag_rules.log_rules = AAZObjectType(
                 serialized_name="logRules",
             )
@@ -221,7 +218,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            log_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules
+            log_rules = cls._schema_on_200.value.Element.properties.monitored_subscription_list.Element.tag_rules.log_rules
             log_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
@@ -235,11 +232,11 @@ class Show(AAZCommand):
                 serialized_name="sendSubscriptionLogs",
             )
 
-            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
+            filtering_tags = cls._schema_on_200.value.Element.properties.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
+            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
-            metric_rules = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules
+            metric_rules = cls._schema_on_200.value.Element.properties.monitored_subscription_list.Element.tag_rules.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
@@ -250,11 +247,11 @@ class Show(AAZCommand):
                 serialized_name="userEmail",
             )
 
-            filtering_tags = cls._schema_on_200.properties.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
+            filtering_tags = cls._schema_on_200.value.Element.properties.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _ShowHelper._build_schema_filtering_tag_read(filtering_tags.Element)
+            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -277,8 +274,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
     _schema_filtering_tag_read = None
 
@@ -302,4 +299,4 @@ class _ShowHelper:
         _schema.value = cls._schema_filtering_tag_read.value
 
 
-__all__ = ["Show"]
+__all__ = ["List"]
