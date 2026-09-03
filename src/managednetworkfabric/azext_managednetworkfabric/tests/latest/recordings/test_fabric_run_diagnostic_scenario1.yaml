@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: '{"operationType": "RuntimeConfiguration", "runtimeConfiguration": {"category": "InfrastructureNetwork", "filters": [{"deviceRole": "ToR", "resourceIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-5-1-CompRack1-TOR1"]}]}}'
+    headers:
+      CommandName:
+      - networkfabric fabric run-diagnostic
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --operation-type --runtime-config
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nffab3-5-1/runDiagnostics?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"fabric-diagnostic-operation","name":"fabric-diagnostic-operation","status":"Succeeded","properties":{"diagnosticsUrl":"https://example.blob.core.windows.net/results/fabric-runtime.json"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -36,7 +36,7 @@ def step_commit(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric fabric commit-configuration --resource-name {name} --resource-group {resourceGroup} --commit-policy {commitPolicy} --commit-stage {commitStage} --devices {devices}",
+        "az networkfabric fabric commit-config --resource-name {name} --resource-group {resourceGroup} --commit-policy {commitPolicy} --commit-stage {commitStage} --devices {devices}",
     )
 
 

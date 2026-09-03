@@ -45,7 +45,7 @@ def step_update_admin_state_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork update-admin-state --resource-name {name} --resource-group {rg} --l3domain {l3Domain} --state {state} --resource-ids {resourceIds}"
+        "az networkfabric internalnetwork update-admin-state --resource-name {name} --resource-group {rg} --l3domain {l3Domain} --state {state} --resource-ids {resourceIds} -f {force}"
     )
 
 
@@ -54,7 +54,7 @@ def step_update_admin_state_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internalnetwork update-admin-state --resource-name {name} --resource-group {rg} --l3-isolation-domain-name {l3Domain} --state {state} --resource-ids {resourceIds}"
+        "az networkfabric internalnetwork update-admin-state --resource-name {name} --resource-group {rg} --l3-isolation-domain-name {l3Domain} --state {state} --resource-ids {resourceIds} --force {force}"
     )
 
 
@@ -70,6 +70,7 @@ class GA_InternalNNetworkUpdateAdminStateScenarioTest1(ScenarioTest):
                 "l3Domain": CONFIG.get("INTERNAL_NETWORK", "l3_domain"),
                 "state": CONFIG.get("INTERNAL_NETWORK", "enabled_state"),
                 "resourceIds": CONFIG.get("INTERNAL_NETWORK", "resource_ids"),
+                "force": CONFIG.get("INTERNAL_NETWORK", "force_flag"),
             }
         )
 

@@ -27,7 +27,10 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_show_scenario1(test, checks=[])
+    step_show_scenario1(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     step_list_resource_group_scenario1(test, checks=[])
     step_update_admin_state_Disable(test, checks=[])
     step_update_admin_state_Enable(test, checks=[])
@@ -49,7 +52,8 @@ def step_show_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric interface show --resource-name {name} --resource-group {rg} --device {deviceName}"
+        "az networkfabric interface show --resource-name {name} --resource-group {rg} --device {deviceName}",
+        checks=checks,
     )
 
 
@@ -109,7 +113,7 @@ def step_update_admin_state_Enable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric interface update-admin-state --resource-group {rg} --device {deviceName} --resource-name {name} --state {stateEnable} --resource-ids {resourceIds}"
+        "az networkfabric interface update-admin-state --resource-group {rg} --device {deviceName} --resource-name {name} --state {stateEnable} --resource-ids {resourceIds} -f {force}"
     )
 
 
@@ -118,7 +122,7 @@ def step_update_admin_state_Disable(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric interface update-admin-state --resource-group {rg} --network-device-name {deviceName} --resource-name {name} --state {stateDisable} --resource-ids {resourceIds}"
+        "az networkfabric interface update-admin-state --resource-group {rg} --network-device-name {deviceName} --resource-name {name} --state {stateDisable} --resource-ids {resourceIds} --force {force}"
     )
 
 
@@ -136,6 +140,7 @@ class GA_InterfaceScenarioTest1(ScenarioTest):
                 "stateEnable": CONFIG.get("NETWORK_INTERFACE", "state_enable"),
                 "stateDisable": CONFIG.get("NETWORK_INTERFACE", "state_disable"),
                 "resourceIds": CONFIG.get("NETWORK_INTERFACE", "resource_ids"),
+                "force": CONFIG.get("NETWORK_INTERFACE", "force_flag"),
                 "additionalDescription": CONFIG.get(
                     "NETWORK_INTERFACE", "additional_description"
                 ),

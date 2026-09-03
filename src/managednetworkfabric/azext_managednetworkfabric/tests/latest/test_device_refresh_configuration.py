@@ -41,21 +41,21 @@ def call_scenario2(test):
 
 
 def step_refresh_configuration_scenario2(test, checks=None):
-    """Device refresh-configuration operation"""
+    """Device refresh-config operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device refresh-configuration --resource-group {rg} --resource-name {name}",
+        "az networkfabric device refresh-config --resource-group {rg} --resource-name {name}",
         checks=checks,
     )
 
 
 def step_refresh_configuration_scenario2(test, checks=None):
-    """Device refresh-configuration operation"""
+    """Device refresh-config operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device refresh-configuration --resource-group {rg} --network-device-name {name}",
+        "az networkfabric device refresh-config --resource-group {rg} --resource-name {name}",
         checks=checks,
     )
 
@@ -74,5 +74,5 @@ class GA_DeviceRefreshConfigurationScenarioTest1(ScenarioTest):
 
     @AllowLargeResponse()
     def test_GA_device_refresh_configuration_scenario1(self):
-        """test scenario for Device refresh-configuration operation"""
+        """test scenario for Device refresh-config operation"""
         call_scenario1(self)

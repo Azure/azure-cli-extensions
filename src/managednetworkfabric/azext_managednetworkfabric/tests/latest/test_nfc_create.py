@@ -27,7 +27,10 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_create_scenario1(test, checks=[])
+    step_create_scenario1(
+        test,
+        checks=[test.check("provisioningState", "Succeeded")],
+    )
     cleanup_scenario(test)
 
 
@@ -53,7 +56,8 @@ def step_create_scenario1(test, checks=None):
         "az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name} --annotation {annotation}"
         " --ipv4-address-space {ipv4AddressSpace} --ipv6-address-space {ipv6AddressSpace} --is-workload-management-network-enabled {isWorkloadManagementNetworkEnabled} --nfc-sku {nfcSku}"
         " --infra-er-connections {infraERConnections} --workload-express-route-connections {workloadERConnections} --mrg name={managedResourceGroupName} --mrg location={managedResourceGroupLocation}"
-        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity} --public-connectivity infrastructure-vpn-gateway-sku={infraVpnSku} tenant-vpn-gateway-sku={tenantVpnSku}"
+        " --vm-profile vm-sku-name={vmSkuName}",
         checks=checks,
     )
 
@@ -66,7 +70,8 @@ def step_create_scenario2(test, checks=None):
         "az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name} --annotation {annotation}"
         " --ipv4-address-space {ipv4AddressSpace} --ipv6-address-space {ipv6AddressSpace} --is-workload-management-network-enabled {isWorkloadManagementNetworkEnabled} --nfc-sku {nfcSku}"
         " --infrastructure-express-route-connections {infraERConnections} --workload-er-connections {workloadERConnections} --mrg name={managedResourceGroupName} --mrg location={managedResourceGroupLocation}"
-        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity} --public-connectivity infrastructure-vpn-gateway-sku={infraVpnSku} tenant-vpn-gateway-sku={tenantVpnSku}"
+        " --vm-profile vm-sku-name={vmSkuName}",
         checks=checks,
     )
 
@@ -130,6 +135,11 @@ class GA_NFCCreateScenarioTest1(ScenarioTest):
                 "systemAssignedIdentity": CONFIG.get(
                     "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
+                "infraVpnSku": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "infra_vpn_sku"),
+                "tenantVpnSku": CONFIG.get(
+                    "NETWORK_FABRIC_CONTROLLER", "tenant_vpn_sku"
+                ),
+                "vmSkuName": CONFIG.get("NETWORK_FABRIC_CONTROLLER", "vm_sku_name"),
             }
         )
 

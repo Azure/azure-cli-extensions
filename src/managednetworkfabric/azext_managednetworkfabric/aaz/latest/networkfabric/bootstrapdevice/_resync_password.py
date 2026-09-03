@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric fabric view-device-configuration",
+    "networkfabric bootstrapdevice resync-password",
 )
-class ViewDeviceConfiguration(AAZCommand):
-    """Post action: Triggers view of network fabric configuration.
+class ResyncPassword(AAZCommand):
+    """Updates the Network Bootstrap Device to use the latest passwords. Does not generate new passwords. Allows network bootstrap devices missed during a previous password rotation to be brought back into sync.
 
-    :example: View device configuration on the Network Fabric
-        az networkfabric fabric view-device-configuration --resource-group example-rg --resource-name example-fabric
+    :example: Resync the latest passwords to the Network Bootstrap Device
+        az networkfabric bootstrapdevice resync-password --resource-group example-rg --resource-name example-device
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/viewdeviceconfiguration", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/resyncpasswords", "2026-07-15-preview"],
         ]
     }
 
@@ -45,9 +45,9 @@ class ViewDeviceConfiguration(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_fabric_name = AAZStrArg(
-            options=["--resource-name", "--network-fabric-name"],
-            help="Name of the Network Fabric.",
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
+            help="Name of the Network Bootstrap Device.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -61,7 +61,7 @@ class ViewDeviceConfiguration(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkFabricsViewDeviceConfiguration(ctx=self.ctx)()
+        yield self.NetworkBootstrapDevicesResyncPasswords(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +76,7 @@ class ViewDeviceConfiguration(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkFabricsViewDeviceConfiguration(AAZHttpOperation):
+    class NetworkBootstrapDevicesResyncPasswords(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +106,7 @@ class ViewDeviceConfiguration(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabrics/{networkFabricName}/viewDeviceConfiguration",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/{networkBootstrapDeviceName}/resyncPasswords",
                 **self.url_parameters
             )
 
@@ -122,7 +122,7 @@ class ViewDeviceConfiguration(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.network_fabric_name,
+                    "networkBootstrapDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -140,7 +140,7 @@ class ViewDeviceConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -177,7 +177,7 @@ class ViewDeviceConfiguration(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _ViewDeviceConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _ResyncPasswordHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType(
                 nullable=True,
             )
@@ -186,7 +186,6 @@ class ViewDeviceConfiguration(AAZCommand):
             _schema_on_200.percent_complete = AAZFloatType(
                 serialized_name="percentComplete",
             )
-            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
                 nullable=True,
@@ -201,18 +200,13 @@ class ViewDeviceConfiguration(AAZCommand):
 
             operations = cls._schema_on_200.operations
             operations.Element = AAZObjectType()
-            _ViewDeviceConfigurationHelper._build_schema_operation_status_result_read(operations.Element)
-
-            properties = cls._schema_on_200.properties
-            properties.device_configuration_url = AAZStrType(
-                serialized_name="deviceConfigurationUrl",
-            )
+            _ResyncPasswordHelper._build_schema_operation_status_result_read(operations.Element)
 
             return cls._schema_on_200
 
 
-class _ViewDeviceConfigurationHelper:
-    """Helper class for ViewDeviceConfiguration"""
+class _ResyncPasswordHelper:
+    """Helper class for ResyncPassword"""
 
     _schema_error_detail_read = None
 
@@ -326,4 +320,4 @@ class _ViewDeviceConfigurationHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["ViewDeviceConfiguration"]
+__all__ = ["ResyncPassword"]

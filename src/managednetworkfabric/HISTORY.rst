@@ -3,6 +3,29 @@
 Release History
 ===============
 
+10.0.0b3
+++++++++
+* New preview CLI version for latest api 2026-07-15-preview wihch includes 'Bring your own fabric (BYOF)' updates.
+* Adds the following new commands for command group `bootstrapdevice`:
+*  - `reboot`
+*  - `refresh-config`
+*  - `resync-password`
+*  - `update-admin-state`
+* Adds the new command `update-admin-state` for command group `bootstrapinterface `.
+* New `bootstrapdevice` commands introduced: `bootstrapdevice run-ro-rommand` and `bootstrapdevice run-rw-rommand`.
+* New `device` commands introduced: `device run-diagnostic` and `device run-validation`.
+* New `fabric` commands introduced: `fabric run-diagnostic` and `fabric run-validation`.
+* Adds the following new command/command groups:
+*  - `edgeconnector` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 delegation` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vlan` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf delegation` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf network` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf peering` with `create`, `update`, `show`, `list`, and `delete` commands.
+*  - `fabric-v2 vrf servicepeer` with `create`, `update`, `show`, `list`, `delete`, `confirm-attachment`, `prepare-attachment`, and `revoke` commands.
+
 10.0.0b2
 ++++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).

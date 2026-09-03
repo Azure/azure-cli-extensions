@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: '{"command": "show version"}'
+    headers:
+      CommandName:
+      - networkfabric bootstrapdevice run-ro-command
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --network-bootstrap-device-name --resource-group --command
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/runRoCommand?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"bootstrap-ro-operation","name":"bootstrap-ro-operation","status":"Succeeded","properties":{"configurationState":"Succeeded","deviceConfigurationPreview":"show version output","outputUrl":"https://example.blob.core.windows.net/results/bootstrap-ro.txt"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

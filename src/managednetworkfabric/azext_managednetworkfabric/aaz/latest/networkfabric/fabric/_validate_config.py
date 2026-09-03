@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric device refresh-configuration",
+    "networkfabric fabric validate-config",
 )
-class RefreshConfiguration(AAZCommand):
-    """Refreshes the configuration the Network Device.
+class ValidateConfig(AAZCommand):
+    """Validates the configuration of the underlying resources in the given Network Fabric instance.
 
-    :example: Run refresh configuration on the Network Device
-        az networkfabric device refresh-configuration --resource-group example-rg --resource-name example-device
+    :example: Validate the configuration on the Network Fabric
+        az networkfabric fabric validate-config -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/refreshconfiguration", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/validateconfiguration", "2026-07-15-preview"],
         ]
     }
 
@@ -45,9 +45,9 @@ class RefreshConfiguration(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_device_name = AAZStrArg(
-            options=["--resource-name", "--network-device-name"],
-            help="Name of the Network Device.",
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
+            help="Name of the Network Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,11 +57,21 @@ class RefreshConfiguration(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.validate_action = AAZStrArg(
+            options=["--validate-action"],
+            arg_group="Body",
+            help="Validate action that to be performed",
+            enum={"Cabling": "Cabling", "Configuration": "Configuration", "Connectivity": "Connectivity"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkDevicesRefreshConfiguration(ctx=self.ctx)()
+        yield self.NetworkFabricsValidateConfiguration(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +86,7 @@ class RefreshConfiguration(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkDevicesRefreshConfiguration(AAZHttpOperation):
+    class NetworkFabricsValidateConfiguration(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +116,7 @@ class RefreshConfiguration(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/refreshConfiguration",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabrics/{networkFabricName}/validateConfiguration",
                 **self.url_parameters
             )
 
@@ -122,7 +132,7 @@ class RefreshConfiguration(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkDeviceName", self.ctx.args.network_device_name,
+                    "networkFabricName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -140,7 +150,7 @@ class RefreshConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -150,10 +160,24 @@ class RefreshConfiguration(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("validateAction", AAZStrType, ".validate_action")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -177,7 +201,7 @@ class RefreshConfiguration(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _RefreshConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _ValidateConfigHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType(
                 nullable=True,
             )
@@ -186,6 +210,7 @@ class RefreshConfiguration(AAZCommand):
             _schema_on_200.percent_complete = AAZFloatType(
                 serialized_name="percentComplete",
             )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
                 nullable=True,
@@ -200,13 +225,20 @@ class RefreshConfiguration(AAZCommand):
 
             operations = cls._schema_on_200.operations
             operations.Element = AAZObjectType()
-            _RefreshConfigurationHelper._build_schema_operation_status_result_read(operations.Element)
+            _ValidateConfigHelper._build_schema_operation_status_result_read(operations.Element)
+
+            properties = cls._schema_on_200.properties
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.url = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _RefreshConfigurationHelper:
-    """Helper class for RefreshConfiguration"""
+class _ValidateConfigHelper:
+    """Helper class for ValidateConfig"""
 
     _schema_error_detail_read = None
 
@@ -320,4 +352,4 @@ class _RefreshConfigurationHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["RefreshConfiguration"]
+__all__ = ["ValidateConfig"]

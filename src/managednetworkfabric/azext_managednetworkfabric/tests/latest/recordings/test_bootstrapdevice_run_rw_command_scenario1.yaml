@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: '{"command": "show running-config", "commandUrl": "https://example.blob.core.windows.net/commands/config.txt"}'
+    headers:
+      CommandName:
+      - networkfabric bootstrapdevice run-rw-command
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --resource-group --command --command-url
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/runRwCommand?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"bootstrap-rw-operation","name":"bootstrap-rw-operation","status":"Succeeded","properties":{"configurationState":"Succeeded","outputUrl":"https://example.blob.core.windows.net/results/bootstrap-rw.txt"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

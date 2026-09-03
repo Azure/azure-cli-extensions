@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric fabric validate-configuration",
+    "networkfabric device run-diagnostic",
 )
-class ValidateConfiguration(AAZCommand):
-    """Validates the configuration of the underlying resources in the given Network Fabric instance.
+class RunDiagnostic(AAZCommand):
+    """Runs a diagnostics operation on the Network Device.
 
-    :example: Validate the configuration on the Network Fabric
-        az networkfabric fabric validate-configuration -g "example-rg" --resource-name "example-nf" --validate-action "Cabling"
+    :example: Run diagnostics on a Network Device.
+        az networkfabric device run-diagnostic --resource-group example-rg --resource-name example-device --operation-type CollectSupportBundle --support-bundle "{support-case-number:2026-07-01T17-00-00}"
     """
 
     _aaz_info = {
-        "version": "2026-01-15-preview",
+        "version": "2026-07-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/validateconfiguration", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/rundiagnostics", "2026-07-15-preview"],
         ]
     }
 
@@ -47,7 +47,7 @@ class ValidateConfiguration(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Fabric.",
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -61,17 +61,64 @@ class ValidateConfiguration(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.validate_action = AAZStrArg(
-            options=["--validate-action"],
+        _args_schema.operation_type = AAZStrArg(
+            options=["--operation-type"],
             arg_group="Body",
-            help="Validate action that to be performed",
-            enum={"Cabling": "Cabling", "Configuration": "Configuration", "Connectivity": "Connectivity"},
+            help="Type of diagnostics operation to be performed on the Network Device.",
+            required=True,
+            enum={"CollectRuntimeConfiguration": "CollectRuntimeConfiguration", "CollectSupportBundle": "CollectSupportBundle"},
+        )
+        _args_schema.runtime_config = AAZObjectArg(
+            options=["--runtime-config"],
+            arg_group="Body",
+            help="RuntimeConfigurationRequest for the Network Fabric. Required when operationType is RuntimeConfiguration.",
+        )
+        _args_schema.support_bundle = AAZObjectArg(
+            options=["--support-bundle"],
+            arg_group="Body",
+            help="Support bundle collection request for the Network Device. Required when operationType is CollectSupportBundle.",
+        )
+
+        runtime_config = cls._args_schema.runtime_config
+        runtime_config.category = AAZStrArg(
+            options=["category"],
+            help="Configuration Category for the Network Fabric.",
+            enum={"InfrastructureNetwork": "InfrastructureNetwork", "NetworkPacketBroker": "NetworkPacketBroker", "TenantNetwork": "TenantNetwork"},
+        )
+        runtime_config.filters = AAZListArg(
+            options=["filters"],
+            help="Filter to apply when collecting configuration for the Network Fabric. If not provided, configuration will be collected for all devices.",
+        )
+
+        filters = cls._args_schema.runtime_config.filters
+        filters.Element = AAZObjectArg()
+
+        _element = cls._args_schema.runtime_config.filters.Element
+        _element.device_role = AAZStrArg(
+            options=["device-role"],
+            help="The types of devices for which the configuration needs to be collected. If not provided, configuration will be collected for all device types.",
+            enum={"CE": "CE", "Management": "Management", "NPB": "NPB", "TS": "TS", "ToR": "ToR"},
+        )
+        _element.resource_ids = AAZListArg(
+            options=["resource-ids"],
+            help="Resource Identifier of which the configuration needs to be collected. If not provided, configuration will be collected for all devices.",
+        )
+
+        resource_ids = cls._args_schema.runtime_config.filters.Element.resource_ids
+        resource_ids.Element = AAZResourceIdArg(
+            nullable=True,
+        )
+
+        support_bundle = cls._args_schema.support_bundle
+        support_bundle.case_number = AAZStrArg(
+            options=["case-number"],
+            help="Support case number associated with the support bundle request.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkFabricsValidateConfiguration(ctx=self.ctx)()
+        yield self.NetworkDevicesRunDiagnostics(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +133,7 @@ class ValidateConfiguration(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkFabricsValidateConfiguration(AAZHttpOperation):
+    class NetworkDevicesRunDiagnostics(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +163,7 @@ class ValidateConfiguration(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkFabrics/{networkFabricName}/validateConfiguration",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/runDiagnostics",
                 **self.url_parameters
             )
 
@@ -132,7 +179,7 @@ class ValidateConfiguration(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkFabricName", self.ctx.args.resource_name,
+                    "networkDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -150,7 +197,7 @@ class ValidateConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-15-preview",
+                    "api-version", "2026-07-15-preview",
                     required=True,
                 ),
             }
@@ -175,7 +222,31 @@ class ValidateConfiguration(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("validateAction", AAZStrType, ".validate_action")
+            _builder.set_prop("operationType", AAZStrType, ".operation_type", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("runtimeConfiguration", AAZObjectType, ".runtime_config")
+            _builder.set_prop("supportBundle", AAZObjectType, ".support_bundle")
+
+            runtime_configuration = _builder.get(".runtimeConfiguration")
+            if runtime_configuration is not None:
+                runtime_configuration.set_prop("category", AAZStrType, ".category")
+                runtime_configuration.set_prop("filters", AAZListType, ".filters")
+
+            filters = _builder.get(".runtimeConfiguration.filters")
+            if filters is not None:
+                filters.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".runtimeConfiguration.filters[]")
+            if _elements is not None:
+                _elements.set_prop("deviceRole", AAZStrType, ".device_role")
+                _elements.set_prop("resourceIds", AAZListType, ".resource_ids")
+
+            resource_ids = _builder.get(".runtimeConfiguration.filters[].resourceIds")
+            if resource_ids is not None:
+                resource_ids.set_elements(AAZStrType, ".", typ_kwargs={"nullable": True})
+
+            support_bundle = _builder.get(".supportBundle")
+            if support_bundle is not None:
+                support_bundle.set_prop("supportCaseNumber", AAZStrType, ".case_number")
 
             return self.serialize_content(_content_value)
 
@@ -201,7 +272,7 @@ class ValidateConfiguration(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _ValidateConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _RunDiagnosticHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType(
                 nullable=True,
             )
@@ -225,20 +296,19 @@ class ValidateConfiguration(AAZCommand):
 
             operations = cls._schema_on_200.operations
             operations.Element = AAZObjectType()
-            _ValidateConfigurationHelper._build_schema_operation_status_result_read(operations.Element)
+            _RunDiagnosticHelper._build_schema_operation_status_result_read(operations.Element)
 
             properties = cls._schema_on_200.properties
-            properties.configuration_state = AAZStrType(
-                serialized_name="configurationState",
+            properties.diagnostics_url = AAZStrType(
+                serialized_name="diagnosticsUrl",
                 flags={"read_only": True},
             )
-            properties.url = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ValidateConfigurationHelper:
-    """Helper class for ValidateConfiguration"""
+class _RunDiagnosticHelper:
+    """Helper class for RunDiagnostic"""
 
     _schema_error_detail_read = None
 
@@ -352,4 +422,4 @@ class _ValidateConfigurationHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["ValidateConfiguration"]
+__all__ = ["RunDiagnostic"]

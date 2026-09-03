@@ -57,7 +57,7 @@ def step_update_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric l3domain update --resource-group {rg} --resource-name {name} --export-policy-config {exportPolicyConfig}"
+        "az networkfabric l3domain update --resource-group {rg} --resource-name {name} --export-policy-configuration {exportPolicyConfig}"
         " --redist-conn-subnets {redistributeConnectedSubnets} --redist-static-routes {redistributeStaticRoutes}"
         " --aggr-route-config {aggregateRouteConf} --cs-route-policy {connectedSubnetRoutePolicy}"
         " --sr-route-policy {staticRouteRoutePolicy} --annotation {annotation}--v4route-prefix-limit {ipv4RoutePrefixLimit}"

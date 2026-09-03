@@ -1,0 +1,20 @@
+interactions:
+- request:
+    body: null
+    headers:
+      CommandName:
+      - networkfabric bootstrapdevice refresh-config
+      ParameterSetName:
+      - --resource-name --resource-group
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/refreshConfiguration?api-version=2026-07-15-preview
+  response:
+    body:
+      string: '{"id":"bootstrapdevice-refresh-operation","name":"bootstrapdevice-refresh-operation","status":"Succeeded"}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

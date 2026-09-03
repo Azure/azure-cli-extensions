@@ -44,10 +44,13 @@ def step_update_scenario1(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric fabric update --resource-group {rg} --resource-name {name} --annotation {annotation}"
-        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
-        " --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf} --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls}"
-        " --ha-threshold {hardwareAlertThreshold} --storage-account-config {storageAccountConfiguration} --trusted-ip-prefixes {trustedIpPrefixes}"
-        " --unique-rd-config {uniqueRdConfiguration} --tags {tags} --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount}"
+        " --server-count-per-rack {serverCountPerRack} --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}"
+        " --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls} --ha-threshold {hardwareAlertThreshold}"
+        " --storage-account-config {storageAccountConfiguration} --trusted-ip-prefixes {trustedIpPrefixes}"
+        " --upgrade-profile {upgradeProfile} --secret-archive-settings {secretArchiveSettings}"
+        " --unique-rd-config {uniqueRdConfiguration} --tags {tags} --user-assigned {userAssignedIdentity}"
+        " --system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -58,11 +61,14 @@ def step_update_scenario2(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric fabric update --resource-group {rg} --resource-name {name} --annotation {annotation}"
-        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount} --server-count-per-rack {serverCountPerRack}"
-        " --terminal-server-configuration {terminalServerConf} --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls}"
-        " --hardware-alert-threshold {hardwareAlertThreshold} --storage-account-configuration {storageAccountConfiguration} --trusted-ip-prefixes {trustedIpPrefixes}"
-        " --authorized-transceiver {authorizedTransceiver} --feature-flags {featureFlags} --management-network-configuration {managementNetworkConfig} --qos-configuration {qosConfig}"
-        " --unique-rd-configuration {uniqueRdConfiguration} --tags {tags} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        " --fabric-asn {fabricAsn} --ipv4-prefix {ipv4Prefix} --ipv6-prefix {ipv6Prefix} --rack-count {rackCount}"
+        " --server-count-per-rack {serverCountPerRack} --terminal-server-configuration {terminalServerConf}"
+        " --user-assigned {userAssignedIdentity} --control-plane-acls {controlPlaneAcls} --hardware-alert-threshold {hardwareAlertThreshold}"
+        " --storage-account-configuration {storageAccountConfiguration} --trusted-ip-prefixes {trustedIpPrefixes}"
+        " --authorized-transceiver {authorizedTransceiver} --feature-flags {featureFlags}"
+        " --management-network-configuration {managementNetworkConfig} --qos-configuration {qosConfig}"
+        " --archive-settings {secretArchiveSettings} --unique-rd-configuration {uniqueRdConfiguration} --tags {tags}"
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -110,6 +116,10 @@ class GA_NFUpdateScenarioTest1(ScenarioTest):
                 "featureFlags": CONFIG.get("NETWORK_FABRIC", "feature_flags"),
                 "authorizedTransceiver": CONFIG.get(
                     "NETWORK_FABRIC", "authorized_transceiver"
+                ),
+                "upgradeProfile": CONFIG.get("NETWORK_FABRIC", "upgrade_profile"),
+                "secretArchiveSettings": CONFIG.get(
+                    "NETWORK_FABRIC", "secret_archive_settings"
                 ),
                 "tags": CONFIG.get("NETWORK_FABRIC", "tags"),
                 "userAssignedIdentity": CONFIG.get(
