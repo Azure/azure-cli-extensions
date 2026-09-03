@@ -10799,6 +10799,26 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1.network_profile.nat_gateway_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+    def test_update_nat_gateway_profile_rejects_nat_params_on_non_nat_outbound(self):
+        # --outbound-type-sku / V2 params build a NAT gateway profile, so they must be rejected on a
+        # loadBalancer cluster when the outbound type is not being switched to managedNATGateway.
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"nat_gateway_sku": "StandardV2"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_1.update_nat_gateway_profile(mc_1)
+
     def test_update_outbound_type(self):
         # default value in `aks_update`
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
