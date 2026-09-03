@@ -15,6 +15,7 @@ from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 
 from .aaz.latest.arc_multicloud import GenerateAwsTemplate as _GenAwsTemplate
+from .aaz.latest.arc_multicloud import GenerateGcpTemplate as _GenGcpTemplate
 from .aaz.latest.arc_multicloud.public_cloud_connector import (
     Create as _PublicCloudConnectorCreate,
     Delete as _PublicCloudConnectorDelete,
@@ -98,22 +99,79 @@ def customized_generate_aws_template(cmd, connector_id, output_directory=None):
                 raise ValidationError(f"Failed to write response to file: {e}")
 
         def _output(self, *args, **kwargs):
-            try:
-                self.output_response_to_file()
-                return {
-                    "status": "success",
-                    "message": "AWS template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
-                }
-            except Exception as e:
-                return {
-                    "status": "error",
-                    "message": f"An error occurred: {str(e)}"
-                }
+            self.output_response_to_file()
+            return {
+                "status": "success",
+                "message": "AWS template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
+            }
 
     return OutputAwsTemplateToFile(cli_ctx=cmd.cli_ctx)(command_args={
         "connector_id": connector_id,
         "output_directory": output_directory
     })
+
+
+# Inheritance - Customization for GenerateGcpTemplate, add new argument and write the output to json file on disk
+class CustomizedGenerateGcpTemplate(_GenGcpTemplate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # Add the --output-directory argument to the schema with an optional argument
+        args_schema.output_directory = AAZStrArg(
+            options=["--output-directory"],
+            help="Directory where the output GCP templated JSON file will be written. Defaults to './AzureArcMulticloudFolder/'.",
+            nullable=True
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        register_providers_if_needed(cmd=self.ctx)
+        super().pre_operations()
+
+    def output_response_to_file(self):
+        raw_response = super()._output()
+
+        # Check if 'body' exists and flatten its contents into the parent dictionary
+        if "body" in raw_response and isinstance(raw_response["body"], dict):
+            # Merge 'body' contents into the parent structure
+            body_content = raw_response.pop("body")
+            raw_response.update(body_content)
+
+        output_dir = self.ctx.args.output_directory
+
+        # Convert AAZStrArg to a string
+        if output_dir is not None:
+            output_dir = output_dir.to_serialized_data()
+
+        # Use default directory if the user doesn't provide --output-directory
+        output_dir = output_dir or "./AzureArcMulticloudFolder"
+
+        if not os.path.exists(output_dir):
+            try:
+                os.makedirs(output_dir)
+                logger.info("successfully create the dir")
+            except Exception as e:
+                raise ValidationError(f"Failed to create directory {output_dir}: {str(e)}")
+
+        output_file_path = os.path.join(output_dir, 'gcp_template.json')
+
+        # Write the output in JSON file
+        try:
+            with open(output_file_path, 'w') as output_file:
+                json.dump(raw_response, output_file, indent=4)
+
+            logger.debug(f"Response successfully written to {output_file_path}")
+        except Exception as e:
+            raise ValidationError(f"Failed to write response to file: {e}")
+
+    def _output(self, *args, **kwargs):
+        self.output_response_to_file()
+        return {
+            "status": "success",
+            "message": "GCP template was generated and saved successfully. Please check your specified output directory or default to ./AzureArcMulticloudFolder",
+        }
 
 
 # Inheritance - Register required RPs before execute each command
