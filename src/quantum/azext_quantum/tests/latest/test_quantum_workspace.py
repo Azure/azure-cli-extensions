@@ -13,14 +13,14 @@ from unittest.mock import Mock, patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ClientRequestError, ForbiddenError, ServiceError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, _list_user_workspace_role_assignments, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -881,29 +881,111 @@ class QuantumWorkspaceUserListTest(unittest.TestCase):
 
 
 class QuantumWorkspaceUserAccessTest(unittest.TestCase):
+    def test_list_user_workspace_role_assignments_filters_to_supported_roles(self):
+        assignments = [
+            {"roleDefinitionId": f"/providers/Microsoft.Authorization/roleDefinitions/{QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID}"},
+            {"roleDefinitionId": f"/providers/Microsoft.Authorization/roleDefinitions/{QUANTUM_WORKSPACE_OWNER_ROLE_ID.upper()}"},
+            {"roleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"},
+        ]
+        with patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=assignments) as list_role_assignments:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = _list_user_workspace_role_assignments(cmd, "oid", "/workspace")
+
+        self.assertEqual(result, assignments[:2])
+        list_role_assignments.assert_called_once_with(cmd, assignee_object_id="oid", scope="/workspace",
+                                                      include_inherited=True, fill_principal_name=False,
+                                                      fill_role_definition_name=False)
+
     def test_add_user_assigns_data_contributor(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid") as resolve_user_id, \
+                patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=[]) as list_assignments, \
                 patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment:
             cmd = SimpleNamespace(cli_ctx=object())
             add_user(cmd, "rg", "ws", email="user@contoso.com")
 
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         resolve_user_id.assert_called_once_with(cmd, "user@contoso.com")
+        list_assignments.assert_called_once_with(cmd, "oid", expected_scope)
         create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee_object_id="oid", assignee_principal_type="User")
+
+    def test_add_user_rejects_existing_supported_role(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        for role_id in (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID):
+            with self.subTest(role_id=role_id), \
+                    patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                    patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
+                    patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments",
+                          return_value=[{"roleDefinitionId": role_id}]), \
+                    patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment:
+                cmd = SimpleNamespace(cli_ctx=object())
+                with self.assertRaisesRegex(ClientRequestError, "already has access"):
+                    add_user(cmd, "rg", "ws", email="user@contoso.com")
+
+                create_role_assignment.assert_not_called()
 
     def test_remove_user_removes_data_contributor(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        assignments = [
+            {"id": "/assignments/contributor", "scope": expected_scope},
+            {"id": "/assignments/owner", "scope": expected_scope},
+        ]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid") as resolve_user_id, \
+                patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=assignments) as list_assignments, \
                 patch("azure.cli.command_modules.role.custom.delete_role_assignments") as delete_role_assignments:
             cmd = SimpleNamespace(cli_ctx=object())
             remove_user(cmd, "rg", "ws", email="user@contoso.com")
 
-        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         resolve_user_id.assert_called_once_with(cmd, "user@contoso.com")
-        delete_role_assignments.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee_object_id="oid")
+        list_assignments.assert_called_once_with(cmd, "oid", expected_scope)
+        delete_role_assignments.assert_called_once_with(cmd, ids=["/assignments/contributor", "/assignments/owner"])
+
+    def test_remove_user_warns_when_inherited_access_remains(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        assignments = [
+            {"id": "/assignments/direct", "scope": expected_scope},
+            {"id": "/assignments/inherited", "scope": "/subscriptions/sub/resourceGroups/rg"},
+        ]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
+                patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=assignments), \
+                patch("azure.cli.command_modules.role.custom.delete_role_assignments") as delete_role_assignments, \
+                self.assertLogs("cli.azext_quantum.operations.workspace", level="WARNING") as logs:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = remove_user(cmd, "rg", "ws", email="user@contoso.com")
+
+        self.assertIsNone(result)
+        delete_role_assignments.assert_called_once_with(cmd, ids=["/assignments/direct"])
+        self.assertIn("inherited access from the resource group or subscription remains", logs.output[0])
+
+    def test_remove_user_rejects_when_access_is_only_inherited(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"id": "/assignments/owner", "scope": "/subscriptions/sub/resourceGroups/rg"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
+                patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=assignments), \
+                patch("azure.cli.command_modules.role.custom.delete_role_assignments") as delete_role_assignments:
+            cmd = SimpleNamespace(cli_ctx=object())
+            with self.assertRaisesRegex(ClientRequestError, "has no workspace-level access to remove"):
+                remove_user(cmd, "rg", "ws", email="user@contoso.com")
+
+        delete_role_assignments.assert_not_called()
+
+    def test_remove_user_rejects_user_without_workspace_access(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
+                patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=[]), \
+                patch("azure.cli.command_modules.role.custom.delete_role_assignments") as delete_role_assignments:
+            cmd = SimpleNamespace(cli_ctx=object())
+            with self.assertRaisesRegex(ClientRequestError, "does not have access"):
+                remove_user(cmd, "rg", "ws", email="user@contoso.com")
+
+        delete_role_assignments.assert_not_called()
 
     def test_resolve_user_id_uses_graph_user_endpoint(self):
         graph_client = SimpleNamespace(user_get=Mock(return_value={"id": "oid"}))

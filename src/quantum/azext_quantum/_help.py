@@ -427,8 +427,10 @@ helps['quantum workspace user add'] = """
     type: command
     short-summary: Grant a user access to an Azure Quantum workspace.
     long-summary: >-
-        Assigns the 'Quantum Workspace Data Contributor' role at the scope of the given
-        (or current) Azure Quantum workspace.
+      Assigns the 'Quantum Workspace Data Contributor' role at the scope of the given
+      (or current) Azure Quantum workspace. The command fails if the user already has the
+      'Quantum Workspace Data Contributor' or 'Quantum Workspace Owner' role at the workspace,
+      including access inherited from the resource group or subscription.
     examples:
       - name: Grant a user access to a workspace using their email address.
         text: |-
@@ -440,8 +442,9 @@ helps['quantum workspace user remove'] = """
     type: command
     short-summary: Remove a user's access to an Azure Quantum workspace.
     long-summary: >-
-        Removes the 'Quantum Workspace Data Contributor' role at the scope of the given
-        (or current) Azure Quantum workspace.
+      Removes the 'Quantum Workspace Data Contributor' and 'Quantum Workspace Owner' role assignments
+      scoped directly to the given (or current) Azure Quantum workspace. Role assignments inherited
+      from the resource group or subscription must be removed at that scope.
     examples:
       - name: Remove a user's access to a workspace using their email address.
         text: |-
