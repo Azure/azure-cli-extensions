@@ -7,7 +7,11 @@ import tempfile
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch
-from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
+from azext_acrcssc.helper._ociartifactoperations import (
+    _oras_client,
+    create_oci_artifact_continuous_patch,
+    delete_oci_artifact_continuous_patch
+)
 from azure.cli.core.mock import DummyCli
 
 
@@ -104,3 +108,23 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         cmd = mock.MagicMock()
         cmd.cli_ctx = DummyCli()
         return cmd
+
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.OrasClient')
+    def test_oras_client_uses_basic_auth_backend(self, mock_oras_client, mock_parse_resource_id, mock_get_acr_token):
+        registry = MagicMock()
+        registry.name = "test-registry"
+        registry.login_server = "test-registry.azurecr.io"
+        registry.id = "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.ContainerRegistry/registries/test-registry"
+
+        mock_parse_resource_id.return_value = {"subscription": "test-subscription"}
+        mock_get_acr_token.return_value = "test-token"
+        client = MagicMock()
+        mock_oras_client.return_value = client
+
+        result = _oras_client(registry)
+
+        mock_oras_client.assert_called_once_with(hostname="test-registry.azurecr.io", auth_backend="basic")
+        client.login.assert_called_once_with("00000000-0000-0000-0000-000000000000", "test-token")
+        self.assertEqual(result, client)
