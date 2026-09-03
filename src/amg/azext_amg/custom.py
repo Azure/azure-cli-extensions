@@ -22,7 +22,7 @@ from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 from ._client_factory import cf_amg
 from .utils import get_yes_or_no_option, search_folders
 from .dashboard_v2 import (is_v2_dashboard_definition, require_dashboard_v2_api_version,
-                           create_dashboard_v2, read_v2_dashboard)
+                           create_dashboard_v2, resolve_dashboard_v2_api_version, read_dashboard)
 
 logger = get_logger(__name__)
 
@@ -332,12 +332,8 @@ def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_
     # the dashboard apiserver. Classic dashboards keep using the legacy endpoint (unchanged shape).
     endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
                                                      api_key_or_token=api_key_or_token)
-    v2_dashboard = read_v2_dashboard(endpoint, headers, uid)
-    if v2_dashboard is not None:
-        return v2_dashboard
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/dashboards/uid/" + uid,
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
+    v2_version = resolve_dashboard_v2_api_version(endpoint, headers)
+    return read_dashboard(endpoint, headers, uid, v2_version)
 
 
 def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):

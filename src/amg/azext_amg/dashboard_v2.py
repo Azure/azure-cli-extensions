@@ -108,6 +108,17 @@ def read_v2_dashboard(grafana_url, http_headers, uid, version=None):
     return None
 
 
+def read_dashboard(grafana_url, http_headers, uid, v2_version):
+    # Read a dashboard losslessly using a caller-resolved v2 API version, then fall back to the
+    # classic endpoint when v2 is unavailable or the dashboard itself is stored as classic.
+    if v2_version:
+        dashboard = read_v2_dashboard(grafana_url, http_headers, uid, version=v2_version)
+        if dashboard is not None:
+            return dashboard
+    response = _request(grafana_url, http_headers, "get", "/api/dashboards/uid/" + uid)
+    return json.loads(response.content)
+
+
 def create_dashboard_v2(grafana_url, http_headers, definition, version, *, title=None, folder_uid=None,
                         overwrite=None):
     # Normalise the input into a k8s Dashboard resource (apiVersion / kind / metadata / spec).

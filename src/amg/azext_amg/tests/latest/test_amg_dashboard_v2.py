@@ -150,6 +150,30 @@ class DashboardV2ReadWriteTests(unittest.TestCase):
         self.assertEqual(req.call_count, 1)
         self.assertEqual(req.call_args[0][3], "/apis/dashboard.grafana.app/v2/namespaces/default/dashboards/uid1")
 
+    def test_read_dashboard_uses_pre_resolved_v2_version(self):
+        v2_body = _resp(200, {"apiVersion": "dashboard.grafana.app/v2", "spec": {"elements": {}}})
+        with mock.patch.object(dv2, "_request", return_value=v2_body) as req:
+            out = dv2.read_dashboard("u", {}, "uid1", "v2")
+        self.assertIn("elements", out["spec"])
+        self.assertEqual(req.call_count, 1)
+
+    def test_read_dashboard_skips_v2_when_version_unavailable(self):
+        classic = _resp(200, {"dashboard": {"uid": "uid1"}})
+        with mock.patch.object(dv2, "_request", return_value=classic) as req:
+            out = dv2.read_dashboard("u", {}, "uid1", None)
+        self.assertEqual(out["dashboard"]["uid"], "uid1")
+        self.assertEqual(req.call_count, 1)
+        self.assertEqual(req.call_args[0][3], "/api/dashboards/uid/uid1")
+
+    def test_read_dashboard_falls_back_for_classic_stored_dashboard(self):
+        upconverted = _resp(200, {"status": {"conversion": {"storedVersion": "v0alpha1"}}})
+        classic = _resp(200, {"dashboard": {"uid": "uid1"}})
+        with mock.patch.object(dv2, "_request", side_effect=[upconverted, classic]) as req:
+            out = dv2.read_dashboard("u", {}, "uid1", "v2")
+        self.assertEqual(out["dashboard"]["uid"], "uid1")
+        self.assertEqual(req.call_count, 2)
+        self.assertEqual(req.call_args_list[1][0][3], "/api/dashboards/uid/uid1")
+
     def test_create_dashboard_v2_create_path_builds_resource(self):
         calls = []
 

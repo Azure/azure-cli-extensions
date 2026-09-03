@@ -12,25 +12,14 @@ from azure.cli.core.style import print_styled_text, Style
 
 from .custom import list_folders
 from .custom import list_data_sources
-from .custom import list_dashboards, show_dashboard, delete_dashboard, _create_dashboard
+from .custom import list_dashboards, delete_dashboard, _create_dashboard
 from .custom import _health_endpoint_reachable, _get_grafana_endpoint, _get_data_plane_creds
-from .utils import send_grafana_get, send_grafana_post, send_grafana_patch, get_folder
+from .utils import send_grafana_get, send_grafana_post, send_grafana_patch
 from .dashboard_v2 import (is_v2_dashboard_definition, dashboard_identity, dashboard_folder_uid,
-                           remap_v2_datasource_uids, is_dashboard_provisioned, get_v2_library_panel_uids)
+                           remap_v2_datasource_uids, is_dashboard_provisioned, get_v2_library_panel_uids,
+                           resolve_dashboard_v2_api_version, read_dashboard)
 
 logger = get_logger(__name__)
-
-
-def _get_folder_title(source_endpoint, http_headers, folder_uid):
-    # Resolve a folder's title from its uid so v2 dashboards (whose resource only carries the folder
-    # uid) still honour the folder-name include/exclude filters. The classic root folder reports its
-    # title as "General".
-    if not folder_uid or folder_uid == "general":
-        return "General"
-    status, content = get_folder(folder_uid, source_endpoint, http_headers)
-    if status == 200 and isinstance(content, dict):
-        return content.get("title", "")
-    return ""
 
 
 def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
@@ -109,21 +98,20 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
 
     source_dashboards = list_dashboards(cmd, source_workspace, resource_group_name=source_resource_group,
                                         subscription=source_subscription)
+    source_v2_version = resolve_dashboard_v2_api_version(source_endpoint, http_headers)
 
     data_source_missed = set()
 
     for dashboard in source_dashboards:
         dashboard_uid = dashboard["uid"]
-        source_dashboard = show_dashboard(cmd, source_workspace, dashboard_uid,
-                                          resource_group_name=source_resource_group,
-                                          subscription=source_subscription)
+        source_dashboard = read_dashboard(source_endpoint, http_headers, dashboard_uid, source_v2_version)
         is_v2 = is_v2_dashboard_definition(source_dashboard)
         provisioned = is_dashboard_provisioned(source_dashboard)
         if is_v2:
             # v2 (dynamic dashboards) resource: folder lives in an annotation, title in spec.
             _, dashboard_title = dashboard_identity(source_dashboard)
             folder_uid = dashboard_folder_uid(source_dashboard)
-            folder_title = _get_folder_title(source_endpoint, http_headers, folder_uid)
+            folder_title = source_folders.get(folder_uid, folder_uid) if folder_uid else "General"
         else:
             folder_title = source_dashboard["meta"]["folderTitle"]
             folder_uid = source_dashboard["meta"]["folderUid"]
