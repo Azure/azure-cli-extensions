@@ -37,6 +37,7 @@ from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_aks_preview._validators import (
     validate_nat_gateway_managed_outbound_ipv6_count,
     validate_nat_gateway_v2_params,
+    validate_action_group_id,
 )
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
@@ -3881,6 +3882,36 @@ def load_arguments(self, _):
                      "label selector with 'matchLabels' (an array of \"key=value\" strings) and/or "
                      "'matchExpressions'. Maximum 100 entries.",
             )
+
+    # AKS alert configuration commands
+    with self.argument_context("aks alert-config") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+
+    for scope in ['aks alert-config add',
+                  'aks alert-config update',
+                  'aks alert-config delete',
+                  'aks alert-config show']:
+        with self.argument_context(scope) as c:
+            c.argument('name', options_list=['--name', '-n'], required=True,
+                       help='Name of the alert configuration.')
+
+    for scope in ['aks alert-config add',
+                  'aks alert-config update']:
+        with self.argument_context(scope) as c:
+            c.argument('mode', arg_type=get_enum_type(['Disabled', 'Managed']),
+                       help='How AKS manages alerts for the cluster.')
+            c.argument('action_group_id', options_list=['--action-group-id'],
+                       validator=validate_action_group_id,
+                       help='Resource ID of the Azure Monitor action group to send '
+                            'notifications to. Pass an empty string to clear it.')
+
+    with self.argument_context('aks alert-config add') as c:
+        c.argument('mode', arg_type=get_enum_type(['Disabled', 'Managed']), required=True,
+                   help='How AKS manages alerts for the cluster.')
 
     # aks list-vm-skus command
     with self.argument_context("aks list-vm-skus") as c:

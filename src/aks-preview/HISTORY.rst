@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
 
 22.0.0b6
 +++++++++
