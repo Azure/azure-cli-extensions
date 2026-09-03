@@ -105,6 +105,10 @@ class RequestCredential(_RequestCredential):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.certificate_signing_request = AAZStrArg(
+            options=["--certificate-signing-request"],
+        )
+        args_schema.certificate_signing_request._registered = False
         args_schema.admin = AAZBoolArg(
             options=["-a", "--admin"],
             help="Get cluster administrator credentials. Default: cluster user credentials.",
@@ -128,24 +132,36 @@ class RequestCredential(_RequestCredential):
         return args_schema
 
     def _handler(self, command_args):
+        from ._kubeconfig import _generate_admin_credential_request
+
         if not command_args.get("admin"):
             logger.warning(
                 "Requesting a non-admin credential is not supported yet. "
                 "Specify --admin/-a to request an admin credential."
             )
             return None
-        lro_poller = super()._handler(command_args)
-        lro_poller._result_callback = self._output
-        return lro_poller
+        private_key_pem, command_args["certificate_signing_request"] = _generate_admin_credential_request()
+        self._private_key_pem = private_key_pem
+        try:
+            return super()._handler(command_args)
+        except Exception:
+            del self._private_key_pem
+            raise
 
     def _output(self, *args, **kwargs):
-        from ._kubeconfig import print_or_merge_credentials
+        from ._kubeconfig import _embed_private_key, print_or_merge_credentials
+
+        private_key_pem = getattr(self, "_private_key_pem", None)
+        if private_key_pem is None:
+            return super()._output(*args, **kwargs)
+        del self._private_key_pem
 
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True, secret_hidden=False)
         if not result or "kubeconfig" not in result:
             return result
 
         kubeconfig = result["kubeconfig"].replace("\\n", "\n")
+        kubeconfig = _embed_private_key(kubeconfig, private_key_pem)
         path = self.ctx.args.file.to_serialized_data()
         if has_value(self.ctx.args.context_name):
             context_name = self.ctx.args.context_name.to_serialized_data()
@@ -166,3 +182,14 @@ class RequestCredential(_RequestCredential):
 
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
         return None
+
+    class HcpOpenShiftClustersRequestAdminCredential(
+            _RequestCredential.HcpOpenShiftClustersRequestAdminCredential):
+
+        @property
+        def content(self):
+            content = super().content
+            content["certificateSigningRequest"] = (
+                self.ctx.args.certificate_signing_request.to_serialized_data()
+            )
+            return content
