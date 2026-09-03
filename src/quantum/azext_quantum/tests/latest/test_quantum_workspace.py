@@ -8,16 +8,19 @@ import argparse
 import pytest
 import unittest
 import time
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
+from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, update, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -313,6 +316,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         self.cmd(f'az quantum workspace user create -g {test_resource_group} --workspace-name {test_workspace_temp} --assignee-object-id {test_object_id} -o json', checks=[
             self.check("principalId", test_object_id),
             self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
+        ])
+
+        # The managed identity has principalType ServicePrincipal, so the user-only list excludes it.
+        self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} --include-inherited false -o json', checks=[
+            self.check(f"length([?principalId=='{test_object_id}'])", 0)
         ])
 
         # remove access using the object id and an explicit role
@@ -643,3 +651,232 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         resource_id = _get_workspace_resource_id(TestWorkspaceInfo())
         assert resource_id == "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Quantum/Workspaces/MyWorkspace"
+
+
+class QuantumWorkspaceUserListTest(unittest.TestCase):
+    def test_list_users_scopes_to_workspace(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "oid", "principalName": "user@contoso.com", "principalType": "User"}]
+        stubs = [{"id": "oid", "displayName": "Contoso User", "mail": "user@contoso.com", "userPrincipalName": "user@contoso.com"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]) as list_role_assignments, \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        queried = {call.kwargs["role"]: (call.kwargs["scope"], call.kwargs["include_inherited"]) for call in list_role_assignments.call_args_list}
+        self.assertEqual(queried[QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID], (expected_scope, True))
+        self.assertEqual(queried[QUANTUM_WORKSPACE_OWNER_ROLE_ID], (expected_scope, True))
+        self.assertEqual(result[0]["displayName"], "Contoso User")
+        self.assertEqual(result[0]["mail"], "user@contoso.com")
+        self.assertEqual(result[0]["roleDefinitionName"], "Quantum Workspace Data Contributor")
+
+    def test_list_users_includes_owner_and_contributor_roles(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        owner = [{"principalId": "o", "principalName": "owner@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Owner"}]
+        contributor = [{"principalId": "c", "principalName": "contrib@contoso.com", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        stubs = [
+            {"id": "o", "displayName": "Owner User", "mail": "owner@contoso.com", "userPrincipalName": "owner@contoso.com"},
+            {"id": "c", "displayName": "Contrib User", "mail": "contrib@contoso.com", "userPrincipalName": "contrib@contoso.com"},
+        ]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[contributor, owner]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        self.assertEqual([user["roleDefinitionName"] for user in result], ["Quantum Workspace Data Contributor", "Quantum Workspace Owner"])
+
+    def test_list_users_can_exclude_inherited(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", return_value=[]) as list_role_assignments:
+            cmd = SimpleNamespace(cli_ctx=object())
+            list_users(cmd, "rg", "ws", include_inherited=False)
+
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        queried = {call.kwargs["role"]: (call.kwargs["scope"], call.kwargs["include_inherited"]) for call in list_role_assignments.call_args_list}
+        self.assertEqual(queried[QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID], (expected_scope, False))
+        self.assertEqual(queried[QUANTUM_WORKSPACE_OWNER_ROLE_ID], (expected_scope, False))
+
+    def test_list_users_excludes_groups_and_service_principals(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [
+            {"principalId": "u", "principalType": "User"},
+            {"principalId": "g", "principalType": "Group"},
+            {"principalId": "sp", "principalType": "ServicePrincipal"},
+        ]
+        stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com", "userPrincipalName": "u@contoso.com"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        self.assertEqual([user["principalId"] for user in result], ["u"])
+        self.assertEqual(result[0]["displayName"], "User One")
+
+    def test_list_users_falls_back_to_upn_when_display_name_missing(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User", "roleDefinitionName": "Quantum Workspace Data Contributor"}]
+        # Graph resolves the principal but returns no displayName/mail (only the UPN).
+        stubs = [{"id": "u", "userPrincipalName": "user@contoso.com"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=stubs):
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        # Name and Email fall back to the UPN from Graph.
+        self.assertEqual(result[0]["displayName"], "user@contoso.com")
+        self.assertEqual(result[0]["mail"], "user@contoso.com")
+
+    def test_list_users_retries_graph_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One", "mail": "u@contoso.com"}]
+        response = SimpleNamespace(status_code=429, headers={"Retry-After": "3"})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()) as graph_client_factory, \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", response), stubs]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        self.assertEqual(result[0]["displayName"], "User One")
+        graph_client_factory.assert_called_once_with(cmd.cli_ctx)
+        self.assertEqual(get_object_stubs.call_count, 2)
+        sleep.assert_called_once_with(3.0)
+
+    def test_list_users_clamps_retry_after(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One"}]
+        response = SimpleNamespace(status_code=429, headers={"Retry-After": "3600"})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", response), stubs]), \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        sleep.assert_called_once_with(60)
+
+    def test_list_users_uses_exponential_backoff_without_retry_after(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One"}]
+        response = SimpleNamespace(status_code=503, headers={})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", response), stubs]), \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        sleep.assert_called_once_with(1)
+
+    def test_list_users_retries_graph_error_without_status_code(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        stubs = [{"id": "u", "displayName": "User One"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=[GraphError("temporary", None), stubs]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            result = list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        self.assertEqual(result[0]["displayName"], "User One")
+        self.assertEqual(get_object_stubs.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_list_users_does_not_retry_permanent_graph_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        response = SimpleNamespace(status_code=403, headers={})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=GraphError("forbidden", response)) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            with self.assertRaises(ForbiddenError):
+                list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        get_object_stubs.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_list_users_does_not_retry_unexpected_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=ValueError("unexpected")) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            with self.assertRaises(ValueError):
+                list_users(SimpleNamespace(cli_ctx=object()), "rg", "ws")
+
+        get_object_stubs.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_list_users_falls_back_when_principal_not_in_directory(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "missing", "principalName": "ghost@contoso.com", "principalType": "User"}]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", return_value=[]) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = list_users(cmd, "rg", "ws")
+
+        # A principal Graph cannot resolve falls back to the principal name; the command still succeeds.
+        self.assertEqual(result[0]["displayName"], "ghost@contoso.com")
+        self.assertEqual(result[0]["mail"], "ghost@contoso.com")
+        get_object_stubs.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_list_users_raises_after_persistent_transient_error(self):
+        info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
+        assignments = [{"principalId": "u", "principalType": "User"}]
+        response = SimpleNamespace(status_code=429, headers={})
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azure.cli.command_modules.role.custom.list_role_assignments", side_effect=[assignments, []]), \
+                patch("azure.cli.command_modules.role.graph_client_factory", return_value=object()), \
+                patch("azure.cli.command_modules.role.custom._get_object_stubs", side_effect=GraphError("throttled", response)) as get_object_stubs, \
+                patch("azext_quantum.operations.workspace.time.sleep") as sleep:
+            cmd = SimpleNamespace(cli_ctx=object())
+            with self.assertRaisesRegex(ServiceError, "Please try again later"):
+                list_users(cmd, "rg", "ws")
+
+        self.assertEqual(get_object_stubs.call_count, 3)
+        self.assertEqual(sleep.call_count, 2)
+
+    def test_transform_users(self):
+        from ...commands import transform_users
+        rows = transform_users([{
+            "principalId": "oid",
+            "principalName": "user@contoso.com",
+            "displayName": "Contoso User",
+            "mail": "user@contoso.com",
+            "createdOn": "2026-06-24T16:53:26.107178+00:00",
+            "principalType": "User",
+            "roleDefinitionName": "Quantum Workspace Data Contributor",
+            "scope": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        }])
+        self.assertEqual(rows[0]["Name"], "Contoso User")
+        self.assertEqual(rows[0]["Email"], "user@contoso.com")
+        self.assertEqual(rows[0]["Role"], "Quantum Workspace Data Contributor")
+        self.assertEqual(rows[0]["Time Added"], "2026-06-24T16:53:26.107178+00:00")
+
+        # Email falls back to the principal name when Graph did not return a mail address.
+        fallback = transform_users([{"principalName": "fallback@contoso.com"}])
+        self.assertEqual(fallback[0]["Email"], "fallback@contoso.com")
+        self.assertIsNone(fallback[0]["Name"])

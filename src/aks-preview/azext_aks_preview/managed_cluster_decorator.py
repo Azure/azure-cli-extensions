@@ -1205,6 +1205,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("nat_gateway_outbound_ip_prefix_ids")
 
+    def get_nat_gateway_sku(self) -> Union[str, None]:
+        """Obtain the value of nat_gateway_sku (--outbound-type-sku).
+
+        The managed NAT gateway SKU (Standard or StandardV2). GA shape: V2 is expressed via
+        outboundType=managedNATGateway + natGatewayProfile.sku=StandardV2. Region availability
+        and downgrade rules are enforced server-side by the RP.
+
+        :return: str or None
+        """
+        return self.raw_param.get("nat_gateway_sku")
+
     def get_load_balancer_outbound_ip_prefixes(self) -> Union[str, List[ResourceReference], None]:
         """Obtain the value of load_balancer_outbound_ip_prefixes.
 
@@ -1906,6 +1917,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return properties.get("enableFIPS")
         return None
 
+    def get_enable_os_disk_full_caching(self) -> bool:
+        """Obtain the value of enable_os_disk_full_caching for the default agent pool profile.
+        :return: bool
+        """
+        return self.raw_param.get("enable_os_disk_full_caching")
+
     def get_enable_fips(self) -> bool:
         """Obtain the value of enable_fips.
         :return: bool
@@ -1934,6 +1951,42 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot specify --enable-fips and --disable-fips at the same time."
             )
         return bool(disable_fips)
+
+    def _get_enable_node_hardening_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_node_hardening") and self.mc.enable_node_hardening is not None:
+            return self.mc.enable_node_hardening
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableNodeHardening")
+        return None
+
+    def get_enable_node_hardening(self) -> bool:
+        """Obtain the value of enable_node_hardening.
+        :return: bool
+        """
+        enable_node_hardening = self.raw_param.get("enable_node_hardening", False)
+        if enable_node_hardening and self.get_disable_node_hardening():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-node-hardening and --disable-node-hardening at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_node_hardening_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_node_hardening = value_obtained_from_mc
+        return bool(enable_node_hardening)
+
+    def get_disable_node_hardening(self) -> bool:
+        """Obtain the value of disable_node_hardening.
+        :return: bool
+        """
+        disable_node_hardening = self.raw_param.get("disable_node_hardening", False)
+        if disable_node_hardening and self.raw_param.get("enable_node_hardening", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-node-hardening and --disable-node-hardening at the same time."
+            )
+        return bool(disable_node_hardening)
 
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
@@ -4551,7 +4604,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_nat_gateway_managed_outbound_ip_count() is not None or \
            self.context.get_nat_gateway_managed_outbound_ipv6_count() is not None or \
            self.context.get_nat_gateway_outbound_ip_ids() is not None or \
-           self.context.get_nat_gateway_outbound_ip_prefix_ids() is not None:
+           self.context.get_nat_gateway_outbound_ip_prefix_ids() is not None or \
+           self.context.get_nat_gateway_sku() is not None:
             network_profile.nat_gateway_profile = create_nat_gateway_profile(
                 self.context.get_nat_gateway_managed_outbound_ip_count(),
                 self.context.get_nat_gateway_idle_timeout(),
@@ -4559,6 +4613,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 managed_outbound_ipv6_count=self.context.get_nat_gateway_managed_outbound_ipv6_count(),
                 outbound_ip_ids=self.context.get_nat_gateway_outbound_ip_ids(),
                 outbound_ip_prefix_ids=self.context.get_nat_gateway_outbound_ip_prefix_ids(),
+                nat_gateway_sku=self.context.get_nat_gateway_sku(),
             )
 
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
@@ -4776,6 +4831,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.agent_pool_profiles:
                 for agentpool in mc.agent_pool_profiles:
                     agentpool.enable_fips = True
+        return mc
+
+    def set_up_enable_node_hardening(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node hardening at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_hardening():
+            mc.enable_node_hardening = True
+        return mc
+
+    def set_up_os_disk_full_caching(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up enable_os_disk_full_caching for the default agent pool profile.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_os_disk_full_caching():
+            if mc.agent_pool_profiles:
+                mc.agent_pool_profiles[0].enable_os_disk_full_caching = True
         return mc
 
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5833,6 +5908,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_integrity(mc)
         # set up FIPS mode at the cluster level
         mc = self.set_up_enable_fips(mc)
+        # set up node hardening at the cluster level
+        mc = self.set_up_enable_node_hardening(mc)
+        # set up full-cache ephemeral OS disk on the default agent pool profile
+        mc = self.set_up_os_disk_full_caching(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -7201,6 +7280,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
             )
         outbound_type = self.context.get_outbound_type()
+        # The managed NAT gateway SKU and V2 params build a NAT gateway profile, so they are only
+        # valid when the cluster's effective outbound type is managedNATGateway. --outbound-type may
+        # be omitted on update, so reject here against the resolved type instead of silently
+        # dropping them on e.g. a loadBalancer cluster.
+        if outbound_type not in [
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+        ] and (
+            self.context.get_nat_gateway_sku() is not None or
+            self.context.get_nat_gateway_managed_outbound_ipv6_count() is not None or
+            self.context.get_nat_gateway_outbound_ip_ids() is not None or
+            self.context.get_nat_gateway_outbound_ip_prefix_ids() is not None
+        ):
+            raise InvalidArgumentValueError(
+                "--outbound-type-sku, --nat-gateway-managed-outbound-ipv6-count, "
+                "--nat-gateway-outbound-ips and --nat-gateway-outbound-ip-prefixes are only valid "
+                "when the cluster's outbound type is managedNATGateway; set "
+                "--outbound-type managedNATGateway to change the outbound type."
+            )
         if outbound_type and outbound_type not in [
             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
@@ -7215,6 +7313,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 managed_outbound_ipv6_count=self.context.get_nat_gateway_managed_outbound_ipv6_count(),
                 outbound_ip_ids=self.context.get_nat_gateway_outbound_ip_ids(),
                 outbound_ip_prefix_ids=self.context.get_nat_gateway_outbound_ip_prefix_ids(),
+                nat_gateway_sku=self.context.get_nat_gateway_sku(),
             )
         return mc
 
@@ -7396,6 +7495,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
         mc.enable_fips = True
+        return mc
+
+    def update_enable_node_hardening(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update node hardening at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_node_hardening():
+            mc.enable_node_hardening = False
+            return mc
+
+        if self.context.get_enable_node_hardening():
+            mc.enable_node_hardening = True
         return mc
 
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -8934,6 +9045,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_integrity(mc)
         # update FIPS mode at the cluster level
         mc = self.update_enable_fips(mc)
+        # update node hardening at the cluster level
+        mc = self.update_enable_node_hardening(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption

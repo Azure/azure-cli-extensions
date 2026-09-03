@@ -11,6 +11,28 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
+* `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
+* `az aks kollect` and `az aks kanalyze`: Fix compatibility with the keyword-only credential SDK parameters.
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
+* Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
+
+22.0.0b6
++++++++++
+* `az aks nodepool add/update`: Add preview `--enable-managed-dranet` to enable Managed DRANET on a node pool.
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
+* Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
+* `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+* `az aks create` and `az aks update`: Add `--outbound-type-sku` to select the managed NAT gateway SKU (`Standard` or `StandardV2`) with `--outbound-type managedNATGateway`, the GA shape of NAT Gateway V2. `StandardV2` supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+* `az aks create`, `az aks update`: Add `--enable-node-hardening` to enable cluster-level node hardening and `--disable-node-hardening` (update only) to disable it. Applies hardened defaults for soft eviction thresholds, kube-reserved, and system-reserved on Linux node pools. Requires AFEC registration `Microsoft.ContainerService/CustomNodeConfigPreview`.
+
+22.0.0b5
++++++++++
+* Vendor new SDK and bump API version to `2026-06-02-preview`.
+
+22.0.0b4
++++++++++
+* `az aks nodepool update`: Add preview `--zones`/`-z` support for migrating a regional node pool to automatic zone placement with `--zones auto`. Other availability zone changes are subject to service restrictions. Omitted zones remain unchanged, and the option can be combined with `--node-vm-size`.
 
 22.0.0b3
 +++++++++

@@ -216,6 +216,23 @@ helps['quantum job update'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-tags tag1 tag2
 """
 
+helps['quantum suite-offer'] = """
+    type: group
+    short-summary: View Azure Quantum suite offers available to the subscription.
+"""
+
+helps['quantum suite-offer list'] = """
+    type: command
+    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider, location, and subscription-level quota allocations.
+    examples:
+      - name: List all suite offers available to the current subscription.
+        text: |-
+            az quantum suite-offer list -o table
+      - name: List the provider ID and location of each available suite offer.
+        text: |-
+            az quantum suite-offer list --query "[].{provider:properties.providerId, location:properties.location}" -o table
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.
@@ -404,6 +421,23 @@ helps['quantum workspace keys'] = """
 helps['quantum workspace user'] = """
     type: group
     short-summary: Manage users of an Azure Quantum workspace.
+"""
+
+helps['quantum workspace user list'] = """
+    type: command
+    short-summary: List the users with access to an Azure Quantum workspace.
+    long-summary: >-
+        Lists user principals (excluding groups and service principals) assigned the 'Quantum Workspace Owner' or
+        'Quantum Workspace Data Contributor' role for the given (or current) workspace. Each user's Name and Email are
+        resolved from Microsoft Graph. By default this includes access inherited from the parent resource group and
+        subscription; pass '--include-inherited false' to list only assignments scoped directly to the workspace.
+    examples:
+      - name: List all users with access to a workspace.
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace
+      - name: List only users assigned directly on the workspace (exclude inherited access).
+        text: |-
+            az quantum workspace user list -g MyResourceGroup -w MyWorkspace --include-inherited false
 """
 
 helps['quantum workspace user create'] = """

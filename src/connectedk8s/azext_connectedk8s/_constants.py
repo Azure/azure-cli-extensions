@@ -493,7 +493,7 @@ SigningKey_CR_Snapshot = "signingkey_cr_snapshot.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = (
-    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:1.36.1"
+    "azurearck8s/helmchart/stable/clusterdiagnosticchecks:1.31.2"
 )
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = (
     "Error while installing cluster diagnostic checks helm release"

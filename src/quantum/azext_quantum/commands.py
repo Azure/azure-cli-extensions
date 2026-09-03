@@ -56,6 +56,17 @@ def transform_jobs(results):
     return [transform_job(job) for job in results]
 
 
+def transform_users(results):
+    def one(result):
+        return OrderedDict([
+            ('Name', result.get('displayName')),
+            ('Email', result.get('mail') or result.get('principalName')),
+            ('Role', result.get('roleDefinitionName')),
+            ('Time Added', result.get('createdOn'))
+        ])
+    return [one(result) for result in results]
+
+
 def transform_file_list(results):
     return [
         OrderedDict([
@@ -77,6 +88,19 @@ def transform_offerings(offerings):
         ])
 
     return [one(offering) for offering in offerings]
+
+
+def transform_suite_offers(suite_offers):
+    def one(offer):
+        properties = offer['properties']
+        return OrderedDict([
+            ('Provider ID', properties['providerId']),
+            ('Provider Name', properties['providerName']),
+            ('Company', properties['companyName']),
+            ('Location', properties['location'])
+        ])
+
+    return [one(offer) for offer in suite_offers]
 
 
 def transform_output(results):
@@ -134,6 +158,7 @@ def load_command_table(self, _):
     job_ops = CliCommandType(operations_tmpl='azext_quantum.operations.job#{}')
     target_ops = CliCommandType(operations_tmpl='azext_quantum.operations.target#{}')
     offerings_ops = CliCommandType(operations_tmpl='azext_quantum.operations.offerings#{}')
+    suite_offers_ops = CliCommandType(operations_tmpl='azext_quantum.operations.suite_offers#{}')
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
@@ -150,6 +175,7 @@ def load_command_table(self, _):
     with self.command_group('quantum workspace user', workspace_ops) as u:
         u.command('create', 'add_user', validator=validate_workspace_info)
         u.command('delete', 'remove_user', validator=validate_workspace_info, confirmation=True)
+        u.command('list', 'list_users', validator=validate_workspace_info, table_transformer=transform_users)
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
@@ -177,3 +203,6 @@ def load_command_table(self, _):
         o.command('list', 'list_offerings', table_transformer=transform_offerings)
         o.command('accept-terms', 'accept_terms', validator=validate_provider_and_sku_info)
         o.command('show-terms', 'show_terms', validator=validate_provider_and_sku_info)
+
+    with self.command_group('quantum suite-offer', suite_offers_ops) as s:
+        s.command('list', 'list_suite_offers', table_transformer=transform_suite_offers)
