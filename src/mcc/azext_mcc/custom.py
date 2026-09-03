@@ -33,6 +33,36 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
+# Auto update rings a user is permitted to select. "Fast", "Slow" and "Preview" are
+# deliberately withheld -- cache nodes should only ever be moved to "Beta" or "Stable".
+SELECTABLE_AUTO_UPDATE_RINGS = {"Beta": "Beta", "Stable": "Stable"}
+
+# Rings that carry a customer supplied install schedule. Every other ring is driven by
+# Microsoft, so the schedule arguments must stay Undefined for them.
+SCHEDULED_AUTO_UPDATE_RINGS = ("Slow", "Stable")
+
+# From api-version 2026-06-01 the service renamed the customer selectable rings: "Stable" and
+# "Beta" replace the legacy "Slow" and "Fast". The service still persists the legacy name, and then
+# rejects that same name on the next write with InvalidAutoUpdateRingTypeForApiVersion. A generic
+# update echoes the instance back, so the stored value has to be replaced before the request is
+# sent. This is only about making the request valid; command output reports whatever the service
+# holds, unmodified.
+AUTO_UPDATE_RING_WRITE_REPLACEMENTS = {"Slow": "Stable", "Fast": "Beta"}
+
+
+def _writable_auto_update_ring(ring):
+    """Return a ring name the service will accept on write."""
+    return AUTO_UPDATE_RING_WRITE_REPLACEMENTS.get(str(ring), ring)
+
+
+# The service models the proxy state as "None" / "Required" (swagger: the isProxyRequired property
+# of AdditionalCacheNodeProperties, which references the ProxyRequired enum). Customers think in
+# terms of turning a proxy on and off, so the CLI accepts and reports "Disabled" / "Enabled" and
+# translates in both directions.
+PROXY_STATE_TO_SERVICE = {"Disabled": "None", "Enabled": "Required"}
+PROXY_STATE_FROM_SERVICE = {"None": "Disabled", "Required": "Enabled"}
+
+
 class MccEntResourceCreate(_MccEntResourceCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -236,6 +266,15 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
     def pre_operations(self):
         args = self.ctx.args
 
+        if has_value(args.auto_update_day):
+            day = args.auto_update_day
+            if day < 1:
+                err_msg = "InvalidArgumentValue: --auto-update-day: Invalid format: \'" + str(day) + "\' is less than 1"
+                raise ValidationError(err_msg)
+            if day > 7:
+                err_msg = "InvalidArgumentValue: --auto-update-day: Invalid format: \'" + str(day) + "\' is greater than 7"
+                raise ValidationError(err_msg)
+
         if has_value(args.auto_update_week):
             week = args.auto_update_week
             if week < 2:
@@ -319,7 +358,8 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
         instanceIsProxyRequired = None
 
         try:
-            instanceIsProxyRequired = instance.properties.additionalCacheNodeProperties.isProxyRequired
+            serviceProxyState = str(instance.properties.additionalCacheNodeProperties.isProxyRequired)
+            instanceIsProxyRequired = PROXY_STATE_FROM_SERVICE.get(serviceProxyState, serviceProxyState)
         except KeyError:
             pass
 
@@ -418,35 +458,49 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
         instanceAutoUpdateRing = None
 
         try:
-            instanceAutoUpdateRing = instance.properties.cacheNode.autoUpdateRingType
+            serviceAutoUpdateRing = str(instance.properties.cacheNode.autoUpdateRingType)
+            instanceAutoUpdateRing = _writable_auto_update_ring(serviceAutoUpdateRing)
+            if instanceAutoUpdateRing != serviceAutoUpdateRing:
+                # The service persists the legacy ring name but refuses to accept it on write, so a
+                # generic update that echoes the instance back would fail with
+                # InvalidAutoUpdateRingTypeForApiVersion. Replace it with the current name.
+                instance.properties.cacheNode.autoUpdateRingType = instanceAutoUpdateRing
         except KeyError:
             pass
 
-        if instanceAutoUpdateRing is not None:
-            if str(instanceAutoUpdateRing) == "Fast":
-                if has_value(args.auto_update_ring):
-                    if str(args.auto_update_ring) == "Slow":
-                        if not has_value(args.auto_update_day) or not has_value(args.auto_update_week) or not has_value(args.auto_update_time):
-                            err_msg = "ValidationError: Switching cache node auto update ring from \"Fast\" to \"Slow\", --auto-update-day, --auto-update-week, and --auto-update-time must not be Undefined"
-                            raise ValidationError(err_msg)
-                    else:
-                        if has_value(args.auto_update_day) or has_value(args.auto_update_week) or has_value(args.auto_update_time):
-                            err_msg = "ValidationError: Parameter --auto-update-ring is set to \"Fast\" and cache node is already on \"Fast\" ring type, --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
-                            raise ValidationError(err_msg)
+        isRingBeingChanged = has_value(args.auto_update_ring)
+
+        targetAutoUpdateRing = None
+        if isRingBeingChanged:
+            targetAutoUpdateRing = str(args.auto_update_ring)
+        elif instanceAutoUpdateRing is not None:
+            targetAutoUpdateRing = str(instanceAutoUpdateRing)
+
+        if targetAutoUpdateRing is not None:
+            hasAnyScheduleArgument = has_value(args.auto_update_day) or has_value(args.auto_update_week) or has_value(args.auto_update_time)
+            hasEveryScheduleArgument = has_value(args.auto_update_day) and has_value(args.auto_update_week) and has_value(args.auto_update_time)
+
+            if targetAutoUpdateRing in SCHEDULED_AUTO_UPDATE_RINGS:
+                if isRingBeingChanged and not hasEveryScheduleArgument:
+                    err_msg = "ValidationError: Switching cache node auto update ring to \"" + targetAutoUpdateRing + "\", --auto-update-day, --auto-update-week, and --auto-update-time must not be Undefined"
+                    raise ValidationError(err_msg)
+            elif hasAnyScheduleArgument:
+                if isRingBeingChanged:
+                    err_msg = "ValidationError: Parameter --auto-update-ring is set to \"" + targetAutoUpdateRing + "\", --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined. The update schedule of the \"" + targetAutoUpdateRing + "\" ring is managed by Microsoft."
                 else:
-                    if has_value(args.auto_update_day) or has_value(args.auto_update_week) or has_value(args.auto_update_time):
-                        err_msg = "ValidationError: Parameter --auto-update-ring is Undefined, --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
-                        raise ValidationError(err_msg)
-            else:
-                if has_value(args.auto_update_ring):
-                    if str(args.auto_update_ring) == "Fast":
-                        if has_value(args.auto_update_day) or has_value(args.auto_update_week) or has_value(args.auto_update_time):
-                            err_msg = "ValidationError: Switching cache node auto update ring from \"Slow\" to \"Fast\", --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
-                            raise ValidationError(err_msg)
+                    err_msg = "ValidationError: Cache node is already on the \"" + targetAutoUpdateRing + "\" auto update ring, --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
+                raise ValidationError(err_msg)
+
+        # The customer speaks in terms of "Enabled" / "Disabled"; the service expects
+        # "Required" / "None". Translate last, so every check above still compares against the
+        # customer facing value, and the request body carries the value the service accepts.
+        if has_value(args.proxy):
+            userProxyState = str(args.proxy)
+            args.proxy = PROXY_STATE_TO_SERVICE.get(userProxyState, userProxyState)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZIntArg
+        from azure.cli.core.aaz import AAZArgEnum, AAZIntArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
@@ -455,6 +509,42 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
             help="Port number for proxy host.",
             arg_group="Configuration",
             nullable=True
+        )
+
+        args_schema.auto_update_ring.enum = AAZArgEnum(SELECTABLE_AUTO_UPDATE_RINGS)
+
+        # The generated enum carries the service values ("None" / "Required"). Replace them with the
+        # customer facing aliases; pre_instance_update translates back before the request is sent.
+        args_schema.proxy.enum = AAZArgEnum({alias: alias for alias in PROXY_STATE_TO_SERVICE})
+
+        # The generated help comes from the swagger description, which does not know about the
+        # restrictions this file enforces. Restate them so --help matches actual behaviour.
+        args_schema.auto_update_ring._help["short-summary"] = (
+            "Cache node automatic software update periodicity ring. Use \"Stable\" to choose the "
+            "install schedule yourself, which requires --auto-update-day, --auto-update-week and "
+            "--auto-update-time. Use \"Beta\" to let Microsoft manage the schedule, in which case "
+            "those three arguments must not be provided."
+        )
+        args_schema.auto_update_day._help["short-summary"] = (
+            "Day of week that cache node will automatically install software update. "
+            "Allowed values: 1-7. Only valid on the \"Stable\" update ring."
+        )
+        args_schema.auto_update_week._help["short-summary"] = (
+            "Week of month that cache node will automatically install software update. "
+            "Allowed values: 2-3. Only valid on the \"Stable\" update ring."
+        )
+        args_schema.auto_update_time._help["short-summary"] = (
+            "Time of day in 24-hour time (hh:mm) that cache node will automatically install "
+            "software update. Only valid on the \"Stable\" update ring."
+        )
+        args_schema.cache_drive._help["short-summary"] = (
+            "The physical path and size of cache drive. For a Windows cache node exactly one drive "
+            "is allowed and its physical path must be \"/var/mcc\"; a Linux cache node allows up to "
+            "9 drives. Size must be between 50 and 10000 GB."
+        )
+        # The swagger description repeats the allowed values, which the CLI already appends.
+        args_schema.proxy._help["short-summary"] = (
+            "Enable or disable proxy. When enabled, provide --proxy-host and --proxy-port."
         )
 
         args_schema.cache_node_id._registered = False
@@ -490,6 +580,16 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
         args_schema.status_code._registered = False
         args_schema.status_details._registered = False
         args_schema.status_text._registered = False
+
+        # Reserved for an upcoming feature. These arrived with the 2026-06-01 API and are not
+        # ready for customer use yet, so they stay unregistered until the feature ships.
+        # The equivalent arguments on 'create' are already covered by hiding 'cache_node'.
+        args_schema.bgp_network_interface._registered = False
+        args_schema.runtime_account_type._registered = False
+        args_schema.open_firewall_port80._registered = False
+        args_schema.open_firewall_port443._registered = False
+        args_schema.open_firewall_port5000._registered = False
+        args_schema.open_firewall_port5001._registered = False
 
         args_schema.no_wait._registered = False
         args_schema.cache_node_name_1._registered = False
@@ -559,13 +659,13 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
         hasAutoUpdateRing = None
 
         try:
-            cleanOutput["autoUpdateRing"] = result["properties"]["cacheNode"]["autoUpdateRingType"]
             hasAutoUpdateRing = result["properties"]["cacheNode"]["autoUpdateRingType"]
+            cleanOutput["autoUpdateRing"] = hasAutoUpdateRing
         except KeyError:
             pass
 
         if hasAutoUpdateRing is not None:
-            if str(hasAutoUpdateRing) == "Slow":
+            if str(hasAutoUpdateRing) in SCHEDULED_AUTO_UPDATE_RINGS:
                 try:
                     cleanOutput["autoUpdateWeek"] = result["properties"]["cacheNode"]["autoUpdateRequestedWeek"]
                 except KeyError:
@@ -669,13 +769,13 @@ class MccEntNodeList(_MccEntNodeList):
                 pass
 
             try:
-                cleanCacheNode["autoUpdateRing"] = cacheNode["properties"]["cacheNode"]["autoUpdateRingType"]
                 hasAutoUpdateRing = cacheNode["properties"]["cacheNode"]["autoUpdateRingType"]
+                cleanCacheNode["autoUpdateRing"] = hasAutoUpdateRing
             except KeyError:
                 pass
 
             if hasAutoUpdateRing is not None:
-                if str(hasAutoUpdateRing) == "Slow":
+                if str(hasAutoUpdateRing) in SCHEDULED_AUTO_UPDATE_RINGS:
                     try:
                         cleanCacheNode["autoUpdateWeek"] = cacheNode["properties"]["cacheNode"]["autoUpdateRequestedWeek"]
                     except KeyError:
@@ -698,7 +798,8 @@ class MccEntNodeList(_MccEntNodeList):
                     pass
 
                 try:
-                    cleanCacheNode["proxy"] = cacheNode["properties"]["additionalCacheNodeProperties"]["isProxyRequired"]
+                    proxyState = cacheNode["properties"]["additionalCacheNodeProperties"]["isProxyRequired"]
+                    cleanCacheNode["proxy"] = PROXY_STATE_FROM_SERVICE.get(proxyState, proxyState)
                 except KeyError:
                     pass
 
@@ -820,7 +921,7 @@ class MccEntNodeShow(_MccEntNodeShow):
             pass
 
         if hasAutoUpdateRing is not None:
-            if str(hasAutoUpdateRing) == "Slow":
+            if str(hasAutoUpdateRing) in SCHEDULED_AUTO_UPDATE_RINGS:
                 try:
                     cleanOutput["autoUpdateWeek"] = result["properties"]["cacheNode"]["autoUpdateRequestedWeek"]
                 except KeyError:
