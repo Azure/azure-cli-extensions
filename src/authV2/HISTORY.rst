@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.2
+++++++
+* Remove AZURE_GERMAN_CLOUD reference from authV2 cloud parameter values.
+
 1.0.1
 ++++++
 * Fix excluded paths parsing in `az webapp auth update` command.
