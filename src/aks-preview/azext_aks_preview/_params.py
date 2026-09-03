@@ -37,6 +37,10 @@ from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_aks_preview._validators import (
     validate_nat_gateway_managed_outbound_ipv6_count,
     validate_nat_gateway_v2_params,
+    validate_nat_gateway_v2_params_for_update,
+    validate_outbound_type_sku,
+    validate_outbound_type_sku_for_update,
+    validate_action_group_id,
 )
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
@@ -158,12 +162,16 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_NONE,
     CONST_OUTBOUND_TYPE_BLOCK,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+    CONST_NAT_GATEWAY_SKU_STANDARD,
+    CONST_NAT_GATEWAY_SKU_STANDARD_V2,
     CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_MANAGED_GPU_DRIVER_MODE_DRA,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
     CONST_GPU_MIG_STRATEGY_SINGLE,
     CONST_GPU_MIG_STRATEGY_MIXED,
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
@@ -431,6 +439,10 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_NONE,
     CONST_OUTBOUND_TYPE_BLOCK,
 ]
+nat_gateway_skus = [
+    CONST_NAT_GATEWAY_SKU_STANDARD,
+    CONST_NAT_GATEWAY_SKU_STANDARD_V2,
+]
 auto_upgrade_channels = [
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_STABLE_UPGRADE_CHANNEL,
@@ -594,6 +606,11 @@ app_routing_nginx_configs = [
 gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+]
+
+managed_gpu_driver_modes = [
+    CONST_MANAGED_GPU_DRIVER_MODE_DRA,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
 ]
 
 gpu_mig_strategies = [
@@ -763,6 +780,15 @@ def load_arguments(self, _):
             ],
             help="Comma-separated public IP prefix resource IDs "
                  "for the cluster NAT gateway. V2 only.",
+        )
+        c.argument(
+            "nat_gateway_sku",
+            options_list=["--outbound-type-sku"],
+            arg_type=get_enum_type(nat_gateway_skus),
+            validator=validate_outbound_type_sku,
+            help="SKU of the managed NAT Gateway: Standard or StandardV2. Only valid with "
+                 "--outbound-type managedNATGateway. Omit to default to StandardV2 where the "
+                 "region supports it.",
         )
         c.argument(
             "outbound_type",
@@ -990,6 +1016,7 @@ def load_arguments(self, _):
         c.argument("enable_ultra_ssd", action="store_true")
         c.argument("enable_fips_image", action="store_true")
         c.argument("enable_fips", action="store_true", is_preview=True)
+        c.argument("enable_node_hardening", action="store_true", is_preview=True)
         c.argument("kubelet_config")
         c.argument("linux_os_config")
         c.argument("host_group_id", validator=validate_host_group_id)
@@ -1521,6 +1548,15 @@ def load_arguments(self, _):
             help="Comma-separated public IP prefix resource IDs "
                  "for the cluster NAT gateway. V2 only.",
         )
+        c.argument(
+            "nat_gateway_sku",
+            options_list=["--outbound-type-sku"],
+            arg_type=get_enum_type(nat_gateway_skus),
+            validator=validate_outbound_type_sku_for_update,
+            help="SKU of the managed NAT Gateway: Standard or StandardV2. Only valid with "
+                 "--outbound-type managedNATGateway. Omit to default to StandardV2 where the "
+                 "region supports it.",
+        )
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
         c.argument("network_policy")
         c.argument("network_plugin", arg_type=get_enum_type(network_plugins))
@@ -1701,7 +1737,7 @@ def load_arguments(self, _):
         c.argument(
             "outbound_type",
             arg_type=get_enum_type(outbound_types),
-            validator=validate_nat_gateway_v2_params,
+            validator=validate_nat_gateway_v2_params_for_update,
         )
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")
@@ -1718,6 +1754,8 @@ def load_arguments(self, _):
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
         c.argument("enable_fips", action="store_true", is_preview=True)
         c.argument("disable_fips", action="store_true", is_preview=True)
+        c.argument("enable_node_hardening", action="store_true", is_preview=True)
+        c.argument("disable_node_hardening", action="store_true", is_preview=True)
         c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
@@ -2437,6 +2475,13 @@ def load_arguments(self, _):
             help="Enable the Managed GPU experience.",
         )
         c.argument(
+            "managed_gpu_driver_mode",
+            options_list=["--managed-gpu-driver-mode", "--gpu-driver-mode"],
+            arg_type=get_enum_type(managed_gpu_driver_modes),
+            is_preview=True,
+            help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin. The default is DevicePlugin. Requires --enable-managed-gpu to be set to true.",
+        )
+        c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
             validator=validate_node_public_ip_tags,
@@ -2508,6 +2553,11 @@ def load_arguments(self, _):
                  'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
             is_preview=True,
         )
+        c.argument(
+            "enable_managed_dranet",
+            action="store_true",
+            is_preview=True,
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -2563,6 +2613,11 @@ def load_arguments(self, _):
             "asg_ids", validator=validate_application_security_groups, is_preview=True
         )
         c.argument(
+            "enable_managed_dranet",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
             "enable_artifact_streaming",
             action="store_true",
             validator=validate_artifact_streaming,
@@ -2579,6 +2634,13 @@ def load_arguments(self, _):
             arg_type=get_three_state_flag(),
             is_preview=True,
             help="Enable or disable the Managed GPU experience.",
+        )
+        c.argument(
+            "managed_gpu_driver_mode",
+            options_list=["--managed-gpu-driver-mode", "--gpu-driver-mode"],
+            arg_type=get_enum_type(managed_gpu_driver_modes),
+            is_preview=True,
+            help="Specify the Managed GPU driver mode. Allowed values: DRA, DevicePlugin.",
         )
         c.argument(
             "os_sku",
@@ -3847,6 +3909,36 @@ def load_arguments(self, _):
                      "label selector with 'matchLabels' (an array of \"key=value\" strings) and/or "
                      "'matchExpressions'. Maximum 100 entries.",
             )
+
+    # AKS alert configuration commands
+    with self.argument_context("aks alert-config") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+
+    for scope in ['aks alert-config add',
+                  'aks alert-config update',
+                  'aks alert-config delete',
+                  'aks alert-config show']:
+        with self.argument_context(scope) as c:
+            c.argument('name', options_list=['--name', '-n'], required=True,
+                       help='Name of the alert configuration.')
+
+    for scope in ['aks alert-config add',
+                  'aks alert-config update']:
+        with self.argument_context(scope) as c:
+            c.argument('mode', arg_type=get_enum_type(['Disabled', 'Managed']),
+                       help='How AKS manages alerts for the cluster.')
+            c.argument('action_group_id', options_list=['--action-group-id'],
+                       validator=validate_action_group_id,
+                       help='Resource ID of the Azure Monitor action group to send '
+                            'notifications to. Pass an empty string to clear it.')
+
+    with self.argument_context('aks alert-config add') as c:
+        c.argument('mode', arg_type=get_enum_type(['Disabled', 'Managed']), required=True,
+                   help='How AKS manages alerts for the cluster.')
 
     # aks list-vm-skus command
     with self.argument_context("aks list-vm-skus") as c:

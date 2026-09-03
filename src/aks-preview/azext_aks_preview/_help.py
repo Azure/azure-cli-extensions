@@ -171,6 +171,10 @@ helps['aks create'] = f"""
           type: int
           short-summary: NAT gateway idle timeout in minutes.
           long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+        - name: --outbound-type-sku
+          type: string
+          short-summary: SKU of the managed NAT gateway (Standard or StandardV2).
+          long-summary: Only valid with --outbound-type managedNATGateway. StandardV2 selects the NAT Gateway V2 shape, which supports IPv6, user-provided public IPs, and user-provided IP prefixes. If omitted, defaults to StandardV2 where the region supports it, otherwise Standard.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
@@ -305,6 +309,17 @@ helps['aks create'] = f"""
             enables FIPS on the default node pool during cluster creation. Some
             addons and extensions aren't supported with cluster-wide FIPS. Verify
             addon and extension compatibility before enabling this preview feature.
+        - name: --enable-node-hardening
+          type: bool
+          short-summary: Enable node hardening at the cluster level.
+          long-summary: |-
+            Applies hardened defaults for soft eviction thresholds, kube-reserved,
+            and system-reserved on all Linux node pools in the cluster. Per-node-pool
+            kubeletConfig settings take precedence over hardening defaults. On agent
+            pools running Kubernetes 1.37 or later, node hardening is enabled by
+            default and cannot be disabled.
+            Requires the Microsoft.ContainerService/CustomNodeConfigPreview feature
+            to be registered on the subscription.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -1041,6 +1056,10 @@ helps['aks update'] = """
           type: int
           short-summary: NAT gateway idle timeout in minutes.
           long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+        - name: --outbound-type-sku
+          type: string
+          short-summary: SKU of the managed NAT gateway (Standard or StandardV2).
+          long-summary: Only valid with --outbound-type managedNATGateway. StandardV2 selects the NAT Gateway V2 shape, which supports IPv6, user-provided public IPs, and user-provided IP prefixes. If omitted, defaults to StandardV2 where the region supports it, otherwise Standard.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
@@ -1328,6 +1347,24 @@ helps['aks update'] = """
           long-summary: |-
             Disables cluster-wide FIPS enforcement for AKS-managed components.
             This doesn't disable FIPS on existing node pools.
+        - name: --enable-node-hardening
+          type: bool
+          short-summary: Enable node hardening at the cluster level.
+          long-summary: |-
+            Applies hardened defaults for soft eviction thresholds, kube-reserved,
+            and system-reserved on all Linux node pools in the cluster. Per-node-pool
+            kubeletConfig settings take precedence over hardening defaults. On agent
+            pools running Kubernetes 1.37 or later, node hardening is enabled by
+            default and cannot be disabled.
+            Requires the Microsoft.ContainerService/CustomNodeConfigPreview feature
+            to be registered on the subscription.
+        - name: --disable-node-hardening
+          type: bool
+          short-summary: Disable node hardening at the cluster level.
+          long-summary: |-
+            Turns off the cluster-level node hardening flag. Agent pools running
+            Kubernetes 1.37 or later remain hardened by default regardless of this
+            setting.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
@@ -2580,6 +2617,9 @@ helps['aks nodepool add'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --gpu-driver-mode --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2632,6 +2672,9 @@ helps['aks nodepool add'] = """
             Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
             Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
             Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
+        - name: --enable-managed-dranet
+          type: bool
+          short-summary: Enable Managed DRANET on the node pool.
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2805,6 +2848,9 @@ helps['aks nodepool update'] = """
         - name: --asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
+        - name: --enable-managed-dranet
+          type: bool
+          short-summary: Enable Managed DRANET on the node pool.
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
@@ -2814,6 +2860,9 @@ helps['aks nodepool update'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --gpu-driver-mode --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
@@ -5127,6 +5176,126 @@ helps['aks jwtauthenticator show'] = """
     examples:
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
+"""
+
+helps['aks alert-config'] = """
+    type: group
+    short-summary: Commands to manage AKS-managed alert configurations for a cluster.
+    long-summary: Alert configurations let AKS create and manage alerts for important cluster
+                  events and conditions, delivering notifications through an Azure Monitor
+                  action group.
+"""
+
+helps['aks alert-config add'] = """
+    type: command
+    short-summary: Add an alert configuration to a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration (must be unique within the cluster).
+        - name: --mode
+          type: string
+          short-summary: How AKS manages alerts for the cluster.
+          long-summary: Use Managed to have AKS create, update and delete the alerts and send
+                        notifications to the configured action group. Use Disabled to turn
+                        alerting off.
+        - name: --action-group-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor action group to send notifications to.
+          long-summary: Optional. When omitted, the alert configuration is created without a
+                        notification target and no notifications are delivered.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Add a managed alert configuration that notifies an action group
+          text: az aks alert-config add -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Managed --action-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/actionGroups/myag
+        - name: Add an alert configuration with alerting disabled
+          text: az aks alert-config add -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Disabled
+"""
+
+helps['aks alert-config update'] = """
+    type: command
+    short-summary: Update an alert configuration in a managed cluster.
+    long-summary: Only the properties you specify are changed; the rest are preserved.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to update.
+        - name: --mode
+          type: string
+          short-summary: How AKS manages alerts for the cluster.
+        - name: --action-group-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor action group to send notifications to.
+          long-summary: Pass an empty string to remove the current notification target.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Turn off alerting without changing the notification target
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Disabled
+        - name: Point an existing alert configuration at a different action group
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --action-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/actionGroups/otherag
+        - name: Clear the notification target
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --action-group-id ""
+"""
+
+helps['aks alert-config delete'] = """
+    type: command
+    short-summary: Delete an alert configuration from a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to delete.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Delete an alert configuration
+          text: az aks alert-config delete -g MyResourceGroup --cluster-name MyCluster -n myalerts
+"""
+
+helps['aks alert-config list'] = """
+    type: command
+    short-summary: List the alert configurations of a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: List all alert configurations in a cluster
+          text: az aks alert-config list -g MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['aks alert-config show'] = """
+    type: command
+    short-summary: Show the details of an alert configuration.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to show.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Show an alert configuration
+          text: az aks alert-config show -g MyResourceGroup --cluster-name MyCluster -n myalerts
 """
 
 helps['aks prepared-image-specification'] = """

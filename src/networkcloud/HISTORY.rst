@@ -3,6 +3,10 @@
 Release History
 ===============
 
+5.1.1
+++++++++
+* Removes `create` and `delete` commands from `kubernetesversion` command group. These are not needed as this is a hydrated resource managed by the cluster.
+
 5.1.0
 ++++++++
 * Adds new resource `accessbridge` commands `list`, `show`, `update`, `create`, and `delete`.
