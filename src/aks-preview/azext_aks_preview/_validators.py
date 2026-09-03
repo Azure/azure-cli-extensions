@@ -1269,25 +1269,56 @@ def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
 
 
 def validate_nat_gateway_v2_params(namespace):
-    """Validate that V2-only NAT gateway params require managedNATGatewayV2.
+    """Validate V2-only NAT gateway params on create.
 
-    On update, --outbound-type may not be specified if the cluster is already V2.
-    Only reject when --outbound-type is explicitly set to a non-V2 value.
+    V2-only params (managed IPv6 count, BYO outbound IPs / IP prefixes) drive building a NAT gateway
+    profile and require the managed NAT gateway outbound type with the StandardV2 SKU
+    (``--outbound-type managedNATGateway --outbound-type-sku StandardV2``); the Standard (V1) SKU
+    cannot carry them. On create --outbound-type must be set explicitly to managedNATGateway;
+    omitting it defaults the cluster to loadBalancer and produces an incompatible request.
     """
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
         getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
         getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
     ]
-    if any(p is not None for p in v2_params):
-        outbound_type = getattr(namespace, 'outbound_type', None)
-        if outbound_type is not None and outbound_type != 'managedNATGatewayV2':
-            raise InvalidArgumentValueError(
-                "--nat-gateway-managed-outbound-ipv6-count, "
-                "--nat-gateway-outbound-ips, and "
-                "--nat-gateway-outbound-ip-prefixes are only "
-                "valid with --outbound-type managedNATGatewayV2."
-            )
+    if not any(p is not None for p in v2_params):
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if outbound_type != 'managedNATGateway' or sku == 'Standard':
+        raise InvalidArgumentValueError(
+            "--nat-gateway-managed-outbound-ipv6-count, "
+            "--nat-gateway-outbound-ips, and "
+            "--nat-gateway-outbound-ip-prefixes are only valid with "
+            "--outbound-type managedNATGateway and --outbound-type-sku StandardV2; "
+            "specify --outbound-type managedNATGateway explicitly."
+        )
+
+
+def validate_nat_gateway_v2_params_for_update(namespace):
+    """Validate V2-only NAT gateway params on update.
+
+    Unlike create, --outbound-type may be omitted when the cluster is already managed NAT gateway;
+    only an explicit non-managed-NAT-gateway outbound type or the Standard SKU is rejected here. The
+    update decorator additionally verifies the cluster's existing outbound type.
+    """
+    v2_params = [
+        getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
+    ]
+    if not any(p is not None for p in v2_params):
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if (outbound_type is not None and outbound_type != 'managedNATGateway') or sku == 'Standard':
+        raise InvalidArgumentValueError(
+            "--nat-gateway-managed-outbound-ipv6-count, "
+            "--nat-gateway-outbound-ips, and "
+            "--nat-gateway-outbound-ip-prefixes are only valid with "
+            "--outbound-type managedNATGateway and --outbound-type-sku StandardV2."
+        )
 
 
 def validate_prepared_image_specification_id(namespace):
@@ -1305,6 +1336,41 @@ def validate_prepared_image_specification_id(namespace):
                 "--prepared-image-specification-id must be a resource ID of type "
                 "Microsoft.ContainerService/preparedImageSpecifications/versions."
             )
+
+
+def validate_outbound_type_sku(namespace):
+    """Validate --outbound-type-sku on create (managed NAT gateway SKU).
+
+    The SKU only applies to the managed NAT gateway outbound type and, on create, drives building a
+    NAT gateway profile. --outbound-type must therefore be set explicitly to managedNATGateway;
+    omitting it defaults the cluster to loadBalancer and produces an incompatible request. Region
+    availability and downgrade (StandardV2 -> Standard) rules are enforced server-side by the RP.
+    """
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if sku is None:
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    if outbound_type != 'managedNATGateway':
+        raise InvalidArgumentValueError(
+            "--outbound-type-sku is only valid with --outbound-type managedNATGateway; "
+            "specify --outbound-type managedNATGateway explicitly."
+        )
+
+
+def validate_outbound_type_sku_for_update(namespace):
+    """Validate --outbound-type-sku on update (managed NAT gateway SKU).
+
+    Unlike create, --outbound-type may be omitted when the cluster is already managed NAT gateway;
+    only an explicit non-managed-NAT-gateway outbound type is rejected.
+    """
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if sku is None:
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    if outbound_type is not None and outbound_type != 'managedNATGateway':
+        raise InvalidArgumentValueError(
+            "--outbound-type-sku is only valid with --outbound-type managedNATGateway."
+        )
 
 
 def validate_action_group_id(namespace):
