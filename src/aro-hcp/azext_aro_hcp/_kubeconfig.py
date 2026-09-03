@@ -8,6 +8,7 @@
 # `az aro hcp cluster request-credential` merges into an existing kubeconfig
 # the same way `az aks get-credentials` does.
 
+import base64
 import errno
 import os
 import platform
@@ -176,3 +177,33 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
     finally:
         additional_file.close()
         os.remove(temp_path)
+
+def _generate_admin_credential_request():
+    from cryptography import x509
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from cryptography.x509.oid import NameOID
+
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
+    subject = x509.Name([
+        x509.NameAttribute(NameOID.COMMON_NAME, "system:customer-break-glass:system-admin"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "system:masters"),
+    ])
+    csr = x509.CertificateSigningRequestBuilder().subject_name(subject).sign(private_key, hashes.SHA256())
+
+    private_key_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
+    csr_pem = csr.public_bytes(serialization.Encoding.PEM).decode("ascii")
+    return private_key_pem, csr_pem
+
+
+def _embed_private_key(kubeconfig, private_key_pem):
+    config = yaml.safe_load(kubeconfig)
+    user = next(item for item in config["users"] if item["name"] == "admin")
+
+    user["user"]["client-key-data"] = base64.b64encode(private_key_pem).decode("ascii")
+    user["user"].pop("client-key", None)
+    return yaml.safe_dump(config, default_flow_style=False)
