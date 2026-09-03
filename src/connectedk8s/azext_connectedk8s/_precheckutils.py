@@ -545,6 +545,65 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
 # ---------------------------------------------------------------------------
 
 
+def _get_incomplete_job_diagnostic(  # pylint: disable=too-many-return-statements
+    pod: Any,
+) -> str:
+    """Return actionable guidance for a diagnostic pod that did not finish."""
+    pod_status = getattr(pod, "status", None)
+    if pod_status is None:
+        return "Review the saved pod description and retry the operation."
+
+    for container_status in getattr(pod_status, "container_statuses", None) or []:
+        state = getattr(container_status, "state", None)
+        waiting = getattr(state, "waiting", None)
+        waiting_reason = getattr(waiting, "reason", None)
+        if waiting_reason in ("ErrImagePull", "ImagePullBackOff"):
+            return (
+                f"Pod reason: {waiting_reason}. The diagnostic image could not be pulled. "
+                "Verify connectivity to MCR and proxy settings, then retry."
+            )
+        if waiting_reason == "CrashLoopBackOff":
+            return (
+                "Pod reason: CrashLoopBackOff. The diagnostic container repeatedly failed. "
+                "Review the saved container logs, then retry."
+            )
+
+        terminated = getattr(state, "terminated", None)
+        terminated_reason = getattr(terminated, "reason", None)
+        exit_code = getattr(terminated, "exit_code", None)
+        if terminated_reason == "OOMKilled":
+            return (
+                "Pod reason: OOMKilled. The diagnostic container exceeded its memory limit. "
+                "Ensure the cluster has sufficient memory, then retry."
+            )
+        if terminated is not None and exit_code not in (None, 0):
+            reason = terminated_reason or "ContainerFailed"
+            return (
+                f"Pod reason: {reason} (exit code {exit_code}). The diagnostic container failed. "
+                "Review the saved container logs, then retry."
+            )
+
+    for condition in getattr(pod_status, "conditions", None) or []:
+        if (
+            getattr(condition, "type", None) == "PodScheduled"
+            and getattr(condition, "status", None) == "False"
+        ):
+            reason = getattr(condition, "reason", None) or "Unschedulable"
+            return (
+                f"Pod reason: {reason}. The diagnostic pod could not be scheduled. "
+                "Verify node resources, taints, and namespace quotas, then retry."
+            )
+
+    pod_reason = getattr(pod_status, "reason", None)
+    if pod_reason:
+        return (
+            f"Pod reason: {pod_reason}. Review the saved pod description and container logs, "
+            "then retry."
+        )
+
+    return "Review the saved pod description and container logs, then retry."
+
+
 def executing_cluster_diagnostic_checks_job(
     cmd: CLICommand,
     corev1_api_instance: CoreV1Api,
@@ -666,7 +725,7 @@ def executing_cluster_diagnostic_checks_job(
             mcr_url,
         )
 
-        # Watch the Job for up to 60s waiting for it to reach Complete or Failed (3 retries) state
+        # Watch the Job for up to 180s waiting for it to reach Complete or Failed (3 retries) state
         w = watch.Watch()
         is_job_complete = False
         is_job_scheduled = False
@@ -675,7 +734,7 @@ def executing_cluster_diagnostic_checks_job(
             batchv1_api_instance.list_namespaced_job,
             namespace="azure-arc-release",
             label_selector="",
-            timeout_seconds=60,
+            timeout_seconds=180,
         ):
             logger.debug(
                 "Watching Cluster Diagnostic Checks Job to reach completed state"
@@ -751,6 +810,9 @@ def executing_cluster_diagnostic_checks_job(
         # 3. Job was scheduled but didn't complete (e.g. OOMKilled, timeout) → fetch partial logs
         if is_job_complete is False:
             prediagnostic_job_execution_status = consts.Job_Status_Not_Completed
+            incomplete_job_diagnostic = (
+                "Review the saved pod description and container logs, then retry."
+            )
             # Job was scheduled successfully, but didn't complete. We will fetch the logs and delete helm release.
             logger.debug(
                 "Cluster Diagnostic Checks Job Failed.  Fetch results and delete Helm release in the cluster"
@@ -767,22 +829,32 @@ def executing_cluster_diagnostic_checks_job(
             )
             if matching_pods:
                 each_pod = matching_pods[0]
+                incomplete_job_diagnostic = _get_incomplete_job_diagnostic(each_pod)
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
 
                 # Creating a text file with the name of the container and adding that containers logs in it
-                cluster_diagnostic_checks_container_log = (
-                    corev1_api_instance.read_namespaced_pod_log(
-                        name=pod_name,
-                        container="cluster-diagnostic-checks-container",
-                        namespace="azure-arc-release",
-                    )
-                )
-                cluster_diagnostic_checks_container_log = normalize_container_log(
-                    cluster_diagnostic_checks_container_log
-                )
+                pod_logs_available = True
                 try:
-                    if storage_space_available:
+                    cluster_diagnostic_checks_container_log = (
+                        corev1_api_instance.read_namespaced_pod_log(
+                            name=pod_name,
+                            container="cluster-diagnostic-checks-container",
+                            namespace="azure-arc-release",
+                        )
+                    )
+                    cluster_diagnostic_checks_container_log = normalize_container_log(
+                        cluster_diagnostic_checks_container_log
+                    )
+                except Exception:  # pylint: disable=broad-exception-caught
+                    pod_logs_available = False
+                    logger.debug(
+                        "Diagnostic pod logs are not available yet for pod %s",
+                        pod_name,
+                        exc_info=True,
+                    )
+                try:
+                    if storage_space_available and pod_logs_available:
                         dns_check_path = os.path.join(
                             filepath_with_timestamp,
                             "cluster_diagnostic_checks_job_log.txt",
@@ -829,8 +901,8 @@ def executing_cluster_diagnostic_checks_job(
                 summary="Could not complete Cluster Diagnostic Checks Job after scheduling in the cluster",
             )
             logger.warning(
-                "Cluster diagnostics job didn't reach completed state in the kubernetes cluster. The "
-                "possible reasons can be resource constraints on the cluster.\n"
+                "Cluster diagnostics job didn't reach completed state in the kubernetes cluster. %s\n",
+                incomplete_job_diagnostic,
             )
 
         # 4. Job completed successfully → fetch logs for result parsing
@@ -984,8 +1056,9 @@ def fetching_cli_output_logs(
                 with open(
                     cli_output_logger_path, "w+", encoding="utf-8"
                 ) as cli_output_writer:
-                    for output in diagnoser_output:
-                        cli_output_writer.write(output + "\n")
+                    cli_output_writer.writelines(
+                        output + "\n" for output in diagnoser_output
+                    )
                     # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that
                     # also to the text file
                     if flag == 0:

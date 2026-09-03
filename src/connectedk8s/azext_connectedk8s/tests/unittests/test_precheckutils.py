@@ -66,8 +66,8 @@ _utils_stub = sys.modules.get("azext_connectedk8s._utils")
 if isinstance(_utils_stub, MagicMock):
     _utils_stub.process_helm_error_detail = lambda x: x
 
-import azext_connectedk8s._constants as consts  # noqa: E402, I001
-import azext_connectedk8s._precheckutils as precheckutils  # noqa: E402
+import azext_connectedk8s._constants as consts  # noqa: E402, I001, RUF100
+import azext_connectedk8s._precheckutils as precheckutils  # noqa: E402, RUF100
 
 
 for mod, original_module in _ORIGINAL_MODULES.items():
@@ -598,3 +598,149 @@ def test_split_container_log_handles_stringified_bytes():
         "DNS Result: success",
         "Outbound Result: success",
     ]
+
+
+@pytest.mark.parametrize(
+    ("reason", "expected_hint"),
+    [
+        ("ErrImagePull", "Verify connectivity to MCR and proxy settings"),
+        ("ImagePullBackOff", "Verify connectivity to MCR and proxy settings"),
+        ("CrashLoopBackOff", "Review the saved container logs"),
+    ],
+)
+def test_incomplete_job_diagnostic_maps_waiting_reason(reason, expected_hint):
+    pod = MagicMock()
+    pod.status.container_statuses = [MagicMock()]
+    pod.status.container_statuses[0].state.waiting.reason = reason
+    pod.status.container_statuses[0].state.terminated = None
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert f"Pod reason: {reason}" in diagnostic
+    assert expected_hint in diagnostic
+
+
+def test_incomplete_job_diagnostic_maps_unschedulable_pod():
+    pod = MagicMock()
+    pod.status.container_statuses = []
+    pod.status.conditions = [
+        MagicMock(type="PodScheduled", status="False", reason="Unschedulable")
+    ]
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert "Pod reason: Unschedulable" in diagnostic
+    assert "Verify node resources, taints, and namespace quotas" in diagnostic
+
+
+def test_incomplete_job_diagnostic_maps_oom_killed_container():
+    pod = MagicMock()
+    container_status = MagicMock()
+    container_status.state.waiting = None
+    container_status.state.terminated.reason = "OOMKilled"
+    container_status.state.terminated.exit_code = 137
+    pod.status.container_statuses = [container_status]
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert "Pod reason: OOMKilled" in diagnostic
+    assert "Ensure the cluster has sufficient memory" in diagnostic
+
+
+def test_incomplete_job_diagnostic_maps_nonzero_exit_code():
+    pod = MagicMock()
+    container_status = MagicMock()
+    container_status.state.waiting = None
+    container_status.state.terminated.reason = "Error"
+    container_status.state.terminated.exit_code = 2
+    pod.status.container_statuses = [container_status]
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert "Pod reason: Error (exit code 2)" in diagnostic
+    assert "Review the saved container logs" in diagnostic
+
+
+def test_incomplete_job_diagnostic_has_unknown_state_fallback():
+    pod = MagicMock()
+    pod.status.container_statuses = []
+    pod.status.conditions = []
+    pod.status.reason = None
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert diagnostic == (
+        "Review the saved pod description and container logs, then retry."
+    )
+
+
+def test_diagnostic_job_watch_uses_180_second_timeout(monkeypatch):
+    _reset_globals()
+
+    complete_condition = MagicMock(type="Complete", status="True")
+    completed_job = MagicMock()
+    completed_job.metadata.name = "cluster-diagnostic-checks-job"
+    completed_job.status.failed = None
+    completed_job.status.conditions = [complete_condition]
+    watcher = MagicMock()
+    watcher.stream.return_value = iter([{"object": completed_job}])
+
+    batchv1_api = MagicMock()
+
+    pod = MagicMock()
+    pod.metadata.name = "cluster-diagnostic-checks-job-abc12"
+    pod.metadata.creation_timestamp = "2026-08-21T23:02:22Z"
+    corev1_api = MagicMock()
+    corev1_api.list_namespaced_pod.return_value = MagicMock(items=[pod])
+    corev1_api.read_namespaced_pod_log.return_value = "diagnostic output"
+
+    cmd = MagicMock()
+    cmd.cli_ctx.cloud.endpoints.active_directory = "https://login.microsoftonline.com"
+    monkeypatch.setattr(precheckutils.watch, "Watch", lambda: watcher)
+    monkeypatch.setattr(precheckutils.config, "load_kube_config", MagicMock())
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock())
+    monkeypatch.setattr(
+        precheckutils,
+        "helm_install_release_cluster_diagnostic_checks",
+        MagicMock(),
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_release_namespace", lambda *_args: None
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_mcr_path",
+        lambda *_args: "mcr.microsoft.com",
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_chart_path", lambda *_args: "/fake/chart"
+    )
+
+    precheckutils.executing_cluster_diagnostic_checks_job(
+        cmd=cmd,
+        corev1_api_instance=corev1_api,
+        batchv1_api_instance=batchv1_api,
+        helm_client_location="helm",
+        kubectl_client_location="kubectl",
+        kube_config=None,
+        kube_context=None,
+        location="eastus",
+        http_proxy="",
+        https_proxy="",
+        no_proxy="",
+        proxy_cert="",
+        azure_cloud="AZUREPUBLICCLOUD",
+        filepath_with_timestamp="/tmp/prediagnostics",
+        storage_space_available=False,
+    )
+
+    watcher.stream.assert_called_once_with(
+        batchv1_api.list_namespaced_job,
+        namespace="azure-arc-release",
+        label_selector="",
+        timeout_seconds=180,
+    )
+    batchv1_api.read_namespaced_job.assert_not_called()
+    assert (
+        precheckutils.prediagnostic_job_execution_status == consts.Job_Status_Completed
+    )
