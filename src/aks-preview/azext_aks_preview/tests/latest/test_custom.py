@@ -9,7 +9,6 @@ from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview import ContainerServiceCommandsLoader
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._consts import CONST_FLEX_NODES
-from azext_aks_preview._params import load_arguments
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolModels
 from azext_aks_preview.managed_cluster_decorator import (
     AKSPreviewManagedClusterModels,
