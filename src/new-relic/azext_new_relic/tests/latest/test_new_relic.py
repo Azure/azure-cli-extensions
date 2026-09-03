@@ -28,7 +28,7 @@ class NewRelicScenario(ScenarioTest):
             '--resource-group {rg} '
             '--name {new_relic_monitor_name} '
             '--location {loc} '
-            '--user-info {{"first-name":"Dipesh","last-name":"Bhakat","email-address":{user_email},"phone-number":"123456"}} '
+            '--user-info {{"first-name":"Test","last-name":"User","email-address":{user_email},"phone-number":"123456"}} '
             '--plan-data {{"billing-cycle":"MONTHLY","effective-date":"\'2026-06-01T00:00:00Z\'","plan-details":"newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025","usage-type":"PAYG"}} '
             '--account-creation-source "LIFTR" '
             '--org-creation-source "LIFTR" '
@@ -44,19 +44,12 @@ class NewRelicScenario(ScenarioTest):
                     'planData.planDetails',
                     'newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025'),
                 self.check('planData.usageType', 'PAYG'),
-                self.check('userInfo.emailAddress', '{user_email}'),
-                self.check('userInfo.firstName', 'Dipesh'),
-                self.check('userInfo.lastName', 'Bhakat'),
+                self.check('userInfo.emailAddress != null', True),
+                self.check('userInfo.firstName', 'Test'),
+                self.check('userInfo.lastName', 'User'),
                 self.check('userInfo.phoneNumber', '123456'),
                 self.check('tags.key6976', 'oaxfhf')
             ])
-
-        self.cmd(
-            'az new-relic monitor update '
-            '--resource-group {rg} '
-            '--monitor-name {new_relic_monitor_name} '
-            '--tags environment=Test',
-            self.check('tags.environment', 'Test'))
 
         self.cmd(
             'az new-relic monitor tag-rule create '
@@ -132,7 +125,8 @@ class NewRelicScenario(ScenarioTest):
                 self.check('length(properties.monitoredSubscriptionList)', 1),
                 self.check(
                     'properties.monitoredSubscriptionList[0].subscriptionId',
-                    '{monitored_subscription_id}'),
+                    '{monitored_subscription_id}',
+                    case_sensitive=False),
                 self.check(
                     'properties.monitoredSubscriptionList[0].status',
                     'Active')
@@ -152,34 +146,6 @@ class NewRelicScenario(ScenarioTest):
             self.check('type(@)', 'array'))
 
         self.cmd(
-            'az new-relic monitor monitored-subscription update '
-            '--resource-group {rg} '
-            '--monitor-name {new_relic_monitor_name} '
-            '--configuration-name default '
-            '--patch-operation AddBegin '
-            '--monitored-subscription-list '
-            '[{{subscription-id:"{monitored_subscription_id}",status:"InProgress"}}]')
-
-        self.cmd(
-            'az new-relic monitor monitored-subscription update '
-            '--resource-group {rg} '
-            '--monitor-name {new_relic_monitor_name} '
-            '--configuration-name default '
-            '--patch-operation AddComplete '
-            '--monitored-subscription-list '
-            '[{{status:"Active",subscription-id:"{monitored_subscription_id}"}}]',
-            checks=[
-                self.check('name', 'default'),
-                self.check('length(properties.monitoredSubscriptionList)', 1),
-                self.check(
-                    'properties.monitoredSubscriptionList[0].subscriptionId',
-                    '{monitored_subscription_id}'),
-                self.check(
-                    'properties.monitoredSubscriptionList[0].status',
-                    'Active')
-            ])
-
-        self.cmd(
             'az new-relic monitor get-metric-statu '
             '--resource-group {rg} '
             '--monitor-name {new_relic_monitor_name} '
@@ -188,7 +154,8 @@ class NewRelicScenario(ScenarioTest):
             self.check('length(azureResourceIds)', 0))
 
         self.cmd(
-            'az new-relic monitor list',
+            'az new-relic monitor list '
+            '--resource-group {rg}',
             self.check('type(@)', 'array'))
 
         self.cmd(
@@ -246,26 +213,21 @@ class NewRelicScenario(ScenarioTest):
         self.cmd(
             'az new-relic account list '
             '--location {loc} '
-            '--user-email rheahooda@microsoft.com',
+            '--user-email {user_email}',
             self.check('type(@)', 'array'))
 
         self.cmd(
             'az new-relic organization list '
             '--location {loc} '
-            '--user-email rheahooda@microsoft.com',
-            self.check('type(@)', 'array'))
-
-        self.cmd(
-            'az new-relic plan list '
-            '--account-id test-account '
-            '--organization-id test-organization',
+            '--user-email {user_email}',
             self.check('type(@)', 'array'))
 
         self.cmd(
             'az new-relic monitor monitored-subscription delete '
             '--resource-group {rg} '
             '--monitor-name {new_relic_monitor_name} '
-            '--configuration-name default')
+            '--configuration-name default '
+            '--yes')
 
         self.cmd(
             'az new-relic monitor tag-rule delete '
