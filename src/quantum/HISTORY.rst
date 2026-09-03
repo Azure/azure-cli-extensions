@@ -3,9 +3,12 @@
 Release History
 ===============
 
-1.0.0b25
+1.0.0b26
 ++++++++++++++
 * Renamed ``az quantum workspace user create/delete`` to ``add/remove`` and limited both commands to users identified by email address.
+
+1.0.0b25
+++++++++++++++
 * Added the ``az quantum suite-offer list`` command to list the suite offers available to the subscription, including provider, location, and subscription-level quota allocations.
 
 1.0.0b24
