@@ -231,17 +231,17 @@ class List(AAZCommand):
             match["foundry.caller.session.id"] = AAZListType()
             match["foundry.project.id"] = AAZListType()
 
-            foundry.caller.agent.id = cls._schema_on_200.value.Element.properties.rules.Element.match.foundry.caller.agent.id
-            foundry.caller.agent.id.Element = AAZStrType()
+            foundry_caller_agent_id = match["foundry.caller.agent.id"]
+            foundry_caller_agent_id.Element = AAZStrType()
 
-            foundry.caller.identity.oid = cls._schema_on_200.value.Element.properties.rules.Element.match.foundry.caller.identity.oid
-            foundry.caller.identity.oid.Element = AAZStrType()
+            foundry_caller_identity_oid = match["foundry.caller.identity.oid"]
+            foundry_caller_identity_oid.Element = AAZStrType()
 
-            foundry.caller.session.id = cls._schema_on_200.value.Element.properties.rules.Element.match.foundry.caller.session.id
-            foundry.caller.session.id.Element = AAZStrType()
+            foundry_caller_session_id = match["foundry.caller.session.id"]
+            foundry_caller_session_id.Element = AAZStrType()
 
-            foundry.project.id = cls._schema_on_200.value.Element.properties.rules.Element.match.foundry.project.id
-            foundry.project.id.Element = AAZStrType()
+            foundry_project_id = match["foundry.project.id"]
+            foundry_project_id.Element = AAZStrType()
 
             thresholds = cls._schema_on_200.value.Element.properties.rules.Element.thresholds
             thresholds.Element = AAZObjectType()
