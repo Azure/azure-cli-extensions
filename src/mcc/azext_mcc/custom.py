@@ -423,7 +423,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 if has_value(args.proxy):
                     if args.proxy == "Enabled":
                         if not has_value(args.proxy_host) or not has_value(args.proxy_port):
-                            err_msg = "ValidationError: Parameter --proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
+                            err_msg = "ValidationError: Parameter --proxy is set to \"Enabled\", must provide both --proxy-host and --proxy-port parameters."
                             raise ValidationError(err_msg)
 
                         if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
@@ -433,16 +433,16 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port)
                     else:
                         if has_value(args.proxy_host) or has_value(args.proxy_port):
-                            err_msg = "ValidationError: Parameter --proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                            err_msg = "ValidationError: Parameter --proxy is not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                             raise ValidationError(err_msg)
                 else:
                     if has_value(args.proxy_host) or has_value(args.proxy_port):
-                        err_msg = "ValidationError: Parameter --proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                        err_msg = "ValidationError: Parameter --proxy is not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                         raise ValidationError(err_msg)
         else:
             if args.proxy == "Enabled":
                 if not has_value(args.proxy_host) or not has_value(args.proxy_port):
-                    err_msg = "ValidationError: Parameter --proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
+                    err_msg = "ValidationError: Parameter --proxy is set to \"Enabled\", must provide both --proxy-host and --proxy-port parameters."
                     raise ValidationError(err_msg)
 
                 if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):

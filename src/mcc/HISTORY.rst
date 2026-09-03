@@ -3,6 +3,15 @@
 Release History
 ===============
 
+1.0.0b5 (2026-09-03)
+++++++
+* Fixed ``az mcc ent node update``: proxy validation errors named ``--enable-proxy``, which is not
+  an argument of the command. Following the guidance in the message failed with ``unrecognized
+  arguments``. The messages now name ``--proxy``.
+* Fixed ``az mcc ent node create``: when the MCC resource could not be found the error reported the
+  cache node name instead of the MCC resource name, and discarded the underlying error. It now
+  reports the MCC resource, the resource group, and the reason the lookup failed.
+
 1.0.0b4 (2026-09-01)
 ++++++
 * Upgraded all ``az mcc ent`` commands to the ``2026-06-01`` API version.
@@ -30,12 +39,6 @@ Release History
   stores it, so an operator can see when a cache node is still on a legacy ring.
 * Hid ``--bgp-network-interface``, ``--runtime-account-type`` and the ``--open-firewall-port*``
   arguments. They are reserved for an upcoming feature and are not ready for use.
-* Fixed ``az mcc ent node update``: proxy validation errors named ``--enable-proxy``, which is not
-  an argument of the command. Following the guidance in the message failed with ``unrecognized
-  arguments``. The messages now name ``--proxy``.
-* Fixed ``az mcc ent node create``: when the MCC resource could not be found the error reported the
-  cache node name instead of the MCC resource name, and discarded the underlying error. It now
-  reports the MCC resource, the resource group, and the reason the lookup failed.
 * Improved help for ``--auto-update-ring``, ``--auto-update-day``, ``--auto-update-week``,
   ``--auto-update-time``, ``--cache-drive`` and ``--proxy`` so it matches the enforced behaviour.
 * Added examples to every ``az mcc ent`` command.
