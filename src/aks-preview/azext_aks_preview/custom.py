@@ -136,6 +136,10 @@ from azext_aks_preview.machine import (
     update_flexnode_machine,
     update_machine,
 )
+from azext_aks_preview.alertconfiguration import (
+    aks_alert_config_add_internal,
+    aks_alert_config_update_internal,
+)
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
     aks_jwtauthenticator_update_internal,
@@ -244,6 +248,41 @@ def _ssl_context():
             return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 
     return ssl.create_default_context()
+
+
+# The Log Analytics workspace's default output tables (e.g. the ContainerInsights solution
+# tables) can take a short while to finish provisioning right after the workspace itself, or
+# its association with the ContainerInsights solution, reports "Succeeded". During that window
+# a Data Collection Rule (DCR) PUT referencing those tables can fail synchronously with
+# "InvalidOutputTable" even though the workspace is otherwise ready.
+_DCR_TABLE_READINESS_MAX_RETRY_TIMES = 5
+_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS = 15
+
+
+def _create_or_update_dcr_with_table_readiness_retry(resources, dcr_resource_id, api_version, body):
+    """
+    Create/update a Data Collection Rule (DCR), applying a bounded backoff-and-retry
+    specifically for the known-transient "InvalidOutputTable" readiness error described above.
+    Any other error keeps the pre-existing immediate-retry policy (up to 3 attempts, no delay)
+    and is re-raised unchanged once that bound is exhausted.
+    """
+    _MAX_RETRY_TIMES = 3
+    error = None
+    readiness_retries = 0
+    attempt = 0
+    while True:
+        try:
+            resources.begin_create_or_update_by_id(dcr_resource_id, api_version, body)
+            return
+        except (CLIError, HttpResponseError) as e:
+            error = e
+            if "InvalidOutputTable" in str(e) and readiness_retries < _DCR_TABLE_READINESS_MAX_RETRY_TIMES:
+                readiness_retries += 1
+                time.sleep(_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS)
+                continue
+            attempt += 1
+            if attempt >= _MAX_RETRY_TIMES:
+                raise error
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
@@ -581,26 +620,12 @@ def ensure_container_insights_for_monitoring_preview(
             )
 
             resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
-            for _ in range(3):
-                try:
-                    if enable_syslog:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_with_syslog)
-                        )
-                    else:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_without_syslog)
-                        )
-                    error = None
-                    break
-                except (CLIError, HttpResponseError) as e:
-                    error = e
-            else:
-                raise error
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources,
+                dcr_resource_id,
+                "2022-06-01",
+                json.loads(dcr_creation_body_with_syslog) if enable_syslog else json.loads(dcr_creation_body_without_syslog),
+            )
 
         if create_dcra:
             # only create or delete the association between the DCR and cluster
@@ -1230,6 +1255,7 @@ def aks_create(
     nat_gateway_managed_outbound_ipv6_count=None,
     nat_gateway_outbound_ip_ids=None,
     nat_gateway_outbound_ip_prefix_ids=None,
+    nat_gateway_sku=None,
     outbound_type=None,
     network_plugin=None,
     network_plugin_mode=None,
@@ -1333,6 +1359,7 @@ def aks_create(
     enable_ultra_ssd=False,
     enable_fips_image=False,
     enable_fips=False,
+    enable_node_hardening=False,
     kubelet_config=None,
     linux_os_config=None,
     host_group_id=None,
@@ -1520,6 +1547,7 @@ def aks_update(
     nat_gateway_managed_outbound_ipv6_count=None,
     nat_gateway_outbound_ip_ids=None,
     nat_gateway_outbound_ip_prefix_ids=None,
+    nat_gateway_sku=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
@@ -1621,6 +1649,8 @@ def aks_update(
     disable_image_integrity=False,
     enable_fips=False,
     disable_fips=False,
+    enable_node_hardening=False,
+    disable_node_hardening=False,
     enable_service_account_image_pull=False,
     disable_service_account_image_pull=False,
     service_account_image_pull_default_managed_identity_id=None,
@@ -2286,9 +2316,11 @@ def aks_agentpool_add(
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     enable_managed_gpu=False,
+    managed_gpu_driver_mode=None,
     skip_gpu_driver_install=False,
     gpu_driver=None,
     driver_type=None,
@@ -2370,9 +2402,11 @@ def aks_agentpool_update(
     # extensions
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=False,
+    managed_gpu_driver_mode=None,
     os_sku=None,
     ssh_access=None,
     yes=False,
@@ -6322,3 +6356,90 @@ def aks_prepared_image_specification_version_show(cmd, client, resource_group_na
 
 def aks_prepared_image_specification_version_list(cmd, client, resource_group_name, pis_name):
     return client.list_versions(resource_group_name, pis_name)
+
+
+# Alert configuration commands
+def aks_alert_config_add(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    existing_alert_config = None
+    try:
+        existing_alert_config = client.get(resource_group_name, cluster_name, name, headers=headers)
+    except ResourceNotFoundError:
+        pass
+
+    if existing_alert_config:
+        raise ClientRequestError(
+            f"Alert configuration '{name}' already exists. "
+            "Please use 'az aks alert-config update' to update it."
+        )
+
+    raw_parameters = locals()
+    return aks_alert_config_add_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_update(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    raw_parameters = locals()
+    return aks_alert_config_update_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_delete(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        cluster_name,
+        name,
+        headers=headers,
+    )
+
+
+def aks_alert_config_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
+
+
+def aks_alert_config_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.get(resource_group_name, cluster_name, name, headers=headers)

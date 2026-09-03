@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.11.4
+++++++
+* `az dataprotection enable-backup trigger`: Specify `ServicePrincipal` when creating role assignments for AKS managed identities.
+
 1.11.3
 ++++++++++++++++
 * [Breaking] `az dataprotection backup-policy retention-rule set` validates against duplicate retention-rule names. AzureBlob: OperationalStore retention lifecycles must now use the retention rule name `--name Default_OperationalStore`. Using `--name Default` with an OperationalStore lifecycle for AzureBlobis no longer accepted. 
