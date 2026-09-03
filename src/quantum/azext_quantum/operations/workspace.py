@@ -575,10 +575,7 @@ def _resolve_user_id(cmd, email):
             ) from ex
         raise
 
-    user_id = user.get("id") if isinstance(user, dict) else None
-    if not user_id:
-        raise AzureResponseError("Microsoft Graph returned an invalid response while resolving the user.")
-    return user_id
+    return user["id"]
 
 
 def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):

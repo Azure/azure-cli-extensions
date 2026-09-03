@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, AzureResponseError, ForbiddenError, ServiceError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
@@ -939,13 +939,6 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
                 _resolve_user_id(cmd, "user@contoso.com")
 
         self.assertIs(raised.exception, graph_error)
-
-    def test_resolve_user_id_rejects_invalid_graph_response(self):
-        graph_client = SimpleNamespace(user_get=Mock(return_value={}))
-        with patch("azure.cli.command_modules.role.graph_client_factory", return_value=graph_client):
-            cmd = SimpleNamespace(cli_ctx=object())
-            with self.assertRaisesRegex(AzureResponseError, "Microsoft Graph returned an invalid response"):
-                _resolve_user_id(cmd, "user@contoso.com")
 
     def test_add_user_rejects_invalid_email(self):
         cmd = SimpleNamespace(cli_ctx=object())
