@@ -178,7 +178,7 @@ helps['aks create'] = f"""
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. managedNATGatewayV2 uses Azure NAT Gateway Standard V2 SKU and supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. For NAT Gateway V2 (IPv6, user-provided public IPs, and user-provided IP prefixes), use managedNATGateway with --outbound-type-sku StandardV2. The legacy managedNATGatewayV2 value is no longer supported.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -1063,7 +1063,7 @@ helps['aks update'] = """
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, userDefinedRouting, none and block. For clusters using a custom virtual network, supported values are loadbalancer, userAssignedNATGateway and userDefinedRouting. For clusters using an AKS-managed virtual network, supported values are loadbalancer, managedNATGateway, managedNATGatewayV2 and userDefinedRouting.
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For clusters using a custom virtual network, supported values are loadbalancer, userAssignedNATGateway and userDefinedRouting. For clusters using an AKS-managed virtual network, supported values are loadbalancer, managedNATGateway and userDefinedRouting. For NAT Gateway V2, use managedNATGateway with --outbound-type-sku StandardV2; the legacy managedNATGatewayV2 value is no longer supported.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource.
