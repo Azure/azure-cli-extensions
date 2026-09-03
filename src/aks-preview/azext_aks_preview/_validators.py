@@ -1371,3 +1371,26 @@ def validate_outbound_type_sku_for_update(namespace):
         raise InvalidArgumentValueError(
             "--outbound-type-sku is only valid with --outbound-type managedNATGateway."
         )
+
+
+def validate_action_group_id(namespace):
+    """Validate that --action-group-id refers to a Microsoft.Insights/actionGroups resource.
+
+    An unset or empty value is allowed: the RP accepts an empty actionGroupId, and the CLI
+    always sends the key so the required-property contract is satisfied.
+    """
+    action_group_id = getattr(namespace, "action_group_id", None)
+    if not action_group_id:
+        return
+    if not is_valid_resource_id(action_group_id):
+        raise InvalidArgumentValueError(
+            f"--action-group-id is not a valid Azure resource ID: {action_group_id}"
+        )
+    parsed = parse_resource_id(action_group_id)
+    provider_namespace = (parsed.get("namespace") or "").lower()
+    resource_type = (parsed.get("type") or "").lower()
+    if provider_namespace != "microsoft.insights" or resource_type != "actiongroups":
+        raise InvalidArgumentValueError(
+            "--action-group-id must reference a Microsoft.Insights/actionGroups resource, "
+            f"got: {action_group_id}"
+        )

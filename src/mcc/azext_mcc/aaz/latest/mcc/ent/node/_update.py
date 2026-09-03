@@ -17,14 +17,23 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Configures a Microsoft Connected Cache for Enterprise cache node with specified configuration parameters.
 
-    :example: Update MCC Enterprise Cache Node
-        az mcc ent node update --mcc-resource-name [MccResourceName] --cache-node-name [MccCacheNodeName] --resource-group [MccResourceRgName] --cache-drive "[{physical-path:/var/mcc,size-in-gb:XX}]" --proxy [EnabledOrDisabled] --proxy-host [URLOrIPForProxy] --proxy-port [ProxyPortNumber] --auto-update-day [AutoUpdateDay] --auto-update-time [HH:mm] --auto-update-week [AutoUpdateWeekOfMonth] --auto-update-ring [SlowOrFastUpdateRing]
+    :example: Configure the cache drives of a cache node
+        az mcc ent node update --mcc-resource-name MyMccResource --cache-node-name MyCacheNode --resource-group MyResourceGroup --cache-drive "[{physical-path:/var/mcc,size-in-gb:200}]"
+
+    :example: Move a cache node to the Stable update ring (an install schedule is required)
+        az mcc ent node update --mcc-resource-name MyMccResource --cache-node-name MyCacheNode --resource-group MyResourceGroup --auto-update-ring Stable --auto-update-day 2 --auto-update-week 3 --auto-update-time 02:00
+
+    :example: Move a cache node to the Beta update ring (the schedule is managed by Microsoft)
+        az mcc ent node update --mcc-resource-name MyMccResource --cache-node-name MyCacheNode --resource-group MyResourceGroup --auto-update-ring Beta
+
+    :example: Route a cache node through an outbound proxy
+        az mcc ent node update --mcc-resource-name MyMccResource --cache-node-name MyCacheNode --resource-group MyResourceGroup --proxy Enabled --proxy-host proxy.contoso.com --proxy-port 8080
     """
 
     _aaz_info = {
-        "version": "2024-11-30-preview",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes/{}", "2026-06-01"],
         ]
     }
 
@@ -90,6 +99,12 @@ class Update(AAZCommand):
         # define Arg Group "CacheNode"
 
         _args_schema = cls._args_schema
+        _args_schema.bgp_network_interface = AAZStrArg(
+            options=["--bgp-network-interface"],
+            arg_group="CacheNode",
+            help="Cache node resource Bgp network interface.",
+            nullable=True,
+        )
         _args_schema.cache_node_id = AAZStrArg(
             options=["--cache-node-id"],
             arg_group="CacheNode",
@@ -156,6 +171,36 @@ class Update(AAZCommand):
             help="Cache node resource maximum allowed egress in Mbps.",
             nullable=True,
         )
+        _args_schema.open_firewall_port443 = AAZBoolArg(
+            options=["--open-firewall-port443"],
+            arg_group="CacheNode",
+            help="Cache node port firewall rule creation opt-in for port 443 property",
+            nullable=True,
+        )
+        _args_schema.open_firewall_port5000 = AAZBoolArg(
+            options=["--open-firewall-port5000"],
+            arg_group="CacheNode",
+            help="Cache node port firewall rule creation opt-in for port 5000 property",
+            nullable=True,
+        )
+        _args_schema.open_firewall_port5001 = AAZBoolArg(
+            options=["--open-firewall-port5001"],
+            arg_group="CacheNode",
+            help="Cache node port firewall rule creation opt-in for port 5001 property",
+            nullable=True,
+        )
+        _args_schema.open_firewall_port80 = AAZBoolArg(
+            options=["--open-firewall-port80"],
+            arg_group="CacheNode",
+            help="Cache node port firewall rule creation opt-in for port 80 property",
+            nullable=True,
+        )
+        _args_schema.runtime_account_type = AAZStrArg(
+            options=["--runtime-account-type"],
+            arg_group="CacheNode",
+            help="Connected Cache runtime account type",
+            nullable=True,
+        )
         _args_schema.should_migrate = AAZBoolArg(
             options=["--should-migrate"],
             arg_group="CacheNode",
@@ -200,7 +245,7 @@ class Update(AAZCommand):
             arg_group="Configuration",
             help="Enable or disable proxy. Allowed values \"Enabled, Disabled\". If proxy is enabled, provide proxy host and proxy port.",
             nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None", "Required": "Required"},
+            enum={"None": "None", "Required": "Required"},
         )
         _args_schema.optional_property1 = AAZStrArg(
             options=["--optional-property1"],
@@ -256,6 +301,9 @@ class Update(AAZCommand):
             arg_group="Configuration",
             help="customer requested date time for mcc install of update cycle",
             nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.auto_update_day = AAZIntArg(
             options=["--auto-update-day"],
@@ -291,7 +339,7 @@ class Update(AAZCommand):
             arg_group="Configuration",
             help="Cache node automatic software update periodicity ring",
             nullable=True,
-            enum={"Fast": "Fast", "Preview": "Preview", "Slow": "Slow"},
+            enum={"Beta": "Beta", "Fast": "Fast", "Preview": "Preview", "Slow": "Slow", "Stable": "Stable"},
         )
         _args_schema.fully_qualified_domain_name = AAZStrArg(
             options=["--fqdn", "--fully-qualified-domain-name"],
@@ -469,7 +517,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -572,7 +620,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -688,6 +736,7 @@ class Update(AAZCommand):
                 cache_node.set_prop("autoUpdateRequestedTime", AAZStrType, ".auto_update_time")
                 cache_node.set_prop("autoUpdateRequestedWeek", AAZIntType, ".auto_update_week")
                 cache_node.set_prop("autoUpdateRingType", AAZStrType, ".auto_update_ring")
+                cache_node.set_prop("bgpNetworkInterface", AAZStrType, ".bgp_network_interface")
                 cache_node.set_prop("cacheNodeId", AAZStrType, ".cache_node_id")
                 cache_node.set_prop("cacheNodeName", AAZStrType, ".cache_node_name_1")
                 cache_node.set_prop("cidrCsv", AAZListType, ".cidr_csv")
@@ -701,6 +750,11 @@ class Update(AAZCommand):
                 cache_node.set_prop("isEnabled", AAZBoolType, ".is_enabled")
                 cache_node.set_prop("isEnterpriseManaged", AAZBoolType, ".is_enterprise_managed")
                 cache_node.set_prop("maxAllowableEgressInMbps", AAZIntType, ".max_allowable_egress_in_mbps")
+                cache_node.set_prop("openFirewallPort443", AAZBoolType, ".open_firewall_port443")
+                cache_node.set_prop("openFirewallPort5000", AAZBoolType, ".open_firewall_port5000")
+                cache_node.set_prop("openFirewallPort5001", AAZBoolType, ".open_firewall_port5001")
+                cache_node.set_prop("openFirewallPort80", AAZBoolType, ".open_firewall_port80")
+                cache_node.set_prop("runtimeAccountType", AAZStrType, ".runtime_account_type")
                 cache_node.set_prop("shouldMigrate", AAZBoolType, ".should_migrate")
 
             cidr_csv = _builder.get(".properties.cacheNode.cidrCsv")
@@ -800,6 +854,10 @@ class _UpdateHelper:
             serialized_name="aggregatedStatusText",
             flags={"read_only": True},
         )
+        additional_cache_node_properties.app_version_wsl = AAZStrType(
+            serialized_name="appVersionWsl",
+            flags={"read_only": True},
+        )
         additional_cache_node_properties.auto_update_applied_version = AAZStrType(
             serialized_name="autoUpdateAppliedVersion",
             flags={"read_only": True},
@@ -849,6 +907,18 @@ class _UpdateHelper:
             serialized_name="cacheNodeStateShortText",
             flags={"read_only": True},
         )
+        additional_cache_node_properties.container_os_build = AAZStrType(
+            serialized_name="containerOsBuild",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.container_os_edition = AAZStrType(
+            serialized_name="containerOsEdition",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.container_os_version = AAZStrType(
+            serialized_name="containerOsVersion",
+            flags={"read_only": True},
+        )
         additional_cache_node_properties.creation_method = AAZIntType(
             serialized_name="creationMethod",
         )
@@ -856,8 +926,40 @@ class _UpdateHelper:
             serialized_name="currentTlsCertificate",
             flags={"read_only": True},
         )
+        additional_cache_node_properties.distro_os_build_wsl = AAZStrType(
+            serialized_name="distroOsBuildWsl",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.distro_os_edition_wsl = AAZStrType(
+            serialized_name="distroOsEditionWsl",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.distro_os_version_wsl = AAZStrType(
+            serialized_name="distroOsVersionWsl",
+            flags={"read_only": True},
+        )
         additional_cache_node_properties.drive_configuration = AAZListType(
             serialized_name="driveConfiguration",
+        )
+        additional_cache_node_properties.host_os_build = AAZStrType(
+            serialized_name="hostOsBuild",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.host_os_edition = AAZStrType(
+            serialized_name="hostOsEdition",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.host_os_version = AAZStrType(
+            serialized_name="hostOsVersion",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.install_version_msix = AAZStrType(
+            serialized_name="installVersionMsix",
+            flags={"read_only": True},
+        )
+        additional_cache_node_properties.install_version_script = AAZStrType(
+            serialized_name="installVersionScript",
+            flags={"read_only": True},
         )
         additional_cache_node_properties.is_provisioned = AAZBoolType(
             serialized_name="isProvisioned",
@@ -925,6 +1027,10 @@ class _UpdateHelper:
         current_tls_certificate = _schema_enterprise_mcc_cache_node_resource_read.properties.additional_cache_node_properties.current_tls_certificate
         current_tls_certificate.action_required = AAZStrType(
             serialized_name="actionRequired",
+            flags={"read_only": True},
+        )
+        current_tls_certificate.cert_type = AAZStrType(
+            serialized_name="certType",
             flags={"read_only": True},
         )
         current_tls_certificate.certificate_file_name = AAZStrType(
@@ -1082,6 +1188,9 @@ class _UpdateHelper:
             serialized_name="bgpLastReportedTime",
             flags={"read_only": True},
         )
+        cache_node.bgp_network_interface = AAZStrType(
+            serialized_name="bgpNetworkInterface",
+        )
         cache_node.bgp_number_of_records = AAZIntType(
             serialized_name="bgpNumberOfRecords",
             flags={"read_only": True},
@@ -1200,6 +1309,18 @@ class _UpdateHelper:
             serialized_name="maxAllowableProbability",
             flags={"read_only": True},
         )
+        cache_node.open_firewall_port443 = AAZBoolType(
+            serialized_name="openFirewallPort443",
+        )
+        cache_node.open_firewall_port5000 = AAZBoolType(
+            serialized_name="openFirewallPort5000",
+        )
+        cache_node.open_firewall_port5001 = AAZBoolType(
+            serialized_name="openFirewallPort5001",
+        )
+        cache_node.open_firewall_port80 = AAZBoolType(
+            serialized_name="openFirewallPort80",
+        )
         cache_node.release_version = AAZIntType(
             serialized_name="releaseVersion",
             flags={"read_only": True},
@@ -1215,6 +1336,9 @@ class _UpdateHelper:
         cache_node.review_state_text = AAZStrType(
             serialized_name="reviewStateText",
             flags={"read_only": True},
+        )
+        cache_node.runtime_account_type = AAZStrType(
+            serialized_name="runtimeAccountType",
         )
         cache_node.should_migrate = AAZBoolType(
             serialized_name="shouldMigrate",
