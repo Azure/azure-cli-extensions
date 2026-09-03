@@ -216,6 +216,23 @@ helps['quantum job update'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-tags tag1 tag2
 """
 
+helps['quantum suite-offer'] = """
+    type: group
+    short-summary: View Azure Quantum suite offers available to the subscription.
+"""
+
+helps['quantum suite-offer list'] = """
+    type: command
+    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider, location, and subscription-level quota allocations.
+    examples:
+      - name: List all suite offers available to the current subscription.
+        text: |-
+            az quantum suite-offer list -o table
+      - name: List the provider ID and location of each available suite offer.
+        text: |-
+            az quantum suite-offer list --query "[].{provider:properties.providerId, location:properties.location}" -o table
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.

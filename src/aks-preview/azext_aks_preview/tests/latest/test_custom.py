@@ -790,5 +790,123 @@ class TestAksListVmSkus(unittest.TestCase):
         self.assertEqual(result, [match])
 
 
+class TestDcrTableReadinessRetry(unittest.TestCase):
+    """
+    Unit tests for `_create_or_update_dcr_with_table_readiness_retry`, added to narrowly
+    retry the monitoring-addon Data Collection Rule (DCR) PUT when the Log Analytics
+    workspace's output table is not yet ready (`InvalidOutputTable`), while preserving the
+    original 3-attempt immediate-retry/raise behavior for every other error.
+    """
+
+    def setUp(self):
+        patcher = patch("azext_aks_preview.custom.time.sleep", return_value=None)
+        self.addCleanup(patcher.stop)
+        self.mock_sleep = patcher.start()
+
+    def test_succeeds_immediately_with_no_retries(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        resources = Mock()
+        resources.begin_create_or_update_by_id.return_value = None
+
+        _create_or_update_dcr_with_table_readiness_retry(
+            resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+        )
+
+        resources.begin_create_or_update_by_id.assert_called_once_with(
+            "dcr-id", "2022-06-01", {"foo": "bar"}
+        )
+        self.mock_sleep.assert_not_called()
+
+    def test_retries_on_invalid_output_table_then_succeeds(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = [
+            CLIError("(BadRequest) InvalidOutputTable: the output table is not ready"),
+            CLIError("(BadRequest) InvalidOutputTable: the output table is not ready"),
+            None,
+        ]
+
+        _create_or_update_dcr_with_table_readiness_retry(
+            resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+        )
+
+        self.assertEqual(resources.begin_create_or_update_by_id.call_count, 3)
+        self.assertEqual(self.mock_sleep.call_count, 2)
+
+    def test_raises_after_exhausting_table_readiness_retries(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+            _DCR_TABLE_READINESS_MAX_RETRY_TIMES,
+        )
+
+        error = CLIError("(BadRequest) InvalidOutputTable: still not ready")
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = error
+
+        with self.assertRaises(CLIError):
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+            )
+
+        # Once the readiness-specific retry budget (_DCR_TABLE_READINESS_MAX_RETRY_TIMES)
+        # is exhausted, a still-failing InvalidOutputTable error falls back to consuming
+        # the original 3-attempt bound before finally being raised: total calls ==
+        # readiness retries + the original 3-attempt bound.
+        self.assertEqual(
+            resources.begin_create_or_update_by_id.call_count,
+            _DCR_TABLE_READINESS_MAX_RETRY_TIMES + 3,
+        )
+        self.assertEqual(self.mock_sleep.call_count, _DCR_TABLE_READINESS_MAX_RETRY_TIMES)
+
+    def test_other_errors_use_original_three_attempt_bound_without_sleep(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        error = CLIError("(BadRequest) some unrelated failure")
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = error
+
+        with self.assertRaises(CLIError):
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+            )
+
+        # Original behavior: exactly 3 immediate attempts, no sleeping.
+        self.assertEqual(resources.begin_create_or_update_by_id.call_count, 3)
+        self.mock_sleep.assert_not_called()
+
+    def test_other_error_after_table_readiness_retry_still_bounded(self):
+        """
+        A different, non-transient error surfacing after one InvalidOutputTable retry
+        should still respect the original 3-attempt bound for *that* error path.
+        """
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = [
+            CLIError("(BadRequest) InvalidOutputTable: not ready yet"),
+            CLIError("(BadRequest) some unrelated failure"),
+            CLIError("(BadRequest) some unrelated failure"),
+            CLIError("(BadRequest) some unrelated failure"),
+        ]
+
+        with self.assertRaisesRegex(CLIError, "unrelated failure"):
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+            )
+
+        self.assertEqual(resources.begin_create_or_update_by_id.call_count, 4)
+        self.assertEqual(self.mock_sleep.call_count, 1)
+
+
 if __name__ == '__main__':
     unittest.main()

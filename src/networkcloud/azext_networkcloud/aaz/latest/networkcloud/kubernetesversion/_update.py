@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update tags associated with the Kubernetes version resource. No other properties are supported for update.
 
     :example: Patch a kubernetes version resource.
-        az networkcloud kubernetesversion create --resource-group resourceGroupName --kubernetes-version-name default --tags "{key1:myvalue1,key2:myvalue2}"
+        az networkcloud kubernetesversion update --resource-group resourceGroupName --kubernetes-version-name default --tags "{key1:myvalue1,key2:myvalue2}"
     """
 
     _aaz_info = {
