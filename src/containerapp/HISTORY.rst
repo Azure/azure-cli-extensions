@@ -6,6 +6,10 @@ upcoming
 ++++++
 * 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity
 
+1.3.0b5
+++++++
+* 'az containerapp debug': Add `--image` and `--entrypoint` parameters to customize the ephemeral debug container image and entrypoint command (used together with `--command`).
+
 1.3.0b4
 ++++++
 * 'az containerapp env --environment-mode': Add environment mode to create and update commands
