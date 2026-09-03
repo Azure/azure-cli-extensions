@@ -58,6 +58,12 @@ register_argument_deprecate(
     target_version="10.0.x",
 )
 register_argument_deprecate(
+    "networkfabric fabric view-device-config",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
     "networkfabric fabric commit-batch-status",
     "--network-fabric-name",
     redirect="--resource-name",

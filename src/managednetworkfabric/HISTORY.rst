@@ -9,6 +9,7 @@ Release History
 * [Breaking Change] The `--network-fabric-name` alias will be removed from the following commands; use `--resource-name` instead:
 *  - `fabric commit-batch-status`.
 *  - `fabric discard-commit-batch`.
+*  - `fabric view-device-config`.
 *  - `fabric lock-fabric`.
 *  - `fabric resync-certificate`.
 *  - `fabric resync-password`.
