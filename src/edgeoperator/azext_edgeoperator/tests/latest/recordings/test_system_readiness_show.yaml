@@ -1,0 +1,29 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aldo system-readiness show
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemReadiness/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemReadiness/default","name":"default","type":"Microsoft.EdgeOperator/systemReadiness","properties":{"systemReady":false,"readinessStatusDetails":[{"categoryName":"services","readinessPercentage":100},{"categoryName":"diagnostics","readinessPercentage":0},{"categoryName":"identity","readinessPercentage":100},{"categoryName":"networking","readinessPercentage":50}],"errorMessages":[{"categoryName":"services","errorMessageDetails":[]},{"categoryName":"diagnostics","errorMessageDetails":[]},{"categoryName":"identity","errorMessageDetails":[]},{"categoryName":"networking","errorMessageDetails":[]}]}}'
+    headers:
+      content-length:
+      - '697'
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+version: 1
+
