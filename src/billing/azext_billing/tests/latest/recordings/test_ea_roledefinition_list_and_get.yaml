@@ -1,0 +1,347 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing role-definition list-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/billingRoleDefinitions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/billingRoleDefinitions/9f1983cb-2574-400c-87e9-34cf8e2280db","name":"9f1983cb-2574-400c-87e9-34cf8e2280db","properties":{"description":"The
+        enrollment administrator role gives the user all permissions including access
+        management rights to an Enrollment and its departments and accounts.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/read","Microsoft.Billing/billingAccounts/write","Microsoft.Billing/billingAccounts/action","Microsoft.Billing/billingAccounts/enrollmentPolicies/read","Microsoft.Billing/billingAccounts/enrollmentPolicies/write","Microsoft.Billing/billingAccounts/enrollmentPolicies/action","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/read","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/write","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/delete","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/action","Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/departments/write","Microsoft.Billing/billingAccounts/departments/action","Microsoft.Billing/billingAccounts/departments/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/action","Microsoft.Billing/billingAccounts/enrollmentAccounts/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/action","Microsoft.Billing/billingAccounts/purchase/action","Microsoft.Billing/billingAccounts/commitments/read"]}],"roleName":"Enrollment
+        administrator"},"type":"Microsoft.Billing/billingAccounts/billingRoleDefinitions"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/billingRoleDefinitions/24f8edb6-1668-4659-b5e2-40bb5f3a7d7e","name":"24f8edb6-1668-4659-b5e2-40bb5f3a7d7e","properties":{"description":"The
+        enrollment reader role gives the user read-only permissions to an Enrollment
+        and its departments and accounts.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/read","Microsoft.Billing/billingAccounts/enrollmentPolicies/read","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/read","Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/commitments/read"]}],"roleName":"Enrollment
+        reader"},"type":"Microsoft.Billing/billingAccounts/billingRoleDefinitions"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/billingRoleDefinitions/da6647fb-7651-49ee-be91-c43c4877f0c4","name":"da6647fb-7651-49ee-be91-c43c4877f0c4","properties":{"description":"EaRoleDesc_da6647fb765149eebe91c43c4877f0c4","permissions":[{"actions":["Microsoft.Billing/billingAccounts/read","Microsoft.Billing/billingAccounts/enrollmentPolicies/read","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/read","Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/purchase/action","Microsoft.Billing/billingAccounts/commitments/read"]}],"roleName":"EaRoleId_da6647fb765149eebe91c43c4877f0c4"},"type":"Microsoft.Billing/billingAccounts/billingRoleDefinitions"}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '3637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 10:32:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 88EF2DE835C34FDF98CB2FDA773A64F5 Ref B: MAA201060514047 Ref C: 2024-11-18T10:32:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing role-definition list-by-department
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --department-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/billingRoleDefinitions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/billingRoleDefinitions/fb2cf67f-be5b-42e7-8025-4683c668f840","name":"fb2cf67f-be5b-42e7-8025-4683c668f840","properties":{"description":"The
+        department administrator role gives the user read/write permissions including
+        access management rights to an Enrollment Department and its accounts.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/departments/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write"]}],"roleName":"Department
+        administrator"},"type":"Microsoft.Billing/billingAccounts/departments/billingRoleDefinitions"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/billingRoleDefinitions/db609904-a47f-4794-9be8-9bd86fbffd8a","name":"db609904-a47f-4794-9be8-9bd86fbffd8a","properties":{"description":"The
+        department reader role gives the user read-only permissions to an Enrollment
+        Department and its accounts.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read"]}],"roleName":"Department
+        reader"},"type":"Microsoft.Billing/billingAccounts/departments/billingRoleDefinitions"}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 10:32:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 7F63D6AE5FF54D73AC092F684A5E2DB9 Ref B: MAA201060515035 Ref C: 2024-11-18T10:32:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing role-definition list-by-enrollment-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --enrollment-account-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/billingRoleDefinitions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/billingRoleDefinitions/c15c22c0-9faf-424c-9b7e-bd91c06a240b","name":"c15c22c0-9faf-424c-9b7e-bd91c06a240b","properties":{"description":"The
+        account owner role gives the user read/write permissions to an Enrollment
+        Account.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Subscription/subscriptions/write"]}],"roleName":"Enrollment
+        account owner"},"type":"Microsoft.Billing/billingAccounts/enrollmentAccounts/billingRoleDefinitions"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/billingRoleDefinitions/a0bcee42-bf30-4d1b-926a-48d21664ef71","name":"a0bcee42-bf30-4d1b-926a-48d21664ef71","properties":{"description":"The
+        enrollent account subscription creator role gives the user permissions to
+        create a subscription under the enrollment account.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Subscription/subscriptions/write"]}],"roleName":"Enrollment
+        account subscription creator"},"type":"Microsoft.Billing/billingAccounts/enrollmentAccounts/billingRoleDefinitions"}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 10:32:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 35644689B94A4D57AAA717A8BAD1DCB0 Ref B: MAA201060513051 Ref C: 2024-11-18T10:32:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing role-definition get-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --role-definition-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/billingRoleDefinitions/9f1983cb-2574-400c-87e9-34cf8e2280db?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/billingRoleDefinitions/9f1983cb-2574-400c-87e9-34cf8e2280db","name":"9f1983cb-2574-400c-87e9-34cf8e2280db","properties":{"description":"The
+        enrollment administrator role gives the user all permissions including access
+        management rights to an Enrollment and its departments and accounts.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/read","Microsoft.Billing/billingAccounts/write","Microsoft.Billing/billingAccounts/action","Microsoft.Billing/billingAccounts/enrollmentPolicies/read","Microsoft.Billing/billingAccounts/enrollmentPolicies/write","Microsoft.Billing/billingAccounts/enrollmentPolicies/action","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/read","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/write","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/delete","Microsoft.Billing/billingAccounts/enrollmentNotificationContacts/action","Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/departments/write","Microsoft.Billing/billingAccounts/departments/action","Microsoft.Billing/billingAccounts/departments/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/action","Microsoft.Billing/billingAccounts/enrollmentAccounts/delete","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/action","Microsoft.Billing/billingAccounts/purchase/action","Microsoft.Billing/billingAccounts/commitments/read"]}],"roleName":"Enrollment
+        administrator"},"type":"Microsoft.Billing/billingAccounts/billingRoleDefinitions"}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1898'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 10:32:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 6E5A2BD126C3445DB9DDAEF47F94000A Ref B: MAA201060514035 Ref C: 2024-11-18T10:32:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing role-definition get-by-department
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --department-name --role-definition-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/billingRoleDefinitions/fb2cf67f-be5b-42e7-8025-4683c668f840?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/departments/148446/billingRoleDefinitions/fb2cf67f-be5b-42e7-8025-4683c668f840","name":"fb2cf67f-be5b-42e7-8025-4683c668f840","properties":{"description":"The
+        department administrator role gives the user read/write permissions including
+        access management rights to an Enrollment Department and its accounts.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/departments/read","Microsoft.Billing/billingAccounts/departments/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write"]}],"roleName":"Department
+        administrator"},"type":"Microsoft.Billing/billingAccounts/departments/billingRoleDefinitions"}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '907'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 10:32:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 78E285AD8A5B4AB6AD83C084EC39AB63 Ref B: MAA201060514031 Ref C: 2024-11-18T10:32:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing role-definition get-by-enrollment-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --enrollment-account-name --role-definition-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/billingRoleDefinitions/c15c22c0-9faf-424c-9b7e-bd91c06a240b?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495/enrollmentAccounts/261569/billingRoleDefinitions/c15c22c0-9faf-424c-9b7e-bd91c06a240b","name":"c15c22c0-9faf-424c-9b7e-bd91c06a240b","properties":{"description":"The
+        account owner role gives the user read/write permissions to an Enrollment
+        Account.","permissions":[{"actions":["Microsoft.Billing/billingAccounts/enrollmentAccounts/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/write","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/read","Microsoft.Billing/billingAccounts/enrollmentAccounts/billingSubscriptions/write","Microsoft.Subscription/subscriptions/write"]}],"roleName":"Enrollment
+        account owner"},"type":"Microsoft.Billing/billingAccounts/enrollmentAccounts/billingRoleDefinitions"}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '793'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 10:32:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: EC617BF3CBCA4EDFB024EBD4315AACF0 Ref B: MAA201060514037 Ref C: 2024-11-18T10:32:12Z'
+    status:
+      code: 200
+      message: OK
+version: 1
