@@ -140,6 +140,7 @@ def save_cache(cache, msal_token_cache_file):
         persistence = build_persistence(msal_token_cache_file, fallback_to_plaintext=False)
         persistence.save(cache.serialize())
 
+
 def build_persistence(msal_token_cache_file, fallback_to_plaintext=False):
     """Build a suitable persistence instance based on current OS
 
