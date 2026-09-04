@@ -105,7 +105,7 @@ def transform_suite_offers(suite_offers):
 
 def _quota_hours(minutes):
     """Convert lifetime quota minutes to hours (2 dp), matching the Quantum studio UI."""
-    return '' if minutes is None else round(minutes / 60, 2)
+    return 0 if minutes is None else round(minutes / 60, 2)
 
 
 def transform_suite_offer_quotas(quotas):
@@ -129,19 +129,23 @@ def transform_suite_offer_quotas(quotas):
 
 def transform_workspace_quotas(quotas):
     def one(quota):
-        allocation = quota.get('allocation') or {}
-        usage = quota.get('usage') or {}
+        is_target_quota = quota.get('targetId') is not None
 
-        def cell(source, key):
-            return _quota_hours(source.get(key))
+        def value(key):
+            result = quota.get(key, 0)
+            if is_target_quota and isinstance(result, float):
+                return round(result, 2)
+            return result
 
         return OrderedDict([
+            ('Dimension', quota.get('dimension', '')),
             ('Provider ID', quota.get('providerId', '')),
+            ('Scope', quota.get('scope', '')),
             ('Target', quota.get('targetId', '')),
-            ('Std Allocated (hrs)', cell(allocation, 'standardMinutesLifetime')),
-            ('Std Used (hrs)', cell(usage, 'standardMinutesLifetime')),
-            ('High Allocated (hrs)', cell(allocation, 'highMinutesLifetime')),
-            ('High Used (hrs)', cell(usage, 'highMinutesLifetime'))
+            ('Limit', value('limit')),
+            ('Utilization', value('utilization')),
+            ('Holds', value('holds')),
+            ('Period', quota.get('period', '')),
         ])
 
     return [one(quota) for quota in quotas]

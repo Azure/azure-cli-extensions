@@ -406,13 +406,13 @@ helps['quantum workspace list'] = """
 
 helps['quantum workspace quotas'] = """
     type: command
-    short-summary: List the v2 target quota allocations, merged with their consumed usages, for an Azure Quantum workspace.
+    short-summary: List quota allocations and consumed usages for an Azure Quantum workspace.
     long-summary: |
-        Returns the target quota allocations (limits) configured on the workspace together with the
-        consumed usages reported by the data plane. Each entry reports the allocated and used standard
-        and high priority minutes over the lifetime of the workspace.
+        Preserves the existing quota dimension response for v1 providers. For v2 providers, returns
+        separate StandardMinutesLifetime and HighMinutesLifetime rows for each target, with targetId,
+        limit, and utilization reported in minutes. Missing allocation or usage values are returned as 0.
     examples:
-      - name: View the quota usages for the given (or current) workspace. If a default workspace has been set, the -g and -w parameters are not required.
+      - name: View quota allocations and usages for the given (or current) workspace. If a default workspace has been set, the -g and -w parameters are not required.
         text: |-
             az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -o table
 """

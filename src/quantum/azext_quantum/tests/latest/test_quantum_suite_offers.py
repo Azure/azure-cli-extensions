@@ -80,12 +80,19 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
                 'targetId': 'ionq.qpu',
                 'allocation': {'standardMinutesLifetime': 100, 'highMinutesLifetime': 50},
                 'usage': {'standardMinutesLifetime': 40, 'highMinutesLifetime': 10},
+            },
+            {
+                'providerId': 'ionq',
+                'scope': 'SubscriptionTarget',
+                'targetId': 'ionq.simulator',
+                'allocation': {'standardMinutesLifetime': None, 'highMinutesLifetime': None},
+                'usage': {'standardMinutesLifetime': None, 'highMinutesLifetime': None},
             }
         ]
 
         table = transform_suite_offer_quotas(quotas)
 
-        self.assertEqual(len(table), 1)
+        self.assertEqual(len(table), 2)
         row = table[0]
         self.assertEqual(list(row.keys()), [
             'Target', 'Std Allocated (hrs)', 'Std Used (hrs)', 'High Allocated (hrs)', 'High Used (hrs)'
@@ -95,6 +102,11 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(row['Std Used (hrs)'], 0.67)
         self.assertEqual(row['High Allocated (hrs)'], 0.83)
         self.assertEqual(row['High Used (hrs)'], 0.17)
+        missing_row = table[1]
+        self.assertEqual(missing_row['Std Allocated (hrs)'], 0)
+        self.assertEqual(missing_row['Std Used (hrs)'], 0)
+        self.assertEqual(missing_row['High Allocated (hrs)'], 0)
+        self.assertEqual(missing_row['High Used (hrs)'], 0)
 
     def test_base_url_v2(self):
         self.assertEqual(base_url_v2('East US'), 'https://eastus-v2.quantum.azure.com/')
