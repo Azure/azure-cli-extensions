@@ -75,3 +75,73 @@ class IdentityRemove(_IdentityRemove):
         args = self.ctx.args
         if args.system_assigned:
             args.type = 'None'
+
+
+def vmconnect_enable(cmd, cluster_name, resource_group, vm_name):
+    """
+    Enable VM Connect for a virtual machine in an Azure Stack HCI cluster.
+    """
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from azure.cli.core.util import send_raw_request
+    import json
+
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    path = (
+        f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/"
+        f"providers/Microsoft.AzureStackHCI/clusters/{cluster_name}/jobs/VmConnectProvision"
+    )
+    api_version = "2023-12-01-preview"
+    url = f"https://management.azure.com{path}?api-version={api_version}"
+    payload = {
+        "properties": {
+            "jobType": "VmConnectProvision",
+            "deploymentMode": "Deploy",
+            "vmConnectProvisionJobDetails": [
+                {"vmName": vm_name}
+            ]
+        }
+    }
+
+    try:
+        response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
+        if response.content:
+            return response.json()
+        return {"message": f"VM Connect provision job initiated successfully for VM: {vm_name}"}
+    except Exception as e:
+        from azure.cli.core.util import CLIError
+        raise CLIError(f"Failed to enable VM Connect for VM '{vm_name}': {str(e)}")
+
+
+def vmconnect_disable(cmd, cluster_name, resource_group, vm_name):
+    """
+    Disable VM Connect for a virtual machine in an Azure Stack HCI cluster.
+    """
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from azure.cli.core.util import send_raw_request
+    import json
+
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    path = (
+        f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/"
+        f"providers/Microsoft.AzureStackHCI/clusters/{cluster_name}/jobs/VmConnectRemove"
+    )
+    api_version = "2023-12-01-preview"
+    url = f"https://management.azure.com{path}?api-version={api_version}"
+    payload = {
+        "properties": {
+            "jobType": "VmConnectRemove",
+            "deploymentMode": "Deploy",
+            "vmConnectRemoveJobDetails": [
+                {"vmName": vm_name}
+            ]
+        }
+    }
+
+    try:
+        response = send_raw_request(cmd.cli_ctx, "PUT", url, body=json.dumps(payload))
+        if response.content:
+            return response.json()
+        return {"message": f"VM Connect remove job initiated successfully for VM: {vm_name}"}
+    except Exception as e:
+        from azure.cli.core.util import CLIError
+        raise CLIError(f"Failed to disable VM Connect for VM '{vm_name}': {str(e)}")
