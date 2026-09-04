@@ -275,7 +275,7 @@ def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
 
     if skip_cleanup:
         logger.warning("Skipping clean-up. The repair resources in the resource group '%s' were kept. "
-                       "Delete them with 'az group delete --name %s' once you no longer need them, to avoid undesired costs.",
+                       "Delete them with 'az group delete --name %s --yes --no-wait' once you no longer need them, to avoid undesired costs.",
                        resource_group_name, resource_group_name)
         return
 
