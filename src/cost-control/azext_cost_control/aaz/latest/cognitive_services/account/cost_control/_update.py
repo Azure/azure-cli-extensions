@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a cost control.
+
+    :example: Update the display name of a cost control
+        az cognitive-services account cost-control update --resource-group MyResourceGroup --account-name MyAccount --cost-control-name MyCostControl --display-name "Updated Display Name"
     """
 
     _aaz_info = {

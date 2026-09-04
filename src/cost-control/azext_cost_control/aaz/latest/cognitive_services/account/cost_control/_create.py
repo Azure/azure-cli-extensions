@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a cost control.
+
+    :example: Create a monthly cost control for an agent
+        az cognitive-services account cost-control create --resource-group MyResourceGroup --account-name MyAccount --cost-control-name MyCostControl --display-name "Display Name" --rules '[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200,"period":"month","recurring":true,"match":{"foundryCallerAgentId":["agent-123"]},"thresholds":[{"type":"percentage","value":80,"action":"alert"},{"type":"absolute","value":200,"action":"audit"}]}]'
     """
 
     _aaz_info = {

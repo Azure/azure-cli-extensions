@@ -9,20 +9,3 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
-
-
-helps['cognitive-services account cost-control create'] = """
-    type: command
-    short-summary: Create a cost control.
-    examples:
-        - name: Create a monthly cost control for an agent
-          text: az cognitive-services account cost-control create --resource-group MyResourceGroup --account-name MyAccount --cost-control-name MyCostControl --display-name "Display Name" --rules '[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200,"period":"month","recurring":true,"match":{"foundryCallerAgentId":["agent-123"]},"thresholds":[{"type":"percentage","value":80,"action":"alert"},{"type":"absolute","value":200,"action":"audit"}]}]'
-"""
-
-helps['cognitive-services account cost-control update'] = """
-    type: command
-    short-summary: Update a cost control.
-    examples:
-        - name: Update the display name of a cost control
-          text: az cognitive-services account cost-control update --resource-group MyResourceGroup --account-name MyAccount --cost-control-name MyCostControl --display-name "Updated Display Name"
-"""
