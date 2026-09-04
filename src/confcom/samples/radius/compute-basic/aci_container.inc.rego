@@ -99,5 +99,9 @@
       "required": false
     }
   ],
-  "working_dir": "/usr/src/app"
+  "working_dir": "/usr/src/app",
+  "signals": [
+    9,
+    15
+  ]
 }

@@ -170,6 +170,10 @@
         "strategy": "id"
       }
     },
-    "no_new_privileges": true
+    "no_new_privileges": true,
+    "signals": [
+      9,
+      15
+    ]
   }
 ]
