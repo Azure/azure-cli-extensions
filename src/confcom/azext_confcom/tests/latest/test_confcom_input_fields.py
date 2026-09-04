@@ -79,6 +79,14 @@ class SignalsInput(unittest.TestCase):
         )
 
 
+class WindowsPolicyWiring(unittest.TestCase):
+    def test_scratch_mount_and_unmount_are_wired(self):
+        policy = _load_policy(WINDOWS_IMAGE, "windows/amd64")
+        boilerplate = policy._add_rego_boilerplate("[]")
+        self.assertIn("scratch_mount := data.framework.scratch_mount", boilerplate)
+        self.assertIn("scratch_unmount := data.framework.scratch_unmount", boilerplate)
+
+
 class RegistryChangesDroppingInput(unittest.TestCase):
     # allowRegistryChangesDropping is Windows-only and --input-only.
     def test_allow_registry_changes_dropping_true(self):
