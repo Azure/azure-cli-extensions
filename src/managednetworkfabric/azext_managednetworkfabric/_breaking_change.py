@@ -57,3 +57,147 @@ register_argument_deprecate(
     redirect="--resource-name",
     target_version="10.0.x",
 )
+register_argument_deprecate(
+    "networkfabric fabric view-device-config",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric commit-batch-status",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric discard-commit-batch",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric lock-fabric",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric resync-certificate",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric resync-password",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric rotate-certificate",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric fabric rotate-password",
+    "--network-fabric-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor create",
+    "-n",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor create",
+    "--name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor create",
+    "--network-monitor-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor delete",
+    "-n",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor delete",
+    "--name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor delete",
+    "--network-monitor-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor show",
+    "-n",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor show",
+    "--name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor show",
+    "--network-monitor-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor update",
+    "-n",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor update",
+    "--name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor update",
+    "--network-monitor-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor wait",
+    "-n",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor wait",
+    "--name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric networkmonitor wait",
+    "--network-monitor-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
+register_argument_deprecate(
+    "networkfabric tap resync",
+    "--network-tap-name",
+    redirect="--resource-name",
+    target_version="10.0.x",
+)
