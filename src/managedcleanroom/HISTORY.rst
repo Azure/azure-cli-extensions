@@ -81,3 +81,7 @@ Release History
   encryption-mode compatibility is enforced by the service.
 * SDK: ``analytics_frontend_api`` updated with the new ``store.subdirectory`` field
   in the JSON dict templates (sync + async) to match the regenerated autorest output.
+
+1.0.0b8
++++++++
+* Add encryption for token cache.
