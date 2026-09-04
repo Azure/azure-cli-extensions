@@ -413,22 +413,22 @@ def create_connectedk8s(
                     "diagnostic check logs on your device"
                 )
 
+    # Preserve errors already assigned a specific AZK8S code, such as AZK8S0607
+    # for Helm installation failures, instead of reclassifying them below.
+    except AzCLIError:
+        raise
+
     except Exception as e:
         precheckutils.send_prediagnostic_job_execution_error_telemetry(
             reason=str(e), cmd=cmd
         )
-        ex_msg = f"An exception occured while trying to execute pre-onboarding diagnostic checks : {e}"
-        summ_msg = f"An exception occured while trying to execute pre-onboarding diagnostic checks : {e}"
-        telemetry.set_exception(
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.PREDIAGNOSTICS_FAILED,
             exception=e,
             fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed,
-            summary=summ_msg,
-        )
-        err_msg = (
-            "An exception has occured while trying to execute pre-onboarding diagnostic checks : "
-            f"{e}"
-        )
-        raise CLIInternalError(err_msg) from e
+            details=str(e),
+        ) from e
 
     # Handling the user manual interrupt
     except KeyboardInterrupt as exc:
@@ -469,32 +469,27 @@ def create_connectedk8s(
                 filepath_with_timestamp,
             )
         if diagnostic_checks == consts.Diagnostic_Check_Incomplete:
-            telemetry.set_exception(
-                exception=Exception("Cluster Diagnostic Prechecks Incomplete"),
+            raise utils.report_connectedk8s_error(
+                cmd,
+                errors.PREDIAGNOSTICS_INCOMPLETE,
                 fault_type=consts.Cluster_Diagnostic_Prechecks_Incomplete,
-                summary="Cluster Diagnostic Prechecks didnt complete in the cluster",
+                details=(
+                    "Execution of pre-onboarding checks failed. Not proceeding with cluster onboarding. "
+                    f"Please meet the prerequisites at {consts.Doc_Onboarding_PreRequisites_Url} "
+                    f"and try onboarding again.{precheck_failure_summary_msg}"
+                ),
             )
-            err_msg = (
-                "Execution of pre-onboarding checks failed. So not proceeding with cluster onboarding. Please "
-                "meet the prerequisites - "
-                + consts.Doc_Onboarding_PreRequisites_Url
-                + " and try onboarding again."
-                + precheck_failure_summary_msg
-            )
-            raise ValidationError(err_msg)
 
         # if diagnostic_checks != consts.Diagnostic_Check_Incomplete
-        telemetry.set_exception(
-            exception=Exception("Cluster Diagnostic Prechecks Failed"),
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.POST_DIAGNOSTIC_PRECHECK_FAILED,
             fault_type=consts.Cluster_Diagnostic_Prechecks_Failed,
-            summary="Cluster Diagnostic Prechecks Failed in the cluster",
+            details=(
+                "One or more pre-onboarding diagnostic checks failed; cluster onboarding will not proceed. "
+                f"Resolve the reported issues and try onboarding again.{precheck_failure_summary_msg}"
+            ),
         )
-        err_msg = (
-            "One or more pre-onboarding diagnostic checks failed and hence not proceeding with "
-            "cluster onboarding. Please resolve them and try onboarding again."
-            + precheck_failure_summary_msg
-        )
-        raise ValidationError(err_msg)
 
     if not azure_local_disconnected and not lowbandwidth:
         print(

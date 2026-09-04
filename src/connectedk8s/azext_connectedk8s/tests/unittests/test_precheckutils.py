@@ -124,6 +124,115 @@ def test_precheck_telemetry_helpers_forward_command_context(monkeypatch):
     assert all(call.args[0] is cmd for call in add_event.call_args_list)
 
 
+def test_log_save_failure_reports_azk8s0606_with_command_context(monkeypatch):
+    cmd = MagicMock()
+    exception = OSError("write failed")
+    add_event = MagicMock()
+    set_exception = MagicMock()
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "add_connectedk8s_telemetry_event", add_event
+    )
+    monkeypatch.setattr(precheckutils.telemetry, "set_exception", set_exception)
+
+    precheckutils._report_prediagnostic_log_save_failure(cmd, exception)
+
+    add_event.assert_called_once()
+    event_cmd, properties = add_event.call_args.args
+    assert event_cmd is cmd
+    assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0606"
+    assert "write failed" in properties[consts.Telemetry_Error_Message_Key]
+    set_exception.assert_called_once_with(
+        exception=exception,
+        fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
+        summary=properties[consts.Telemetry_Error_Message_Key],
+    )
+
+
+def test_fetch_results_propagates_classified_azure_cli_error(monkeypatch):
+    class ClassifiedError(Exception):
+        pass
+
+    monkeypatch.setattr(precheckutils, "AzCLIError", ClassifiedError)
+    classified_error = ClassifiedError("[AZK8S0607] forbidden")
+
+    def raise_classified_error(*_args, **_kwargs):
+        raise classified_error
+
+    monkeypatch.setattr(
+        precheckutils,
+        "executing_cluster_diagnostic_checks_job",
+        raise_classified_error,
+    )
+
+    with pytest.raises(ClassifiedError) as exc_info:
+        precheckutils.fetch_diagnostic_checks_results(
+            cmd=MagicMock(),
+            corev1_api_instance=MagicMock(),
+            batchv1_api_instance=MagicMock(),
+            helm_client_location="helm",
+            kubectl_client_location="kubectl",
+            kube_config=None,
+            kube_context=None,
+            location="eastus",
+            http_proxy="",
+            https_proxy="",
+            no_proxy="",
+            proxy_cert="",
+            azure_cloud="AZUREPUBLICCLOUD",
+            filepath_with_timestamp="/tmp/prediagnostics",
+            storage_space_available=True,
+        )
+
+    assert exc_info.value is classified_error
+
+
+def test_job_execution_propagates_helm_install_error_unchanged(monkeypatch):
+    class ClassifiedError(Exception):
+        pass
+
+    monkeypatch.setattr(precheckutils, "AzCLIError", ClassifiedError)
+    classified_error = ClassifiedError("[AZK8S0607] forbidden")
+    monkeypatch.setattr(precheckutils.config, "load_kube_config", MagicMock())
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_release_namespace", lambda *_args: None
+    )
+    monkeypatch.setattr(precheckutils.azext_utils, "get_mcr_path", lambda *_args: "mcr")
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_chart_path", lambda *_args: "chart"
+    )
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock())
+
+    def raise_classified_error(*_args, **_kwargs):
+        raise classified_error
+
+    monkeypatch.setattr(
+        precheckutils,
+        "helm_install_release_cluster_diagnostic_checks",
+        raise_classified_error,
+    )
+
+    with pytest.raises(ClassifiedError) as exc_info:
+        precheckutils.executing_cluster_diagnostic_checks_job(
+            cmd=MagicMock(),
+            corev1_api_instance=MagicMock(),
+            batchv1_api_instance=MagicMock(),
+            helm_client_location="helm",
+            kubectl_client_location="kubectl",
+            kube_config=None,
+            kube_context=None,
+            location="eastus",
+            http_proxy="",
+            https_proxy="",
+            no_proxy="",
+            proxy_cert="",
+            azure_cloud="AZUREPUBLICCLOUD",
+            filepath_with_timestamp="/tmp/prediagnostics",
+            storage_space_available=True,
+        )
+
+    assert exc_info.value is classified_error
+
+
 # ---------------------------------------------------------------------------
 # send_prediagnostic_job_execution_error_telemetry
 # ---------------------------------------------------------------------------
