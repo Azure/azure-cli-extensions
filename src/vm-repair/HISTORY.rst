@@ -2,7 +2,7 @@
 Release History
 ===============
 
-2.3.0
+2.3.1
 ++++++
 The repair VM is now created with the SCSI disk controller whenever the selected VM size supports it, even when the source VM uses NVMe. Previously the repair VM inherited the platform default for the size, so a source VM on an NVMe-only size produced an NVMe repair VM. Several repair scripts locate the attached OS disk by its SCSI model name and therefore found no disk on such a repair VM: they completed, reported success, and repaired nothing. Pinning the repair VM to SCSI restores those scripts. When the size only supports NVMe the command now emits a warning instead of failing silently. A new ``--disk-controller-type`` parameter on ``az vm repair create`` overrides the selection.
 
