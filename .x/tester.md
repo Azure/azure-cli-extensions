@@ -16,6 +16,11 @@ PR title/body and `pr_files` set to those filenames. Use
 the central dispatcher infer them; repository custom skills own both
 decisions and the workflow validates them against the current PR.
 
+If no test path is selected, call the dispatcher with the empty list so it
+records a neutral skip for the current revision. If tests are selected but
+target inference does not return a named extension, stop with a pending
+result and do not dispatch.
+
 Reuse any queued, in-progress, or completed run for the same head SHA. Read
 state with `get_workflow_run` once. Return pending without waiting when the run
 is incomplete. Never provision infrastructure, authenticate to Azure, SSH,
