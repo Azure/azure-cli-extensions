@@ -7,6 +7,7 @@
 
 import os.path
 import json
+import re
 import sys
 
 import time
@@ -19,8 +20,7 @@ from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError, ServiceError,
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError,
-                                       MutuallyExclusiveArgumentError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
@@ -51,6 +51,13 @@ QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e6032
 
 # Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
+
+QUANTUM_WORKSPACE_USER_ROLE_IDS = {
+    QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+    QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+}
+
+EMAIL_PATTERN = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -552,38 +559,81 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_assignee_args(assignee, assignee_object_id):
-    if not assignee and not assignee_object_id:
-        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
-    if assignee and assignee_object_id:
-        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+def _validate_email_arg(email):
+    if not email:
+        raise RequiredArgumentMissingError("Please provide '--email' (the user's email address).")
+    if not EMAIL_PATTERN.fullmatch(email):
+        raise InvalidArgumentValueError(f"'{email}' is not a valid email address.")
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+def _resolve_user_id(cmd, email):
+    from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import GraphError
+
+    _validate_email_arg(email)
+    try:
+        user = graph_client_factory(cmd.cli_ctx).user_get(email)
+    except GraphError as ex:
+        if getattr(ex.response, "status_code", None) == 404:
+            raise ResourceNotFoundError(
+                f"No user with the email address '{email}' was found in the directory."
+            ) from ex
+        raise
+
+    return user["id"]
+
+
+def _list_user_workspace_role_assignments(cmd, user_id, scope):
+    from azure.cli.command_modules.role.custom import list_role_assignments
+
+    assignments = list_role_assignments(cmd, assignee_object_id=user_id, scope=scope,
+                                        include_inherited=True, fill_principal_name=False,
+                                        fill_role_definition_name=False)
+    return [assignment for assignment in assignments
+            if assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower() in QUANTUM_WORKSPACE_USER_ROLE_IDS]
+
+
+def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
-                                  assignee_principal_type=assignee_principal_type)
+    if _list_user_workspace_role_assignments(cmd, user_id, scope):
+        raise ClientRequestError(f"User '{email}' already has access to this Azure Quantum workspace.")
+
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
+                                  assignee_object_id=user_id, assignee_principal_type="User")
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+    assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
+    direct_assignment_ids = [assignment["id"] for assignment in assignments
+                             if assignment["scope"].lower() == scope.lower()]
+    if direct_assignment_ids:
+        delete_role_assignments(cmd, ids=direct_assignment_ids)
+        if any(assignment["scope"].lower() != scope.lower() for assignment in assignments):
+            logger.warning("Workspace-level access was removed for '%s', but inherited access from the resource "
+                           "group or subscription remains. Remove the inherited assignment at its scope to revoke "
+                           "access.", email)
+        return None
+    if assignments:
+        raise ClientRequestError(
+            f"User '{email}' has no workspace-level access to remove. Access inherited from the resource group or "
+            "subscription must be removed at that scope."
+        )
+    raise ClientRequestError(f"User '{email}' does not have access to this Azure Quantum workspace.")
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):
