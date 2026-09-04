@@ -223,7 +223,7 @@ helps['quantum suite-offer'] = """
 
 helps['quantum suite-offer list'] = """
     type: command
-    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider, location, and subscription-level quota allocations.
+    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider ID, name, company, and location.
     examples:
       - name: List all suite offers available to the current subscription.
         text: |-
@@ -231,6 +231,43 @@ helps['quantum suite-offer list'] = """
       - name: List the provider ID and location of each available suite offer.
         text: |-
             az quantum suite-offer list --query "[].{provider:properties.providerId, location:properties.location}" -o table
+"""
+
+helps['quantum suite-offer quotas'] = """
+    type: command
+    short-summary: View quota allocations and their consumed usages for a suite offer provider account in the current subscription.
+    long-summary: |
+        Returns the v2 quota allocations (limits) for each target of the provider account together
+        with the consumed usages. Each entry reports the allocated and used standard and high priority
+        minutes over the lifetime of the provider account.
+    examples:
+      - name: View the quota usages for a suite offer provider account.
+        text: |-
+            az quantum suite-offer quotas --provider-id MyProviderAccount -o table
+      - name: View the raw quota usage details for a suite offer provider account.
+        text: |-
+            az quantum suite-offer quotas -p MyProviderAccount
+"""
+
+helps['quantum suite-offer target'] = """
+    type: group
+    short-summary: List targets available through an Azure Quantum suite offer.
+"""
+
+helps['quantum suite-offer target list'] = """
+    type: command
+    short-summary: List the targets and their status available through a suite offer, without requiring a workspace.
+    long-summary: |
+        Returns each target exposed by the suite offer provider account together with its current
+        availability and average queue time, resolved directly from the data plane without requiring
+        an Azure Quantum workspace.
+    examples:
+      - name: List the targets available in a suite offer.
+        text: |-
+            az quantum suite-offer target list --provider-id MyProviderAccount -o table
+      - name: List the raw target status details for a suite offer provider account.
+        text: |-
+            az quantum suite-offer target list -p MyProviderAccount
 """
 
 helps['quantum offerings'] = """
@@ -369,11 +406,15 @@ helps['quantum workspace list'] = """
 
 helps['quantum workspace quotas'] = """
     type: command
-    short-summary: List the quotas for the given (or current) Azure Quantum workspace.
+    short-summary: List quota allocations and consumed usages for an Azure Quantum workspace.
+    long-summary: |
+        Preserves the existing quota dimension response for v1 providers. For v2 providers, returns
+        separate StandardMinutesLifetime and HighMinutesLifetime rows for each target, with targetId,
+        limit, and utilization reported in minutes. Missing allocation or usage values are returned as 0.
     examples:
-      - name: List the quota information of a specified Azure Quantum workspace. If a default workspace has been set, the -g and -w parameters are not required.
+      - name: View quota allocations and usages for the given (or current) workspace. If a default workspace has been set, the -g and -w parameters are not required.
         text: |-
-            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace
+            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -o table
 """
 
 helps['quantum workspace set'] = """

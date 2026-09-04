@@ -316,3 +316,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('workspace_name', workspace_name_type)
         c.argument('enable_key', enable_key_type)
         c.argument('quota', quota_type)
+
+    with self.argument_context('quantum suite-offer quotas') as c:
+        c.argument('provider_id', provider_id_type, required=True)
+
+    with self.argument_context('quantum suite-offer target list') as c:
+        c.argument('provider_id', provider_id_type, required=True)

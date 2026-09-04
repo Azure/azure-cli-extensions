@@ -43,12 +43,15 @@ from ...operations._operations import (
     build_services_jobs_update_request,
     build_services_providers_list_request,
     build_services_quotas_list_request,
+    build_services_quotas_list_quota_usages_request,
     build_services_sessions_close_request,
     build_services_sessions_get_request,
     build_services_sessions_jobs_list_request,
     build_services_sessions_listv2_request,
     build_services_sessions_open_request,
     build_services_storage_get_sas_uri_request,
+    build_services_suite_offers_get_provider_status_request,
+    build_services_suite_offers_list_quota_usages_request,
     build_services_top_level_items_listv2_request,
 )
 from .._configuration import WorkspaceClientConfiguration
@@ -81,6 +84,9 @@ class ServicesOperations:
         self.jobs = ServicesJobsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.providers = ServicesProvidersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.quotas = ServicesQuotasOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.suite_offers = ServicesSuiteOffersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.sessions = ServicesSessionsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.storage = ServicesStorageOperations(self._client, self._config, self._serialize, self._deserialize)
 
@@ -1198,6 +1204,207 @@ class ServicesQuotasOperations:
             return pipeline_response
 
         return AsyncItemPaged(get_next, extract_data)
+
+    @distributed_trace_async
+    async def list_quota_usages(
+        self, subscription_id: str, resource_group_name: str, workspace_name: str, provider_id: str, **kwargs: Any
+    ) -> "list[_models.QuotaUsage]":
+        """List quota usages for a provider in the given workspace.
+
+        :param subscription_id: The Azure subscription ID. Required.
+        :type subscription_id: str
+        :param resource_group_name: Name of the Azure resource group. Required.
+        :type resource_group_name: str
+        :param workspace_name: Name of the Azure Quantum workspace. Required.
+        :type workspace_name: str
+        :param provider_id: The provider whose quota usages are requested. Required.
+        :type provider_id: str
+        :return: list of QuotaUsage
+        :rtype: list[~azure.quantum.models.QuotaUsage]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[list[_models.QuotaUsage]] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _request = build_services_quotas_list_quota_usages_request(
+            subscription_id=subscription_id,
+            resource_group_name=resource_group_name,
+            workspace_name=workspace_name,
+            provider_id=provider_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url(
+                "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
+            ),
+        }
+        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        deserialized = response.json()
+        # The service may return either a bare JSON array or a paged envelope ({"value": [...]}).
+        if isinstance(deserialized, dict):
+            deserialized = deserialized.get("value", [])
+        list_of_elem = _deserialize(list[_models.QuotaUsage], deserialized)
+        if cls:
+            return cls(list_of_elem)  # type: ignore
+        return list_of_elem
+
+
+class ServicesSuiteOffersOperations:
+    """
+    .. warning::
+        **DO NOT** instantiate this class directly.
+
+        Instead, you should access the following operations through
+        :class:`~azure.quantum.aio.WorkspaceClient`'s
+        :attr:`suite_offers` attribute.
+    """
+
+    def __init__(self, *args, **kwargs) -> None:
+        input_args = list(args)
+        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._config: WorkspaceClientConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
+        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
+        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
+
+    @distributed_trace_async
+    async def list_quota_usages(
+        self, subscription_id: str, provider_id: str, **kwargs: Any
+    ) -> list["_models.QuotaUsage"]:
+        """List quota usages for the given suite offer provider account.
+
+        :param subscription_id: The Azure subscription ID. Required.
+        :type subscription_id: str
+        :param provider_id: The unique identifier of the suite offer provider account. Required.
+        :type provider_id: str
+        :return: list of QuotaUsage
+        :rtype: list[~azure.quantum.models.QuotaUsage]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[list[_models.QuotaUsage]] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _request = build_services_suite_offers_list_quota_usages_request(
+            subscription_id=subscription_id,
+            provider_id=provider_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url(
+                "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
+            ),
+        }
+        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        deserialized = response.json()
+        # The service may return either a bare JSON array or a paged envelope ({"value": [...]}).
+        if isinstance(deserialized, dict):
+            deserialized = deserialized.get("value", [])
+        list_of_elem = _deserialize(list[_models.QuotaUsage], deserialized)
+        if cls:
+            return cls(list_of_elem)  # type: ignore
+        return list_of_elem
+
+    @distributed_trace_async
+    async def get_provider_status(
+        self, subscription_id: str, provider_id: str, **kwargs: Any
+    ) -> "_models.ProviderStatus":
+        """Get the target status for the given suite offer provider account.
+
+        :param subscription_id: The Azure subscription ID. Required.
+        :type subscription_id: str
+        :param provider_id: The unique identifier of the suite offer provider account. Required.
+        :type provider_id: str
+        :return: ProviderStatus
+        :rtype: ~azure.quantum.models.ProviderStatus
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[_models.ProviderStatus] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _request = build_services_suite_offers_get_provider_status_request(
+            subscription_id=subscription_id,
+            provider_id=provider_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url(
+                "self._config.endpoint", self._config.endpoint, "str", skip_quote=True
+            ),
+        }
+        _request.url = self._client.format_url(_request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        # The provider status endpoint returns a single ProviderStatus object.
+        deserialized = _deserialize(_models.ProviderStatus, response.json())
+        if cls:
+            return cls(deserialized)  # type: ignore
+        return deserialized
 
 
 class ServicesSessionsOperations:

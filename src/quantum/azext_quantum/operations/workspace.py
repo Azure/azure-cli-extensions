@@ -21,8 +21,9 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError,
                                        MutuallyExclusiveArgumentError)
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials, base_url, base_url_v2
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
@@ -444,12 +445,99 @@ def get(cmd, resource_group_name=None, workspace_name=None):
 
 def quotas(cmd, resource_group_name, workspace_name):
     """
-    List the quotas for the given (or current) Azure Quantum workspace.
+    List quota allocations and usages for the given (or current) Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
-    response = client.list(info.subscription, info.resource_group, info.name)
-    return repack_response_json(response)
+
+    workspace = cf_workspaces(cmd.cli_ctx).get(info.resource_group, info.name)
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+
+    legacy_client = cf_quotas(
+        cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url(workspace.location))
+    legacy_quotas = repack_response_json(
+        legacy_client.list(info.subscription, info.resource_group, info.name))
+
+    usages = []
+    workspace_kind = getattr(properties, 'workspace_kind', None) if properties is not None else None
+    if str(_enum_to_value(workspace_kind)).upper() == 'V2':
+        v2_client = cf_quotas(
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url_v2(workspace.location))
+        for provider in providers or []:
+            try:
+                provider_usages = v2_client.list_quota_usages(
+                    info.subscription, info.resource_group, info.name, provider.provider_id)
+            except AzureResourceNotFoundError:
+                provider_usages = None
+            usages.extend(provider_usages or [])
+
+    return _merge_workspace_quotas(workspace, usages, legacy_quotas)
+
+
+_WORKSPACE_QUOTA_SCOPE = "Workspace"
+_WORKSPACE_QUOTA_PERIOD = "None"
+_TARGET_QUOTA_DIMENSIONS = (
+    ("StandardMinutesLifetime", "standard_minutes_lifetime"),
+    ("HighMinutesLifetime", "high_minutes_lifetime"),
+)
+
+
+def _target_quota_row(provider_id, target_id, dimension, allocation, usage):
+    return {
+        "dimension": dimension,
+        "providerId": provider_id,
+        "scope": _WORKSPACE_QUOTA_SCOPE,
+        "limit": allocation if allocation is not None else 0,
+        "utilization": usage if usage is not None else 0,
+        "holds": 0.0,
+        "period": _WORKSPACE_QUOTA_PERIOD,
+        "targetId": target_id,
+    }
+
+
+def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
+    """
+    Preserve legacy quota rows and append one flat row per target and priority for v2 quotas.
+    """
+    usage_by_key = {
+        ((usage.provider_id or '').lower(), usage.target_id.lower()): usage
+        for usage in (usages or [])
+        if usage.target_id is not None
+    }
+
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+
+    rows = [row for row in (legacy_quotas or [])]
+    for provider in sorted(providers or [], key=lambda p: p.provider_id or ""):
+        allocations_by_target = {
+            quota.target_id.lower(): quota
+            for quota in (provider.target_quotas or [])
+            if quota.target_id is not None
+        }
+        usage_targets = {
+            target_id: usage
+            for (provider_id, target_id), usage in usage_by_key.items()
+            if provider_id == (provider.provider_id or '').lower()
+        }
+        target_ids = sorted(builtin_set(allocations_by_target) | builtin_set(usage_targets))
+
+        for target_id in target_ids:
+            target_quota = allocations_by_target.get(target_id)
+            usage = usage_targets.get(target_id)
+            usage_values = usage.usage if usage is not None else None
+            display_target_id = target_quota.target_id if target_quota is not None else usage.target_id
+
+            for dimension, attribute in _TARGET_QUOTA_DIMENSIONS:
+                rows.append(_target_quota_row(
+                    provider.provider_id,
+                    display_target_id,
+                    dimension,
+                    getattr(target_quota, attribute, None),
+                    getattr(usage_values, attribute, None),
+                ))
+
+    return rows
 
 
 def set(cmd, workspace_name, resource_group_name):
