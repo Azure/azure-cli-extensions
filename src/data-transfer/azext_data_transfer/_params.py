@@ -16,6 +16,27 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--name', '-n', '--pipeline-name'],
             help='The name for the pipeline to perform the operation on.'
         )
+        c.argument(
+            'justification',
+            options_list=['--justification'],
+            help='Business justification for the action'
+        )
+
+    with self.argument_context('data-transfer pipeline connection') as c:
+        c.argument(
+            'connection_ids',
+            options_list=['--connection-ids'],
+            nargs='+',
+            help='List of connection IDs to operate on'
+        )
+
+    with self.argument_context('data-transfer pipeline flowtype') as c:
+        c.argument(
+            'flow_types',
+            options_list=['--flow-types'],
+            nargs='+',
+            help='List of flow types to operate on'
+        )
 
     with self.argument_context('data-transfer connection flow') as c:
         c.argument(
