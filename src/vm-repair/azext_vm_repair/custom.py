@@ -23,6 +23,9 @@ from .repair_utils import (
     _call_az_command,
     _clean_up_resources,
     _fetch_compatible_sku,
+    _fetch_source_disk_controller_type,
+    _fetch_sku_disk_controller_types,
+    _select_repair_disk_controller_type,
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _validate_tags_for_command,
@@ -56,7 +59,7 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, yes=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, disk_controller_type=None, yes=False):
     """
     This function creates a repair VM.
 
@@ -79,6 +82,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - tags: Tags to apply to the repair VM. Should be a dictionary or a string in key[=value] format.
     - copy_tags: If True, tags will be copied from the source VM to the repair VM. Default is False.
     - size: The size of the repair VM. If not provided, the size of the broken vm will be used.
+    - disk_controller_type: Optional SCSI or NVMe override for the repair VM disk controller.
     """
 
     # Logging all the command parameters, except the sensitive data.
@@ -227,6 +231,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         # Adding the size to the command.
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
+
+        source_controller = _fetch_source_disk_controller_type(source_vm)
+        supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
+        selected_controller, level, message = _select_repair_disk_controller_type(
+            source_controller, supported_controllers, disk_controller_type)
+        getattr(logger, level)(message)
+        if selected_controller:
+            create_repair_vm_command += ' --disk-controller-type {controller}'.format(controller=selected_controller)
 
         # Setting the availability zone for the repair VM.
         # If the source VM has availability zones, the first one is chosen for the repair VM.

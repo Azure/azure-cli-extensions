@@ -33,6 +33,13 @@ EXTENSION_NAME = 'vm-repair'
 
 
 def validate_create(cmd, namespace):
+    if namespace.disk_controller_type:
+        requested_controller = namespace.disk_controller_type.strip().lower()
+        valid_controllers = {'scsi': 'SCSI', 'nvme': 'NVMe'}
+        if requested_controller not in valid_controllers:
+            raise CLIError("--disk-controller-type must be 'SCSI' or 'NVMe'.")
+        namespace.disk_controller_type = valid_controllers[requested_controller]
+
     check_extension_version(EXTENSION_NAME)
 
     # Check if VM exists and is not classic VM

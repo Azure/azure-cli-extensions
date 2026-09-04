@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.3.0
+++++++
+The repair VM is now created with the SCSI disk controller whenever the selected VM size supports it, even when the source VM uses NVMe. Previously the repair VM inherited the platform default for the size, so a source VM on an NVMe-only size produced an NVMe repair VM. Several repair scripts locate the attached OS disk by its SCSI model name and therefore found no disk on such a repair VM: they completed, reported success, and repaired nothing. Pinning the repair VM to SCSI restores those scripts. When the size only supports NVMe the command now emits a warning instead of failing silently. A new ``--disk-controller-type`` parameter on ``az vm repair create`` overrides the selection.
+
 2.2.6
 ++++++
 Fixing ``az extension add --name vm-repair`` failing with ``Pip failed with status code 2`` on 32-bit Windows installations of the Azure CLI. The extension declared ``opencensus`` as a dependency but never imported it. Because extensions are installed with ``pip --target``, that unused dependency pulled roughly twenty extra packages into the extension folder, including ``cryptography``, which stopped publishing 32-bit Windows wheels in version 49.0.0. On a 32-bit CLI, pip had no compatible wheel, fell back to building ``cryptography`` from source, and failed. Removing the unused ``opencensus`` dependency removes that entire dependency tree.

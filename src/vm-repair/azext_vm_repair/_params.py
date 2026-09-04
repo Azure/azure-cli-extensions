@@ -35,6 +35,7 @@ def load_arguments(self, _):
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
         c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
+        c.argument('disk_controller_type', help='Disk controller type for the repair VM (SCSI or NVMe). By default the repair VM uses SCSI when the selected size supports it, so that offline repair scripts can enumerate the attached OS disk.')
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.  Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
