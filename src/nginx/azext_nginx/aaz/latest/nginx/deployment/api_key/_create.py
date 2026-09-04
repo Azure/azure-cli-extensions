@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an API Key for the Nginx deployment in order to access the dataplane API endpoint
+
+    :example: Create an API Key for the Nginx deployment
+        az nginx deployment api-key create --resource-group myResourceGroup --deployment-name myDeployment --api-key-name myApiKey
     """
 
     _aaz_info = {
