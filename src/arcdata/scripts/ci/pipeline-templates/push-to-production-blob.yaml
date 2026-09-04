@@ -1,0 +1,29 @@
+stages:
+- stage: Prod___Push_to_Blob
+  displayName: 'PPE:  Push to Blob'
+  variables:
+  - name: ob_release_environment
+    value: Production
+  dependsOn: []
+  jobs:
+  - job: prod___push_to_blob_agent_job
+    displayName: 'Agent job'
+    variables:
+      ob_sdl_codeql_compiled_enabled: false
+    pool:
+      type: release
+    steps:
+    - download: release-artifacts
+      displayName: 'Task download'
+    - task: vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1
+      displayName: 'Task vsrm-ev2.vss-services-ev2.adm-release-task.ExpressV2Internal@1'
+      inputs:
+        UseServerMonitorTask: true
+        EnableStrictValidation: true
+        ValidateOnly: false
+        EndpointProviderType: ApprovalService
+        ApprovalServiceEnvironment: Production
+        ServiceRootLocation: LinkedArtifact
+        RolloutSpecType: RSPath
+        ServiceRootPath: $(Pipeline.Workspace)/release-artifacts/drop_Build_BuildWheels/release-ev2/ev2
+        RolloutSpecPath: $(Pipeline.Workspace)/release-artifacts/drop_Build_BuildWheels/release-ev2/ev2/RolloutSpecs.json
