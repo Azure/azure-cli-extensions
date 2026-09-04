@@ -411,6 +411,39 @@ def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
     raise CLIError('Selected VM size: \'{}\' is NOT available in location: \'{}\'.'.format(determined_sku, location))
 
 
+def _fetch_source_disk_controller_type(source_vm):
+    """Return the source VM disk controller type, or None when it is unavailable."""
+    # Older compute SDKs do not model this field, so query ARM through Azure CLI as a fallback.
+    controller = getattr(source_vm.storage_profile, 'disk_controller_type', None)
+    if controller:
+        return str(controller)
+    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=source_vm.id)
+    return (_call_az_command(show_command) or '').strip() or None
+
+
+def _fetch_sku_disk_controller_types(sku, location):
+    """Return the disk controller types supported by a VM size."""
+    query = "[0].capabilities[?name=='DiskControllerTypes'].value"
+    command = 'az vm list-skus -s {sku} -l {loc} --query "{query}" -o tsv'.format(
+        sku=sku, loc=location, query=query)
+    raw = (_call_az_command(command) or '').strip()
+    return [part.strip() for part in raw.split(',') if part.strip()]
+
+
+def _select_repair_disk_controller_type(source_controller, supported_types, requested=None):
+    """Select a repair VM controller while preserving existing SCSI-based repair scripts."""
+    if requested:
+        return requested, 'info', 'Using requested repair VM disk controller type: {}'.format(requested)
+    if not supported_types:
+        return None, 'debug', 'Could not determine supported disk controller types; using the platform default.'
+    if not source_controller or str(source_controller).lower() != 'nvme':
+        return None, 'debug', 'Source VM is not NVMe; using the platform default for the repair VM size.'
+    normalized_types = {controller.lower(): controller for controller in supported_types}
+    if 'scsi' in normalized_types:
+        return 'SCSI', 'info', 'Source VM uses the NVMe disk controller. Creating the repair VM with SCSI so repair scripts can enumerate the attached OS disk. Override with --disk-controller-type.'
+    return None, 'warning', 'The repair VM size only supports NVMe. Repair scripts that select disks by the SCSI model string will not find the attached OS disk. Use --size to pick a size that supports SCSI, or verify the script handles NVMe.'
+
+
 def _fetch_disk_info(resource_group_name, disk_name):
     """ Returns sku, location, os_type, hyperVgeneration, and disk_id as a tuple """
     show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration,id] -o json'.format(g=resource_group_name, name=disk_name)
