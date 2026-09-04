@@ -13124,6 +13124,94 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_machine_create_with_crg_id(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        machines_pool_name = self.create_random_name("c", 6)
+        vm_size = "Standard_E20bds_v6"
+        crg_id = (
+            "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/CLI-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/aks-crg"
+        )
+        identity = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/cli-crg-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-crg-identity"
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "node_pool_name": node_pool_name,
+                "machines_pool_name": machines_pool_name,
+                "machine_name": "machinetest1",
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+                "identity": identity,
+                "crg_id": crg_id,
+                "vm_size": vm_size,
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--node-vm-size {vm_size} "
+            "--nodepool-name {node_pool_name} -c 1 "
+            "--enable-managed-identity "
+            "--assign-identity {identity} "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # add a Machines nodepool and create a machine backed by the CRG
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={machines_pool_name} "
+            "--mode=Machines",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("mode", "Machines"),
+            ],
+        )
+        self.cmd(
+            "aks machine add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={machines_pool_name} "
+            "--machine-name={machine_name} "
+            "--vm-size={vm_size} "
+            "--crg={crg_id}"
+        )
+        self.cmd(
+            "aks machine show "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={machines_pool_name} "
+            "--machine-name={machine_name}",
+            checks=[
+                self.check("properties.provisioningState", "Succeeded"),
+            ],
+        )
+
+        # delete the cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_create_with_network_plugin_none(
         self, resource_group, resource_group_location
     ):

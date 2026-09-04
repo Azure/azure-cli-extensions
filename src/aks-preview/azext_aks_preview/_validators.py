@@ -761,6 +761,13 @@ def validate_crg_id(namespace):
                 "--crg-id is not a valid Azure resource ID.")
 
 
+def validate_capacity_reservation_group(namespace):
+    if namespace.capacity_reservation_group:
+        if not is_valid_resource_id(namespace.capacity_reservation_group):
+            raise InvalidArgumentValueError(
+                "--capacity-reservation-group is not a valid Azure resource ID.")
+
+
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
