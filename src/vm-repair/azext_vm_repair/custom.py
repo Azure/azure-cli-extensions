@@ -232,8 +232,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Adding the size to the command.
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
-        source_controller = _fetch_source_disk_controller_type(source_vm)
-        supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
+        source_controller = None if disk_controller_type else _fetch_source_disk_controller_type(source_vm)
+        supported_controllers = []
+        if source_controller and str(source_controller).lower() == 'nvme':
+            supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
         selected_controller, level, message = _select_repair_disk_controller_type(
             source_controller, supported_controllers, disk_controller_type)
         getattr(logger, level)(message)
