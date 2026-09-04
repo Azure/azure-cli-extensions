@@ -117,6 +117,38 @@ helps['ssh cert'] = """
             az ssh cert --file ./id_rsa-aadcert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
 
+helps['ssh cert-create'] = """
+    type: command
+    short-summary: Create a short-lived SSH certificate signed by a private CA key in Azure Key Vault.
+    long-summary: |
+        Generates an ephemeral SSH key pair, determines the caller's RBAC role
+        on the target ProvisionedMachine resource via PIM-based JIT access, and
+        sends the public key along with metadata (userPublicKey, username, role,
+        expiry) to Key Vault for signing.
+
+        The user's role is NOT taken as input — it is resolved automatically from
+        the RBAC role assignment on the device resource.
+
+        Currently the extension relies on the built-in Azure roles (Owner,
+        Contributor, Reader) because we do not yet have permission to create
+        custom roles. The final intended roles are:
+          - Provisioned Machine Administrator (full SSH with sudo)
+          - Provisioned Machine Contributor  (SSH without sudo)
+          - Provisioned Machine Reader       (view-only; SSH restricted on device)
+        Certificates are generated for all roles — access restrictions are
+        enforced on the device side, not by the CLI.
+        These custom roles are pending creation (Teodora, Eric — please help
+        finalize so the CLI extension can be completed).
+
+        The user identity is derived automatically from the Entra login context.
+        The certificate expiry is derived from the PIM activation's remaining duration.
+        Returns the signed SSH user certificate and the freshly generated private key.
+    examples:
+        - name: Create a certificate (expiry derived from PIM activation)
+          text: |
+            az ssh cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.ProvisionedMachine/machines/myDevice
+"""
+
 helps['ssh arc'] = """
     type: command
     short-summary: SSH into Azure Arc Servers
