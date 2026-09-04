@@ -44,6 +44,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
         c.argument('yes', help='Deletes the repair resources without confirmation.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources without confirmation. Use for unattended runs that need the repair VM and disk copy preserved for inspection. Cannot be combined with --yes.')
 
     with self.argument_context('vm repair run') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
@@ -70,6 +71,7 @@ def load_arguments(self, _):
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources instead of deleting them, including when the repair script fails. Use to inspect a failed repair.')
 
     with self.argument_context('vm repair repair-button') as c:
         c.argument('button_command', help='Button_command for repair VM.')
@@ -83,3 +85,4 @@ def load_arguments(self, _):
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
         c.argument('yes', help='Deprecated - Creates the repair VM without confirmation.  No current behavior change, this parameter will be removed in a future release.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources instead of deleting them, including when the repair script fails. Use to inspect a failed repair.')

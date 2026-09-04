@@ -96,6 +96,10 @@ def validate_create(cmd, namespace):
 def validate_restore(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
 
+    # Fail before any network call: the two flags ask for opposite clean-up outcomes
+    if namespace.yes and namespace.no_cleanup:
+        raise CLIError('--yes and --no-cleanup cannot be used together. --yes deletes the repair resources without confirmation, --no-cleanup keeps them. Omit both to be prompted.')
+
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 

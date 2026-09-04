@@ -58,6 +58,12 @@ helps['vm repair restore'] = """
         - name: Restore from the repair VM, specify the disk to restore
           text: >
             az vm repair restore -g MyResourceGroup -n MyVM --disk-name MyDiskCopy --verbose
+        - name: Restore from the repair VM and delete the repair resources without confirmation.
+          text: >
+            az vm repair restore -g MyResourceGroup -n MyVM --yes --verbose
+        - name: Restore from the repair VM and keep the repair resources without confirmation. Use for unattended runs that need the repair VM preserved for inspection.
+          text: >
+            az vm repair restore -g MyResourceGroup -n MyVM --no-cleanup --verbose
 """
 
 helps['vm repair run'] = """
