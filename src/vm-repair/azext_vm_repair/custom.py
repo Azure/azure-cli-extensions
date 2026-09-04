@@ -497,11 +497,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
 
 # This method is responsible for restoring the VM after repair
-def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
+def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False, no_cleanup=False):
 
     # Create an instance of the command helper object to facilitate logging and status tracking.
     command = command_helper(logger, cmd, 'vm repair restore')
     source_disk = None
+    repair_resource_group = None
 
     try:
         # Fetch source and repair VM data
@@ -553,7 +554,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 _call_az_command(attach_unmanaged_command)
 
             # Clean up the resources in the repair resource group
-            _clean_up_resources(repair_resource_group, confirm=not yes)
+            _clean_up_resources(repair_resource_group, confirm=not yes, skip_cleanup=no_cleanup)
             command.set_status_success()  # Set the command status to success
     # Handle possible exceptions
     except KeyboardInterrupt:
@@ -585,6 +586,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         command.message = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
             'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
             .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
+        if no_cleanup and repair_resource_group:
+            command.message += ' The repair resources in the resource group \'{repair_rg}\' were kept because --no-cleanup was used. ' \
+                'Delete them with \'az group delete --name {repair_rg}\' once you no longer need them, to avoid any undesired costs.' \
+                .format(repair_rg=repair_resource_group)
         return_dict = command.init_return_dict()
         logger.info('\n%s\n', return_dict['message'])
 
@@ -965,7 +970,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None):
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, no_cleanup=False):
     """
     This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves
     the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource
@@ -982,6 +987,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     :param tags: (Optional) Tags to apply to the repair VM.
     :param copy_tags: (Optional) Boolean indicating whether to copy tags from the source VM to the repair VM.
     :param size: (Optional) The size of the repair VM.
+    :param no_cleanup: (Optional) Boolean indicating whether the repair resources should be kept instead of deleted.
     """
     from datetime import datetime, timezone
     import secrets
@@ -1036,9 +1042,9 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
         # If the resource group existed before, confirm before cleaning up resources
         # Otherwise, clean up resources without confirmation
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     # Log the output of the run command
@@ -1048,9 +1054,9 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     if run_out['script_status'] == 'ERROR':
         logger.error('fstab script returned an error.')
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     # Run the restore command
@@ -1060,13 +1066,14 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     repair_vm_id = _call_az_command(show_vm_id)
 
-    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
 
     # Set the success message
+    repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
     command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+        'The repairs were complete using the fstab script and {fate}. ' \
         'The repair disk was restored to the source VM. ' \
-        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, fate=repair_vm_fate)
 
     # Mark the operation as successful
     command.set_status_success()
@@ -1084,7 +1091,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     return return_dict
 
 
-def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, yes=False):
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, yes=False, no_cleanup=False):
     """
     Button-triggered repair operation. Supports tags for the repair VM.
     """
@@ -1133,9 +1140,9 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
         command.error_message = "Command failed when running  script."
         command.message = "Command failed when running script."
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     # log run_out
@@ -1144,9 +1151,9 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     if run_out['script_status'] == 'ERROR':
         logger.error(' script returned an error.')
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     logger.info('Running restore command')
@@ -1155,12 +1162,13 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
 
     repair_vm_id = _call_az_command(show_vm_id)
 
-    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
 
+    repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
     command.message = 'script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-        'The repairs were complete using the script and the repair VM was then deleted. ' \
+        'The repairs were complete using the script and {fate}. ' \
         'The repair disk was restored to the source VM. ' \
-        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, fate=repair_vm_fate)
 
     command.set_status_success()
     if command.error_stack_trace:

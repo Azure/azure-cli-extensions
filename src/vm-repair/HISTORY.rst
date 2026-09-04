@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.3.0
+++++++
+Adding a ``--no-cleanup`` parameter (alias ``--no``) to ``az vm repair restore``, ``az vm repair repair-and-restore`` and ``az vm repair repair-button``. Until now the only way to answer the "Continue with clean-up and delete resources?" prompt without a human present was ``--yes``, which deletes the repair VM, the disk copy and the repair resource group. There was no way to decline the deletion unattended, so scripted and multi-VM runs either blocked on the prompt or lost the repair resources they needed to inspect. With ``--no-cleanup`` the disk swap back to the source VM still happens, but the repair resources are kept and the command reports the resource group to delete later. ``--yes`` and ``--no-cleanup`` cannot be combined on ``az vm repair restore`` and the command now fails early if both are given. Behavior without either flag is unchanged: the command still prompts, and still skips clean-up in a non-interactive session.
+
 2.2.6
 ++++++
 Fixing ``az extension add --name vm-repair`` failing with ``Pip failed with status code 2`` on 32-bit Windows installations of the Azure CLI. The extension declared ``opencensus`` as a dependency but never imported it. Because extensions are installed with ``pip --target``, that unused dependency pulled roughly twenty extra packages into the extension folder, including ``cryptography``, which stopped publishing 32-bit Windows wheels in version 49.0.0. On a 32-bit CLI, pip had no compatible wheel, fell back to building ``cryptography`` from source, and failed. Removing the unused ``opencensus`` dependency removes that entire dependency tree.
