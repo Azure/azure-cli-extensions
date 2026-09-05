@@ -8,6 +8,7 @@
 import base64
 import json
 import os
+import re
 import time
 
 import yaml
@@ -17,38 +18,97 @@ from azure.cli.testsdk.scenario_tests import RecordingProcessor
 
 class AroHcpRecordingProcessor(RecordingProcessor):
 
+    MOCK_TENANT_ID = '00000000-0000-0000-0000-000000000001'
+    MOCK_PRINCIPAL_ID = '00000000-0000-0000-0000-000000000002'
+    MOCK_CLIENT_ID = '00000000-0000-0000-0000-000000000003'
+    MOCK_ROLE_ASSIGNMENT_ID = '00000000-0000-0000-0000-000000000004'
+    MOCK_USER_EMAIL = 'recording-user@example.com'
     REDACTED_DATA = base64.b64encode(b'REDACTED').decode('ascii')
 
+    HEADERS_TO_REDACT = [
+        'x-ms-keyvault-network-info',
+        'x-ms-operation-identifier',
+    ]
+
+    @classmethod
+    def _scrub_text(cls, value):
+        if not value:
+            return value
+
+        replacements = (
+            (r'("tenantId"\s*:\s*")[^"]+', rf'\g<1>{cls.MOCK_TENANT_ID}'),
+            (r'("principalId"\s*:\s*")[^"]+', rf'\g<1>{cls.MOCK_PRINCIPAL_ID}'),
+            (r'("clientId"\s*:\s*")[^"]+', rf'\g<1>{cls.MOCK_CLIENT_ID}'),
+            (
+                r'("(?:createdBy|lastModifiedBy|updatedBy)"\s*:\s*")[^"]+',
+                rf'\g<1>{cls.MOCK_USER_EMAIL}',
+            ),
+            (
+                r'(login\.microsoftonline\.com/)[0-9a-f-]{36}',
+                rf'\g<1>{cls.MOCK_TENANT_ID}',
+            ),
+            (
+                r'(\.oic\.aro-hcp\.azure\.com/)[0-9a-f-]{36}',
+                rf'\g<1>{cls.MOCK_TENANT_ID}',
+            ),
+            (
+                r'(/roleAssignments/)[0-9a-f-]{36}',
+                rf'\g<1>{cls.MOCK_ROLE_ASSIGNMENT_ID}',
+            ),
+            (r'([?&](?:c|s|h)=)[^&"\s\\]+', r'\g<1>REDACTED'),
+        )
+        for pattern, replacement in replacements:
+            value = re.sub(pattern, replacement, value, flags=re.IGNORECASE)
+        return value
+
     def process_request(self, request):
-        if 'requestAdminCredential' not in request.uri or not request.body:
+        request.uri = self._scrub_text(request.uri)
+        if not request.body:
             return request
 
         body_is_bytes = isinstance(request.body, bytes)
         body = request.body.decode('utf-8') if body_is_bytes else request.body
-        content = json.loads(body)
-        content['certificateSigningRequest'] = 'redacted-csr'
-        body = json.dumps(content)
+        body = self._scrub_text(body)
+        if 'requestAdminCredential' in request.uri:
+            content = json.loads(body)
+            content['certificateSigningRequest'] = 'redacted-csr'
+            body = json.dumps(content)
         request.body = body.encode('utf-8') if body_is_bytes else body
         return request
 
     def process_response(self, response):
         headers = response.get('headers', {})
         for header in list(headers):
-            if header.lower() == 'x-ms-operation-identifier':
+            if header.lower() in self.HEADERS_TO_REDACT:
                 del headers[header]
+                continue
+            values = headers[header]
+            if isinstance(values, list):
+                headers[header] = [
+                    self._scrub_text(value) if isinstance(value, str) else value
+                    for value in values
+                ]
+            elif isinstance(values, str):
+                headers[header] = self._scrub_text(values)
 
         body = (response.get('body') or {}).get('string')
         if not body:
             return response
 
+        body_is_bytes = isinstance(body, bytes)
+        body = body.decode('utf-8') if body_is_bytes else body
+        body = self._scrub_text(body)
         try:
             content = json.loads(body)
         except (TypeError, ValueError):
+            response['body']['string'] = body.encode('utf-8') if body_is_bytes else body
             return response
         if content.get('userPrincipalName') and content.get('id'):
-            response['body']['string'] = json.dumps({'id': content['id']})
+            body = json.dumps({'id': self.MOCK_PRINCIPAL_ID})
+            response['body']['string'] = body.encode('utf-8') if body_is_bytes else body
             return response
         if not content.get('kubeconfig'):
+            response['body']['string'] = body.encode('utf-8') if body_is_bytes else body
             return response
 
         kubeconfig = yaml.safe_load(content['kubeconfig'])
@@ -60,7 +120,8 @@ class AroHcpRecordingProcessor(RecordingProcessor):
             if 'client-key-data' in user_data:
                 user_data['client-key-data'] = self.REDACTED_DATA
         content['kubeconfig'] = yaml.safe_dump(kubeconfig, default_flow_style=False)
-        response['body']['string'] = json.dumps(content)
+        body = json.dumps(content)
+        response['body']['string'] = body.encode('utf-8') if body_is_bytes else body
         return response
 
 
