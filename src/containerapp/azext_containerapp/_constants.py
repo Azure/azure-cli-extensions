@@ -37,6 +37,7 @@ SHORT_POLLING_INTERVAL_SECS = 3
 LONG_POLLING_INTERVAL_SECS = 10
 
 ACR_IMAGE_SUFFIX = ".azurecr.io"
+ACR_IMAGE_SUFFIXES = [".azurecr.io", ".azurecr.us", ".azurecr.cn"]
 
 CONTAINER_APPS_SDK_MODELS = "azext_containerapp._sdk_models"
 
