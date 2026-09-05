@@ -168,3 +168,7 @@ Release History
 * `az grafana integrations`: rename to `az grafana integration`
 * `az grafana integration monitor`: drop `--monitor-resource-group-name` option; use `--monitor-rg-name` instead
 * `az grafana data-source`: drop lookup by numeric ID and switch to UID-based endpoints due to deprecated Grafana API
+
+3.0.1
+++++++
+* `az grafana service-account token create`: fix duration calculation for year ('y') unit
