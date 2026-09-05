@@ -64,7 +64,7 @@ test_id_no_completer = CLIArgumentType(
     validator=validators.validate_test_id,
     options_list=["--test-id", "-t"],
     type=str,
-    help="Test ID of the load test",
+    help="Test ID of the load test. Required if not specified in the load test config file.",
 )
 
 test_run_id = CLIArgumentType(
