@@ -87,7 +87,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.max_node_provision_time = AAZIntArg(
-            options=["--max-node-provision-time"],
+            options=["--node-provision-time", "--max-node-provision-time"],
             arg_group="Autoscaling",
             help="maxNodeProvisionTimeSeconds is the maximum time to wait for node provisioning before considering the provisioning to be unsuccessful. The default is 900 seconds, or 15 minutes.",
             fmt=AAZIntArgFormat(
@@ -202,7 +202,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
+            options=["--uami", "--user-assigned-identities"],
             arg_group="Identity",
             help="The identities assigned to this resource by the user.",
         )
@@ -263,7 +263,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.managed_resource_group_name = AAZStrArg(
-            options=["--managed-resource-group-name"],
+            options=["--managed-rg-name", "--managed-resource-group-name"],
             arg_group="Platform",
             help="Resource group name to put cluster resources  If not specified then a unique name is generated from the following pattern  \"aro-hcp-\" + clusterName + \"-\" + UUID  where clusterName means the hcpOpenShiftClusters resource name (up to 45 characters) followed by a 16-byte universally unique identifier per RFC 4122.",
         )
@@ -273,7 +273,7 @@ class Create(AAZCommand):
             help="ResourceId for the NSG (network security group) attached to the cluster subnet  Note that NSGs cannot be reused for other ARO-HCP clusters.",
         )
         _args_schema.operators_authentication = AAZObjectArg(
-            options=["--operators-authentication"],
+            options=["--operators-auth", "--operators-authentication"],
             arg_group="Platform",
             help="The configuration that the operators of the cluster have to authenticate to Azure",
         )
@@ -290,7 +290,7 @@ class Create(AAZCommand):
             help="The Azure resource ID of the worker subnet Note that a subnet cannot be reused between ARO-HCP Clusters.",
         )
         _args_schema.vnet_integration_subnet_id = AAZResourceIdArg(
-            options=["--vnet-integration-subnet-id"],
+            options=["--vnet-int-subnet-id", "--vnet-integration-subnet-id"],
             arg_group="Platform",
             help="The Azure resource ID of a subnet that enables direct, private network connectivity between the hosted control plane and your cluster's nodes. This subnet must be dedicated to ARO HCP and cannot be shared with the cluster subnet or any node pool subnets.",
         )
