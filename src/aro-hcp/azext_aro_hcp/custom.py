@@ -102,6 +102,10 @@ class GetVersions(_GetVersions):
 
 class RequestCredential(_RequestCredential):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._private_key_pem = None
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
