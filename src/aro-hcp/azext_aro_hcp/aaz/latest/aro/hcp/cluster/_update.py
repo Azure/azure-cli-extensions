@@ -65,7 +65,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.max_node_provision_time = AAZIntArg(
-            options=["--max-node-provision-time"],
+            options=["--node-provision-time", "--max-node-provision-time"],
             arg_group="Autoscaling",
             help="maxNodeProvisionTimeSeconds is the maximum time to wait for node provisioning before considering the provisioning to be unsuccessful. The default is 900 seconds, or 15 minutes.",
             nullable=True,
@@ -102,7 +102,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
+            options=["--uami", "--user-assigned-identities"],
             arg_group="Identity",
             help="The identities assigned to this resource by the user.",
             nullable=True,

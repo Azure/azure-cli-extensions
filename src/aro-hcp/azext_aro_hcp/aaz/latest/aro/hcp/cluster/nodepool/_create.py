@@ -95,7 +95,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.disk_storage_account_type = AAZStrArg(
-            options=["--disk-storage-account-type"],
+            options=["--disk-storage-type", "--disk-storage-account-type"],
             arg_group="OS Disk",
             help={"short-summary": "The type of the disk storage account - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types", "long-summary": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types"},
             default="Premium_LRS",
