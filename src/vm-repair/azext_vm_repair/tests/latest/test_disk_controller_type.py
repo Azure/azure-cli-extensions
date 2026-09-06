@@ -53,6 +53,13 @@ class FetchDiskControllerTypeTest(unittest.TestCase):
         source_vm.storage_profile.disk_controller_type = 'NVMe'
         self.assertEqual('NVMe', _fetch_source_disk_controller_type(source_vm))
 
+    def test_source_controller_uses_sdk_enum_value(self):
+        controller = mock.MagicMock(value='NVMe')
+        controller.__str__.return_value = 'DiskControllerTypes.NVME'
+        source_vm = mock.MagicMock()
+        source_vm.storage_profile.disk_controller_type = controller
+        self.assertEqual('NVMe', _fetch_source_disk_controller_type(source_vm))
+
     @mock.patch('azext_vm_repair.repair_utils._call_az_command', return_value='SCSI\n')
     def test_source_controller_falls_back_to_cli(self, mock_call):
         source_vm = mock.MagicMock()
@@ -60,6 +67,19 @@ class FetchDiskControllerTypeTest(unittest.TestCase):
         source_vm.id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Compute/virtualMachines/vm'
         self.assertEqual('SCSI', _fetch_source_disk_controller_type(source_vm))
         self.assertIn('storageProfile.diskControllerType', mock_call.call_args[0][0])
+
+    @mock.patch('azext_vm_repair.repair_utils._call_az_command', return_value='NVMe\n')
+    def test_missing_storage_profile_falls_back_to_cli(self, mock_call):
+        source_vm = mock.MagicMock(spec=['id'])
+        source_vm.id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Compute/virtualMachines/vm'
+        self.assertEqual('NVMe', _fetch_source_disk_controller_type(source_vm))
+        mock_call.assert_called_once()
+
+    @mock.patch('azext_vm_repair.repair_utils._call_az_command')
+    def test_missing_vm_id_returns_none(self, mock_call):
+        source_vm = mock.MagicMock(spec=[])
+        self.assertIsNone(_fetch_source_disk_controller_type(source_vm))
+        mock_call.assert_not_called()
 
     @mock.patch('azext_vm_repair.repair_utils._call_az_command', return_value='SCSI,NVMe\n')
     def test_sku_capabilities_are_parsed(self, _):

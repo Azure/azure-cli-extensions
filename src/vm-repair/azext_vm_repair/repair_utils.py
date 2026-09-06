@@ -414,10 +414,14 @@ def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
 def _fetch_source_disk_controller_type(source_vm):
     """Return the source VM disk controller type, or None when it is unavailable."""
     # Older compute SDKs do not model this field, so query ARM through Azure CLI as a fallback.
-    controller = getattr(source_vm.storage_profile, 'disk_controller_type', None)
+    storage_profile = getattr(source_vm, 'storage_profile', None)
+    controller = getattr(storage_profile, 'disk_controller_type', None)
     if controller:
-        return str(controller)
-    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=source_vm.id)
+        return str(getattr(controller, 'value', controller))
+    vm_id = getattr(source_vm, 'id', None)
+    if not vm_id:
+        return None
+    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=vm_id)
     return (_call_az_command(show_command) or '').strip() or None
 
 
