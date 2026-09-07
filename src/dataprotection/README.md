@@ -86,7 +86,7 @@ az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sara
 # 1) Create backup configuration for selected source volumes in the chosen volume group
 az dataprotection backup-instance initialize-backupconfig \
     --datasource-type AzureElasticSAN \
-    --resource-selectors volume001 volume002 > esan_backup_config.json
+    --resource-selectors volume001 > esan_backup_config.json
 
 # 2) Initialize backup instance payload (datasource-id is the source volume group ARM ID)
 az dataprotection backup-instance initialize \
@@ -123,8 +123,8 @@ az dataprotection backup-instance create \
 # 1) Build restore configuration: select source volumes and optional target names
 az dataprotection backup-instance initialize-restoreconfig \
     --datasource-type AzureElasticSAN \
-    --resource-identifiers source-vol1 source-vol2 \
-    --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}' > esan_restore_config.json
+    --resource-identifiers source-vol1 \
+    --resource-name-overrides '{"source-vol1":"restored-vol1"}' > esan_restore_config.json
 
 # 2) Initialize restore request (target-resource-id is target volume group ARM ID).
 #    Elastic SAN supports alternate-location restore only, so pass --target-resource-id

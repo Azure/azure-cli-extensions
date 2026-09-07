@@ -112,6 +112,8 @@ def load_arguments(self, _):
         c.argument('resource_selectors', type=str, nargs='+',
                    help='List of source volume names (or selectors expected by the service) within the selected '
                         'Elastic SAN volume group to be backed up. Use this parameter for DatasourceType AzureElasticSAN.')
+
+    with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
         c.argument('datasource_location', options_list=['--datasource-location', '-l'], arg_type=get_location_type(self.cli_ctx))

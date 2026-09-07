@@ -206,7 +206,7 @@ helps['dataprotection backup-instance restore initialize-for-item-recovery'] = "
             --target-resource-id {storage_account_id} \\
             --vaulted-blob-prefix-pattern '{"containers":[{"name":"container1","prefixmatch":["a","b"],"renameto":"container1renamed"},{"name":"container2","renameto":"container2renamed"}]}'
       - name: Initialize item-level restore request for an AzureElasticSAN volume group
-        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureElasticSAN --restore-location centraluseuap --source-datastore OperationalStore --backup-instance-id {backup_instance_id} --recovery-point-id {recovery_point_id} --target-resource-id {target_volume_group_id} --restore-configuration {restore_configuration}
+        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureElasticSAN --restore-location centraluseuap --source-datastore OperationalStore --recovery-point-id {recovery_point_id} --target-resource-id {target_volume_group_id} --restore-configuration {restore_configuration}
 """
 
 helps['dataprotection resource-guard list-protected-operations'] = """
@@ -232,7 +232,7 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
       - name: Initialize backup configuration for AzureDataLakeStorage with auto-protection and exclusion prefixes
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureDataLakeStorage --auto-protection true --exclusion-prefixes "logs-" "temp-"
       - name: Initialize backup configuration for AzureElasticSAN
-        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors volume001 volume002 volume003
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors volume001
 
 """
 

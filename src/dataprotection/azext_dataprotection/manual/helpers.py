@@ -579,8 +579,9 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
         if restore_configuration is not None:
             restore_criteria = restore_configuration
         else:
-            raise RequiredArgumentMissingError("Please input parameter restore_configuration for AzureElasticSAN restore.\n\
-                                               Use command initialize-restoreconfig for creating the RestoreConfiguration")
+            raise RequiredArgumentMissingError(
+                "Please input parameter restore_configuration for AzureElasticSAN restore.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
 

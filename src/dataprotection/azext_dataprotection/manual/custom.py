@@ -1037,6 +1037,7 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
             if len(target_volume_names) != len(set(target_volume_names)):
                 raise InvalidArgumentValueError('Target volume names in --resource-name-overrides must be unique.')
 
+        resource_identifiers = [resource_identifier.strip() for resource_identifier in resource_identifiers]
         resource_selectors = {
             "object_type": "ResourceListSelectionCriteria",
             "resource_identifiers": resource_identifiers
