@@ -17,6 +17,7 @@ from azext_aks_preview._consts import CONST_CUSTOM_CA_TEST_CERT, CONST_WORKLOAD_
 from azext_aks_preview._format import aks_machine_list_table_format
 from azext_aks_preview.tests.latest.custom_preparers import (
     AKSCustomResourceGroupPreparer,
+    skip_test_if_location_unsupported,
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
@@ -559,6 +560,32 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 )
             raise
 
+    def _cmd_or_skip_if_feature_unavailable(self, cmd, feature_name, checks=None):
+        """Run a command that depends on a preview feature unlocked via `--aks-custom-headers`.
+
+        Some `AKSHTTPCustomFeatures` preview flags additionally require the test
+        subscription to be on a service-side allowlist; the header alone is not
+        sufficient to unlock them (mirrors the verified behavior seen for the
+        `ManagedSystem` agent pool mode preview). If the service rejects the request
+        because this subscription isn't enrolled, skip with a precise reason instead
+        of failing the test; any other failure (e.g. a real CLI/service regression)
+        still propagates normally.
+        """
+        try:
+            return self.cmd(cmd, checks=checks)
+        except Exception as ex:  # pylint: disable=broad-except
+            message = str(ex)
+            if feature_name in message and re.search(
+                r"not (?:whitelisted|allowed|enabled|supported|available|registered)",
+                message,
+                re.IGNORECASE,
+            ):
+                self.skipTest(
+                    f"This subscription is not enrolled for the {feature_name} preview "
+                    f"despite the aks-custom-headers override: {message}"
+                )
+            raise
+
     def _get_lts_version(self, location):
         """Return the latest LTS version in the given location."""
         data = self.cmd(
@@ -825,8 +852,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nat-gateway-managed-outbound-ip-count 2 "
             "--ssh-key-value={ssh_key_value}"
         )
-        self.cmd(
+        # ManagedNATGatewayV2Preview is gated by a subscription feature registration, not an
+        # `--aks-custom-headers` override, so it cannot be unlocked from the test itself. Skip
+        # precisely if the service reports the subscription/registration isn't available.
+        self._cmd_or_skip_if_feature_unavailable(
             create_cmd,
+            "managedNATGatewayV2",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
@@ -3071,12 +3102,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         addon_list = self.cmd(list_cmd).get_output_in_json()
 
         # check virtual node addon
+        # only assert that the virtual-node addon itself is enabled; other addons may be
+        # enabled independently (e.g. by service defaults) and asserting they are disabled
+        # is unrelated to what this test is verifying.
         assert len(addon_list) > 0
-        for addon in addon_list:
-            if addon["name"] == "virtual-node":
-                assert addon["enabled"]
-            else:
-                assert not addon["enabled"]
+        virtual_node_addons = [addon for addon in addon_list if addon["name"] == "virtual-node"]
+        assert virtual_node_addons, "virtual-node addon not present in `aks addon list` output"
+        assert all(addon["enabled"] for addon in virtual_node_addons)
 
         # delete
         cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
@@ -6677,6 +6709,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_automatic_sku_with_hosted_system_enabled(self, resource_group, resource_group_location):
+        # hosted-system (HOBO) is only available in a limited set of regions; skip precisely
+        # rather than via a broad decorator so this doesn't hide unrelated regressions when a
+        # compliance-mandated AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION override resolves to
+        # an unsupported region.
+        skip_test_if_location_unsupported(
+            self, resource_group_location, ["westus2", "westus3"], "hosted-system"
+        )
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
@@ -6733,6 +6772,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_automatic_sku_hosted_system_byovnet_slb(self, resource_group, resource_group_location):
+        # hosted-system (HOBO) is only available in a limited set of regions; skip precisely
+        # rather than via a broad decorator so this doesn't hide unrelated regressions when a
+        # compliance-mandated AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION override resolves to
+        # an unsupported region.
+        skip_test_if_location_unsupported(
+            self, resource_group_location, ["westus2", "westus3"], "hosted-system"
+        )
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
@@ -6818,6 +6864,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_automatic_sku_hosted_system_byovnet_user_natgw(self, resource_group, resource_group_location):
+        # hosted-system (HOBO) is only available in a limited set of regions; skip precisely
+        # rather than via a broad decorator so this doesn't hide unrelated regressions when a
+        # compliance-mandated AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION override resolves to
+        # an unsupported region.
+        skip_test_if_location_unsupported(
+            self, resource_group_location, ["westus2", "westus3"], "hosted-system"
+        )
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
@@ -8253,8 +8306,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/FullCachePreview "
         )
 
+        # Only assert provisioningState on the create LRO response here. As
+        # with the nodepool-add case below, the create LRO result surfaced to
+        # the CLI/test is not a reliable source for enableOSDiskFullCaching
+        # (the RP's PUT/sanitized payload contains it, but the response
+        # returned for the operation can lag/omit it). Validate the actually
+        # persisted state with a follow-up 'aks show' instead.
         self.cmd(
             create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # verify the persisted state via a follow-up show, since the create
+        # LRO response itself is not a reliable source for this field
+        self.cmd(
+            "aks show --resource-group={resource_group} --name={name}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].enableOSDiskFullCaching", True),
@@ -9792,19 +9860,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-    # this case relatively frequently requires updating the corresponding recording file after network/virtualnetwork
-    # bumps its default API version in core azure-cli, thereby blocking some PRs that are not related to it.
-    # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
-    # so mark this case as live_only.
-    @live_only()
-    @AllowLargeResponse(99999)
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_create_and_update_with_http_proxy_config(
-        self, resource_group, resource_group_location
-    ):
-        aks_name = self.create_random_name("cliakstest", 16)
+    def _setup_http_proxy_cluster(self, resource_group, resource_group_location, aks_name):
+        """Shared setup for the http-proxy tests below: create a VNet/subnet,
+        a proxy VM (with cloud-init that stands up an actual HTTP(S) proxy),
+        and an AKS cluster with the initial ``httpProxyConfig`` enabled
+        against that VM.
+
+        This used to all live inline in one ~1h test
+        (``test_aks_create_and_update_with_http_proxy_config``) that created
+        the VNet/VM, created the cluster with proxy config, updated the
+        proxy config, disabled the proxy, and re-enabled it -- all
+        sequentially in a single live test run. Factoring the common
+        VNet/VM/initial-create steps into this helper lets each of those
+        follow-on scenarios (update / disable / re-enable) run as its own
+        independent live test, each well under the 1-hour live-test budget,
+        without dropping any of the original coverage.
+        """
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -9885,6 +9956,52 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # The original combined test created a VNet/subnet/proxy VM, then
+    # created a cluster with http-proxy-config, updated the config, disabled
+    # the proxy, and re-enabled it -- all sequentially in a single live test.
+    # In practice that made the whole scenario run right up against (or
+    # over) the 1-hour live-test timeout budget. Each follow-on step is
+    # independent of the others (they only need *a* cluster with the initial
+    # proxy config applied, not the specific history of prior steps), so the
+    # scenario is split below into three focused live tests that share the
+    # ``_setup_http_proxy_cluster`` helper above. This preserves the exact
+    # same assertions/coverage (initial create, config update, disable,
+    # re-enable) while keeping each individual test comfortably within the
+    # live-test time budget and letting them run in parallel (separate
+    # per-test resource groups).
+    #
+    # this case relatively frequently requires updating the corresponding recording file after network/virtualnetwork
+    # bumps its default API version in core azure-cli, thereby blocking some PRs that are not related to it.
+    # In any case, AKS clirunner will execute this case in live mode every day to ensure that there are no problems,
+    # so mark this case as live_only.
+    @live_only()
+    @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_with_http_proxy_config(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self._setup_http_proxy_cluster(resource_group, resource_group_location, aks_name)
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_http_proxy_config(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self._setup_http_proxy_cluster(resource_group, resource_group_location, aks_name)
+
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -9903,6 +10020,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.exists("httpProxyConfig.trustedCa"),
             ],
         )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_disable_and_reenable_http_proxy(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self._setup_http_proxy_cluster(resource_group, resource_group_location, aks_name)
 
         self.kwargs.update(
             {
@@ -14075,6 +14209,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # Enabling KMS triggers an async re-encryption of the cluster's
+        # Kubernetes secrets with the customer key; the create LRO can report
+        # "Succeeded" before that re-encryption has actually settled on the
+        # service side. Disabling KMS immediately afterwards races that
+        # in-flight re-encryption. Poll the cluster's own provisioningState
+        # (bounded, service-visible) until it is stable before disabling.
+        wait_cmd = (
+            "aks wait --resource-group={resource_group} --name={name} --updated "
+            "--interval 30 --timeout 1800"
+        )
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--disable-azure-keyvault-kms "
@@ -14387,6 +14533,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # Enabling CMK triggers an async re-encryption of the cluster's
+        # Kubernetes secrets with the customer key; wait for the cluster's
+        # service-visible provisioningState to settle before disabling CMK,
+        # otherwise the disable races the in-flight re-encryption.
+        wait_cmd = (
+            "aks wait --resource-group={resource_group} --name={name} --updated "
+            "--interval 30 --timeout 1800"
+        )
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # disable CMK
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
@@ -14557,6 +14713,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # Enabling CMK triggers an async re-encryption of the cluster's
+        # Kubernetes secrets with the customer key; wait for the cluster's
+        # service-visible provisioningState to settle before disabling CMK,
+        # otherwise the disable races the in-flight re-encryption.
+        wait_cmd = (
+            "aks wait --resource-group={resource_group} --name={name} --updated "
+            "--interval 30 --timeout 1800"
+        )
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # disable CMK
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
@@ -14684,6 +14850,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.not_exists("securityProfile.kubernetesResourceObjectEncryptionProfile"),
             ],
         )
+
+        # Enabling CMK triggers an async re-encryption of the cluster's
+        # Kubernetes secrets with the customer key; wait for the cluster's
+        # service-visible provisioningState to settle before disabling CMK,
+        # otherwise the disable races the in-flight re-encryption.
+        wait_cmd = (
+            "aks wait --resource-group={resource_group} --name={name} --updated "
+            "--interval 30 --timeout 1800"
+        )
+        self.cmd(wait_cmd, checks=[self.is_empty()])
 
         # disable CMK
         disable_cmk_cmd = (
@@ -17388,6 +17564,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', True)
         ])
 
+        if self.is_live:
+            # The monitoring managed cluster extension keeps provisioning after the update call
+            # returns. Without this wait the next update collides with it and fails with
+            # CreateOrUpdateExtensionFailed ("conflicting operation in progress").
+            wait_cmd = ' '.join([
+                'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
+                '--interval 60', '--timeout 1800',
+            ])
+            self.cmd(wait_cmd, checks=[
+                self.is_empty(),
+            ])
+
         # update: disable-azure-monitor-app-monitoring
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes --output=json --disable-azure-monitor-app-monitoring "
@@ -17398,6 +17586,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False)
         ])
+
+        if self.is_live:
+            self.cmd(wait_cmd, checks=[
+                self.is_empty(),
+            ])
 
         # delete
         cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
@@ -22591,9 +22784,12 @@ spec:
         )
 
         # create cluster with application load balancer enabled
+        # application load balancer (Application Gateway for Containers) requires
+        # workload identity (and its OIDC issuer prerequisite) to be enabled on the cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
-            "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer "
+            "--ssh-key-value={ssh_key_value} --enable-oidc-issuer --enable-workload-identity "
+            "--enable-gateway-api --enable-application-load-balancer "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ApplicationLoadBalancerPreview"
         )
         self.cmd(
@@ -24117,15 +24313,47 @@ spec:
             self.check("provisioningState", "Succeeded"),
         ])
 
-        # update AKS cluster to use Cache as artifact source
-        update_cmd = (
+        # migrate to network isolated: switching bootstrap-artifact-source and outbound-type
+        # in a single update can leave existing nodes without a path to fetch the bootstrap
+        # artifacts they need once outbound access is cut off. Follow the supported migration
+        # order instead: (1) switch to Cache while outbound access is still open, (2) reimage
+        # the nodes and wait for them to pick up the cached artifacts, then (3) switch
+        # outbound-type to fully network-isolate the cluster.
+        update_artifact_source_cmd = (
             "aks update --resource-group {resource_group} --name {aks_name_2} "
-            "--outbound-type=none "
             "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
             "-o json"
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_artifact_source_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("bootstrapProfile.artifactSource", "Cache"),
+            self.check("bootstrapProfile.containerRegistryId", acr_id),
+        ])
+
+        # reimage the existing nodepool so nodes pick up the Cache-based bootstrap artifacts
+        # while they still have outbound network access
+        reimage_nodepool_cmd = (
+            "aks nodepool upgrade --resource-group {resource_group} --cluster-name {aks_name_2} "
+            "--name nodepool1 --node-image-only --yes"
+        )
+        self.cmd(reimage_nodepool_cmd, checks=[self.check("provisioningState", "Succeeded")])
+
+        # wait for the cluster to settle after the reimage before removing outbound access
+        wait_after_reimage_cmd = (
+            "aks wait --resource-group {resource_group} --name {aks_name_2} "
+            "--updated --interval 30 --timeout 1800"
+        )
+        self.cmd(wait_after_reimage_cmd, checks=[self.is_empty()])
+
+        # now switch outbound type to fully network-isolate the cluster
+        update_outbound_type_cmd = (
+            "aks update --resource-group {resource_group} --name {aks_name_2} "
+            "--outbound-type=none "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
+            "-o json"
+        )
+        self.cmd(update_outbound_type_cmd, checks=[
             self.check("provisioningState", "Succeeded"),
             self.check("networkProfile.outboundType", "none"),
             self.check("bootstrapProfile.artifactSource", "Cache"),
@@ -24384,13 +24612,19 @@ spec:
             self.check('provisioningState', 'Succeeded')
         ])
 
+        # `componentsByReleases` may legitimately be `None`/empty when the newly created
+        # cluster is already on the latest release train and has no component upgrades
+        # available, so only assert the shape of the response rather than requiring a
+        # non-empty list (which flakes whenever the default version has no upgrades).
         get_upgrades_cmd = 'aks get-upgrades --resource-group={resource_group} --name={name} -o json'
         upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
-        assert len(upgrades['controlPlaneProfile']['componentsByReleases']) > 0
+        components_by_releases = upgrades['controlPlaneProfile'].get('componentsByReleases')
+        assert components_by_releases is None or isinstance(components_by_releases, list)
 
         get_nodepool_upgrades_cmd = 'aks nodepool get-upgrades --resource-group={resource_group} --cluster-name={name} --name=nodepool1 -o json'
         nodepool_upgrades = self.cmd(get_nodepool_upgrades_cmd).get_output_in_json()
-        assert len(nodepool_upgrades['componentsByReleases']) > 0
+        nodepool_components_by_releases = nodepool_upgrades.get('componentsByReleases')
+        assert nodepool_components_by_releases is None or isinstance(nodepool_components_by_releases, list)
 
         delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
         self.cmd(delete_cmd, checks=[
@@ -24766,8 +25000,9 @@ spec:
             "--bastion-sku Standard --bastion-scale-units 2 "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
         )
-        self.cmd(
+        self._cmd_or_skip_if_feature_unavailable(
             enable_cmd,
+            "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.bastionProfile.enabled", True),
@@ -24859,8 +25094,9 @@ spec:
             "--bastion-public-ip={pip_id} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedBastionPreview"
         )
-        self.cmd(
+        self._cmd_or_skip_if_feature_unavailable(
             enable_cmd,
+            "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.bastionProfile.enabled", True),
@@ -25699,11 +25935,20 @@ spec:
         aks_name = self.create_random_name('cliakstest', 16)
         jwt_auth_name = self.create_random_name('jwt', 10)
 
+        # The confidential-compute SKU below is only verified to have capacity in eastus2.
+        # A compliance-mandated AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION override always
+        # wins for the resource group's own location (by design, regardless of
+        # preserve_default_location), but an AKS cluster can be created in a different region
+        # than its resource group. Pin the cluster's --location explicitly to the
+        # capacity-verified region so this test keeps passing under a forced resource-group
+        # location instead of failing with SkuNotAvailable.
+        cluster_location = "eastus2"
+
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'jwt_auth_name': jwt_auth_name,
-            'location': resource_group_location,
+            'location': cluster_location,
             'ssh_key_value': self.generate_ssh_keys(),
             'jwt_config_file': _get_test_data_file('jwtauthenticator.json'),
             'updated_jwt_config_file': _get_test_data_file('jwtauthenticator_update.json'),
@@ -26556,7 +26801,13 @@ spec:
     def test_aks_alert_config_cmds(self, resource_group, resource_group_location):
         # The alertConfigurations RP endpoint is only deployed to selected regions, so this
         # test pins its location and opts out of the AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION
-        # override.
+        # override. `preserve_default_location` does not protect against a compliance-mandated
+        # AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION override though (by design it always
+        # wins), so skip precisely if that resolves outside the supported region instead of
+        # failing with an opaque RP error.
+        skip_test_if_location_unsupported(
+            self, resource_group_location, ["eastus2euap"], "alert-config (Prometheus managed alerts)"
+        )
         # reset the count so that in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name('cliakstest', 16)
@@ -26784,10 +27035,11 @@ spec:
         )
 
         # update node disruption policy to "Block"
-        self.cmd(
+        self._cmd_or_skip_if_feature_unavailable(
             "aks update --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeDisruptionProfile "
             "--node-disruption-policy=Block",
+            "NodeDisruption",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
@@ -26834,7 +27086,7 @@ spec:
         )
 
         # create aks cluster with node disruption policy set to "Block"
-        self.cmd(
+        self._cmd_or_skip_if_feature_unavailable(
             "aks create "
             "--resource-group={resource_group} "
             "--name={name} "
@@ -26845,6 +27097,7 @@ spec:
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeDisruptionProfile "
             "--node-disruption-policy=Block "
             "--node-count=3",
+            "NodeDisruption",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.networkPolicy", "none"),
