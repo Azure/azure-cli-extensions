@@ -31,25 +31,11 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
     step_update(test, checks=[])
     step_show(test, checks=[])
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_delete(test, checks=[])
     cleanup_scenario1(test)
-
-
-def step_create(test, checks=None):
-    """KubernetesVersion create operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud kubernetesversion create --name {name} --extended-location "
-        ' name={extendedLocation} type="CustomLocation" --location {location} '
-        "--tags {tags} --resource-group {rg}",
-        checks=checks,
-    )
 
 
 def step_show(test, checks=None):
@@ -74,15 +60,6 @@ def step_show(test, checks=None):
     assert (
         properties.get("provisioningState") == "Succeeded"
     ), properties_key_mismatch_message("provisioningState")
-
-
-def step_delete(test, checks=None):
-    """KubernetesVersion delete operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud kubernetesversion delete --name {name} --resource-group {rg} -y"
-    )
 
 
 def step_list_resource_group(test, checks=None):

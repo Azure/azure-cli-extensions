@@ -2790,5 +2790,15 @@ class TestValidateSshKey(unittest.TestCase):
         self.assertIsNone(namespace.ssh_key_value)
 
 
+class TestValidateOsSku(unittest.TestCase):
+    def test_nodepool_update_allows_windows2022_and_windows2025(self):
+        # `az aks nodepool update --os-sku` allows in-place upgrades between
+        # Windows Server 2022 and 2025.
+        from azext_aks_preview._params import node_os_skus_update
+
+        self.assertIn("Windows2022", node_os_skus_update)
+        self.assertIn("Windows2025", node_os_skus_update)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -11,10 +11,10 @@ import os
 import uuid
 import knack.log
 
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as AzureResourceNotFoundError
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
-                                       RequiredArgumentMissingError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
 
 from ..vendored_sdks.azure_quantum_python.workspace import Workspace
 from ..vendored_sdks.azure_quantum_python.storage import upload_blob
@@ -369,6 +369,84 @@ def output(cmd, job_id, resource_group_name, workspace_name):
         #             consistent with other commands.
 
     return _get_job_output(job)
+
+
+def list_files(cmd, job_id, resource_group_name, workspace_name):
+    """
+    List the files stored in a job's output storage container.
+
+    :return: A list of files, one dictionary per file, each with the keys:
+        - name: The file (blob) name.
+        - size: The file size in bytes.
+        - lastModified: The last-modified time as an ISO 8601 timestamp,
+          or None when the storage service does not report it.
+    :rtype: list[dict]
+    """
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+
+    # Retrieve the job through the data-plane SDK so an unknown or deleted job id
+    # fails with a clear not-found error, and reuse the container URI recorded on
+    # the job instead of get_container_uri(), which would create the container.
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.endpoint)
+    job = client.get(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id)
+
+    container_client = ContainerClient.from_container_url(job.container_uri)
+
+    files = []
+    try:
+        for blob in container_client.list_blobs():
+            files.append({
+                "name": blob.name,
+                "size": blob.size,
+                "lastModified": blob.last_modified.isoformat() if blob.last_modified else None
+            })
+    except AzureResourceNotFoundError:
+        raise ResourceNotFoundError(
+            "The output storage container for job '{}' was not found.".format(job_id))
+    return files
+
+
+def download_file(cmd, job_id, file_name, resource_group_name, workspace_name, dest=None):
+    """
+    Download a file from a job's output storage container.
+    """
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+
+    # Retrieve the job through the data-plane SDK so an unknown or deleted job id
+    # fails with a clear not-found error, and reuse the container URI recorded on
+    # the job instead of get_container_uri(), which would create the container.
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.endpoint)
+    job = client.get(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id)
+
+    container_client = ContainerClient.from_container_url(job.container_uri)
+    blob_client = container_client.get_blob_client(file_name)
+
+    # Blob names can contain path separators or traversal segments (e.g. "foo/bar"
+    # or "../x"). Use only the final path component so a file is never written
+    # outside the destination directory.
+    safe_file_name = os.path.basename(file_name.replace("\\", "/"))
+    if safe_file_name in ("", ".", ".."):
+        raise InvalidArgumentValueError(
+            "File name '{}' cannot be used to build a local download path.".format(file_name))
+
+    # --dest is always a directory; the file keeps its blob name inside it.
+    output_dir = dest if dest else os.getcwd()
+    os.makedirs(output_dir, exist_ok=True)
+    destination = os.path.join(output_dir, safe_file_name)
+
+    try:
+        downloader = blob_client.download_blob()
+        with open(destination, "wb") as file_handle:
+            downloader.readinto(file_handle)
+    except AzureResourceNotFoundError:
+        raise ResourceNotFoundError(
+            "File '{}' was not found in the output storage container for job '{}'.".format(file_name, job_id))
+
+    return {
+        "name": file_name,
+        "path": os.path.abspath(destination),
+        "size": os.path.getsize(destination)
+    }
 
 
 def wait(cmd, job_id, resource_group_name, workspace_name, max_poll_wait_secs=5):

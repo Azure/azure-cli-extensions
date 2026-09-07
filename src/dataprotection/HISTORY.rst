@@ -7,6 +7,10 @@ Release History
 ++++++
 * Added dataprotection support for the AzureElasticSAN (Elastic SAN volume group) workload: new manifest (Microsoft.ElasticSan/elasticSans/volumeGroups), registration in supported datasource types and datasource map. New backup configuration via ``az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors`` (GenericBackupDatasourceParameters) and restore configuration via ``az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers/--resource-name-overrides`` (GenericRestoreDatasourceCriteria), with data-recovery and item-recovery restore wiring plus help/examples. The AzureElasticSAN backup-instance operations are pinned to the GA 2026-06-01 DataProtection API, which defines GenericBackupDatasourceParameters/GenericRestoreDatasourceCriteria natively.
 
+1.11.4
+++++++
+* `az dataprotection enable-backup trigger`: Specify `ServicePrincipal` when creating role assignments for AKS managed identities.
+
 1.11.3
 ++++++++++++++++
 * [Breaking] `az dataprotection backup-policy retention-rule set` validates against duplicate retention-rule names. AzureBlob: OperationalStore retention lifecycles must now use the retention rule name `--name Default_OperationalStore`. Using `--name Default` with an OperationalStore lifecycle for AzureBlobis no longer accepted. 

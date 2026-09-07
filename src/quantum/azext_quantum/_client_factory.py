@@ -10,7 +10,7 @@ from ._location_helper import normalize_location
 from .__init__ import CLI_REPORTED_VERSION
 from .vendored_sdks.azure_quantum_python._client import WorkspaceClient
 from .vendored_sdks.azure_mgmt_quantum import AzureQuantumMgmtClient
-from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations
+from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations, SuiteOffersOperations
 
 
 def is_env(name):
@@ -55,6 +55,10 @@ def cf_workspaces(cli_ctx, *_) -> WorkspacesOperations:
 
 def cf_offerings(cli_ctx, *_) -> OfferingsOperations:
     return cf_quantum_mgmt(cli_ctx).offerings
+
+
+def cf_suite_offers(cli_ctx, *_) -> SuiteOffersOperations:
+    return cf_quantum_mgmt(cli_ctx).suite_offers
 
 
 # Data Plane clients

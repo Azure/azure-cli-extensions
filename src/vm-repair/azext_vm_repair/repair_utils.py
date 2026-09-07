@@ -140,8 +140,15 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
     # and the '&' would be parsed as a command separator. To prevent command injection
     # from untrusted interpolated values (for example source VM tags), build the command
-    # line explicitly and wrap every token in double quotes so cmd.exe treats
+    # line explicitly and wrap every argument in double quotes so cmd.exe treats
     # metacharacters as literal text.
+    #
+    # The 'az' token itself must stay unquoted. Quoting it makes cmd.exe treat it as a
+    # literal path instead of a PATH search, so '%~dp0' inside az.cmd no longer expands to
+    # the launcher directory, the bundled python.exe is not found, and every nested call
+    # fails with 'Failed to load python executable.' on stdout and an empty stderr. The
+    # first token is validated to be exactly 'az' above, so it never carries untrusted
+    # input and does not need quoting.
     #
     # The whole command is additionally wrapped in one outer pair of quotes and invoked
     # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
@@ -151,7 +158,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # per-token quote balanced. See MSRC 115198 / VULN-185362.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
-        quoted_command = ' '.join(_quote_cmd_arg(token) for token in tokenized_command)
+        quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
+        quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'
     else:
         command_to_run = tokenized_command
@@ -162,7 +170,17 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     if not run_async:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
-            raise AzCommandError(stderr)
+            # A failing launcher (for example a broken CLI install) reports on stdout and
+            # leaves stderr empty, which used to surface an error with no message at all.
+            error_message = (stderr or '').strip() or (stdout or '').strip()
+            if not error_message:
+                error_message = 'The az command failed with exit code {code} and produced no output.' \
+                    .format(code=process.returncode)
+            if secure_params:
+                for param in secure_params:
+                    if param:
+                        error_message = error_message.replace(param, '********')
+            raise AzCommandError(error_message)
 
         logger.debug('Success.\n')
 
@@ -391,6 +409,43 @@ def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
         logger.info('Selected VM size \'%s\' is available. Selecting it to create repair VM.\n', determined_sku)
         return determined_sku
     raise CLIError('Selected VM size: \'{}\' is NOT available in location: \'{}\'.'.format(determined_sku, location))
+
+
+def _fetch_source_disk_controller_type(source_vm):
+    """Return the source VM disk controller type, or None when it is unavailable."""
+    # Older compute SDKs do not model this field, so query ARM through Azure CLI as a fallback.
+    storage_profile = getattr(source_vm, 'storage_profile', None)
+    controller = getattr(storage_profile, 'disk_controller_type', None)
+    if controller:
+        return str(getattr(controller, 'value', controller))
+    vm_id = getattr(source_vm, 'id', None)
+    if not vm_id:
+        return None
+    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=vm_id)
+    return (_call_az_command(show_command) or '').strip() or None
+
+
+def _fetch_sku_disk_controller_types(sku, location):
+    """Return the disk controller types supported by a VM size."""
+    query = "[0].capabilities[?name=='DiskControllerTypes'].value"
+    command = 'az vm list-skus -s {sku} -l {loc} --query "{query}" -o tsv'.format(
+        sku=sku, loc=location, query=query)
+    raw = (_call_az_command(command) or '').strip()
+    return [part.strip() for part in raw.split(',') if part.strip()]
+
+
+def _select_repair_disk_controller_type(source_controller, supported_types, requested=None):
+    """Select a repair VM controller while preserving existing SCSI-based repair scripts."""
+    if requested:
+        return requested, 'info', 'Using requested repair VM disk controller type: {}'.format(requested)
+    if not supported_types:
+        return None, 'debug', 'Could not determine supported disk controller types; using the platform default.'
+    if not source_controller or str(source_controller).lower() != 'nvme':
+        return None, 'debug', 'Source VM is not NVMe; using the platform default for the repair VM size.'
+    normalized_types = {controller.lower(): controller for controller in supported_types}
+    if 'scsi' in normalized_types:
+        return 'SCSI', 'info', 'Source VM uses the NVMe disk controller. Creating the repair VM with SCSI so repair scripts can enumerate the attached OS disk. Override with --disk-controller-type.'
+    return None, 'warning', 'The repair VM size only supports NVMe. Repair scripts that select disks by the SCSI model string will not find the attached OS disk. Use --size to pick a size that supports SCSI, or verify the script handles NVMe.'
 
 
 def _fetch_disk_info(resource_group_name, disk_name):

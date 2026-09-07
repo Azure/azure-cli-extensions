@@ -14,11 +14,14 @@ from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError, ResourceNotFoundError as CliResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
 from ...operations.job import (
+    list_files,
+    download_file,
     update,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
@@ -52,8 +55,208 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job delete", "az quantum job delete -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nDelete an Azure Quantum job by id.")
         issue_cmd_with_param_missing(self, "az quantum job update", "az quantum job update -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-name 'My new name'\nUpdate an Azure Quantum job by id.")
         issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job file list", "az quantum job file list -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nList the files stored in a job's output storage container.")
+        issue_cmd_with_param_missing(self, "az quantum job file download", "az quantum job file download -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData\nDownload a file from a job's output storage container.")
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_list_files(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import datetime
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob1 = unittest.mock.MagicMock()
+        blob1.name = "rawOutputData"
+        blob1.size = 42
+        blob1.last_modified = datetime.datetime(2026, 1, 15, 12, 0, 0)
+
+        blob2 = unittest.mock.MagicMock()
+        blob2.name = "atom-logs.txt"
+        blob2.size = 1024
+        blob2.last_modified = None
+
+        mock_container_client.from_container_url.return_value.list_blobs.return_value = [blob1, blob2]
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        result = list_files(cmd, job_id, "rg", "ws")
+
+        mock_cf_jobs.return_value.get.assert_called_once_with("sub", "rg", "ws", job_id)
+        mock_container_client.from_container_url.assert_called_once_with("https://acct.blob.core.windows.net/job-id?sas")
+        self.assertEqual(result, [
+            {"name": "rawOutputData", "size": 42, "lastModified": "2026-01-15T12:00:00"},
+            {"name": "atom-logs.txt", "size": 1024, "lastModified": None}
+        ])
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_list_files_raises_when_container_missing(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_container_client.from_container_url.return_value.list_blobs.side_effect = AzureResourceNotFoundError("not found")
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with self.assertRaises(CliResourceNotFoundError):
+            list_files(cmd, job_id, "rg", "ws")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file_raises_when_file_missing(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        blob_client.download_blob.side_effect = AzureResourceNotFoundError("not found")
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with self.assertRaises(CliResourceNotFoundError):
+            download_file(cmd, job_id, "missingFile", "rg", "ws")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import tempfile
+
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        file_content = b"hello world"
+
+        def fake_readinto(stream):
+            stream.write(file_content)
+            return len(file_content)
+
+        blob_client.download_blob.return_value.readinto.side_effect = fake_readinto
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = download_file(cmd, job_id, "rawOutputData", "rg", "ws", dest=tmp_dir)
+
+            expected_path = os.path.join(tmp_dir, "rawOutputData")
+            self.assertTrue(os.path.exists(expected_path))
+            with open(expected_path, "rb") as file_handle:
+                self.assertEqual(file_handle.read(), file_content)
+
+            mock_cf_jobs.return_value.get.assert_called_once_with("sub", "rg", "ws", job_id)
+            mock_container_client.from_container_url.return_value.get_blob_client.assert_called_once_with("rawOutputData")
+            self.assertEqual(result["name"], "rawOutputData")
+            self.assertEqual(result["path"], os.path.abspath(expected_path))
+            self.assertEqual(result["size"], len(file_content))
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file_sanitizes_traversal_name(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import tempfile
+
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        file_content = b"payload"
+
+        def fake_readinto(stream):
+            stream.write(file_content)
+            return len(file_content)
+
+        blob_client.download_blob.return_value.readinto.side_effect = fake_readinto
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_dir = os.path.join(tmp_dir, "downloads")
+            os.makedirs(target_dir)
+
+            result = download_file(cmd, job_id, "../../evil.txt", "rg", "ws", dest=target_dir)
+
+            # Only the basename is used, so the file stays inside target_dir
+            # and never escapes via the traversal segments in the blob name.
+            safe_path = os.path.join(target_dir, "evil.txt")
+            self.assertTrue(os.path.exists(safe_path))
+            self.assertFalse(os.path.exists(os.path.join(tmp_dir, "evil.txt")))
+            self.assertEqual(result["path"], os.path.abspath(safe_path))
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file_creates_missing_output_directory(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import tempfile
+
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        file_content = b"payload"
+
+        def fake_readinto(stream):
+            stream.write(file_content)
+            return len(file_content)
+
+        blob_client.download_blob.return_value.readinto.side_effect = fake_readinto
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # A non-existent --dest is created and treated as a directory.
+            new_dir = os.path.join(tmp_dir, "downloads")
+
+            result = download_file(cmd, job_id, "outputData", "rg", "ws", dest=new_dir)
+
+            expected_path = os.path.join(new_dir, "outputData")
+            self.assertTrue(os.path.isdir(new_dir))
+            self.assertTrue(os.path.exists(expected_path))
+            self.assertEqual(result["path"], os.path.abspath(expected_path))
 
     @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
     @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')

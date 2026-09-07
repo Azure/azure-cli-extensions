@@ -284,10 +284,10 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerappjob_eventtriggered_create_with_yaml(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         job = self.create_random_name(prefix='yaml', length=24)

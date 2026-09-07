@@ -37,9 +37,11 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_MANAGEMENT_MODE_MANAGED,
+    CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
     CONST_FLEX_NODES,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
+    CONST_OS_SKU_WINDOWS2025,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import (
@@ -48,6 +50,7 @@ from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockCmd,
 )
 from azure.cli.core.azclierror import (
+    ArgumentUsageError,
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
@@ -251,6 +254,25 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             self.agentpool_decorator_mode,
         )
         self.assertEqual(ctx_2.get_enable_artifact_streaming(), None)
+
+    def common_get_enable_managed_dranet(self):
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_managed_dranet": False}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_managed_dranet(), False)
+
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_managed_dranet": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_managed_dranet(), True)
         agentpool_2 = self.create_initialized_agentpool_instance(
             artifact_streaming_profile=self.models.AgentPoolArtifactStreamingProfile(
                 enabled=True
@@ -685,6 +707,63 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         agentpool_5 = self.create_initialized_agentpool_instance(os_sku="test_os_sku")
         ctx_5.attach_agentpool(agentpool_5)
         self.assertEqual(ctx_5.get_os_sku(), None)
+
+    def common_get_enable_fips_image_windows2025_required(self):
+        # Windows2025 requires FIPS-enabled OS image, so it is always enabled on create
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": CONST_OS_SKU_WINDOWS2025}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_fips_image(), True)
+
+        # other os_sku values are not forced to enable FIPS
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": "Windows2022"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_fips_image(), False)
+
+        # explicit --enable-fips-image is respected regardless of os_sku
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": "Ubuntu", "enable_fips_image": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_3.get_enable_fips_image(), True)
+
+        # --disable-fips-image cannot be used with Windows2025, since FIPS is required
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "os_sku": CONST_OS_SKU_WINDOWS2025,
+                    "disable_fips_image": True,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_4.get_enable_fips_image()
+
+        # the Windows2025 requirement only applies in create mode
+        ctx_5 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"os_sku": CONST_OS_SKU_WINDOWS2025}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_5.get_enable_fips_image(), False)
 
     def common_get_enable_secure_boot(self):
         # default
@@ -1356,6 +1435,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_enable_managed_dranet(self):
+        self.common_get_enable_managed_dranet()
+
     def test_get_enable_os_disk_full_caching(self):
         self.common_get_enable_os_disk_full_caching()
 
@@ -1373,6 +1455,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
+
+    def test_get_enable_fips_image_windows2025_required(self):
+        self.common_get_enable_fips_image_windows2025_required()
 
     def test_get_skip_gpu_driver_install(self):
         self.common_get_skip_gpu_driver_install()
@@ -1471,6 +1556,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_enable_managed_dranet(self):
+        self.common_get_enable_managed_dranet()
+
     def test_get_enable_os_disk_full_caching(self):
         self.common_get_enable_os_disk_full_caching()
 
@@ -1485,6 +1573,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
+
+    def test_get_enable_fips_image_windows2025_required(self):
+        self.common_get_enable_fips_image_windows2025_required()
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
@@ -1859,11 +1950,46 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             gpu_profile=self.models.GPUProfile(
                 driver=CONST_GPU_DRIVER_INSTALL,
                 nvidia=self.models.NvidiaGPUProfile(
-                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED
+                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED,
+                    driver_mode=CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
                 )
             )
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_gpu": True, "managed_gpu_driver_mode": "DRA"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.set_up_managed_gpu(agentpool_2)
+        dec_agentpool_2 = self._restore_defaults_in_agentpool(dec_agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL,
+                nvidia=self.models.NvidiaGPUProfile(
+                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED,
+                    driver_mode="DRA",
+                )
+            )
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        dec_3 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_gpu": False, "managed_gpu_driver_mode": "DRA"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_3.context.attach_agentpool(agentpool_3)
+        with self.assertRaises(ArgumentUsageError):
+            dec_3.set_up_managed_gpu(agentpool_3)
 
     def common_set_up_skip_gpu_driver_install(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
@@ -1997,6 +2123,31 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_managed_dranet(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_dranet": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_agentpool_network_profile(agentpool_1)
+        self.assertIsNone(dec_agentpool_1.network_profile.dranet)
+
+        dec_2 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_dranet": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.set_up_agentpool_network_profile(agentpool_2)
+        self.assertEqual(dec_agentpool_2.network_profile.dranet.mode, "Managed")
 
     def common_set_up_virtual_machines_profile(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
@@ -2439,6 +2590,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     def test_set_up_agentpool_gateway_profile(self):
         self.common_set_up_agentpool_gateway_profile()
 
+    def test_set_up_managed_dranet(self):
+        self.common_set_up_managed_dranet()
+
     def test_set_up_virtual_machines_profile(self):
         self.common_set_up_virtual_machines_profile()
 
@@ -2669,6 +2823,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
     def test_set_up_agentpool_gateway_profile(self):
         self.common_set_up_agentpool_gateway_profile()
 
+    def test_set_up_managed_dranet(self):
+        self.common_set_up_managed_dranet()
+
     def test_set_up_virtual_machines_profile(self):
         self.common_set_up_virtual_machines_profile()
 
@@ -2894,6 +3051,35 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_4.update_artifact_streaming(agentpool_3)
 
+    def common_update_managed_dranet(self):
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_dranet": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            network_profile=self.models.AgentPoolNetworkProfile(
+                dranet=self.models.DRANETProfile(mode="Managed")
+            )
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_network_profile(agentpool_1)
+        self.assertEqual(dec_agentpool_1.network_profile.dranet.mode, "Managed")
+
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_managed_dranet": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance()
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_network_profile(agentpool_2)
+        self.assertEqual(dec_agentpool_2.network_profile.dranet.mode, "Managed")
+
     def common_update_managed_gpu(self):
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
             self.cmd,
@@ -2940,7 +3126,8 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             gpu_profile=self.models.GPUProfile(
                 driver=CONST_GPU_DRIVER_INSTALL,
                 nvidia=self.models.NvidiaGPUProfile(
-                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED
+                    management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED,
+                    driver_mode=CONST_MANAGED_GPU_DRIVER_MODE_DEVICE_PLUGIN,
                 )
             )
         )
@@ -3180,6 +3367,74 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_3 = dec_3.update_vm_size(agentpool_3)
         # vm_size should remain unchanged for VMs pools
         self.assertEqual(dec_agentpool_3.vm_size, "Standard_D2s_v3")
+
+    def common_update_zones(self):
+        # No zones provided: preserve both the value and list instance from the fetched pool.
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"zones": None},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_zones(None)
+
+        existing_zones = ["1", "2"]
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            availability_zones=existing_zones
+        )
+        stored_zones = agentpool_1.availability_zones
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_zones(agentpool_1)
+        self.assertIs(dec_agentpool_1.availability_zones, stored_zones)
+
+        # The automatic-zone token is passed through as a one-element list.
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"zones": ["auto"]},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            availability_zones=None
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_zones(agentpool_2)
+        self.assertEqual(dec_agentpool_2.availability_zones, ["auto"])
+
+        payload = dec_agentpool_2.as_dict()
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.STANDALONE:
+            payload = payload["properties"]
+        self.assertEqual(payload["availabilityZones"], ["auto"])
+
+        # Explicit zone lists compose with a VM-size update on the same payload.
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "zones": ["1", "2", "3"],
+                "node_vm_size": "Standard_D4s_v3",
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            availability_zones=None,
+            vm_size="Standard_D2s_v3",
+        )
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_vm_size(agentpool_3)
+        dec_agentpool_3 = dec_3.update_zones(dec_agentpool_3)
+        self.assertEqual(dec_agentpool_3.availability_zones, ["1", "2", "3"])
+        self.assertEqual(dec_agentpool_3.vm_size, "Standard_D4s_v3")
+
+        payload = dec_agentpool_3.as_dict()
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.STANDALONE:
+            payload = payload["properties"]
+        self.assertEqual(payload["availabilityZones"], ["1", "2", "3"])
+        self.assertEqual(payload["vmSize"], "Standard_D4s_v3")
 
     def common_update_upgrade_strategy(self):
         # Test case 1: No upgrade strategy provided (should not change agentpool)
@@ -3509,6 +3764,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     def test_update_artifact_streaming(self):
         self.common_update_artifact_streaming()
 
+    def test_update_managed_dranet(self):
+        self.common_update_managed_dranet()
+
     def test_update_managed_gpu(self):
         self.common_update_managed_gpu()
 
@@ -3523,6 +3781,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_vm_size(self):
         self.common_update_vm_size()
+
+    def test_update_zones(self):
+        self.common_update_zones()
 
     def test_update_upgrade_strategy(self):
         self.common_update_upgrade_strategy()
@@ -3559,6 +3820,8 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
             "nodepool_name",
         ]
         self.assertEqual(positional_params, ground_truth_positional_params)
+        self.assertIn("zones", optional_params)
+        self.assertIsNone(optional_params["zones"])
 
         # prepare a dictionary of default parameters
         raw_param_dict = {
@@ -3607,7 +3870,10 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_artifact_streaming(self):
         self.common_update_artifact_streaming()
-    
+
+    def test_update_managed_dranet(self):
+        self.common_update_managed_dranet()
+
     def test_update_managed_gpu(self):
         self.common_update_managed_gpu()
 
@@ -3622,6 +3888,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_vm_size(self):
         self.common_update_vm_size()
+
+    def test_update_zones(self):
+        self.common_update_zones()
 
     def test_update_upgrade_strategy(self):
         self.common_update_upgrade_strategy()

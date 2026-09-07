@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
+import os
 import unittest
 from types import SimpleNamespace
 
@@ -349,3 +351,39 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
         self.assertEqual(captured["config_name"], "aksManagedAutoUpgradeSchedule")
         self.assertEqual(captured["parameters"].maintenance_window_id, window_id)
         self.assertEqual(result.maintenance_window_id, window_id)
+
+    def test_config_file_is_wrapped_under_properties_for_wire_serialization(self):
+        """Regression test: --config-file JSON is authored in the flattened display
+        shape (top-level "maintenanceWindow", matching `aks maintenanceconfiguration
+        show` output), but the generated SDK model only exposes the flattened
+        attributes through its "properties" field. Without wrapping, the PUT body
+        drops the flattened fields entirely and the service rejects the request.
+        """
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        config_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "data", "maintenancewindow.json"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "config_file": config_file,
+        }
+
+        result = mc.getMaintenanceConfiguration(cmd, raw_parameters)
+
+        # The flattened accessor must resolve through the wrapped "properties" field.
+        self.assertIsNotNone(result.maintenance_window)
+        self.assertEqual(result.maintenance_window.duration_hours, 4)
+        self.assertEqual(result.maintenance_window.utc_offset, "-08:00")
+        self.assertEqual(result.maintenance_window.schedule.absolute_monthly.interval_months, 3)
+
+        # The wire payload sent to the service must nest the fields under "properties",
+        # not leave them flattened at the top level.
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks._utils.model_base import SdkJSONEncoder
+        serialized = json.loads(json.dumps(result, cls=SdkJSONEncoder, exclude_readonly=True))
+        self.assertIn("properties", serialized)
+        self.assertIn("maintenanceWindow", serialized["properties"])
+        self.assertNotIn("maintenanceWindow", serialized)

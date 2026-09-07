@@ -41,9 +41,16 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
     base_handles_vms_autoscaler = hasattr(
         AKSAgentPoolUpdateDecorator, "update_auto_scaler_properties_vms"
     )
+    base_handles_zones = hasattr(AKSAgentPoolUpdateDecorator, "update_zones")
 
     def _assert_vms_autoscaler_update(self, update_method, agentpool, expected):
         if expected and not self.base_handles_vms_autoscaler:
+            update_method.assert_called_once_with(agentpool)
+        else:
+            update_method.assert_not_called()
+
+    def _assert_zones_update(self, update_method, agentpool, expected):
+        if expected and not self.base_handles_zones:
             update_method.assert_called_once_with(agentpool)
         else:
             update_method.assert_not_called()
@@ -143,6 +150,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_vm_size = Mock(return_value=agentpool)
+        decorator.update_zones = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
         decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
         decorator.update_upgrade_strategy = Mock(return_value=agentpool)
@@ -171,6 +179,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image.assert_called_once_with(agentpool)
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_vm_size.assert_called_once_with(agentpool)
+        self._assert_zones_update(decorator.update_zones, agentpool, expected=True)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
         self._assert_vms_autoscaler_update(
             decorator.update_auto_scaler_properties_vms, agentpool, expected=True
@@ -181,6 +190,62 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
         decorator.update_crg.assert_called_once_with(agentpool)
         decorator.update_prepared_image_specification.assert_called_once_with(agentpool)
+
+    def test_update_zones_is_not_applied_twice_when_base_handles_it(self):
+        """A newer CLI base invokes the preview override from its default update flow."""
+        raw_param_dict = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "nodepool_name": "test_nodepool",
+            "zones": ["auto"],
+        }
+        decorator = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool = self._create_initialized_agentpool_instance(
+            nodepool_name="test_nodepool",
+            availability_zones=None,
+        )
+        decorator.context.attach_agentpool(agentpool)
+
+        original_update_zones = decorator.update_zones
+        decorator.update_zones = Mock(wraps=original_update_zones)
+
+        # Simulate a future base update flow calling the dynamically-dispatched
+        # preview override before returning the fetched AgentPool.
+        decorator.update_agentpool_profile_default = Mock(
+            side_effect=lambda _: decorator.update_zones(agentpool)
+        )
+        for method_name in [
+            "update_network_profile",
+            "update_artifact_streaming",
+            "update_managed_gpu",
+            "update_secure_boot",
+            "update_vtpm",
+            "update_os_sku",
+            "update_fips_image",
+            "update_ssh_access",
+            "update_vm_size",
+            "update_localdns_profile",
+            "update_auto_scaler_properties_vms",
+            "update_upgrade_strategy",
+            "update_blue_green_upgrade_settings",
+            "update_gpu_profile",
+            "update_gpu_mig_strategy",
+            "update_crg",
+            "update_prepared_image_specification",
+        ]:
+            setattr(decorator, method_name, Mock(return_value=agentpool))
+
+        with patch.object(AKSAgentPoolUpdateDecorator, "update_zones", create=True):
+            result = decorator.update_agentpool_profile_preview()
+
+        decorator.update_zones.assert_called_once_with(agentpool)
+        self.assertEqual(result.availability_zones, ["auto"])
 
     def test_update_agentpool_profile_preview_with_agentpools_parameter(self):
         """Test update_agentpool_profile_preview with agentpools parameter."""
@@ -219,6 +284,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_vm_size = Mock(return_value=agentpool)
+        decorator.update_zones = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
         decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
         decorator.update_upgrade_strategy = Mock(return_value=agentpool)
@@ -390,6 +456,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_vm_size = Mock(return_value=agentpool)
+        decorator.update_zones = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
         decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
         decorator.update_upgrade_strategy = Mock(return_value=agentpool)
@@ -416,6 +483,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image.assert_called_once_with(agentpool)
         decorator.update_ssh_access.assert_called_once_with(agentpool)
         decorator.update_vm_size.assert_called_once_with(agentpool)
+        self._assert_zones_update(decorator.update_zones, agentpool, expected=True)
         decorator.update_localdns_profile.assert_called_once_with(agentpool)
         self._assert_vms_autoscaler_update(
             decorator.update_auto_scaler_properties_vms, agentpool, expected=True
@@ -469,6 +537,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = create_mock_update_method("update_fips_image")
         decorator.update_ssh_access = create_mock_update_method("update_ssh_access")
         decorator.update_vm_size = create_mock_update_method("update_vm_size")
+        decorator.update_zones = create_mock_update_method("update_zones")
         decorator.update_localdns_profile = create_mock_update_method("update_localdns_profile")
         decorator.update_auto_scaler_properties_vms = create_mock_update_method("update_auto_scaler_properties_vms")
         decorator.update_upgrade_strategy = create_mock_update_method("update_upgrade_strategy")
@@ -502,6 +571,8 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         ]
         if not self.base_handles_vms_autoscaler:
             expected_order.insert(10, "update_auto_scaler_properties_vms")
+        if not self.base_handles_zones:
+            expected_order.insert(9, "update_zones")
         self.assertEqual(call_order, expected_order)
 
     def test_update_agentpool_profile_preview_preserves_agentpool_reference(self):
@@ -546,6 +617,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_fips_image = create_tracking_mock("update_fips_image")
         decorator.update_ssh_access = create_tracking_mock("update_ssh_access")
         decorator.update_vm_size = create_tracking_mock("update_vm_size")
+        decorator.update_zones = create_tracking_mock("update_zones")
         decorator.update_localdns_profile = create_tracking_mock("update_localdns_profile")
         decorator.update_auto_scaler_properties_vms = create_tracking_mock("update_auto_scaler_properties_vms")
         decorator.update_upgrade_strategy = create_tracking_mock("update_upgrade_strategy")
@@ -619,6 +691,8 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                     'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile',
                     'update_gpu_mig_strategy', 'update_crg', 'update_prepared_image_specification'
                 ]
+                if not self.base_handles_zones:
+                    update_methods.insert(9, 'update_zones')
 
                 for method_name in update_methods:
                     setattr(decorator, method_name, Mock(return_value=agentpool))
@@ -772,6 +846,7 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         decorator.update_fips_image = Mock(return_value=agentpool)
         decorator.update_ssh_access = Mock(return_value=agentpool)
         decorator.update_vm_size = Mock(return_value=agentpool)
+        decorator.update_zones = Mock(return_value=agentpool)
         decorator.update_localdns_profile = Mock(return_value=agentpool)
         decorator.update_auto_scaler_properties_vms = Mock(return_value=agentpool)
         decorator.update_upgrade_strategy = Mock(return_value=agentpool)

@@ -243,7 +243,7 @@ def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, 
     _, temp_kubeconfig_path = tempfile.mkstemp()
 
     # Use normal user credentials, not admin credentials (admin creds will not be supplied if local accounts are disabled).
-    credentialResults = client.list_cluster_user_credentials(resource_group_name, name, None)
+    credentialResults = client.list_cluster_user_credentials(resource_group_name, name, server_fqdn=None)
     kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
     print_or_merge_credentials(temp_kubeconfig_path, kubeconfig, False, None)
 

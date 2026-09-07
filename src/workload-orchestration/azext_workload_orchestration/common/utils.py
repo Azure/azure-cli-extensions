@@ -168,7 +168,7 @@ def print_step(step_num, total, message, status=""):
 # errors. Mirrors the azext_vme.utils.check_and_add_cli_extension pattern.
 REQUIRED_CLI_EXTENSIONS = [
     "connectedk8s",     # `connectedk8s show` in _preflight_checks
-    "k8s-extension",    # `k8s-extension list/create` for aio-certmgr + wo-extension
+    "k8s-extension",    # `k8s-extension list/create` for cert management + wo-extension
     "customlocation",   # `customlocation create` for Step 4
 ]
 
@@ -227,3 +227,23 @@ def ensure_required_cli_extensions(extension_names=None):
     extensions = extension_names if extension_names is not None else REQUIRED_CLI_EXTENSIONS
     for ext in extensions:
         check_and_add_cli_extension(ext)
+
+
+def set_current_context_config(cli_ctx, context_id):
+    """Persist the current Context to CLI config: id, name, and resource group.
+
+    Parses the Context ARM ID and writes all three keys
+    (``context_id``, ``context_name``, ``resource_group``) so that
+    ``context current`` and every command that sets the current context stay
+    consistent. Namespace-agnostic (works for both ``Private.Edge`` and
+    ``microsoft.edge``). Falls back to writing just ``context_id`` if the ARM
+    ID shape is unexpected.
+    """
+    parsed = parse_arm_id(context_id)
+    config = cli_ctx.config
+    config.set_value('workload_orchestration', 'context_id', context_id)
+    context_name = parsed.get('contexts')
+    resource_group = parsed.get('resourcegroups')
+    if context_name and resource_group:
+        config.set_value('workload_orchestration', 'context_name', context_name)
+        config.set_value('workload_orchestration', 'resource_group', resource_group)
