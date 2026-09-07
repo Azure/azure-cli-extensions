@@ -84,7 +84,7 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
     })
 
 
-def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasource_type, excluded_resource_types=None,
+def dataprotection_backup_instance_initialize_backupconfig(cmd, datasource_type, excluded_resource_types=None,
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
                                                            snapshot_volumes=None,
@@ -131,6 +131,11 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             if any([storage_account_name, storage_account_resource_group]):
                 raise InvalidArgumentValueError('--storage-account-name and --storage-account-resource-group are not applicable with --auto-protection.')
             return helper.get_blob_autoprotection_config(datasource_type, auto_protection_exclusion_prefixes)
+        # Build the storage client lazily so non-blob datasource types don't require an az login.
+        client = None
+        if include_all_containers:
+            from azure.cli.command_modules.storage._client_factory import cf_blob_container_mgmt
+            client = cf_blob_container_mgmt(cmd.cli_ctx, None)
         return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group, datasource_type)
 
     if datasource_type == "AzureElasticSAN":
