@@ -21,7 +21,13 @@ or triage an ordinary extension issue.
    `Azure/azure-cli-extensions`. Never act on a dispute from another
    repository.
 2. Handle explicit, deduplicated human feedback on an Agent-managed PR.
-3. Promote completed Copilot fork work.
+3. Promote completed Copilot fork work. When generated AAZ output in an
+   Agent-managed PR requires a durable source change, use the
+   repository-owned `start_aaz_source_task` custom skill. Discover completed
+   source work with `find_aaz_fork_prs_ready_for_promotion`, promote it with
+   `promote_aaz_fork_pr`, and confirm the live source PR with
+   `find_promoted_aaz_source_pr` before downstream readiness. Do not invoke
+   the neutral generation-source bridge primitives directly.
 4. For the first verified Agent-managed draft returned by
    `find_in_flight_prs` with `needs_ready_for_review`, call
    `mark_pr_ready_for_review` and stop after that write.

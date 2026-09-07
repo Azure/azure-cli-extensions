@@ -7,9 +7,9 @@ Read the current PR, head SHA, changed files, CI summary, blocking human
 reviews, and live-test state once. Pending required validation is waiting.
 Honor a decisive human change request and do not post an Agent pass over it.
 
-Run `get_pr_regression_coverage_summary` and `get_pr_review_skill_summary` on
-the
-current diff. Require focused extension tests or recordings for behavior
+Run the repository-owned `get_pr_regression_coverage_summary` custom skill
+with the PR number, then run `get_pr_review_skill_summary` on the current
+diff. Require focused extension tests or recordings for behavior
 changes, valid command-table generation, no generated-file hand edits, and
 repository-compliant title, description, issue link, and History Notes.
 Confirm any shared or upstream REST API assumption against current source

@@ -3,13 +3,21 @@
 Release History
 ===============
 
+1.0.0b5 (2026-09-03)
+++++++
+* Fixed ``az mcc ent node update``: proxy validation errors named ``--enable-proxy``, which is not
+  an argument of the command. Following the guidance in the message failed with ``unrecognized
+  arguments``. The messages now name ``--proxy``.
+* Fixed ``az mcc ent node create``: when the MCC resource could not be found the error reported the
+  cache node name instead of the MCC resource name, and discarded the underlying error. It now
+  reports the MCC resource, the resource group, and the reason the lookup failed.
+
 1.0.0b4 (2026-09-01)
 ++++++
 * Upgraded all ``az mcc ent`` commands to the ``2026-06-01`` API version.
 * [BREAKING CHANGE] ``az mcc ent node update``: ``--auto-update-ring`` now accepts only ``Stable``
   and ``Beta``. The legacy ``Slow``, ``Fast`` and ``Preview`` rings are no longer selectable.
-  ``Stable`` replaces ``Slow`` and ``Beta`` replaces ``Fast``; the ring is reported using the new
-  names even though the service still stores the legacy values.
+  ``Stable`` replaces ``Slow`` and ``Beta`` replaces ``Fast``.
 * [BREAKING CHANGE] ``az mcc ent node update``: ``--proxy`` now accepts only ``Enabled`` and
   ``Disabled``. The raw service values ``Required`` and ``None`` are no longer accepted; they were
   already rejected by validation and could never be used successfully.

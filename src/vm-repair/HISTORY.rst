@@ -2,9 +2,13 @@
 Release History
 ===============
 
-2.3.0
+2.3.2
 ++++++
 Adding a ``--no-cleanup`` parameter (alias ``--no``) to ``az vm repair restore``, ``az vm repair repair-and-restore`` and ``az vm repair repair-button``. Until now the only way to answer the "Continue with clean-up and delete resources?" prompt without a human present was ``--yes``, which deletes the repair VM, the disk copy and the repair resource group. There was no way to decline the deletion unattended, so scripted and multi-VM runs either blocked on the prompt or lost the repair resources they needed to inspect. With ``--no-cleanup`` the disk swap back to the source VM still happens, but the repair resources are kept and the command reports the resource group to delete later. ``--yes`` and ``--no-cleanup`` cannot be combined on ``az vm repair restore`` and the command now fails early if both are given. Behavior without either flag is unchanged: the command still prompts, and still skips clean-up in a non-interactive session.
+
+2.3.1
+++++++
+The repair VM is now created with the SCSI disk controller whenever the selected VM size supports it, even when the source VM uses NVMe. Previously the repair VM inherited the platform default for the size, so a source VM on an NVMe-only size produced an NVMe repair VM. Several repair scripts locate the attached OS disk by its SCSI model name and therefore found no disk on such a repair VM: they completed, reported success, and repaired nothing. Pinning the repair VM to SCSI restores those scripts. When the size only supports NVMe the command now emits a warning instead of failing silently. A new ``--disk-controller-type`` parameter on ``az vm repair create`` overrides the selection.
 
 2.2.6
 ++++++
