@@ -575,7 +575,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             return self.cmd(cmd, checks=checks)
         except Exception as ex:  # pylint: disable=broad-except
             message = str(ex)
-            if feature_name in message and re.search(
+            if feature_name.lower() in message.lower() and re.search(
                 r"not (?:whitelisted|allowed|enabled|supported|available|registered)",
                 message,
                 re.IGNORECASE,
