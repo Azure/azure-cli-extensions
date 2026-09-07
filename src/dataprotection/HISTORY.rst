@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.11.5
+++++++
+* `az dataprotection enable-backup trigger`: Fixed AKS backup vault discovery to scope the lookup to `backupResourceGroupId` instead of the whole subscription, preventing concurrent enable-backup runs from racing over a shared, tag-matched vault. Also wait for a newly created vault's `provisioningState` to reach a terminal state before proceeding.
+
 1.11.4
 ++++++
 * `az dataprotection enable-backup trigger`: Specify `ServicePrincipal` when creating role assignments for AKS managed identities.
