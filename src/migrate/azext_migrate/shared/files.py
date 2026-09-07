@@ -186,6 +186,44 @@ def read_spec_json(zip_bytes):
     return json.loads(found[1].decode('utf-8')) if found else None
 
 
+def describe_archive(zip_bytes):
+    """Summarize a download for diagnostics: each member and its detected role.
+
+    Returns a short string such as ``spec.json (definition), inputs.json
+    (parameters), runbook.md (docs)`` so a "definition not found" failure can
+    tell whether the archive genuinely lacks a definition or the member was
+    rejected by the content classifier (e.g. an unexpected contract shape).
+    """
+    if not _is_zip(zip_bytes):
+        return 'raw non-archive blob'
+    roles = []
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
+        for info in archive.infolist():
+            if info.is_dir():
+                continue
+            name = os.path.basename(info.filename.replace('\\', '/'))
+            lower = name.lower()
+            if lower in _DERIVED_INPUTS_NAMES:
+                roles.append('%s (derived-inputs, skipped)' % name)
+            elif lower.endswith('.md'):
+                roles.append('%s (docs)' % name)
+            elif not lower.endswith('.json'):
+                roles.append('%s (ignored)' % name)
+            else:
+                try:
+                    parsed = json.loads(archive.read(info).decode('utf-8'))
+                except ValueError:
+                    roles.append('%s (invalid JSON)' % name)
+                    continue
+                if _looks_like_spec(parsed):
+                    roles.append('%s (definition)' % name)
+                elif _looks_like_parameters(parsed):
+                    roles.append('%s (parameters)' % name)
+                else:
+                    roles.append('%s (unrecognized)' % name)
+    return ', '.join(roles) if roles else 'empty archive'
+
+
 def read_schema_json(zip_bytes):
     """Return the parsed standalone ``schema.json`` from the archive, or None.
 

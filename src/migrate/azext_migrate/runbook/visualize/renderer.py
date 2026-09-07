@@ -24,6 +24,7 @@ import datetime
 import html
 import os
 import re
+import secrets
 import string
 
 from azext_migrate.runbook.visualize import viewmodel
@@ -242,21 +243,26 @@ def _grid_row(kind, index, step):
     if kind == viewmodel.KIND_EXECUTION:
         status = step.status or 'NotStarted'
         count = step.workload_progress or '-'
+        retry = getattr(step, 'retry_count', 0) or 0
+        retry_badge = (
+            ' <span class="retry" title="%s failed attempt(s), retried">'
+            '&#8635; %s</span>' % (_esc(retry), _esc(retry))) if retry else ''
     else:
         status = step.status or 'Unknown'
         count = step.workloads
+        retry_badge = ''
     return (
         '<div class="row" role="button" tabindex="0" data-step="%d">'
         '<div class="col-step cell-step">'
         '<span class="row__ico">&#9656;</span>'
         '<span class="row__name">%s</span>%s</div>'
-        '<div class="col-status"><span class="pill%s">%s</span></div>'
+        '<div class="col-status"><span class="pill%s">%s</span>%s</div>'
         '<div class="col-dep">%s</div>'
         '<div class="col-count">%s</div>'
         '<div class="col-apps">%s</div>'
         '</div>'
         % (index, _esc(step.name), ref,
-           _status_class(status), _esc(status), _esc(dep),
+           _status_class(status), _esc(status), retry_badge, _esc(dep),
            _esc(count), _esc(apps)))
 
 
@@ -329,14 +335,46 @@ def _status_field(label, status, default):
 def _detail_html(workstream_name, step, kind):
     """Build the step detail-pane markup (shown in the side drawer)."""
     if kind == viewmodel.KIND_EXECUTION:
-        entities = ['%s (%s)' % (entity.name, entity.status)
-                    if entity.status else entity.name
-                    for entity in step.entities]
+        entities = []
+        for entity in step.entities:
+            label = ('%s (%s)' % (entity.name, entity.status)
+                     if entity.status else entity.name)
+            if entity.tool_status:
+                label += ' \u00b7 tool status: %s' % entity.tool_status
+            if entity.error:
+                label += ' \u2014 %s' % entity.error
+            elif entity.status_reason:
+                label += ' \u2014 %s' % entity.status_reason
+            if entity.total_attempts:
+                label += ' [%s attempt(s)]' % entity.total_attempts
+            entities.append(label)
+
+        def _fmt_attempt(prefix, attempt):
+            tail = ((' \u2014 %s' % attempt.get('error'))
+                    if attempt.get('error') else '')
+            return '%sAttempt %s: %s%s' % (
+                prefix, attempt.get('number'), attempt.get('status') or '',
+                tail)
+        # Attempt timeline lives on the step and/or each entity execution.
+        attempt_lines = [_fmt_attempt('', a) for a in step.attempts]
+        for entity in step.entities:
+            attempt_lines.extend(
+                _fmt_attempt('%s \u00b7 ' % entity.name, a)
+                for a in entity.attempts)
         body = (
             _field('Step ID', step.id)
             + _status_field('Step status', step.status, 'NotStarted')
+            + (_field('Status reason', step.status_reason)
+               if step.status_reason else '')
+            + (_field('Error', step.error) if step.error else '')
+            + (_field('Retries (failed attempts)', step.retry_count)
+               if step.retry_count else '')
             + _field('Workload progress', step.workload_progress)
             + _chip_field('Entities (%d)' % len(entities), entities)
+            + (_chip_field('Attempts', attempt_lines)
+               if attempt_lines else '')
+            + (_field('User comment', step.user_comment)
+               if step.user_comment else '')
             + _chip_field('Applications', step.entity_groups)
             + _chip_field('Depends on', step.deps))
     else:
@@ -490,6 +528,9 @@ def render(graph, view=None, refresh_interval=None):
     generated = _format_generated(
         None if view is None else view.generated)
     grid_html = _grid(view)
+    # Per-file random nonce: the Content-Security-Policy admits only the inline
+    # <script> stamped with this nonce, so no injected markup can execute.
+    nonce = secrets.token_urlsafe(16)
     return template.substitute(
         title=_esc(title),
         summary=_esc(summary),
@@ -504,6 +545,7 @@ def render(graph, view=None, refresh_interval=None):
         grid=grid_html,
         grid_hidden='' if grid_html else ' hidden',
         diagram_hidden=' hidden' if grid_html else '',
+        nonce=nonce,
         svg=_svg(graph))
 
 

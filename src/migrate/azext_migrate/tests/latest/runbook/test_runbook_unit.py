@@ -7,6 +7,7 @@ import io
 import json
 import os
 import copy
+import re
 import tempfile
 import unittest
 import zipfile
@@ -29,6 +30,7 @@ from azext_migrate.shared.constants import WAVE_OPERATIONS_API_VERSION
 from azext_migrate.runbook import models, transformers
 from azext_migrate.runbook import deps as deps_mod
 from azext_migrate.runbook import config_status as config_status_mod
+from azext_migrate.runbook import validators as validators_mod
 from azext_migrate.runbook.cmds import runbook as runbook_cmds
 from azext_migrate.runbook.cmds import definition as definition_cmds
 from azext_migrate.runbook.cmds import definition_step as step_cmds
@@ -670,6 +672,27 @@ class FilesTests(unittest.TestCase):
                 '{"runbookInputs": {"stepInputs": {}}}'})
         self.assertIsNone(files.read_spec_json(zip_bytes))
 
+    def test_describe_archive_reports_member_roles(self):
+        zip_bytes = _make_zip({
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "runbook.md": "# docs"})
+        summary = files.describe_archive(zip_bytes)
+        self.assertIn('spec.json (definition)', summary)
+        self.assertIn('inputs.json (parameters)', summary)
+        self.assertIn('runbook.md (docs)', summary)
+
+    def test_describe_archive_flags_unrecognized_member(self):
+        # A stale/mismatched contract (old runbookSpec key) is not a spec.
+        zip_bytes = _make_zip({
+            "runbook.json": '{"runbookSpec": {"workstreams": []}}'})
+        self.assertIn('runbook.json (unrecognized)',
+                      files.describe_archive(zip_bytes))
+
+    def test_describe_archive_raw_blob(self):
+        self.assertEqual(
+            files.describe_archive(b'{"spec": {}}'), 'raw non-archive blob')
+
     def test_extract_parameters_selects_inputs_by_content(self):
         # Mirror of the spec test: the params file must win over the spec
         # regardless of member ordering or non-standard names.
@@ -1223,7 +1246,7 @@ class ExecutionCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e1"),
             'GenerateDownloadUrl',
-            {"mode": "Directory"})
+            {"mode": "File", "path": "executionStatus.json"})
         dl.assert_called_once_with("https://b/x")
 
     def test_show_projects_step(self):
@@ -1657,6 +1680,68 @@ class ConfigureRendererTests(unittest.TestCase):
         self.assertIn('applianceName', html_text)
         self.assertIn('vm.agentless.setup-001', html_text)
 
+    def test_render_emits_csp_and_per_file_nonce(self):
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertNotIn('__CSP_NONCE__', html_text)
+        self.assertIn(
+            '<meta http-equiv="Content-Security-Policy"', html_text)
+        # The nonce on the <script> tag must also appear in script-src, and
+        # 'unsafe-inline' must not weaken the script policy.
+        match = re.search(r'<script nonce="([A-Za-z0-9_-]+)"', html_text)
+        self.assertIsNotNone(match)
+        nonce = match.group(1)
+        self.assertIn("script-src 'nonce-%s'" % nonce, html_text)
+        self.assertNotIn("script-src 'unsafe-inline'", html_text)
+
+    def test_render_nonce_is_unique_per_file(self):
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        first = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            configure_renderer.render(root, None, {"runbook": "r"})).group(1)
+        second = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            configure_renderer.render(root, None, {"runbook": "r"})).group(1)
+        self.assertNotEqual(first, second)
+
+    def test_render_ships_client_side_escaper(self):
+        # The page builds its UI from the embedded JSON via innerHTML, so the
+        # client-side esc() guard must be present and applied at render time.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn("replace(/</g, '&lt;')", html_text)
+        self.assertIn("replace(/>/g, '&gt;')", html_text)
+
+    def test_render_has_phase1_ui(self):
+        # Phase 1 UX: legend, workload-override pane, JSON popover button,
+        # spec-driven labels, and no per-field Appliance/Entity scope pill.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn('Workload level overrides', html_text)
+        self.assertIn('View updated parameters file', html_text)
+        self.assertIn('function stepLabel(', html_text)
+        self.assertIn('id="genAt"', html_text)
+        self.assertIn("'Must match: '", html_text)
+        self.assertNotIn('scope-pill', html_text)
+        self.assertNotIn('id="validateBtn"', html_text)
+
+    def test_render_has_phase23_ui(self):
+        # Phase 2/3: structured grid/kv editors, issues navigator, search,
+        # and accessibility roles.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn('function gridCtrl(', html_text)
+        self.assertIn('function kvCtrl(', html_text)
+        self.assertIn('function showIssues(', html_text)
+        self.assertIn('const matchField', html_text)
+        self.assertIn('id="issuePop"', html_text)
+        self.assertIn('aria-modal="true"', html_text)
+
 
 _DEFINITION_DOC = {
     "workstreams": [
@@ -1708,6 +1793,72 @@ _STATUS_DOC = {
 }
 
 
+# Rich failure shape: failed step with a per-entity attempt timeline
+# (fail then recover) plus a downstream skipped step with a statusReason.
+_STATUS_DETAIL_DOC = {
+    "status": "Failed",
+    "workstreams": [{
+        "id": "ws1", "displayName": "Unmapped",
+        "steps": [
+            {"stepId": "dataSync-1", "displayName": "Data Sync",
+             "status": "Failed",
+             "errorDetails": {
+                 "code": "StepFailed",
+                 "message": "invalid parameter logStorageAccountId"},
+             "entityExecutions": [
+                 {"entity": "vm-a", "status": "Failed",
+                  "errorDetails": {
+                      "code": "StepFailed",
+                      "message": "invalid parameter logStorageAccountId"},
+                  "totalAttempts": 0,
+                  "attempts": [
+                      {"attemptNumber": 1, "status": "Failed",
+                       "errorDetails": {"code": "StepFailed",
+                                        "message": "boom"}},
+                      {"attemptNumber": 2, "status": "Completed"}]}],
+             "attempts": []},
+            {"stepId": "test-1", "displayName": "Test Migration",
+             "status": "Skipped",
+             "statusReason": "Dependency dataSync-1 failed",
+             "entityExecutions": [
+                 {"entity": "vm-a", "status": "Skipped",
+                  "statusReason": "Dependency dataSync-1 failed",
+                  "attempts": [{"attemptNumber": 1, "status": "Skipped"}]}]},
+        ],
+    }],
+}
+
+
+# Execution status carrying the service-provided step aggregate counts and the
+# per-entity ``toolReportedMigrationStatus`` field.
+_STATUS_TOOL_DOC = {
+    "stepsCompleted": 2,
+    "stepsInProgress": 1,
+    "stepsAwaitingUserAction": 0,
+    "stepsFailed": 0,
+    "stepsNotStarted": 1,
+    "status": "InProgress",
+    "startTime": "2026-08-21T10:00:00Z",
+    "lastUpdatedTime": "2026-08-21T10:30:00Z",
+    "workstreams": [{
+        "id": "workstream-1", "displayName": "waveapp",
+        "status": "InProgress",
+        "steps": [{
+            "stepId": "vm.agentless.migration-1", "displayName": "Migration",
+            "stepRef": "vm.agentless.migration", "status": "InProgress",
+            "entities": ["web-vm-01", "db-vm-02"],
+            "entitiesCompleted": 1,
+            "entityExecutions": [
+                {"entity": "web-vm-01",
+                 "toolReportedMigrationStatus": "MigrationSucceeded",
+                 "status": "Completed"},
+                {"entity": "db-vm-02",
+                 "toolReportedMigrationStatus": "Migrating",
+                 "status": "InProgress"}]}],
+    }],
+}
+
+
 class ExecutionStatusParsingTests(unittest.TestCase):
 
     def test_read_status_json_raw_bytes(self):
@@ -1741,6 +1892,128 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertEqual(
             by_id['dataSync']['Workload Progress'], '1/2 completed')
         self.assertIsNone(by_id['setup']['Workload Progress'])
+
+    def test_execution_table_surfaces_error_and_retries(self):
+        rows = transformers.execution_table(_STATUS_DETAIL_DOC)
+        by_id = {row['Step Id']: row for row in rows}
+        # One failed attempt on the entity -> 1 retry; error message shown.
+        self.assertEqual(by_id['dataSync-1']['Retries'], 1)
+        self.assertIn('logStorageAccountId', by_id['dataSync-1']['Details'])
+        # A skipped step shows its statusReason and no retries.
+        self.assertEqual(by_id['test-1']['Retries'], 0)
+        self.assertIn('Dependency', by_id['test-1']['Details'])
+
+    def test_execution_view_captures_error_retry_attempts(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        ds = steps['dataSync-1']
+        self.assertIn('logStorageAccountId', ds.error)
+        self.assertEqual(ds.retry_count, 1)
+        ent = ds.entities[0]
+        self.assertEqual(ent.status, 'Failed')
+        self.assertIn('logStorageAccountId', ent.error)
+        self.assertEqual(len(ent.attempts), 2)
+        self.assertEqual(
+            steps['test-1'].status_reason, 'Dependency dataSync-1 failed')
+
+    def test_execution_render_shows_error_and_attempts(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_DETAIL_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('logStorageAccountId', html_text)
+        self.assertIn('Attempt 1', html_text)
+        self.assertIn('class="retry"', html_text)
+        self.assertIn('Dependency', html_text)
+
+    def test_execution_overview_uses_service_counts(self):
+        overview = transformers.execution_overview(_STATUS_TOOL_DOC)
+        self.assertEqual(overview['State'], 'InProgress')
+        self.assertEqual(overview['Completed'], 2)
+        self.assertEqual(overview['In Progress'], 1)
+        self.assertEqual(overview['Awaiting Action'], 0)
+        self.assertEqual(overview['Failed'], 0)
+        self.assertEqual(overview['Not Started'], 1)
+        self.assertEqual(overview['Last Updated'], '2026-08-21T10:30:00Z')
+
+    def test_execution_table_omits_tool_reported_status(self):
+        # Tool status is per-entity and belongs only in the step side-pane,
+        # never in the (per-step) status table.
+        rows = transformers.execution_table(_STATUS_TOOL_DOC)
+        by_id = {row['Step Id']: row for row in rows}
+        progress = by_id['vm.agentless.migration-1']['Workload Progress']
+        self.assertEqual(progress, '1/2 completed')
+        self.assertNotIn('MigrationSucceeded', progress)
+        self.assertNotIn('Migrating', progress)
+
+    def test_execution_view_summary_uses_service_counts(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_TOOL_DOC, title='X')
+        summary = dict(view.summary)
+        self.assertEqual(summary['State'], 'InProgress')
+        self.assertEqual(summary['Completed'], 2)
+        self.assertEqual(summary['In progress'], 1)
+        self.assertEqual(summary['Not started'], 1)
+        meta = dict(view.meta)
+        self.assertEqual(meta['Started'], '2026-08-21T10:00:00Z')
+        self.assertEqual(meta['Last updated'], '2026-08-21T10:30:00Z')
+
+    def test_execution_view_captures_tool_reported_status(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_TOOL_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        entities = {e.name: e
+                    for e in steps['vm.agentless.migration-1'].entities}
+        self.assertEqual(
+            entities['web-vm-01'].tool_status, 'MigrationSucceeded')
+        self.assertEqual(entities['db-vm-02'].tool_status, 'Migrating')
+
+    def test_execution_render_shows_tool_reported_status(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_TOOL_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_TOOL_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('Migrating', html_text)
+        self.assertIn('MigrationSucceeded', html_text)
+
+    def test_execution_overview_absent_counts_returns_state_only(self):
+        # _STATUS_DOC carries no stepsX aggregates or timestamps.
+        overview = transformers.execution_overview(_STATUS_DOC)
+        self.assertEqual(overview.get('State'), 'InProgress')
+        self.assertNotIn('Completed', overview)
+        self.assertNotIn('Start Time', overview)
+
+    def test_execution_overview_empty_for_non_dict(self):
+        self.assertEqual(dict(transformers.execution_overview(None)), {})
+        self.assertEqual(dict(transformers.execution_overview([])), {})
+
+    def test_execution_table_progress_without_tool_status(self):
+        # Entities lacking toolReportedMigrationStatus render plainly.
+        rows = transformers.execution_table(_STATUS_DOC)
+        by_id = {row['Step Id']: row for row in rows}
+        self.assertEqual(
+            by_id['dataSync']['Workload Progress'], '1/2 completed')
+
+    def test_execution_view_summary_falls_back_when_counts_absent(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DOC, title='X')
+        summary = dict(view.summary)
+        self.assertEqual(summary.get('State'), 'InProgress')
+        # No service counts -> self-counted per-status keys instead.
+        self.assertIn('Failed', summary)
+        meta = dict(view.meta)
+        self.assertNotIn('Started', meta)
+        self.assertNotIn('Last updated', meta)
+
+    def test_execution_view_entity_tool_status_none_when_absent(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        for entity in steps['dataSync'].entities:
+            self.assertIsNone(entity.tool_status)
 
     def test_execution_graph_edges_from_step_key(self):
         graph = visualize_graph.build_execution_graph(_STATUS_DOC)
@@ -1826,7 +2099,7 @@ class VisualizeRendererTests(unittest.TestCase):
     def test_no_auto_reload_by_default(self):
         graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
         html_text = visualize_renderer.render(graph)
-        self.assertNotIn("http-equiv", html_text)
+        self.assertNotIn('http-equiv="refresh"', html_text)
 
     def test_auto_reload_meta_when_interval_set(self):
         graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
@@ -1842,7 +2115,29 @@ class VisualizeRendererTests(unittest.TestCase):
         for value in (0, -1, None, "x"):
             html_text = visualize_renderer.render(
                 graph, refresh_interval=value)
-            self.assertNotIn("http-equiv", html_text)
+            self.assertNotIn('http-equiv="refresh"', html_text)
+
+    def test_render_emits_csp_and_per_file_nonce(self):
+        graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
+        html_text = visualize_renderer.render(graph)
+        self.assertNotIn('$nonce', html_text)
+        self.assertIn(
+            '<meta http-equiv="Content-Security-Policy"', html_text)
+        match = re.search(r'<script nonce="([A-Za-z0-9_-]+)"', html_text)
+        self.assertIsNotNone(match)
+        nonce = match.group(1)
+        self.assertIn("script-src 'nonce-%s'" % nonce, html_text)
+        self.assertNotIn("script-src 'unsafe-inline'", html_text)
+
+    def test_render_nonce_is_unique_per_file(self):
+        graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
+        first = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            visualize_renderer.render(graph)).group(1)
+        second = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            visualize_renderer.render(graph)).group(1)
+        self.assertNotEqual(first, second)
 
 
 class VisualizeCommandTests(unittest.TestCase):
@@ -2469,6 +2764,311 @@ class CommandRegistrationTests(unittest.TestCase):
                 'migrate runbook execution parameter download',
                 'migrate runbook execution parameter upload'):
             self.assertIn(expected, commands)
+
+
+class RunbookValidatorTests(unittest.TestCase):
+
+    def test_definition_visualize_requires_identity(self):
+        ns = SimpleNamespace(from_file=None, resource_group_name=None,
+                             project_name=None, runbook_name=None)
+        with self.assertRaises(RequiredArgumentMissingError):
+            validators_mod.validate_definition_visualize(ns)
+
+    def test_definition_visualize_from_file_ok(self):
+        validators_mod.validate_definition_visualize(
+            SimpleNamespace(from_file='x.json'))
+
+    def test_execution_visualize_requires_execution_id(self):
+        ns = SimpleNamespace(from_file=None, resource_group_name=RG,
+                             project_name=PROJECT, runbook_name=RUNBOOK,
+                             execution_id=None)
+        with self.assertRaises(RequiredArgumentMissingError):
+            validators_mod.validate_execution_visualize(ns)
+
+    def test_execution_visualize_full_identity_ok(self):
+        validators_mod.validate_execution_visualize(
+            SimpleNamespace(from_file=None, resource_group_name=RG,
+                            project_name=PROJECT, runbook_name=RUNBOOK,
+                            execution_id='e1'))
+
+    def test_execution_visualize_from_file_ok(self):
+        validators_mod.validate_execution_visualize(
+            SimpleNamespace(from_file='x.json'))
+
+
+class ExecutionHelperTests(unittest.TestCase):
+
+    def test_status_payload_unwraps_execution_status(self):
+        payload = execution_cmds._status_payload({
+            'generatedAt': 't', 'runbookId': 'r',
+            'executionStatus': {'status': 'InProgress'}})
+        self.assertEqual(payload['status'], 'InProgress')
+        self.assertEqual(payload['generatedAt'], 't')
+        self.assertEqual(payload['runbookId'], 'r')
+
+    def test_status_payload_unwraps_properties(self):
+        payload = execution_cmds._status_payload({
+            'executionId': 'e', 'properties': {'status': 'Completed'}})
+        self.assertEqual(payload['status'], 'Completed')
+        self.assertEqual(payload['executionId'], 'e')
+
+    def test_status_payload_passthrough(self):
+        self.assertIsNone(execution_cmds._status_payload(None))
+        bare = {'workstreams': []}
+        self.assertIs(execution_cmds._status_payload(bare), bare)
+
+    def test_execution_id_from_result_variants(self):
+        self.assertEqual(
+            execution_cmds._execution_id_from_result({'name': 'e1'}), 'e1')
+        self.assertEqual(
+            execution_cmds._execution_id_from_result(
+                {'id': '/a/executions/e2'}), 'e2')
+        self.assertEqual(
+            execution_cmds._execution_id_from_result(
+                {'properties': {'executionId': 'e3'}}), 'e3')
+        self.assertIsNone(execution_cmds._execution_id_from_result('x'))
+
+    def test_project_filters_step(self):
+        doc = {'workstreams': [{'steps': [
+            {'stepId': 's1'}, {'stepId': 's2'}]}]}
+        self.assertEqual(
+            execution_cmds._project(doc, 's2'), {'stepId': 's2'})
+
+    def test_project_flat_and_not_found(self):
+        doc = {'steps': [{'id': 'a'}]}
+        self.assertEqual(execution_cmds._project(doc, 'a'), {'id': 'a'})
+        self.assertIs(execution_cmds._project(doc, 'zzz'), doc)
+        self.assertIs(execution_cmds._project(doc, None), doc)
+        self.assertEqual(execution_cmds._project('x', 'a'), 'x')
+
+    def test_terminal_states(self):
+        self.assertTrue(execution_cmds._terminal({'status': 'Completed'}))
+        self.assertTrue(
+            execution_cmds._terminal({'properties': {'state': 'Failed'}}))
+        self.assertFalse(execution_cmds._terminal({'status': 'InProgress'}))
+        self.assertFalse(execution_cmds._terminal({}))
+
+    def test_render_does_not_crash(self):
+        execution_cmds._render(_STATUS_TOOL_DOC)
+        execution_cmds._render({})
+
+
+class ExecutionStatusCommandTests(unittest.TestCase):
+
+    def setUp(self):
+        sub_patch = mock.patch.object(
+            execution_cmds, 'get_subscription_id', return_value=SUB)
+        self.addCleanup(sub_patch.stop)
+        sub_patch.start()
+        client_patch = mock.patch.object(execution_cmds, 'ArmClient')
+        self.addCleanup(client_patch.stop)
+        self.client = client_patch.start().return_value
+
+    def _exec_id(self):
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        return arm_ids.execution_id(
+            arm_ids.runbook_id(project, RUNBOOK), 'e1')
+
+    def test_status_download_url_error_when_no_sas(self):
+        self.client.post_action.return_value = {}
+        with self.assertRaises(CLIInternalError):
+            execution_cmds._status_download_url(mock.Mock(), self._exec_id())
+
+    def test_status_download_url_returns_sas(self):
+        self.client.post_action.return_value = {
+            'properties': {'sasUrl': 'https://x/blob'}}
+        self.assertEqual(
+            execution_cmds._status_download_url(mock.Mock(), self._exec_id()),
+            'https://x/blob')
+
+    def test_fetch_status_downloads_and_unwraps(self):
+        with mock.patch.object(execution_cmds, '_status_download_url',
+                               return_value='https://x'), \
+             mock.patch.object(execution_cmds.files, 'download_bytes',
+                               return_value=b'{}'), \
+             mock.patch.object(
+                 execution_cmds.files, 'read_status_json',
+                 return_value={'executionStatus': {'status': 'InProgress'}}):
+            result = execution_cmds._fetch_status(
+                mock.Mock(), self._exec_id())
+        self.assertEqual(result['status'], 'InProgress')
+
+    def test_show_returns_projected_status(self):
+        with mock.patch.object(
+                execution_cmds, '_fetch_status',
+                return_value={'workstreams': [
+                    {'steps': [{'stepId': 's1'}]}]}):
+            result = execution_cmds.show(
+                mock.Mock(), RG, PROJECT, RUNBOOK, 'e1', step_id='s1')
+        self.assertEqual(result, {'stepId': 's1'})
+
+    def test_pause_resume_cancel_perform_action(self):
+        for fn in (execution_cmds.pause, execution_cmds.resume,
+                   execution_cmds.cancel):
+            self.client.post_action.reset_mock()
+            self.client.post_action.return_value = {'ok': True}
+            self.assertEqual(
+                fn(mock.Mock(), RG, PROJECT, RUNBOOK, 'e1'), {'ok': True})
+            self.client.post_action.assert_called_once()
+
+    def test_visualize_from_file_writes_and_opens(self):
+        status = {'executionStatus': {'status': 'InProgress',
+                                      'workstreams': []}}
+        with mock.patch.object(execution_cmds.files, 'read_json_file',
+                               return_value=status), \
+             mock.patch.object(execution_cmds.files, 'resolve_output_path',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files, 'write_text',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files,
+                               'open_in_browser') as browser:
+            result = execution_cmds.visualize(
+                mock.Mock(), runbook_name=RUNBOOK, execution_id='e1',
+                from_file='f.json')
+        self.assertEqual(result, {'path': 'out.html'})
+        browser.assert_called_once()
+
+    def test_visualize_service_path_writes_and_opens(self):
+        with mock.patch.object(
+                execution_cmds, '_fetch_status',
+                return_value={'status': 'InProgress', 'workstreams': []}), \
+             mock.patch.object(execution_cmds.files, 'resolve_output_path',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files, 'write_text',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files,
+                               'open_in_browser') as browser:
+            result = execution_cmds.visualize(
+                mock.Mock(), RG, PROJECT, RUNBOOK, 'e1')
+        self.assertEqual(result, {'path': 'out.html'})
+        browser.assert_called_once()
+
+
+class ConfigStatusBranchTests(unittest.TestCase):
+
+    def test_is_empty_variants(self):
+        self.assertTrue(config_status_mod._is_empty(''))
+        self.assertTrue(config_status_mod._is_empty('  '))
+        self.assertTrue(config_status_mod._is_empty([]))
+        self.assertFalse(config_status_mod._is_empty('x'))
+        self.assertFalse(config_status_mod._is_empty([1]))
+
+    def test_compute_unknown_when_no_inputs(self):
+        self.assertEqual(
+            config_status_mod.compute({'stepId': 's'}, None),
+            config_status_mod.UNKNOWN)
+
+    def test_compute_unknown_when_untracked(self):
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'}, {'stepInputs': {}}),
+            config_status_mod.UNKNOWN)
+
+    def test_compute_configured_when_no_required(self):
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'},
+                {'stepInputs': {'s': {}}, 'schema': {}}),
+            config_status_mod.CONFIGURED)
+
+    def test_compute_partial_and_not_configured(self):
+        schema = {'t': {'a': {'required': True}, 'b': {'required': True}}}
+        partial = config_status_mod.compute(
+            {'stepId': 's', 'stepRef': 't'},
+            {'schema': schema, 'stepInputs': {'s': {'a': 'x'}}})
+        self.assertTrue(partial.startswith('Partial'))
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'},
+                {'schema': schema, 'stepInputs': {'s': {}}}),
+            config_status_mod.NOT_CONFIGURED)
+
+    def test_compute_entity_scope(self):
+        schema = {'t': {'a': {'required': True, 'scope': 'Entity'}}}
+        step = {'stepId': 's', 'stepRef': 't', 'entities': ['vm1']}
+        self.assertEqual(
+            config_status_mod.compute(step, {
+                'schema': schema,
+                'stepInputs': {'s': {'workloadOverrides': {'vm1': {}}}}}),
+            config_status_mod.NOT_CONFIGURED)
+        self.assertEqual(
+            config_status_mod.compute(step, {
+                'schema': schema,
+                'stepInputs': {
+                    's': {'workloadOverrides': {'vm1': {'a': 'x'}}}}}),
+            config_status_mod.CONFIGURED)
+
+    def test_compute_entity_scope_no_entities(self):
+        schema = {'t': {'a': {'required': True, 'scope': 'Entity'}}}
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't', 'entities': []},
+                {'schema': schema, 'stepInputs': {'s': {}}}),
+            config_status_mod.NOT_CONFIGURED)
+
+    def test_annotate_non_dict_passthrough(self):
+        self.assertIsNone(config_status_mod.annotate(None, {}))
+
+
+class TransformerBranchTests(unittest.TestCase):
+
+    def test_execution_table_single_step_dict(self):
+        rows = transformers.execution_table(
+            {'stepId': 's1', 'status': 'Completed'})
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['Step Id'], 's1')
+
+    def test_workload_progress_explicit_scalar(self):
+        rows = transformers.execution_table(
+            {'steps': [{'stepId': 's', 'workloadProgress': '5 of 5'}]})
+        self.assertEqual(rows[0]['Workload Progress'], '5 of 5')
+
+    def test_workload_progress_none_without_entities(self):
+        rows = transformers.execution_table({'steps': [{'stepId': 's'}]})
+        self.assertIsNone(rows[0]['Workload Progress'])
+
+
+class DepsBranchTests(unittest.TestCase):
+
+    def test_dep_labels_execution_properties_envelope(self):
+        labels = deps_mod.build_dep_labels({'properties': {'workstreams': [
+            None,
+            {'displayName': 'WS', 'steps': [
+                {'stepId': 's1', 'displayName': 'Step One'}]}]}})
+        self.assertEqual(labels['s1'], 'WS:Step One')
+
+    def test_dep_labels_flat_steps_no_workstream(self):
+        labels = deps_mod.build_dep_labels(
+            {'steps': [{'stepId': 's2', 'displayName': 'Solo'}]})
+        self.assertEqual(labels['s2'], 'Solo')
+
+    def test_dep_labels_non_dict_document(self):
+        self.assertEqual(deps_mod.build_dep_labels([1, 2]), {})
+
+
+class ViewmodelBranchTests(unittest.TestCase):
+
+    def test_unwrap_properties_envelope(self):
+        view = visualize_viewmodel.build_execution_view(
+            {'properties': {'status': 'InProgress', 'workstreams': [
+                {'displayName': 'W', 'steps': [
+                    {'stepId': 's', 'status': 'Completed'}]}]}}, title='X')
+        self.assertEqual(view.workstreams[0].name, 'W')
+
+    def test_progress_text_explicit_scalar(self):
+        view = visualize_viewmodel.build_execution_view(
+            {'workstreams': [{'steps': [
+                {'stepId': 's', 'workloadProgress': '3 of 3'}]}]}, title='X')
+        self.assertEqual(
+            view.workstreams[0].steps[0].workload_progress, '3 of 3')
+
+    def test_entity_status_dict_shape(self):
+        view = visualize_viewmodel.build_execution_view(
+            {'workstreams': [{'steps': [{'stepId': 's', 'entityExecutions': [
+                {'entity': 'e1', 'status': {'state': 'Completed'}}]}]}]},
+            title='X')
+        self.assertEqual(
+            view.workstreams[0].steps[0].entities[0].status, 'Completed')
 
 
 if __name__ == '__main__':

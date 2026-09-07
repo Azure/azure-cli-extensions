@@ -125,6 +125,41 @@ def _execution_status(result):
     return result or {}
 
 
+# Service-provided step aggregate counts, in display order (label, key).
+_STEP_COUNT_FIELDS = (
+    ('Completed', 'stepsCompleted'),
+    ('In Progress', 'stepsInProgress'),
+    ('Awaiting Action', 'stepsAwaitingUserAction'),
+    ('Failed', 'stepsFailed'),
+    ('Not Started', 'stepsNotStarted'),
+)
+
+
+def execution_overview(result):
+    """Summarize an execution using the service-supplied top-level fields.
+
+    Returns an ``OrderedDict`` of the overall status, the step aggregate
+    counts (``stepsCompleted`` etc., as reported by the service rather than
+    counted locally), and the start / last-updated timestamps. Returns an
+    empty dict when none of those fields are present.
+    """
+    status = _execution_status(result)
+    if not isinstance(status, dict):
+        return OrderedDict()
+    overview = OrderedDict()
+    state = status.get('status') or status.get('state')
+    if state:
+        overview['State'] = state
+    for label, key in _STEP_COUNT_FIELDS:
+        if isinstance(status.get(key), int):
+            overview[label] = status.get(key)
+    if status.get('startTime'):
+        overview['Start Time'] = status.get('startTime')
+    if status.get('lastUpdatedTime'):
+        overview['Last Updated'] = status.get('lastUpdatedTime')
+    return overview
+
+
 def _exec_step_rows(workstream, labels):
     workstream = workstream or {}
     workstream_id = workstream.get('id')
@@ -140,9 +175,41 @@ def _exec_step_row(step, workstream_id=None, labels=None):
         ('Step Name', step.get('displayName') or step.get('stepName')),
         ('Step Status',
          step.get('status') or step.get('stepStatus') or step.get('state')),
+        ('Retries', _failed_attempts(step)),
+        ('Details', _step_detail(step)),
         ('Depends On', '\n'.join(dep_utils.label_deps(step, labels or {}))),
         ('Workload Progress', _workload_progress(step)),
     ])
+
+
+def _failed_attempts(step):
+    """Count failed attempts on the step and its per-entity executions."""
+    def _failed(attempts):
+        return sum(
+            1 for a in attempts or []
+            if str((a or {}).get('status') or '').lower() == 'failed')
+
+    total = _failed(step.get('attempts'))
+    for entity in step.get('entityExecutions') or []:
+        total += _failed((entity or {}).get('attempts'))
+    return total
+
+
+def _step_detail(step):
+    """One-line failure/skip reason for the table (error message or reason)."""
+    err = step.get('errorDetails')
+    if isinstance(err, dict) and err.get('message'):
+        return err.get('message')
+    if step.get('statusReason'):
+        return step.get('statusReason')
+    for entity in step.get('entityExecutions') or []:
+        entity = entity or {}
+        e_err = entity.get('errorDetails')
+        if isinstance(e_err, dict) and e_err.get('message'):
+            return e_err.get('message')
+        if entity.get('statusReason'):
+            return entity.get('statusReason')
+    return None
 
 
 def _workload_progress(step):

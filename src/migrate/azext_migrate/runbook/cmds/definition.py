@@ -184,8 +184,10 @@ def _load_definition(cmd, resource_group_name, project_name, runbook_name,
     if spec is None:
         raise CLIInternalError(
             'The downloaded runbook artifact did not contain a definition '
-            '(spec.json). If the runbook was just generated, wait for it '
-            'to finish and try again.')
+            '(spec.json). Archive contents: %s. If the runbook was just '
+            'generated, wait for it to finish and try again; if the problem '
+            'persists, the extension may be out of date for the service '
+            'contract.' % files.describe_archive(zip_bytes))
     definition = _unwrap_spec(spec)
     runbook_inputs = files.read_parameters_json(zip_bytes)
     config_status.annotate(definition, runbook_inputs)

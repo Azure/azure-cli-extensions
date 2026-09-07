@@ -51,6 +51,26 @@ Every non-trivial migrate change MUST end with a **10-point engineering review**
 - `python -m pytest migrate/azext_migrate/tests/latest/runbook/test_runbook_unit.py -q`
 - `python -m azdev style migrate`
 - `python -m azdev linter migrate` (the trailing `ERROR: invalid git repo: None` is harmless)
+- `python src/migrate/scripts/runbook_coverage.py` — runbook coverage; **fails under 95%** by default.
+
+## Runbook code coverage — calculate and display on every code change
+
+Every change under `azext_migrate/runbook/` MUST run the coverage script and keep total
+coverage **≥ 95%**; report the `TOTAL` line in the PR summary so reviewers see the delta.
+
+- Run: `python src/migrate/scripts/runbook_coverage.py`
+- It runs the runbook unit + scenario suites under `coverage` (config: `src/migrate/.coveragerc`),
+  scoped to `azext_migrate/runbook`, prints a per-file table + `TOTAL`, and **exits non-zero
+  below 95%** (`--fail-under 95` is the default; pass `--fail-under 0` to only report).
+- Paste the `TOTAL` line (and any files whose coverage dropped) into the PR summary.
+- Prerequisite: `pip install coverage` (not part of the default env).
+- Excluded from measurement (see `.coveragerc` / `# pragma: no cover`), do NOT try to test these:
+  - `params.py` — declarative CLI arg registration, exercised by the command-table/linter, not units.
+  - `execution.py` `_watch` / `_watch_visualize` — interactive `while True` + `time.sleep` polling loops.
+- New logic MUST ship with tests in the same change (see "Tests move with the code").
+- The `.coverage` data file is a git-ignored artifact — never commit it.
+
+
 
 ## Tests move with the code — never leave a reconciliation gap
 

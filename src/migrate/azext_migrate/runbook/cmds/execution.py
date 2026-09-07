@@ -17,8 +17,9 @@ from azext_migrate.shared import files
 from azext_migrate.runbook import models, transformers
 from azext_migrate.runbook.models import ExecutionAction
 from azext_migrate.runbook.constants import (
-    ARTIFACT_DOWNLOAD_MODE_DIRECTORY,
+    ARTIFACT_DOWNLOAD_MODE_FILE,
     EXECUTION_TERMINAL_STATES,
+    RUNBOOK_STATUS_FILE,
 )
 from azext_migrate.runbook.visualize import graph as graph_mod
 from azext_migrate.runbook.visualize import renderer
@@ -42,13 +43,13 @@ def _execution_resource_id(cmd, resource_group_name, project_name,
 
 
 def _status_download_url(cmd, resource_id):
-    # Directory mode returns the whole execution artifact as a ZIP; File mode
-    # by path 404s when that exact blob is not present yet. read_status_json
-    # extracts executionStatus.json from the archive.
+    # TODO: move back to Directory mode ({mode:Directory}, whole-artifact ZIP)
+    # once the service reliably serves it; File mode targets the single
+    # executionStatus.json blob directly.
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateDownloadUrl',
         models.build_artifact_download_url_body(
-            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY))
+            mode=ARTIFACT_DOWNLOAD_MODE_FILE, path=RUNBOOK_STATUS_FILE))
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -245,7 +246,8 @@ def _terminal(execution):
     return bool(state) and state.lower() in EXECUTION_TERMINAL_STATES
 
 
-def _watch(cmd, resource_id, execution_id, step_id, interval):
+def _watch(cmd, resource_id, execution_id, step_id,
+           interval):  # pragma: no cover - interactive polling loop
     """Re-render the execution status table until a terminal state."""
     logger.warning(
         "Watching execution '%s' (interval: %ss). Press Ctrl+C to stop.",
@@ -266,14 +268,23 @@ def _watch(cmd, resource_id, execution_id, step_id, interval):
 
 def _render(execution):
     rows = transformers.execution_table(execution)
+    overview = transformers.execution_overview(execution)
+    if overview:
+        logger.warning(
+            '%s', ' | '.join('%s: %s' % (k, v) for k, v in overview.items()))
     if not rows:
         logger.warning("No step status available yet.")
         return
     for row in rows:
+        retries = row.get('Retries') or 0
+        detail = row.get('Details')
+        suffix = (' | retries=%s' % retries) if retries else ''
+        if detail:
+            suffix += ' | %s' % detail
         logger.warning(
-            "%s | %s | %s | %s | %s",
+            "%s | %s | %s | %s | %s%s",
             row.get('Step Id'), row.get('Step Name'), row.get('Step Status'),
-            row.get('Depends On'), row.get('Workload Progress'))
+            row.get('Depends On'), row.get('Workload Progress'), suffix)
 
 
 def visualize(cmd, resource_group_name=None, project_name=None,
@@ -319,7 +330,8 @@ def _write_visualization(execution, runbook_name, execution_id, target,
 
 
 def _watch_visualize(cmd, resource_id, runbook_name, execution_id, target,
-                     interval, no_open):
+                     interval,
+                     no_open):  # pragma: no cover - interactive polling loop
     """Regenerate the HTML snapshot on an interval until a terminal state."""
     logger.warning(
         "Watching execution '%s' (interval: %ss). Press Ctrl+C to stop.",

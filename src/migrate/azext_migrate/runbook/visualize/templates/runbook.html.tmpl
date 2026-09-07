@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; script-src 'nonce-$nonce';" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 $refresh<title>$title</title>
 <style>
@@ -168,6 +169,11 @@ $refresh<title>$title</title>
   .col-count { text-align: right; color: var(--link); font-weight: 600; }
   .col-dep { color: var(--muted); }
   .col-apps { text-align: right; color: var(--link); font-weight: 600; }
+  .retry {
+    color: #8a6a00; background: #fff4ce; font-size: 11px;
+    padding: 1px 6px; border-radius: 8px; margin-left: 6px;
+    white-space: nowrap; vertical-align: middle;
+  }
 
   /* Execution cards */
   .group { padding: 12px 0; }
@@ -348,7 +354,7 @@ $details
 </div>
 <div class="drawer-scrim" id="drawerScrim"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-label="Step detail"></aside>
-<script>
+<script nonce="$nonce">
 (function () {
   var tabs = document.querySelectorAll('.tab');
   var views = {

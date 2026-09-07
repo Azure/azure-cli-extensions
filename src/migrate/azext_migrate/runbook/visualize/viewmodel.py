@@ -20,10 +20,18 @@ KIND_EXECUTION = 'execution'
 class EntityProgress:
     """Per-entity execution state shown under an execution step."""
 
-    # pylint: disable=too-few-public-methods
-    def __init__(self, name, status):
+    # pylint: disable=too-few-public-methods,too-many-arguments
+    def __init__(self, name, status, status_reason=None, error=None,
+                 total_attempts=None, attempts=None, tool_status=None):
         self.name = name
         self.status = status
+        self.status_reason = status_reason
+        self.error = error
+        self.total_attempts = total_attempts
+        self.attempts = attempts or []
+        # Tool-reported migration status (e.g. Replicating, Migrating) — a
+        # finer-grained, tool-driven state than the orchestrator ``status``.
+        self.tool_status = tool_status
 
 
 class StepRow:
@@ -34,7 +42,9 @@ class StepRow:
     def __init__(self, step_id, name, deps=None, status=None,
                  workloads=None, workload_progress=None, entities=None,
                  step_ref=None, entity_names=None, prereqs=None,
-                 dep_details=None, entity_groups=None):
+                 dep_details=None, entity_groups=None, status_reason=None,
+                 error=None, retry_count=0, attempts=None,
+                 user_comment=None):
         self.id = step_id
         self.name = name
         self.deps = deps or []
@@ -50,6 +60,13 @@ class StepRow:
         self.dep_details = dep_details or []
         # Affected entity groups ("applications"), as display names.
         self.entity_groups = entity_groups or []
+        # Execution detail: failure reason/error, retry (failed-attempt)
+        # count, per-attempt history, and any manual sign-off comment.
+        self.status_reason = status_reason
+        self.error = error
+        self.retry_count = retry_count
+        self.attempts = attempts or []
+        self.user_comment = user_comment
 
 
 class Workstream:
@@ -283,6 +300,46 @@ def _exec_status(step):
             or step.get('state'))
 
 
+def _error_text(node):
+    """Flatten an ``errorDetails`` object to "code: message (details)"."""
+    err = node.get('errorDetails') if isinstance(node, dict) else None
+    if not isinstance(err, dict):
+        return None
+    parts = [str(v) for v in (err.get('code'), err.get('message')) if v]
+    text = ': '.join(parts) if parts else None
+    details = err.get('details')
+    if text and details:
+        text = '%s (%s)' % (text, details)
+    return text
+
+
+def _failed_attempts(step):
+    """Count failed attempts on a step and its per-entity executions."""
+    def _failed(attempts):
+        return sum(
+            1 for a in attempts or []
+            if str((a or {}).get('status') or '').lower() == 'failed')
+
+    total = _failed(step.get('attempts'))
+    for entity in step.get('entityExecutions') or []:
+        total += _failed((entity or {}).get('attempts'))
+    return total
+
+
+def _attempt_views(attempts):
+    """Project raw attempt objects to ``{number, status, error}`` dicts."""
+    views = []
+    for attempt in attempts or []:
+        if not isinstance(attempt, dict):
+            continue
+        views.append({
+            'number': attempt.get('attemptNumber'),
+            'status': attempt.get('status'),
+            'error': _error_text(attempt),
+        })
+    return views
+
+
 def build_execution_view(document, title):
     """Build the grid view model for a runbook execution status document."""
     root = _unwrap(document)
@@ -303,7 +360,13 @@ def build_execution_view(document, title):
                 EntityProgress(
                     e.get('entity') or e.get('displayName')
                     or e.get('entityId') or e.get('name'),
-                    _entity_status(e))
+                    _entity_status(e),
+                    status_reason=e.get('statusReason'),
+                    error=_error_text(e),
+                    total_attempts=(e.get('totalAttempts')
+                                    or len(e.get('attempts') or [])),
+                    attempts=_attempt_views(e.get('attempts')),
+                    tool_status=e.get('toolReportedMigrationStatus'))
                 for e in entity_execs]
             rows.append(StepRow(
                 step_id=_step_id(step),
@@ -312,13 +375,50 @@ def build_execution_view(document, title):
                 status=status,
                 workload_progress=_progress_text(step),
                 entities=entities,
-                entity_groups=_step_groups(step, group_map)))
+                entity_groups=_step_groups(step, group_map),
+                status_reason=step.get('statusReason'),
+                error=_error_text(step),
+                retry_count=_failed_attempts(step),
+                attempts=_attempt_views(step.get('attempts')),
+                user_comment=step.get('userComment')))
         workstreams.append(Workstream(name, rows, ws_id))
 
+    summary = _execution_summary(root, status_counts)
+    meta = [('Data source', 'executionStatus.json')]
+    start_time = root.get('startTime')
+    if start_time:
+        meta.append(('Started', start_time))
+    last_updated = root.get('lastUpdatedTime')
+    if last_updated:
+        meta.append(('Last updated', last_updated))
+    return RunbookView(title, KIND_EXECUTION, workstreams, summary, meta=meta)
+
+
+# Service-provided step aggregate counts, in display order (label, key).
+_STEP_COUNT_FIELDS = (
+    ('Completed', 'stepsCompleted'),
+    ('In progress', 'stepsInProgress'),
+    ('Awaiting action', 'stepsAwaitingUserAction'),
+    ('Failed', 'stepsFailed'),
+    ('Not started', 'stepsNotStarted'),
+)
+
+
+def _execution_summary(root, status_counts):
+    """Build the summary cards for an execution.
+
+    Prefer the service-supplied top-level step aggregates
+    (``stepsCompleted`` etc.); only when the document carries none of them do
+    we fall back to counting the steps ourselves.
+    """
     summary = []
     overall = root.get('status') or root.get('state')
     if overall:
         summary.append(('State', overall))
-    summary.extend(sorted(status_counts.items()))
-    meta = [('Data source', 'executionStatus.json')]
-    return RunbookView(title, KIND_EXECUTION, workstreams, summary, meta=meta)
+    provided = [(label, root.get(key)) for label, key in _STEP_COUNT_FIELDS
+                if isinstance(root.get(key), int)]
+    if provided:
+        summary.extend(provided)
+    else:
+        summary.extend(sorted(status_counts.items()))
+    return summary
