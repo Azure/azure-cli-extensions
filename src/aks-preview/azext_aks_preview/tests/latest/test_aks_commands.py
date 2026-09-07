@@ -9860,7 +9860,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-    def _setup_http_proxy_cluster(self, resource_group, resource_group_location, aks_name):
+    def _setup_http_proxy_cluster(self, resource_group, _resource_group_location, aks_name):
         """Shared setup for the http-proxy tests below: create a VNet/subnet,
         a proxy VM (with cloud-init that stands up an actual HTTP(S) proxy),
         and an AKS cluster with the initial ``httpProxyConfig`` enabled
