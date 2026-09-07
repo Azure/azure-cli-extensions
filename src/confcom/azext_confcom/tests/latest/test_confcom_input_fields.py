@@ -5,12 +5,13 @@
 
 import json
 import unittest
+from unittest.mock import patch
 
 import azext_confcom.config as config
 from azext_confcom.security_policy import load_policy_from_json
 
-# These images are never pulled: the tests only exercise --input JSON parsing
-# and rego boilerplate serialization, neither of which needs image content.
+# These tests only exercise --input JSON parsing and rego boilerplate
+# serialization, so image platform validation is mocked in _load_policy.
 LINUX_IMAGE = "mcr.microsoft.com/azurelinux/distroless/base:3.0"
 WINDOWS_IMAGE = "mcr.microsoft.com/windows/nanoserver:ltsc2022"
 
@@ -34,7 +35,8 @@ def _load_policy(image, platform, top_level=None, container_props=None):
     }
     if top_level:
         body.update(top_level)
-    return load_policy_from_json(json.dumps(body), platform=platform)
+    with patch("azext_confcom.security_policy.validate_image_platform"):
+        return load_policy_from_json(json.dumps(body), platform=platform)
 
 
 class HostNetworkInput(unittest.TestCase):
