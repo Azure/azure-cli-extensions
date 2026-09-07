@@ -111,7 +111,7 @@ class Update(AAZCommand):
         )
         metric_rules.user_email = AAZStrArg(
             options=["user-email"],
-            help="Reusable representation of an email address",
+            help="Email address associated with the metric collection rules for the New Relic monitor.",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),

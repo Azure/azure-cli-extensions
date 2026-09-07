@@ -28,7 +28,7 @@ class NewRelicScenario(ScenarioTest):
             '--resource-group {rg} '
             '--name {new_relic_monitor_name} '
             '--location {loc} '
-            '--user-info {{"first-name":"Test","last-name":"User","email-address":{user_email},"phone-number":"123456"}} '
+            '--user-info {{"first-name":"Test","last-name":"User","email-address":"{user_email}","phone-number":"123456"}} '
             '--plan-data {{"billing-cycle":"MONTHLY","effective-date":"\'2026-06-01T00:00:00Z\'","plan-details":"newrelic-pay-as-you-go-free-live@TIDn7ja87drquhy@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg_2025","usage-type":"PAYG"}} '
             '--account-creation-source "LIFTR" '
             '--org-creation-source "LIFTR" '

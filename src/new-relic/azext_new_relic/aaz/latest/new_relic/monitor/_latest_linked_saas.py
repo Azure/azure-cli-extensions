@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class LatestLinkedSaas(AAZCommand):
     """Returns the latest SaaS linked to the newrelic organization of the underlying monitor.
 
-    :example: Get the latest SaaS resource linked to a New Relic monito
+    :example: Get the latest SaaS resource linked to a New Relic monitor
         az new-relic monitor latest-linked-saas --resource-group myResourceGroup --monitor-name myMonitor
     """
 
