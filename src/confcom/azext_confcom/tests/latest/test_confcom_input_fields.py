@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import importlib
 import json
 import unittest
 from unittest.mock import patch
 
 import azext_confcom.config as config
-from azext_confcom.security_policy import load_policy_from_json
 
 # These tests only exercise --input JSON parsing and rego boilerplate
 # serialization, so image platform validation is mocked in _load_policy.
@@ -35,8 +35,9 @@ def _load_policy(image, platform, top_level=None, container_props=None):
     }
     if top_level:
         body.update(top_level)
-    with patch("azext_confcom.security_policy.validate_image_platform"):
-        return load_policy_from_json(json.dumps(body), platform=platform)
+    security_policy = importlib.import_module("azext_confcom.security_policy")
+    with patch.object(security_policy, "validate_image_platform"):
+        return security_policy.load_policy_from_json(json.dumps(body), platform=platform)
 
 
 class HostNetworkInput(unittest.TestCase):
