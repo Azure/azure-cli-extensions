@@ -1,0 +1,914 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"scope": "InfiniBand", "subgroupProfile":
+      {"vmSize": "Standard_ND128isr_GB300_v6", "scope": "VerticalConnect", "size":
+      18}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '167'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --resource-type --api-version --location --properties
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig?api-version=2026-01-01
+  response:
+    body:
+      string: '{"name":"training-ig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig","etag":"W/\"0d7b4867-2b04-43ff-9d3a-e3c3b8037951\"","type":"Microsoft.Network/interconnectGroups","location":"eastus2euap","properties":{"provisioningState":"Succeeded","resourceGuid":"c315f126-50d3-4a2c-80f5-3137184243e0","scope":"InfiniBand","subgroupProfile":{"vmSize":"Standard_ND128isr_GB300_v6","scope":"VerticalConnect","size":18},"subgroups":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '544'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 71054c4c-9cb4-40b8-aa21-cb3c154fb847
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/eastus2euap/f7ee85a4-e5e0-4bcb-8000-bdf97a790e92
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttle-levels:
+      - operationRatePct=0.1, operationConcurrencyPct=0.3, subscriptionWriteRatePct=0.1,
+        etc
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8C44826825B94790BC0B9D6E1DB140FE Ref B: KUL201100111031 Ref C: 2026-08-03T07:52:11Z'
+    status:
+      code: 201
+      message: ''
+- request:
+    body: '{"location": "eastus2euap", "placement": {"zonePlacementPolicy": "Any"},
+      "properties": {"interconnectGroup": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig"}},
+      "sku": {"capacity": 18, "name": "Standard_ND128isr_GB300_v6"}, "tags": {"env":
+      "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '369'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --zone-placement-policy --sku-name --sku-capacity --interconnect-group-id
+        --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"Result\": {\r\n    \"name\": \"icb000002\",\r\n    \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \   \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n    \"location\":
+        \"eastus2euap\",\r\n    \"tags\": {\r\n      \"env\": \"test\"\r\n    },\r\n
+        \   \"sku\": {\r\n      \"name\": \"Standard_ND128isr_GB300_v6\",\r\n      \"capacity\":
+        18\r\n    },\r\n    \"placement\": {\r\n      \"zonePlacementPolicy\": \"Any\"\r\n
+        \   },\r\n    \"properties\": {\r\n      \"interconnectGroup\": {\r\n        \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \     },\r\n      \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \     \"provisioningState\": \"Creating\"\r\n    }\r\n  },\r\n  \"Id\": 87464607,\r\n
+        \ \"Status\": \"RanToCompletion\",\r\n  \"IsCanceled\": false,\r\n  \"IsCompleted\":
+        true,\r\n  \"CreationOptions\": \"None\",\r\n  \"IsFaulted\": false\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/5caf30d6-b9c6-4eda-8244-a84a86874355?p=f6830f8f-cf25-42e7-9aa3-89582227249f&api-version=2026-03-01&t=639213403340257180&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=SjF40gUy5hHy4dzGKMPSpQKSzYQ7WTsncFEkqp8MBvoP5lhbOd-5MDNY2625rnogG_OefIXqYlsMxmd81IIVXw0sBFBe-rnW6signfF7WmQjYTEMuM2d-xaDvkuXMZ_q-G8_usNYWW9Uck46FwFSgvHfOe3ghuHtJm9inHV5Fd5jzwyROrEYljfy5RRidtWYy6C08ODzH3hOBUWTV0yKDYstEqzywU4hqC_FSq5eE3vVN0hbuMXqoZWVXRTE98Tk_0IFlTPxsKn0XLMmfmBB6ZxB6LIxmhcXUrhllL6AFqm_T8hGkFpLuMy8WOt-xuAXpmYRa8Vb6hwSc0O8sfqkgQ&h=5xEjj1IXX1OqL_HN9fSCjyeNb-bYJqvqw0DH4oHuCWE
+      cache-control:
+      - no-cache
+      content-length:
+      - '1012'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/eastus2euap/e211f7eb-9e06-4ad4-a751-fe7d3a0b1d93
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/PutDeleteInterconnectBlockSubscriptionMaximum;119
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 55D5783F0F154464BAFDA03174804C4D Ref B: KUL201100111054 Ref C: 2026-08-03T07:52:12Z'
+    status:
+      code: 201
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --zone-placement-policy --sku-name --sku-capacity --interconnect-group-id
+        --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/5caf30d6-b9c6-4eda-8244-a84a86874355?p=f6830f8f-cf25-42e7-9aa3-89582227249f&api-version=2026-03-01&t=639213403340257180&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=SjF40gUy5hHy4dzGKMPSpQKSzYQ7WTsncFEkqp8MBvoP5lhbOd-5MDNY2625rnogG_OefIXqYlsMxmd81IIVXw0sBFBe-rnW6signfF7WmQjYTEMuM2d-xaDvkuXMZ_q-G8_usNYWW9Uck46FwFSgvHfOe3ghuHtJm9inHV5Fd5jzwyROrEYljfy5RRidtWYy6C08ODzH3hOBUWTV0yKDYstEqzywU4hqC_FSq5eE3vVN0hbuMXqoZWVXRTE98Tk_0IFlTPxsKn0XLMmfmBB6ZxB6LIxmhcXUrhllL6AFqm_T8hGkFpLuMy8WOt-xuAXpmYRa8Vb6hwSc0O8sfqkgQ&h=5xEjj1IXX1OqL_HN9fSCjyeNb-bYJqvqw0DH4oHuCWE
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2026-08-03T07:52:13.4323139+00:00\",\r\n  \"endTime\":
+        \"2026-08-03T07:52:14.7600982+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"5caf30d6-b9c6-4eda-8244-a84a86874355\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/southeastasia/514132f2-9267-4c30-89cc-d31d007ae45c
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationResource;44,Microsoft.Compute/GetOperationSubscriptionMaximum;14999
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5662D4AFE9D14C42830620F800ECDDBE Ref B: KUL201100111023 Ref C: 2026-08-03T07:52:14Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --zone-placement-policy --sku-name --sku-capacity --interconnect-group-id
+        --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"icb000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"tags\": {\r\n    \"env\": \"test\"\r\n  },\r\n  \"sku\": {\r\n    \"name\":
+        \"Standard_ND128isr_GB300_v6\",\r\n    \"capacity\": 18\r\n  },\r\n  \"zones\":
+        [\r\n    \"2\"\r\n  ],\r\n  \"placement\": {\r\n    \"zonePlacementPolicy\":
+        \"Any\"\r\n  },\r\n  \"properties\": {\r\n    \"interconnectGroup\": {\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \   },\r\n    \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \   \"provisioningTime\": \"2026-08-03T07:52:14.7087503+00:00\",\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '890'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;268
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 63E325C4EFCA4581BB6C60B3AC27F338 Ref B: KUL201100111042 Ref C: 2026-08-03T07:52:15Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"icb000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"tags\": {\r\n    \"env\": \"test\"\r\n  },\r\n  \"sku\": {\r\n    \"name\":
+        \"Standard_ND128isr_GB300_v6\",\r\n    \"capacity\": 18\r\n  },\r\n  \"zones\":
+        [\r\n    \"2\"\r\n  ],\r\n  \"placement\": {\r\n    \"zonePlacementPolicy\":
+        \"Any\"\r\n  },\r\n  \"properties\": {\r\n    \"interconnectGroup\": {\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \   },\r\n    \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \   \"provisioningTime\": \"2026-08-03T07:52:14.7087503+00:00\",\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '890'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;267
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DD1042F074644169AE7C3C6A0B9574F2 Ref B: KUL201100111034 Ref C: 2026-08-03T07:52:17Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --expand
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?$expand=instanceView&api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"icb000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"tags\": {\r\n    \"env\": \"test\"\r\n  },\r\n  \"sku\": {\r\n    \"name\":
+        \"Standard_ND128isr_GB300_v6\",\r\n    \"capacity\": 18\r\n  },\r\n  \"zones\":
+        [\r\n    \"2\"\r\n  ],\r\n  \"placement\": {\r\n    \"zonePlacementPolicy\":
+        \"Any\"\r\n  },\r\n  \"properties\": {\r\n    \"interconnectGroup\": {\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \   },\r\n    \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \   \"provisioningTime\": \"2026-08-03T07:52:14.7087503+00:00\",\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"instanceView\": {\r\n      \"currentCapacity\": 18,\r\n
+        \     \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
+        \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
+        succeeded\",\r\n          \"time\": \"2026-08-03T07:52:14.7396977+00:00\"\r\n
+        \       }\r\n      ]\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1190'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;266
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5301445CF8764623A6AF92A3744D8B08 Ref B: KUL201100110042 Ref C: 2026-08-03T07:52:18Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks?api-version=2026-03-01
+  response:
+    body:
+      string: '{"value":[{"name":"icb000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI_TEST_INTERCONNECT_BLOCK_KJOBCSYFDDHJ2JM37GJTTU5EHOJPBGJ4BFEDADGFASSK5AS/providers/Microsoft.Compute/interconnectBlocks/icb000002","type":"Microsoft.Compute/interconnectBlocks","location":"eastus2euap","tags":{"env":"test"},"sku":{"name":"Standard_ND128isr_GB300_v6","capacity":18},"zones":["2"],"placement":{"zonePlacementPolicy":"Any"},"properties":{"interconnectGroup":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig"},"interconnectBlockId":"0311902e-15ae-4836-85c5-c13701d917f5","provisioningTime":"2026-08-03T07:52:14.7087503+00:00","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '799'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-original-request-ids:
+      - af27cd1e-5158-4deb-8cb5-2e7b66afa966
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;265
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 2DADFE525F2144719B6E778B307B7457 Ref B: KUL201100111023 Ref C: 2026-08-03T07:52:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/interconnectBlocks?api-version=2026-03-01
+  response:
+    body:
+      string: '{"value":[{"name":"icb000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI_TEST_INTERCONNECT_BLOCK_KJOBCSYFDDHJ2JM37GJTTU5EHOJPBGJ4BFEDADGFASSK5AS/providers/Microsoft.Compute/interconnectBlocks/icb000002","type":"Microsoft.Compute/interconnectBlocks","location":"eastus2euap","tags":{"env":"test"},"sku":{"name":"Standard_ND128isr_GB300_v6","capacity":18},"zones":["2"],"placement":{"zonePlacementPolicy":"Any"},"properties":{"interconnectGroup":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig"},"interconnectBlockId":"0311902e-15ae-4836-85c5-c13701d917f5","provisioningTime":"2026-08-03T07:52:14.7087503+00:00","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '799'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-original-request-ids:
+      - 78b31500-39e7-40ef-91f6-9583fe249845
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;264
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 243B346698AE4C7EA7DE61463EFD24BF Ref B: KUL201100111031 Ref C: 2026-08-03T07:52:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku-capacity --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"icb000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"tags\": {\r\n    \"env\": \"test\"\r\n  },\r\n  \"sku\": {\r\n    \"name\":
+        \"Standard_ND128isr_GB300_v6\",\r\n    \"capacity\": 18\r\n  },\r\n  \"zones\":
+        [\r\n    \"2\"\r\n  ],\r\n  \"placement\": {\r\n    \"zonePlacementPolicy\":
+        \"Any\"\r\n  },\r\n  \"properties\": {\r\n    \"interconnectGroup\": {\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \   },\r\n    \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \   \"provisioningTime\": \"2026-08-03T07:52:14.7087503+00:00\",\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      content-length:
+      - '890'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:22 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;263
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DFFCA5C4C25545F5882038C32F170B08 Ref B: KUL201100110029 Ref C: 2026-08-03T07:52:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "placement": {"zonePlacementPolicy": "Any"},
+      "properties": {"interconnectGroup": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig"}},
+      "sku": {"capacity": 18, "name": "Standard_ND128isr_GB300_v6"}, "tags": {"env":
+      "prod"}, "zones": ["2"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '385'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku-capacity --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"Result\": {\r\n    \"name\": \"icb000002\",\r\n    \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \   \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n    \"location\":
+        \"eastus2euap\",\r\n    \"tags\": {\r\n      \"env\": \"prod\"\r\n    },\r\n
+        \   \"sku\": {\r\n      \"name\": \"Standard_ND128isr_GB300_v6\",\r\n      \"capacity\":
+        18\r\n    },\r\n    \"zones\": [\r\n      \"2\"\r\n    ],\r\n    \"placement\":
+        {\r\n      \"zonePlacementPolicy\": \"Any\"\r\n    },\r\n    \"properties\":
+        {\r\n      \"interconnectGroup\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \     },\r\n      \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \     \"provisioningTime\": \"2026-08-03T07:52:14.7087503+00:00\",\r\n      \"provisioningState\":
+        \"Succeeded\"\r\n    }\r\n  },\r\n  \"Id\": 87467126,\r\n  \"Status\": \"RanToCompletion\",\r\n
+        \ \"IsCanceled\": false,\r\n  \"IsCompleted\": true,\r\n  \"CreationOptions\":
+        \"None\",\r\n  \"IsFaulted\": false\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/f6d82ebb-1a21-48f1-83c7-ce2a5b5280e6?p=f6830f8f-cf25-42e7-9aa3-89582227249f&api-version=2026-03-01&t=639213403444778421&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=hR7Iw7NGf7HLo9kov4ai9RuDoaivNE3E-XCXnsR3KFsm5xdchKgjQbHzxS1fHz1PX8ffuQCuWZCANJO4rHeKQSpk4KID7qhvQhXotKex2dZjudAshRN1mWsYxu5HMwysTSynF_i7N9YPa8NonIxToceB6_VdEhAHxKdLUIy8qjjWwbo5HIfxRqkDCNP-4jtwLa6kNCQsFXkW7RsLebChlDW8IDnxhOLqOr35vT6_HqP9cv3orsWdjfnIVuDu6nYKFr60wF1S9GrOOf0k-ZypLU9e0QmV4m5joLU-P40tHD_Sc6VXeKVJjG-DIciWzpN2hN31YqjxWuc7D1P4v6KXMQ&h=AyeZPG1m89Dkhig69DfyJ4p5cD1r2YjdXmIVRmd1Fr4
+      content-length:
+      - '1112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:24 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/eastus2euap/1b65df4c-60ba-4846-a0f7-6b530dc0864f
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/PutDeleteInterconnectBlockSubscriptionMaximum;118
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5740CD50B7F445E688E2C0FA1B82859C Ref B: KUL201100111062 Ref C: 2026-08-03T07:52:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku-capacity --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/f6d82ebb-1a21-48f1-83c7-ce2a5b5280e6?p=f6830f8f-cf25-42e7-9aa3-89582227249f&api-version=2026-03-01&t=639213403444778421&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=hR7Iw7NGf7HLo9kov4ai9RuDoaivNE3E-XCXnsR3KFsm5xdchKgjQbHzxS1fHz1PX8ffuQCuWZCANJO4rHeKQSpk4KID7qhvQhXotKex2dZjudAshRN1mWsYxu5HMwysTSynF_i7N9YPa8NonIxToceB6_VdEhAHxKdLUIy8qjjWwbo5HIfxRqkDCNP-4jtwLa6kNCQsFXkW7RsLebChlDW8IDnxhOLqOr35vT6_HqP9cv3orsWdjfnIVuDu6nYKFr60wF1S9GrOOf0k-ZypLU9e0QmV4m5joLU-P40tHD_Sc6VXeKVJjG-DIciWzpN2hN31YqjxWuc7D1P4v6KXMQ&h=AyeZPG1m89Dkhig69DfyJ4p5cD1r2YjdXmIVRmd1Fr4
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2026-08-03T07:52:24.3909876+00:00\",\r\n  \"endTime\":
+        \"2026-08-03T07:52:24.4313174+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"f6d82ebb-1a21-48f1-83c7-ce2a5b5280e6\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/southeastasia/a74d006c-e1f9-48ff-95d3-5e1a6ebde399
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationResource;44,Microsoft.Compute/GetOperationSubscriptionMaximum;14998
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A01AE14B40D548908243E0DA269D040B Ref B: KUL201100111052 Ref C: 2026-08-03T07:52:25Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku-capacity --tags
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"icb000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002\",\r\n
+        \ \"type\": \"Microsoft.Compute/interconnectBlocks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"tags\": {\r\n    \"env\": \"prod\"\r\n  },\r\n  \"sku\": {\r\n    \"name\":
+        \"Standard_ND128isr_GB300_v6\",\r\n    \"capacity\": 18\r\n  },\r\n  \"zones\":
+        [\r\n    \"2\"\r\n  ],\r\n  \"placement\": {\r\n    \"zonePlacementPolicy\":
+        \"Any\"\r\n  },\r\n  \"properties\": {\r\n    \"interconnectGroup\": {\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Network/interconnectGroups/training-ig\"\r\n
+        \   },\r\n    \"interconnectBlockId\": \"0311902e-15ae-4836-85c5-c13701d917f5\",\r\n
+        \   \"provisioningTime\": \"2026-08-03T07:52:14.7087503+00:00\",\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '890'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetInterconnectBlockSubscriptionMaximum;261
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 09F412A73F124AC0BDD19957B8820D1C Ref B: KUL201100111023 Ref C: 2026-08-03T07:52:26Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks/icb000002?api-version=2026-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/6d1f27bc-ba2b-4616-aafe-8db1698fc331?p=f6830f8f-cf25-42e7-9aa3-89582227249f&api-version=2026-03-01&t=639213403487167970&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=K801Lg1fel9vKKZ9BnCHUbeF0BECdPHkY_eJusVosyE5szqWRJsjn1sdaahobWGPrpY4KA5XfUusXXxsthXJBfhSWxfy3ejCHbtPxs7qL2eKRJ1-kb2yjxv3VTqiLsP2n_xcvIsEzFU-X0lPEOHAU7N_uiDjOvVicXW8tIQ1l4YzzWl0q_RcDzeLx8unzERU9j1sRsLtcAwAjIuf_700dW1DyxyMr3wOoRfRakEHtFgBjcK9lERI9CQqSGoCoZzGQeV4kZzay5AYDMyBH1S6Ons7duyl8xNxbq1gmzvXaXUskmK_fIE_PrS8TPUMWE5L8ZWKwydHFx9xkyOdwIRkkA&h=cSwjhH42BbDzERM_z-ZX3e46gkof3w9bi8cq8ltYjvY
+      content-length:
+      - '0'
+      date:
+      - Mon, 03 Aug 2026 07:52:27 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/6d1f27bc-ba2b-4616-aafe-8db1698fc331?p=f6830f8f-cf25-42e7-9aa3-89582227249f&monitor=true&api-version=2026-03-01&t=639213403487167970&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=ux7rL1S2oG1LZ99p7wAsXgAJulhn7v0UrkWHqkzTsYk2h-C-DZQMG9mSKAbEg9gPAM7qcbMpq7i5UalWLPIBbTRg1Mf6Pbg6ocOVmrX76-_p7s6J0vecxStF7r5YeFCQIDmFH6fCHF6e_fPOcr6ee2vfqHf1f_GAYOzGfmAO1ORDGdtv5pD4UPHxZ-4ZW2PwN94k6RFnZbU5Ae0W3rfvAc_YCrWNMntkTT-7VlPV86I3Rvxsgk8NQlw7ZVsuXj8_ttKUDuNZ6praOTyq99lJw6pJV81pi_hgCbz-PC8sFJdx5GG3gfP39YOZ396VYPtOXWremXmbw7q6gqh3T68Sgw&h=cSwjhH42BbDzERM_z-ZX3e46gkof3w9bi8cq8ltYjvY
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/eastus2euap/99215f27-97b3-4719-b0f6-09229c4e51d0
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/PutDeleteInterconnectBlockSubscriptionMaximum;117
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3A00AD7746B640559B7BB32B2998F16E Ref B: KUL201100110062 Ref C: 2026-08-03T07:52:27Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/6d1f27bc-ba2b-4616-aafe-8db1698fc331?p=f6830f8f-cf25-42e7-9aa3-89582227249f&api-version=2026-03-01&t=639213403487167970&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=K801Lg1fel9vKKZ9BnCHUbeF0BECdPHkY_eJusVosyE5szqWRJsjn1sdaahobWGPrpY4KA5XfUusXXxsthXJBfhSWxfy3ejCHbtPxs7qL2eKRJ1-kb2yjxv3VTqiLsP2n_xcvIsEzFU-X0lPEOHAU7N_uiDjOvVicXW8tIQ1l4YzzWl0q_RcDzeLx8unzERU9j1sRsLtcAwAjIuf_700dW1DyxyMr3wOoRfRakEHtFgBjcK9lERI9CQqSGoCoZzGQeV4kZzay5AYDMyBH1S6Ons7duyl8xNxbq1gmzvXaXUskmK_fIE_PrS8TPUMWE5L8ZWKwydHFx9xkyOdwIRkkA&h=cSwjhH42BbDzERM_z-ZX3e46gkof3w9bi8cq8ltYjvY
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2026-08-03T07:52:28.674539+00:00\",\r\n  \"endTime\":
+        \"2026-08-03T07:52:28.8626653+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"6d1f27bc-ba2b-4616-aafe-8db1698fc331\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/southeastasia/5bfcde3f-7917-44a4-a616-cf03493981e2
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationResource;44,Microsoft.Compute/GetOperationSubscriptionMaximum;14997
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D20D2B51D4654399A21D06FD3EDEEA66 Ref B: KUL201100111031 Ref C: 2026-08-03T07:52:29Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/operations/6d1f27bc-ba2b-4616-aafe-8db1698fc331?p=f6830f8f-cf25-42e7-9aa3-89582227249f&monitor=true&api-version=2026-03-01&t=639213403487167970&c=MIIH9TCCBt2gAwIBAgIRAIv6bqY7SwhL3LG8FAICEKMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA3MjAxOTMxMjBaFw0yNzAxMTYwMTMxMjBaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA60XvbHp6raPh7-g9YtwjAqWd8-7lJaqYevbtT_chcmJKVGCqalDpcpjm1c7dJ0qttCqzgccGmOaUWRed2_AMGGNlJShP44ilyJABuOT-EaoRkb3opVLWjv64yC_HkTxj2rVcdFdi0mzKyfN-4xe_IO6lAgKTxPPX2W5koMP89MUtB9_TIF0ZmAmHkUJ2buzabC1mfecmfqeNzrWGwtYHEeBWwdbVL2G8hvN1QfQR8Fn7voXnu_aco27ks_o_kTCamRZw9DWQxrZpUKOcr-oF3519-slXDvongk1J2qEhVwm4ubCSPVapkQk-IT3Ta9s8LWV2Xxc4kK3ltL6a3X8HsQIDAQABo4IE8jCCBO4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUQVGqcnvgw6L4YX39W1RhWMO33mMwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHiBgNVHR8EggHZMIIB1TB1oHOgcYZvaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHegdaBzhnFodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82My9jdXJyZW50LmNybDBmoGSgYoZgaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYzL2N1cnJlbnQuY3JsMHugeaB3hnVodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNjMvY3VycmVudC5jcmwwggHnBggrBgEFBQcBAQSCAdkwggHVMHgGCCsGAQUFBzAChmxodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwegYIKwYBBQUHMAKGbmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NhY2VydHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxL2NlcnQuY2VyMGkGCCsGAQUFBzAChl1odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwcgYIKwYBBQUHMAKGZmh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEALvKIKeG4LLHrBV6i-dD6mlha6SyIEw86psNUSqq7gX5SSbyC2LJl0hFPP6eZnQIrAgslagPJmiu8xxyQWfXEKPk7iNcOu63xs7xRhS-vgQ0kFSP5UxHToK0eCIC8X2PnmZ7uEC9lLcC8zR4xTCvuFX0aJc2tjjIiJnrnU8CZ8y8Tp6poCS2KvpJk1Rk2x5p-AouDt-0UkRsaEIlvVM95rgiZ4yKxGKzI02X8n3p__rHt7iaxLW9fSrXQnyDr5zIzVd9UvUEpXgp3vGpV6iDTwYvEwQbg3Lj4sYLyDjKV2rOvDeOPa6rGbGc3mvGUerYDmqPuw4XWatkr7IoISbVPeg&s=ux7rL1S2oG1LZ99p7wAsXgAJulhn7v0UrkWHqkzTsYk2h-C-DZQMG9mSKAbEg9gPAM7qcbMpq7i5UalWLPIBbTRg1Mf6Pbg6ocOVmrX76-_p7s6J0vecxStF7r5YeFCQIDmFH6fCHF6e_fPOcr6ee2vfqHf1f_GAYOzGfmAO1ORDGdtv5pD4UPHxZ-4ZW2PwN94k6RFnZbU5Ae0W3rfvAc_YCrWNMntkTT-7VlPV86I3Rvxsgk8NQlw7ZVsuXj8_ttKUDuNZ6praOTyq99lJw6pJV81pi_hgCbz-PC8sFJdx5GG3gfP39YOZ396VYPtOXWremXmbw7q6gqh3T68Sgw&h=cSwjhH42BbDzERM_z-ZX3e46gkof3w9bi8cq8ltYjvY
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 03 Aug 2026 07:52:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-need-to-refresh-epl-cache:
+      - 'False'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=50aa02a5-cef7-4a1c-be56-d7b8a8c363ab/southeastasia/a820ea2e-5856-4135-9931-350922fde571
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationResource;43,Microsoft.Compute/GetOperationSubscriptionMaximum;14996
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E96728B66E6F4F06A9B79C90856A2A9A Ref B: KUL201100110040 Ref C: 2026-08-03T07:52:30Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - interconnect-block list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_interconnect_block_000001/providers/Microsoft.Compute/interconnectBlocks?api-version=2026-03-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Aug 2026 07:52:32 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8DEB235C3E344336AE9054FFDD7CAF7E Ref B: KUL201100111062 Ref C: 2026-08-03T07:52:32Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -180,7 +180,7 @@ def _normalize_names_input(name, names):
 def _fetch_context(cli_ctx, resource_group, context_name, subscription=None):
     """GET the context resource. Returns (context_dict, subscription_id)."""
     cmd = CmdProxy(cli_ctx)
-    args = ["workload-orchestration", "context", "show",
+    args = ["workload-orchestration-preview", "context", "show",
             "-g", resource_group, "--name", context_name]
     if subscription:
         args.extend(["--subscription", subscription])

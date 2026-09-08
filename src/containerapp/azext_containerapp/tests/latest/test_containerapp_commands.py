@@ -2057,10 +2057,10 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_up_registry_identity_user(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='aca', length=24)
@@ -2177,10 +2177,10 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_up_registry_identity_system(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='aca', length=24)
@@ -2224,10 +2224,10 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_up_private_registry_port(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='aca', length=24)
@@ -2292,10 +2292,10 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_up_registry_acr_look_up_credentical(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
@@ -2369,10 +2369,10 @@ class ContainerappUpRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     @SubnetPreparer(location="eastus", delegations='Microsoft.App/environments', service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_up_identity_registry(self, resource_group, subnet_id, vnet_name, subnet_name):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
@@ -2712,10 +2712,10 @@ properties:
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_preview_create_with_yaml(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='yaml', length=24)
@@ -2891,10 +2891,10 @@ properties:
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_create_with_yaml(self, resource_group):
-        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use brazilsouth as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "brazilsouth"
         self.cmd('configure --defaults location={}'.format(location))
 
         app = self.create_random_name(prefix='yaml', length=24)
@@ -3012,6 +3012,10 @@ properties:
                           allowInsecure: false
                           targetPort: 80
                           transport: Auto
+                          traffic:
+                            - latestRevision: true
+                              weight: 100
+                              label: label1
                       template:
                         revisionSuffix: myrevision2
                         containers:

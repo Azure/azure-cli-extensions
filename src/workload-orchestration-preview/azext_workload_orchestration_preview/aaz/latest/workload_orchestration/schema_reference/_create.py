@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema-reference create",
+    "workload-orchestration-preview schema-reference create",
 )
 class Create(AAZCommand):
     """Create a Schema Reference Resource

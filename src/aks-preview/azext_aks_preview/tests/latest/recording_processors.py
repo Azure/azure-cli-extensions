@@ -8,6 +8,8 @@ from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 
 MOCK_GUID = '00000000-0000-0000-0000-000000000001'
 MOCK_SECRET = 'fake-secret'
+MOCK_BOOTSTRAP_TOKEN = 'fake-bootstrap-token'
+MOCK_CA_CERT_DATA = 'ZmFrZS1jYS1jZXJ0'
 
 
 class KeyReplacer(RecordingProcessor):
@@ -38,6 +40,20 @@ class KeyReplacer(RecordingProcessor):
         if 'principalId' in val:
             val = re.sub(r'"principalId":( ?)"([^"]+)"', r'"principalId":"{}"'
                          .format(MOCK_GUID), val, flags=re.IGNORECASE)
+        if 'bootstraptoken' in val.lower():
+            val = re.sub(
+                r'("bootstrapToken"\s*:\s*\{[^{}]*?"token"\s*:\s*)"[^"]*"',
+                r'\1"{}"'.format(MOCK_BOOTSTRAP_TOKEN),
+                val,
+                flags=re.IGNORECASE,
+            )
+        if 'cacertdata' in val.lower():
+            val = re.sub(
+                r'("caCertData"\s*:\s*)"[^"]*"',
+                r'\1"{}"'.format(MOCK_CA_CERT_DATA),
+                val,
+                flags=re.IGNORECASE,
+            )
         return val
 
     def _replace_byte_keys(self, val):
@@ -58,4 +74,18 @@ class KeyReplacer(RecordingProcessor):
             val = re.sub(b'"principalId":( ?)"([^"]+)"',
                          ('"principalId":"{}"'.format(MOCK_GUID)).encode('utf-8'),
                          val, flags=re.IGNORECASE)
+        if b'bootstraptoken' in val.lower():
+            val = re.sub(
+                b'("bootstrapToken"\\s*:\\s*\\{[^{}]*?"token"\\s*:\\s*)"[^"]*"',
+                b'\\1"' + MOCK_BOOTSTRAP_TOKEN.encode('utf-8') + b'"',
+                val,
+                flags=re.IGNORECASE,
+            )
+        if b'cacertdata' in val.lower():
+            val = re.sub(
+                b'("caCertData"\\s*:\\s*)"[^"]*"',
+                b'\\1"' + MOCK_CA_CERT_DATA.encode('utf-8') + b'"',
+                val,
+                flags=re.IGNORECASE,
+            )
         return val

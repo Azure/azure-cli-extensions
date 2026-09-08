@@ -5,7 +5,7 @@
 
 # pylint: disable=unused-argument,import-outside-toplevel,too-many-locals
 
-"""Prerequisite validators for the workload-orchestration support bundle feature.
+"""Prerequisite validators for the workload-orchestration-preview support bundle feature.
 
 Each check function has the same signature (clients, bundle_dir, cluster_info, capabilities)
 for consistency. Not all checks use all arguments.

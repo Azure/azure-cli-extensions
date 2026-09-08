@@ -7,16 +7,46 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=protected-access
 
 from knack.log import get_logger
 from .aaz.latest.appnet.member._join import Join
-from azure.cli.core.aaz import has_value
-from azure.cli.core.azclierror import ArgumentUsageError
+from azure.cli.core.aaz import has_value, AAZResourceLocationArgFormat
+from azure.cli.core.azclierror import ArgumentUsageError, RequiredArgumentMissingError
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+from azure.mgmt.core.tools import is_valid_resource_id
+from azure.core.exceptions import AzureError
 
 logger = get_logger(__name__)
 
+# `location` is part of the common ARM resource envelope and is returned by every
+# Microsoft.ContainerService/managedClusters API version, so a pinned stable version is
+# safe here purely for reading the cluster's `.location`.
+MANAGED_CLUSTER_API_VERSION = "2023-09-01"
+
 
 class MemberJoin(Join):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # --member-location is derived from the member cluster (--member-resource-id) when
+        # not supplied, so it is no longer required on the command line. Replace the format
+        # so AAZ does NOT auto-fill it from the resource group's location before
+        # pre_operations runs; an empty value must reach our detection logic below.
+        args_schema.member_location._required = False
+        args_schema.member_location._fmt = AAZResourceLocationArgFormat()
+        # AAZResourceLocationArg defaults configured_default='location', so a user with
+        # `az configure --defaults location=...` would get that value and auto-detect would
+        # never run. Clear it so an unspecified --member-location stays unset.
+        args_schema.member_location._configured_default = None
+        args_schema.member_location._help["short-summary"] = (
+            "The geo-location where the member resource lives. Defaults to the location "
+            "of the member cluster referenced by --member-resource-id."
+        )
+        return args_schema
+
     def pre_operations(self):
         super().pre_operations()
 
@@ -28,3 +58,46 @@ class MemberJoin(Join):
         elif args.upgrade_mode == 'FullyManaged':
             if has_value(args.version):
                 raise ArgumentUsageError('Cannot use --version when using "--upgrade-mode FullyManaged"')
+
+        self._resolve_member_location(args)
+
+    def _resolve_member_location(self, args):
+        cluster_location = self._get_member_cluster_location(args)
+
+        if not has_value(args.member_location):
+            if not cluster_location:
+                raise RequiredArgumentMissingError(
+                    "Unable to determine the member location automatically. Provide "
+                    "--member-location explicitly, or pass --member-resource-id pointing "
+                    "to an existing cluster whose location can be read."
+                )
+            args.member_location = cluster_location
+            logger.info("Using member cluster location '%s' for --member-location.", cluster_location)
+            return
+
+        member_location = args.member_location.to_serialized_data()
+        if cluster_location and member_location.lower() != cluster_location.lower():
+            logger.warning(
+                "--member-location '%s' differs from the member cluster location '%s'. "
+                "A member should normally be in the same region as its cluster.",
+                member_location, cluster_location,
+            )
+
+    def _get_member_cluster_location(self, args):
+        if not has_value(args.member_resource_id):
+            return None
+        resource_id = args.member_resource_id.to_serialized_data()
+        if not is_valid_resource_id(resource_id):
+            return None
+        client = get_mgmt_service_client(self.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+        try:
+            cluster = client.resources.get_by_id(resource_id, MANAGED_CLUSTER_API_VERSION)
+        except AzureError as ex:
+            # Reading the cluster is best-effort: if it can't be reached (404/403, or a
+            # connection/timeout failure such as ServiceRequestError/ServiceResponseError),
+            # treat the location as unavailable so an explicitly provided --member-location
+            # still works, and the auto-detect path surfaces the actionable
+            # RequiredArgumentMissingError instead of a raw ARM error.
+            logger.debug("Could not read location from member cluster '%s': %s", resource_id, ex)
+            return None
+        return cluster.location

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context site-reference update",
+    "workload-orchestration-preview context site-reference update",
 )
 class Update(AAZCommand):
     """Update Site Reference Resource

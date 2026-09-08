@@ -2,6 +2,12 @@
 
 Release History
 ===============
+5.3.1
++++++
+* Added ``az workload-orchestration init`` command:
+  * Prepares Arc-connected clusters for WO (cert-manager, trust-manager, extension, custom location) 
+  * Creates a default context and sets it as the current context in CLI config
+
 5.2.1
 ++++++
 * **Auto-install of required az CLI dependencies** — ``az workload-orchestration cluster init`` (and any flow that invokes ``target_prepare``) now performs a pre-flight check for the ``connectedk8s``, ``k8s-extension``, and ``customlocation`` az CLI extensions, and installs any that are missing. Previously, missing dependencies surfaced as opaque ``command not recognized`` errors deep inside the cluster onboarding flow.

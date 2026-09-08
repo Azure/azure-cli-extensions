@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration workflow-template list-untitled1",
+    "workload-orchestration-preview workflow-template list-untitled1",
 )
 class ListUntitled1(AAZCommand):
     """List by specified resource group

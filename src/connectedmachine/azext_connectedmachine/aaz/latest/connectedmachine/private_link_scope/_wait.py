@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-07-15"],
         ]
     }
 
@@ -49,7 +49,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         return cls._args_schema
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -187,6 +187,9 @@ class Wait(AAZWaitCommand):
             properties.public_network_access = AAZStrType(
                 serialized_name="publicNetworkAccess",
             )
+            properties.service_extensions = AAZListType(
+                serialized_name="serviceExtensions",
+            )
 
             private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
             private_endpoint_connections.Element = AAZObjectType()
@@ -235,6 +238,17 @@ class Wait(AAZWaitCommand):
             )
             private_link_service_connection_state.status = AAZStrType(
                 flags={"required": True},
+            )
+
+            service_extensions = cls._schema_on_200.properties.service_extensions
+            service_extensions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.service_extensions.Element
+            _element.service_extension_public_network_access = AAZStrType(
+                serialized_name="serviceExtensionPublicNetworkAccess",
+            )
+            _element.service_extension_type = AAZStrType(
+                serialized_name="serviceExtensionType",
             )
 
             system_data = cls._schema_on_200.system_data
