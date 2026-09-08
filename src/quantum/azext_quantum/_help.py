@@ -363,6 +363,9 @@ helps['quantum workspace clear'] = """
 helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
+    long-summary: >-
+        Target quota values are absolute. For V2 workspaces, each final Standard and High allocation is validated
+        against the provider's suite target allocation before the workspace is created.
     examples:
       - name: Create a new Azure Quantum workspace with the providers that offer free credit.
         text: |-
@@ -441,6 +444,10 @@ helps['quantum workspace show'] = """
 helps['quantum workspace update'] = """
     type: command
     short-summary: Update the given (or current) Azure Quantum workspace.
+    long-summary: >-
+        Target quota values are absolute. Each final Standard and High allocation is validated against the current
+        workspace target usage and provider's suite target allocation, with equality allowed at both boundaries.
+        Priority values omitted from an existing target allocation are preserved and validated.
     examples:
       - name: Enable a provided Azure Quantum workspace api keys.
         text: |-

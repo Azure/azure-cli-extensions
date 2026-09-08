@@ -7,6 +7,7 @@ Release History
 ++++++++++++++
 * Added the ``az quantum suite-offer target list`` command to list the targets and their status available through a suite offer provider account, without requiring a workspace.
 * Updated the ``az quantum workspace quotas`` command to include v2 target quota allocations and usages while preserving the existing response format for v1 providers.
+* Added always-on validation for V2 workspace target quota allocations on create and update, allowing final Standard and High values between current workspace usage and suite target allocation, inclusive.
 
 1.0.0b26
 ++++++++++++++

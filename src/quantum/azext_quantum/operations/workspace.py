@@ -23,7 +23,7 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials, base_url, base_url_v2
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_offers, _get_data_credentials, base_url, base_url_v2
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
@@ -268,6 +268,102 @@ def _apply_target_quotas(providers, quota, preserve_existing=False):
         provider.target_quotas = target_quotas
 
 
+_TARGET_QUOTA_PRIORITIES = (
+    ("Standard", "standard_minutes_lifetime"),
+    ("High", "high_minutes_lifetime"),
+)
+
+
+def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
+    if not quota:
+        return
+
+    requested_keys = {
+        (allocation['providerId'].lower(), allocation['targetId'].lower())
+        for allocation in quota
+    }
+    workspace_providers = {
+        provider.provider_id.lower(): provider
+        for provider in workspace.properties.providers or []
+        if provider.provider_id
+    }
+    suite_offers = {
+        offer.properties.provider_id.lower(): offer
+        for offer in cf_suite_offers(cmd.cli_ctx).list_by_subscription()
+        if offer.properties is not None and offer.properties.provider_id
+    }
+
+    final_targets = {}
+    suite_targets = {}
+    for provider_id, target_id in sorted(requested_keys):
+        provider = workspace_providers[provider_id]
+        target_quota = next(
+            item for item in provider.target_quotas or []
+            if item.target_id is not None and item.target_id.lower() == target_id
+        )
+        final_targets[(provider_id, target_id)] = target_quota
+        suite_offer = suite_offers.get(provider_id)
+        if suite_offer is None:
+            raise InvalidArgumentValueError(
+                f"Cannot validate --quota because no suite offer was found for provider '{provider.provider_id}'. "
+                "Run 'az quantum suite-offer list' to view available suite offers."
+            )
+        suite_target = next(
+            (item for item in suite_offer.properties.target_quotas or []
+             if item.target_id is not None and item.target_id.lower() == target_id),
+            None
+        )
+        if suite_target is None:
+            raise InvalidArgumentValueError(
+                f"Cannot validate --quota because target '{target_quota.target_id}' was not found in the "
+                f"suite offer for provider '{provider.provider_id}'. Run 'az quantum suite-offer quotas "
+                f"--provider-id {provider.provider_id}' to view available target allocations."
+            )
+        for priority, attribute in _TARGET_QUOTA_PRIORITIES:
+            if getattr(target_quota, attribute, None) is not None and getattr(suite_target, attribute, None) is None:
+                raise InvalidArgumentValueError(
+                    f"Cannot validate the {priority} allocation for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}', because the suite offer has no {priority} allocation."
+                )
+        suite_targets[(provider_id, target_id)] = suite_target
+
+    usage_by_key = {}
+    if include_usage:
+        usage_client = cf_quotas(
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url_v2(workspace.location))
+        for provider_id in sorted({provider_id for provider_id, _ in requested_keys}):
+            provider = workspace_providers[provider_id]
+            try:
+                usages = usage_client.list_quota_usages(
+                    info.subscription, info.resource_group, info.name, provider.provider_id)
+            except AzureResourceNotFoundError:
+                usages = None
+            for usage in usages or []:
+                if usage.target_id is not None:
+                    usage_by_key[(provider_id, usage.target_id.lower())] = usage.usage
+
+    for provider_id, target_id in sorted(requested_keys):
+        provider = workspace_providers[provider_id]
+        target_quota = final_targets[(provider_id, target_id)]
+        suite_target = suite_targets[(provider_id, target_id)]
+
+        usage = usage_by_key.get((provider_id, target_id))
+        for priority, attribute in _TARGET_QUOTA_PRIORITIES:
+            final_allocation = getattr(target_quota, attribute, None)
+            if final_allocation is None:
+                continue
+            suite_allocation = getattr(suite_target, attribute)
+            current_usage = getattr(usage, attribute, None) if usage is not None else None
+            current_usage = current_usage if current_usage is not None else 0
+            if final_allocation < current_usage or final_allocation > suite_allocation:
+                raise InvalidArgumentValueError(
+                    f"The final {priority} allocation for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' is {final_allocation} minutes. It must be between the current "
+                    f"workspace usage ({current_usage} minutes) and suite allocation ({suite_allocation} minutes), "
+                    "inclusive."
+                )
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
@@ -291,6 +387,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
+        _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
         quantum_workspace.properties.api_key_enabled = True
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
@@ -308,6 +405,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
 
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
     _apply_target_quotas(quantum_workspace.properties.providers, quota)
+    _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
         provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
@@ -622,6 +720,7 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     if quota:
         _require_v2_workspace(ws.properties.workspace_kind)
         _apply_target_quotas(ws.properties.providers, quota, preserve_existing=True)
+        _validate_target_quota_bounds(cmd, info, ws, quota, include_usage=True)
 
     if enable_key in ["True", "true"]:
         ws.properties.api_key_enabled = True
