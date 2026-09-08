@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import ResourceNotFoundError, InvalidArgumentValueError, ClientRequestError, ForbiddenError, ServiceError
+from azure.cli.core.azclierror import ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
@@ -971,7 +971,7 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         delete_role_assignments.assert_called_once_with(cmd, ids=["/assignments/direct"])
         self.assertIn("inherited access from the resource group or subscription remains", logs.output[0])
 
-    def test_remove_user_rejects_when_access_is_only_inherited(self):
+    def test_remove_user_raises_resource_not_found_when_access_is_only_inherited(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         assignments = [{"id": "/assignments/owner", "scope": "/subscriptions/sub/resourceGroups/rg"}]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
@@ -979,19 +979,25 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
                 patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=assignments), \
                 patch("azure.cli.command_modules.role.custom.delete_role_assignments") as delete_role_assignments:
             cmd = SimpleNamespace(cli_ctx=object())
-            with self.assertRaisesRegex(ClientRequestError, "has no workspace-level access to remove"):
+            expected_error = ("User 'user@contoso.com' has no access assigned directly on this workspace. "
+                              "Their access is inherited from the resource group or subscription and must be "
+                              "removed at that scope.")
+            with self.assertRaisesRegex(ResourceNotFoundError, expected_error):
                 remove_user(cmd, "rg", "ws", email="user@contoso.com")
 
         delete_role_assignments.assert_not_called()
 
-    def test_remove_user_rejects_user_without_workspace_access(self):
+    def test_remove_user_raises_resource_not_found_without_workspace_access(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
                 patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments", return_value=[]), \
                 patch("azure.cli.command_modules.role.custom.delete_role_assignments") as delete_role_assignments:
             cmd = SimpleNamespace(cli_ctx=object())
-            with self.assertRaisesRegex(ClientRequestError, "does not have access"):
+            with self.assertRaisesRegex(
+                ResourceNotFoundError,
+                "User 'user@contoso.com' does not have access to this Azure Quantum workspace."
+            ):
                 remove_user(cmd, "rg", "ws", email="user@contoso.com")
 
         delete_role_assignments.assert_not_called()

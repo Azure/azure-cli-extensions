@@ -612,21 +612,24 @@ def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
-    direct_assignment_ids = [assignment["id"] for assignment in assignments
-                             if assignment["scope"].lower() == scope.lower()]
-    if direct_assignment_ids:
-        delete_role_assignments(cmd, ids=direct_assignment_ids)
-        if any(assignment["scope"].lower() != scope.lower() for assignment in assignments):
-            logger.warning("Workspace-level access was removed for '%s', but inherited access from the resource "
-                           "group or subscription remains. Remove the inherited assignment at its scope to revoke "
-                           "access.", email)
-        return None
-    if assignments:
-        raise ClientRequestError(
-            f"User '{email}' has no workspace-level access to remove. Access inherited from the resource group or "
-            "subscription must be removed at that scope."
-        )
-    raise ClientRequestError(f"User '{email}' does not have access to this Azure Quantum workspace.")
+    direct_assignments = [assignment for assignment in assignments
+                          if assignment["scope"].lower() == scope.lower()]
+    inherited_assignments = [assignment for assignment in assignments
+                             if assignment["scope"].lower() != scope.lower()]
+
+    if not direct_assignments:
+        if inherited_assignments:
+            raise ResourceNotFoundError(
+                f"User '{email}' has no access assigned directly on this workspace. Their access is inherited "
+                "from the resource group or subscription and must be removed at that scope."
+            )
+        raise ResourceNotFoundError(f"User '{email}' does not have access to this Azure Quantum workspace.")
+
+    delete_role_assignments(cmd, ids=[assignment["id"] for assignment in direct_assignments])
+    if inherited_assignments:
+        logger.warning("Workspace-level access was removed for '%s', but inherited access from the resource "
+                       "group or subscription remains. Remove the inherited assignment at its scope to revoke "
+                       "access.", email)
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):
