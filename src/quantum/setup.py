@@ -49,5 +49,8 @@ setup(
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    package_data={'azext_quantum': ['azext_metadata.json', 'operations/templates/create-workspace-and-assign-role.json']},
+    package_data={
+        'azext_quantum': ['azext_metadata.json', 'operations/templates/create-workspace-and-assign-role.json'],
+        'azext_quantum.vendored_sdks.azure_quantum_python._client': ['py.typed'],
+    },
 )

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from .. import models as _models
 
 
-class BlobDetails(_Model):
+class BlobDetails(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """The details (name and container) of the blob to store or download data.
 
     :ivar container_name: The container name. Required.
@@ -53,7 +53,7 @@ class BlobDetails(_Model):
         super().__init__(*args, **kwargs)
 
 
-class CostEstimate(_Model):
+class CostEstimate(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """The job cost billed by the provider. The final cost on your bill might be slightly different
     due to added taxes and currency conversion rates.
 
@@ -96,7 +96,7 @@ class CostEstimate(_Model):
         super().__init__(*args, **kwargs)
 
 
-class InnerError(_Model):
+class InnerError(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """An object containing more specific information about the error. As per Azure REST API
     guidelines - `https://aka.ms/AzureRestApiGuidelines#handling-errors
     <https://aka.ms/AzureRestApiGuidelines#handling-errors>`_.
@@ -131,7 +131,7 @@ class InnerError(_Model):
         super().__init__(*args, **kwargs)
 
 
-class ItemDetails(_Model):
+class ItemDetails(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """A workspace item.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
@@ -262,7 +262,7 @@ class ItemDetails(_Model):
         super().__init__(*args, **kwargs)
 
 
-class JobDetails(ItemDetails, discriminator="Job"):
+class JobDetails(ItemDetails, discriminator="Job"):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """A job to be run in the workspace.
 
     :ivar name: The name of the item. It is not required for the name to be unique and it's only
@@ -412,7 +412,7 @@ class JobDetails(ItemDetails, discriminator="Job"):
         self.item_type = ItemType.JOB  # type: ignore
 
 
-class JobUpdateOptions(_Model):
+class JobUpdateOptions(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """Options for updating a job.
 
     :ivar id: Id of the job. Required.
@@ -441,6 +441,46 @@ class JobUpdateOptions(_Model):
         priority: Optional[Union[str, "_models.Priority"]] = None,
         name: Optional[str] = None,
         tags: Optional[list[str]] = None,
+    ) -> None: ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]) -> None:
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class JobUpdateResponse(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
+    """Response returned when a job update succeeds.
+
+    :ivar name: The name of the job. Required.
+    :vartype name: str
+    :ivar priority: Priority of job. Known values are: "Standard" and "High".
+    :vartype priority: str or ~azure.quantum.models.Priority
+    :ivar tags: List of user-supplied tags associated with the job. Required.
+    :vartype tags: list[str]
+    """
+
+    name: str = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """The name of the job. Required."""
+    priority: Optional[Union[str, "_models.Priority"]] = rest_field(
+        visibility=["read", "create", "update", "delete", "query"]
+    )
+    """Priority of job. Known values are: \"Standard\" and \"High\"."""
+    tags: list[str] = rest_field(visibility=["read", "create", "update", "delete", "query"])
+    """List of user-supplied tags associated with the job. Required."""
+
+    @overload
+    def __init__(
+        self,
+        *,
+        name: str,
+        tags: list[str],
+        priority: Optional[Union[str, "_models.Priority"]] = None,
     ) -> None: ...
 
     @overload
@@ -531,60 +571,37 @@ class Quota(_Model):
      'None' is used for concurrent quotas. Required. Known values are: \"None\" and \"Monthly\"."""
 
 
-class QuotaUsageValues(_Model):
-    """The consumed quota usage values, measured in minutes over the lifetime of the provider
-    account.
+class QuotaUsageData(_Model):
+    """Quota usage data for a suite offer provider.
 
-    :ivar standard_minutes_lifetime: The amount of standard priority minutes consumed over the
-     lifetime of the provider account.
-    :vartype standard_minutes_lifetime: float
-    :ivar high_minutes_lifetime: The amount of high priority minutes consumed over the lifetime of
-     the provider account.
-    :vartype high_minutes_lifetime: float
-    """
-
-    standard_minutes_lifetime: Optional[float] = rest_field(name="standardMinutesLifetime", visibility=["read"])
-    """The amount of standard priority minutes consumed over the lifetime of the provider account."""
-    high_minutes_lifetime: Optional[float] = rest_field(name="highMinutesLifetime", visibility=["read"])
-    """The amount of high priority minutes consumed over the lifetime of the provider account."""
-
-
-class QuotaUsage(_Model):
-    """Quota usage information for a suite offer provider account.
-
-    :ivar id: The unique identifier of the quota usage record. Required.
-    :vartype id: str
-    :ivar provider_id: The unique identifier for the provider account. Required.
+    :ivar provider_id: The unique identifier for the provider. Required.
     :vartype provider_id: str
-    :ivar scope: The scope at which the quota usage is measured. Required.
-    :vartype scope: str
-    :ivar target_id: The identifier of the target the usage applies to, when the scope is
-     target-specific.
+    :ivar scope: The scope at which the quota usage is applied. Required. Known values are:
+     "Target", "SubscriptionTarget", and "WorkspaceTarget".
+    :vartype scope: str or ~azure.quantum.models.SuiteOfferScope
+    :ivar target_id: The unique identifier for the target, when the usage is scoped to a target.
     :vartype target_id: str
-    :ivar usage: The consumed quota usage values. Required.
-    :vartype usage: ~azure.quantum.models.QuotaUsageValues
-    :ivar last_modified_time: The timestamp of the last modification of the quota usage record.
+    :ivar usage: The accumulated quota usage values. Required.
+    :vartype usage: ~azure.quantum.models.Usage
+    :ivar last_modified_time: The time when the quota usage was last modified. Required.
     :vartype last_modified_time: ~datetime.datetime
-    :ivar metadata: Additional metadata associated with the quota usage record.
+    :ivar metadata: Additional metadata associated with the quota usage.
     :vartype metadata: dict[str, str]
     """
 
-    id: str = rest_field(visibility=["read"])
-    """The unique identifier of the quota usage record. Required."""
     provider_id: str = rest_field(name="providerId", visibility=["read"])
-    """The unique identifier for the provider account. Required."""
-    scope: str = rest_field(visibility=["read"])
-    """The scope at which the quota usage is measured. Required."""
+    """The unique identifier for the provider. Required."""
+    scope: Union[str, "_models.SuiteOfferScope"] = rest_field(visibility=["read"])
+    """The scope at which the quota usage is applied. Required. Known values are: \"Target\",
+     \"SubscriptionTarget\", and \"WorkspaceTarget\"."""
     target_id: Optional[str] = rest_field(name="targetId", visibility=["read"])
-    """The identifier of the target the usage applies to, when the scope is target-specific."""
-    usage: "_models.QuotaUsageValues" = rest_field(visibility=["read"])
-    """The consumed quota usage values. Required."""
-    last_modified_time: Optional[datetime.datetime] = rest_field(
-        name="lastModifiedTime", visibility=["read"], format="rfc3339"
-    )
-    """The timestamp of the last modification of the quota usage record."""
+    """The unique identifier for the target, when the usage is scoped to a target."""
+    usage: "_models.Usage" = rest_field(visibility=["read"])
+    """The accumulated quota usage values. Required."""
+    last_modified_time: datetime.datetime = rest_field(name="lastModifiedTime", visibility=["read"], format="rfc3339")
+    """The time when the quota usage was last modified. Required."""
     metadata: Optional[dict[str, str]] = rest_field(visibility=["read"])
-    """Additional metadata associated with the quota usage record."""
+    """Additional metadata associated with the quota usage."""
 
 
 class SasUriResponse(_Model):
@@ -599,7 +616,9 @@ class SasUriResponse(_Model):
     """A URL with a SAS token to upload a blob for execution in the given workspace. Required."""
 
 
-class SessionDetails(ItemDetails, discriminator="Session"):
+class SessionDetails(
+    ItemDetails, discriminator="Session"
+):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """Session, a logical grouping of jobs.
 
     :ivar name: The name of the item. It is not required for the name to be unique and it's only
@@ -699,6 +718,10 @@ class TargetStatus(_Model):
     :vartype current_availability: str or ~azure.quantum.models.TargetAvailability
     :ivar average_queue_time: Average queue time in seconds. Required.
     :vartype average_queue_time: int
+    :ivar average_queue_time_high_priority: Average high-priority queue time in seconds.
+    :vartype average_queue_time_high_priority: int
+    :ivar average_queue_time_standard_priority: Average standard-priority queue time in seconds.
+    :vartype average_queue_time_standard_priority: int
     :ivar status_page: A page with detailed status of the provider.
     :vartype status_page: str
     :ivar num_qubits: The qubit number.
@@ -718,6 +741,14 @@ class TargetStatus(_Model):
      \"Unavailable\"."""
     average_queue_time: int = rest_field(name="averageQueueTime", visibility=["read"])
     """Average queue time in seconds. Required."""
+    average_queue_time_high_priority: Optional[int] = rest_field(
+        name="averageQueueTimeHighPriority", visibility=["read"]
+    )
+    """Average high-priority queue time in seconds."""
+    average_queue_time_standard_priority: Optional[int] = rest_field(
+        name="averageQueueTimeStandardPriority", visibility=["read"]
+    )
+    """Average standard-priority queue time in seconds."""
     status_page: Optional[str] = rest_field(name="statusPage", visibility=["read"])
     """A page with detailed status of the provider."""
     num_qubits: Optional[int] = rest_field(name="numQubits", visibility=["read"])
@@ -736,7 +767,7 @@ class Usage(_Model):
     """
 
 
-class UsageEvent(_Model):
+class UsageEvent(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """Usage event details.
 
     :ivar dimension_id: The dimension id. Required.
@@ -791,7 +822,7 @@ class UsageEvent(_Model):
         super().__init__(*args, **kwargs)
 
 
-class WorkspaceItemError(_Model):
+class WorkspaceItemError(_Model):  # pylint: disable=docstring-keyword-should-match-keyword-only
     """The error object.
 
     :ivar code: One of a server-defined set of error codes. Required.

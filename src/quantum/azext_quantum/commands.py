@@ -35,7 +35,9 @@ def transform_suite_offer_targets(providers):
         OrderedDict([
             ('Target-id', target['id']),
             ('Current Availability', target['currentAvailability']),
-            ('Average Queue Time (seconds)', target['averageQueueTime'])
+            ('Average Queue Time (seconds)', target['averageQueueTime']),
+            ('Average Standard Queue Time (seconds)', target.get('averageQueueTimeStandardPriority')),
+            ('Average High Queue Time (seconds)', target.get('averageQueueTimeHighPriority'))
         ])
         for provider in providers
         for target in provider['targets']

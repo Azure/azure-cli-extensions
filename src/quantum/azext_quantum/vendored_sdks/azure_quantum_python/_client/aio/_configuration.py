@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from azure.core.credentials_async import AsyncTokenCredential
 
 
-class WorkspaceClientConfiguration:  # pylint: disable=too-many-instance-attributes
+class WorkspaceClientConfiguration:  # pylint: disable=too-many-instance-attributes,docstring-keyword-should-match-keyword-only
     """Configuration for WorkspaceClient.
 
     Note that all parameters used to create this instance are saved as instance
@@ -31,8 +32,9 @@ class WorkspaceClientConfiguration:  # pylint: disable=too-many-instance-attribu
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential or
      ~azure.core.credentials.AzureKeyCredential
     :keyword api_version: The API version to use for this operation. Known values are
-     "2026-01-15-preview" and None. Default value is "2026-01-15-preview". Note that overriding this
-     default value may result in unsupported behavior.
+     "2026-01-15-preview" and None. Default value is None. If not set, the operation's default API
+     version will be used. Note that overriding this default value may result in unsupported
+     behavior.
     :paramtype api_version: str
     """
 

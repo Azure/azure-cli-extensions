@@ -272,6 +272,18 @@ _TARGET_QUOTA_PRIORITIES = (
     ("Standard", "standard_minutes_lifetime"),
     ("High", "high_minutes_lifetime"),
 )
+_TARGET_QUOTA_USAGE_FIELDS = {
+    "standard_minutes_lifetime": "standardMinutesLifetime",
+    "high_minutes_lifetime": "highMinutesLifetime",
+}
+
+
+def _target_quota_usage_value(usage, attribute):
+    if usage is None:
+        return None
+    if hasattr(usage, "get"):
+        return usage.get(_TARGET_QUOTA_USAGE_FIELDS[attribute])
+    return getattr(usage, attribute, None)
 
 
 def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
@@ -334,8 +346,8 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
         for provider_id in sorted({provider_id for provider_id, _ in requested_keys}):
             provider = workspace_providers[provider_id]
             try:
-                usages = usage_client.list_quota_usages(
-                    info.subscription, info.resource_group, info.name, provider.provider_id)
+                usages = usage_client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
             except AzureResourceNotFoundError:
                 usages = None
             for usage in usages or []:
@@ -353,7 +365,7 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
             if final_allocation is None:
                 continue
             suite_allocation = getattr(suite_target, attribute)
-            current_usage = getattr(usage, attribute, None) if usage is not None else None
+            current_usage = _target_quota_usage_value(usage, attribute)
             current_usage = current_usage if current_usage is not None else 0
             if final_allocation < current_usage or final_allocation > suite_allocation:
                 raise InvalidArgumentValueError(
@@ -563,8 +575,8 @@ def quotas(cmd, resource_group_name, workspace_name):
             cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url_v2(workspace.location))
         for provider in providers or []:
             try:
-                provider_usages = v2_client.list_quota_usages(
-                    info.subscription, info.resource_group, info.name, provider.provider_id)
+                provider_usages = v2_client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
             except AzureResourceNotFoundError:
                 provider_usages = None
             usages.extend(provider_usages or [])
@@ -632,7 +644,7 @@ def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
                     display_target_id,
                     dimension,
                     getattr(target_quota, attribute, None),
-                    getattr(usage_values, attribute, None),
+                    _target_quota_usage_value(usage_values, attribute),
                 ))
 
     return rows

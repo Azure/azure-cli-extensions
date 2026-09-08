@@ -259,8 +259,9 @@ helps['quantum suite-offer target list'] = """
     short-summary: List the targets and their status available through a suite offer, without requiring a workspace.
     long-summary: |
         Returns each target exposed by the suite offer provider account together with its current
-        availability and average queue time, resolved directly from the data plane without requiring
-        an Azure Quantum workspace.
+        availability and overall average queue time. Standard- and High-priority average queue times
+        are also returned when supplied by the provider. Data is resolved directly from the data plane
+        without requiring an Azure Quantum workspace.
     examples:
       - name: List the targets available in a suite offer.
         text: |-

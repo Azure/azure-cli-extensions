@@ -27,7 +27,7 @@ from ...operations.workspace import _merge_workspace_quotas
 from ...commands import transform_workspace_quotas
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
-    build_services_quotas_list_quota_usages_request,
+    build_services_quotas_list_workspace_usages_request,
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -605,14 +605,14 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
                 patch.object(workspace_ops, 'cf_quotas') as quota_factory:
             suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
-            quota_factory.return_value.list_quota_usages.return_value = [usage]
+            quota_factory.return_value.list_workspace_usages.return_value = [usage]
 
             _validate_target_quota_bounds(cmd, info, workspace, [{
                 'providerId': 'provider', 'targetId': 'provider.target'
             }], include_usage=True)
 
-        quota_factory.return_value.list_quota_usages.assert_called_once_with(
-            'sub', 'group', 'workspace', 'Provider')
+        quota_factory.return_value.list_workspace_usages.assert_called_once_with(
+            'sub', 'group', 'workspace', provider_id='Provider')
 
     def test_target_quota_bounds_reject_values_outside_inclusive_range(self):
         info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
@@ -640,7 +640,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
                     patch.object(workspace_ops, 'cf_quotas') as quota_factory:
                 suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
-                quota_factory.return_value.list_quota_usages.return_value = [usage]
+                quota_factory.return_value.list_workspace_usages.return_value = [usage]
 
                 with self.assertRaisesRegex(InvalidArgumentValueError, re.escape(expected_text)):
                     _validate_target_quota_bounds(cmd, info, workspace, [{
@@ -668,7 +668,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
                 patch.object(workspace_ops, 'cf_quotas') as quota_factory:
             suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
-            quota_factory.return_value.list_quota_usages.return_value = [usage]
+            quota_factory.return_value.list_workspace_usages.return_value = [usage]
 
             with self.assertRaisesRegex(InvalidArgumentValueError, 'final High allocation'):
                 _validate_target_quota_bounds(cmd, info, workspace, [{
@@ -728,11 +728,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
                 patch.object(workspace_ops, 'cf_quotas') as quota_factory:
             suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
-            quota_factory.return_value.list_quota_usages.return_value = []
+            quota_factory.return_value.list_workspace_usages.return_value = []
 
             _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage=True)
 
-        quota_factory.return_value.list_quota_usages.assert_called_once()
+        quota_factory.return_value.list_workspace_usages.assert_called_once()
 
     def test_target_quota_bounds_treat_usage_404_as_zero(self):
         provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
@@ -751,7 +751,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
                 patch.object(workspace_ops, 'cf_quotas') as quota_factory:
             suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
-            quota_factory.return_value.list_quota_usages.side_effect = AzureResourceNotFoundError()
+            quota_factory.return_value.list_workspace_usages.side_effect = AzureResourceNotFoundError()
 
             _validate_target_quota_bounds(cmd, info, workspace, [{
                 'providerId': 'provider', 'targetId': 'provider.target'
@@ -900,7 +900,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 class QuantumWorkspaceQuotasTest(unittest.TestCase):
 
     def test_build_workspace_quotas_list_quota_usages_request(self):
-        request = build_services_quotas_list_quota_usages_request(
+        request = build_services_quotas_list_workspace_usages_request(
             subscription_id='00000000-0000-0000-0000-000000000000',
             resource_group_name='MyResourceGroup',
             workspace_name='MyWorkspace',
@@ -1057,13 +1057,13 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         }
         queried = []
 
-        def fake_list_quota_usages(*args):
-            provider_id = args[-1]
+        def fake_list_workspace_usages(*args, **kwargs):
+            provider_id = kwargs['provider_id']
             queried.append(provider_id)
             return usage_by_provider[provider_id]
 
         legacy_client = SimpleNamespace(list=lambda *_: [legacy_row])
-        v2_client = SimpleNamespace(list_quota_usages=fake_list_quota_usages)
+        v2_client = SimpleNamespace(list_workspace_usages=fake_list_workspace_usages)
 
         def fake_client_factory(*args):
             endpoint = args[-1]
