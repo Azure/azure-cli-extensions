@@ -349,6 +349,16 @@ class TestValidateNatGatewayV2Params(unittest.TestCase):
         )
         validate_nat_gateway_v2_params(ns)
 
+    def test_legacy_managed_nat_gateway_v2_outbound_type_rejected(self):
+        # The legacy managedNATGatewayV2 value is rejected up front, even with no V2 params, so
+        # users fail fast locally instead of hitting the RP's 400 on the GA-aligned api-version.
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(outbound_type='managedNATGatewayV2')
+        with self.assertRaises(InvalidArgumentValueError) as ctx:
+            validate_nat_gateway_v2_params(ns)
+        self.assertIn('--outbound-type-sku StandardV2', str(ctx.exception))
+
 
 class TestValidateOutboundTypeSku(unittest.TestCase):
     """Test the --outbound-type-sku cross-parameter validator."""
@@ -486,6 +496,15 @@ class TestValidateNatGatewayV2ParamsForUpdate(unittest.TestCase):
         from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
         ns = self._make_namespace(outbound_type='loadBalancer')
         validate_nat_gateway_v2_params_for_update(ns)
+
+    def test_legacy_managed_nat_gateway_v2_outbound_type_rejected(self):
+        # Same clean-break reject on update: an explicit managedNATGatewayV2 fails fast.
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params_for_update
+        ns = self._make_namespace(outbound_type='managedNATGatewayV2')
+        with self.assertRaises(InvalidArgumentValueError) as ctx:
+            validate_nat_gateway_v2_params_for_update(ns)
+        self.assertIn('--outbound-type-sku StandardV2', str(ctx.exception))
 
 
 if __name__ == '__main__':
