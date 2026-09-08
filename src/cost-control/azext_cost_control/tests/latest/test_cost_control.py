@@ -17,39 +17,87 @@ TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class CostControlScenario(ScenarioTest):
 
+    # This decorator automatically creates and cleans up a resource group for the test.
     @ResourceGroupPreparer(
-        name_prefix='az-cli-cost-control-test-rg',
+        name_prefix='az-cli-cost-control-test-rg-',
         location='westus2',
         random_name_length=42
     )
-    def test_cost_control_crud(self, resource_group):
+    def test_cost_control(self, resource_group):
+
+        #==================================================================================
+        #                 Define test params
+        #==================================================================================
 
         self.kwargs.update({
-            'account_name': self.create_random_name('az-cli-cost-control-test-account', 40),
+            'account_name': self.create_random_name('az-cli-cost-control-test-account-', 40),
             'cost_control_name_1': 'test-1',
             'cost_control_name_2': 'test-2',
-            'display_name_1': 'agent cost control',
-            'display_name_2': 'project cost control',
-            'updated_display_name_1': 'updated agent cost control',
+            'display_name_1': 'first display name',
+            'display_name_2': 'second display name',
+            'updated_display_name_1': 'updated first display name',
+            'app_insights_name': self.create_random_name('az-cli-cost-control-test-app-insights-', 50),
+            'app_insights_connection_name': self.create_random_name('app-insights-', 24),
             'location': 'westus2',
             'resource_group': resource_group,
             'rules_file_1': os.path.join(TEST_DIR, 'cost-control-rules-1.json'),
             'rules_file_2': os.path.join(TEST_DIR, 'cost-control-rules-2.json'),
         })
 
+        #==================================================================================
+        #                 BEGIN creation of resources in the resource group
+        #==================================================================================
+
         # Create the AI Services account that owns the cost controls.
-        self.cmd(
+        account = self.cmd(
             'cognitiveservices account create '
             '--resource-group {resource_group} '
             '--name {account_name} '
             '--kind AIServices '
             '--sku S0 '
             '--location {location} '
+            '--assign-identity '
             '--yes'
-        )
+        ).get_output_in_json()
+        self.kwargs['account_id'] = account['id']
+
+        # Create the Application Insights component used for cost-control telemetry.
+        app_insights = self.cmd(
+            'monitor app-insights component create '
+            '--app {app_insights_name} '
+            '--resource-group {resource_group} '
+            '--location {location} '
+            '--application-type web',
+            checks=[
+                self.check('name', '{app_insights_name}'),
+                self.check('provisioningState', 'Succeeded'),
+            ]
+        ).get_output_in_json()
+        self.kwargs['app_insights_id'] = app_insights['id']
+
+        # Connect the account to the Application Insights component.
+        app_insights_connection = self.cmd(
+            'resource create '
+            '--id {account_id}/connections/{app_insights_connection_name} '
+            '--api-version 2026-07-15-preview '
+            '--properties '
+            '\'{{"authType":"AccountManagedIdentity","category":"AppInsights",'
+            '"target":"{app_insights_id}"}}\'',
+            checks=[
+                self.check('name', '{app_insights_connection_name}'),
+                self.check('properties.authType', 'AccountManagedIdentity'),
+                self.check('properties.category', 'AppInsights'),
+                self.check('properties.target', '{app_insights_id}'),
+            ]
+        ).get_output_in_json()
+        self.kwargs['app_insights_connection_id'] = app_insights_connection['id']
+
+        #==================================================================================
+        #                 BEGIN actual const-control tests
+        #==================================================================================
 
         # Create the first cost control with the agent-based rules.
-        self.cmd(
+        cost_control_1 = self.cmd(
             'cognitive-services account cost-control create '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
@@ -61,7 +109,8 @@ class CostControlScenario(ScenarioTest):
                 self.check('properties.displayName', '{display_name_1}'),
                 self.check('properties.rules[0].name', 'per-agent-monthly'),
             ]
-        )
+        ).get_output_in_json()
+        self.kwargs['cost_control_id_1'] = cost_control_1['id']
 
         # Create the second cost control with the project-based rules.
         self.cmd(
@@ -75,6 +124,23 @@ class CostControlScenario(ScenarioTest):
                 self.check('name', '{cost_control_name_2}'),
                 self.check('properties.displayName', '{display_name_2}'),
                 self.check('properties.rules[0].name', 'per-project-monthly'),
+            ]
+        )
+
+        # Attach the first cost control to the account.
+        self.cmd(
+            'resource update '
+            '--ids {account_id} '
+            '--api-version 2026-07-15-preview '
+            '--set '
+            'properties.costControlConnections.appInsightsConnectionId={app_insights_connection_id} '
+            'properties.costControlIds=\'["{cost_control_id_1}"]\'',
+            checks=[
+                self.check(
+                    'properties.costControlConnections.appInsightsConnectionId',
+                    '{app_insights_connection_id}'
+                ),
+                self.check('properties.costControlIds[0]', '{cost_control_id_1}'),
             ]
         )
 
@@ -128,6 +194,15 @@ class CostControlScenario(ScenarioTest):
                 self.check('properties.displayName', '{updated_display_name_1}'),
                 self.check('properties.rules[0].name', 'per-agent-monthly'),
             ]
+        )
+
+        # Detach the cost control before deleting it.
+        self.cmd(
+            'resource update '
+            '--ids {account_id} '
+            '--api-version 2026-07-15-preview '
+            '--set properties.costControlIds=[]',
+            checks=[self.check('properties.costControlIds', [])]
         )
 
         # Delete the first cost control.
