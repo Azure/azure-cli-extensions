@@ -20,8 +20,7 @@ from webbrowser import open_new_tab
 from azext_mlv2.manual.user_agent import USER_AGENT
 from azure.ai.ml import MLClient
 from azure.ai.ml._azure_environments import _environments, _get_aml_resource_id_from_metadata, _get_default_cloud_name
-from azure.ai.ml._restclient.v2020_09_01_dataplanepreview.models import BatchJobResource
-from azure.ai.ml._restclient.v2022_02_01_preview.models import ListViewType
+from azure.ai.ml._restclient.arm_ml_service.models import ListViewType
 from azure.ai.ml._utils._storage_utils import AzureMLDatastorePathUri
 from azure.ai.ml.constants._common import (
     ARM_ID_PREFIX,
@@ -65,7 +64,7 @@ def _dump_entity_with_warnings(entity) -> Dict:
         return entity
     try:
         if entity.__class__.__name__ == "ComponentContainerData" or isinstance(
-            entity, (BatchJobResource, AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
+            entity, (AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
         ):
             return entity.as_dict()
         return entity._to_dict()  # type: ignore  # pylint: disable=protected-access
