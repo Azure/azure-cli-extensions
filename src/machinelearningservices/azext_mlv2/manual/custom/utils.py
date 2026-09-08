@@ -20,7 +20,8 @@ from webbrowser import open_new_tab
 from azext_mlv2.manual.user_agent import USER_AGENT
 from azure.ai.ml import MLClient
 from azure.ai.ml._azure_environments import _environments, _get_aml_resource_id_from_metadata, _get_default_cloud_name
-from azure.ai.ml._restclient.arm_ml_service.models import ListViewType
+from azure.ai.ml._restclient.v2020_09_01_dataplanepreview.models import BatchJobResource
+from azure.ai.ml._restclient.v2022_02_01_preview.models import ListViewType
 from azure.ai.ml._utils._storage_utils import AzureMLDatastorePathUri
 from azure.ai.ml.constants._common import (
     ARM_ID_PREFIX,
