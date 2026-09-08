@@ -7,6 +7,7 @@
 
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo
+from ._params import validate_email
 
 
 def validate_workspace_info(cmd, namespace):
@@ -23,6 +24,11 @@ def validate_workspace_info(cmd, namespace):
         raise ValueError("Missing resource-group argument")
     if not ws.name:
         raise ValueError("Missing workspace-name argument")
+
+
+def validate_workspace_user(cmd, namespace):
+    validate_email(namespace)
+    validate_workspace_info(cmd, namespace)
 
 
 def validate_target_info(cmd, namespace):

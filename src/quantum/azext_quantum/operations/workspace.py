@@ -7,7 +7,6 @@
 
 import os.path
 import json
-import re
 import sys
 
 import time
@@ -56,8 +55,6 @@ QUANTUM_WORKSPACE_USER_ROLE_IDS = {
     QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
     QUANTUM_WORKSPACE_OWNER_ROLE_ID,
 }
-
-EMAIL_PATTERN = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
@@ -559,18 +556,10 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_email_arg(email):
-    if not email:
-        raise RequiredArgumentMissingError("Please provide '--email' (the user's email address).")
-    if not EMAIL_PATTERN.fullmatch(email):
-        raise InvalidArgumentValueError(f"'{email}' is not a valid email address.")
-
-
 def _resolve_user_id(cmd, email):
     from azure.cli.command_modules.role import graph_client_factory
     from azure.cli.command_modules.role.custom import GraphError
 
-    _validate_email_arg(email)
     try:
         user = graph_client_factory(cmd.cli_ctx).user_get(email)
     except GraphError as ex:

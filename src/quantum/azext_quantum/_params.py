@@ -12,6 +12,14 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azure.cli.core.util import shell_safe_json_parse
 
+# Accept UPNs with exactly one '@' and no dotted-domain requirement; reject whitespace and Graph URL path separators.
+EMAIL_PATTERN = re.compile(r"[^@/\\\s]+@[^@/\\\s]+")
+
+
+def validate_email(namespace):
+    if not EMAIL_PATTERN.fullmatch(namespace.email):
+        raise InvalidArgumentValueError(f"'{namespace.email}' is not a valid email address.")
+
 
 class JobParamsAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -196,7 +204,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
-    email_type = CLIArgumentType(options_list=['--email'], help='The email address of the user to grant or remove access.')
+    email_type = CLIArgumentType(options_list=['--email'], validator=validate_email, help='The email address of the user to grant or remove access.')
     include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], arg_type=get_three_state_flag(), help='Include role assignments inherited from the parent resource group and subscription. Enabled by default; use "--include-inherited false" to list only assignments scoped directly to the workspace.')
 
     with self.argument_context('quantum workspace') as c:

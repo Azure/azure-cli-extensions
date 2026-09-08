@@ -13,11 +13,12 @@ from unittest.mock import Mock, patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ClientRequestError, ForbiddenError, ServiceError
+from azure.cli.core.azclierror import ResourceNotFoundError, InvalidArgumentValueError, ClientRequestError, ForbiddenError, ServiceError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
-from ..._params import QuotaAction
+from ..._params import QuotaAction, validate_email
+from ..._validators import validate_workspace_user
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
 from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, _list_user_workspace_role_assignments, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
@@ -1001,6 +1002,7 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
             cmd = SimpleNamespace(cli_ctx=object())
             emails = (
                 "user@contoso.com",
+                "admin@contoso",
                 "user_contoso.com#EXT#@fabrikam.onmicrosoft.com",
                 "o'brien@contoso.com",
             )
@@ -1032,19 +1034,42 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
 
         self.assertIs(raised.exception, graph_error)
 
-    def test_add_user_rejects_invalid_email(self):
-        cmd = SimpleNamespace(cli_ctx=object())
+    def test_validate_email_accepts_valid_upn(self):
+        valid_emails = (
+            "user@contoso.com",
+            "admin@contoso",
+            "user_contoso.com#EXT#@fabrikam.onmicrosoft.com",
+            "o'brien@contoso.com",
+        )
+        for email in valid_emails:
+            with self.subTest(email=email):
+                validate_email(SimpleNamespace(email=email))
+
+    def test_validate_email_rejects_invalid_upn(self):
         invalid_emails = (
             "00000000-0000-0000-0000-000000000000",
             "user.contoso.com",
             "user @contoso.com",
-            "user@contoso",
+            "a/../groups@contoso.com",
+            "a\\groups@contoso.com",
         )
         for email in invalid_emails:
             with self.subTest(email=email), self.assertRaises(InvalidArgumentValueError):
-                add_user(cmd, "rg", "ws", email=email)
+                validate_email(SimpleNamespace(email=email))
 
-    def test_add_user_requires_email(self):
+    def test_validate_workspace_user_runs_email_and_workspace_validation(self):
         cmd = SimpleNamespace(cli_ctx=object())
-        with self.assertRaises(RequiredArgumentMissingError):
-            add_user(cmd, "rg", "ws")
+        namespace = SimpleNamespace(email="admin@contoso")
+        with patch("azext_quantum._validators.validate_workspace_info") as validate_workspace_info:
+            validate_workspace_user(cmd, namespace)
+
+        validate_workspace_info.assert_called_once_with(cmd, namespace)
+
+    def test_validate_workspace_user_rejects_email_before_workspace_validation(self):
+        cmd = SimpleNamespace(cli_ctx=object())
+        namespace = SimpleNamespace(email="a/../groups@contoso.com")
+        with patch("azext_quantum._validators.validate_workspace_info") as validate_workspace_info, \
+                self.assertRaises(InvalidArgumentValueError):
+            validate_workspace_user(cmd, namespace)
+
+        validate_workspace_info.assert_not_called()
