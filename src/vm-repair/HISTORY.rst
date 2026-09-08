@@ -2,6 +2,11 @@
 Release History
 ===============
 
+2.4.0
+++++++
+Adding resource-shape dimensions to ``vm repair`` telemetry: operating system family, VM size, source and repair VM disk controller type, and Hyper-V generation. Until now the telemetry recorded which command ran and whether it succeeded, but nothing about the shape of the VM it ran against, so it was not possible to tell how often repairs run against NVMe-attached disks or whether the repair VM controller selection added in 2.3.1 changes anything in practice. The new dimensions are resource shape only; no resource names or customer content are recorded by them.
+Also fixing ``az vm repair run`` emitting two telemetry events per invocation instead of one. Run counts in existing reports are inflated for that command and will drop to their true value from this release onward.
+
 2.3.2
 ++++++
 Adding a ``--no-cleanup`` parameter (alias ``--no``) to ``az vm repair restore``, ``az vm repair repair-and-restore`` and ``az vm repair repair-button``. Until now the only way to answer the "Continue with clean-up and delete resources?" prompt without a human present was ``--yes``, which deletes the repair VM, the disk copy and the repair resource group. There was no way to decline the deletion unattended, so scripted and multi-VM runs either blocked on the prompt or lost the repair resources they needed to inspect. With ``--no-cleanup`` the disk swap back to the source VM still happens, but the repair resources are kept and the command reports the resource group to delete later. ``--yes`` and ``--no-cleanup`` cannot be combined on ``az vm repair restore`` and the command now fails early if both are given. Behavior without either flag is unchanged: the command still prompts, and still skips clean-up in a non-interactive session.

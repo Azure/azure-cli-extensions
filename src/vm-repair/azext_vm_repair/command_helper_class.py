@@ -68,6 +68,13 @@ class command_helper:
         # Return dict
         self.return_dict = {}
 
+        # Resource shape used for telemetry. Commands populate this after fetching the source VM.
+        self.os_family = None
+        self.vm_size = None
+        self.disk_controller_type = None
+        self.repair_vm_disk_controller_type = None
+        self.hyperv_generation = None
+
         # Verbose flag for command
         self.is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
 
@@ -88,11 +95,25 @@ class command_helper:
         # Track telemetry data
         elapsed_time = timeit.default_timer() - self.start_time
         if self.command_name == VM_REPAIR_RUN_COMMAND:
-            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time)
-        if self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
-            _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx))
+            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time, self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation)
+        elif self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
+            _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation)
         else:
-            _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict)
+            _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation)
+
+    def set_resource_context(self, os_family=None, vm_size=None, disk_controller_type=None,
+                             repair_vm_disk_controller_type=None, hyperv_generation=None):
+        """Store resource-shape dimensions for telemetry without recording resource identity."""
+        if os_family is not None:
+            self.os_family = os_family
+        if vm_size is not None:
+            self.vm_size = vm_size
+        if disk_controller_type is not None:
+            self.disk_controller_type = disk_controller_type
+        if repair_vm_disk_controller_type is not None:
+            self.repair_vm_disk_controller_type = repair_vm_disk_controller_type
+        if hyperv_generation is not None:
+            self.hyperv_generation = hyperv_generation
 
     def set_status_success(self):
         """ Set command status to success """
