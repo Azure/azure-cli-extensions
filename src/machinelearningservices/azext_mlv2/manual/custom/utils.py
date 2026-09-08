@@ -65,7 +65,7 @@ def _dump_entity_with_warnings(entity) -> Dict:
         return entity
     try:
         if entity.__class__.__name__ == "ComponentContainerData" or isinstance(
-            entity, (AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
+            entity, (BatchJobResource, AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
         ):
             return entity.as_dict()
         return entity._to_dict()  # type: ignore  # pylint: disable=protected-access
