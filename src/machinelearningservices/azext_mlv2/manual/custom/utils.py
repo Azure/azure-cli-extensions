@@ -21,9 +21,8 @@ from webbrowser import open_new_tab
 from azext_mlv2.manual.user_agent import USER_AGENT
 from azure.ai.ml import MLClient
 from azure.ai.ml._azure_environments import _environments, _get_aml_resource_id_from_metadata, _get_default_cloud_name
-from azure.ai.ml._restclient.arm_ml_service.models import EndpointProvisioningState
+from azure.ai.ml._restclient.arm_ml_service.models import EndpointProvisioningState, ListViewType
 from azure.ai.ml._utils._storage_utils import AzureMLDatastorePathUri
-from azure.ai.ml.constants import ListViewType
 from azure.ai.ml.constants._common import (
     ARM_ID_PREFIX,
     ASSET_ARM_ID_REGEX_FORMAT,
