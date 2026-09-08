@@ -910,20 +910,28 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         list_assignments.assert_called_once_with(cmd, "oid", expected_scope)
         create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee_object_id="oid", assignee_principal_type="User")
 
-    def test_add_user_rejects_existing_supported_role(self):
+    def test_add_user_returns_existing_supported_roles(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
-        for role_id in (QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID):
-            with self.subTest(role_id=role_id), \
-                    patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
-                    patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
-                    patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments",
-                          return_value=[{"roleDefinitionId": role_id}]), \
-                    patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment:
-                cmd = SimpleNamespace(cli_ctx=object())
-                with self.assertRaisesRegex(ClientRequestError, "already has access"):
-                    add_user(cmd, "rg", "ws", email="user@contoso.com")
+        expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        assignments = [
+            {"id": "/assignments/contributor", "roleDefinitionId": QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+             "scope": expected_scope},
+            {"id": "/assignments/owner", "roleDefinitionId": QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+             "scope": "/subscriptions/sub/resourceGroups/rg"},
+        ]
+        with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
+                patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
+                patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments",
+                      return_value=assignments), \
+                patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment, \
+                    self.assertLogs("cli.azext_quantum.operations.workspace", level="WARNING") as logs:
+            cmd = SimpleNamespace(cli_ctx=object())
+            result = add_user(cmd, "rg", "ws", email="user@contoso.com")
 
-                create_role_assignment.assert_not_called()
+        self.assertIs(result, assignments)
+        self.assertIn("already has access", logs.output[0])
+        self.assertIn("No new role assignment was created", logs.output[0])
+        create_role_assignment.assert_not_called()
 
     def test_remove_user_removes_data_contributor(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)

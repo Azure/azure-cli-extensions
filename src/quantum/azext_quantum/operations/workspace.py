@@ -603,8 +603,11 @@ def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    if _list_user_workspace_role_assignments(cmd, user_id, scope):
-        raise ClientRequestError(f"User '{email}' already has access to this Azure Quantum workspace.")
+    assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
+    if assignments:
+        logger.warning("User '%s' already has access to this Azure Quantum workspace. No new role assignment was "
+                       "created.", email)
+        return assignments
 
     return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
                                   assignee_object_id=user_id, assignee_principal_type="User")
