@@ -29,7 +29,7 @@ def load_arguments(self, _):
         c.argument("components", get_enum_type(["dashboards", "datasources", "folders", "snapshots", "annotations"]), nargs='+', options_list=["-c", "--components"], help="grafana artifact types to backup")
         c.argument("folders_to_include", nargs='+', options_list=["-i", "--folders-to-include"], help="folders to include in backup or sync")
         c.argument("folders_to_exclude", nargs='+', options_list=["-e", "--folders-to-exclude"], help="folders to exclude in backup or sync")
-        c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
+        c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last for one day. Supported units are: s,m,h,d,w,M,y")
         c.ignore("subscription")  # a help argument
 
     with self.argument_context("grafana backup") as c:
