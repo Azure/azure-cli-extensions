@@ -28,9 +28,10 @@ class CommandTableTest(unittest.TestCase):
     @mock.patch("azext_aro_hcp.aaz.latest.aro.hcp.cluster._show.Show", autospec=True)
     @mock.patch("azext_aro_hcp.aaz.latest.aro.hcp.cluster._list.List", autospec=True)
     @mock.patch("azext_aro_hcp.custom.RequestCredential", autospec=True)
+    @mock.patch("azext_aro_hcp.custom.ClusterUpdate", autospec=True)
     @mock.patch("azext_aro_hcp.custom.ClusterCreate", autospec=True)
     def test_load_command_table_registers_custom_commands_and_transformers(
-            self, cluster_create, request_credential, cluster_list, cluster_show,
+            self, cluster_create, cluster_update, request_credential, cluster_list, cluster_show,
             nodepool_list, nodepool_show, get_versions):
         loader = _Loader()
 
@@ -43,6 +44,7 @@ class CommandTableTest(unittest.TestCase):
         self.assertEqual(
             {
                 "aro hcp cluster create",
+                "aro hcp cluster update",
                 "aro hcp cluster request-credential",
                 "aro hcp cluster list",
                 "aro hcp cluster show",
@@ -53,6 +55,7 @@ class CommandTableTest(unittest.TestCase):
             set(loader.command_table),
         )
         cluster_create.assert_called_once_with(loader=loader)
+        cluster_update.assert_called_once_with(loader=loader)
         request_credential.assert_called_once_with(loader=loader)
         cluster_list.assert_called_once()
         cluster_show.assert_called_once()

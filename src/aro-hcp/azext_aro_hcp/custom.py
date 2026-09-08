@@ -10,14 +10,88 @@
 
 import os
 
-from azure.cli.core.aaz import AAZBoolArg, AAZStrArg, has_value
+from azure.cli.core.aaz import (
+    AAZBoolArg,
+    AAZListArg,
+    AAZObjectArg,
+    AAZResourceIdArg,
+    AAZStrArg,
+    has_value,
+)
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 
 from .aaz.latest.aro.hcp.cluster._create import Create as _ClusterCreate
+from .aaz.latest.aro.hcp.cluster._update import Update as _ClusterUpdate
 from .aaz.latest.aro.hcp.cluster._request_credential import RequestCredential as _RequestCredential
 from .aaz.latest.aro.hcp._get_versions import GetVersions as _GetVersions
 
 logger = get_logger(__name__)
+
+
+class _AAZIdentityPairArg(AAZListArg):
+
+    def to_cmd_arg(self, name, **kwargs):
+        arg = super().to_cmd_arg(name, **kwargs)
+        arg.help = self._help.get("short-summary")
+        return arg
+
+    def _build_cmd_action(self):
+        from azure.cli.core.aaz._arg_action import (  # pylint: disable=protected-access
+            AAZArgActionOperations,
+            AAZListArgAction,
+            _ELEMENT_APPEND_KEY,
+        )
+
+        class Action(AAZListArgAction):
+            _schema = self
+
+            def __call__(self, parser, namespace, values, option_string=None):
+                if len(values) != 2:
+                    raise InvalidArgumentValueError(
+                        "{} expects NAME RESOURCE_ID.".format(option_string)
+                    )
+                if not isinstance(getattr(namespace, self.dest), AAZArgActionOperations):
+                    setattr(namespace, self.dest, AAZArgActionOperations())
+                element_action = self._schema.Element._build_cmd_action()
+                element = element_action.format_data({
+                    "name": values[0],
+                    "resource_id": values[1],
+                })
+                getattr(namespace, self.dest).add(element, _ELEMENT_APPEND_KEY)
+
+        return Action
+
+
+def _build_operator_identity_arg(options, help_text, required=True):
+    identity_arg = _AAZIdentityPairArg(
+        options=options,
+        arg_group="Identity",
+        help=help_text,
+        required=required,
+    )
+    identity_arg.Element = AAZObjectArg()
+    identity_arg.Element.name = AAZStrArg(
+        options=["name"],
+        required=True,
+    )
+    identity_arg.Element.resource_id = AAZResourceIdArg(
+        options=["resource-id"],
+        required=True,
+    )
+    return identity_arg
+
+
+def _operator_identities(argument, option):
+    identities = {}
+    for identity in argument:
+        name = identity.name.to_serialized_data()
+        if name in identities:
+            raise InvalidArgumentValueError(
+                "Duplicate name '{}' supplied for {}.".format(name, option)
+            )
+        identities[name] = identity.resource_id.to_serialized_data()
+    return identities
 
 
 def _default_kubeconfig_path():
@@ -25,6 +99,95 @@ def _default_kubeconfig_path():
 
 
 class ClusterCreate(_ClusterCreate):
+    AZ_HELP = {
+        **_ClusterCreate.AZ_HELP,
+        "examples": [
+            {
+                "name": "Create a cluster",
+                "text": "az aro hcp cluster create --resource-group MyResourceGroup --name MyCluster "
+                        "--location eastus --version 4.19 --channel-group stable --network-type OVNKubernetes "
+                        "--subnet-id <subnet-id> --etcd-encryption-type KMS "
+                        "--key-management-mode CustomerManaged --kms-vault-name MyKeyVault "
+                        "--kms-active-key \"{name:MyKey,version:<key-version>}\" "
+                        "--assign-service-managed-identity <service-identity-id> "
+                        "--assign-control-plane-operator-identity cluster-api-azure "
+                        "<cluster-api-azure-identity-id> "
+                        "--assign-control-plane-operator-identity control-plane "
+                        "<control-plane-identity-id> "
+                        "--assign-control-plane-operator-identity cloud-controller-manager "
+                        "<cloud-controller-manager-identity-id> "
+                        "--assign-control-plane-operator-identity ingress <ingress-identity-id> "
+                        "--assign-control-plane-operator-identity disk-csi-driver "
+                        "<control-plane-disk-csi-driver-identity-id> "
+                        "--assign-control-plane-operator-identity file-csi-driver "
+                        "<control-plane-file-csi-driver-identity-id> "
+                        "--assign-control-plane-operator-identity image-registry "
+                        "<control-plane-image-registry-identity-id> "
+                        "--assign-control-plane-operator-identity cloud-network-config "
+                        "<cloud-network-config-identity-id> "
+                        "--assign-control-plane-operator-identity kms <kms-identity-id> "
+                        "--assign-data-plane-operator-identity disk-csi-driver "
+                        "<data-plane-disk-csi-driver-identity-id> "
+                        "--assign-data-plane-operator-identity file-csi-driver "
+                        "<data-plane-file-csi-driver-identity-id> "
+                        "--assign-data-plane-operator-identity image-registry "
+                        "<data-plane-image-registry-identity-id>",
+            },
+        ],
+    }
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        if hasattr(args_schema, "assign_control_plane_operator_identity"):
+            return args_schema
+
+        args_schema.user_assigned_identities._registered = False
+        args_schema.operators_authentication._registered = False
+
+        args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
+            ["--control-plane-identity", "--assign-control-plane-operator-identity"],
+            "Assign a user-assigned identity to a control plane operator. "
+            "Usage: --assign-control-plane-operator-identity NAME RESOURCE_ID. "
+            "Repeat the argument to assign more identities.",
+        )
+        args_schema.assign_data_plane_operator_identity = _build_operator_identity_arg(
+            ["--data-plane-identity", "--assign-data-plane-operator-identity"],
+            "Assign a user-assigned identity to a data plane operator. "
+            "Usage: --assign-data-plane-operator-identity NAME RESOURCE_ID. "
+            "Repeat the argument to assign more identities.",
+        )
+        args_schema.assign_service_managed_identity = AAZResourceIdArg(
+            options=["--service-identity", "--assign-service-managed-identity"],
+            arg_group="Identity",
+            help="Assign the user-assigned identity used for service-level actions.",
+            required=True,
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        control_plane = _operator_identities(
+            args.assign_control_plane_operator_identity,
+            "--assign-control-plane-operator-identity",
+        )
+        data_plane = _operator_identities(
+            args.assign_data_plane_operator_identity,
+            "--assign-data-plane-operator-identity",
+        )
+        service = args.assign_service_managed_identity.to_serialized_data()
+
+        args.user_assigned_identities = {
+            resource_id: {}
+            for resource_id in set(control_plane.values()) | set(data_plane.values()) | {service}
+        }
+        args.operators_authentication = {
+            "user_assigned_identities": {
+                "control_plane_operators": control_plane,
+                "data_plane_operators": data_plane,
+                "service_managed_identity": service,
+            }
+        }
 
     class HcpOpenShiftClustersCreateOrUpdate(_ClusterCreate.HcpOpenShiftClustersCreateOrUpdate):
 
@@ -36,6 +199,94 @@ class ClusterCreate(_ClusterCreate):
             elif _content:
                 _content["identity"] = {"type": "UserAssigned"}
             return _content
+
+
+class ClusterUpdate(_ClusterUpdate):
+    AZ_HELP = {
+        "type": "command",
+        "short-summary": "Update an Azure Red Hat OpenShift with hosted control plane cluster",
+        "long-summary": None,
+        "examples": [
+            {
+                "name": "Update cluster tags",
+                "text": "az aro hcp cluster update --resource-group MyResourceGroup "
+                        "--name MyCluster --tags env=prod team=platform",
+            },
+            {
+                "name": "Update cluster operator identities",
+                "text": "az aro hcp cluster update --resource-group MyResourceGroup --name MyCluster "
+                        "--assign-service-managed-identity <service-identity-id> "
+                        "--assign-control-plane-operator-identity cluster-api-azure "
+                        "<control-plane-identity-id> --assign-data-plane-operator-identity "
+                        "disk-csi-driver <data-plane-identity-id>",
+            },
+        ],
+    }
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        if hasattr(args_schema, "assign_control_plane_operator_identity"):
+            return args_schema
+
+        args_schema.user_assigned_identities._registered = False
+        args_schema.platform._registered = False
+
+        args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
+            ["--control-plane-identity", "--assign-control-plane-operator-identity"],
+            "Assign user-assigned identities to control plane operators. "
+            "Usage: --assign-control-plane-operator-identity NAME RESOURCE_ID. "
+            "Repeat the argument to assign more identities.",
+            required=False,
+        )
+        args_schema.assign_data_plane_operator_identity = _build_operator_identity_arg(
+            ["--data-plane-identity", "--assign-data-plane-operator-identity"],
+            "Assign user-assigned identities to data plane operators. "
+            "Usage: --assign-data-plane-operator-identity NAME RESOURCE_ID. "
+            "Repeat the argument to assign more identities.",
+            required=False,
+        )
+        args_schema.assign_service_managed_identity = AAZResourceIdArg(
+            options=["--service-identity", "--assign-service-managed-identity"],
+            arg_group="Identity",
+            help="Assign the user-assigned identity used for service-level actions.",
+        )
+        return args_schema
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        control_plane_arg = args.assign_control_plane_operator_identity
+        data_plane_arg = args.assign_data_plane_operator_identity
+        service_arg = args.assign_service_managed_identity
+        if not any(has_value(arg) for arg in (control_plane_arg, data_plane_arg, service_arg)):
+            return
+
+        operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
+
+        if has_value(control_plane_arg):
+            control_plane = _operator_identities(
+                control_plane_arg,
+                "--assign-control-plane-operator-identity",
+            )
+            operator_identities.control_plane_operators = control_plane
+
+        if has_value(data_plane_arg):
+            data_plane = _operator_identities(
+                data_plane_arg,
+                "--assign-data-plane-operator-identity",
+            )
+            operator_identities.data_plane_operators = data_plane
+
+        if has_value(service_arg):
+            service = service_arg.to_serialized_data()
+            operator_identities.service_managed_identity = service
+
+        assigned_resource_ids = set(operator_identities.control_plane_operators.values())
+        assigned_resource_ids.update(operator_identities.data_plane_operators.values())
+        assigned_resource_ids.add(operator_identities.service_managed_identity)
+        instance.identity.user_assigned_identities = {
+            resource_id: {} for resource_id in assigned_resource_ids
+        }
 
 
 class GetVersions(_GetVersions):

@@ -3,24 +3,142 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import argparse
 import types
 import unittest
 from unittest import mock
 
-from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
+from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
 
-from azext_aro_hcp.custom import ClusterCreate, GetVersions, RequestCredential
+from azext_aro_hcp.custom import ClusterCreate, ClusterUpdate, GetVersions, RequestCredential
 
 
 class _Arg:
     def __init__(self, value):
         self.value = value
 
+    def __iter__(self):
+        return iter(self.value)
+
     def to_serialized_data(self):
         return self.value
 
 
+class _OperatorIdentity:
+    def __init__(self, name, resource_id):
+        self.name = _Arg(name)
+        self.resource_id = _Arg(resource_id)
+
+
 class ClusterCreateTest(unittest.TestCase):
+
+    def test_help_examples_use_custom_identity_arguments(self):
+        example_text = " ".join(example["text"] for example in ClusterCreate.AZ_HELP["examples"])
+
+        self.assertIn("--assign-control-plane-operator-identity", example_text)
+        self.assertIn("--assign-data-plane-operator-identity", example_text)
+        self.assertIn("--assign-service-managed-identity", example_text)
+        self.assertNotIn("--control-plane-operators", example_text)
+        self.assertNotIn("--data-plane-operators", example_text)
+        self.assertEqual(9, example_text.count("--assign-control-plane-operator-identity"))
+        self.assertEqual(3, example_text.count("--assign-data-plane-operator-identity"))
+
+    @staticmethod
+    def _identity_parser():
+        schema = ClusterCreate._build_arguments_schema()
+        command_arg = schema.assign_control_plane_operator_identity.to_cmd_arg(
+            "assign_control_plane_operator_identity"
+        )
+        settings = command_arg.type.settings
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            *command_arg.options_list,
+            dest="identities",
+            nargs=settings["nargs"],
+            action=settings["action"],
+        )
+        return parser, schema
+
+    def _command(self, control_plane, data_plane, service):
+        command = object.__new__(ClusterCreate)
+        command.ctx = types.SimpleNamespace(args=types.SimpleNamespace(
+            assign_control_plane_operator_identity=control_plane,
+            assign_data_plane_operator_identity=data_plane,
+            assign_service_managed_identity=_Arg(service),
+        ))
+        return command
+
+    def test_pre_operations_maps_operator_identities(self):
+        service = "/subscriptions/000/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/service"
+        control_plane_id = "/subscriptions/000/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/control"
+        data_plane_id = "/subscriptions/000/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/data"
+        command = self._command(
+            [_OperatorIdentity("control-plane", control_plane_id)],
+            [_OperatorIdentity("disk-csi-driver", data_plane_id)],
+            service,
+        )
+
+        command.pre_operations()
+
+        args = command.ctx.args
+        self.assertEqual(
+            {control_plane_id: {}, data_plane_id: {}, service: {}},
+            args.user_assigned_identities,
+        )
+        self.assertEqual({
+            "user_assigned_identities": {
+                "control_plane_operators": {"control-plane": control_plane_id},
+                "data_plane_operators": {"disk-csi-driver": data_plane_id},
+                "service_managed_identity": service,
+            }
+        }, args.operators_authentication)
+
+    def test_pre_operations_rejects_duplicate_name(self):
+        command = self._command(
+            [
+                _OperatorIdentity("control-plane", "identity-one"),
+                _OperatorIdentity("control-plane", "identity-two"),
+            ],
+            [_OperatorIdentity("disk-csi-driver", "identity-three")],
+            "service-identity",
+        )
+
+        with self.assertRaisesRegex(InvalidArgumentValueError, "Duplicate name 'control-plane'"):
+            command.pre_operations()
+
+    def test_identity_argument_accepts_repeated_positional_pairs(self):
+        parser, schema = self._identity_parser()
+        namespace = parser.parse_args([
+            "--control-plane-identity", "control-plane", "identity-one",
+            "--control-plane-identity", "ingress", "identity-two",
+        ])
+        values = schema()
+        namespace.identities.apply(values, "assign_control_plane_operator_identity")
+
+        self.assertEqual([
+            {"name": "control-plane", "resource_id": "identity-one"},
+            {"name": "ingress", "resource_id": "identity-two"},
+        ], values.assign_control_plane_operator_identity.to_serialized_data())
+
+    def test_identity_argument_help_omits_structured_input_formats(self):
+        schema = ClusterCreate._build_arguments_schema()
+        command_arg = schema.assign_control_plane_operator_identity.to_cmd_arg(
+            "assign_control_plane_operator_identity"
+        )
+        help_text = command_arg.type.settings["help"]
+
+        self.assertIn("Usage: --assign-control-plane-operator-identity NAME RESOURCE_ID", help_text)
+        self.assertNotIn("shorthand-syntax", help_text)
+        self.assertNotIn("json-file", help_text)
+        self.assertNotIn('Try "??"', help_text)
+
+    def test_identity_argument_requires_exactly_two_values(self):
+        parser, _ = self._identity_parser()
+
+        with self.assertRaisesRegex(InvalidArgumentValueError, "expects NAME RESOURCE_ID"):
+            parser.parse_args([
+                "--assign-control-plane-operator-identity", "control-plane",
+            ])
 
     def test_content_adds_identity(self):
         operation_type = ClusterCreate.HcpOpenShiftClustersCreateOrUpdate
@@ -46,6 +164,99 @@ class ClusterCreateTest(unittest.TestCase):
                 return_value=content):
             self.assertEqual("UserAssigned", operation.content["identity"]["type"])
             self.assertEqual({}, operation.content["identity"]["userAssignedIdentities"])
+
+
+class ClusterUpdateTest(unittest.TestCase):
+
+    def test_help_examples_use_custom_identity_arguments(self):
+        example_text = " ".join(example["text"] for example in ClusterUpdate.AZ_HELP["examples"])
+
+        self.assertIn("--assign-control-plane-operator-identity", example_text)
+        self.assertIn("--assign-data-plane-operator-identity", example_text)
+        self.assertIn("--assign-service-managed-identity", example_text)
+
+    @staticmethod
+    def _command(control_plane=None, data_plane=None, service=None):
+        command = object.__new__(ClusterUpdate)
+        command.ctx = types.SimpleNamespace(args=types.SimpleNamespace(
+            assign_control_plane_operator_identity=_Arg(control_plane),
+            assign_data_plane_operator_identity=_Arg(data_plane),
+            assign_service_managed_identity=_Arg(service),
+        ))
+        return command
+
+    @staticmethod
+    def _instance():
+        operator_identities = types.SimpleNamespace(
+            control_plane_operators={"existing-control": "control-identity"},
+            data_plane_operators={"existing-data": "data-identity"},
+            service_managed_identity="service-identity",
+        )
+        return types.SimpleNamespace(
+            identity=types.SimpleNamespace(
+                user_assigned_identities=_Arg({
+                    "control-identity": {},
+                    "data-identity": {},
+                    "service-identity": {},
+                }),
+            ),
+            properties=types.SimpleNamespace(
+                platform=types.SimpleNamespace(
+                    operators_authentication=types.SimpleNamespace(
+                        user_assigned_identities=operator_identities,
+                    ),
+                ),
+            ),
+        )
+
+    @mock.patch("azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_instance_update_replaces_supplied_category_and_rebuilds_top_level_identities(self, _):
+        instance = self._instance()
+        command = self._command(
+            control_plane=[_OperatorIdentity("new-control", "new-control-identity")],
+        )
+
+        command.pre_instance_update(instance)
+
+        operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
+        self.assertEqual({"new-control": "new-control-identity"}, operator_identities.control_plane_operators)
+        self.assertEqual({"existing-data": "data-identity"}, operator_identities.data_plane_operators)
+        self.assertEqual("service-identity", operator_identities.service_managed_identity)
+        self.assertEqual({
+            "new-control-identity": {},
+            "data-identity": {},
+            "service-identity": {},
+        }, instance.identity.user_assigned_identities)
+
+    @mock.patch("azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_instance_update_preserves_identities_when_arguments_are_omitted(self, _):
+        instance = self._instance()
+        command = self._command()
+
+        command.pre_instance_update(instance)
+
+        self.assertEqual(
+            {
+                "control-identity": {},
+                "data-identity": {},
+                "service-identity": {},
+            },
+            instance.identity.user_assigned_identities.to_serialized_data(),
+        )
+        operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
+        self.assertEqual({"existing-control": "control-identity"}, operator_identities.control_plane_operators)
+        self.assertEqual({"existing-data": "data-identity"}, operator_identities.data_plane_operators)
+        self.assertEqual("service-identity", operator_identities.service_managed_identity)
+
+    @mock.patch("azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_instance_update_rejects_duplicate_name(self, _):
+        command = self._command(control_plane=[
+            _OperatorIdentity("control-plane", "identity-one"),
+            _OperatorIdentity("control-plane", "identity-two"),
+        ])
+
+        with self.assertRaisesRegex(InvalidArgumentValueError, "Duplicate name 'control-plane'"):
+            command.pre_instance_update(self._instance())
 
 
 class GetVersionsTest(unittest.TestCase):
