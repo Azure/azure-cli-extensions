@@ -68,7 +68,18 @@ def ml_compute_list_nodes(cmd, resource_group_name, workspace_name, name):
 
     try:
         nodes = ml_client.compute.list_nodes(name=name)
-        return [_dump_entity_with_warnings(x) for x in nodes]
+        results = []
+        for node in nodes:
+            for rest_name, entity_name in (
+                ("nodeId", "node_id"),
+                ("nodeState", "node_state"),
+                ("privateIpAddress", "private_ip_address"),
+                ("publicIpAddress", "public_ip_address"),
+            ):
+                if getattr(node, entity_name, None) is None and hasattr(node, rest_name):
+                    setattr(node, entity_name, getattr(node, rest_name))
+            results.append(_dump_entity_with_warnings(node))
+        return results
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 

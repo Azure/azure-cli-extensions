@@ -12,6 +12,7 @@ import json
 import re
 import sys
 import traceback
+from enum import Enum
 from os import environ, getenv, pardir, path
 from typing import Dict, Tuple, Union
 from uuid import uuid4
@@ -20,9 +21,9 @@ from webbrowser import open_new_tab
 from azext_mlv2.manual.user_agent import USER_AGENT
 from azure.ai.ml import MLClient
 from azure.ai.ml._azure_environments import _environments, _get_aml_resource_id_from_metadata, _get_default_cloud_name
-from azure.ai.ml._restclient.v2020_09_01_dataplanepreview.models import BatchJobResource
-from azure.ai.ml._restclient.v2022_02_01_preview.models import ListViewType
+from azure.ai.ml._restclient.arm_ml_service.models import EndpointProvisioningState
 from azure.ai.ml._utils._storage_utils import AzureMLDatastorePathUri
+from azure.ai.ml.constants import ListViewType
 from azure.ai.ml.constants._common import (
     ARM_ID_PREFIX,
     ASSET_ARM_ID_REGEX_FORMAT,
@@ -56,6 +57,18 @@ from .raise_error import log_and_raise_error
 module_logger = get_logger(__name__)
 
 
+def _normalize_enum_values(value):
+    if isinstance(value, Enum):
+        return value.value
+    if isinstance(value, str) and value.startswith("EndpointProvisioningState."):
+        return EndpointProvisioningState[value.rsplit(".", 1)[1]].value
+    if isinstance(value, dict):
+        return {key: _normalize_enum_values(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_normalize_enum_values(item) for item in value]
+    return value
+
+
 def _dump_entity_with_warnings(entity) -> Dict:
     if not entity:
         return
@@ -65,10 +78,15 @@ def _dump_entity_with_warnings(entity) -> Dict:
         return entity
     try:
         if entity.__class__.__name__ == "ComponentContainerData" or isinstance(
-            entity, (BatchJobResource, AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
+            entity, (AzureOpenAIDeployment, ServerlessEndpoint, MarketplaceSubscription)
         ):
             return entity.as_dict()
-        return entity._to_dict()  # type: ignore  # pylint: disable=protected-access
+        result = entity._to_dict()  # type: ignore  # pylint: disable=protected-access
+        for key in result:
+            source_value = getattr(entity, key, None)
+            if isinstance(source_value, Enum) and result[key] == str(source_value):
+                result[key] = source_value.value
+        return _normalize_enum_values(result)
     except Exception as err:  # pylint: disable=broad-exception-caught
         module_logger.warning("Failed to deserialize response: %s", str(err))
         module_logger.warning(str(entity))
