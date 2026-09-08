@@ -11,6 +11,7 @@ from ._help import helps  # pylint: disable=unused-import
 
 from knack.commands import CLICommand
 
+
 class K8sExtensionCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):

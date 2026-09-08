@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=broad-exception-caught
+# TODO: Narrow exception types in incremental refactor PRs to avoid behavior regressions.
 from __future__ import annotations
 
 import contextlib
@@ -19,6 +21,10 @@ from kubernetes import client, config, utils, watch
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
+from azext_connectedk8s._logutils import (
+    normalize_container_log,
+    split_container_log,
+)
 from azext_connectedk8s._utils import get_utctimestring
 
 if TYPE_CHECKING:
@@ -30,6 +36,9 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
+# pylint: disable=too-many-lines, too-many-positional-arguments, consider-using-with
+# Troubleshooter intentionally aggregates many checks in a single execution path for user support runs.
+# Suppressions here avoid noisy lint while preserving the existing operational troubleshooting behavior.
 
 diagnoser_output: list[str] = []
 
@@ -88,7 +97,7 @@ def fetch_kubectl_cluster_info(
             cluster_info_path = os.path.join(
                 filepath_with_timestamp, consts.K8s_Cluster_Info
             )
-            with open(cluster_info_path, "w+") as cluster_info:
+            with open(cluster_info_path, "w+", encoding="utf-8") as cluster_info:
                 cluster_info.write(str(formatted_cluster_info) + "\n")
 
         return consts.Diagnostic_Check_Passed, storage_space_available
@@ -151,7 +160,9 @@ def fetch_connected_cluster_resource(
         if storage_space_available:
             connected_cluster_dict = connected_cluster.as_dict()
             # If storage space is available then only store the connected cluster resource
-            with open(connected_cluster_resource_file_path, "w+") as cc:
+            with open(
+                connected_cluster_resource_file_path, "w+", encoding="utf-8"
+            ) as cc:
                 json.dump(connected_cluster_dict, cc, indent=2)
 
         return consts.Diagnostic_Check_Passed, storage_space_available
@@ -235,12 +246,15 @@ def retrieve_arc_agents_logs(
                     container_log = corev1_api_instance.read_namespaced_pod_log(
                         name=agent_name, container=container_name, namespace="azure-arc"
                     )
+                    container_log = normalize_container_log(container_log)
                     # Path to add the arc agents container logs.
                     arc_agent_container_logs_path = os.path.join(
                         agent_name_logs_path, container_name + ".txt"
                     )
-                    with open(arc_agent_container_logs_path, "w+") as container_file:
-                        container_file.write(str(container_log))
+                    with open(
+                        arc_agent_container_logs_path, "w+", encoding="utf-8"
+                    ) as container_file:
+                        container_file.write(container_log)
 
         return consts.Diagnostic_Check_Passed, storage_space_available
 
@@ -343,7 +357,7 @@ def retrieve_arc_agents_event_logs(
                 filepath_with_timestamp, consts.Arc_Agents_Events
             )
             if len(events_json["items"]) != 0:
-                with open(event_logs_path, "w+") as event_log:
+                with open(event_logs_path, "w+", encoding="utf-8") as event_log:
                     # Adding all the individual events
                     for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
@@ -420,7 +434,9 @@ def retrieve_deployments_logs(
                     deployments_path, deployment_name + ".txt"
                 )
                 # Creating a text file with the name of the deployment and adding deployment status in it
-                with open(arc_deployment_logs_path, "w+") as deployment_file:
+                with open(
+                    arc_deployment_logs_path, "w+", encoding="utf-8"
+                ) as deployment_file:
                     deployment_file.write(str(deployment.status))
 
         return consts.Diagnostic_Check_Passed, storage_space_available
@@ -510,14 +526,17 @@ def retrieve_arc_workload_identity_pod_logs(
                         container=container_name,
                         namespace="arc-workload-identity",
                     )
+                    container_log = normalize_container_log(container_log)
                     # Path to add the arc agents container logs.
                     arc_workload_identity_container_logs_path = os.path.join(
                         agent_name_logs_path, container_name + ".txt"
                     )
                     with open(
-                        arc_workload_identity_container_logs_path, "w+"
+                        arc_workload_identity_container_logs_path,
+                        "w+",
+                        encoding="utf-8",
                     ) as container_file:
-                        container_file.write(str(container_log))
+                        container_file.write(container_log)
 
         return consts.Diagnostic_Check_Passed, storage_space_available
 
@@ -620,7 +639,7 @@ def retrieve_arc_workload_identity_event_logs(
                 filepath_with_timestamp, consts.Arc_Workload_Identity_Events
             )
             if len(events_json["items"]) != 0:
-                with open(event_logs_path, "w+") as event_log:
+                with open(event_logs_path, "w+", encoding="utf-8") as event_log:
                     # Adding all the individual events
                     for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
@@ -700,7 +719,7 @@ def retrieve_arc_workload_identity_deployments_logs(
                 )
                 # Creating a text file with the name of the deployment and adding deployment status in it
                 with open(
-                    arc_workload_identity_deployment_logs_path, "w+"
+                    arc_workload_identity_deployment_logs_path, "w+", encoding="utf-8"
                 ) as deployment_file:
                     deployment_file.write(str(deployment.status))
 
@@ -767,13 +786,13 @@ def check_agent_state(
         agent_state_path = os.path.join(filepath_with_timestamp, consts.Agent_State)
         # If storage space available then only we will be writing into the file
         if storage_space_available:
-            with open(agent_state_path, "w+") as agent_state:
+            with open(agent_state_path, "w+", encoding="utf-8") as agent_state:
                 # To retrieve all of the arc agent pods that are present in the Cluster
                 arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(
                     namespace="azure-arc"
                 )
                 # Check if any arc agent is not in Running state
-                for each_agent_pod in arc_agents_pod_list.items:
+                for each_agent_pod in arc_agents_pod_list.items:  # pylint: disable=too-many-nested-blocks
                     if storage_space_available:
                         # Storing the state of the arc agent in the user machine
                         agent_state.write(
@@ -1087,8 +1106,7 @@ def check_diagnoser_container(
         )
         # If diagnoser_container_log is not empty then only we will check for the results
         if diagnoser_container_log is not None and diagnoser_container_log != "":
-            diagnoser_container_log_list = diagnoser_container_log.split("\n")
-            diagnoser_container_log_list.pop(-1)
+            diagnoser_container_log_list = split_container_log(diagnoser_container_log)
             dns_check_log = ""
             counter_container_logs = 1
             # For retrieving only diagnoser logs from the diagnoser output
@@ -1126,9 +1144,9 @@ def check_diagnoser_container(
             return consts.Diagnostic_Check_Passed, storage_space_available
 
         # If any of the check remain Incomplete than we will return Incomplete
-        if (
-            dns_check == consts.Diagnostic_Check_Incomplete
-            or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete
+        if consts.Diagnostic_Check_Incomplete in (
+            dns_check,
+            outbound_connectivity_check,
         ):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
@@ -1153,6 +1171,8 @@ def check_diagnoser_container(
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
+# pylint: disable=too-many-return-statements
+# Diagnostic execution returns different results based on multiple conditions
 def executing_diagnoser_job(
     corev1_api_instance: CoreV1Api,
     batchv1_api_instance: BatchV1Api,
@@ -1280,7 +1300,7 @@ def executing_diagnoser_job(
     cmd_delete_job[3] = str(yaml_file_path)
     # Editing the yaml file based on the release namespace
     new_yaml = []
-    with open(yaml_file_path) as f:
+    with open(yaml_file_path, encoding="utf-8") as f:
         list_doc = yaml.safe_load_all(f)
         # We are creating 4 resources from a single yaml and troubleshoot_yaml_part points to the part of yaml we are
         #  referring to in 0 based index.
@@ -1289,7 +1309,7 @@ def executing_diagnoser_job(
             # Changing the role, rolebinding and the job args namespace field to the release-namespace
             # Secret-reader role is used to fetch the secrets present in the release-namespace
             # Also we pass release-namespace in args to read secrets for helm command that we are using in the script.
-            if troubleshoot_yaml_part == 1 or troubleshoot_yaml_part == 2:
+            if troubleshoot_yaml_part in (1, 2):
                 each_yaml["metadata"]["namespace"] = release_namespace
             elif troubleshoot_yaml_part == 3:
                 each_yaml["spec"]["template"]["spec"]["containers"][0]["args"][0] = (
@@ -1297,7 +1317,7 @@ def executing_diagnoser_job(
                 )
             new_yaml.append(each_yaml)
     # Updating the yaml file
-    with open(yaml_file_path, "w+") as f:
+    with open(yaml_file_path, "w+", encoding="utf-8") as f:
         for add_updated_yaml_part in new_yaml:
             f.write("---\n")
             yaml.dump(add_updated_yaml_part, f)
@@ -1492,7 +1512,7 @@ def executing_diagnoser_job(
                     events_json = json.loads(output_kubectl_get_events)
                     if len(events_json["items"]) != 0:
                         with open(
-                            unfinished_diagnoser_job_path, "w+"
+                            unfinished_diagnoser_job_path, "w+", encoding="utf-8"
                         ) as unfinished_diagnoser_job:
                             # Adding all the individual events
                             for events in events_json["items"]:
@@ -1516,6 +1536,9 @@ def executing_diagnoser_job(
                     name=pod_name,
                     container="azure-arc-diagnoser-container",
                     namespace="azure-arc",
+                )
+                diagnoser_container_log = normalize_container_log(
+                    diagnoser_container_log
                 )
 
         # Clearing all the resources after fetching the diagnoser container logs
@@ -1806,7 +1829,7 @@ def describe_non_ready_agent_log(
             stuck_agent_pod_path = os.path.join(
                 describe_stuck_agent_path, agent_pod_name + ".txt"
             )
-            with open(stuck_agent_pod_path, "w+") as stuck_agent_log:
+            with open(stuck_agent_pod_path, "w+", encoding="utf-8") as stuck_agent_log:
                 stuck_agent_log.write(str(api_response))
 
     # For handling storage or OS exception that may occur during the execution
@@ -1899,7 +1922,7 @@ def get_secrets_azure_arc(
                 filepath_with_timestamp, "azure-arc-secrets.txt"
             )
 
-            with open(secrets_logs_path, "w+") as secrets_log:
+            with open(secrets_logs_path, "w+", encoding="utf-8") as secrets_log:
                 secrets_log.write(secrets_json)
 
             return storage_space_available
@@ -2023,7 +2046,7 @@ def get_helm_values_azure_arc(
                 filepath_with_timestamp, "helm_values_azure_arc.txt"
             )
 
-            with open(helmvalues_logs_path, "w") as helmvalues_log:
+            with open(helmvalues_logs_path, "w", encoding="utf-8") as helmvalues_log:
                 helmvalues_log.write(helmvalues_json)
 
             return storage_space_available
@@ -2131,7 +2154,7 @@ def get_helm_values_arc_workload_identity(
                 filepath_with_timestamp, consts.Wiextension_Helm_Values
             )
 
-            with open(helmvalues_logs_path, "w") as helmvalues_log:
+            with open(helmvalues_logs_path, "w", encoding="utf-8") as helmvalues_log:
                 helmvalues_log.write(helmvalues_json)
 
             return storage_space_available
@@ -2232,7 +2255,7 @@ def get_metadata_cr_snapshot(
                 filepath_with_timestamp, "metadata_cr_snapshot.txt"
             )
 
-            with open(metadata_cr_logs_path, "w+") as metadata_cr_log:
+            with open(metadata_cr_logs_path, "w+", encoding="utf-8") as metadata_cr_log:
                 metadata_cr_log.write(metadata_cr_json)
 
             return storage_space_available
@@ -2333,7 +2356,7 @@ def get_kubeaadproxy_cr_snapshot(
                 filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt"
             )
 
-            with open(kap_cr_logs_path, "w+") as kap_cr_log:
+            with open(kap_cr_logs_path, "w+", encoding="utf-8") as kap_cr_log:
                 kap_cr_log.write(kap_cr_json)
 
             return storage_space_available
@@ -2436,7 +2459,9 @@ def get_signingkey_cr_snapshot(
                 filepath_with_timestamp, consts.SigningKey_CR_Snapshot
             )
 
-            with open(signingkey_cr_logs_path, "w+") as signingkey_cr_log:
+            with open(
+                signingkey_cr_logs_path, "w+", encoding="utf-8"
+            ) as signingkey_cr_log:
                 signingkey_cr_log.write(signingkey_cr_json)
 
             return storage_space_available
@@ -2500,7 +2525,9 @@ def fetching_cli_output_logs(
             )
             # If any results are obtained during the process than we will add it to the text file.
             if len(diagnoser_output) > 0:
-                with open(cli_output_logger_path, "w+") as cli_output_writer:
+                with open(
+                    cli_output_logger_path, "w+", encoding="utf-8"
+                ) as cli_output_writer:
                     for output in diagnoser_output:
                         cli_output_writer.write(output + "\n")
                     # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that
@@ -2510,13 +2537,17 @@ def fetching_cli_output_logs(
 
             # If no issues was found during the whole troubleshoot execution
             elif flag:
-                with open(cli_output_logger_path, "w+") as cli_output_writer:
+                with open(
+                    cli_output_logger_path, "w+", encoding="utf-8"
+                ) as cli_output_writer:
                     cli_output_writer.write(
                         "The diagnoser didn't find any issues on the cluster.\n"
                     )
             # If process was terminated by user
             else:
-                with open(cli_output_logger_path, "w+") as cli_output_writer:
+                with open(
+                    cli_output_logger_path, "w+", encoding="utf-8"
+                ) as cli_output_writer:
                     cli_output_writer.write("Process terminated externally.\n")
 
         return consts.Diagnostic_Check_Passed

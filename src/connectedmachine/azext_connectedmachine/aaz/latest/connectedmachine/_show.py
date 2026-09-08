@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-07-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -133,7 +133,7 @@ class Show(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -169,7 +169,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
@@ -202,7 +202,27 @@ class Show(AAZCommand):
                 serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            identity.type = AAZStrType()
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200.properties
             properties.ad_fqdn = AAZStrType(
@@ -254,6 +274,12 @@ class Show(AAZCommand):
             properties.hardware_profile = AAZObjectType(
                 serialized_name="hardwareProfile",
                 flags={"read_only": True},
+            )
+            properties.hardware_resource_id = AAZStrType(
+                serialized_name="hardwareResourceId",
+            )
+            properties.identity_key_store = AAZStrType(
+                serialized_name="identityKeyStore",
             )
             properties.last_status_change = AAZStrType(
                 serialized_name="lastStatusChange",
@@ -314,9 +340,16 @@ class Show(AAZCommand):
             properties.status = AAZStrType(
                 flags={"read_only": True},
             )
+            properties.status_reason = AAZStrType(
+                serialized_name="statusReason",
+                flags={"read_only": True},
+            )
             properties.storage_profile = AAZObjectType(
                 serialized_name="storageProfile",
                 flags={"read_only": True},
+            )
+            properties.tpm_ek_certificate = AAZStrType(
+                serialized_name="tpmEkCertificate",
             )
             properties.vm_id = AAZStrType(
                 serialized_name="vmId",
@@ -410,9 +443,7 @@ class Show(AAZCommand):
             detected_properties.Element = AAZStrType()
 
             error_details = cls._schema_on_200.properties.error_details
-            error_details.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            error_details.Element = AAZObjectType()
             _ShowHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
@@ -442,9 +473,7 @@ class Show(AAZCommand):
             )
 
             processors = cls._schema_on_200.properties.hardware_profile.processors
-            processors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            processors.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.hardware_profile.processors.Element
             _element.name = AAZStrType(
@@ -661,17 +690,17 @@ class Show(AAZCommand):
             network_profile = cls._schema_on_200.properties.network_profile
             network_profile.network_interfaces = AAZListType(
                 serialized_name="networkInterfaces",
+                flags={"read_only": True},
             )
 
             network_interfaces = cls._schema_on_200.properties.network_profile.network_interfaces
-            network_interfaces.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            network_interfaces.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.network_profile.network_interfaces.Element
             _element.id = AAZStrType()
             _element.ip_addresses = AAZListType(
                 serialized_name="ipAddresses",
+                flags={"read_only": True},
             )
             _element.mac_address = AAZStrType(
                 serialized_name="macAddress",
@@ -679,9 +708,7 @@ class Show(AAZCommand):
             _element.name = AAZStrType()
 
             ip_addresses = cls._schema_on_200.properties.network_profile.network_interfaces.Element.ip_addresses
-            ip_addresses.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            ip_addresses.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.network_profile.network_interfaces.Element.ip_addresses.Element
             _element.address = AAZStrType()
@@ -734,12 +761,12 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
 
             storage_profile = cls._schema_on_200.properties.storage_profile
-            storage_profile.disks = AAZListType()
-
-            disks = cls._schema_on_200.properties.storage_profile.disks
-            disks.Element = AAZObjectType(
+            storage_profile.disks = AAZListType(
                 flags={"read_only": True},
             )
+
+            disks = cls._schema_on_200.properties.storage_profile.disks
+            disks.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.storage_profile.disks.Element
             _element.disk_type = AAZStrType(
@@ -796,7 +823,7 @@ class Show(AAZCommand):
                 serialized_name="instanceView",
             )
             _ShowHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
-            properties.protected_settings = AAZFreeFormDictType(
+            properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
             properties.provisioning_state = AAZStrType(
@@ -804,11 +831,17 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
+            properties.settings = AAZDictType()
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
             )
+
+            protected_settings = cls._schema_on_200.resources.Element.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            settings = cls._schema_on_200.resources.Element.properties.settings
+            settings.Element = AAZAnyType()
 
             tags = cls._schema_on_200.resources.Element.tags
             tags.Element = AAZStrType()
@@ -882,17 +915,18 @@ class _ShowHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info

@@ -57,7 +57,6 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
     def test_dataprotection_backup_instance_create_backup_delete_disk(test):
         test.kwargs.update({
             'subscriptionId': '59e574f1-e278-4b66-875b-e3e4fe74ad88',
-            'originalSubscriptionId': test.cmd('az account show --query id -o tsv').output.strip(),
             'dataSourceType': "AzureDisk",
             'permissionsScope': "Resource",
             'policyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy',
@@ -65,8 +64,10 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
             'diskId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete',
             'policyRuleName': "BackupHourly"
         })
-        test.addCleanup(lambda: test.cmd('az account set --subscription "{originalSubscriptionId}"'))
-        test.cmd('az account set --subscription "{subscriptionId}"')
+        if test.is_live:
+            test.kwargs['originalSubscriptionId'] = test.cmd('az account show --query id -o tsv').output.strip()
+            test.addCleanup(lambda: test.cmd('az account set --subscription "{originalSubscriptionId}"'))
+            test.cmd('az account set --subscription "{subscriptionId}"')
         backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fa1"
         backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
                                         '-l "{location}" --policy-id "{policyId}" --datasource-id "{diskId}" --snapshot-rg "{rg}" --tags Owner=dppclitest Purpose=Testing').get_output_in_json()

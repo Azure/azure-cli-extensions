@@ -37,7 +37,7 @@ def pis_identity_resource_id(cmd, agentpool):
 
 
 def ensure_pis_managed_identity_permission_for_cluster(cmd, cluster):
-    for agentpool in cluster.agent_pool_profiles:
+    for agentpool in (cluster.agent_pool_profiles or []):
         pis_identity_id = pis_identity_resource_id(cmd, agentpool)
         if not pis_identity_id:
             continue

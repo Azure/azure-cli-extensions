@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration config-template delete",
+    "workload-orchestration-preview config-template delete",
     is_preview=False,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a Config Template Resource
        :example: Delete a Config Template 
-        az workload-orchestration config-template delete -n myConfigTemplate -g myResourceGroup
+        az workload-orchestration-preview config-template delete -n myConfigTemplate -g myResourceGroup
     """
 
     _aaz_info = {

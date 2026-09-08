@@ -80,7 +80,7 @@ Use `wait` with Azure CLI wait conditions such as `--created`, `--updated`, `--d
 #### Create an Autonomous Database backup ####
 az oracle-database autonomous-database backup create --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --adbbackupid MyBackup01 --display-name "My backup" --retention-period-in-days 30
 
-Use the Azure backup resource name/id returned by `backup create` or `backup list` as `--adbbackupid` for backup operations.
+Use the Azure backup resource name (the final segment of `id` returned by `backup create` or `backup list`) as `--adbbackupid` for all backup operations. Do not pass the full Azure resource ID.
 
 #### List Autonomous Database backups ####
 az oracle-database autonomous-database backup list --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB
@@ -97,7 +97,7 @@ az oracle-database autonomous-database backup delete --resource-group MyResource
 #### Wait for an Autonomous Database backup condition ####
 az oracle-database autonomous-database backup wait --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --adbbackupid MyBackup01 --created
 
-Use the Azure backup resource name/id returned by `backup create` or `backup list` as `--adbbackupid`.
+For all backup operations, pass the backup resource name rather than its full Azure resource ID.
 
 #### Change Autonomous Database disaster recovery configuration ####
 az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group MyResourceGroup --autonomousdatabasename MyCrossRegionPeerDB --disaster-recovery-type Adg --is-replicate-automatic-backups false

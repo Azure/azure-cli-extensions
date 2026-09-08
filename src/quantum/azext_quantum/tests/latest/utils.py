@@ -10,6 +10,12 @@ TEST_WORKSPACE_DEFAULT_LOCATION = "eastus"
 TEST_WORKSPACE_DEFAULT_STORAGE = "qwe2etestswus2"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "qwe2etestsgrswus2"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
+# V2 workspaces use a different provider model than V1. The e2e pipeline supplies
+# these per-location via the AZURE_QUANTUM_WORKSPACE_V2_PROVIDERS variable, where
+# each provider is paired with the "default" SKU. Keep this default in sync with
+# the 'e2e.workspace.v2.providers' default in the *-clients e2e pipeline.
+TEST_WORKSPACE_DEFAULT_V2_PROVIDERS = '{"westus":[{"id":"atom-boulder","targets":["msft.sim.ac1000.physical"]}],"eastus":[{"id":"atom-dev","targets":["msft.sim.ac1000-dev.physical"]}],"eastus2euap":[{"id":"az-sim-test-1","targets":["microsoft.sim.canary-001"]}]}'
+TEST_WORKSPACE_DEFAULT_V2_PROVIDER_SKU = "default"
 TEST_CAPABILITIES_DEFAULT = "new.quantinuum;submit.quantinuum"
 TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "quantinuum/basic1"
 TEST_TARGET_DEFAULT_PROVIDER = "quantinuum"
@@ -47,6 +53,24 @@ def get_test_workspace_storage_grs():
 
 def get_test_workspace_provider_sku_list():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_PROVIDER_SKU_LIST", TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST)
+
+
+def get_test_workspace_v2_provider_sku_list():
+    # Returns the Provider/SKU list (in the '-r' command format) for creating a V2
+    # workspace in the current test location, or None if no V2 providers are
+    # configured for that location. The e2e pipeline passes a location-keyed JSON
+    # map via AZURE_QUANTUM_WORKSPACE_V2_PROVIDERS; each provider is paired with the
+    # "default" SKU, matching how the pipeline's ARM deployment builds the providers.
+    import json
+    providers_map_raw = get_from_os_environment("AZURE_QUANTUM_WORKSPACE_V2_PROVIDERS", TEST_WORKSPACE_DEFAULT_V2_PROVIDERS)
+    try:
+        providers_map = json.loads(providers_map_raw)
+    except (ValueError, TypeError):
+        return None
+    location_providers = providers_map.get(get_test_workspace_location())
+    if not location_providers:
+        return None
+    return ", ".join(f"{provider['id']}/{TEST_WORKSPACE_DEFAULT_V2_PROVIDER_SKU}" for provider in location_providers if provider.get('id'))
 
 
 def get_test_capabilities():

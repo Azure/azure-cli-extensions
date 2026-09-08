@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration workflow version show",
+    "workload-orchestration-preview workflow version show",
 )
 class Show(AAZCommand):
     """Get a Workflow Version Resource

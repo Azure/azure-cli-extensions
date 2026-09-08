@@ -10,7 +10,7 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    with self.argument_context('workload-orchestration support create-bundle') as c:
+    with self.argument_context('workload-orchestration-preview support create-bundle') as c:
         c.argument(
             'bundle_name',
             options_list=['--bundle-name', '-n'],

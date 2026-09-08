@@ -24,10 +24,8 @@ from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.common.consts import (
     DEFAULT_CERT_MANAGER_VERSION,
-    AIO_PLATFORM_EXTENSION_TYPE,
-    AIO_PLATFORM_EXTENSION_NAME,
-    AIO_PLATFORM_EXTENSION_NAMESPACE,
-    AIO_PLATFORM_EXTENSION_SCOPE,
+    CERT_MANAGEMENT_EXTENSION_TYPE,
+    CERT_MANAGEMENT_EXTENSION_NAME,
     DEFAULT_EXTENSION_TYPE,
     DEFAULT_EXTENSION_NAME,
     DEFAULT_RELEASE_TRAIN,
@@ -70,7 +68,7 @@ def target_prepare(
 ):
     """Prepare an Arc-connected K8s cluster for Workload Orchestration.
 
-    Installs cert-manager + trust-manager (via the AIO platform Arc
+    Installs cert-manager + trust-manager (via the Certificate Management Arc
     extension), the WO extension, and creates a custom location.
     Idempotent: skips components that are already installed.
     """
@@ -104,9 +102,9 @@ def target_prepare(
         _print_failure_hint(step_results)
         raise
 
-    # Step 1+2: cert-manager + trust-manager (single AIO Arc extension)
+    # Step 1+2: cert-manager + trust-manager (single Certificate Management Arc extension)
     try:
-        _ensure_cert_trust_manager_via_aio_extension(
+        _ensure_cert_trust_manager_extension(
             cmd, cluster_name, resource_group,
             cert_manager_version, no_wait,
         )
@@ -115,7 +113,7 @@ def target_prepare(
     except Exception as exc:
         step_results["cert-manager"] = f"FAILED: {exc}"
         logger.debug(
-            "Steps 1-2/4 failed (AIO cert/trust-manager): %s", exc
+            "Steps 1-2/4 failed (cert/trust-manager): %s", exc
         )
         _print_failure_hint(step_results)
         raise CLIInternalError("cert-manager/trust-manager installation failed. See error above.")
@@ -208,15 +206,15 @@ def _preflight_checks(cmd, cluster_name, resource_group):
 
 
 # ---------------------------------------------------------------------------
-# target_prepare — Step 1+2: cert-manager + trust-manager via AIO Platform extension
+# target_prepare — Step 1+2: cert-manager + trust-manager extension
 # ---------------------------------------------------------------------------
 
-def _ensure_cert_trust_manager_via_aio_extension(
+def _ensure_cert_trust_manager_extension(
     cmd, cluster_name, resource_group, version, no_wait
 ):
     """Install cert-manager + trust-manager as an Arc k8s-extension.
 
-    Uses microsoft.iotoperations.platform which bundles cert-manager and
+    Uses microsoft.certmanagement which bundles cert-manager and
     trust-manager. Idempotent: skips if an extension of that type already
     exists on the cluster.
     """
@@ -236,7 +234,7 @@ def _ensure_cert_trust_manager_via_aio_extension(
     existing = None
     for ext in (extensions or []):
         ext_type = (ext.get("extensionType", "") or "").lower()
-        if ext_type == AIO_PLATFORM_EXTENSION_TYPE.lower():
+        if ext_type == CERT_MANAGEMENT_EXTENSION_TYPE.lower():
             existing = ext
             break
 
@@ -245,30 +243,28 @@ def _ensure_cert_trust_manager_via_aio_extension(
         prov_state = (existing.get("provisioningState", "") or "").lower()
         if prov_state == "succeeded":
             _eprint(
-                f"  ├── Workload Orchestration Extension Dependency: {AIO_PLATFORM_EXTENSION_NAME} "
+                f"  ├── Workload Orchestration Extension Dependency: {CERT_MANAGEMENT_EXTENSION_NAME} "
                 f"Already installed ✓ ({ext_ver})"
             )
             return
         logger.info(
-            "Existing AIO platform extension in state '%s'; reinstalling.",
+            "Existing Certificate Management extension in state '%s'; reinstalling.",
             prov_state,
         )
 
     version_msg = f" version {version}" if version else ""
     _eprint(
         f"  ├── Installing Workload Orchestration Extension Dependency: "
-        f"{AIO_PLATFORM_EXTENSION_NAME}{version_msg}..."
+        f"{CERT_MANAGEMENT_EXTENSION_NAME}{version_msg}..."
     )
 
     create_args = [
         "k8s-extension", "create",
         "--resource-group", resource_group,
         "--cluster-name", cluster_name,
-        "--name", AIO_PLATFORM_EXTENSION_NAME,
+        "--name", CERT_MANAGEMENT_EXTENSION_NAME,
         "--cluster-type", "connectedClusters",
-        "--extension-type", AIO_PLATFORM_EXTENSION_TYPE,
-        "--scope", AIO_PLATFORM_EXTENSION_SCOPE,
-        "--release-namespace", AIO_PLATFORM_EXTENSION_NAMESPACE,
+        "--extension-type", CERT_MANAGEMENT_EXTENSION_TYPE,
     ]
     if version:
         create_args.extend(["--version", version, "--auto-upgrade", "false"])
@@ -280,7 +276,7 @@ def _ensure_cert_trust_manager_via_aio_extension(
     suffix = " (--no-wait)" if no_wait else ""
     _eprint(
         f"  Workload Orchestration Extension Dependency: "
-        f"{AIO_PLATFORM_EXTENSION_NAME} Installed{suffix} ✓"
+        f"{CERT_MANAGEMENT_EXTENSION_NAME} Installed{suffix} ✓"
     )
 
 

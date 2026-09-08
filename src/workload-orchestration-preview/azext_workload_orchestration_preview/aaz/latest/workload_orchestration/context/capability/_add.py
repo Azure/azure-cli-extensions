@@ -6,7 +6,7 @@
 # pylint: skip-file
 # flake8: noqa
 
-"""AAZ command for `workload-orchestration context add-capability`.
+"""AAZ command for `workload-orchestration-preview context add-capability`.
 
 Idempotent — at most ONE ARM PATCH call. Skips the call entirely if all
 requested capabilities already exist.
@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context add-capability",
+    "workload-orchestration-preview context add-capability",
 )
 class AddCapability(AAZCommand):
     """Add capabilities to a context (idempotent).
@@ -28,16 +28,16 @@ class AddCapability(AAZCommand):
     If description is omitted for a capability, it defaults to the name.
 
     :example: Add a single capability
-        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:soap,description:'Soap line'}]"
+        az workload-orchestration-preview context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:soap,description:'Soap line'}]"
 
     :example: Add multiple capabilities (shorthand)
-        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:soap,description:Soap},{name:shampoo,description:Shampoo}]"
+        az workload-orchestration-preview context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:soap,description:Soap},{name:shampoo,description:Shampoo}]"
 
     :example: Add capability without description (defaults to name)
-        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:detergent}]"
+        az workload-orchestration-preview context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:detergent}]"
 
     :example: Add capabilities from a JSON file
-        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities @new-caps.json
+        az workload-orchestration-preview context add-capability -g Mehoopany -n Mehoopany-Context --capabilities @new-caps.json
     """
 
     _aaz_info = {

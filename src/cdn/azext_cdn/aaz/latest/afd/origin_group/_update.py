@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -92,7 +92,7 @@ class Update(AAZCommand):
             arg_group="HealthProbeSettings",
             help="Protocol to use for health probe.",
             nullable=True,
-            enum={"Grpc": "Grpc", "Http": "Http", "Https": "Https", "NotSet": "NotSet"},
+            enum={"Http": "Http", "Https": "Https", "NotSet": "NotSet"},
         )
         _args_schema.probe_request_type = AAZStrArg(
             options=["--probe-request-type"],
@@ -139,6 +139,12 @@ class Update(AAZCommand):
             options=["scope"],
             help="The scope used when requesting token from Microsoft Entra. For example, for Azure Blob Storage, scope could be \"https://storage.azure.com/.default\".",
             nullable=True,
+        )
+        authentication.token_destination_header = AAZStrArg(
+            options=["token-destination-header"],
+            help="The HTTP request header where the origin authentication token will be placed when forwarding the request to the origin. If not specified, the service will use the `Authorization` header for backward compatibility.",
+            nullable=True,
+            enum={"Authorization": "Authorization", "X-Azure-Authorization": "X-Azure-Authorization"},
         )
         authentication.type = AAZStrArg(
             options=["type"],
@@ -242,7 +248,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -345,7 +351,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -414,6 +420,7 @@ class Update(AAZCommand):
             authentication = _builder.get(".properties.authentication")
             if authentication is not None:
                 authentication.set_prop("scope", AAZStrType, ".scope")
+                authentication.set_prop("tokenDestinationHeader", AAZStrType, ".token_destination_header")
                 authentication.set_prop("type", AAZStrType, ".type")
                 authentication.set_prop("userAssignedIdentity", AAZObjectType, ".user_assigned_identity")
 
@@ -509,6 +516,9 @@ class _UpdateHelper:
 
         authentication = _schema_afd_origin_group_read.properties.authentication
         authentication.scope = AAZStrType()
+        authentication.token_destination_header = AAZStrType(
+            serialized_name="tokenDestinationHeader",
+        )
         authentication.type = AAZStrType()
         authentication.user_assigned_identity = AAZObjectType(
             serialized_name="userAssignedIdentity",

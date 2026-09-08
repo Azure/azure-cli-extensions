@@ -965,6 +965,8 @@ def list_storage(cmd, name, resource_group_name):
 
 def create_or_update_storage(cmd, storage_name, resource_group_name, name, storage_type=None,
                              azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None,
+                             azure_file_key_vault_secret_url=None, azure_file_key_vault_identity=None,
+                             azure_file_identity=None,
                              server=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 

@@ -1,0 +1,162 @@
+interactions:
+- request:
+    body: '{"properties": {"analyticsOutputSettings": null, "clusterServicePrincipal": null, "commandOutputSettings": null, "computeDeploymentThreshold": null, "runtimeProtectionConfiguration": null, "secretArchiveSettings": null, "updateStrategy": null, "vulnerabilityScanningSettings": null}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '283'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --analytics-output-settings --cluster-service-principal --command-output-settings --compute-deployment-threshold --runtime-protection --secret-archive-settings --update-strategy --vulnerability-scanning-settings
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.NetworkCloud/clusters/simdev-2422238-cluster?api-version=2026-07-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/2c5a7b66-293a-4e61-92f4-14f83ce096d2*A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6A7B8C9D0?api-version=2026-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 13 Apr 2026 14:30:00 GMT
+      etag:
+      - '"0000aabb-0000-1000-0000-680c1e380000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/2c5a7b66-293a-4e61-92f4-14f83ce096d2*A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6A7B8C9D0?api-version=2026-07-01
+      mise-correlation-id:
+      - 8bb164a1-ffdc-4c15-8cee-aa003768f71d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 00000000000000000000000000000001 Ref B: AMS231032607009 Ref C: 2026-04-13T14:30:00Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --analytics-output-settings --cluster-service-principal --command-output-settings --compute-deployment-threshold --runtime-protection --secret-archive-settings --update-strategy --vulnerability-scanning-settings
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/2c5a7b66-293a-4e61-92f4-14f83ce096d2*A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6A7B8C9D0?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/UKSOUTH/operationStatuses/2c5a7b66-293a-4e61-92f4-14f83ce096d2*A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6A7B8C9D0","name":"2c5a7b66-293a-4e61-92f4-14f83ce096d2*A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6A7B8C9D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.NetworkCloud/clusters/simdev-2422238-cluster","status":"Succeeded","startTime":"2026-04-13T14:30:00.0000000Z","endTime":"2026-04-13T14:30:07.0000000Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '639'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 13 Apr 2026 14:30:31 GMT
+      etag:
+      - '"0000bbcc-0000-1000-0000-680c1e3f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 00000000000000000000000000000002 Ref B: AMS231020615029 Ref C: 2026-04-13T14:30:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --analytics-output-settings --cluster-service-principal --command-output-settings --compute-deployment-threshold --runtime-protection --secret-archive-settings --update-strategy --vulnerability-scanning-settings
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-6.5.0-1025-azure-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.NetworkCloud/clusters/simdev-2422238-cluster?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.NetworkCloud/clusters/simdev-2422238-cluster","name":"simdev-2422238-cluster","type":"microsoft.networkcloud/clusters","location":"uksouth","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2765120-iy254vx57apfa/providers/Microsoft.ExtendedLocation/customLocations/sim-cluster-mgr-iy254vx57apfa-cl","type":"CustomLocation"},"tags":{"EnableDenyAssignments":"false","LabEnvironment":"simulator","ManagedBy":"nc-development-environments","ResourceType":"cluster"},"systemData":{"createdBy":"975445e1-202a-4786-b0ac-d35fa6fc1f6d","createdByType":"Application","createdAt":"2024-11-05T00:42:13.656596Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2026-04-13T14:30:07.0000000Z"},"properties":{"aggregatorOrSingleRackDefinition":{"availabilityZone":"A","bareMetalMachineConfigurationData":[],"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackLocation":"Foo Datacenter, Floor 3, Aisle 9, Rack 2","rackSerialNumber":"aa1234","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/VLab1_4_Aggregator_sim","storageApplianceConfigurationData":[]},"analyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.OperationalInsights/workspaces/simdev-2765120-law","availableUpgradeVersions":[],"clusterConnectionStatus":"Connected","clusterExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simdev-2422238-cluster-HostedResources-6E559721/providers/Microsoft.ExtendedLocation/customLocations/simdev-2422238-cluster-cstm-loc","type":"CustomLocation"},"clusterManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.NetworkCloud/clusterManagers/sim-cluster-mgr-iy254vx57apfa","clusterType":"MultiRack","clusterVersion":"3.16.0","computeRackDefinitions":[{"networkRackId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.Network/virtualNetworks/vNet/subnets/Subnet","rackSkuId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/rackSkus/VLab1_4_Compute_DellR750_2C2M_sim","rackSerialNumber":"rack1","rackLocation":"Foo Datacenter, Floor 3, Aisle 9, Rack 2","availabilityZone":"1","storageApplianceConfigurationData":[],"bareMetalMachineConfigurationData":[]}],"detailedStatus":"Running","detailedStatusMessage":"Cluster is up and running.","managedResourceGroupConfiguration":{"location":"uksouth","name":"simdev-2422238-cluster-HostedResources-6E559721"},"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-cli-testing_id-simdev-2422238/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/CM_Subnet","supportExpiryDate":"2025-06-30","workloadResourceIds":[],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3263'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 13 Apr 2026 14:30:32 GMT
+      etag:
+      - '"0000ccdd-0000-1000-0000-680c1e400000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 00000000000000000000000000000003 Ref B: AMS231022012035 Ref C: 2026-04-13T14:30:32Z'
+    status:
+      code: 200
+      message: OK
+version: 1

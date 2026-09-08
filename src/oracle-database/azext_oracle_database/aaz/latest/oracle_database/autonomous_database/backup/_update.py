@@ -30,8 +30,6 @@ class Update(AAZCommand):
 
     AZ_SUPPORT_NO_WAIT = True
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
         return self.build_lro_poller(self._execute_operations, self._output)
@@ -78,18 +76,13 @@ class Update(AAZCommand):
             options=["--retention-days", "--retention-period-in-days"],
             arg_group="Properties",
             help="Retention period, in days, for long-term backups.",
-            nullable=True,
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AutonomousDatabaseBackupsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.AutonomousDatabaseBackupsCreateOrUpdate(ctx=self.ctx)()
+        yield self.AutonomousDatabaseBackupsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -98,14 +91,6 @@ class Update(AAZCommand):
 
     @register_callback
     def post_operations(self):
-        pass
-
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
         pass
 
     def _output(self, *args, **kwargs):
@@ -297,7 +282,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class AutonomousDatabaseBackupsCreateOrUpdate(AAZHttpOperation):
+    class AutonomousDatabaseBackupsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -309,7 +294,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -318,7 +303,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -333,7 +318,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -385,12 +370,11 @@ class Update(AAZCommand):
 
         @property
         def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
+            return self.serialize_content({
+                "properties": {
+                    "retentionPeriodInDays": self.ctx.args.retention_period_in_days.to_serialized_data(),
+                },
+            })
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

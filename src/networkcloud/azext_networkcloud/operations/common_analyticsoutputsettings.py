@@ -26,6 +26,12 @@ class AnalyticsOutputSettings:
 
     @classmethod
     def pre_operations_update(cls, args):
+        if (
+            args.analytics_output_settings is None
+            or args.analytics_output_settings._data is None
+        ):
+            return
+
         if has_value(args.analytics_output_settings):
             if not has_value(args.analytics_output_settings.analytics_workspace_id):
                 raise RequiredArgumentMissingError(

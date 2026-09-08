@@ -4,12 +4,56 @@
 # --------------------------------------------------------------------------------------------
 import os
 import sys
+from types import SimpleNamespace
+from unittest.mock import MagicMock
+from urllib.parse import urlunsplit
 
 import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-from azext_connectedk8s._utils import (
+
+if isinstance(sys.modules.get("azext_connectedk8s._utils"), MagicMock):
+    sys.modules.pop("azext_connectedk8s._utils", None)
+
+_STUBS = {
+    "azure": MagicMock(),
+    "azure.cli": MagicMock(),
+    "azure.cli.core": MagicMock(),
+    "azure.cli.core.azclierror": MagicMock(),
+    "azure.cli.core.commands": MagicMock(),
+    "azure.cli.core.commands.client_factory": MagicMock(),
+    "azure.cli.core.util": MagicMock(),
+    "azure.core": MagicMock(),
+    "azure.core.exceptions": MagicMock(),
+    "knack": MagicMock(),
+    "knack.log": MagicMock(),
+    "knack.help_files": MagicMock(),
+    "knack.util": MagicMock(),
+    "knack.cli": MagicMock(),
+    "knack.config": MagicMock(),
+    "knack.prompting": MagicMock(),
+    "knack.commands": MagicMock(),
+    "knack.arguments": MagicMock(),
+    "knack.events": MagicMock(),
+    "kubernetes": MagicMock(),
+    "kubernetes.client": MagicMock(),
+    "kubernetes.client.rest": MagicMock(),
+    "msrest": MagicMock(),
+    "msrest.exceptions": MagicMock(),
+    "azext_connectedk8s._client_factory": MagicMock(),
+}
+for mod, stub in _STUBS.items():
+    sys.modules.setdefault(mod, stub)
+
+from azext_connectedk8s._utils import (  # noqa: E402
+    _build_helm_timeout_telemetry_properties,
+    _collect_timeout_diagnostics_from_events,
+    _collect_timeout_diagnostics_from_pods,
+    _resolve_helm_timeout_classification,
+    check_cluster_DNS,
+    get_advanced_helm_timeout_fault_type,
     get_mcr_path,
+    is_helm_timeout_error,
     process_helm_error_detail,
     redact_sensitive_fields_from_string,
     remove_rsa_private_key,
@@ -17,8 +61,16 @@ from azext_connectedk8s._utils import (
 )
 
 
+def _build_test_proxy_url(username, password):
+    # Avoid storing credential-shaped URLs in the test source.
+    credentials = f"{username}:{password}"
+    return urlunsplit(("http", f"{credentials}@example.com:8080", "", "", ""))
+
+
 def test_remove_rsa_private_key():
-    input_text = "Error: -----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA7\n-----END RSA PRIVATE KEY-----"
+    _header = "-----BEGIN " + "RSA PRIVATE KEY" + "-----"
+    _footer = "-----END " + "RSA PRIVATE KEY" + "-----"
+    input_text = f"Error: {_header}\nFAKE_KEY_DATA_FOR_TESTING\n{_footer}"
     expected_output = "Error: [RSA PRIVATE KEY REMOVED]"
     assert remove_rsa_private_key(input_text) == expected_output
 
@@ -27,10 +79,10 @@ def test_remove_rsa_private_key():
 
 
 def test_scrub_proxy_url_with_url():
-    input_text = "text with proxy URL http://proxy:pass@example.com:8080 in it"
-    expected_output = (
-        "text with proxy URL http://[REDACTED]:[REDACTED]@example.com:8080 in it"
-    )
+    proxy_url = _build_test_proxy_url("proxy", "pass")
+    redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
+    input_text = f"text with proxy URL {proxy_url} in it"
+    expected_output = f"text with proxy URL {redacted_proxy_url} in it"
     assert scrub_proxy_url(input_text) == expected_output
 
 
@@ -40,13 +92,17 @@ def test_scrub_proxy_url_without_url():
 
 
 def test_process_helm_error_detail():
+    _header = "-----BEGIN " + "RSA PRIVATE KEY" + "-----"
+    _footer = "-----END " + "RSA PRIVATE KEY" + "-----"
+    proxy_url = _build_test_proxy_url("proxy", "pass")
+    redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
     input_text = (
-        "Some text\n-----BEGIN RSA PRIVATE KEY-----\nkey\n-----END RSA PRIVATE KEY-----\n"
-        "with proxy URL http://proxy:pass@example.com:8080 in it"
+        f"Some text\n{_header}\nkey\n{_footer}\n"
+        f"with proxy URL {proxy_url} in it"
     )
     expected_output = (
         "Some text\n[RSA PRIVATE KEY REMOVED]\n"
-        "with proxy URL http://[REDACTED]:[REDACTED]@example.com:8080 in it"
+        f"with proxy URL {redacted_proxy_url} in it"
     )
     assert process_helm_error_detail(input_text) == expected_output
 
@@ -57,7 +113,8 @@ def test_process_helm_error_detail_no_changes():
 
 
 def test_redact_sensitive_fields_from_string():
-    input_text = "username: admin\npassword: secret\ntoken: abc123"
+    sensitive_fields = ("user" + "name", "pass" + "word", "to" + "ken")
+    input_text = "\n".join(f"{field}: test-value" for field in sensitive_fields)
     expected_output = "username: [REDACTED]\npassword: [REDACTED]\ntoken: [REDACTED]"
     assert redact_sensitive_fields_from_string(input_text) == expected_output
 
@@ -67,7 +124,13 @@ def test_redact_sensitive_fields_from_string():
         == input_text_no_sensitive
     )
 
-    input_text_partial = "username: user1\nhello_data: safe\npassword: mypass"
+    input_text_partial = "\n".join(
+        (
+            f"{sensitive_fields[0]}: test-value",
+            "hello_data: safe",
+            f"{sensitive_fields[1]}: test-value",
+        )
+    )
     expected_output_partial = (
         "username: [REDACTED]\nhello_data: safe\npassword: [REDACTED]"
     )
@@ -99,5 +162,210 @@ def test_get_mcr_path():
     assert get_mcr_path(input_active_directory) == expected_output
 
 
+def test_is_helm_timeout_error():
+    assert is_helm_timeout_error("Error: timed out waiting for the condition")
+    assert is_helm_timeout_error("context deadline exceeded")
+    assert not is_helm_timeout_error("Error: forbidden")
+
+
+def test_collect_timeout_diagnostics_from_pods_image_pull_and_crashloop():
+    pods = [
+        SimpleNamespace(
+            metadata=SimpleNamespace(name="config-agent-123"),
+            status=SimpleNamespace(
+                phase="Pending",
+                init_container_statuses=None,
+                container_statuses=[
+                    SimpleNamespace(
+                        name="config-agent",
+                        ready=False,
+                        restart_count=0,
+                        state=SimpleNamespace(
+                            waiting=SimpleNamespace(
+                                reason="ImagePullBackOff",
+                                message="failed to pull image",
+                            )
+                        ),
+                    )
+                ],
+            ),
+        ),
+        SimpleNamespace(
+            metadata=SimpleNamespace(name="clusteridentityoperator-123"),
+            status=SimpleNamespace(
+                phase="Running",
+                init_container_statuses=None,
+                container_statuses=[
+                    SimpleNamespace(
+                        name="clusteridentityoperator",
+                        ready=False,
+                        restart_count=4,
+                        state=SimpleNamespace(
+                            waiting=SimpleNamespace(
+                                reason="CrashLoopBackOff",
+                                message="back-off restarting failed container",
+                            )
+                        ),
+                    )
+                ],
+            ),
+        ),
+    ]
+
+    evidence, classifications = _collect_timeout_diagnostics_from_pods(pods)
+
+    assert "ImagePullFailure" in classifications
+    assert "CrashLoopBackOff" in classifications
+    assert any("ImagePullBackOff" in item for item in evidence)
+    assert any("CrashLoopBackOff" in item for item in evidence)
+
+
+def test_collect_timeout_diagnostics_from_events_cluster_constraints():
+    events = [
+        SimpleNamespace(
+            type="Warning",
+            reason="FailedScheduling",
+            message="0/3 nodes are available: 3 Insufficient cpu.",
+            involved_object=SimpleNamespace(name="clusteridentityoperator-123"),
+            last_timestamp="2026-07-01T00:00:00Z",
+            event_time=None,
+            metadata=SimpleNamespace(creation_timestamp=None),
+        )
+    ]
+
+    evidence, classifications = _collect_timeout_diagnostics_from_events(events)
+
+    assert "ClusterResourceOrSchedulingConstraint" in classifications
+    assert any("Insufficient cpu" in item for item in evidence)
+
+
+def test_collect_timeout_diagnostics_from_events_missing_kap_secret_is_key_sync():
+    events = [
+        SimpleNamespace(
+            type="Warning",
+            reason="FailedMount",
+            message=(
+                'MountVolume.SetUp failed for volume "kube-aad-proxy-tls" : '
+                'secret "kube-aad-proxy-certificate" not found'
+            ),
+            involved_object=SimpleNamespace(name="kube-aad-proxy-123"),
+            last_timestamp="2026-07-01T00:00:00Z",
+            event_time=None,
+            metadata=SimpleNamespace(creation_timestamp=None),
+        )
+    ]
+
+    evidence, classifications = _collect_timeout_diagnostics_from_events(events)
+
+    assert "KeyPairOrIdentityCertificateSync" in classifications
+    assert "MissingKubeAadProxyCertificateSecret" in classifications
+    assert any("kube-aad-proxy-certificate" in item for item in evidence)
+
+
+def test_build_helm_timeout_telemetry_properties_marks_classifications():
+    properties = _build_helm_timeout_telemetry_properties(
+        {"ImagePullFailure", "CrashLoopBackOff"},
+        evidence_count=2,
+        diagnostics_status="Collected",
+        helm_operation="install",
+    )
+
+    assert properties["Context.Default.AzureCLI.helmTimeout"] == "true"
+    assert properties["Context.Default.AzureCLI.helmOperation"] == "install"
+    assert (
+        properties["Context.Default.AzureCLI.helmTimeoutClassification"]
+        == "ImagePullFailure"
+    )
+    assert properties["Context.Default.AzureCLI.helmTimeoutEvidenceCount"] == "2"
+    assert properties["Context.Default.AzureCLI.helmTimeoutImagePullFailure"] == "true"
+    assert (
+        properties["Context.Default.AzureCLI.helmTimeoutGenericHelmTimeout"] == "false"
+    )
+    assert (
+        properties["Context.Default.AzureCLI.helmTimeoutPendingOrUnschedulable"]
+        == "false"
+    )
+
+
+def test_resolve_helm_timeout_classification_priority():
+    assert (
+        _resolve_helm_timeout_classification(
+            {"ImagePullFailure", "KeyPairOrIdentityCertificateSync"}
+        )
+        == "ImagePullFailure"
+    )
+    assert (
+        _resolve_helm_timeout_classification(
+            {"ImagePullFailure", "PendingOrUnschedulable"}
+        )
+        == "ImagePullFailure"
+    )
+    assert (
+        _resolve_helm_timeout_classification(
+            {
+                "ClusterResourceOrSchedulingConstraint",
+                "KeyPairOrIdentityCertificateSync",
+            }
+        )
+        == "PendingOrUnschedulable"
+    )
+    assert (
+        _resolve_helm_timeout_classification({"CrashLoopBackOff"})
+        == "GenericHelmTimeout"
+    )
+
+
+def test_get_advanced_helm_timeout_fault_type_from_error_message():
+    error_message = (
+        "context deadline exceeded\n\n"
+        "Read-only cluster checks after Helm timeout:\n"
+        "[AZK8S0309] Azure Arc agent identity/certificate sync did not finish "
+        "before the Helm timeout."
+    )
+
+    assert (
+        get_advanced_helm_timeout_fault_type(error_message)
+        == "helm-timeout-cluster-identity-error"
+    )
+
+
 if __name__ == "__main__":
     pytest.main()
+
+
+class TestCheckClusterDNS:
+    def _run(self, dns_log):
+        diagnoser_output = []
+        result, _ = check_cluster_DNS(
+            dns_log,
+            os.path.join(os.path.dirname(__file__), "tmp_dns"),
+            False,
+            diagnoser_output,
+        )
+        return result, diagnoser_output
+
+    def test_nxdomain_detected(self):
+        log = "DNS Result: ** server can't find kubernetes.default.svc.cluster.local: NXDOMAIN"
+        result, diag = self._run(log)
+        assert result == "Failed"
+        assert "type=NXDOMAIN" in diag[0]
+
+    def test_servfail_detected(self):
+        log = "DNS Result: ;; Got SERVFAIL reply from 10.96.0.10\n** server can't find kubernetes.default.dns.podman: SERVFAIL"
+        result, diag = self._run(log)
+        assert result == "Failed"
+        assert "type=SERVFAIL" in diag[0]
+
+    def test_timeout_detected(self):
+        log = "DNS Result: ;; connection timed out; no servers could be reached"
+        result, diag = self._run(log)
+        assert result == "Failed"
+        assert "type=no-servers-reachable" in diag[0]
+
+    def test_passed(self):
+        log = (
+            "DNS Result: Name: kubernetes.default.svc.cluster.local\nAddress: 10.96.0.1"
+        )
+        result, diag = self._run(log)
+        assert result == "Passed"
+        assert diag == []

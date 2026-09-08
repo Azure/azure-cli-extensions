@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "mongo-db atlas organization show",
 )
 class Show(AAZCommand):
-    """Retrieve details of the Azure resource associated with a MongoDB Atlas organization
+    """Get a OrganizationResource
 
-    :example: Organizations_Get
-        az mongo-db atlas organization show --subscription "abcd1234-5678-90ab-cdef-12345678abcd" --resource-group "MyResourceGroup" -name "MyOrganizationResourceName"
+    :example: Organizations_Get_MaximumSet
+        az mongo-db atlas organization show \\ --subscription {subscription} \\ --resource-group {resource_group} \\ --name MongoDBCLITestOrg2
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2026-03-01-preview"],
         ]
     }
 
@@ -56,7 +56,6 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Azure resource group in which MongoDB Atlas resource is created",
             required=True,
         )
         return cls._args_schema
@@ -126,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-03-01-preview",
                     required=True,
                 ),
             }

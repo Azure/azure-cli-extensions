@@ -1156,6 +1156,36 @@ class AzureFirewallScenario(ScenarioTest):
         )
 
     @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_standard_mgmt_ip_", location="westus")
+    def test_firewall_standard_sku_management_ip_config(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "m_conf_name": self.create_random_name("ipconfig-", 16),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+            "m_public_ip_name": self.create_random_name("mpublic-ip-", 16),
+        })
+
+        self.cmd("network vnet create -n {vnet_name} -g {rg} --address-prefixes 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefixes 10.0.0.0/24")
+        self.cmd("network vnet subnet create -n AzureFirewallManagementSubnet -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.1.0/24")
+        self.cmd("network public-ip create -n {public_ip_name} -g {rg} --sku Standard")
+        self.cmd("network public-ip create -n {m_public_ip_name} -g {rg} --sku Standard")
+
+        # Standard tier with a management IP config must auto-populate the management subnet (issue #32624)
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Standard --vnet-name {vnet_name} "
+            "--public-ip {public_ip_name} --conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.tier", "Standard"),
+                self.check("managementIpConfiguration.name", "{m_conf_name}"),
+                self.check("managementIpConfiguration.subnet.id.contains(@, 'AzureFirewallManagementSubnet')", True),
+            ]
+        )
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_vhub_create_with_public_ip", location="westus")
     def test_firewall_vhub_create_with_public_ip(self):
         self.kwargs.update({
