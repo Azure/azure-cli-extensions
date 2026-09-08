@@ -306,42 +306,6 @@ class AroHcpScenario(ScenarioTest):
                 'ef318e2a-8334-4a05-9e4a-295a196c6a6e',
                 identity_key + '_id')
 
-        self.kwargs['cluster_identities'] = json.dumps({
-            self.kwargs[key + '_id']: {}
-            for key in (
-                'service_identity',
-                'capi_identity',
-                'control_plane_identity',
-                'ccm_identity',
-                'ingress_identity',
-                'disk_csi_identity',
-                'file_csi_identity',
-                'image_registry_identity',
-                'cloud_network_identity',
-                'kms_identity')
-        })
-        self.kwargs['operator_identities'] = json.dumps({
-            'userAssignedIdentities': {
-                'serviceManagedIdentity': self.kwargs['service_identity_id'],
-                'controlPlaneOperators': {
-                    'cluster-api-azure': self.kwargs['capi_identity_id'],
-                    'control-plane': self.kwargs['control_plane_identity_id'],
-                    'cloud-controller-manager': self.kwargs['ccm_identity_id'],
-                    'ingress': self.kwargs['ingress_identity_id'],
-                    'disk-csi-driver': self.kwargs['disk_csi_identity_id'],
-                    'file-csi-driver': self.kwargs['file_csi_identity_id'],
-                    'image-registry': self.kwargs['image_registry_identity_id'],
-                    'cloud-network-config': self.kwargs['cloud_network_identity_id'],
-                    'kms': self.kwargs['kms_identity_id'],
-                },
-                'dataPlaneOperators': {
-                    'disk-csi-driver': self.kwargs['dp_disk_csi_identity_id'],
-                    'file-csi-driver': self.kwargs['dp_file_csi_identity_id'],
-                    'image-registry': self.kwargs['dp_image_registry_identity_id'],
-                },
-            },
-        })
-
         cluster_created = False
         try:
             cluster = self.cmd(
@@ -352,8 +316,19 @@ class AroHcpScenario(ScenarioTest):
                 "--key-management-mode CustomerManaged --etcd-encryption-type KMS "
                 "--kms-vault-name {keyvault} --vault-visibility Public "
                 "--kms-active-key '{{name:{kms_key},version:{kms_key_version}}}' "
-                "--user-assigned-identities '{cluster_identities}' "
-                "--operators-authentication '{operator_identities}'"
+                "--assign-service-managed-identity {service_identity_id} "
+                "--assign-control-plane-operator-identity cluster-api-azure {capi_identity_id} "
+                "--assign-control-plane-operator-identity control-plane {control_plane_identity_id} "
+                "--assign-control-plane-operator-identity cloud-controller-manager {ccm_identity_id} "
+                "--assign-control-plane-operator-identity ingress {ingress_identity_id} "
+                "--assign-control-plane-operator-identity disk-csi-driver {disk_csi_identity_id} "
+                "--assign-control-plane-operator-identity file-csi-driver {file_csi_identity_id} "
+                "--assign-control-plane-operator-identity image-registry {image_registry_identity_id} "
+                "--assign-control-plane-operator-identity cloud-network-config {cloud_network_identity_id} "
+                "--assign-control-plane-operator-identity kms {kms_identity_id} "
+                "--assign-data-plane-operator-identity disk-csi-driver {dp_disk_csi_identity_id} "
+                "--assign-data-plane-operator-identity file-csi-driver {dp_file_csi_identity_id} "
+                "--assign-data-plane-operator-identity image-registry {dp_image_registry_identity_id}"
             ).get_output_in_json()
             cluster_created = True
             self.assertEqual(self.kwargs['cluster'], cluster['name'])

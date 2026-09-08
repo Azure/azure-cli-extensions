@@ -13,11 +13,12 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("aro hcp cluster"):
-        from .custom import ClusterCreate, RequestCredential
+        from .custom import ClusterCreate, ClusterUpdate, RequestCredential
         from .aaz.latest.aro.hcp.cluster._list import List
         from .aaz.latest.aro.hcp.cluster._show import Show
         from ._format import cluster_list_table_format, cluster_show_table_format
         self.command_table["aro hcp cluster create"] = ClusterCreate(loader=self)
+        self.command_table["aro hcp cluster update"] = ClusterUpdate(loader=self)
         self.command_table["aro hcp cluster request-credential"] = RequestCredential(loader=self)
         self.command_table["aro hcp cluster list"] = List(loader=self, table_transformer=cluster_list_table_format)
         self.command_table["aro hcp cluster show"] = Show(loader=self, table_transformer=cluster_show_table_format)
