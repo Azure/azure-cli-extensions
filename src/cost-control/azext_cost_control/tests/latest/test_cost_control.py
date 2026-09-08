@@ -21,7 +21,7 @@ class CostControlScenario(ScenarioTest):
     @ResourceGroupPreparer(
         name_prefix='az-cli-cost-control-test-rg-',
         location='westus2',
-        random_name_length=42
+        random_name_length=38
     )
     def test_cost_control(self, resource_group):
 
@@ -30,14 +30,14 @@ class CostControlScenario(ScenarioTest):
         #==================================================================================
 
         self.kwargs.update({
-            'account_name': self.create_random_name('az-cli-cost-control-test-account-', 40),
+            'account_name': self.create_random_name('az-cli-cost-control-test-account-', 43),
             'cost_control_name_1': 'test-1',
             'cost_control_name_2': 'test-2',
             'display_name_1': 'first display name',
             'display_name_2': 'second display name',
             'updated_display_name_1': 'updated first display name',
-            'app_insights_name': self.create_random_name('az-cli-cost-control-test-app-insights-', 50),
-            'app_insights_connection_name': self.create_random_name('app-insights-', 24),
+            'app_insights_name': self.create_random_name('az-cli-cost-control-test-app-insights-', 48),
+            'app_insights_connection_name': self.create_random_name('app-insights-', 23),
             'location': 'westus2',
             'resource_group': resource_group,
             'rules_file_1': os.path.join(TEST_DIR, 'cost-control-rules-1.json'),
@@ -93,7 +93,7 @@ class CostControlScenario(ScenarioTest):
         self.kwargs['app_insights_connection_id'] = app_insights_connection['id']
 
         #==================================================================================
-        #                 BEGIN actual const-control tests
+        #                 BEGIN actual cost-control tests
         #==================================================================================
 
         # Create the first cost control with the agent-based rules.
