@@ -273,7 +273,8 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
         source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
     except HttpResponseError as httpError:
         logger.debug(httpError)
-        if httpError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
+        error_code = getattr(getattr(httpError, 'error', None), 'code', None)
+        if error_code == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
             # Given VM is classic VM (RDFE)
             raise CLIError('The given VM \'{}\' is a classic VM. VM repair commands do not support classic VMs.'.format(vm_name))
         # Unknown Error
