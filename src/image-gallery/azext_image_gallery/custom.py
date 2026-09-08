@@ -109,20 +109,27 @@ def sig_community_image_version_show(cmd, location, public_gallery_name, gallery
 
 def sig_share_enable_community(cmd, resource_group_name, gallery_name, subscription_ids=None, tenant_ids=None,
                                no_wait=False, op_type=None):
-    from azure.cli.command_modules.vm.operations.sig_share import SigShareEnableCommunity
+    from azure.cli.command_modules.vm.aaz.latest.sig.share import Update
 
-    if op_type != 'EnableCommunity' and subscription_ids is None and tenant_ids is None:
+    operation_type = op_type or 'EnableCommunity'
+    if operation_type != 'EnableCommunity' and subscription_ids is None and tenant_ids is None:
         raise RequiredArgumentMissingError('At least one of subscription ids or tenant ids must be provided')
 
     command_args = {
         'resource_group': resource_group_name,
         'gallery_name': gallery_name,
         'no_wait': no_wait,
+        'operation_type': operation_type,
+        'groups': [],
     }
     if subscription_ids:
-        command_args['subscription_ids'] = subscription_ids
+        command_args['groups'].append({
+            'type': 'Subscriptions',
+            'ids': subscription_ids,
+        })
     if tenant_ids:
-        command_args['tenant_ids'] = tenant_ids
-    if op_type:
-        command_args['operation_type'] = op_type
-    return SigShareEnableCommunity(cli_ctx=cmd.cli_ctx)(command_args=command_args)
+        command_args['groups'].append({
+            'type': 'AADTenants',
+            'ids': tenant_ids,
+        })
+    return Update(cli_ctx=cmd.cli_ctx)(command_args=command_args)

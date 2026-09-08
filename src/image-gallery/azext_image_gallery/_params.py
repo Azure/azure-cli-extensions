@@ -35,7 +35,7 @@ def load_arguments(self, _):
     )
 
     pagination_token_type = CLIArgumentType(
-        options_list=['--next-token'], type=int, arg_group="Pagination",
+        options_list=['--next-token'], arg_group="Pagination",
         help="Token to specify where to start paginating. This is the token value from a previously truncated response."
     )
 
