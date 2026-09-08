@@ -8,7 +8,7 @@ from types import SimpleNamespace
 from azure.cli.testsdk.scenario_tests import live_only
 from azure.cli.testsdk import ScenarioTest
 
-from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_targets
+from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_suite_offer_targets
 from ..._client_factory import base_url_v2
 from ...operations.suite_offers import _merge_suite_offer_quotas
 from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus
@@ -221,14 +221,13 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
             }
         ]
 
-        table = transform_targets(providers)
+        table = transform_suite_offer_targets(providers)
 
         self.assertEqual(len(table), 1)
         row = table[0]
         self.assertEqual(list(row.keys()), [
-            'Provider', 'Target-id', 'Current Availability', 'Average Queue Time (seconds)'
+            'Target-id', 'Current Availability', 'Average Queue Time (seconds)'
         ])
-        self.assertEqual(row['Provider'], 'ionq')
         self.assertEqual(row['Target-id'], 'ionq.qpu')
         self.assertEqual(row['Current Availability'], 'Available')
         self.assertEqual(row['Average Queue Time (seconds)'], 42)

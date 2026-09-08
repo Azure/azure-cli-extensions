@@ -30,6 +30,18 @@ def transform_targets(providers):
     ]
 
 
+def transform_suite_offer_targets(providers):
+    return [
+        OrderedDict([
+            ('Target-id', target['id']),
+            ('Current Availability', target['currentAvailability']),
+            ('Average Queue Time (seconds)', target['averageQueueTime'])
+        ])
+        for provider in providers
+        for target in provider['targets']
+    ]
+
+
 def transform_job(result):
     transformed_result = OrderedDict([
         ('Name', result['name']),
@@ -257,4 +269,4 @@ def load_command_table(self, _):
         s.command('quotas', 'suite_offer_quotas', table_transformer=transform_suite_offer_quotas)
 
     with self.command_group('quantum suite-offer target', suite_offers_ops) as st:
-        st.command('list', 'suite_offer_targets', table_transformer=transform_targets)
+        st.command('list', 'suite_offer_targets', table_transformer=transform_suite_offer_targets)
