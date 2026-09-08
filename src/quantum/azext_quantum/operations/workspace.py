@@ -576,7 +576,8 @@ def _resolve_user_id(cmd, email):
     except GraphError as ex:
         if getattr(ex.response, "status_code", None) == 404:
             raise ResourceNotFoundError(
-                f"No user with the email address '{email}' was found in the directory."
+                f"No user with the email address '{email}' was found in the directory. "
+                "Check that the user is in the tenant and the email address is spelled correctly."
             ) from ex
         raise
 

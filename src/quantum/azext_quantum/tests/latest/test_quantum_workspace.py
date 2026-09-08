@@ -1008,7 +1008,9 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         graph_client = SimpleNamespace(user_get=Mock(side_effect=GraphError("not found", response)))
         with patch("azure.cli.command_modules.role.graph_client_factory", return_value=graph_client):
             cmd = SimpleNamespace(cli_ctx=object())
-            with self.assertRaisesRegex(ResourceNotFoundError, "No user with the email address 'missing@contoso.com' was found"):
+            expected_error = ("No user with the email address 'missing@contoso.com' was found in the directory. "
+                              "Check that the user is in the tenant and the email address is spelled correctly.")
+            with self.assertRaisesRegex(ResourceNotFoundError, expected_error):
                 _resolve_user_id(cmd, "missing@contoso.com")
 
     def test_resolve_user_id_preserves_other_graph_errors(self):
