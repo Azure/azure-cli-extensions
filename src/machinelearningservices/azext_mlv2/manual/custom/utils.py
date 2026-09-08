@@ -303,14 +303,14 @@ def deep_get(d, keys, default=None):
     return deep_get(d.get(keys[0]), keys[1:], default)
 
 
-def get_list_view_type(include_archived: bool, archived_only: bool) -> ListViewType:
+def get_list_view_type(include_archived: bool, archived_only: bool) -> str:
     if include_archived and archived_only:
         raise ValueError("Cannot provide both archived-only and include-archived.")
     if include_archived:
-        return ListViewType.ALL
+        return ListViewType.ALL.value
     if archived_only:
-        return ListViewType.ARCHIVED_ONLY
-    return ListViewType.ACTIVE_ONLY
+        return ListViewType.ARCHIVED_ONLY.value
+    return ListViewType.ACTIVE_ONLY.value
 
 
 def is_env_var_enabled(env_var_name):
