@@ -13,7 +13,7 @@ from typing import Dict
 
 from marshmallow import EXCLUDE
 
-from azure.ai.ml._restclient.arm_ml_service.models import ScheduleListViewType
+from azure.ai.ml._restclient.v2022_10_01_preview.models import ScheduleListViewType
 from azure.ai.ml.entities import JobSchedule, Schedule
 from azure.ai.ml.entities._load_functions import load_schedule
 from azure.cli.core.commands import LongRunningOperation
