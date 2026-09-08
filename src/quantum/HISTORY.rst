@@ -5,7 +5,7 @@ Release History
 
 1.0.0b26
 ++++++++++++++
-* Renamed ``az quantum workspace user create/delete`` to ``add/remove`` and limited both commands to users identified by email address.
+* [BREAKING CHANGE] Renamed ``az quantum workspace user create/delete`` to ``add/remove`` and limited both commands to users identified by email address. The ``--assignee``, ``--assignee-object-id``, ``--assignee-principal-type``, and ``--role`` parameters are replaced by ``--email``.
 
 1.0.0b25
 ++++++++++++++
