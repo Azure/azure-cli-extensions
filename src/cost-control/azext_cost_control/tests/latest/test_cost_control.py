@@ -7,9 +7,13 @@
 
 # Test recording location: recordings/test_cost_control_create_list_delete.yaml
 
+# To run this test live with full request/response logs:
+# azdev test cost-control --live --series -a -s --log-cli-level=DEBUG --log-file="cost-control-http-debug.log" --log-file-level=DEBUG
+
 import os
 
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+#from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,6 +22,7 @@ TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 class CostControlScenario(ScenarioTest):
 
     # This decorator automatically creates and cleans up a resource group for the test.
+    #@AllowLargeResponse(size_kb=4096)
     @ResourceGroupPreparer(
         name_prefix='az-cli-cost-control-test-rg-',
         location='westus2',
@@ -30,14 +35,22 @@ class CostControlScenario(ScenarioTest):
         #==================================================================================
 
         self.kwargs.update({
-            'account_name': self.create_random_name('az-cli-cost-control-test-account-', 43),
+            'account_name': self.create_random_name('test-account-', 23),
             'cost_control_name_1': 'test-1',
             'cost_control_name_2': 'test-2',
             'display_name_1': 'first display name',
             'display_name_2': 'second display name',
             'updated_display_name_1': 'updated first display name',
-            'app_insights_name': self.create_random_name('az-cli-cost-control-test-app-insights-', 48),
-            'app_insights_connection_name': self.create_random_name('app-insights-', 23),
+            'app_insights_connection_id': ( # The service only validates the format, not the existence of the resource
+                '/subscriptions/00000000-0000-0000-0000-000000000000/'
+                'resourceGroups/placeholder-resource-group/providers/Microsoft.CognitiveServices/'
+                'accounts/placeholder-account/connections/placeholder-connection'
+            ),
+            'event_grid_connection_id': ( # The service only validates the format, not the existence of the resource
+                '/subscriptions/00000000-0000-0000-0000-000000000000/'
+                'resourceGroups/placeholder-resource-group/providers/Microsoft.CognitiveServices/'
+                'accounts/placeholder-account/connections/placeholder-event-grid-connection'
+            ),
             'location': 'westus2',
             'resource_group': resource_group,
             'rules_file_1': os.path.join(TEST_DIR, 'cost-control-rules-1.json'),
@@ -56,41 +69,9 @@ class CostControlScenario(ScenarioTest):
             '--kind AIServices '
             '--sku S0 '
             '--location {location} '
-            '--assign-identity '
             '--yes'
         ).get_output_in_json()
         self.kwargs['account_id'] = account['id']
-
-        # Create the Application Insights component used for cost-control telemetry.
-        app_insights = self.cmd(
-            'monitor app-insights component create '
-            '--app {app_insights_name} '
-            '--resource-group {resource_group} '
-            '--location {location} '
-            '--application-type web',
-            checks=[
-                self.check('name', '{app_insights_name}'),
-                self.check('provisioningState', 'Succeeded'),
-            ]
-        ).get_output_in_json()
-        self.kwargs['app_insights_id'] = app_insights['id']
-
-        # Connect the account to the Application Insights component.
-        app_insights_connection = self.cmd(
-            'resource create '
-            '--id {account_id}/connections/{app_insights_connection_name} '
-            '--api-version 2026-07-15-preview '
-            '--properties '
-            '\'{{"authType":"AccountManagedIdentity","category":"AppInsights",'
-            '"target":"{app_insights_id}"}}\'',
-            checks=[
-                self.check('name', '{app_insights_connection_name}'),
-                self.check('properties.authType', 'AccountManagedIdentity'),
-                self.check('properties.category', 'AppInsights'),
-                self.check('properties.target', '{app_insights_id}'),
-            ]
-        ).get_output_in_json()
-        self.kwargs['app_insights_connection_id'] = app_insights_connection['id']
 
         #==================================================================================
         #                 BEGIN actual cost-control tests
@@ -128,17 +109,27 @@ class CostControlScenario(ScenarioTest):
         )
 
         # Attach the first cost control to the account.
+        # TODO: Update command "cognitiveservices account update" to support setting costControlConnections and costControlIds.
         self.cmd(
-            'resource update '
+            'resource patch '
             '--ids {account_id} '
             '--api-version 2026-07-15-preview '
-            '--set '
-            'properties.costControlConnections.appInsightsConnectionId={app_insights_connection_id} '
-            'properties.costControlIds=\'["{cost_control_id_1}"]\'',
+            '--properties '
+            '\'{{'
+            '"costControlConnections":{{'
+            '"appInsightsConnectionId":"{app_insights_connection_id}",'
+            '"eventGridConnectionId":"{event_grid_connection_id}"'
+            '}},'
+            '"costControlIds":["{cost_control_id_1}"]'
+            '}}\'',
             checks=[
                 self.check(
                     'properties.costControlConnections.appInsightsConnectionId',
                     '{app_insights_connection_id}'
+                ),
+                self.check(
+                    'properties.costControlConnections.eventGridConnectionId',
+                    '{event_grid_connection_id}'
                 ),
                 self.check('properties.costControlIds[0]', '{cost_control_id_1}'),
             ]
@@ -197,11 +188,12 @@ class CostControlScenario(ScenarioTest):
         )
 
         # Detach the cost control before deleting it.
+        # TODO: Update command "cognitiveservices account update" to support resetting costControlIds.
         self.cmd(
-            'resource update '
+            'resource patch '
             '--ids {account_id} '
             '--api-version 2026-07-15-preview '
-            '--set properties.costControlIds=[]',
+            '--properties \'{{"costControlIds":[]}}\'',
             checks=[self.check('properties.costControlIds', [])]
         )
 
