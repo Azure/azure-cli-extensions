@@ -47,15 +47,17 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         cmd_create = yaml.safe_load(cmd_create.output)
         assert cmd_create["name"] == self.kwargs.get("online_endpoint_name_1", None)
         assert cmd_create["auth_mode"] == "aml_token"
-        assert cmd_create["provisioning_state"] != ""
+        assert cmd_create["provisioning_state"] == "Succeeded"
         assert len(cmd_create["traffic"]) == 0
         assert cmd_create["id"] is not None
         cmd_show = self.cmd("az ml online-endpoint show -n {online_endpoint_name_1} -g testrg -w testworkspace")
         cmd_show = yaml.safe_load(cmd_show.output)
         assert cmd_show["name"] == self.kwargs.get("online_endpoint_name_1", None)
+        assert cmd_show["provisioning_state"] == "Succeeded"
         cmd_update = self.cmd("az ml online-endpoint update -n {online_endpoint_name_1}  --set tags.new_tag=new_val -g testrg -w testworkspace")
         cmd_update = yaml.safe_load(cmd_update.output)
         assert cmd_update["tags"]["new_tag"] == "new_val"
+        assert cmd_update["provisioning_state"] == "Succeeded"
         cmd_delete = self.cmd("az ml online-endpoint delete -n {online_endpoint_name_1} --no-wait -y -g testrg -w testworkspace")
         assert cmd_delete.output == ""
         # Delete a key regardless of whether it is in the dictionary for the new name
