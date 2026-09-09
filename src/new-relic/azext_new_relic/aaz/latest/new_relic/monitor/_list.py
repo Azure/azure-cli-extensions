@@ -47,7 +47,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g"],
         )
         return cls._args_schema
 

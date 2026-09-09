@@ -54,7 +54,7 @@ class SwitchBilling(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g"],
             required=True,
         )
 

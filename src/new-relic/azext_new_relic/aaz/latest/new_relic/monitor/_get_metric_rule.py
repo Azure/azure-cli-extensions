@@ -45,7 +45,7 @@ class GetMetricRule(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["--monitor-name", "-n", "--name"],
             help="Name of the Monitoring resource",
             required=True,
             id_part="name",
@@ -54,7 +54,7 @@ class GetMetricRule(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g"],
             required=True,
         )
 

@@ -54,7 +54,7 @@ class GetBillingInfo(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g", "--g"],
             required=True,
         )
         return cls._args_schema

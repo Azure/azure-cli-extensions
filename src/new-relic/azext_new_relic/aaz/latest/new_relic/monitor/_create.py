@@ -46,7 +46,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["--name", "-n", "--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
             fmt=AAZStrArgFormat(
@@ -54,7 +54,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g"],
             required=True,
         )
 
@@ -227,7 +227,7 @@ class Create(AAZCommand):
             default={"type": "SystemAssigned"},
         )
         _args_schema.location = AAZResourceLocationArg(
-            options=["--location"],
+            options=["--location", "-l"],
             arg_group="Resource",
             help="The geo-location where the resource lives When not specified, the location of the resource group will be used.",
             required=True,

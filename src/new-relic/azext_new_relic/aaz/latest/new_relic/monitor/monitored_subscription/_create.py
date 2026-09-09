@@ -64,7 +64,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g", "--g"],
             required=True,
         )
 
@@ -72,7 +72,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitored_subscription_list = AAZListArg(
-            options=["--subscriptions", "--monitored-subscription-list"],
+            options=["--subscriptions", "--monitored-subscription-list", "-n"],
             arg_group="Properties",
             help="List of subscriptions and the state of the monitoring.",
         )

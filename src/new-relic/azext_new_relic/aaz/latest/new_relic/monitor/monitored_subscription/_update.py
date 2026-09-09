@@ -65,6 +65,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group", "-g", "--g"],
             required=True,
         )
 

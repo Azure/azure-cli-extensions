@@ -55,11 +55,11 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group", "-g"],
             required=True,
         )
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["--name", "-n", "--rule-set-name"],
             help="Name of the TagRule",
             required=True,
             id_part="child_name_1",
