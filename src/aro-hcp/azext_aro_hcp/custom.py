@@ -29,6 +29,8 @@ from .aaz.latest.aro.hcp._get_versions import GetVersions as _GetVersions
 logger = get_logger(__name__)
 
 
+# This subclass facilitates the `--IDENTITY-FLAG OPERATOR_NAME IDENTITY` positional argument
+# formatting while still maintaining the underlying AAZListArg behavior.
 class _AAZIdentityPairArg(AAZListArg):
 
     def to_cmd_arg(self, name, **kwargs):
@@ -102,12 +104,6 @@ def _resolve_identity_resource_id(identity, subnet_id):
         type="userAssignedIdentities",
         name=identity,
     )
-
-
-def _serialized_data(value):
-    if hasattr(value, "to_serialized_data"):
-        return value.to_serialized_data()
-    return value
 
 
 def _operator_identities(argument, option, subnet_id):
@@ -308,7 +304,7 @@ class ClusterUpdate(_ClusterUpdate):
             return
 
         platform = instance.properties.platform
-        subnet_id = _serialized_data(platform.subnet_id)
+        subnet_id = platform.subnet_id
         operator_identities = platform.operators_authentication.user_assigned_identities
 
         if has_value(control_plane_arg):
