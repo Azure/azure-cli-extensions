@@ -105,7 +105,7 @@ class ClusterCreateTest(unittest.TestCase):
 
         args = command.ctx.args
         self.assertEqual(
-            {control_plane_id: {}, data_plane_id: {}, service: {}},
+            {control_plane_id: {}, service: {}},
             args.user_assigned_identities,
         )
         self.assertEqual({
@@ -128,7 +128,6 @@ class ClusterCreateTest(unittest.TestCase):
         args = command.ctx.args
         self.assertEqual({
             _identity_id("control"): {},
-            _identity_id("data"): {},
             _identity_id("service"): {},
         }, args.user_assigned_identities)
         self.assertEqual({

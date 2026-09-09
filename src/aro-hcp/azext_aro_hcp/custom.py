@@ -218,7 +218,7 @@ class ClusterCreate(_ClusterCreate):
 
         args.user_assigned_identities = {
             resource_id: {}
-            for resource_id in set(control_plane.values()) | set(data_plane.values()) | {service}
+            for resource_id in set(control_plane.values()) | {service}
         }
         args.operators_authentication = {
             "user_assigned_identities": {
