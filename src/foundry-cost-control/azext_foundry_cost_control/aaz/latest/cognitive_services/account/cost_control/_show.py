@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a cost control.
+
+    :example: Get a cost control with all settings
+        az cognitive-services account cost-control show --resource-group foundry-resource-group --account-name foundry-account --cost-control-name production-agents
     """
 
     _aaz_info = {

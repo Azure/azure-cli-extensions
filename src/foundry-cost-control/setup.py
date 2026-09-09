@@ -36,16 +36,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='cost-control',
+    name='foundry-cost-control',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools CostControl Extension.',
+    description='Microsoft Azure Command-Line Tools FoundryCostControl Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/cost-control',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/foundry-cost-control',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_cost_control': ['azext_metadata.json']},
+    package_data={'azext_foundry_cost_control': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

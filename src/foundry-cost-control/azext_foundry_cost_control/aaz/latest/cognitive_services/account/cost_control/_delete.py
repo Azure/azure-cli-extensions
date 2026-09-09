@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a cost control.
+
+    :example: Delete a cost control conditionally
+        az cognitive-services account cost-control delete --resource-group foundry-resource-group --account-name foundry-account --cost-control-name production-agents --if-match "00000000-0000-0000-0000-000000000002"
     """
 
     _aaz_info = {

@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "cognitive-services account cost-control update",
+    "cognitive-services account cost-control create",
     is_preview=True,
 )
-class Update(AAZCommand):
-    """Update a cost control.
+class Create(AAZCommand):
+    """Create a cost control.
 
-    :example: Update the display name of a cost control
-        az cognitive-services account cost-control update --resource-group MyResourceGroup --account-name MyAccount --cost-control-name MyCostControl --display-name "Updated Display Name"
+    :example: Create a cost control with all settings
+        az cognitive-services account cost-control create --resource-group foundry-resource-group --account-name foundry-account --cost-control-name production-agents --if-none-match * --display-name Production agent monthly budget --rules "[{name:monthly-agent-budget,counter-key:[{type:agent}],unit:usd,amount:1000,period:month,recurring:True,match:{foundry-caller-agent-id:[customer-support-agent,sales-assistant-agent],foundry-caller-identity-oid:[11111111-2222-3333-4444-555555555555],foundry-caller-session-id:[production-session],foundry-project-id:[/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/foundry-resource-group/providers/Microsoft.CognitiveServices/accounts/foundry-account/projects/production]},thresholds:[{type:percentage,value:80,action:alert},{type:absolute,value:1000,action:audit}]},{name:daily-tenant-budget,counter-key:[{type:custom,attribute:x-tenant-id}],unit:usd,amount:100,period:day,recurring:True,thresholds:[{type:percentage,value:90,action:alert}]}]"
     """
 
     _aaz_info = {
@@ -28,8 +28,6 @@ class Update(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cognitiveservices/accounts/{}/costcontrols/{}", "2026-07-15-preview"],
         ]
     }
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -59,7 +57,6 @@ class Update(AAZCommand):
             options=["--account-name"],
             help="The name of Cognitive Services account.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
                 max_length=64,
@@ -70,7 +67,6 @@ class Update(AAZCommand):
             options=["-n", "--name", "--cost-control-name"],
             help="The name of the CostControl",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,63}$",
             ),
@@ -86,7 +82,6 @@ class Update(AAZCommand):
             options=["--display-name"],
             arg_group="Properties",
             help="An optional human-readable name for the cost control.",
-            nullable=True,
             fmt=AAZStrArgFormat(
                 max_length=128,
             ),
@@ -102,14 +97,13 @@ class Update(AAZCommand):
         )
 
         rules = cls._args_schema.rules
-        rules.Element = AAZObjectArg(
-            nullable=True,
-        )
+        rules.Element = AAZObjectArg()
 
         _element = cls._args_schema.rules.Element
         _element.amount = AAZFloatArg(
             options=["amount"],
             help="The maximum consumption allowed by this rule, expressed in the selected unit.",
+            required=True,
             fmt=AAZFloatArgFormat(
                 minimum=0.0,
                 exclusive_minimum=True,
@@ -118,6 +112,7 @@ class Update(AAZCommand):
         _element.counter_key = AAZListArg(
             options=["counter-key"],
             help="The built-in dimension used to partition consumption. The initial preview supports exactly one dimension.",
+            required=True,
             fmt=AAZListArgFormat(
                 max_length=1,
                 min_length=1,
@@ -126,11 +121,11 @@ class Update(AAZCommand):
         _element.match = AAZObjectArg(
             options=["match"],
             help="Trusted request attributes and allowed values used to select matching requests.",
-            nullable=True,
         )
         _element.name = AAZStrArg(
             options=["name"],
             help="The stable rule identifier, unique within the cost control without regard to case.",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,63}$",
                 max_length=64,
@@ -139,17 +134,17 @@ class Update(AAZCommand):
         _element.period = AAZStrArg(
             options=["period"],
             help="The calendar-aligned UTC renewal period. This property is required for recurring rules and omitted for non-recurring rules.",
-            nullable=True,
             enum={"day": "day", "hour": "hour", "minute": "minute", "month": "month", "week": "week", "year": "year"},
         )
         _element.recurring = AAZBoolArg(
             options=["recurring"],
             help="Whether the cost control renews. The default is true.",
-            nullable=True,
+            default=True,
         )
         _element.thresholds = AAZListArg(
             options=["thresholds"],
             help="The actions evaluated as consumption approaches the configured amount.",
+            required=True,
             fmt=AAZListArgFormat(
                 max_length=10,
                 min_length=1,
@@ -158,19 +153,17 @@ class Update(AAZCommand):
         _element.unit = AAZStrArg(
             options=["unit"],
             help="The unit used for the cost control amount and absolute thresholds.",
+            required=True,
             enum={"usd": "usd"},
         )
 
         counter_key = cls._args_schema.rules.Element.counter_key
-        counter_key.Element = AAZObjectArg(
-            nullable=True,
-        )
+        counter_key.Element = AAZObjectArg()
 
         _element = cls._args_schema.rules.Element.counter_key.Element
         _element.attribute = AAZStrArg(
             options=["attribute"],
             help="The request attribute used by a custom dimension. This property is required for custom dimensions and must be omitted for built-in dimensions.",
-            nullable=True,
             fmt=AAZStrArgFormat(
                 max_length=128,
             ),
@@ -178,6 +171,7 @@ class Update(AAZCommand):
         _element.type = AAZStrArg(
             options=["type"],
             help="The kind of request dimension.",
+            required=True,
             enum={"account": "account", "agent": "agent", "custom": "custom", "identity": "identity", "project": "project", "session": "session"},
         )
 
@@ -185,7 +179,6 @@ class Update(AAZCommand):
         match.foundry_caller_agent_id = AAZListArg(
             options=["foundry-caller-agent-id"],
             help="The stable Foundry agent IDs to match.",
-            nullable=True,
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
@@ -194,7 +187,6 @@ class Update(AAZCommand):
         match.foundry_caller_identity_oid = AAZListArg(
             options=["foundry-caller-identity-oid"],
             help="The authenticated principal object IDs to match.",
-            nullable=True,
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
@@ -203,7 +195,6 @@ class Update(AAZCommand):
         match.foundry_caller_session_id = AAZListArg(
             options=["foundry-caller-session-id"],
             help="The Foundry session IDs to match.",
-            nullable=True,
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
@@ -212,7 +203,6 @@ class Update(AAZCommand):
         match.foundry_project_id = AAZListArg(
             options=["foundry-project-id"],
             help="The Foundry project resource IDs to match.",
-            nullable=True,
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
@@ -221,7 +211,6 @@ class Update(AAZCommand):
 
         foundry_caller_agent_id = cls._args_schema.rules.Element.match.foundry_caller_agent_id
         foundry_caller_agent_id.Element = AAZStrArg(
-            nullable=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -229,7 +218,6 @@ class Update(AAZCommand):
 
         foundry_caller_identity_oid = cls._args_schema.rules.Element.match.foundry_caller_identity_oid
         foundry_caller_identity_oid.Element = AAZStrArg(
-            nullable=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -237,7 +225,6 @@ class Update(AAZCommand):
 
         foundry_caller_session_id = cls._args_schema.rules.Element.match.foundry_caller_session_id
         foundry_caller_session_id.Element = AAZStrArg(
-            nullable=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -245,32 +232,31 @@ class Update(AAZCommand):
 
         foundry_project_id = cls._args_schema.rules.Element.match.foundry_project_id
         foundry_project_id.Element = AAZStrArg(
-            nullable=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
         thresholds = cls._args_schema.rules.Element.thresholds
-        thresholds.Element = AAZObjectArg(
-            nullable=True,
-        )
+        thresholds.Element = AAZObjectArg()
 
         _element = cls._args_schema.rules.Element.thresholds.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="The action taken when the threshold is reached. The default is audit.",
-            nullable=True,
+            default="audit",
             enum={"alert": "alert", "audit": "audit"},
         )
         _element.type = AAZStrArg(
             options=["type"],
             help="How the threshold value is interpreted.",
+            required=True,
             enum={"absolute": "absolute", "percentage": "percentage"},
         )
         _element.value = AAZFloatArg(
             options=["value"],
             help="The threshold value. Percentage values range from 0 through 100, and absolute values cannot exceed the rule amount.",
+            required=True,
             fmt=AAZFloatArgFormat(
                 minimum=0.0,
             ),
@@ -279,11 +265,6 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CostControlsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
         self.CostControlsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -295,213 +276,9 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
-
-    class CostControlsGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CognitiveServices/accounts/{accountName}/costControls/{costControlName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "accountName", self.ctx.args.account_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "costControlName", self.ctx.args.cost_control_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-07-15-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            properties.rules = AAZListType(
-                flags={"required": True},
-            )
-
-            rules = cls._schema_on_200.properties.rules
-            rules.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.rules.Element
-            _element.amount = AAZFloatType(
-                flags={"required": True},
-            )
-            _element.counter_key = AAZListType(
-                serialized_name="counterKey",
-                flags={"required": True},
-            )
-            _element.match = AAZObjectType()
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.period = AAZStrType()
-            _element.recurring = AAZBoolType()
-            _element.thresholds = AAZListType(
-                flags={"required": True},
-            )
-            _element.unit = AAZStrType(
-                flags={"required": True},
-            )
-
-            counter_key = cls._schema_on_200.properties.rules.Element.counter_key
-            counter_key.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.rules.Element.counter_key.Element
-            _element.attribute = AAZStrType()
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            match = cls._schema_on_200.properties.rules.Element.match
-            match["foundry.caller.agent.id"] = AAZListType()
-            match["foundry.caller.identity.oid"] = AAZListType()
-            match["foundry.caller.session.id"] = AAZListType()
-            match["foundry.project.id"] = AAZListType()
-
-            foundry_caller_agent_id = match["foundry.caller.agent.id"]
-            foundry_caller_agent_id.Element = AAZStrType()
-
-            foundry_caller_identity_oid = match["foundry.caller.identity.oid"]
-            foundry_caller_identity_oid.Element = AAZStrType()
-
-            foundry_caller_session_id = match["foundry.caller.session.id"]
-            foundry_caller_session_id.Element = AAZStrType()
-
-            foundry_project_id = match["foundry.project.id"]
-            foundry_project_id.Element = AAZStrType()
-
-            thresholds = cls._schema_on_200.properties.rules.Element.thresholds
-            thresholds.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.rules.Element.thresholds.Element
-            _element.action = AAZStrType()
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-            _element.value = AAZFloatType(
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200
 
     class CostControlsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -583,8 +360,71 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("rules", AAZListType, ".rules", typ_kwargs={"flags": {"required": True}})
+
+            rules = _builder.get(".properties.rules")
+            if rules is not None:
+                rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.rules[]")
+            if _elements is not None:
+                _elements.set_prop("amount", AAZFloatType, ".amount", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("counterKey", AAZListType, ".counter_key", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("match", AAZObjectType, ".match")
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("period", AAZStrType, ".period")
+                _elements.set_prop("recurring", AAZBoolType, ".recurring")
+                _elements.set_prop("thresholds", AAZListType, ".thresholds", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("unit", AAZStrType, ".unit", typ_kwargs={"flags": {"required": True}})
+
+            counter_key = _builder.get(".properties.rules[].counterKey")
+            if counter_key is not None:
+                counter_key.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.rules[].counterKey[]")
+            if _elements is not None:
+                _elements.set_prop("attribute", AAZStrType, ".attribute")
+                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+            match = _builder.get(".properties.rules[].match")
+            if match is not None:
+                foundry_caller_agent_id = match.set_prop(
+                    "foundry.caller.agent.id", AAZListType, ".foundry_caller_agent_id")
+                if foundry_caller_agent_id is not None:
+                    foundry_caller_agent_id.set_elements(AAZStrType, ".")
+
+                foundry_caller_identity_oid = match.set_prop(
+                    "foundry.caller.identity.oid", AAZListType, ".foundry_caller_identity_oid")
+                if foundry_caller_identity_oid is not None:
+                    foundry_caller_identity_oid.set_elements(AAZStrType, ".")
+
+                foundry_caller_session_id = match.set_prop(
+                    "foundry.caller.session.id", AAZListType, ".foundry_caller_session_id")
+                if foundry_caller_session_id is not None:
+                    foundry_caller_session_id.set_elements(AAZStrType, ".")
+
+                foundry_project_id = match.set_prop(
+                    "foundry.project.id", AAZListType, ".foundry_project_id")
+                if foundry_project_id is not None:
+                    foundry_project_id.set_elements(AAZStrType, ".")
+
+            thresholds = _builder.get(".properties.rules[].thresholds")
+            if thresholds is not None:
+                thresholds.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.rules[].thresholds[]")
+            if _elements is not None:
+                _elements.set_prop("action", AAZStrType, ".action")
+                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("value", AAZFloatType, ".value", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -717,93 +557,9 @@ class Update(AAZCommand):
 
             return cls._schema_on_200_201
 
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("displayName", AAZStrType, ".display_name")
-                properties.set_prop("rules", AAZListType, ".rules", typ_kwargs={"flags": {"required": True}})
-
-            rules = _builder.get(".properties.rules")
-            if rules is not None:
-                rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.rules[]")
-            if _elements is not None:
-                _elements.set_prop("amount", AAZFloatType, ".amount", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("counterKey", AAZListType, ".counter_key", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("match", AAZObjectType, ".match")
-                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("period", AAZStrType, ".period")
-                _elements.set_prop("recurring", AAZBoolType, ".recurring")
-                _elements.set_prop("thresholds", AAZListType, ".thresholds", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("unit", AAZStrType, ".unit", typ_kwargs={"flags": {"required": True}})
-
-            counter_key = _builder.get(".properties.rules[].counterKey")
-            if counter_key is not None:
-                counter_key.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.rules[].counterKey[]")
-            if _elements is not None:
-                _elements.set_prop("attribute", AAZStrType, ".attribute")
-                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-
-            match = _builder.get(".properties.rules[].match")
-            if match is not None:
-                foundry_caller_agent_id = match.set_prop(
-                    "foundry.caller.agent.id", AAZListType, ".foundry_caller_agent_id")
-                if foundry_caller_agent_id is not None:
-                    foundry_caller_agent_id.set_elements(AAZStrType, ".")
-
-                foundry_caller_identity_oid = match.set_prop(
-                    "foundry.caller.identity.oid", AAZListType, ".foundry_caller_identity_oid")
-                if foundry_caller_identity_oid is not None:
-                    foundry_caller_identity_oid.set_elements(AAZStrType, ".")
-
-                foundry_caller_session_id = match.set_prop(
-                    "foundry.caller.session.id", AAZListType, ".foundry_caller_session_id")
-                if foundry_caller_session_id is not None:
-                    foundry_caller_session_id.set_elements(AAZStrType, ".")
-
-                foundry_project_id = match.set_prop(
-                    "foundry.project.id", AAZListType, ".foundry_project_id")
-                if foundry_project_id is not None:
-                    foundry_project_id.set_elements(AAZStrType, ".")
-
-            thresholds = _builder.get(".properties.rules[].thresholds")
-            if thresholds is not None:
-                thresholds.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.rules[].thresholds[]")
-            if _elements is not None:
-                _elements.set_prop("action", AAZStrType, ".action")
-                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("value", AAZFloatType, ".value", typ_kwargs={"flags": {"required": True}})
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-class _UpdateHelper:
-    """Helper class for Update"""
-
-
-__all__ = ["Update"]
+__all__ = ["Create"]
