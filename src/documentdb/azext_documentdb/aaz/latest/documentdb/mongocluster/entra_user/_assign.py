@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster microsoft-entra-user assign",
-    is_preview=True,
 )
 class Assign(AAZCommand):
     """Grant a Microsoft Entra ID principal access to a mongo cluster by assigning it database roles.
