@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alrs"
+version = "0.1.0"
+description = "Microsoft Azure Command-Line Tools Package Registry Extension"
+dynamic = ["readme"]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Microsoft Corporation", email = "azpycli@microsoft.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = []
+
+[project.urls]
+Home = "https://github.com/Azure/azure-cli-extensions/tree/main/src/alrs"
+
+[tool.setuptools.dynamic]
+readme = { file = ["README.md", "HISTORY.rst"], content-type = "text/markdown" }
+
+[tool.setuptools.packages.find]
+include = ["azext_alrs*"]
+
+[tool.setuptools.package-data]
+azext_alrs = ["azext_metadata.json"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "PTH",  # flake8-use-pathlib
+    "T20",  # flake8-print
+]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+
+[[tool.mypy.overrides]]
+module = "azext_alrs.*"
+warn_unused_ignores = false
+
+# azure-cli-core and knack ship no type stubs; don't fail strict mode on them.
+[[tool.mypy.overrides]]
+module = ["azure.cli.*", "knack.*", "rpm_rs"]
+ignore_missing_imports = true
+
+[tool.pyright]
+pythonVersion = "3.10"
