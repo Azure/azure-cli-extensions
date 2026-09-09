@@ -4085,6 +4085,19 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                     raise CLIError(f"The addon {addon} is not installed.")
             addon_profiles[addon].config = None
         addon_profiles[addon].enabled = enable
+        if addon == CONST_MONITORING_ADDON_NAME:
+            monitor_profile = getattr(instance, "azure_monitor_profile", None)
+            if getattr(monitor_profile, "container_insights", None) is not None:
+                # Reset canonical monitoring values along with the legacy addon config.
+                ContainerInsights = cmd.get_models(
+                    "ManagedClusterAzureMonitorProfileContainerInsights",
+                    resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+                    operation_group="managed_clusters",
+                )
+                monitor_profile.container_insights = ContainerInsights(
+                    enabled=enable,
+                    log_analytics_workspace_resource_id=workspace_resource_id if enable else None,
+                )
 
     instance.addon_profiles = addon_profiles
 
