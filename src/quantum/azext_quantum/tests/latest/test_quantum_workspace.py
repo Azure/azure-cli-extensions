@@ -21,7 +21,7 @@ from ..._params import QuotaAction, validate_email
 from ..._validators import validate_workspace_user
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, _list_user_workspace_role_assignments, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, _list_user_workspace_role_assignments, _select_user_workspace_role_assignment, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -911,25 +911,65 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         list_assignments.assert_called_once_with(cmd, "oid", expected_scope)
         create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee_object_id="oid", assignee_principal_type="User")
 
-    def test_add_user_returns_existing_supported_roles(self):
+    def test_select_user_workspace_role_assignment_uses_stable_priority(self):
+        workspace_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+        resource_group_scope = "/subscriptions/sub/resourceGroups/rg"
+        subscription_scope = "/subscriptions/sub"
+        direct_contributor = {"id": "/assignments/direct-contributor",
+                              "roleDefinitionId": QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+                              "scope": workspace_scope}
+        direct_owner = {"id": "/assignments/direct-owner",
+                        "roleDefinitionId": QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+                        "scope": workspace_scope}
+        resource_group_contributor = {"id": "/assignments/resource-group-contributor",
+                                      "roleDefinitionId": QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+                                      "scope": resource_group_scope}
+        subscription_contributor = {"id": "/assignments/subscription-contributor",
+                                    "roleDefinitionId": QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+                                    "scope": subscription_scope}
+        resource_group_owner = {"id": "/assignments/resource-group-owner",
+                                "roleDefinitionId": QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+                                "scope": resource_group_scope}
+        subscription_owner = {"id": "/assignments/subscription-owner",
+                              "roleDefinitionId": QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+                              "scope": subscription_scope}
+        cases = (
+            ("direct contributor",
+             [subscription_owner, resource_group_owner, subscription_contributor, resource_group_contributor,
+              direct_owner, direct_contributor], direct_contributor),
+            ("direct owner",
+             [subscription_owner, resource_group_owner, subscription_contributor, resource_group_contributor,
+              direct_owner], direct_owner),
+            ("closest inherited contributor",
+             [subscription_owner, resource_group_owner, subscription_contributor, resource_group_contributor],
+             resource_group_contributor),
+            ("closest inherited owner", [subscription_owner, resource_group_owner], resource_group_owner),
+        )
+        for name, assignments, expected in cases:
+            with self.subTest(name=name):
+                result = _select_user_workspace_role_assignment(assignments, workspace_scope)
+
+                self.assertIs(result, expected)
+
+    def test_add_user_returns_preferred_existing_role(self):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
-        assignments = [
-            {"id": "/assignments/contributor", "roleDefinitionId": QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
-             "scope": expected_scope},
-            {"id": "/assignments/owner", "roleDefinitionId": QUANTUM_WORKSPACE_OWNER_ROLE_ID,
-             "scope": "/subscriptions/sub/resourceGroups/rg"},
-        ]
+        inherited_owner = {"id": "/assignments/owner", "roleDefinitionId": QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+                           "scope": "/subscriptions/sub/resourceGroups/rg"}
+        direct_contributor = {"id": "/assignments/contributor",
+                              "roleDefinitionId": QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+                              "scope": expected_scope}
+        assignments = [inherited_owner, direct_contributor]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
                 patch("azext_quantum.operations.workspace._resolve_user_id", return_value="oid"), \
                 patch("azext_quantum.operations.workspace._list_user_workspace_role_assignments",
                       return_value=assignments), \
                 patch("azure.cli.command_modules.role.custom.create_role_assignment") as create_role_assignment, \
-                    self.assertLogs("cli.azext_quantum.operations.workspace", level="WARNING") as logs:
+                self.assertLogs("cli.azext_quantum.operations.workspace", level="WARNING") as logs:
             cmd = SimpleNamespace(cli_ctx=object())
             result = add_user(cmd, "rg", "ws", email="user@contoso.com")
 
-        self.assertIs(result, assignments)
+        self.assertIs(result, direct_contributor)
         self.assertIn("already has access", logs.output[0])
         self.assertIn("No new role assignment was created", logs.output[0])
         create_role_assignment.assert_not_called()

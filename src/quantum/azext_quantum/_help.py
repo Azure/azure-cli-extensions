@@ -447,8 +447,8 @@ helps['quantum workspace user add'] = """
       Assigns the 'Quantum Workspace Data Contributor' role at the scope of the given
       (or current) Azure Quantum workspace. If the user already has the
       'Quantum Workspace Data Contributor' or 'Quantum Workspace Owner' role at the workspace,
-      including access inherited from the resource group or subscription, the command returns
-      the existing assignments without creating a new one.
+      including access inherited from the resource group or subscription, the command returns an
+      existing assignment without creating a new one.
     examples:
       - name: Grant a user access to a workspace using their email address.
         text: |-

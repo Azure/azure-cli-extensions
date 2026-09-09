@@ -583,6 +583,23 @@ def _list_user_workspace_role_assignments(cmd, user_id, scope):
             if assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower() in QUANTUM_WORKSPACE_USER_ROLE_IDS]
 
 
+def _select_user_workspace_role_assignment(assignments, scope):
+    workspace_scope_parts = scope.lower().strip("/").split("/")
+
+    def priority(assignment):
+        assignment_scope_parts = assignment["scope"].lower().strip("/").split("/")
+        is_inherited = assignment_scope_parts != workspace_scope_parts
+        role_id = assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower()
+        role_priority = 0 if role_id == QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID else 1
+        # Prefer the inherited assignment whose ARM scope is the nearest recognizable ancestor of the workspace.
+        scope_distance = (len(workspace_scope_parts) - len(assignment_scope_parts)
+                          if workspace_scope_parts[:len(assignment_scope_parts)] == assignment_scope_parts
+                          else len(workspace_scope_parts))
+        return is_inherited, role_priority, scope_distance, assignment["scope"].lower(), assignment["id"].lower()
+
+    return min(assignments, key=priority)
+
+
 def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
     Grant a user access to an Azure Quantum workspace.
@@ -596,7 +613,7 @@ def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     if assignments:
         logger.warning("User '%s' already has access to this Azure Quantum workspace. No new role assignment was "
                        "created.", email)
-        return assignments
+        return _select_user_workspace_role_assignment(assignments, scope)
 
     return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
                                   assignee_object_id=user_id, assignee_principal_type="User")
