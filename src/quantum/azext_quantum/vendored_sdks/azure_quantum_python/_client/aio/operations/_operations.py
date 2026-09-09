@@ -1251,7 +1251,7 @@ class ServicesQuotasOperations:  # pylint: disable=docstring-missing-param
     )
     def list_workspace_usages(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, *, provider_id: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.QuotaUsageData"]:
+    ) -> AsyncItemPaged["_models.QuotaUsage"]:
         """List quota usages for the given workspace. This operation is only available for v2 workspaces.
 
         :param subscription_id: The Azure subscription ID. Required.
@@ -1262,14 +1262,14 @@ class ServicesQuotasOperations:  # pylint: disable=docstring-missing-param
         :type workspace_name: str
         :keyword provider_id: The unique identifier for the provider to get quota usages for. Required.
         :paramtype provider_id: str
-        :return: An iterator like instance of QuotaUsageData
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.QuotaUsageData]
+        :return: An iterator like instance of QuotaUsage
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.QuotaUsage]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[list[_models.QuotaUsageData]] = kwargs.pop("cls", None)
+        cls: ClsType[list[_models.QuotaUsage]] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -1326,7 +1326,7 @@ class ServicesQuotasOperations:  # pylint: disable=docstring-missing-param
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(
-                list[_models.QuotaUsageData],
+                list[_models.QuotaUsage],
                 deserialized.get("value", []),
             )
             if cls:
@@ -2202,21 +2202,21 @@ class ServicesSuiteOffersOperations:  # pylint: disable=docstring-missing-param
     )
     def list_quota_usages(
         self, subscription_id: str, provider_id: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.QuotaUsageData"]:
+    ) -> AsyncItemPaged["_models.QuotaUsage"]:
         """List quota usages for the given suite offer provider in the subscription.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
         :param provider_id: The unique identifier for the provider. Required.
         :type provider_id: str
-        :return: An iterator like instance of QuotaUsageData
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.QuotaUsageData]
+        :return: An iterator like instance of QuotaUsage
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.quantum.models.QuotaUsage]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[list[_models.QuotaUsageData]] = kwargs.pop("cls", None)
+        cls: ClsType[list[_models.QuotaUsage]] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -2271,7 +2271,7 @@ class ServicesSuiteOffersOperations:  # pylint: disable=docstring-missing-param
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
             list_of_elem = _deserialize(
-                list[_models.QuotaUsageData],
+                list[_models.QuotaUsage],
                 deserialized.get("value", []),
             )
             if cls:

@@ -11,7 +11,7 @@ from azure.cli.testsdk import ScenarioTest
 from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_suite_offer_targets
 from ..._client_factory import base_url_v2
 from ...operations.suite_offers import _merge_suite_offer_quotas
-from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsageData, ProviderStatus
+from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus
 from ...vendored_sdks.azure_quantum_python._client._utils.model_base import _deserialize
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_suite_offers_list_quota_usages_request,
@@ -141,7 +141,7 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
             },
         ]
 
-        usages = _deserialize(list[QuotaUsageData], data)
+        usages = _deserialize(list[QuotaUsage], data)
 
         self.assertEqual(len(usages), 2)
         self.assertEqual(usages[0].scope, 'Subscription')
@@ -270,7 +270,7 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         )
         usages = [
             _usage(target_id=None, standard=40, high=10),        # subscription-scope usage ignored
-            _deserialize(QuotaUsageData, {
+            _deserialize(QuotaUsage, {
                 'providerId': 'ionq',
                 'scope': 'SubscriptionTarget',
                 'targetId': 'ionq.qpu',

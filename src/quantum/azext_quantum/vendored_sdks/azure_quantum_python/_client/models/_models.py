@@ -571,8 +571,8 @@ class Quota(_Model):
      'None' is used for concurrent quotas. Required. Known values are: \"None\" and \"Monthly\"."""
 
 
-class QuotaUsageData(_Model):
-    """Quota usage data for a suite offer provider.
+class QuotaUsage(_Model):
+    """Quota usage for a suite offer provider.
 
     :ivar provider_id: The unique identifier for the provider. Required.
     :vartype provider_id: str
@@ -718,9 +718,11 @@ class TargetStatus(_Model):
     :vartype current_availability: str or ~azure.quantum.models.TargetAvailability
     :ivar average_queue_time: Average queue time in seconds. Required.
     :vartype average_queue_time: int
-    :ivar average_queue_time_high_priority: Average high-priority queue time in seconds.
+    :ivar average_queue_time_high_priority: Average high-priority queue time in seconds. Only
+     populated for v2 workspaces and suite offers; omitted otherwise.
     :vartype average_queue_time_high_priority: int
     :ivar average_queue_time_standard_priority: Average standard-priority queue time in seconds.
+     Only populated for v2 workspaces and suite offers; omitted otherwise.
     :vartype average_queue_time_standard_priority: int
     :ivar status_page: A page with detailed status of the provider.
     :vartype status_page: str
@@ -744,11 +746,13 @@ class TargetStatus(_Model):
     average_queue_time_high_priority: Optional[int] = rest_field(
         name="averageQueueTimeHighPriority", visibility=["read"]
     )
-    """Average high-priority queue time in seconds."""
+    """Average high-priority queue time in seconds. Only populated for v2 workspaces and suite offers;
+     omitted otherwise."""
     average_queue_time_standard_priority: Optional[int] = rest_field(
         name="averageQueueTimeStandardPriority", visibility=["read"]
     )
-    """Average standard-priority queue time in seconds."""
+    """Average standard-priority queue time in seconds. Only populated for v2 workspaces and suite
+     offers; omitted otherwise."""
     status_page: Optional[str] = rest_field(name="statusPage", visibility=["read"])
     """A page with detailed status of the provider."""
     num_qubits: Optional[int] = rest_field(name="numQubits", visibility=["read"])
