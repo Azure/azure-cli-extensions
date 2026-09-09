@@ -108,7 +108,7 @@ def get_msal_cache_file():
 
     :return: Path to token cache file
     """
-    return get_msal_cache_dir() / "token_cache.json"
+    return get_msal_cache_dir() / "token_cache_enc.json"
 
 
 def load_cache(msal_token_cache_file):
@@ -123,7 +123,7 @@ def load_cache(msal_token_cache_file):
 
     cache = SerializableTokenCache()
     if os.path.exists(msal_token_cache_file):
-        persistence = build_persistence(msal_token_cache_file, fallback_to_plaintext=False)
+        persistence = build_persistence(msal_token_cache_file)
         cache.deserialize(persistence.load())
     return cache
 
@@ -137,25 +137,18 @@ def save_cache(cache, msal_token_cache_file):
     :param msal_token_cache_file: Path to cache file
     """
     if cache.has_state_changed:
-        persistence = build_persistence(msal_token_cache_file, fallback_to_plaintext=False)
+        persistence = build_persistence(msal_token_cache_file)
         persistence.save(cache.serialize())
 
 
-def build_persistence(msal_token_cache_file, fallback_to_plaintext=False):
+def build_persistence(msal_token_cache_file):
     """Build a suitable persistence instance based on current OS
 
     :param msal_token_cache_file: Path to cache file
-    :param fallback_to_plaintext: Indicates whether to fallback if encryption unavailable
     """
-    from msal_extensions import build_encrypted_persistence, FilePersistence
+    from msal_extensions import build_encrypted_persistence
 
-    try:
-        return build_encrypted_persistence(msal_token_cache_file)
-    except:  # pylint: disable=bare-except
-        if not fallback_to_plaintext:
-            raise
-        logger.warning("Encryption unavailable. Opting in to plain text.")
-        return FilePersistence(msal_token_cache_file)
+    return build_encrypted_persistence(msal_token_cache_file)
 
 
 def perform_device_code_flow(cmd):
