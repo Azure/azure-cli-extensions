@@ -34,10 +34,14 @@ from azext_fleet.constants import FLEET_1P_APP_ID
 from azext_fleet.constants import POLLING_INTERVAL_SECS
 from azext_fleet.vendored_sdks.v2026_06_02_preview.models import (
     PropagationPolicy,
+    PropagationPolicyPatch,
     PlacementProfile,
+    PlacementProfilePatch,
     PlacementV1ClusterResourcePlacementSpec,
+    PlacementV1ClusterResourcePlacementSpecPatch,
     PlacementV1ClusterUpdateStrategyReference,
     PlacementV1PlacementPolicy,
+    PlacementV1PlacementPolicyPatch,
     PlacementV1RolloutStrategy,
     PropagationType,
     PlacementType,
@@ -978,7 +982,10 @@ def _build_network_policy(cmd, ingress_policy, egress_policy):
     return network_policy_model(**network_policies)
 
 
-def _build_propagation_policy(member_cluster_names, rollout_update_strategy=None, default_rollout_type=None):
+def _build_propagation_policy(member_cluster_names,
+                              rollout_update_strategy=None,
+                              default_rollout_type=None,
+                              patch=False):
     rollout_strategy_obj = None
     if rollout_update_strategy:
         rollout_strategy_obj = PlacementV1RolloutStrategy(
@@ -995,18 +1002,24 @@ def _build_propagation_policy(member_cluster_names, rollout_update_strategy=None
 
     placement_policy = None
     if member_cluster_names:
-        placement_policy = PlacementV1PlacementPolicy(
+        placement_policy_model = PlacementV1PlacementPolicyPatch if patch else PlacementV1PlacementPolicy
+        placement_policy = placement_policy_model(
             placement_type=PlacementType.pick_fixed,
             cluster_names=member_cluster_names
         )
-    placement_spec = PlacementV1ClusterResourcePlacementSpec(
+    placement_spec_model = (
+        PlacementV1ClusterResourcePlacementSpecPatch if patch else PlacementV1ClusterResourcePlacementSpec
+    )
+    placement_spec = placement_spec_model(
         policy=placement_policy,
         rollout_strategy=rollout_strategy_obj
     )
-    placement_profile = PlacementProfile(
+    placement_profile_model = PlacementProfilePatch if patch else PlacementProfile
+    placement_profile = placement_profile_model(
         default_cluster_resource_placement=placement_spec
     )
-    return PropagationPolicy(
+    propagation_policy_model = PropagationPolicyPatch if patch else PropagationPolicy
+    return propagation_policy_model(
         type=PropagationType.placement,
         placement_profile=placement_profile
     )
@@ -1143,7 +1156,7 @@ def update_managed_namespace(cmd,
         managed_namespace_properties=managed_namespace_props,
         adoption_policy=adoption_policy,
         delete_policy=delete_policy,
-        propagation_policy=_build_propagation_policy(member_cluster_names, rollout_update_strategy)
+        propagation_policy=_build_propagation_policy(member_cluster_names, rollout_update_strategy, patch=True)
     )
 
     patch = fleet_managed_namespace_patch_model(

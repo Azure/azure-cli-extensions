@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from azext_aks_preview.bastion.bastion import (
@@ -11,6 +12,7 @@ from azext_aks_preview.bastion.bastion import (
     _aks_bastion_launch_tunnel,
     aks_bastion_parse_bastion_resource,
 )
+from azext_aks_preview.custom import aks_bastion_tunnel
 
 
 class TestAksBastionParseResource(unittest.TestCase):
@@ -105,6 +107,71 @@ class TestAksBastionLaunchTunnel(unittest.IsolatedAsyncioTestCase):
         self.assertIn("--subscription", args)
         sub_index = args.index("--subscription")
         self.assertEqual(args[sub_index + 1], "aks-sub-id")
+
+
+class TestAksBastionTunnel(unittest.TestCase):
+    def _run_tunnel(self, bastion_profile, bastion=None):
+        cmd = SimpleNamespace(cli_ctx=MagicMock())
+        client = MagicMock()
+        client.get.return_value = SimpleNamespace(
+            id="cluster-id",
+            node_resource_group="node-rg",
+            network_profile=SimpleNamespace(bastion_profile=bastion_profile),
+        )
+        bastion_resource = BastionResource("bastion", "bastion-rg", "sub-id")
+
+        with patch("azext_aks_preview.custom.aks_bastion_extension"), patch(
+            "azext_aks_preview.custom.os.path.exists", return_value=True
+        ), patch(
+            "azext_aks_preview.custom.get_subscription_id", return_value="sub-id"
+        ), patch(
+            "azext_aks_preview.custom.aks_bastion_parse_bastion_resource",
+            return_value=bastion_resource,
+        ) as mock_parse, patch(
+            "azext_aks_preview.custom.aks_bastion_get_local_port", return_value=12345
+        ), patch(
+            "azext_aks_preview.custom.aks_bastion_set_kubeconfig"
+        ), patch(
+            "azext_aks_preview.custom.aks_bastion_runner", new=AsyncMock()
+        ), patch(
+            "azext_aks_preview.custom.aks_batsion_clean_up"
+        ):
+            aks_bastion_tunnel(
+                cmd,
+                client,
+                "rg",
+                "cluster",
+                bastion=bastion,
+                kubeconfig_path="/tmp/kubeconfig",
+            )
+
+        return mock_parse
+
+    def test_uses_enabled_managed_bastion_by_default(self):
+        mock_parse = self._run_tunnel(
+            SimpleNamespace(enabled=True, bastion_id="managed-bastion-id")
+        )
+
+        mock_parse.assert_called_once_with(
+            "managed-bastion-id", ["node-rg"], "sub-id"
+        )
+
+    def test_explicit_bastion_takes_precedence(self):
+        mock_parse = self._run_tunnel(
+            SimpleNamespace(enabled=True, bastion_id="managed-bastion-id"),
+            bastion="explicit-bastion-id",
+        )
+
+        mock_parse.assert_called_once_with(
+            "explicit-bastion-id", ["node-rg"], "sub-id"
+        )
+
+    def test_disabled_managed_bastion_uses_discovery(self):
+        mock_parse = self._run_tunnel(
+            SimpleNamespace(enabled=False, bastion_id="managed-bastion-id")
+        )
+
+        mock_parse.assert_called_once_with(None, ["node-rg"], "sub-id")
 
 
 if __name__ == "__main__":

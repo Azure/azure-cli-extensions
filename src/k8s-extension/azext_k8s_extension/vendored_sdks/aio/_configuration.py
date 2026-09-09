@@ -46,6 +46,9 @@ class SourceControlConfigurationClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
+        self.base_url = kwargs.pop('base_url', 'https://management.azure.com')
+        self.api_version = kwargs.pop('api_version', '2022-03-01')
+        self.polling_interval = kwargs.get('polling_interval', 30)
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'azure-mgmt-kubernetesconfiguration/{}'.format(VERSION))
         self._configure(**kwargs)

@@ -48,7 +48,7 @@ if TYPE_CHECKING:
 features_types = CLIArgumentType(nargs="+", choices=CaseInsensitiveList(Feature_Values))
 
 
-def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
+def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # pylint: disable=too-many-statements
     pls_arm_id_type = CLIArgumentType(
         options_list=["--private-link-scope-resource-id", "--pls-arm-id"],
         arg_group="PrivateLink",
@@ -97,7 +97,8 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             "no_proxy",
             options_list=["--proxy-skip-range"],
             arg_group="Proxy",
-            help="List of URLs/CIDRs for which proxy should not to be used.",
+            help="List of URLs/CIDRs for which proxy should not be used. Pass the "
+            "keyword 'Arc' to bypass the proxy for the linked Azure Arc private-link endpoints.",
         )
         c.argument(
             "proxy_cert",
@@ -187,14 +188,12 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
-            is_preview=True,
         )
         c.argument(
             "self_hosted_issuer",
             options_list=["--self-hosted-issuer"],
             arg_group="Workload Identity",
             help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS",
-            is_preview=True,
             validator=validate_self_hosted_issuer,
         )
         c.argument(
@@ -203,7 +202,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
-            is_preview=True,
         )
         c.argument(
             "gateway_resource_id",
@@ -263,7 +261,8 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             "no_proxy",
             options_list=["--proxy-skip-range"],
             arg_group="Proxy",
-            help="List of URLs/CIDRs for which proxy should not to be used.",
+            help="List of URLs/CIDRs for which proxy should not be used. Pass the "
+            "keyword 'Arc' to bypass the proxy for the linked Azure Arc private-link endpoints.",
         )
         c.argument(
             "distribution",
@@ -321,7 +320,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
-            is_preview=True,
             validator=validate_enable_oidc_issuer_updates,
         )
         c.argument(
@@ -329,7 +327,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             options_list=["--self-hosted-issuer"],
             arg_group="Workload Identity",
             help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS",
-            is_preview=True,
             validator=validate_self_hosted_issuer,
         )
         c.argument(
@@ -338,7 +335,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
-            is_preview=True,
             validator=validate_workload_identity_updates,
         )
         c.argument(
@@ -347,7 +343,6 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
             options_list=["--disable-workload-identity", "--disable-wi"],
             arg_group="Workload Identity",
             help="Disable workload identity webhook",
-            is_preview=True,
             validator=validate_workload_identity_updates,
         )
         c.argument(

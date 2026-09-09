@@ -3050,6 +3050,11 @@ quantum job submit:
     program_args:
       rule_exclusions:
         - no_positional_parameters
+quantum workspace user create:
+  parameters:
+    assignee_principal_type:
+      rule_exclusions:
+        - option_length_too_long
 repos import create:
   parameters:
     git_service_endpoint_id:

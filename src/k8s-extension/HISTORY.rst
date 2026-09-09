@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.8.0
++++++++++++++++++++
+* Migrate Extensions api-version to 2025-03-01 and bump extension version to 1.8.0.
+* Add new partner extension for VirtualNodes.
+* Update partner extensions to support autoUpgradeMode option.
+
 1.7.0
 +++++++++++++++++++
 * Added the `az k8s-extension troubleshoot` command to simplify log collection and diagnostics for extensions.

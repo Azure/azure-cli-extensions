@@ -26,6 +26,12 @@ class CommandOutputSettings:
 
     @classmethod
     def pre_operations_update(cls, args):
+        if (
+            args.command_output_settings is None
+            or args.command_output_settings._data is None
+        ):
+            return
+
         if has_value(args.command_output_settings):
             # ensure container URL is provided
             if not has_value(args.command_output_settings.container_url):

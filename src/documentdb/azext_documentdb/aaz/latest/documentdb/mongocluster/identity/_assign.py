@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster identity assign",
+    is_preview=True,
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.

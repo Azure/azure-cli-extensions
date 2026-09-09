@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._init import *
 from ._sync import *
 from . import cluster
 from . import hierarchy

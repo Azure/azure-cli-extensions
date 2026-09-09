@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Updates the configuration of an existing Datadog monitor resource in your Azure subscription, allowing you to modify its settings and integration parameters.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-11",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-12-26-preview"],
         ]
     }
 
@@ -110,12 +111,30 @@ class Update(AAZCommand):
             help="Specify the Datadog organization name. In the case of linking to existing organizations, Id, ApiKey, and Applicationkey is required as well.",
             nullable=True,
         )
+        _args_schema.marketplace_offer_details = AAZObjectArg(
+            options=["--marketplace-offer-details"],
+            arg_group="Properties",
+            help="Details about the marketplace offer associated with the resource. Required for API version 2025-11 and later. For earlier API versions, defaults to the legacy offer.",
+            nullable=True,
+        )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
             arg_group="Properties",
             help="Flag specifying if the resource monitoring is enabled or disabled.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.saas_data = AAZObjectArg(
+            options=["--saas-data"],
+            arg_group="Properties",
+            help="SaaS details",
+            nullable=True,
+        )
+        _args_schema.sre_agent_configuration = AAZListArg(
+            options=["--sre-agent-configuration"],
+            arg_group="Properties",
+            help="SRE Agent configuration to connect to MCP server of Datadog for given organization.",
+            nullable=True,
         )
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
@@ -134,6 +153,36 @@ class Update(AAZCommand):
             options=["resource-collection"],
             help="The configuration which describes the state of resource collection. This collects configuration information for all resources in a subscription.",
             nullable=True,
+        )
+
+        marketplace_offer_details = cls._args_schema.marketplace_offer_details
+        marketplace_offer_details.offer_id = AAZStrArg(
+            options=["offer-id"],
+            help="The offer ID (e.g., \"dd_liftr_v3_decoupled\").",
+            nullable=True,
+        )
+        marketplace_offer_details.publisher_id = AAZStrArg(
+            options=["publisher-id"],
+            help="The publisher ID (e.g., \"datadog1591740804488\").",
+            nullable=True,
+        )
+
+        saas_data = cls._args_schema.saas_data
+        saas_data.saa_s_resource_id = AAZStrArg(
+            options=["saa-s-resource-id"],
+            help="SaaS resource id",
+            nullable=True,
+        )
+
+        sre_agent_configuration = cls._args_schema.sre_agent_configuration
+        sre_agent_configuration.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.sre_agent_configuration.Element
+        _element.mcp_connector_resource_id = AAZStrArg(
+            options=["mcp-connector-resource-id"],
+            help="The ARM resource ID of the MCP connector integrated with SRE Agent resource.",
         )
 
         user_info = cls._args_schema.user_info
@@ -241,7 +290,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -340,7 +389,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -410,13 +459,33 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".org_properties")
+                properties.set_prop("marketplaceOfferDetails", AAZObjectType, ".marketplace_offer_details")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
+                properties.set_prop("saaSData", AAZObjectType, ".saas_data")
+                properties.set_prop("sreAgentConfiguration", AAZListType, ".sre_agent_configuration")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info")
 
             datadog_organization_properties = _builder.get(".properties.datadogOrganizationProperties")
             if datadog_organization_properties is not None:
                 datadog_organization_properties.set_prop("cspm", AAZBoolType, ".cspm")
                 datadog_organization_properties.set_prop("resourceCollection", AAZBoolType, ".resource_collection")
+
+            marketplace_offer_details = _builder.get(".properties.marketplaceOfferDetails")
+            if marketplace_offer_details is not None:
+                marketplace_offer_details.set_prop("offerId", AAZStrType, ".offer_id")
+                marketplace_offer_details.set_prop("publisherId", AAZStrType, ".publisher_id")
+
+            saa_s_data = _builder.get(".properties.saaSData")
+            if saa_s_data is not None:
+                saa_s_data.set_prop("saaSResourceId", AAZStrType, ".saa_s_resource_id")
+
+            sre_agent_configuration = _builder.get(".properties.sreAgentConfiguration")
+            if sre_agent_configuration is not None:
+                sre_agent_configuration.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.sreAgentConfiguration[]")
+            if _elements is not None:
+                _elements.set_prop("mcpConnectorResourceId", AAZStrType, ".mcp_connector_resource_id", typ_kwargs={"flags": {"required": True}})
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -509,6 +578,9 @@ class _UpdateHelper:
             serialized_name="liftrResourcePreference",
             flags={"read_only": True},
         )
+        properties.marketplace_offer_details = AAZObjectType(
+            serialized_name="marketplaceOfferDetails",
+        )
         properties.marketplace_subscription_status = AAZStrType(
             serialized_name="marketplaceSubscriptionStatus",
             flags={"read_only": True},
@@ -520,6 +592,9 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.saa_s_data = AAZObjectType(
+            serialized_name="saaSData",
+        )
         properties.user_info = AAZObjectType(
             serialized_name="userInfo",
         )
@@ -530,6 +605,19 @@ class _UpdateHelper:
         datadog_organization_properties.name = AAZStrType()
         datadog_organization_properties.resource_collection = AAZBoolType(
             serialized_name="resourceCollection",
+        )
+
+        marketplace_offer_details = _schema_datadog_monitor_resource_read.properties.marketplace_offer_details
+        marketplace_offer_details.offer_id = AAZStrType(
+            serialized_name="offerId",
+        )
+        marketplace_offer_details.publisher_id = AAZStrType(
+            serialized_name="publisherId",
+        )
+
+        saa_s_data = _schema_datadog_monitor_resource_read.properties.saa_s_data
+        saa_s_data.saa_s_resource_id = AAZStrType(
+            serialized_name="saaSResourceId",
         )
 
         user_info = _schema_datadog_monitor_resource_read.properties.user_info

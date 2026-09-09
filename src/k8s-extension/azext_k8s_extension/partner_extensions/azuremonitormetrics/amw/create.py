@@ -13,7 +13,7 @@ from ...._client_factory import cf_resources, cf_resource_groups
 
 def create_default_mac(cmd, cluster_subscription, cluster_region):
     from azure.cli.core.util import send_raw_request
-    default_mac_name, default_mac_region = get_default_mac_name_and_region(cmd, cluster_region)
+    default_mac_name, default_mac_region = get_default_mac_name_and_region(cmd, cluster_region, cluster_subscription)
     default_resource_group_name = f"DefaultResourceGroup-{default_mac_region}"
     azure_monitor_workspace_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{default_resource_group_name}/providers/microsoft.monitor/accounts/{default_mac_name}"
     # Check if default resource group exists or not, if it does not then create it

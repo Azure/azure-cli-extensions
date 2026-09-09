@@ -9,7 +9,7 @@ import shlex
 import os
 import re
 from json import loads
-import pkgutil
+import importlib.util
 import requests
 
 from knack.log import get_logger
@@ -18,7 +18,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SkuNotAvailableError)
 
-from azure.cli.core.azclierror import CLIError
+from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -30,9 +30,8 @@ def _get_cloud_init_script():
     SCRIPTS_DIR_NAME = 'scripts'
     CLOUD_INIT = 'linux-build_setup-cloud-init.txt'
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
+    mod_spec = importlib.util.find_spec(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod_spec.origin)
     return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
 
 
@@ -60,6 +59,61 @@ def _is_gen2(vm):
     return 1
 
 
+def _quote_cmd_arg(arg):
+    """
+    Quote a single argument for safe use on a Windows 'cmd /c' command line.
+
+    The argument is always wrapped in double quotes so that cmd.exe treats shell
+    metacharacters such as & | < > ( ) ^ as literal text instead of operators.
+    Embedded double quotes and any backslashes that precede them are escaped using
+    the Windows CommandLineToArgvW convention so the receiving program parses the
+    original value. This prevents command injection from untrusted values (for
+    example source VM tags) that are interpolated into the command string.
+    See MSRC 115198 / VULN-185362.
+    """
+    result = '"'
+    backslash_count = 0
+    for char in arg:
+        if char == '\\':
+            backslash_count += 1
+        elif char == '"':
+            # Double the backslashes that precede the quote, then escape the quote.
+            result += '\\' * (backslash_count * 2 + 1)
+            result += '"'
+            backslash_count = 0
+        else:
+            result += '\\' * backslash_count
+            result += char
+            backslash_count = 0
+    # Double any trailing backslashes so they do not escape the closing quote.
+    result += '\\' * (backslash_count * 2)
+    result += '"'
+    return result
+
+
+# Characters that cannot be safely carried through a Windows 'cmd /c' command line when
+# interpolated from an untrusted tag value (for example a source VM tag copied via
+# --copy-tags). Double quotes and ASCII control characters break argument tokenization,
+# and '%' / '!' are expanded by cmd.exe as environment / delayed-expansion variables even
+# inside double quotes -- '%' in particular cannot be reliably escaped on a 'cmd /c' line
+# (a leading '^' is preserved as a literal caret and corrupts the value). Such characters
+# are therefore rejected at the boundary rather than escaped. See MSRC 115198 / VULN-185362.
+def _validate_tags_for_command(merged_tags):
+    """
+    Reject tag keys and values that contain characters which are unsafe to interpolate
+    into the 'az' command string. Raises InvalidArgumentValueError on the first offending
+    key or value; returns None when every tag is safe.
+    """
+    for tag_key, tag_value in merged_tags.items():
+        for tag_field in (str(tag_key), str(tag_value)):
+            if any(unsafe_char in tag_field for unsafe_char in ('"', '%', '!')) or \
+                    any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+                raise InvalidArgumentValueError(
+                    f'Tag keys and values must not contain double quotes, percent signs, '
+                    f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
+                )
+
+
 def _call_az_command(command_string, run_async=False, secure_params=None):
     """
     Uses subprocess to run a command string. To hide sensitive parameters from logs, add the
@@ -72,10 +126,6 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # If command does not start with 'az' then raise exception
     if not tokenized_command or tokenized_command[0] != 'az':
         raise AzCommandError("The command string is not an 'az' command!")
-    # If run on windows, add 'cmd /c'
-    windows_os_name = 'nt'
-    if os.name == windows_os_name:
-        tokenized_command = ['cmd', '/c'] + tokenized_command
 
     # Hide sensitive data such as passwords from logs
     if secure_params:
@@ -83,13 +133,54 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
             if param:
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
-    process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+
+    # On Windows, 'az' resolves to a batch file (az.cmd) so the call must be launched
+    # through cmd.exe. Handing the tokenized list to subprocess would let cmd.exe
+    # re-interpret shell metacharacters: subprocess.list2cmdline only quotes tokens that
+    # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
+    # and the '&' would be parsed as a command separator. To prevent command injection
+    # from untrusted interpolated values (for example source VM tags), build the command
+    # line explicitly and wrap every argument in double quotes so cmd.exe treats
+    # metacharacters as literal text.
+    #
+    # The 'az' token itself must stay unquoted. Quoting it makes cmd.exe treat it as a
+    # literal path instead of a PATH search, so '%~dp0' inside az.cmd no longer expands to
+    # the launcher directory, the bundled python.exe is not found, and every nested call
+    # fails with 'Failed to load python executable.' on stdout and an empty stderr. The
+    # first token is validated to be exactly 'az' above, so it never carries untrusted
+    # input and does not need quoting.
+    #
+    # The whole command is additionally wrapped in one outer pair of quotes and invoked
+    # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
+    # line (its documented /c behavior), which would unbalance the quoting around the final
+    # argument and re-expose metacharacters. With '/s' and a leading+trailing quote, cmd.exe
+    # strips exactly those outer quotes and parses the remainder verbatim, keeping every
+    # per-token quote balanced. See MSRC 115198 / VULN-185362.
+    windows_os_name = 'nt'
+    if os.name == windows_os_name:
+        quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
+        quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
+        command_to_run = 'cmd /s /c "' + quoted_command + '"'
+    else:
+        command_to_run = tokenized_command
+
+    process = subprocess.Popen(command_to_run, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
-            raise AzCommandError(stderr)
+            # A failing launcher (for example a broken CLI install) reports on stdout and
+            # leaves stderr empty, which used to surface an error with no message at all.
+            error_message = (stderr or '').strip() or (stdout or '').strip()
+            if not error_message:
+                error_message = 'The az command failed with exit code {code} and produced no output.' \
+                    .format(code=process.returncode)
+            if secure_params:
+                for param in secure_params:
+                    if param:
+                        error_message = error_message.replace(param, '********')
+            raise AzCommandError(error_message)
 
         logger.debug('Success.\n')
 
@@ -108,9 +199,8 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
 
     # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
+    mod_spec = importlib.util.find_spec(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod_spec.origin)
     run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, script_name)
 
     if is_linux:
@@ -165,15 +255,29 @@ def check_extension_version(extension_name):
 
     extension_to_check = extension_to_check[0]
 
+    # On some Azure CLI versions (e.g. 2.87) the installed extension metadata is missing because
+    # newer setuptools no longer generates 'metadata.json', so the version resolves to None. Skip
+    # the up-to-date check instead of crashing the command on a None comparison (fixed in CLI 2.88).
+    installed_version = extension_to_check.get('version')
+    if not installed_version:
+        logger.debug('Could not determine the installed version of the %s extension; skipping version check.', extension_name)
+        return
+
     for ext in available_extensions:
-        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+        if ext['name'] == extension_name and ext.get('version') and ext['version'] > installed_version:
             logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
             return
 
     logger.debug('The extension with name %s does not exist within available extensions.', extension_name)
 
 
-def _clean_up_resources(resource_group_name, confirm):
+def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
+
+    if skip_cleanup:
+        logger.warning("Skipping clean-up. The repair resources in the resource group '%s' were kept. "
+                       "Delete them with 'az group delete --name %s --yes --no-wait' once you no longer need them, to avoid undesired costs.",
+                       resource_group_name, resource_group_name)
+        return
 
     try:
         if confirm:
@@ -311,6 +415,43 @@ def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
         logger.info('Selected VM size \'%s\' is available. Selecting it to create repair VM.\n', determined_sku)
         return determined_sku
     raise CLIError('Selected VM size: \'{}\' is NOT available in location: \'{}\'.'.format(determined_sku, location))
+
+
+def _fetch_source_disk_controller_type(source_vm):
+    """Return the source VM disk controller type, or None when it is unavailable."""
+    # Older compute SDKs do not model this field, so query ARM through Azure CLI as a fallback.
+    storage_profile = getattr(source_vm, 'storage_profile', None)
+    controller = getattr(storage_profile, 'disk_controller_type', None)
+    if controller:
+        return str(getattr(controller, 'value', controller))
+    vm_id = getattr(source_vm, 'id', None)
+    if not vm_id:
+        return None
+    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=vm_id)
+    return (_call_az_command(show_command) or '').strip() or None
+
+
+def _fetch_sku_disk_controller_types(sku, location):
+    """Return the disk controller types supported by a VM size."""
+    query = "[0].capabilities[?name=='DiskControllerTypes'].value"
+    command = 'az vm list-skus -s {sku} -l {loc} --query "{query}" -o tsv'.format(
+        sku=sku, loc=location, query=query)
+    raw = (_call_az_command(command) or '').strip()
+    return [part.strip() for part in raw.split(',') if part.strip()]
+
+
+def _select_repair_disk_controller_type(source_controller, supported_types, requested=None):
+    """Select a repair VM controller while preserving existing SCSI-based repair scripts."""
+    if requested:
+        return requested, 'info', 'Using requested repair VM disk controller type: {}'.format(requested)
+    if not supported_types:
+        return None, 'debug', 'Could not determine supported disk controller types; using the platform default.'
+    if not source_controller or str(source_controller).lower() != 'nvme':
+        return None, 'debug', 'Source VM is not NVMe; using the platform default for the repair VM size.'
+    normalized_types = {controller.lower(): controller for controller in supported_types}
+    if 'scsi' in normalized_types:
+        return 'SCSI', 'info', 'Source VM uses the NVMe disk controller. Creating the repair VM with SCSI so repair scripts can enumerate the attached OS disk. Override with --disk-controller-type.'
+    return None, 'warning', 'The repair VM size only supports NVMe. Repair scripts that select disks by the SCSI model string will not find the attached OS disk. Use --size to pick a size that supports SCSI, or verify the script handles NVMe.'
 
 
 def _fetch_disk_info(resource_group_name, disk_name):

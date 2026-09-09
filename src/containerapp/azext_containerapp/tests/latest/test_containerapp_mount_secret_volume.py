@@ -37,7 +37,7 @@ class ContainerAppMountSecretTest(ScenarioTest):
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.template.volumes[0].storageType', 'Secret'), 
             # --secret-volume-mount mounts all secrets, not specific secrets, therefore no secrets should be returned.
-            JMESPathCheck('properties.template.volumes[0].secrets', None),
+            JMESPathCheck('properties.template.volumes[0].secrets', []),
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', 'mnt/secrets'), 
         ])
         # test using update to update the secret volume mount path
@@ -77,7 +77,7 @@ class ContainerAppMountSecretTest(ScenarioTest):
         
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.template.volumes[0].storageType', 'Secret'), 
-            JMESPathCheck('properties.template.volumes[0].secrets', None),
+            JMESPathCheck('properties.template.volumes[0].secrets', []),
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', 'mnt/secrets'), 
         ])
 

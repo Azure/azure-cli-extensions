@@ -46,6 +46,9 @@ helps['vm repair create'] = """
         - name: Create a repair VM with an OS Disk storage type of StandardSSD_LRS.
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username <username> --repair-password <password> --os-disk-type StandardSSD_LRS
+        - name: Create a repair VM using the NVMe disk controller.
+          text: >
+            az vm repair create -g MyResourceGroup -n MySourceVM --disk-controller-type NVMe --verbose
 """
 
 helps['vm repair restore'] = """
@@ -58,6 +61,12 @@ helps['vm repair restore'] = """
         - name: Restore from the repair VM, specify the disk to restore
           text: >
             az vm repair restore -g MyResourceGroup -n MyVM --disk-name MyDiskCopy --verbose
+        - name: Restore from the repair VM and delete the repair resources without confirmation.
+          text: >
+            az vm repair restore -g MyResourceGroup -n MyVM --yes --verbose
+        - name: Restore from the repair VM and keep the repair resources without confirmation. Use for unattended runs that need the repair VM preserved for inspection.
+          text: >
+            az vm repair restore -g MyResourceGroup -n MyVM --no-cleanup --verbose
 """
 
 helps['vm repair run'] = """

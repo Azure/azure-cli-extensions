@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a mongo cluster. Update overwrites all properties for the resource. To only modify some of the properties, use PATCH.
@@ -63,7 +64,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.admin_password = AAZPasswordArg(
-            options=["-p", "--admin-password"],
+            options=["-p", "--password", "--admin-password"],
             arg_group="Administrator",
             help="The administrator password.",
             required=True,
@@ -153,7 +154,7 @@ class Create(AAZCommand):
         _args_schema.preview_features = AAZListArg(
             options=["--preview-features"],
             arg_group="Properties",
-            help="List of private endpoint connections.",
+            help="Space-separated list of preview features to enable on the cluster. Preview feature names are free-form strings; refer to the mongo cluster feature documentation for the currently available values.",
         )
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
@@ -195,9 +196,7 @@ class Create(AAZCommand):
         )
 
         preview_features = cls._args_schema.preview_features
-        preview_features.Element = AAZStrArg(
-            enum={"GeoReplicas": "GeoReplicas"},
-        )
+        preview_features.Element = AAZStrArg()
 
         # define Arg Group "Resource"
 

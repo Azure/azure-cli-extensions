@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update tags associated with the Kubernetes version resource. No other properties are supported for update.
 
     :example: Patch a kubernetes version resource.
-        az networkcloud kubernetesversion create --resource-group resourceGroupName --kubernetes-version-name default --tags "{key1:myvalue1,key2:myvalue2}"
+        az networkcloud kubernetesversion update --resource-group resourceGroupName --kubernetes-version-name default --tags "{key1:myvalue1,key2:myvalue2}"
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesversions/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesversions/{}", "2026-07-01"],
         ]
     }
 
@@ -160,7 +160,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-07-01",
                     required=True,
                 ),
             }

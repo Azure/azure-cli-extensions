@@ -62,7 +62,7 @@ Key features of the public preview release include end-to-end flows for applicat
 ### 1. Install Extension & Login
 
 ```sh
-az extension add --source <path-to-extension-file-workload-orchestration.whl>
+az extension add --source <path-to-extension-file-workload-orchestration-preview.whl>
 az login
 ```
 
@@ -71,7 +71,7 @@ az login
 ### 2. Create/Update Context
 
 ```sh
-az workload-orchestration context create \
+az workload-orchestration-preview context create \
   --subscription <subscription-id> \
   --resource-group <resource-group> \
   --location <location> \
@@ -85,7 +85,7 @@ az workload-orchestration context create \
 ### 3. Create Site Reference
 
 ```sh
-az workload-orchestration context.site-reference create \
+az workload-orchestration-preview context.site-reference create \
   --subscription <subscription-id> \
   --resource-group <resource-group> \
   --context-name <context-name> \
@@ -98,7 +98,7 @@ az workload-orchestration context.site-reference create \
 ### 4. Create Target
 
 ```sh
-az workload-orchestration target create \
+az workload-orchestration-preview target create \
   --resource-group <resource-group> \
   --location <location> \
   --name <target-name> \
@@ -116,7 +116,7 @@ az workload-orchestration target create \
 ### 5. Create Schema
 
 ```sh
-az workload-orchestration schema create \
+az workload-orchestration-preview schema create \
   --resource-group <resource-group> \
   --version "1.0.0" \
   --schema-name <schema-name> \
@@ -131,7 +131,7 @@ Or, if version is in the file, omit `--version`.
 ### 6. Create Solution Template and Version
 
 ```sh
-az workload-orchestration solution-template create \
+az workload-orchestration-preview solution-template create \
   --solution-template-name <solution-template-name> \
   -g <resource-group> \
   -l <location> \
@@ -143,7 +143,7 @@ az workload-orchestration solution-template create \
 ```
 
 ```sh
-az workload-orchestration solution-template-version create \
+az workload-orchestration-preview solution-template-version create \
   --template-name <solution-template-name> \
   --version 1.0.0 \
   --file solution-template-version.yaml
@@ -154,7 +154,7 @@ az workload-orchestration solution-template-version create \
 ### 7. Set Configuration Values
 
 ```sh
-az workload-orchestration configuration set \
+az workload-orchestration-preview configuration set \
   -g <resource-group> \
   --solution-template-name <solution-template-name> \
   --target-name <target-name>
@@ -165,7 +165,7 @@ az workload-orchestration configuration set \
 ### 8. Resolve and Review
 
 ```sh
-az workload-orchestration target review \
+az workload-orchestration-preview target review \
   --solution-template-name <solution-template-name> \
   --solution-template-version 1.0.0 \
   --resource-group <resource-group> \
@@ -179,7 +179,7 @@ az workload-orchestration target review \
 
 **Publish:**
 ```sh
-az workload-orchestration target publish \
+az workload-orchestration-preview target publish \
   --solution-name <solution-template-name> \
   --solution-version <new-version> \
   --review-id <review-id> \
@@ -189,7 +189,7 @@ az workload-orchestration target publish \
 
 **Install:**
 ```sh
-az workload-orchestration target install \
+az workload-orchestration-preview target install \
   --solution-name <solution-template-name> \
   --solution-version <new-version> \
   --resource-group <resource-group> \

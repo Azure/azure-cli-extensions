@@ -537,6 +537,62 @@ class StreamAnalyticsClientTest(ScenarioTest):
             self.check("datasource.type", "Microsoft.AzureFunction")
         ])
 
+    @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
+    def test_output_documentdb_authentication_mode(self):
+        self.kwargs.update({
+            "job_name": "job",
+            "output_name": "output",
+            "locale": "en-US"
+        })
+
+        self.cmd(
+            "stream-analytics job create -n {job_name} -g {rg} \
+            --data-locale {locale} \
+            --output-error-policy Drop --out-of-order-policy Drop \
+            --order-max-delay 0 --arrival-max-delay 5"
+        )
+
+        datasource_props = {
+            "type": "Microsoft.Storage/DocumentDB",
+            "properties": {
+                "accountId": "babocosmosnosql",
+                "accountKey": None,
+                "database": "Transactional",
+                "collectionNamePattern": "1",
+                "authenticationMode": "Msi"
+            }
+        }
+        serialization_props = {
+            "type": "Json",
+            "properties": {
+                "encoding": "UTF8"
+            }
+        }
+        self.kwargs["datasource"] = json.dumps(datasource_props)
+        self.kwargs["serialization"] = json.dumps(serialization_props)
+
+        self.cmd(
+            "stream-analytics output create -n {output_name} -g {rg} \
+            --job-name {job_name} \
+            --datasource '{datasource}' --serialization '{serialization}'",
+            checks=[
+                self.check("name", "{output_name}"),
+                self.check("type", "Microsoft.StreamAnalytics/streamingjobs/outputs"),
+                self.check("datasource.type", "Microsoft.Storage/DocumentDB"),
+                self.check("datasource.authenticationMode", "Msi")
+            ]
+        )
+        self.cmd(
+            "stream-analytics output show -n {output_name} -g {rg} --job-name {job_name}",
+            checks=[
+                self.check("name", "{output_name}"),
+                self.check("datasource.type", "Microsoft.Storage/DocumentDB"),
+                self.check("datasource.authenticationMode", "Msi")
+            ]
+        )
+
+        self.cmd("stream-analytics output delete -n {output_name} -g {rg} --job-name {job_name} --yes")
+
     @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_")
     @StorageAccountPreparer(parameter_name="storage_account")
     def test_output_create_policy_violation(self, storage_account):
@@ -581,22 +637,19 @@ class StreamAnalyticsClientTest(ScenarioTest):
             --account-name {account} --account-key {key}"
         )
 
-        # create/test an input
+        # create/test an output
         datasource_props = {
-            "type": "Stream",
-            "datasource": {
-                "type": "Microsoft.Storage/Blob",
-                "properties": {
-                    "container": self.kwargs["container"],
-                    "dateFormat": "yyyy/MM/dd",
-                    "pathPattern": "{date}/{time}",
-                    "storageAccounts": [{
-                        "accountName": self.kwargs["account"],
-                        "accountKey": self.kwargs["key"]
-                    }],
-                    "timeFormat": "HH",
-                    "authenticationMode": "ConnectionString"
-                }
+            "type": "Microsoft.Storage/Blob",
+            "properties": {
+                "container": self.kwargs["container"],
+                "dateFormat": "yyyy/MM/dd",
+                "pathPattern": "{date}/{time}",
+                "storageAccounts": [{
+                    "accountName": self.kwargs["account"],
+                    "accountKey": self.kwargs["key"]
+                }],
+                "timeFormat": "HH",
+                "authenticationMode": "ConnectionString"
             }
         }
         serialization_props = {

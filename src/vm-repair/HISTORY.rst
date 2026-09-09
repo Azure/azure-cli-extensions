@@ -2,6 +2,36 @@
 Release History
 ===============
 
+2.3.2
+++++++
+Adding a ``--no-cleanup`` parameter (alias ``--no``) to ``az vm repair restore``, ``az vm repair repair-and-restore`` and ``az vm repair repair-button``. Until now the only way to answer the "Continue with clean-up and delete resources?" prompt without a human present was ``--yes``, which deletes the repair VM, the disk copy and the repair resource group. There was no way to decline the deletion unattended, so scripted and multi-VM runs either blocked on the prompt or lost the repair resources they needed to inspect. With ``--no-cleanup`` the disk swap back to the source VM still happens, but the repair resources are kept and the command reports the resource group to delete later. ``--yes`` and ``--no-cleanup`` cannot be combined on ``az vm repair restore`` and the command now fails early if both are given. Behavior without either flag is unchanged: the command still prompts, and still skips clean-up in a non-interactive session.
+
+2.3.1
+++++++
+The repair VM is now created with the SCSI disk controller whenever the selected VM size supports it, even when the source VM uses NVMe. Previously the repair VM inherited the platform default for the size, so a source VM on an NVMe-only size produced an NVMe repair VM. Several repair scripts locate the attached OS disk by its SCSI model name and therefore found no disk on such a repair VM: they completed, reported success, and repaired nothing. Pinning the repair VM to SCSI restores those scripts. When the size only supports NVMe the command now emits a warning instead of failing silently. A new ``--disk-controller-type`` parameter on ``az vm repair create`` overrides the selection.
+
+2.2.6
+++++++
+Fixing ``az extension add --name vm-repair`` failing with ``Pip failed with status code 2`` on 32-bit Windows installations of the Azure CLI. The extension declared ``opencensus`` as a dependency but never imported it. Because extensions are installed with ``pip --target``, that unused dependency pulled roughly twenty extra packages into the extension folder, including ``cryptography``, which stopped publishing 32-bit Windows wheels in version 49.0.0. On a 32-bit CLI, pip had no compatible wheel, fell back to building ``cryptography`` from source, and failed. Removing the unused ``opencensus`` dependency removes that entire dependency tree.
+Also declaring ``applicationinsights``, which the telemetry module imports on every command but which was never listed as a dependency. It previously resolved only because the Azure CLI happened to ship it, even though no Azure CLI package requires it, so any future CLI that dropped it would have broken every ``vm repair`` command at import time.
+
+2.2.5
+++++++
+Fixing a regression introduced in 2.2.1 that could break every ``vm repair`` command on Windows when ``az`` resolves to the ``az.cmd`` launcher (the default for MSI installations). The command-injection hardening quoted every token of the nested ``az`` call, including the ``az`` program name itself. cmd.exe then treated it as a literal path instead of a PATH search, so ``%~dp0`` inside ``az.cmd`` no longer pointed at the launcher directory, the bundled Python interpreter was not found, and the call failed with ``Failed to load python executable.`` and exit code 1. The ``az`` token is no longer quoted; all arguments are still individually quoted, so the injection protection added in 2.2.1 (MSRC 115198) is unchanged.
+Also fixing failed ``az`` calls that surfaced an empty error message. Because the launcher reports on standard output and leaves standard error empty, the failure previously produced a blank error and empty telemetry. The error now falls back to the command's standard output, reports the exit code when there is no output at all, and masks credentials passed as secure parameters.
+
+2.2.4
+++++++
+Replacing deprecated ``datetime.utcnow()`` with timezone-aware ``datetime.now(timezone.utc)`` for Python 3.12+ forward compatibility. ``datetime.utcnow()`` is deprecated as of Python 3.12 and scheduled for removal in a future release. The generated timestamps (used for repair VM, copied disk, and repair resource group names) are unchanged. Also replacing ``pkgutil.get_loader()``/``loader.load_module()`` (deprecated in Python 3.12, removed in Python 3.14) with ``importlib.util.find_spec()`` when locating the bundled driver scripts, and extending the static Python 3.12+ compatibility guard to cover these APIs.
+
+2.2.3
+++++++
+Fixing a crash ("version: null") when running any ``vm repair`` command on Azure CLI 2.87. Newer ``setuptools`` no longer generates the ``metadata.json`` that CLI 2.87 relied on to read the installed extension version, so the version resolved to ``None`` and the extension's version check raised a ``TypeError`` before the command could run. The version check now handles a missing version gracefully instead of failing. Azure CLI 2.88 also fixes the underlying metadata issue, so upgrading the CLI remains the recommended long-term resolution.
+
+2.2.1
+++++++
+Fixing a command injection vulnerability (MSRC 115198 / VULN-185362). Source VM tag values copied via ``--copy-tags`` could contain shell metacharacters that, on Windows, were interpreted by ``cmd.exe`` and executed as arbitrary commands on the operator's workstation. Tag keys and values are now validated and quoted before being interpolated into the ``az`` command, and ``_call_az_command`` quotes every argument so ``cmd.exe`` treats shell metacharacters as literal text. Minimum fixed version: 2.2.1.
+
 2.2.0
 ++++++
 Adding `--tags` parameter to `vm repair create` and `vm repair repair-and-restore` commands to allow users to tag the repair VM for organizational requirements

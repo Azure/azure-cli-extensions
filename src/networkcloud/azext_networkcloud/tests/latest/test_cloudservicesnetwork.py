@@ -12,6 +12,11 @@ CloudServicesNetwork tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -101,11 +106,42 @@ def step_create_scenario2(test, checks=None):
 
 def step_show(test, checks=None):
     """cloudservicesnetwork show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
+    if checks is not None:
+        test.cmd(
+            "az networkcloud cloudservicesnetwork show --name {name} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud cloudservicesnetwork show --name {name} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Cloudservicesnetwork show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert properties.get("additionalEgressEndpoint") == get_value(
+        test, "additionalEgressEndpoint"
+    ), properties_key_mismatch_message("additionalEgressEndpoint")
+
+    assert properties.get("defaultEgressEndpoint") == get_value(
+        test, "defaultEgressEndpoint"
+    ), properties_key_mismatch_message("defaultEgressEndpoint")
+
+    assert properties.get("mode") == get_value(
+        test, "mode"
+    ), properties_key_mismatch_message("mode")
+
+    assert properties.get("sizeMiB") == get_value(
+        test, "sizeMiB"
+    ), properties_key_mismatch_message("sizeMiB")
+
+    assert properties.get("storageApplianceId") == get_value(
+        test, "storageApplianceId"
+    ), properties_key_mismatch_message("storageApplianceId")
 
 
 def step_delete(test, checks=None):

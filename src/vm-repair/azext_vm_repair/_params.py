@@ -35,6 +35,7 @@ def load_arguments(self, _):
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
         c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
+        c.argument('disk_controller_type', help='Disk controller type for the repair VM (SCSI or NVMe). By default the repair VM uses SCSI when the selected size supports it, so that offline repair scripts can enumerate the attached OS disk.')
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources.  Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
@@ -44,6 +45,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
         c.argument('yes', help='Deletes the repair resources without confirmation.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources without confirmation. Use for unattended runs that need the repair VM and disk copy preserved for inspection. Cannot be combined with --yes.')
 
     with self.argument_context('vm repair run') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
@@ -70,6 +72,7 @@ def load_arguments(self, _):
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources instead of deleting them, including when the repair script fails. Use to inspect a failed repair.')
 
     with self.argument_context('vm repair repair-button') as c:
         c.argument('button_command', help='Button_command for repair VM.')
@@ -83,3 +86,4 @@ def load_arguments(self, _):
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
         c.argument('yes', help='Deprecated - Creates the repair VM without confirmation.  No current behavior change, this parameter will be removed in a future release.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources instead of deleting them, including when the repair script fails. Use to inspect a failed repair.')
