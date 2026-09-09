@@ -21787,7 +21787,9 @@ spec:
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
                 self.check("networkProfile.advancedNetworking.security.enabled", True),
                 self.check("addonProfiles.omsagent.enabled", True),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+                self.check(
+                    "contains(['True', 'true'], addonProfiles.omsagent.config.enableRetinaNetworkFlags)", True
+                ),
             ],
         ).get_output_in_json()
 
@@ -21812,7 +21814,9 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
+                self.check(
+                    "contains(['False', 'false'], addonProfiles.omsagent.config.enableRetinaNetworkFlags)", True
+                ),
             ],
         )
 
@@ -21822,7 +21826,9 @@ spec:
             enable_cmd_update,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+                self.check(
+                    "contains(['True', 'true'], addonProfiles.omsagent.config.enableRetinaNetworkFlags)", True
+                ),
             ],
         )
 
