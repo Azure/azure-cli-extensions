@@ -5,9 +5,21 @@
 
 # pylint: disable=line-too-long,unused-argument
 
+import re
+
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo
-from ._params import validate_email
+
+
+# Accept UPNs with exactly one '@' and no dotted-domain requirement; reject whitespace and Graph URL path separators.
+EMAIL_PATTERN = re.compile(r"[^@/\\\s]+@[^@/\\\s]+")
+
+
+def validate_email(namespace):
+    if not EMAIL_PATTERN.fullmatch(namespace.email):
+        raise InvalidArgumentValueError(f"'{namespace.email}' is not a valid email address.")
 
 
 def validate_workspace_info(cmd, namespace):

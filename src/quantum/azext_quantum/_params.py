@@ -11,14 +11,7 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azure.cli.core.util import shell_safe_json_parse
-
-# Accept UPNs with exactly one '@' and no dotted-domain requirement; reject whitespace and Graph URL path separators.
-EMAIL_PATTERN = re.compile(r"[^@/\\\s]+@[^@/\\\s]+")
-
-
-def validate_email(namespace):
-    if not EMAIL_PATTERN.fullmatch(namespace.email):
-        raise InvalidArgumentValueError(f"'{namespace.email}' is not a valid email address.")
+from ._validators import validate_email
 
 
 class JobParamsAction(argparse._AppendAction):
