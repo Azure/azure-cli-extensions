@@ -251,7 +251,7 @@ class ClusterUpdateTest(unittest.TestCase):
             ),
             properties=types.SimpleNamespace(
                 platform=types.SimpleNamespace(
-                    subnet_id=_Arg(SUBNET_ID),
+                    subnet_id=SUBNET_ID,
                     operators_authentication=types.SimpleNamespace(
                         user_assigned_identities=operator_identities,
                     ),
