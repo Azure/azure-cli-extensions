@@ -65,7 +65,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cost_management_granularity = AAZStrArg(
-            options=["--cost-management-granularity"],
+            options=["--cost-granularity", "--cost-management-granularity"],
             arg_group="CostManagementSettings",
             help="Settings for cost management granularity level",
             nullable=True,
