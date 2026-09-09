@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import inspect
 import os
 import tempfile
 import unittest
@@ -196,6 +197,7 @@ class TestTransientConflictRetry(AKSRetryTestCase):
         messages = [
             "Operation is not allowed: Another operation is in progress.",
             "Operation is not allowed because there's an in-progress update managed cluster operation",
+            "(AKSOperationPreempted) This operation has been preempted by another operation. Please retry later.",
             "Operation is not allowed: in-progress PutExtensionAddonHandler.PUT operation",
             "The managed cluster test is in Updating state, please wait for it to succeed.",
             "ProvisioningState of extension: Updating",
@@ -686,6 +688,182 @@ class TestAmbiguousLroStatusHandling(AKSRetryTestCase):
 
         mock_execute.assert_called_once()
         mock_sleep.assert_not_called()
+
+
+class TestLiveScenarioRegressions(AKSRetryTestCase):
+    def test_proxy_readiness_requires_success_marker_not_just_run_command_status(self):
+        instance = self._make_instance()
+        for message, ready in [
+            ("[stdout]\nAKS_PROXY_READY\n\n[stderr]\n", True),
+            ("[stdout]\n\n[stderr]\nFailed to start squid\n", False),
+            ("Failed executing echo AKS_PROXY_READY", False),
+        ]:
+            with self.subTest(message=message):
+                result = self._result({"value": [{"code": "ProvisioningState/succeeded", "message": message}]})
+                instance.cmd = lambda command, checks: result.assert_with_checks(checks)
+                if ready:
+                    instance._wait_for_http_proxy()
+                else:
+                    with self.assertRaises(AssertionError):
+                        instance._wait_for_http_proxy()
+
+    def test_proxy_readiness_failure_prevents_cluster_creation(self):
+        instance = self._make_instance()
+        instance.generate_ssh_keys = MagicMock(return_value="key")
+        instance.cmd = MagicMock(return_value=self._result({"id": "/subnets/aks"}))
+        instance._wait_for_http_proxy = MagicMock(side_effect=AssertionError("Proxy not ready"))
+
+        with self.assertRaisesRegex(AssertionError, "Proxy not ready"):
+            instance._setup_http_proxy_cluster("rg", "westcentralus", "cluster")
+
+        commands = [call.args[0] for call in instance.cmd.call_args_list]
+        self.assertTrue(any(command.startswith("vm create") for command in commands))
+        self.assertFalse(any(command.startswith("aks create") for command in commands))
+
+    @patch("azure.cli.testsdk.base.execute")
+    def test_node_image_upgrade_accepts_real_empty_sdk_result(self, mock_execute):
+        from azure.cli.testsdk.base import ExecutionResult
+
+        cli_ctx = MagicMock()
+        cli_ctx.invoke.return_value = 0
+        action_result = ExecutionResult(cli_ctx, "aks nodepool upgrade --node-image-only")
+        pool_result = self._result({"provisioningState": "Succeeded"})
+        mock_execute.side_effect = [action_result, pool_result]
+        instance = self._make_instance()
+        instance.cmd = lambda command, checks=None: instance._cmd_with_retry(command, checks or [], False)
+
+        instance._reimage_nodepool("rg", "cluster", "pool")
+
+        self.assertEqual(mock_execute.call_count, 2)
+
+    def test_node_image_upgrade_checks_persisted_pool_not_empty_action_result(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock()
+
+        instance._reimage_nodepool("rg", "cluster", "pool")
+
+        self.assertEqual(instance.cmd.call_count, 2)
+        upgrade_call, show_call = instance.cmd.call_args_list
+        self.assertIn("--node-image-only", upgrade_call.args[0])
+        self.assertFalse(any(
+            instance._is_provisioning_state_check(check)
+            for check in upgrade_call.kwargs.get("checks", [])
+        ))
+        self.assertEqual(
+            show_call.args[0],
+            "aks nodepool show --resource-group rg --cluster-name cluster --name pool",
+        )
+        self.assertTrue(instance._is_provisioning_state_check(show_call.kwargs["checks"][0]))
+
+    def test_node_image_upgrade_failure_is_not_recovered_by_show(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock(side_effect=CLIError("Reimage failed"))
+
+        with self.assertRaisesRegex(CLIError, "Reimage failed"):
+            instance._reimage_nodepool("rg", "cluster", "pool")
+
+        instance.cmd.assert_called_once()
+
+    def test_alb_update_uses_supported_command_arguments(self):
+        from azext_aks_preview import ContainerServiceCommandsLoader
+        from azext_aks_preview.tests.latest.mocks import MockCLI
+
+        instance = self._make_instance()
+        instance.cmd = MagicMock()
+        instance._get_versions = MagicMock(return_value=("1.33.1", "1.34.1"))
+        instance.create_random_name = MagicMock(return_value="cluster")
+        instance.generate_ssh_keys = MagicMock(return_value="ssh-key")
+        scenario = inspect.unwrap(instance.test_aks_applicationloadbalancer_update)
+        scenario(instance, "rg", "eastus")
+
+        loader = ContainerServiceCommandsLoader(MockCLI())
+        loader.load_command_table(["aks", "applicationloadbalancer", "update"])
+        command = loader.command_table["aks applicationloadbalancer update"]
+        command.load_arguments()
+        self.assertNotIn("aks_custom_headers", command.arguments)
+        update_command = instance.cmd.call_args_list[1].args[0]
+        self.assertIn("aks applicationloadbalancer update", update_command)
+        self.assertNotIn("--aks-custom-headers", update_command)
+
+
+class TestFeatureAvailabilitySkip(AKSRetryTestCase):
+    def test_managed_system_allowlist_wording_skips(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock(side_effect=CLIError(
+            "(InvalidParameter) 'ManagedSystem' is in preview and only support whitelisted subscriptions"
+        ))
+        with self.assertRaises(unittest.SkipTest):
+            instance._cmd_or_skip_if_managed_system_unavailable("aks create")
+
+    def test_managed_system_validation_error_still_fails(self):
+        instance = self._make_instance()
+        instance.cmd = MagicMock(side_effect=CLIError(
+            "(InvalidParameter) Only one ManagedSystem pool is allowed per cluster"
+        ))
+        with self.assertRaises(CLIError):
+            instance._cmd_or_skip_if_managed_system_unavailable("aks nodepool add")
+
+    def test_feature_alias_and_region_errors_skip_precisely(self):
+        cases = [
+            ("ManagedBastion", ("bastionProfile",),
+             "(InvalidParameter) Field .properties.bastionProfile is not yet supported for managed cluster."),
+            ("managedNATGatewayV2", (),
+             "(UnsupportedOutboundType) Outbound type managedNATGatewayV2 is not supported in this region."),
+        ]
+        for feature, aliases, message in cases:
+            with self.subTest(feature=feature):
+                instance = self._make_instance()
+                instance.cmd = MagicMock(side_effect=CLIError(message))
+                with self.assertRaises(unittest.SkipTest):
+                    instance._cmd_or_skip_if_feature_unavailable(
+                        "aks update", feature, feature_aliases=aliases
+                    )
+
+    def test_unrelated_feature_and_validation_errors_still_fail(self):
+        messages = [
+            "(InvalidParameter) Field .properties.otherProfile is not yet supported for managed cluster.",
+            "(InvalidParameter) Field .properties.bastionProfile has an invalid value.",
+        ]
+        for message in messages:
+            with self.subTest(message=message):
+                instance = self._make_instance()
+                instance.cmd = MagicMock(side_effect=CLIError(message))
+                with self.assertRaises(CLIError):
+                    instance._cmd_or_skip_if_feature_unavailable(
+                        "aks update", "ManagedBastion", feature_aliases=("bastionProfile",)
+                    )
+
+    def test_region_or_required_vm_size_unavailable_skips(self):
+        cases = [
+            ("westcentralus", None, "(AvailabilityZoneNotSupported) The supported zones for location 'westcentralus' are ''"),
+            ("eastus2", "Standard_DC16ads_cc_v5",
+             "(VMSizeNotSupported) Virtual Machine size: 'standard_dc16ads_cc_v5' is not supported in location 'eastus2'."),
+        ]
+        for location, vm_size, message in cases:
+            with self.subTest(location=location):
+                instance = self._make_instance()
+                instance.cmd = MagicMock(side_effect=CLIError(message))
+                with self.assertRaises(unittest.SkipTest):
+                    instance._cmd_or_skip_if_region_unavailable(
+                        "aks create", location, vm_size=vm_size
+                    )
+
+    def test_region_skip_preserves_unrelated_and_capacity_failures(self):
+        cases = [
+            ("eastus", None, "(AvailabilityZoneNotSupported) The supported zones for location 'eastus2' are ''"),
+            ("eastus2", "Standard_DC16ads_cc_v5",
+             "(VMSizeNotSupported) Virtual Machine size: 'Standard_D2s_v3' is not supported in location 'eastus2'."),
+            ("eastus2", "Standard_DC16ads_cc_v5",
+             "(ErrCode_InsufficientVCPUQuota) Insufficient quota for Standard_DC16ads_cc_v5 in location 'eastus2'."),
+        ]
+        for location, vm_size, message in cases:
+            with self.subTest(message=message):
+                instance = self._make_instance()
+                instance.cmd = MagicMock(side_effect=CLIError(message))
+                with self.assertRaises(CLIError):
+                    instance._cmd_or_skip_if_region_unavailable(
+                        "aks create", location, vm_size=vm_size
+                    )
 
 
 class TestOsSkuRetirementSkip(AKSRetryTestCase):
