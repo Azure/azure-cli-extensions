@@ -313,7 +313,6 @@ class AroHcpScenario(ScenarioTest):
                 "--version 4.22 --subnet-id {subnet_id} "
                 "--vnet-integration-subnet-id {integration_subnet_id} --nsg {nsg_id} "
                 "--managed-resource-group-name {managed_rg} "
-                "--key-management-mode CustomerManaged --etcd-encryption-type KMS "
                 "--kms-vault-name {keyvault} --vault-visibility Public "
                 "--kms-active-key '{{name:{kms_key},version:{kms_key_version}}}' "
                 "--assign-service-managed-identity {service_identity_id} "

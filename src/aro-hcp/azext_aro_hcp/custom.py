@@ -137,8 +137,7 @@ class ClusterCreate(_ClusterCreate):
                 "name": "Create a cluster",
                 "text": "az aro hcp cluster create --resource-group MyResourceGroup --name MyCluster "
                         "--location eastus --version 4.19 --channel-group stable --network-type OVNKubernetes "
-                        "--subnet-id <subnet-id> --etcd-encryption-type KMS "
-                        "--key-management-mode CustomerManaged --kms-vault-name MyKeyVault "
+                        "--subnet-id <subnet-id> --kms-vault-name MyKeyVault "
                         "--kms-active-key \"{name:MyKey,version:<key-version>}\" "
                         "--assign-service-managed-identity <service-identity-id> "
                         "--assign-control-plane-operator-identity cluster-api-azure "
@@ -170,6 +169,8 @@ class ClusterCreate(_ClusterCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.etcd_encryption_type._registered = False
+        args_schema.key_management_mode._registered = False
         if hasattr(args_schema, "assign_control_plane_operator_identity"):
             return args_schema
 
@@ -201,6 +202,8 @@ class ClusterCreate(_ClusterCreate):
 
     def pre_operations(self):
         args = self.ctx.args
+        args.etcd_encryption_type = "KMS"
+        args.key_management_mode = "CustomerManaged"
         subnet_id = args.subnet_id.to_serialized_data()
         control_plane = _operator_identities(
             args.assign_control_plane_operator_identity,
