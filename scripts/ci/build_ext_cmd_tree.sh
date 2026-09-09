@@ -6,8 +6,6 @@ if [[ -z "$changed_content" ]]; then
     exit 0
 fi
 
-pip install azure-cli-core azure-cli requests
-pip install azure-storage-blob==1.5.0
 echo "Listing Available Extensions:"
 az extension list-available -otable
 
@@ -20,7 +18,8 @@ export AZURE_EXTENSION_INDEX_URL=https://raw.githubusercontent.com/Azure/azure-c
 output=$(az extension list-available --query [].name -otsv)
 # azure-cli-ml is replaced by ml
 # disable alias which relies on Jinja2 2.10
-blocklist=("azure-cli-ml" "alias")
+# disable rdbms-connect and deploy-to-azure which cause cmd tree build failures
+blocklist=("azure-cli-ml" "alias" "rdbms-connect" "deploy-to-azure")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 
@@ -40,4 +39,7 @@ for ext in $output; do
     fi
 done
 
+pip install azure-cli-core azure-cli requests azure-storage-blob==1.5.0
+# arcdata: ModuleNotFoundError: No module named 'regex._regex'
+pip install regex
 python $(cd $(dirname $0); pwd)/update_ext_cmd_tree.py $filter_exts
