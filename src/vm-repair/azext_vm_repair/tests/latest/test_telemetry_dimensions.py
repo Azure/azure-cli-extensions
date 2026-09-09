@@ -7,7 +7,7 @@ import gc
 import unittest
 from unittest.mock import Mock, patch
 
-from azext_vm_repair import telemetry
+from azext_vm_repair import custom, telemetry
 from azext_vm_repair.command_helper_class import command_helper, script_data
 
 
@@ -132,6 +132,51 @@ class TelemetryDimensionTests(unittest.TestCase):
         track_run.assert_called_once()
         track_generic.assert_not_called()
         track_repair_and_restore.assert_not_called()
+
+
+class SourceResourceContextTests(unittest.TestCase):
+
+    def setUp(self):
+        self.command = ResourceContextOnlyHelper.__new__(ResourceContextOnlyHelper)
+        self.command.os_family = None
+        self.command.vm_size = None
+        self.command.disk_controller_type = None
+        self.command.repair_vm_disk_controller_type = None
+        self.command.hyperv_generation = None
+
+    @staticmethod
+    def _legacy_sdk_vm():
+        """Source VM as returned by an older compute SDK that does not model diskControllerType."""
+        source_vm = Mock()
+        source_vm.id = '/subscriptions/s/resourceGroups/rg/providers/Microsoft.Compute/virtualMachines/vm'
+        source_vm.storage_profile = Mock(spec=[])
+        source_vm.hardware_profile = Mock(vm_size='Standard_D2ds_v6')
+        return source_vm
+
+    @patch('azext_vm_repair.custom._is_linux_os', return_value=False)
+    @patch('azext_vm_repair.repair_utils._call_az_command', return_value='NVMe\n')
+    def test_controller_uses_arm_fallback_on_older_sdk(self, call_az, _):
+        custom._set_source_resource_context(self.command, self._legacy_sdk_vm())
+
+        self.assertEqual('NVMe', self.command.disk_controller_type)
+        call_az.assert_called_once()
+
+    @patch('azext_vm_repair.custom._is_linux_os', return_value=False)
+    @patch('azext_vm_repair.repair_utils._call_az_command', side_effect=Exception('ARM unavailable'))
+    def test_controller_fallback_failure_does_not_raise(self, call_az, _):
+        custom._set_source_resource_context(self.command, self._legacy_sdk_vm())
+
+        self.assertIsNone(self.command.disk_controller_type)
+        self.assertEqual('windows', self.command.os_family)
+
+    @patch('azext_vm_repair.custom._is_linux_os', return_value=False)
+    @patch('azext_vm_repair.repair_utils._call_az_command')
+    def test_supplied_controller_skips_extra_arm_call(self, call_az, _):
+        custom._set_source_resource_context(
+            self.command, self._legacy_sdk_vm(), disk_controller_type='SCSI')
+
+        self.assertEqual('SCSI', self.command.disk_controller_type)
+        call_az.assert_not_called()
 
 
 if __name__ == '__main__':

@@ -59,13 +59,15 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
-def _set_source_resource_context(command, source_vm, source_vm_instance_view=None):
+def _set_source_resource_context(command, source_vm, source_vm_instance_view=None, disk_controller_type=None):
     """Populate telemetry-only resource shape without allowing enrichment to fail a command."""
-    storage_profile = getattr(source_vm, 'storage_profile', None)
-    source_controller = getattr(storage_profile, 'disk_controller_type', None)
-    source_controller = getattr(source_controller, 'value', source_controller)
-    if source_controller is not None:
-        source_controller = str(source_controller)
+    source_controller = disk_controller_type
+    if source_controller is None:
+        try:
+            # Shared helper falls back to an ARM query when the SDK does not model the field.
+            source_controller = _fetch_source_disk_controller_type(source_vm)
+        except Exception as exception:
+            logger.debug('Could not determine source VM disk controller type for telemetry: %s', exception)
 
     hyperv_generation = None
     if source_vm_instance_view:
@@ -161,7 +163,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Checking if the OS of the source VM is Linux and what the Hyper-V generation is.
         is_linux = _is_linux_os(source_vm)
         vm_hypervgen = _is_gen2(source_vm_instance_view)
-        _set_source_resource_context(command, source_vm, source_vm_instance_view)
+        source_controller = _fetch_source_disk_controller_type(source_vm)
+        _set_source_resource_context(command, source_vm, source_vm_instance_view,
+                                     disk_controller_type=source_controller)
 
         # Fetching the name of the OS disk and checking if it's managed.
         target_disk_name = source_vm.storage_profile.os_disk.name
@@ -280,9 +284,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Adding the size to the command.
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
-        source_controller = _fetch_source_disk_controller_type(source_vm)
-        if hasattr(command, 'set_resource_context'):
-            command.set_resource_context(disk_controller_type=source_controller)
         supported_controllers = []
         if not disk_controller_type and source_controller and str(source_controller).lower() == 'nvme':
             supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
