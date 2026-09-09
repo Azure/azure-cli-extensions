@@ -71,6 +71,7 @@ class Create(AAZCommand):
             options=["--cost-management-granularity"],
             arg_group="CostManagementSettings",
             help="Settings for cost management granularity level for a vault.",
+            default="VaultLevel",
             enum={"ProtectedItemLevel": "ProtectedItemLevel", "ProtectedItemWithParentTag": "ProtectedItemWithParentTag", "VaultLevel": "VaultLevel"},
         )
 

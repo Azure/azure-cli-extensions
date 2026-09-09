@@ -126,7 +126,7 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                  '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "SystemAssigned" '
-                 '--soft-delete-state "Off" --immutability-state "Unlocked"',
+                 '--soft-delete-state "On" --immutability-state "Unlocked"',
                  checks=[
                      test.check('properties.featureSettings.crossRegionRestoreSettings.state', "None")
                  ])
