@@ -8,7 +8,7 @@
 # Test recording location: recordings/test_foundry_cost_control.yaml
 
 # To run this test live with full request/response logs:
-# azdev test cost-control --live --series -a -s --log-cli-level=DEBUG --log-file="cost-control-http-debug.log" --log-file-level=DEBUG
+# azdev test foundry-cost-control --live --series -a -s --log-cli-level=DEBUG --log-file="cost-control-http-debug.log" --log-file-level=DEBUG
 
 import os
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest

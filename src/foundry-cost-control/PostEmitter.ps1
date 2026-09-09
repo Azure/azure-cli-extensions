@@ -10,7 +10,7 @@ if ($LASTEXITCODE -ne 0) {
 
 & git -C $PSScriptRoot restore -- setup.py
 if ($LASTEXITCODE -ne 0) {
-    throw "Failed to restore README.md after CLI emission."
+    throw "Failed to restore setup.py after CLI emission."
 }
 
 # Change 2:

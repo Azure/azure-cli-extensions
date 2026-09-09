@@ -16,4 +16,4 @@ Get help on the commands:
 az cognitive-services account cost-control --help
 ```
 
-For usage examples see the test file `azext_foundry_cost_control\tests\latest\test_foundry_cost_control.py`.
+For usage examples see the test file `azext_foundry_cost_control/tests/latest/test_foundry_cost_control.py`.
