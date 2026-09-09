@@ -1,6 +1,6 @@
 Do these updates after you export new code from the AAZDev tool:
 
-- Update api-version from 2026-09-15-preview to 2026-07-15-preview everywhere, since the service does not use support 9-15
+- Update api-version from 2026-09-15-preview to 2026-07-15-preview everywhere, since the service does not use support 9-15.
 - Update _create.py to add example:
     ```python
     class Create(AAZCommand):
