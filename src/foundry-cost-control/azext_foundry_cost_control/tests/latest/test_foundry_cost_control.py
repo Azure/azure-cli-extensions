@@ -79,7 +79,7 @@ class FoundryCostControlScenario(ScenarioTest):
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_1} '
             '--display-name "{display_name_1}" '
-            '--rules "{rules_file_1}"',
+            '--rules "@{rules_file_1}"',
             checks=[
                 self.check('name', '{cost_control_name_1}'),
                 self.check('properties.displayName', '{display_name_1}'),
@@ -95,7 +95,7 @@ class FoundryCostControlScenario(ScenarioTest):
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_2} '
             '--display-name "{display_name_2}" '
-            '--rules "{rules_file_2}"',
+            '--rules "@{rules_file_2}"',
             checks=[
                 self.check('name', '{cost_control_name_2}'),
                 self.check('properties.displayName', '{display_name_2}'),
