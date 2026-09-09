@@ -6662,6 +6662,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     config = monitoring_addon_profile.config or {}
                     config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                     mc.addon_profiles[monitoring_addon_key].config = config
+            container_insights = getattr(mc.azure_monitor_profile, "container_insights", None)
+            if container_insights is not None:
+                container_insights.container_network_logs = (
+                    "Enabled" if container_network_logs_enabled else "Disabled"
+                )
 
         # When enabling CNL, the DCR must be updated to add the high-scale stream.
         # Set the postprocessing intermediate so that the update path calls ensure_container_insights.

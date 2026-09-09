@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks enable-addons`, `az aks disable-addons` and `az aks update`: Keep Container Insights monitoring and container network log settings consistent with the legacy monitoring addon when updating clusters.
 
 22.0.0b7
 +++++++++
