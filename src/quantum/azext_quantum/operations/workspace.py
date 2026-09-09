@@ -583,21 +583,33 @@ def _list_user_workspace_role_assignments(cmd, user_id, scope):
             if assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower() in QUANTUM_WORKSPACE_USER_ROLE_IDS]
 
 
+def _scope_parts(scope):
+    return scope.lower().strip("/").split("/")
+
+
+def _is_workspace_scope(assignment, scope):
+    return _scope_parts(assignment["scope"]) == _scope_parts(scope)
+
+
+def _scope_distance(assignment_scope, workspace_scope):
+    """ARM path segments between the workspace and an assignment's scope; unrelated scopes sort last."""
+    workspace_parts = _scope_parts(workspace_scope)
+    assignment_parts = _scope_parts(assignment_scope)
+    if workspace_parts[:len(assignment_parts)] != assignment_parts:
+        return len(workspace_parts)
+    return len(workspace_parts) - len(assignment_parts)
+
+
 def _select_user_workspace_role_assignment(assignments, scope):
-    workspace_scope_parts = scope.lower().strip("/").split("/")
-
-    def priority(assignment):
-        assignment_scope_parts = assignment["scope"].lower().strip("/").split("/")
-        is_inherited = assignment_scope_parts != workspace_scope_parts
+    # Nearest scope wins, then Data Contributor over Owner; scope and ID make remaining ties deterministic.
+    def sort_key(assignment):
         role_id = assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower()
-        role_priority = 0 if role_id == QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID else 1
-        # Prefer the inherited assignment whose ARM scope is the nearest recognizable ancestor of the workspace.
-        scope_distance = (len(workspace_scope_parts) - len(assignment_scope_parts)
-                          if workspace_scope_parts[:len(assignment_scope_parts)] == assignment_scope_parts
-                          else len(workspace_scope_parts))
-        return is_inherited, role_priority, scope_distance, assignment["scope"].lower(), assignment["id"].lower()
+        return (_scope_distance(assignment["scope"], scope),
+                0 if role_id == QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID else 1,
+                assignment["scope"].lower(),
+                assignment["id"].lower())
 
-    return min(assignments, key=priority)
+    return min(assignments, key=sort_key)
 
 
 def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
@@ -629,10 +641,8 @@ def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
     assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
-    direct_assignments = [assignment for assignment in assignments
-                          if assignment["scope"].lower() == scope.lower()]
-    inherited_assignments = [assignment for assignment in assignments
-                             if assignment["scope"].lower() != scope.lower()]
+    direct_assignments = [assignment for assignment in assignments if _is_workspace_scope(assignment, scope)]
+    inherited_assignments = [assignment for assignment in assignments if not _is_workspace_scope(assignment, scope)]
 
     if not direct_assignments:
         if inherited_assignments:

@@ -21,7 +21,7 @@ from ..._params import QuotaAction
 from ..._validators import validate_email, validate_workspace_user
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, _list_user_workspace_role_assignments, _select_user_workspace_role_assignment, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, _resolve_user_id, _list_user_workspace_role_assignments, _scope_distance, _select_user_workspace_role_assignment, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -911,6 +911,14 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         list_assignments.assert_called_once_with(cmd, "oid", expected_scope)
         create_role_assignment.assert_called_once_with(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=expected_scope, assignee_object_id="oid", assignee_principal_type="User")
 
+    def test_scope_distance_uses_normalized_ancestor_paths(self):
+        workspace_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
+
+        self.assertEqual(_scope_distance(workspace_scope + "/", workspace_scope), 0)
+        self.assertEqual(_scope_distance("/subscriptions/sub/resourceGroups/rg", workspace_scope), 4)
+        self.assertEqual(_scope_distance("/subscriptions/sub", workspace_scope), 6)
+        self.assertEqual(_scope_distance("/providers/Microsoft.Management/managementGroups/mg", workspace_scope), 8)
+
     def test_select_user_workspace_role_assignment_uses_stable_priority(self):
         workspace_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         resource_group_scope = "/subscriptions/sub/resourceGroups/rg"
@@ -940,9 +948,10 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
             ("direct owner",
              [subscription_owner, resource_group_owner, subscription_contributor, resource_group_contributor,
               direct_owner], direct_owner),
-            ("closest inherited contributor",
-             [subscription_owner, resource_group_owner, subscription_contributor, resource_group_contributor],
-             resource_group_contributor),
+                        ("nearest inherited scope before role",
+                         [subscription_contributor, resource_group_owner], resource_group_owner),
+                        ("contributor before owner at same inherited scope",
+                         [resource_group_owner, resource_group_contributor], resource_group_contributor),
             ("closest inherited owner", [subscription_owner, resource_group_owner], resource_group_owner),
         )
         for name, assignments, expected in cases:
@@ -978,7 +987,7 @@ class QuantumWorkspaceUserAccessTest(unittest.TestCase):
         info = SimpleNamespace(subscription="sub", resource_group="rg", name="ws", endpoint=None)
         expected_scope = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws"
         assignments = [
-            {"id": "/assignments/contributor", "scope": expected_scope},
+            {"id": "/assignments/contributor", "scope": expected_scope + "/"},
             {"id": "/assignments/owner", "scope": expected_scope},
         ]
         with patch("azext_quantum.operations.workspace.WorkspaceInfo", return_value=info), \
