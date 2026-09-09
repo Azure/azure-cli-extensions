@@ -23,10 +23,12 @@ _QUOTA_USAGE_FIELDS = {
 
 def _quota_usage_value(usage, attribute):
     if usage is None:
-        return None
+        return 0
     if hasattr(usage, "get"):
-        return usage.get(_QUOTA_USAGE_FIELDS[attribute])
-    return getattr(usage, attribute, None)
+        value = usage.get(_QUOTA_USAGE_FIELDS[attribute])
+    else:
+        value = getattr(usage, attribute, None)
+    return value if value is not None else 0
 
 
 def list_suite_offers(cmd):

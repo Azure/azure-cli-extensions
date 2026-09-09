@@ -300,7 +300,17 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(len(rows), 1)
         row = rows[0]
         self.assertEqual(row['allocation'], {'standardMinutesLifetime': 30, 'highMinutesLifetime': None})
-        self.assertEqual(row['usage'], {'standardMinutesLifetime': None, 'highMinutesLifetime': None})
+        self.assertEqual(row['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
+
+    def test_merge_quotas_null_usage_values_as_zero(self):
+        offer = _offer(
+            target_quotas=[_allocation(standard=30, high=15, target_id='ionq.qpu')],
+        )
+        usages = [_usage(target_id='ionq.qpu', standard=None, high=None)]
+
+        rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
+
+        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
 
     def test_merge_quotas_ignores_subscription_and_unmatched_usage(self):
         offer = _offer(
@@ -316,7 +326,7 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
 
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]['targetId'], 'ionq.qpu')
-        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': None, 'highMinutesLifetime': None})
+        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
 
     @live_only()
     def test_quantum_suite_offer_list(self):

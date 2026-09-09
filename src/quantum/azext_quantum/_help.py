@@ -239,7 +239,7 @@ helps['quantum suite-offer quotas'] = """
     long-summary: |
         Returns the v2 quota allocations (limits) for each target of the provider account together
         with the consumed usages. Each entry reports the allocated and used standard and high priority
-        minutes over the lifetime of the provider account.
+        minutes over the lifetime of the provider account. Missing usage values are returned as 0.
     examples:
       - name: View the quota usages for a suite offer provider account.
         text: |-
