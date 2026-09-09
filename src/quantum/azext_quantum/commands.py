@@ -119,7 +119,8 @@ def transform_suite_offers(suite_offers):
 
 def _quota_hours(minutes):
     """Convert lifetime quota minutes to hours (2 dp), matching the Quantum studio UI."""
-    return 0 if minutes is None else round(minutes / 60, 2)
+    hours = 0 if minutes is None else minutes / 60
+    return f"{hours:.2f}"
 
 
 def transform_suite_offer_quotas(quotas):

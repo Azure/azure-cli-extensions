@@ -98,15 +98,15 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
             'Target', 'Std Allocated (hrs)', 'Std Used (hrs)', 'High Allocated (hrs)', 'High Used (hrs)'
         ])
         self.assertEqual(row['Target'], 'ionq.qpu')
-        self.assertEqual(row['Std Allocated (hrs)'], 1.67)
-        self.assertEqual(row['Std Used (hrs)'], 0.67)
-        self.assertEqual(row['High Allocated (hrs)'], 0.83)
-        self.assertEqual(row['High Used (hrs)'], 0.17)
+        self.assertEqual(row['Std Allocated (hrs)'], '1.67')
+        self.assertEqual(row['Std Used (hrs)'], '0.67')
+        self.assertEqual(row['High Allocated (hrs)'], '0.83')
+        self.assertEqual(row['High Used (hrs)'], '0.17')
         missing_row = table[1]
-        self.assertEqual(missing_row['Std Allocated (hrs)'], 0)
-        self.assertEqual(missing_row['Std Used (hrs)'], 0)
-        self.assertEqual(missing_row['High Allocated (hrs)'], 0)
-        self.assertEqual(missing_row['High Used (hrs)'], 0)
+        self.assertEqual(missing_row['Std Allocated (hrs)'], '0.00')
+        self.assertEqual(missing_row['Std Used (hrs)'], '0.00')
+        self.assertEqual(missing_row['High Allocated (hrs)'], '0.00')
+        self.assertEqual(missing_row['High Used (hrs)'], '0.00')
 
     def test_base_url_v2(self):
         self.assertEqual(base_url_v2('East US'), 'https://eastus-v2.quantum.azure.com/')
