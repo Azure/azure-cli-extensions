@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.13.1
+++++++
+* `az dataprotection enable-backup trigger`: Preserve backup vault discovery and creation errors, including full service errors when storage-type fallback fails. Preserve service-error fallback without masking local validation or programming errors. Require successful provisioning for new and reused vaults before assigning roles; fail on readiness timeout instead of proceeding with an unready vault.
+
 1.13.0
 ++++++
 * ``az dataprotection backup-vault create/update``: Added ``--cost-management-granularity`` (alias ``--cost-granularity``) to configure vault cost management settings. Supported values are ``VaultLevel``, ``ProtectedItemLevel``, and ``ProtectedItemWithParentTag``; vault creation defaults to ``VaultLevel``.
