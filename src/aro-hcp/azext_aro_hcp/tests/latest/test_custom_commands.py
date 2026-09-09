@@ -13,6 +13,15 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusi
 from azext_aro_hcp.custom import ClusterCreate, ClusterUpdate, GetVersions, RequestCredential
 
 
+SUBNET_ID = ("/subscriptions/000/resourceGroups/network-rg/providers/Microsoft.Network/"
+             "virtualNetworks/vnet/subnets/cluster-subnet")
+
+
+def _identity_id(name):
+    return ("/subscriptions/000/resourceGroups/network-rg/providers/"
+            "Microsoft.ManagedIdentity/userAssignedIdentities/{}".format(name))
+
+
 class _Arg:
     def __init__(self, value):
         self.value = value
@@ -62,6 +71,7 @@ class ClusterCreateTest(unittest.TestCase):
     def _command(self, control_plane, data_plane, service):
         command = object.__new__(ClusterCreate)
         command.ctx = types.SimpleNamespace(args=types.SimpleNamespace(
+            subnet_id=_Arg(SUBNET_ID),
             assign_control_plane_operator_identity=control_plane,
             assign_data_plane_operator_identity=data_plane,
             assign_service_managed_identity=_Arg(service),
@@ -90,6 +100,29 @@ class ClusterCreateTest(unittest.TestCase):
                 "control_plane_operators": {"control-plane": control_plane_id},
                 "data_plane_operators": {"disk-csi-driver": data_plane_id},
                 "service_managed_identity": service,
+            }
+        }, args.operators_authentication)
+
+    def test_pre_operations_resolves_all_identity_names_from_subnet(self):
+        command = self._command(
+            [_OperatorIdentity("control-plane", "control")],
+            [_OperatorIdentity("disk-csi-driver", "data")],
+            "service",
+        )
+
+        command.pre_operations()
+
+        args = command.ctx.args
+        self.assertEqual({
+            _identity_id("control"): {},
+            _identity_id("data"): {},
+            _identity_id("service"): {},
+        }, args.user_assigned_identities)
+        self.assertEqual({
+            "user_assigned_identities": {
+                "control_plane_operators": {"control-plane": _identity_id("control")},
+                "data_plane_operators": {"disk-csi-driver": _identity_id("data")},
+                "service_managed_identity": _identity_id("service"),
             }
         }, args.operators_authentication)
 
@@ -127,7 +160,10 @@ class ClusterCreateTest(unittest.TestCase):
         )
         help_text = command_arg.type.settings["help"]
 
-        self.assertIn("Usage: --assign-control-plane-operator-identity NAME RESOURCE_ID", help_text)
+        self.assertIn(
+            "Usage: --assign-control-plane-operator-identity OPERATOR_NAME IDENTITY",
+            help_text,
+        )
         self.assertNotIn("shorthand-syntax", help_text)
         self.assertNotIn("json-file", help_text)
         self.assertNotIn('Try "??"', help_text)
@@ -135,7 +171,7 @@ class ClusterCreateTest(unittest.TestCase):
     def test_identity_argument_requires_exactly_two_values(self):
         parser, _ = self._identity_parser()
 
-        with self.assertRaisesRegex(InvalidArgumentValueError, "expects NAME RESOURCE_ID"):
+        with self.assertRaisesRegex(InvalidArgumentValueError, "expects OPERATOR_NAME IDENTITY"):
             parser.parse_args([
                 "--assign-control-plane-operator-identity", "control-plane",
             ])
@@ -188,20 +224,21 @@ class ClusterUpdateTest(unittest.TestCase):
     @staticmethod
     def _instance():
         operator_identities = types.SimpleNamespace(
-            control_plane_operators={"existing-control": "control-identity"},
-            data_plane_operators={"existing-data": "data-identity"},
-            service_managed_identity="service-identity",
+            control_plane_operators={"existing-control": _identity_id("control")},
+            data_plane_operators={"existing-data": _identity_id("data")},
+            service_managed_identity=_identity_id("service"),
         )
         return types.SimpleNamespace(
             identity=types.SimpleNamespace(
                 user_assigned_identities=_Arg({
-                    "control-identity": {},
-                    "data-identity": {},
-                    "service-identity": {},
+                    _identity_id("control"): {},
+                    _identity_id("data"): {},
+                    _identity_id("service"): {},
                 }),
             ),
             properties=types.SimpleNamespace(
                 platform=types.SimpleNamespace(
+                    subnet_id=_Arg(SUBNET_ID),
                     operators_authentication=types.SimpleNamespace(
                         user_assigned_identities=operator_identities,
                     ),
@@ -219,13 +256,37 @@ class ClusterUpdateTest(unittest.TestCase):
         command.pre_instance_update(instance)
 
         operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
-        self.assertEqual({"new-control": "new-control-identity"}, operator_identities.control_plane_operators)
-        self.assertEqual({"existing-data": "data-identity"}, operator_identities.data_plane_operators)
-        self.assertEqual("service-identity", operator_identities.service_managed_identity)
+        self.assertEqual({"new-control": _identity_id("new-control-identity")},
+                         operator_identities.control_plane_operators)
+        self.assertEqual({"existing-data": _identity_id("data")}, operator_identities.data_plane_operators)
+        self.assertEqual(_identity_id("service"), operator_identities.service_managed_identity)
         self.assertEqual({
-            "new-control-identity": {},
-            "data-identity": {},
-            "service-identity": {},
+            _identity_id("new-control-identity"): {},
+            _identity_id("data"): {},
+            _identity_id("service"): {},
+        }, instance.identity.user_assigned_identities)
+
+    @mock.patch("azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_instance_update_resolves_all_identity_names_from_subnet(self, _):
+        instance = self._instance()
+        command = self._command(
+            control_plane=[_OperatorIdentity("new-control", "control-two")],
+            data_plane=[_OperatorIdentity("new-data", "data-two")],
+            service="service-two",
+        )
+
+        command.pre_instance_update(instance)
+
+        operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
+        self.assertEqual({"new-control": _identity_id("control-two")},
+                         operator_identities.control_plane_operators)
+        self.assertEqual({"new-data": _identity_id("data-two")},
+                         operator_identities.data_plane_operators)
+        self.assertEqual(_identity_id("service-two"), operator_identities.service_managed_identity)
+        self.assertEqual({
+            _identity_id("control-two"): {},
+            _identity_id("data-two"): {},
+            _identity_id("service-two"): {},
         }, instance.identity.user_assigned_identities)
 
     @mock.patch("azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
@@ -237,16 +298,17 @@ class ClusterUpdateTest(unittest.TestCase):
 
         self.assertEqual(
             {
-                "control-identity": {},
-                "data-identity": {},
-                "service-identity": {},
+                _identity_id("control"): {},
+                _identity_id("data"): {},
+                _identity_id("service"): {},
             },
             instance.identity.user_assigned_identities.to_serialized_data(),
         )
         operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
-        self.assertEqual({"existing-control": "control-identity"}, operator_identities.control_plane_operators)
-        self.assertEqual({"existing-data": "data-identity"}, operator_identities.data_plane_operators)
-        self.assertEqual("service-identity", operator_identities.service_managed_identity)
+        self.assertEqual({"existing-control": _identity_id("control")},
+                 operator_identities.control_plane_operators)
+        self.assertEqual({"existing-data": _identity_id("data")}, operator_identities.data_plane_operators)
+        self.assertEqual(_identity_id("service"), operator_identities.service_managed_identity)
 
     @mock.patch("azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
     def test_pre_instance_update_rejects_duplicate_name(self, _):

@@ -14,11 +14,11 @@ from azure.cli.core.aaz import (
     AAZBoolArg,
     AAZListArg,
     AAZObjectArg,
-    AAZResourceIdArg,
     AAZStrArg,
     has_value,
 )
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from knack.log import get_logger
 
 from .aaz.latest.aro.hcp.cluster._create import Create as _ClusterCreate
@@ -49,7 +49,7 @@ class _AAZIdentityPairArg(AAZListArg):
             def __call__(self, parser, namespace, values, option_string=None):
                 if len(values) != 2:
                     raise InvalidArgumentValueError(
-                        "{} expects NAME RESOURCE_ID.".format(option_string)
+                        "{} expects OPERATOR_NAME IDENTITY.".format(option_string)
                     )
                 if not isinstance(getattr(namespace, self.dest), AAZArgActionOperations):
                     setattr(namespace, self.dest, AAZArgActionOperations())
@@ -75,14 +75,42 @@ def _build_operator_identity_arg(options, help_text, required=True):
         options=["name"],
         required=True,
     )
-    identity_arg.Element.resource_id = AAZResourceIdArg(
+    identity_arg.Element.resource_id = AAZStrArg(
         options=["resource-id"],
         required=True,
     )
     return identity_arg
 
 
-def _operator_identities(argument, option):
+def _resolve_identity_resource_id(identity, subnet_id):
+    if is_valid_resource_id(identity):
+        return identity
+
+    subnet = parse_resource_id(subnet_id)
+    subscription = subnet.get("subscription")
+    resource_group = subnet.get("resource_group")
+    if not subscription or not resource_group:
+        raise InvalidArgumentValueError(
+            "Unable to resolve identity name '{}' because platform.subnetId is not a valid "
+            "Azure resource ID.".format(identity)
+        )
+
+    return resource_id(
+        subscription=subscription,
+        resource_group=resource_group,
+        namespace="Microsoft.ManagedIdentity",
+        type="userAssignedIdentities",
+        name=identity,
+    )
+
+
+def _serialized_data(value):
+    if hasattr(value, "to_serialized_data"):
+        return value.to_serialized_data()
+    return value
+
+
+def _operator_identities(argument, option, subnet_id):
     identities = {}
     for identity in argument:
         name = identity.name.to_serialized_data()
@@ -90,7 +118,10 @@ def _operator_identities(argument, option):
             raise InvalidArgumentValueError(
                 "Duplicate name '{}' supplied for {}.".format(name, option)
             )
-        identities[name] = identity.resource_id.to_serialized_data()
+        identities[name] = _resolve_identity_resource_id(
+            identity.resource_id.to_serialized_data(),
+            subnet_id,
+        )
     return identities
 
 
@@ -148,34 +179,43 @@ class ClusterCreate(_ClusterCreate):
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
             "Assign a user-assigned identity to a control plane operator. "
-            "Usage: --assign-control-plane-operator-identity NAME RESOURCE_ID. "
+            "Usage: --assign-control-plane-operator-identity OPERATOR_NAME IDENTITY. "
+            "IDENTITY is a resource ID or the name of an identity in the cluster subnet's resource group. "
             "Repeat the argument to assign more identities.",
         )
         args_schema.assign_data_plane_operator_identity = _build_operator_identity_arg(
             ["--data-plane-identity", "--assign-data-plane-operator-identity"],
             "Assign a user-assigned identity to a data plane operator. "
-            "Usage: --assign-data-plane-operator-identity NAME RESOURCE_ID. "
+            "Usage: --assign-data-plane-operator-identity OPERATOR_NAME IDENTITY. "
+            "IDENTITY is a resource ID or the name of an identity in the cluster subnet's resource group. "
             "Repeat the argument to assign more identities.",
         )
-        args_schema.assign_service_managed_identity = AAZResourceIdArg(
+        args_schema.assign_service_managed_identity = AAZStrArg(
             options=["--service-identity", "--assign-service-managed-identity"],
             arg_group="Identity",
-            help="Assign the user-assigned identity used for service-level actions.",
+            help="Assign the user-assigned identity used for service-level actions by resource ID "
+                 "or by name when it is in the cluster subnet's resource group.",
             required=True,
         )
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
+        subnet_id = args.subnet_id.to_serialized_data()
         control_plane = _operator_identities(
             args.assign_control_plane_operator_identity,
             "--assign-control-plane-operator-identity",
+            subnet_id,
         )
         data_plane = _operator_identities(
             args.assign_data_plane_operator_identity,
             "--assign-data-plane-operator-identity",
+            subnet_id,
         )
-        service = args.assign_service_managed_identity.to_serialized_data()
+        service = _resolve_identity_resource_id(
+            args.assign_service_managed_identity.to_serialized_data(),
+            subnet_id,
+        )
 
         args.user_assigned_identities = {
             resource_id: {}
@@ -235,21 +275,24 @@ class ClusterUpdate(_ClusterUpdate):
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
             "Assign user-assigned identities to control plane operators. "
-            "Usage: --assign-control-plane-operator-identity NAME RESOURCE_ID. "
+            "Usage: --assign-control-plane-operator-identity OPERATOR_NAME IDENTITY. "
+            "IDENTITY is a resource ID or the name of an identity in the cluster subnet's resource group. "
             "Repeat the argument to assign more identities.",
             required=False,
         )
         args_schema.assign_data_plane_operator_identity = _build_operator_identity_arg(
             ["--data-plane-identity", "--assign-data-plane-operator-identity"],
             "Assign user-assigned identities to data plane operators. "
-            "Usage: --assign-data-plane-operator-identity NAME RESOURCE_ID. "
+            "Usage: --assign-data-plane-operator-identity OPERATOR_NAME IDENTITY. "
+            "IDENTITY is a resource ID or the name of an identity in the cluster subnet's resource group. "
             "Repeat the argument to assign more identities.",
             required=False,
         )
-        args_schema.assign_service_managed_identity = AAZResourceIdArg(
+        args_schema.assign_service_managed_identity = AAZStrArg(
             options=["--service-identity", "--assign-service-managed-identity"],
             arg_group="Identity",
-            help="Assign the user-assigned identity used for service-level actions.",
+            help="Assign the user-assigned identity used for service-level actions by resource ID "
+                 "or by name when it is in the cluster subnet's resource group.",
         )
         return args_schema
 
@@ -261,12 +304,15 @@ class ClusterUpdate(_ClusterUpdate):
         if not any(has_value(arg) for arg in (control_plane_arg, data_plane_arg, service_arg)):
             return
 
-        operator_identities = instance.properties.platform.operators_authentication.user_assigned_identities
+        platform = instance.properties.platform
+        subnet_id = _serialized_data(platform.subnet_id)
+        operator_identities = platform.operators_authentication.user_assigned_identities
 
         if has_value(control_plane_arg):
             control_plane = _operator_identities(
                 control_plane_arg,
                 "--assign-control-plane-operator-identity",
+                subnet_id,
             )
             operator_identities.control_plane_operators = control_plane
 
@@ -274,11 +320,15 @@ class ClusterUpdate(_ClusterUpdate):
             data_plane = _operator_identities(
                 data_plane_arg,
                 "--assign-data-plane-operator-identity",
+                subnet_id,
             )
             operator_identities.data_plane_operators = data_plane
 
         if has_value(service_arg):
-            service = service_arg.to_serialized_data()
+            service = _resolve_identity_resource_id(
+                service_arg.to_serialized_data(),
+                subnet_id,
+            )
             operator_identities.service_managed_identity = service
 
         assigned_resource_ids = set(operator_identities.control_plane_operators.values())
