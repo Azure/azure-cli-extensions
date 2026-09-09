@@ -47,10 +47,23 @@ class ClusterCreateTest(unittest.TestCase):
         self.assertIn("--assign-control-plane-operator-identity", example_text)
         self.assertIn("--assign-data-plane-operator-identity", example_text)
         self.assertIn("--assign-service-managed-identity", example_text)
+        self.assertNotIn("--etcd-encryption-type", example_text)
+        self.assertNotIn("--key-management-mode", example_text)
         self.assertNotIn("--control-plane-operators", example_text)
         self.assertNotIn("--data-plane-operators", example_text)
         self.assertEqual(9, example_text.count("--assign-control-plane-operator-identity"))
         self.assertEqual(3, example_text.count("--assign-data-plane-operator-identity"))
+
+    def test_encryption_singleton_values_are_request_only(self):
+        schema = ClusterCreate._build_arguments_schema()
+        self.assertFalse(schema.etcd_encryption_type._registered)
+        self.assertFalse(schema.key_management_mode._registered)
+
+        command = self._command([], [], "service")
+        command.pre_operations()
+
+        self.assertEqual("KMS", command.ctx.args.etcd_encryption_type)
+        self.assertEqual("CustomerManaged", command.ctx.args.key_management_mode)
 
     @staticmethod
     def _identity_parser():
