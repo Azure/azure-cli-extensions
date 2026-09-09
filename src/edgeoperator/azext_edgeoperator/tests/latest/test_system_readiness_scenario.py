@@ -56,5 +56,9 @@ class SystemReadinessScenarioTest(ScenarioTest):
         ]).get_output_in_json()
 
         self.assertIsInstance(result["properties"]["systemReady"], bool)
-        self.assertIsInstance(result["properties"]["readinessStatusDetails"], list)
-        self.assertIsInstance(result["properties"]["errorMessages"], list)
+        categories = result["properties"]["categories"]
+        self.assertIsInstance(categories, list)
+        for category in categories:
+            self.assertIn("categoryName", category)
+            self.assertIn("readinessPercentage", category)
+            self.assertIsInstance(category["errorMessageDetails"], list)
