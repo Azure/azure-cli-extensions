@@ -24,10 +24,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-12-01",
+        "version": "2027-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors", "2024-12-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors", "2024-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors", "2027-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors", "2027-01-01"],
         ]
     }
 
@@ -118,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }
@@ -165,6 +165,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.kind = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -184,11 +187,13 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.aws_cloud_profile = AAZObjectType(
                 serialized_name="awsCloudProfile",
-                flags={"required": True},
             )
             properties.connector_primary_identifier = AAZStrType(
                 serialized_name="connectorPrimaryIdentifier",
                 flags={"read_only": True},
+            )
+            properties.gcp_cloud_profile = AAZObjectType(
+                serialized_name="gcpCloudProfile",
             )
             properties.host_type = AAZStrType(
                 serialized_name="hostType",
@@ -213,6 +218,50 @@ class List(AAZCommand):
 
             excluded_accounts = cls._schema_on_200.value.Element.properties.aws_cloud_profile.excluded_accounts
             excluded_accounts.Element = AAZStrType()
+
+            gcp_cloud_profile = cls._schema_on_200.value.Element.properties.gcp_cloud_profile
+            gcp_cloud_profile.organization_properties = AAZObjectType(
+                serialized_name="organizationProperties",
+            )
+            gcp_cloud_profile.project_properties = AAZObjectType(
+                serialized_name="projectProperties",
+            )
+
+            organization_properties = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.organization_properties
+            organization_properties.excluded_folder_ids = AAZListType(
+                serialized_name="excludedFolderIds",
+            )
+            organization_properties.excluded_project_numbers = AAZListType(
+                serialized_name="excludedProjectNumbers",
+            )
+            organization_properties.management_project_id = AAZStrType(
+                serialized_name="managementProjectId",
+                flags={"required": True},
+            )
+            organization_properties.management_project_number = AAZStrType(
+                serialized_name="managementProjectNumber",
+                flags={"required": True},
+            )
+            organization_properties.organization_id = AAZStrType(
+                serialized_name="organizationId",
+                flags={"required": True},
+            )
+
+            excluded_folder_ids = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.organization_properties.excluded_folder_ids
+            excluded_folder_ids.Element = AAZStrType()
+
+            excluded_project_numbers = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.organization_properties.excluded_project_numbers
+            excluded_project_numbers.Element = AAZStrType()
+
+            project_properties = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.project_properties
+            project_properties.project_id = AAZStrType(
+                serialized_name="projectId",
+                flags={"required": True},
+            )
+            project_properties.project_number = AAZStrType(
+                serialized_name="projectNumber",
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -279,7 +328,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }
@@ -326,6 +375,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.kind = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -345,11 +397,13 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.aws_cloud_profile = AAZObjectType(
                 serialized_name="awsCloudProfile",
-                flags={"required": True},
             )
             properties.connector_primary_identifier = AAZStrType(
                 serialized_name="connectorPrimaryIdentifier",
                 flags={"read_only": True},
+            )
+            properties.gcp_cloud_profile = AAZObjectType(
+                serialized_name="gcpCloudProfile",
             )
             properties.host_type = AAZStrType(
                 serialized_name="hostType",
@@ -374,6 +428,50 @@ class List(AAZCommand):
 
             excluded_accounts = cls._schema_on_200.value.Element.properties.aws_cloud_profile.excluded_accounts
             excluded_accounts.Element = AAZStrType()
+
+            gcp_cloud_profile = cls._schema_on_200.value.Element.properties.gcp_cloud_profile
+            gcp_cloud_profile.organization_properties = AAZObjectType(
+                serialized_name="organizationProperties",
+            )
+            gcp_cloud_profile.project_properties = AAZObjectType(
+                serialized_name="projectProperties",
+            )
+
+            organization_properties = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.organization_properties
+            organization_properties.excluded_folder_ids = AAZListType(
+                serialized_name="excludedFolderIds",
+            )
+            organization_properties.excluded_project_numbers = AAZListType(
+                serialized_name="excludedProjectNumbers",
+            )
+            organization_properties.management_project_id = AAZStrType(
+                serialized_name="managementProjectId",
+                flags={"required": True},
+            )
+            organization_properties.management_project_number = AAZStrType(
+                serialized_name="managementProjectNumber",
+                flags={"required": True},
+            )
+            organization_properties.organization_id = AAZStrType(
+                serialized_name="organizationId",
+                flags={"required": True},
+            )
+
+            excluded_folder_ids = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.organization_properties.excluded_folder_ids
+            excluded_folder_ids.Element = AAZStrType()
+
+            excluded_project_numbers = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.organization_properties.excluded_project_numbers
+            excluded_project_numbers.Element = AAZStrType()
+
+            project_properties = cls._schema_on_200.value.Element.properties.gcp_cloud_profile.project_properties
+            project_properties.project_id = AAZStrType(
+                serialized_name="projectId",
+                flags={"required": True},
+            )
+            project_properties.project_number = AAZStrType(
+                serialized_name="projectNumber",
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
