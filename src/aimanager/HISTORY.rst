@@ -6,7 +6,7 @@ Release History
 1.5.3b1
 ++++++
 * ``az aimanager list`` and ``az aimanager show``: Improve ``-o table`` output. Drop the
-  ``ETag`` column and add ``ProvisioningState`` and ``Subscription`` columns.
+  ``ETag`` column and add a ``ProvisioningState`` column.
 
 1.5.2b1
 ++++++

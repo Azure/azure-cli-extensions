@@ -22,7 +22,6 @@ def aimanager_table_format(result):
         ('Name', result.get('name', '')),
         ('ProvisioningState', properties.get('provisioningState', '')),
         ('ResourceGroup', parsed.get('resource_group', '')),
-        ('Subscription', parsed.get('subscription', '')),
         ('Location', result.get('location', '')),
     ])
 

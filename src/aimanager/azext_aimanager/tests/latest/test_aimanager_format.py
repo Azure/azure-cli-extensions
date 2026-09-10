@@ -31,7 +31,7 @@ class TestAIManagerTableFormat(unittest.TestCase):
         result = aimanager_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
-            ["Name", "ProvisioningState", "ResourceGroup", "Subscription", "Location"],
+            ["Name", "ProvisioningState", "ResourceGroup", "Location"],
         )
         self.assertNotIn("ETag", result)
 
@@ -41,13 +41,11 @@ class TestAIManagerTableFormat(unittest.TestCase):
         self.assertEqual(result["ResourceGroup"], "yiralirg")
         self.assertEqual(result["Location"], "westus2")
         self.assertEqual(result["ProvisioningState"], "Succeeded")
-        self.assertEqual(result["Subscription"], "26fe00f8-0000-0000-0000-bb1d2e00343a")
 
     def test_table_format_missing_fields(self):
         result = aimanager_table_format({})
         self.assertEqual(result["Name"], "")
         self.assertEqual(result["ResourceGroup"], "")
-        self.assertEqual(result["Subscription"], "")
         self.assertEqual(result["ProvisioningState"], "")
 
     def test_table_format_null_properties(self):
