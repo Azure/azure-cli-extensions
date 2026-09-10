@@ -599,46 +599,63 @@ def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, name
                          model_deployment_name):  # pylint: disable=unused-argument
     deployment = client.get(
         resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
-    _annotate_model_id(cmd, deployment)
+    _annotate_model_ids(cmd, [deployment])
     return deployment
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                          namespace_name):  # pylint: disable=unused-argument
-    deployments = client.list_by_ai_manager_namespace(
-        resource_group_name, ai_manager_name, namespace_name)
-    return [_annotate_model_id(cmd, d) for d in deployments]
+    deployments = list(client.list_by_ai_manager_namespace(
+        resource_group_name, ai_manager_name, namespace_name))
+    _annotate_model_ids(cmd, deployments)
+    return deployments
 
 
-def _annotate_model_id(cmd, deployment):
-    """Resolve the human-readable model id (e.g. "meta-llama/Llama-3-8B") from a deployment's
-    ``modelResourceId`` and stash it on the deployment as ``modelId`` for table rendering.
+def _annotate_model_ids(cmd, deployments):
+    """Resolve the human-readable model id (e.g. "meta-llama/Llama-3-8B") for each deployment
+    from its ``modelResourceId`` and stash it on the deployment as ``modelId`` for table
+    rendering.
 
-    Best-effort: on any failure the deployment is returned unchanged and table output falls
-    back to the AIModel resource name parsed from the id.
+    The AIModel client is built once and lookups are memoized by ``(location, ai_model_name)``
+    so a namespace with many deployments referencing the same model incurs a single GET per
+    distinct model rather than one per deployment.
+
+    Best-effort: on any failure the affected deployment is left unchanged and table output
+    falls back to the AIModel resource name parsed from the id.
     """
-    try:
-        properties = deployment.get('properties') or {}
-        model_resource_id = properties.get('modelResourceId')
-        if not model_resource_id:
-            return deployment
+    from azure.mgmt.core.tools import parse_resource_id
+    from azext_aimanager._client_factory import cf_ai_models
 
-        from azure.mgmt.core.tools import parse_resource_id
-        parsed = parse_resource_id(model_resource_id)
-        location = parsed.get('name')  # the location segment for an AIModel id
-        ai_model_name = parsed.get('resource_name')
-        if not location or not ai_model_name:
-            return deployment
+    ai_models_client = None
+    resolved = {}  # (location, ai_model_name) -> modelId
 
-        from azext_aimanager._client_factory import cf_ai_models
-        model = cf_ai_models(cmd.cli_ctx).get(location, ai_model_name)
-        model_id = (model.get('properties') or {}).get('modelId')
-        if model_id:
-            deployment['modelId'] = model_id
-    except Exception:  # pylint: disable=broad-except
-        logger.debug("Failed to resolve human-readable modelId for a model deployment.",
-                     exc_info=True)
-    return deployment
+    for deployment in deployments:
+        try:
+            properties = deployment.get('properties') or {}
+            model_resource_id = properties.get('modelResourceId')
+            if not model_resource_id:
+                continue
+
+            parsed = parse_resource_id(model_resource_id)
+            location = parsed.get('name')  # the location segment for an AIModel id
+            ai_model_name = parsed.get('resource_name')
+            if not location or not ai_model_name:
+                continue
+
+            key = (location, ai_model_name)
+            if key not in resolved:
+                if ai_models_client is None:
+                    ai_models_client = cf_ai_models(cmd.cli_ctx)
+                model = ai_models_client.get(location, ai_model_name)
+                resolved[key] = (model.get('properties') or {}).get('modelId')
+
+            model_id = resolved[key]
+            if model_id:
+                deployment['modelId'] = model_id
+        except Exception:  # pylint: disable=broad-except
+            logger.debug("Failed to resolve human-readable modelId for a model deployment.",
+                         exc_info=True)
+    return deployments
 
 
 def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
