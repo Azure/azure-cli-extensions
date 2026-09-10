@@ -144,10 +144,9 @@ class Create(AAZCommand):
         _element.thresholds = AAZListArg(
             options=["thresholds"],
             help="The actions evaluated as consumption approaches the configured amount.",
-            required=True,
+            nullable=True,
             fmt=AAZListArgFormat(
                 max_length=10,
-                min_length=1,
             ),
         )
         _element.unit = AAZStrArg(
@@ -245,7 +244,7 @@ class Create(AAZCommand):
             options=["action"],
             help="The action taken when the threshold is reached. The default is audit.",
             default="audit",
-            enum={"alert": "alert", "audit": "audit"},
+            enum={"alert": "alert", "audit": "audit", "block": "block"},
         )
         _element.type = AAZStrArg(
             options=["type"],
@@ -382,7 +381,7 @@ class Create(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("period", AAZStrType, ".period")
                 _elements.set_prop("recurring", AAZBoolType, ".recurring")
-                _elements.set_prop("thresholds", AAZListType, ".thresholds", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("thresholds", AAZListType, ".thresholds", typ_kwargs={"nullable": True})
                 _elements.set_prop("unit", AAZStrType, ".unit", typ_kwargs={"flags": {"required": True}})
 
             counter_key = _builder.get(".properties.rules[].counterKey")
@@ -396,25 +395,26 @@ class Create(AAZCommand):
 
             match = _builder.get(".properties.rules[].match")
             if match is not None:
-                foundry_caller_agent_id = match.set_prop(
-                    "foundry.caller.agent.id", AAZListType, ".foundry_caller_agent_id")
-                if foundry_caller_agent_id is not None:
-                    foundry_caller_agent_id.set_elements(AAZStrType, ".")
+                match.set_prop("foundry.caller.agent.id", AAZListType, ".foundry_caller_agent_id")
+                match.set_prop("foundry.caller.identity.oid", AAZListType, ".foundry_caller_identity_oid")
+                match.set_prop("foundry.caller.session.id", AAZListType, ".foundry_caller_session_id")
+                match.set_prop("foundry.project.id", AAZListType, ".foundry_project_id")
 
-                foundry_caller_identity_oid = match.set_prop(
-                    "foundry.caller.identity.oid", AAZListType, ".foundry_caller_identity_oid")
-                if foundry_caller_identity_oid is not None:
-                    foundry_caller_identity_oid.set_elements(AAZStrType, ".")
+            foundry.caller.agent.id = _builder.get(".properties.rules[].match.foundry.caller.agent.id")
+            if foundry.caller.agent.id is not None:
+                foundry.caller.agent.id.set_elements(AAZStrType, ".")
 
-                foundry_caller_session_id = match.set_prop(
-                    "foundry.caller.session.id", AAZListType, ".foundry_caller_session_id")
-                if foundry_caller_session_id is not None:
-                    foundry_caller_session_id.set_elements(AAZStrType, ".")
+            foundry.caller.identity.oid = _builder.get(".properties.rules[].match.foundry.caller.identity.oid")
+            if foundry.caller.identity.oid is not None:
+                foundry.caller.identity.oid.set_elements(AAZStrType, ".")
 
-                foundry_project_id = match.set_prop(
-                    "foundry.project.id", AAZListType, ".foundry_project_id")
-                if foundry_project_id is not None:
-                    foundry_project_id.set_elements(AAZStrType, ".")
+            foundry.caller.session.id = _builder.get(".properties.rules[].match.foundry.caller.session.id")
+            if foundry.caller.session.id is not None:
+                foundry.caller.session.id.set_elements(AAZStrType, ".")
+
+            foundry.project.id = _builder.get(".properties.rules[].match.foundry.project.id")
+            if foundry.project.id is not None:
+                foundry.project.id.set_elements(AAZStrType, ".")
 
             thresholds = _builder.get(".properties.rules[].thresholds")
             if thresholds is not None:
@@ -490,7 +490,7 @@ class Create(AAZCommand):
             _element.period = AAZStrType()
             _element.recurring = AAZBoolType()
             _element.thresholds = AAZListType(
-                flags={"required": True},
+                nullable=True,
             )
             _element.unit = AAZStrType(
                 flags={"required": True},
@@ -511,17 +511,17 @@ class Create(AAZCommand):
             match["foundry.caller.session.id"] = AAZListType()
             match["foundry.project.id"] = AAZListType()
 
-            foundry_caller_agent_id = match["foundry.caller.agent.id"]
-            foundry_caller_agent_id.Element = AAZStrType()
+            foundry.caller.agent.id = cls._schema_on_200_201.properties.rules.Element.match.foundry.caller.agent.id
+            foundry.caller.agent.id.Element = AAZStrType()
 
-            foundry_caller_identity_oid = match["foundry.caller.identity.oid"]
-            foundry_caller_identity_oid.Element = AAZStrType()
+            foundry.caller.identity.oid = cls._schema_on_200_201.properties.rules.Element.match.foundry.caller.identity.oid
+            foundry.caller.identity.oid.Element = AAZStrType()
 
-            foundry_caller_session_id = match["foundry.caller.session.id"]
-            foundry_caller_session_id.Element = AAZStrType()
+            foundry.caller.session.id = cls._schema_on_200_201.properties.rules.Element.match.foundry.caller.session.id
+            foundry.caller.session.id.Element = AAZStrType()
 
-            foundry_project_id = match["foundry.project.id"]
-            foundry_project_id.Element = AAZStrType()
+            foundry.project.id = cls._schema_on_200_201.properties.rules.Element.match.foundry.project.id
+            foundry.project.id.Element = AAZStrType()
 
             thresholds = cls._schema_on_200_201.properties.rules.Element.thresholds
             thresholds.Element = AAZObjectType()

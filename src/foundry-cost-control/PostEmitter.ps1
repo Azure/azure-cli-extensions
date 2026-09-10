@@ -1,3 +1,7 @@
+#
+# Run this script after re-emitting the code: 
+#   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\PostEmitter.ps1
+#
 
 # Change 1:
 # I did manual edits to README.md and setup.py files. Make sure you restore 
