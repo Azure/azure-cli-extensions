@@ -18,7 +18,7 @@ class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
         CloudNameEnum.AzureChinaCloud: "https://api.loganalytics.azure.cn",
         CloudNameEnum.AzureUSGovernment: "https://api.loganalytics.us",
     }
-    _CLOUD_HOST_METADATA_INDEX = "logAnalyticslogAnalyticsResourceId"
+    _CLOUD_HOST_METADATA_INDEX = "logAnalyticsResourceId"
 
     _AAD_CREDENTIAL_SCOPES = [
         "https://api.loganalytics.io/.default",
