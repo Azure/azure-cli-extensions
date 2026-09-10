@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='aro-hcp',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools AroHcp Extension.',
+    description='Manage Azure Red Hat OpenShift clusters with hosted control planes, including node pools, external authentication, and credentials.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
