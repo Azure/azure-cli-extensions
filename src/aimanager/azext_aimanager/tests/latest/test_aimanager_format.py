@@ -50,6 +50,12 @@ class TestAIManagerTableFormat(unittest.TestCase):
         self.assertEqual(result["Subscription"], "")
         self.assertEqual(result["ProvisioningState"], "")
 
+    def test_table_format_null_properties(self):
+        # 'properties' present but null (Optional in the vendored model) must not raise.
+        result = aimanager_table_format({"name": "aimbyo", "properties": None})
+        self.assertEqual(result["Name"], "aimbyo")
+        self.assertEqual(result["ProvisioningState"], "")
+
     def test_list_table_format(self):
         results = aimanager_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)

@@ -17,9 +17,10 @@ def _parse_resource_id(resource_id):
 def aimanager_table_format(result):
     """Format a single AI Manager resource for display with "-o table"."""
     parsed = _parse_resource_id(result.get('id', ''))
+    properties = result.get('properties') or {}
     return OrderedDict([
         ('Name', result.get('name', '')),
-        ('ProvisioningState', result.get('properties', {}).get('provisioningState', '')),
+        ('ProvisioningState', properties.get('provisioningState', '')),
         ('ResourceGroup', parsed.get('resource_group', '')),
         ('Subscription', parsed.get('subscription', '')),
         ('Location', result.get('location', '')),
