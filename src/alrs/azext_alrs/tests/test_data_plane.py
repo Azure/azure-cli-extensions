@@ -64,6 +64,7 @@ def test_api_version_prefix_not_doubled_when_endpoint_already_versioned():
     [
         "http://r.eastus.api.alrs.azure.net",
         "ftp://r.eastus.api.alrs.azure.net",
+        "ftp://localhost:8100",
         "https://",
     ],
 )
@@ -73,6 +74,22 @@ def test_non_https_remote_endpoint_rejected(base_url):
     from azext_alrs.server import _data_plane
 
     with pytest.raises(ValidationError, match="must use HTTPS"):
+        _data_plane.DataPlaneClient(cli_ctx=object(), base_url=base_url)
+
+
+@pytest.mark.parametrize(
+    "base_url",
+    [
+        "https://r.eastus.api.alrs.azure.net?x=1",
+        "https://r.eastus.api.alrs.azure.net#fragment",
+    ],
+)
+def test_endpoint_query_or_fragment_rejected(base_url):
+    from azure.cli.core.azclierror import ValidationError
+
+    from azext_alrs.server import _data_plane
+
+    with pytest.raises(ValidationError, match="query string or fragment"):
         _data_plane.DataPlaneClient(cli_ctx=object(), base_url=base_url)
 
 
@@ -149,6 +166,7 @@ def test_transport_failure_wrapped(client):
         "/publications/id#fragment/",
         "/publications\\..\\repositories\\id/",
         "/publications//id/",
+        "/publications/\x7f/id/",
     ],
 )
 def test_unsafe_request_path_rejected_before_auth(monkeypatch, path):

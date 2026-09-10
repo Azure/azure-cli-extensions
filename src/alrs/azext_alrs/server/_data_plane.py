@@ -147,10 +147,17 @@ class DataPlaneClient:
         base_url = base_url.rstrip("/")
         parsed_url = urlparse(base_url)
         is_local = parsed_url.hostname in _LOCAL_HOSTS
-        if not parsed_url.hostname or (parsed_url.scheme != "https" and not is_local):
+        scheme = parsed_url.scheme.lower()
+        is_https = scheme == "https"
+        is_loopback_http = is_local and scheme == "http"
+        if not parsed_url.hostname or (not is_https and not is_loopback_http):
             raise ValidationError(
                 "Registry API endpoints must use HTTPS. Only loopback development "
                 "endpoints may use HTTP."
+            )
+        if parsed_url.query or parsed_url.fragment:
+            raise ValidationError(
+                "Registry API endpoints must not include a query string or fragment."
             )
         self.base_url = base_url
         # The CLI owns the versioned API path (see DATA_PLANE_API_PREFIX), so an
@@ -300,7 +307,7 @@ def _validate_request_path(path: str) -> None:
     has_unsafe_segment = not path.startswith("/") or any(
         segment in {"", ".", ".."} for segment in segments
     )
-    has_control_character = any(ord(char) < 32 for char in path)
+    has_control_character = any(ord(char) < 32 or ord(char) == 127 for char in path)
     if has_unsafe_delimiter or has_unsafe_segment or has_control_character:
         raise ValidationError("The service returned or constructed an invalid request path.")
 
