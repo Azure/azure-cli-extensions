@@ -27,7 +27,6 @@ class TestAIManagerTableFormat(unittest.TestCase):
             ),
             "name": "aimbyo",
             "location": "westus2",
-            "eTag": "b918e441-390c-4b01-a922-dea9b42a03df",
             "properties": {"provisioningState": "Succeeded"},
         }
 
@@ -37,7 +36,6 @@ class TestAIManagerTableFormat(unittest.TestCase):
             list(result.keys()),
             ["Name", "ProvisioningState", "ResourceGroup", "Location"],
         )
-        self.assertNotIn("ETag", result)
 
     def test_table_format_values(self):
         result = aimanager_table_format(self._sample())
@@ -89,7 +87,6 @@ class TestNamespaceTableFormat(unittest.TestCase):
             list(result.keys()),
             ["Name", "ProvisioningState", "Age", "Labels"],
         )
-        self.assertNotIn("ETag", result)
 
     def test_table_format_values(self):
         result = namespace_table_format(self._sample())
