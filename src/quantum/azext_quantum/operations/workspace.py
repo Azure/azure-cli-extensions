@@ -23,7 +23,7 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_offers, _get_data_credentials, base_url, base_url_v2
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_offers, _get_data_credentials
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
@@ -342,7 +342,7 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
     usage_by_key = {}
     if include_usage:
         usage_client = cf_quotas(
-            cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url_v2(workspace.location))
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, workspace.properties.endpoint_uri)
         for provider_id in sorted({provider_id for provider_id, _ in requested_keys}):
             provider = workspace_providers[provider_id]
             try:
@@ -562,17 +562,13 @@ def quotas(cmd, resource_group_name, workspace_name):
     workspace = cf_workspaces(cmd.cli_ctx).get(info.resource_group, info.name)
     properties = workspace.properties
     providers = properties.providers if properties is not None else None
-
-    legacy_client = cf_quotas(
-        cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url(workspace.location))
-    legacy_quotas = repack_response_json(
-        legacy_client.list(info.subscription, info.resource_group, info.name))
-
+    endpoint = properties.endpoint_uri if properties is not None else info.endpoint
     usages = []
+    legacy_quotas = []
     workspace_kind = getattr(properties, 'workspace_kind', None) if properties is not None else None
     if str(_enum_to_value(workspace_kind)).upper() == 'V2':
         v2_client = cf_quotas(
-            cmd.cli_ctx, info.subscription, info.resource_group, info.name, base_url_v2(workspace.location))
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
         for provider in providers or []:
             try:
                 provider_usages = v2_client.list_workspace_usages(
@@ -580,6 +576,11 @@ def quotas(cmd, resource_group_name, workspace_name):
             except AzureResourceNotFoundError:
                 provider_usages = None
             usages.extend(provider_usages or [])
+    else:
+        legacy_client = cf_quotas(
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
+        legacy_quotas = repack_response_json(
+            legacy_client.list(info.subscription, info.resource_group, info.name))
 
     return _merge_workspace_quotas(workspace, usages, legacy_quotas)
 
