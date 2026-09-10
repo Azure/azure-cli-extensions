@@ -22,10 +22,11 @@ from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_target_quota_bounds, _validate_storage_account, _autoadd_providers, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_target_quota_bounds, _validate_storage_account, _autoadd_providers, create, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...operations.workspace import _merge_workspace_quotas
 from ...commands import transform_workspace_quotas
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
+from ...vendored_sdks.azure_quantum_python._client.models import Usage
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_quotas_list_workspace_usages_request,
 )
@@ -563,6 +564,33 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assert provider.target_quotas[0].standard_minutes_lifetime == 0
         assert provider.target_quotas[0].high_minutes_lifetime == 50
 
+    def test_skip_role_assignment_api_key_matches_workspace_kind(self):
+        from ...operations import workspace as workspace_ops
+
+        for workspace_kind, expected_api_key_enabled in ((None, True), ('V1', True), ('V2', False)):
+            workspace = SimpleNamespace(properties=SimpleNamespace(providers=[]))
+            poller = SimpleNamespace(done=lambda: True, result=lambda: workspace)
+            client = SimpleNamespace(begin_create_or_update=lambda *args, **kwargs: poller)
+            info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+
+            with patch.object(workspace_ops, 'cf_workspaces', return_value=client), \
+                    patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                    patch.object(workspace_ops, '_get_basic_quantum_workspace', return_value=workspace), \
+                    patch.object(workspace_ops, '_add_quantum_providers') as add_providers:
+                result = create(
+                    SimpleNamespace(cli_ctx=object()),
+                    resource_group_name='group',
+                    workspace_name='workspace',
+                    location='eastus',
+                    storage_account='storage',
+                    skip_role_assignment=True,
+                    workspace_kind=workspace_kind,
+                )
+
+            self.assertIs(result, workspace)
+            self.assertEqual(workspace.properties.api_key_enabled, expected_api_key_enabled)
+            self.assertEqual(add_providers.call_args.args[-1], workspace_kind == 'V2')
+
     def test_target_quota_validation_errors(self):
         with self.assertRaises(InvalidArgumentValueError):
             _require_v2_workspace('V1')
@@ -597,7 +625,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ))
         usage = SimpleNamespace(
             target_id='provider.target',
-            usage=SimpleNamespace(standard_minutes_lifetime=25, high_minutes_lifetime=10)
+            usage=Usage({'standardMinutesLifetime': 25, 'highMinutesLifetime': 10})
         )
         info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
         cmd = SimpleNamespace(cli_ctx=object())
@@ -635,7 +663,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             ))
             usage = SimpleNamespace(
                 target_id='provider.target',
-                usage=SimpleNamespace(standard_minutes_lifetime=usage_value, high_minutes_lifetime=None)
+                usage=Usage({'standardMinutesLifetime': usage_value})
             )
 
             from ...operations import workspace as workspace_ops
@@ -662,7 +690,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ))
         usage = SimpleNamespace(
             target_id='provider.target',
-            usage=SimpleNamespace(standard_minutes_lifetime=50, high_minutes_lifetime=5)
+            usage=Usage({'standardMinutesLifetime': 50, 'highMinutesLifetime': 5})
         )
         info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
         cmd = SimpleNamespace(cli_ctx=object())
@@ -688,8 +716,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         cases = (
             ([], "no suite offer was found for provider 'provider'"),
-            ([SimpleNamespace(properties=SimpleNamespace(provider_id='provider', target_quotas=[]))],
-             "target 'provider.target' was not found"),
             ([SimpleNamespace(properties=SimpleNamespace(
                 provider_id='provider', target_quotas=[TargetQuotaAllocations(
                     target_id='provider.target', standard_minutes_lifetime=100
@@ -707,6 +733,34 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                         'providerId': 'provider', 'targetId': 'provider.target'
                     }], include_usage=True)
                 quota_factory.assert_not_called()
+
+    def test_target_quota_bounds_treat_missing_suite_target_as_zero(self):
+        provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+            target_id='provider.target', standard_minutes_lifetime=50
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(provider_id='provider', target_quotas=[]))
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+            quota_factory.return_value.list_workspace_usages.return_value = []
+
+            with self.assertRaisesRegex(
+                    InvalidArgumentValueError,
+                    r'suite allocation \(0 minutes\).*Set the target quota allocation at the subscription level first'):
+                _validate_target_quota_bounds(cmd, info, workspace, [{
+                    'providerId': 'provider', 'targetId': 'provider.target'
+                }], include_usage=True)
+
+            provider.target_quotas[0].standard_minutes_lifetime = 0
+            _validate_target_quota_bounds(cmd, info, workspace, [{
+                'providerId': 'provider', 'targetId': 'provider.target'
+            }], include_usage=True)
 
     def test_target_quota_bounds_query_usage_once_per_provider(self):
         provider = Provider(provider_id='provider', target_quotas=[
@@ -931,7 +985,7 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         }]
         usages = [
             SimpleNamespace(provider_id='ionq', target_id='ionq.qpu',
-                            usage=SimpleNamespace(standard_minutes_lifetime=5, high_minutes_lifetime=2)),
+                            usage=Usage({'standardMinutesLifetime': 5, 'highMinutesLifetime': 2})),
         ]
 
         rows = _merge_workspace_quotas(workspace, usages, legacy_quotas)
@@ -985,7 +1039,7 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         usages = [
             # Same target id but a different provider -> must not match.
             SimpleNamespace(provider_id='quantinuum', target_id='shared.target',
-                            usage=SimpleNamespace(standard_minutes_lifetime=9, high_minutes_lifetime=4)),
+                            usage=Usage({'standardMinutesLifetime': 9, 'highMinutesLifetime': 4})),
         ]
 
         rows = _merge_workspace_quotas(workspace, usages)
@@ -1000,7 +1054,7 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         ]))
         usages = [
             SimpleNamespace(provider_id='IONQ', target_id='ionq.retired-target',
-                            usage=SimpleNamespace(standard_minutes_lifetime=9, high_minutes_lifetime=None)),
+                            usage=Usage({'standardMinutesLifetime': 9})),
         ]
 
         rows = _merge_workspace_quotas(workspace, usages)
@@ -1055,7 +1109,7 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
 
         usage_by_provider = {
             'ionq': [SimpleNamespace(provider_id='ionq', target_id='ionq.qpu',
-                                     usage=SimpleNamespace(standard_minutes_lifetime=5, high_minutes_lifetime=2))],
+                                     usage=Usage({'standardMinutesLifetime': 5, 'highMinutesLifetime': 2}))],
             'pasqal': [],
         }
         queried = []

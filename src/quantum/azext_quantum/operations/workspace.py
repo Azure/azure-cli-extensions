@@ -28,6 +28,7 @@ from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
+from ..vendored_sdks.azure_quantum_python._client.models import DimensionScope, MeterPeriod, Priority
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 from knack.log import get_logger
@@ -278,14 +279,6 @@ _TARGET_QUOTA_USAGE_FIELDS = {
 }
 
 
-def _target_quota_usage_value(usage, attribute):
-    if usage is None:
-        return None
-    if hasattr(usage, "get"):
-        return usage.get(_TARGET_QUOTA_USAGE_FIELDS[attribute])
-    return getattr(usage, attribute, None)
-
-
 def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
     if not quota:
         return
@@ -325,18 +318,13 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
              if item.target_id is not None and item.target_id.lower() == target_id),
             None
         )
-        if suite_target is None:
-            raise InvalidArgumentValueError(
-                f"Cannot validate --quota because target '{target_quota.target_id}' was not found in the "
-                f"suite offer for provider '{provider.provider_id}'. Run 'az quantum suite-offer quotas "
-                f"--provider-id {provider.provider_id}' to view available target allocations."
-            )
-        for priority, attribute in _TARGET_QUOTA_PRIORITIES:
-            if getattr(target_quota, attribute, None) is not None and getattr(suite_target, attribute, None) is None:
-                raise InvalidArgumentValueError(
-                    f"Cannot validate the {priority} allocation for provider '{provider.provider_id}', target "
-                    f"'{target_quota.target_id}', because the suite offer has no {priority} allocation."
-                )
+        if suite_target is not None:
+            for priority, attribute in _TARGET_QUOTA_PRIORITIES:
+                if getattr(target_quota, attribute, None) is not None and getattr(suite_target, attribute, None) is None:
+                    raise InvalidArgumentValueError(
+                        f"Cannot validate the {priority} allocation for provider '{provider.provider_id}', target "
+                        f"'{target_quota.target_id}', because the suite offer has no {priority} allocation."
+                    )
         suite_targets[(provider_id, target_id)] = suite_target
 
     usage_by_key = {}
@@ -364,16 +352,19 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
             final_allocation = getattr(target_quota, attribute, None)
             if final_allocation is None:
                 continue
-            suite_allocation = getattr(suite_target, attribute)
-            current_usage = _target_quota_usage_value(usage, attribute)
+            suite_allocation = getattr(suite_target, attribute, 0)
+            current_usage = usage.get(_TARGET_QUOTA_USAGE_FIELDS[attribute]) if usage is not None else None
             current_usage = current_usage if current_usage is not None else 0
             if final_allocation < current_usage or final_allocation > suite_allocation:
-                raise InvalidArgumentValueError(
+                message = (
                     f"The final {priority} allocation for provider '{provider.provider_id}', target "
                     f"'{target_quota.target_id}' is {final_allocation} minutes. It must be between the current "
                     f"workspace usage ({current_usage} minutes) and suite allocation ({suite_allocation} minutes), "
                     "inclusive."
                 )
+                if suite_target is None:
+                    message += " Set the target quota allocation at the subscription level first."
+                raise InvalidArgumentValueError(message)
 
 
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
@@ -392,15 +383,18 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace: QuantumWorkspace = _get_basic_quantum_workspace(location, info, storage_account)
+    workspace_kind_value = str(_enum_to_value(workspace_kind)).upper()
     if quota:
         _require_v2_workspace(workspace_kind)
+    if workspace_kind_value == 'V2':
+        skip_autoadd = True
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
         _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
-        quantum_workspace.properties.api_key_enabled = True
+        quantum_workspace.properties.api_key_enabled = workspace_kind_value != 'V2'
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -585,11 +579,11 @@ def quotas(cmd, resource_group_name, workspace_name):
     return _merge_workspace_quotas(workspace, usages, legacy_quotas)
 
 
-_WORKSPACE_QUOTA_SCOPE = "Workspace"
-_WORKSPACE_QUOTA_PERIOD = "None"
+_WORKSPACE_QUOTA_SCOPE = DimensionScope.WORKSPACE.value
+_WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
 _TARGET_QUOTA_DIMENSIONS = (
-    ("StandardMinutesLifetime", "standard_minutes_lifetime"),
-    ("HighMinutesLifetime", "high_minutes_lifetime"),
+    (f"{Priority.STANDARD.value}MinutesLifetime", "standard_minutes_lifetime"),
+    (f"{Priority.HIGH.value}MinutesLifetime", "high_minutes_lifetime"),
 )
 
 
@@ -645,7 +639,7 @@ def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
                     display_target_id,
                     dimension,
                     getattr(target_quota, attribute, None),
-                    _target_quota_usage_value(usage_values, attribute),
+                    usage_values.get(_TARGET_QUOTA_USAGE_FIELDS[attribute]) if usage_values is not None else None,
                 ))
 
     return rows
