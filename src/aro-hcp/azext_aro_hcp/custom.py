@@ -439,11 +439,9 @@ class RequestCredential(_RequestCredential):
         from ._kubeconfig import _generate_admin_credential_request
 
         if not command_args.get("admin"):
-            logger.warning(
-                "Requesting a non-admin credential is not supported yet. "
-                "Specify --admin/-a to request an admin credential."
+            raise InvalidArgumentValueError(
+                "Requesting a non-admin credential is not supported yet. Specify --admin/-a to request an admin credential."
             )
-            return None
         private_key_pem, command_args["certificate_signing_request"] = _generate_admin_credential_request()
         self._private_key_pem = private_key_pem
         try:
