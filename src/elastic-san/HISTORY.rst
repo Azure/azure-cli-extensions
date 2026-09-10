@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.3
+++++++
+* `az elastic-san volume-group create/update`: Add `--encryption-in-transit`
+
 1.3.2
 ++++++
 * `az elastic-san`: Support autoscale, prerestore, and prebackup
