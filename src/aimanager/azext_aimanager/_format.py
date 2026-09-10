@@ -38,12 +38,45 @@ def _labels_display(labels):
     return ','.join('{}={}'.format(k, labels[k]) for k in sorted(labels))
 
 
+def _age_display(result):
+    """Render the resource age from systemData.createdAt, kubectl-style (e.g. 45d, 3h, 12m).
+
+    Best-effort: returns '' when the timestamp is missing or cannot be parsed.
+    """
+    created_at = (result.get('systemData') or {}).get('createdAt')
+    if not created_at:
+        return ''
+    try:
+        from datetime import datetime, timezone
+        from dateutil.parser import parse as parse_datetime
+        created = parse_datetime(created_at)
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        delta = datetime.now(timezone.utc) - created
+        seconds = int(delta.total_seconds())
+        if seconds < 0:
+            return ''
+        days, rem = divmod(seconds, 86400)
+        hours, rem = divmod(rem, 3600)
+        minutes, secs = divmod(rem, 60)
+        if days > 0:
+            return '{}d'.format(days) if hours == 0 else '{}d{}h'.format(days, hours)
+        if hours > 0:
+            return '{}h'.format(hours) if minutes == 0 else '{}h{}m'.format(hours, minutes)
+        if minutes > 0:
+            return '{}m'.format(minutes)
+        return '{}s'.format(secs)
+    except Exception:  # pylint: disable=broad-except
+        return ''
+
+
 def namespace_table_format(result):
     """Format a single AI Manager namespace resource for display with "-o table"."""
     properties = result.get('properties') or {}
     return OrderedDict([
         ('Name', result.get('name', '')),
         ('ProvisioningState', properties.get('provisioningState', '')),
+        ('Age', _age_display(result)),
         ('Labels', _labels_display(properties.get('labels'))),
     ])
 

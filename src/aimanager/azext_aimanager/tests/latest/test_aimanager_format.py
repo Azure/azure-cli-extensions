@@ -76,6 +76,7 @@ class TestNamespaceTableFormat(unittest.TestCase):
                 "/namespaces/ns1"
             ),
             "name": "ns1",
+            "systemData": {"createdAt": "2020-01-01T00:00:00+00:00"},
             "properties": {
                 "provisioningState": "Succeeded",
                 "labels": {"team": "payments", "env": "prod"},
@@ -86,7 +87,7 @@ class TestNamespaceTableFormat(unittest.TestCase):
         result = namespace_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
-            ["Name", "ProvisioningState", "Labels"],
+            ["Name", "ProvisioningState", "Age", "Labels"],
         )
         self.assertNotIn("ETag", result)
 
@@ -95,17 +96,21 @@ class TestNamespaceTableFormat(unittest.TestCase):
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "Succeeded")
         self.assertEqual(result["Labels"], "env=prod,team=payments")
+        # Age is derived from a fixed 2020 timestamp, so it should be reported in days.
+        self.assertIn("d", result["Age"])
 
     def test_table_format_missing_fields(self):
         result = namespace_table_format({})
         self.assertEqual(result["Name"], "")
         self.assertEqual(result["ProvisioningState"], "")
+        self.assertEqual(result["Age"], "")
         self.assertEqual(result["Labels"], "")
 
     def test_table_format_null_properties(self):
         result = namespace_table_format({"name": "ns1", "properties": None})
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "")
+        self.assertEqual(result["Age"], "")
         self.assertEqual(result["Labels"], "")
 
     def test_list_table_format(self):

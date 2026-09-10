@@ -8,7 +8,7 @@ Release History
 * ``az aimanager list`` and ``az aimanager show``: Improve ``-o table`` output. Drop the
   ``ETag`` column and add a ``ProvisioningState`` column.
 * ``az aimanager namespace list`` and ``az aimanager namespace show``: Improve ``-o table``
-  output with ``Name``, ``ProvisioningState`` and ``Labels`` columns.
+  output with ``Name``, ``ProvisioningState``, ``Age`` and ``Labels`` columns.
 * ``az aimanager namespace modeldeployment list`` and ``show``: Improve ``-o table`` output
   with ``Name``, ``ProvisioningState``, ``ModelId`` (human-readable, resolved from the model),
   ``Replicas`` (current/desired), ``Endpoint`` and ``Namespace`` columns.
