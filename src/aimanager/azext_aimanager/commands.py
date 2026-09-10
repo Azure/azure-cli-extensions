@@ -12,6 +12,8 @@ from azext_aimanager.constants import (
 from azext_aimanager._format import (
     aimanager_table_format,
     aimanager_list_table_format,
+    namespace_table_format,
+    namespace_list_table_format,
 )
 from azext_aimanager._client_factory import (
     cf_ai_managers,
@@ -62,8 +64,8 @@ def load_command_table(self, _):
     with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces, is_preview=True) as g:
         g.custom_command("add", "add_aimanager_namespace", supports_no_wait=True)
         g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True)
-        g.custom_show_command("show", "show_aimanager_namespace")
-        g.custom_command("list", "list_aimanager_namespace")
+        g.custom_show_command("show", "show_aimanager_namespace", table_transformer=namespace_table_format)
+        g.custom_command("list", "list_aimanager_namespace", table_transformer=namespace_list_table_format)
         g.custom_command("delete", "delete_aimanager_namespace", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "aimanager_namespace_get_credentials")
         g.custom_command("list-accesskeys", "aimanager_namespace_list_accesskeys")
