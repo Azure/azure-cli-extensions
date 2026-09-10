@@ -132,6 +132,7 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
             ),
             "name": "md1",
             "modelId": "meta-llama/Llama-3-8B",
+            "systemData": {"createdAt": "2020-01-01T00:00:00+00:00"},
             "properties": {
                 "provisioningState": "Succeeded",
                 "modelResourceId": (
@@ -151,18 +152,19 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         result = modeldeployment_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
-            ["Name", "ProvisioningState", "ModelId", "Replicas",
-             "Endpoint", "Namespace"],
+            ["Namespace", "Name", "ProvisioningState", "Replicas",
+             "Age", "ModelId", "Endpoint"],
         )
 
     def test_table_format_values(self):
         result = modeldeployment_table_format(self._sample())
+        self.assertEqual(result["Namespace"], "ns1")
         self.assertEqual(result["Name"], "md1")
         self.assertEqual(result["ProvisioningState"], "Succeeded")
-        self.assertEqual(result["ModelId"], "meta-llama/Llama-3-8B")
         self.assertEqual(result["Replicas"], "1/3")
+        self.assertIn("d", result["Age"])
+        self.assertEqual(result["ModelId"], "meta-llama/Llama-3-8B")
         self.assertEqual(result["Endpoint"], "https://md1.example.com")
-        self.assertEqual(result["Namespace"], "ns1")
 
     def test_model_id_fallback_to_resource_name(self):
         sample = self._sample()
@@ -175,6 +177,7 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         self.assertEqual(result["Replicas"], "-/-")
         self.assertEqual(result["Endpoint"], "")
         self.assertEqual(result["ModelId"], "")
+        self.assertEqual(result["Age"], "")
 
     def test_list_table_format(self):
         results = modeldeployment_list_table_format([self._sample(), self._sample()])

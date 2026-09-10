@@ -10,8 +10,8 @@ Release History
 * ``az aimanager namespace list`` and ``az aimanager namespace show``: Improve ``-o table``
   output with ``Name``, ``ProvisioningState``, ``Age`` and ``Labels`` columns.
 * ``az aimanager namespace modeldeployment list`` and ``show``: Improve ``-o table`` output
-  with ``Name``, ``ProvisioningState``, ``ModelId`` (human-readable, resolved from the model),
-  ``Replicas`` (current/desired), ``Endpoint`` and ``Namespace`` columns.
+  with ``Namespace``, ``Name``, ``ProvisioningState``, ``Replicas`` (current/desired),
+  ``Age``, ``ModelId`` (human-readable, resolved from the model) and ``Endpoint`` columns.
 
 1.5.2b1
 ++++++

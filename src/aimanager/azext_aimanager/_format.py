@@ -111,12 +111,13 @@ def modeldeployment_table_format(result):
     )
 
     return OrderedDict([
+        ('Namespace', parsed.get('child_name_1', '')),
         ('Name', result.get('name', '')),
         ('ProvisioningState', properties.get('provisioningState', '')),
-        ('ModelId', model_id or ''),
         ('Replicas', replicas),
+        ('Age', _age_display(result)),
+        ('ModelId', model_id or ''),
         ('Endpoint', status.get('endpoint', '')),
-        ('Namespace', parsed.get('child_name_1', '')),
     ])
 
 
