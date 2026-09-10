@@ -31,12 +31,20 @@ def aimanager_list_table_format(results):
     return [aimanager_table_format(r) for r in results]
 
 
+def _labels_display(labels):
+    """Render a labels dict as comma-joined key=value pairs, sorted for stable output."""
+    if not labels:
+        return ''
+    return ','.join('{}={}'.format(k, labels[k]) for k in sorted(labels))
+
+
 def namespace_table_format(result):
     """Format a single AI Manager namespace resource for display with "-o table"."""
     properties = result.get('properties') or {}
     return OrderedDict([
         ('Name', result.get('name', '')),
         ('ProvisioningState', properties.get('provisioningState', '')),
+        ('Labels', _labels_display(properties.get('labels'))),
     ])
 
 

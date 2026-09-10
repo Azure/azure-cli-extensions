@@ -76,14 +76,17 @@ class TestNamespaceTableFormat(unittest.TestCase):
                 "/namespaces/ns1"
             ),
             "name": "ns1",
-            "properties": {"provisioningState": "Succeeded"},
+            "properties": {
+                "provisioningState": "Succeeded",
+                "labels": {"team": "payments", "env": "prod"},
+            },
         }
 
     def test_table_format_columns(self):
         result = namespace_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
-            ["Name", "ProvisioningState"],
+            ["Name", "ProvisioningState", "Labels"],
         )
         self.assertNotIn("ETag", result)
 
@@ -91,16 +94,19 @@ class TestNamespaceTableFormat(unittest.TestCase):
         result = namespace_table_format(self._sample())
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "Succeeded")
+        self.assertEqual(result["Labels"], "env=prod,team=payments")
 
     def test_table_format_missing_fields(self):
         result = namespace_table_format({})
         self.assertEqual(result["Name"], "")
         self.assertEqual(result["ProvisioningState"], "")
+        self.assertEqual(result["Labels"], "")
 
     def test_table_format_null_properties(self):
         result = namespace_table_format({"name": "ns1", "properties": None})
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "")
+        self.assertEqual(result["Labels"], "")
 
     def test_list_table_format(self):
         results = namespace_list_table_format([self._sample(), self._sample()])
