@@ -7,24 +7,17 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import ScenarioTest
 
 
 class LogAnalyticsDataClientTests(ScenarioTest):
     """Test class for Log Analytics data client."""
 
-    @ResourceGroupPreparer(name_prefix='cli_test_log_analytics')
-    def test_query(self, resource_group):
+    def test_query(self):
         """Tests data plane query capabilities for Log Analytics."""
         self.kwargs.update({
-            'workspace_name': self.create_random_name('clitest', 20),
-            'location': "eastus",
+            'workspace_customerId': '062c153f-f7b2-4a8b-b57d-05b9f5cadfdc',
         })
-
-        workspace_json = self.cmd(
-            "monitor log-analytics workspace create -g {rg} -n {workspace_name} --location {location} --quota 1 "
-            "--level 100 --sku CapacityReservation").get_output_in_json()
-        self.kwargs['workspace_customerId'] = workspace_json['customerId']
 
         self.cmd(
             'az monitor log-analytics query -w {workspace_customerId} '
