@@ -1,3 +1,8 @@
+1.0.0
+++++++++++++++++++
+* Fix CloudEndpointNotSetException error.
+
+
 1.0.0b1
 ++++++++++++++++++
 * Migrate to AAZ codegen.
