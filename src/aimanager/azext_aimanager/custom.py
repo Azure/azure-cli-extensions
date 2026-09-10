@@ -627,27 +627,28 @@ def _annotate_model_ids(cmd, deployments):
     ``modelId``) and the table shows a blank ModelId.
     """
     from azure.mgmt.core.tools import parse_resource_id
+    from azure.cli.core.util import todict
     from azext_aimanager._client_factory import cf_ai_models
+
+    # Convert to plain (recursively nested) dicts first with todict, so an injected ``modelId``
+    # survives CLI output conversion and nested camelCase keys (e.g. ``modelResourceId``,
+    # ``currentReplicas``) are preserved for the table formatter.
+    annotated = [todict(deployment) for deployment in deployments]
 
     ai_models_client = None
     resolved = {}  # (location, ai_model_name) -> modelId
-    results = []
 
-    for deployment in deployments:
-        # Normalize to a plain dict so an injected ``modelId`` survives CLI output conversion.
-        deployment = dict(deployment)
+    for deployment in annotated:
         try:
             properties = deployment.get('properties') or {}
             model_resource_id = properties.get('modelResourceId')
             if not model_resource_id:
-                results.append(deployment)
                 continue
 
             parsed = parse_resource_id(model_resource_id)
             location = parsed.get('name')  # the location segment for an AIModel id
             ai_model_name = parsed.get('resource_name')
             if not location or not ai_model_name:
-                results.append(deployment)
                 continue
 
             key = (location, ai_model_name)
@@ -655,7 +656,7 @@ def _annotate_model_ids(cmd, deployments):
                 if ai_models_client is None:
                     ai_models_client = cf_ai_models(cmd.cli_ctx)
                 model = ai_models_client.get(location, ai_model_name)
-                resolved[key] = (model.get('properties') or {}).get('modelId')
+                resolved[key] = (todict(model).get('properties') or {}).get('modelId')
 
             model_id = resolved[key]
             if model_id:
@@ -663,8 +664,7 @@ def _annotate_model_ids(cmd, deployments):
         except Exception:  # pylint: disable=broad-except
             logger.debug("Failed to resolve human-readable modelId for a model deployment.",
                          exc_info=True)
-        results.append(deployment)
-    return results
+    return annotated
 
 
 def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
