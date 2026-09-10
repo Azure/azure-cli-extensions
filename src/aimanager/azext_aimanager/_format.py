@@ -46,3 +46,44 @@ def namespace_table_format(result):
 def namespace_list_table_format(results):
     """Format a list of AI Manager namespace resources for display with "-o table"."""
     return [namespace_table_format(r) for r in results]
+
+
+def _replica_display(value):
+    """Render a replica count, using '-' when the count is not yet reported."""
+    return str(value) if value is not None else '-'
+
+
+def modeldeployment_table_format(result):
+    """Format a single model deployment resource for display with "-o table"."""
+    parsed = _parse_resource_id(result.get('id', ''))
+    properties = result.get('properties') or {}
+    status = properties.get('status') or {}
+
+    # ``modelId`` (human-readable, e.g. "meta-llama/Llama-3-8B") is resolved from the
+    # deployment's ``modelResourceId`` by the custom list/show functions and injected onto
+    # the result. Fall back to the AIModel resource name when resolution is unavailable.
+    model_id = result.get('modelId')
+    if not model_id:
+        model_ref = _parse_resource_id(properties.get('modelResourceId', ''))
+        model_id = model_ref.get('resource_name', '')
+
+    replicas = '{}/{}'.format(
+        _replica_display(status.get('currentReplicas')),
+        _replica_display(status.get('desiredReplicas')),
+    )
+
+    return OrderedDict([
+        ('Name', result.get('name', '')),
+        ('ProvisioningState', properties.get('provisioningState', '')),
+        ('ModelId', model_id or ''),
+        ('Replicas', replicas),
+        ('Endpoint', status.get('endpoint', '')),
+        ('Namespace', parsed.get('child_name_1', '')),
+        ('AIManager', parsed.get('name', '')),
+        ('ResourceGroup', parsed.get('resource_group', '')),
+    ])
+
+
+def modeldeployment_list_table_format(results):
+    """Format a list of model deployment resources for display with "-o table"."""
+    return [modeldeployment_table_format(r) for r in results]

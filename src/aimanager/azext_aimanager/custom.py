@@ -597,14 +597,48 @@ def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
 
 def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
                          model_deployment_name):  # pylint: disable=unused-argument
-    return client.get(
+    deployment = client.get(
         resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+    _annotate_model_id(cmd, deployment)
+    return deployment
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                          namespace_name):  # pylint: disable=unused-argument
-    return client.list_by_ai_manager_namespace(
+    deployments = client.list_by_ai_manager_namespace(
         resource_group_name, ai_manager_name, namespace_name)
+    return [_annotate_model_id(cmd, d) for d in deployments]
+
+
+def _annotate_model_id(cmd, deployment):
+    """Resolve the human-readable model id (e.g. "meta-llama/Llama-3-8B") from a deployment's
+    ``modelResourceId`` and stash it on the deployment as ``modelId`` for table rendering.
+
+    Best-effort: on any failure the deployment is returned unchanged and table output falls
+    back to the AIModel resource name parsed from the id.
+    """
+    try:
+        properties = deployment.get('properties') or {}
+        model_resource_id = properties.get('modelResourceId')
+        if not model_resource_id:
+            return deployment
+
+        from azure.mgmt.core.tools import parse_resource_id
+        parsed = parse_resource_id(model_resource_id)
+        location = parsed.get('name')  # the location segment for an AIModel id
+        ai_model_name = parsed.get('resource_name')
+        if not location or not ai_model_name:
+            return deployment
+
+        from azext_aimanager._client_factory import cf_ai_models
+        model = cf_ai_models(cmd.cli_ctx).get(location, ai_model_name)
+        model_id = (model.get('properties') or {}).get('modelId')
+        if model_id:
+            deployment['modelId'] = model_id
+    except Exception:  # pylint: disable=broad-except
+        logger.debug("Failed to resolve human-readable modelId for a model deployment.",
+                     exc_info=True)
+    return deployment
 
 
 def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,

@@ -10,6 +10,8 @@ from azext_aimanager._format import (
     aimanager_list_table_format,
     namespace_table_format,
     namespace_list_table_format,
+    modeldeployment_table_format,
+    modeldeployment_list_table_format,
 )
 
 
@@ -108,6 +110,71 @@ class TestNamespaceTableFormat(unittest.TestCase):
         results = namespace_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["AIManager"], "aimbyo")
+
+
+class TestModelDeploymentTableFormat(unittest.TestCase):
+    """Test cases for model deployment table output formatting."""
+
+    def _sample(self):
+        return {
+            "id": (
+                "/subscriptions/26fe00f8-0000-0000-0000-bb1d2e00343a"
+                "/resourceGroups/yiralirg"
+                "/providers/Microsoft.ContainerService/aiManagers/aimbyo"
+                "/namespaces/ns1/modelDeployments/md1"
+            ),
+            "name": "md1",
+            "modelId": "meta-llama/Llama-3-8B",
+            "properties": {
+                "provisioningState": "Succeeded",
+                "modelResourceId": (
+                    "/subscriptions/26fe00f8-0000-0000-0000-bb1d2e00343a"
+                    "/providers/Microsoft.ContainerService/locations/westus2"
+                    "/aiModels/llama3"
+                ),
+                "status": {
+                    "endpoint": "https://md1.example.com",
+                    "currentReplicas": 1,
+                    "desiredReplicas": 3,
+                },
+            },
+        }
+
+    def test_table_format_columns(self):
+        result = modeldeployment_table_format(self._sample())
+        self.assertEqual(
+            list(result.keys()),
+            ["Name", "ProvisioningState", "ModelId", "Replicas",
+             "Endpoint", "Namespace", "AIManager", "ResourceGroup"],
+        )
+
+    def test_table_format_values(self):
+        result = modeldeployment_table_format(self._sample())
+        self.assertEqual(result["Name"], "md1")
+        self.assertEqual(result["ProvisioningState"], "Succeeded")
+        self.assertEqual(result["ModelId"], "meta-llama/Llama-3-8B")
+        self.assertEqual(result["Replicas"], "1/3")
+        self.assertEqual(result["Endpoint"], "https://md1.example.com")
+        self.assertEqual(result["Namespace"], "ns1")
+        self.assertEqual(result["AIManager"], "aimbyo")
+        self.assertEqual(result["ResourceGroup"], "yiralirg")
+
+    def test_model_id_fallback_to_resource_name(self):
+        sample = self._sample()
+        del sample["modelId"]
+        result = modeldeployment_table_format(sample)
+        self.assertEqual(result["ModelId"], "llama3")
+
+    def test_replicas_missing_status(self):
+        result = modeldeployment_table_format({"name": "md1", "properties": None})
+        self.assertEqual(result["Replicas"], "-/-")
+        self.assertEqual(result["Endpoint"], "")
+        self.assertEqual(result["ModelId"], "")
+
+    def test_list_table_format(self):
+        results = modeldeployment_list_table_format([self._sample(), self._sample()])
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0]["ModelId"], "meta-llama/Llama-3-8B")
 
 
 if __name__ == "__main__":

@@ -14,6 +14,8 @@ from azext_aimanager._format import (
     aimanager_list_table_format,
     namespace_table_format,
     namespace_list_table_format,
+    modeldeployment_table_format,
+    modeldeployment_list_table_format,
 )
 from azext_aimanager._client_factory import (
     cf_ai_managers,
@@ -92,8 +94,8 @@ def load_command_table(self, _):
                             client_factory=cf_model_deployments, is_preview=True) as g:
         g.custom_command("add", "add_modeldeployment", supports_no_wait=True)
         g.custom_command("update", "update_modeldeployment", supports_no_wait=True)
-        g.custom_show_command("show", "show_modeldeployment")
-        g.custom_command("list", "list_modeldeployment")
+        g.custom_show_command("show", "show_modeldeployment", table_transformer=modeldeployment_table_format)
+        g.custom_command("list", "list_modeldeployment", table_transformer=modeldeployment_list_table_format)
         g.custom_command("delete", "delete_modeldeployment", supports_no_wait=True, confirmation=True)
         g.custom_wait_command("wait", "show_modeldeployment")
 
