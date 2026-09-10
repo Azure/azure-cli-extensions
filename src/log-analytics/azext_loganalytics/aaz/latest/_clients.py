@@ -15,8 +15,10 @@ from azure.cli.core.aaz import *
 class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
     _CLOUD_HOST_TEMPLATES = {
         CloudNameEnum.AzureCloud: "https://api.loganalytics.io",
+        CloudNameEnum.AzureChinaCloud: "https://api.loganalytics.azure.cn",
+        CloudNameEnum.AzureUSGovernment: "https://api.loganalytics.us",
     }
-    _CLOUD_HOST_METADATA_INDEX = "logAnalyticslogAnalyticsResourceId"
+    _CLOUD_HOST_METADATA_INDEX = "logAnalyticsResourceId"
 
     _AAD_CREDENTIAL_SCOPES = [
         "https://api.loganalytics.io/.default",
@@ -27,7 +29,7 @@ class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
         endpoint = cls.get_cloud_endpoint(ctx, cls._CLOUD_HOST_METADATA_INDEX)
         if not endpoint:
             endpoint = cls._CLOUD_HOST_TEMPLATES.get(ctx.cli_ctx.cloud.name, None)
-        return endpoint
+        return endpoint.rstrip('/') if endpoint else endpoint
 
     @classmethod
     def _build_configuration(cls, ctx, credential, **kwargs):

@@ -1,3 +1,7 @@
+1.0.0b2
+++++++++++++++++++
+* Add AzureChinaCloud and AzureUSGovernment host templates for log-analytics data-plane client.
+
 1.0.0b1
 ++++++++++++++++++
 * Migrate to AAZ codegen.
