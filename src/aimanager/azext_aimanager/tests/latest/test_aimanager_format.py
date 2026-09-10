@@ -83,7 +83,7 @@ class TestNamespaceTableFormat(unittest.TestCase):
         result = namespace_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
-            ["Name", "ProvisioningState", "AIManager", "ResourceGroup"],
+            ["Name", "ProvisioningState"],
         )
         self.assertNotIn("ETag", result)
 
@@ -91,15 +91,11 @@ class TestNamespaceTableFormat(unittest.TestCase):
         result = namespace_table_format(self._sample())
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "Succeeded")
-        self.assertEqual(result["AIManager"], "aimbyo")
-        self.assertEqual(result["ResourceGroup"], "yiralirg")
 
     def test_table_format_missing_fields(self):
         result = namespace_table_format({})
         self.assertEqual(result["Name"], "")
         self.assertEqual(result["ProvisioningState"], "")
-        self.assertEqual(result["AIManager"], "")
-        self.assertEqual(result["ResourceGroup"], "")
 
     def test_table_format_null_properties(self):
         result = namespace_table_format({"name": "ns1", "properties": None})
@@ -109,7 +105,7 @@ class TestNamespaceTableFormat(unittest.TestCase):
     def test_list_table_format(self):
         results = namespace_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
-        self.assertEqual(results[0]["AIManager"], "aimbyo")
+        self.assertEqual(results[0]["Name"], "ns1")
 
 
 class TestModelDeploymentTableFormat(unittest.TestCase):
@@ -145,7 +141,7 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         self.assertEqual(
             list(result.keys()),
             ["Name", "ProvisioningState", "ModelId", "Replicas",
-             "Endpoint", "Namespace", "AIManager", "ResourceGroup"],
+             "Endpoint", "Namespace"],
         )
 
     def test_table_format_values(self):
@@ -156,8 +152,6 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         self.assertEqual(result["Replicas"], "1/3")
         self.assertEqual(result["Endpoint"], "https://md1.example.com")
         self.assertEqual(result["Namespace"], "ns1")
-        self.assertEqual(result["AIManager"], "aimbyo")
-        self.assertEqual(result["ResourceGroup"], "yiralirg")
 
     def test_model_id_fallback_to_resource_name(self):
         sample = self._sample()

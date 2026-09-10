@@ -33,13 +33,10 @@ def aimanager_list_table_format(results):
 
 def namespace_table_format(result):
     """Format a single AI Manager namespace resource for display with "-o table"."""
-    parsed = _parse_resource_id(result.get('id', ''))
     properties = result.get('properties') or {}
     return OrderedDict([
         ('Name', result.get('name', '')),
         ('ProvisioningState', properties.get('provisioningState', '')),
-        ('AIManager', parsed.get('name', '')),
-        ('ResourceGroup', parsed.get('resource_group', '')),
     ])
 
 
@@ -79,8 +76,6 @@ def modeldeployment_table_format(result):
         ('Replicas', replicas),
         ('Endpoint', status.get('endpoint', '')),
         ('Namespace', parsed.get('child_name_1', '')),
-        ('AIManager', parsed.get('name', '')),
-        ('ResourceGroup', parsed.get('resource_group', '')),
     ])
 
 
