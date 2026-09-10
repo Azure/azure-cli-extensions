@@ -2270,13 +2270,15 @@ class ServicesSuiteOffersOperations:  # pylint: disable=docstring-missing-param
 
         async def extract_data(pipeline_response):
             deserialized = pipeline_response.http_response.json()
+            values = deserialized if isinstance(deserialized, list) else deserialized.get("value", [])
             list_of_elem = _deserialize(
                 list[_models.QuotaUsage],
-                deserialized.get("value", []),
+                values,
             )
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.get("nextLink") or None, AsyncList(list_of_elem)
+            next_link = None if isinstance(deserialized, list) else deserialized.get("nextLink") or None
+            return next_link, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             _request = prepare_request(next_link)

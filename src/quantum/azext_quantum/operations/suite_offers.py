@@ -15,19 +15,10 @@ from .._client_factory import cf_suite_offers, cf_suite_offers_data_plane, base_
 
 # Suite offer quota allocations are always reported at the per-target scope.
 _SUITE_OFFER_QUOTA_SCOPE = "SubscriptionTarget"
-_QUOTA_USAGE_FIELDS = {
-    "standard_minutes_lifetime": "standardMinutesLifetime",
-    "high_minutes_lifetime": "highMinutesLifetime",
-}
 
 
-def _quota_usage_value(usage, attribute):
-    if usage is None:
-        return 0
-    if hasattr(usage, "get"):
-        value = usage.get(_QUOTA_USAGE_FIELDS[attribute])
-    else:
-        value = getattr(usage, attribute, None)
+def _quota_usage_value(usage, field):
+    value = usage.get(field) if usage is not None else None
     return value if value is not None else 0
 
 
@@ -142,8 +133,8 @@ def _merge_suite_offer_quotas(offer, usages, provider_id):
             target_quota.high_minutes_lifetime,
         )
         row["usage"] = _minutes(
-            _quota_usage_value(usage_values, "standard_minutes_lifetime"),
-            _quota_usage_value(usage_values, "high_minutes_lifetime"),
+            _quota_usage_value(usage_values, "standardMinutesLifetime"),
+            _quota_usage_value(usage_values, "highMinutesLifetime"),
         )
         rows.append(row)
 

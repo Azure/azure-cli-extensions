@@ -11,7 +11,7 @@ from azure.cli.testsdk import ScenarioTest
 from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_suite_offer_targets
 from ..._client_factory import base_url_v2
 from ...operations.suite_offers import _merge_suite_offer_quotas
-from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus
+from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus, Usage
 from ...vendored_sdks.azure_quantum_python._client._utils.model_base import _deserialize
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_suite_offers_list_quota_usages_request,
@@ -40,7 +40,10 @@ def _offer(provider_id='ionq', location='eastus', quotas=None, target_quotas=Non
 def _usage(target_id=None, standard=None, high=None, last_modified_time=None):
     return SimpleNamespace(
         target_id=target_id,
-        usage=SimpleNamespace(standard_minutes_lifetime=standard, high_minutes_lifetime=high),
+        usage=Usage({
+            "standardMinutesLifetime": standard,
+            "highMinutesLifetime": high,
+        }),
         last_modified_time=last_modified_time,
     )
 
@@ -149,6 +152,31 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(usages[0].usage['standardMinutesLifetime'], 40.0)
         self.assertEqual(usages[1].scope, 'SubscriptionTarget')
         self.assertEqual(usages[1].target_id, 'ionq.qpu')
+
+    def test_list_quota_usages_accepts_array_response(self):
+        data = [{
+            'id': 'usage-1',
+            'providerId': 'ionq',
+            'scope': 'SubscriptionTarget',
+            'targetId': 'ionq.qpu',
+            'usage': {'standardMinutesLifetime': 5.0, 'highMinutesLifetime': 1.0},
+            'lastModifiedTime': '2026-01-15T00:00:00Z',
+        }]
+        http_response = SimpleNamespace(status_code=200, json=lambda: data)
+        pipeline_response = SimpleNamespace(http_response=http_response)
+        fake_client = SimpleNamespace(
+            _pipeline=SimpleNamespace(run=lambda request, **kwargs: pipeline_response),
+            format_url=lambda url, **kwargs: url,
+        )
+        fake_config = SimpleNamespace(api_version='2026-01-15-preview', endpoint='https://example')
+        fake_serialize = SimpleNamespace(url=lambda name, value, kind, **kwargs: value)
+        operations = ServicesSuiteOffersOperations(fake_client, fake_config, fake_serialize, object())
+
+        usages = list(operations.list_quota_usages('sub', 'ionq'))
+
+        self.assertEqual(len(usages), 1)
+        self.assertEqual(usages[0].target_id, 'ionq.qpu')
+        self.assertEqual(usages[0].usage['standardMinutesLifetime'], 5.0)
 
     def test_build_suite_offers_get_provider_status_request(self):
         request = build_services_suite_offers_get_provider_status_request(
