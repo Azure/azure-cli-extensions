@@ -19,10 +19,10 @@ def aimanager_table_format(result):
     parsed = _parse_resource_id(result.get('id', ''))
     return OrderedDict([
         ('Name', result.get('name', '')),
-        ('ResourceGroup', parsed.get('resource_group', '')),
-        ('Location', result.get('location', '')),
         ('ProvisioningState', result.get('properties', {}).get('provisioningState', '')),
+        ('ResourceGroup', parsed.get('resource_group', '')),
         ('Subscription', parsed.get('subscription', '')),
+        ('Location', result.get('location', '')),
     ])
 
 

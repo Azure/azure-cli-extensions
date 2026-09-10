@@ -31,7 +31,7 @@ class TestAIManagerTableFormat(unittest.TestCase):
         result = aimanager_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
-            ["Name", "ResourceGroup", "Location", "ProvisioningState", "Subscription"],
+            ["Name", "ProvisioningState", "ResourceGroup", "Subscription", "Location"],
         )
         self.assertNotIn("ETag", result)
 
