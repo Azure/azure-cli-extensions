@@ -1,4 +1,4 @@
-1.0.0
+1.0.0b2
 ++++++++++++++++++
 * Fix CloudEndpointNotSetException error.
 
