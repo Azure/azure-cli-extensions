@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks enable-addons`, `az aks disable-addons` and `az aks update`: Keep Container Insights monitoring and container network log settings consistent with the legacy monitoring addon when updating clusters.
 * `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
 * Add `az aks alert-config` commands to manage AKS-managed alert configurations.
 * `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
