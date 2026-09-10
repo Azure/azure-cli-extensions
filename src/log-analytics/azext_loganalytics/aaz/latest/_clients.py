@@ -29,7 +29,7 @@ class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
         endpoint = cls.get_cloud_endpoint(ctx, cls._CLOUD_HOST_METADATA_INDEX)
         if not endpoint:
             endpoint = cls._CLOUD_HOST_TEMPLATES.get(ctx.cli_ctx.cloud.name, None)
-        return endpoint
+        return endpoint.rstrip('/') if endpoint else endpoint
 
     @classmethod
     def _build_configuration(cls, ctx, credential, **kwargs):

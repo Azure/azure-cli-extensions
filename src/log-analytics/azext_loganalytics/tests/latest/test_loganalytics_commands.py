@@ -78,6 +78,11 @@ class LogAnalyticsClientEndpointMappingTests(unittest.TestCase):
         ctx = self._make_ctx('AzureCloud', 'https://api.loganalytics.io')
         self.assertEqual(self._get_base_url(ctx), 'https://api.loganalytics.io')
 
+    def test_azure_public_cloud_endpoint_trailing_slash(self):
+        """AzureCloud endpoint with trailing slash should be stripped."""
+        ctx = self._make_ctx('AzureCloud', 'https://api.loganalytics.io/')
+        self.assertEqual(self._get_base_url(ctx), 'https://api.loganalytics.io')
+
     def test_azure_china_cloud_endpoint(self):
         """AzureChinaCloud should resolve to the China sovereign endpoint."""
         ctx = self._make_ctx('AzureChinaCloud', 'https://api.loganalytics.azure.cn')
