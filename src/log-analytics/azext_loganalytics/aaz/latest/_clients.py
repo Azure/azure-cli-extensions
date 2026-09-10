@@ -15,6 +15,8 @@ from azure.cli.core.aaz import *
 class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
     _CLOUD_HOST_TEMPLATES = {
         CloudNameEnum.AzureCloud: "https://api.loganalytics.io",
+        CloudNameEnum.AzureChinaCloud: "https://api.loganalytics.azure.cn",
+        CloudNameEnum.AzureUSGovernment: "https://api.loganalytics.us",
     }
     _CLOUD_HOST_METADATA_INDEX = "logAnalyticslogAnalyticsResourceId"
 
