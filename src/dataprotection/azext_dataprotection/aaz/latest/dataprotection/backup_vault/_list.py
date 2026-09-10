@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/backupvaults", "2025-07-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/backupvaults", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults", "2026-06-01"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -214,6 +214,9 @@ class List(AAZCommand):
                 serialized_name="bcdrSecurityLevel",
                 flags={"read_only": True},
             )
+            properties.cost_management_settings = AAZObjectType(
+                serialized_name="costManagementSettings",
+            )
             properties.feature_settings = AAZObjectType(
                 serialized_name="featureSettings",
             )
@@ -251,7 +254,11 @@ class List(AAZCommand):
             )
             properties.storage_settings = AAZListType(
                 serialized_name="storageSettings",
-                flags={"required": True},
+            )
+
+            cost_management_settings = cls._schema_on_200.value.Element.properties.cost_management_settings
+            cost_management_settings.granularity_level = AAZStrType(
+                serialized_name="granularityLevel",
             )
 
             feature_settings = cls._schema_on_200.value.Element.properties.feature_settings
@@ -424,7 +431,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -523,6 +530,9 @@ class List(AAZCommand):
                 serialized_name="bcdrSecurityLevel",
                 flags={"read_only": True},
             )
+            properties.cost_management_settings = AAZObjectType(
+                serialized_name="costManagementSettings",
+            )
             properties.feature_settings = AAZObjectType(
                 serialized_name="featureSettings",
             )
@@ -560,7 +570,11 @@ class List(AAZCommand):
             )
             properties.storage_settings = AAZListType(
                 serialized_name="storageSettings",
-                flags={"required": True},
+            )
+
+            cost_management_settings = cls._schema_on_200.value.Element.properties.cost_management_settings
+            cost_management_settings.granularity_level = AAZStrType(
+                serialized_name="granularityLevel",
             )
 
             feature_settings = cls._schema_on_200.value.Element.properties.feature_settings
