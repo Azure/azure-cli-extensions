@@ -24,7 +24,7 @@ setup(
     url="https://github.com/Azure/azure-cli-extensions/tree/main/src/edgeoperator",
     long_description=README + "\n\n" + HISTORY,
     license="MIT",
-    packages=find_packages(),
+    packages=find_packages(exclude=["*.tests", "*.tests.*"]),
     install_requires=[],
     package_data={"azext_edgeoperator": ["azext_metadata.json"]},
 )
