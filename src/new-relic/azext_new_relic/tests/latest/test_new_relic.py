@@ -8,8 +8,16 @@
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
+from .recording_processors import NewRelicSecretScrubber
+
 
 class NewRelicScenario(ScenarioTest):
+
+    def __init__(self, method_name):
+        super().__init__(
+            method_name,
+            recording_processors=[NewRelicSecretScrubber()],
+        )
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_new_relic_monitor')
