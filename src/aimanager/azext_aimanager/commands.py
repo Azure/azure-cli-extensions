@@ -9,6 +9,10 @@ from azext_aimanager.constants import (
     AI_MODEL_TABLE_TRANSFORMER,
     CALCULATE_COST_TABLE_TRANSFORMER,
 )
+from azext_aimanager._format import (
+    aimanager_table_format,
+    aimanager_list_table_format,
+)
 from azext_aimanager._client_factory import (
     cf_ai_managers,
     cf_ai_manager_namespaces,
@@ -48,8 +52,8 @@ def load_command_table(self, _):
     with self.command_group("aimanager", ai_managers_sdk, client_factory=cf_ai_managers, is_preview=True) as g:
         g.custom_command("create", "create_aimanager", supports_no_wait=True)
         g.custom_command("update", "update_aimanager", supports_no_wait=True)
-        g.custom_show_command("show", "show_aimanager")
-        g.custom_command("list", "list_aimanager")
+        g.custom_show_command("show", "show_aimanager", table_transformer=aimanager_table_format)
+        g.custom_command("list", "list_aimanager", table_transformer=aimanager_list_table_format)
         g.custom_command("delete", "delete_aimanager", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "aimanager_get_credentials")
         g.wait_command("wait")
