@@ -12,15 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor tag-rule wait",
+    "new-relic activate-saas",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class ActivateSaas(AAZCommand):
+    """Resolve the token to get the SaaS resource ID and activate the SaaS resource
+
+    :example: Activate a New Relic SaaS resource
+        az new-relic activate-saas --publisher-id newrelicinc1635200720692 --saas-guid 00000000-0000-0000-0000-000005430000
     """
 
     _aaz_info = {
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/newrelic.observability/activatesaas", "2026-06-01"],
         ]
     }
 
@@ -39,32 +43,26 @@ class Wait(AAZWaitCommand):
 
         # define Arg Group ""
 
+        # define Arg Group "Request"
+
         _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
-            help="Name of the Monitoring resource",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^.*$",
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group", "-g"],
+        _args_schema.publisher_id = AAZStrArg(
+            options=["--publisher-id"],
+            arg_group="Request",
+            help="Publisher Id for NewRelic resource",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["--name", "-n", "--rule-set-name"],
-            help="Name of the TagRule",
+        _args_schema.saas_guid = AAZStrArg(
+            options=["--saas-guid"],
+            arg_group="Request",
+            help="SaaS guid for Activate and Validate SaaS Resource",
             required=True,
-            id_part="child_name_1",
-            default="default",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TagRulesGet(ctx=self.ctx)()
+        self.SaaSActivateResource(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,10 +74,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TagRulesGet(AAZHttpOperation):
+    class SaaSActivateResource(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,13 +91,13 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/providers/NewRelic.Observability/activateSaaS",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -108,18 +106,6 @@ class Wait(AAZWaitCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -141,10 +127,25 @@ class Wait(AAZWaitCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("publisherId", AAZStrType, ".publisher_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("saasGuid", AAZStrType, ".saas_guid", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -170,8 +171,8 @@ class Wait(AAZWaitCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+            _schema_on_200.saas_id = AAZStrType(
+                serialized_name="saasId",
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -180,51 +181,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
-
-            properties = cls._schema_on_200.properties
-            properties.log_rules = AAZObjectType(
-                serialized_name="logRules",
-            )
-            properties.metric_rules = AAZObjectType(
-                serialized_name="metricRules",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            log_rules = cls._schema_on_200.properties.log_rules
-            log_rules.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
-            )
-            log_rules.send_aad_logs = AAZStrType(
-                serialized_name="sendAadLogs",
-            )
-            log_rules.send_activity_logs = AAZStrType(
-                serialized_name="sendActivityLogs",
-            )
-            log_rules.send_subscription_logs = AAZStrType(
-                serialized_name="sendSubscriptionLogs",
-            )
-
-            filtering_tags = cls._schema_on_200.properties.log_rules.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-            _WaitHelper._build_schema_filtering_tag_read(filtering_tags.Element)
-
-            metric_rules = cls._schema_on_200.properties.metric_rules
-            metric_rules.filtering_tags = AAZListType(
-                serialized_name="filteringTags",
-            )
-            metric_rules.send_metrics = AAZStrType(
-                serialized_name="sendMetrics",
-            )
-            metric_rules.user_email = AAZStrType(
-                serialized_name="userEmail",
-            )
-
-            filtering_tags = cls._schema_on_200.properties.metric_rules.filtering_tags
-            filtering_tags.Element = AAZObjectType()
-            _WaitHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -249,29 +205,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
-
-    _schema_filtering_tag_read = None
-
-    @classmethod
-    def _build_schema_filtering_tag_read(cls, _schema):
-        if cls._schema_filtering_tag_read is not None:
-            _schema.action = cls._schema_filtering_tag_read.action
-            _schema.name = cls._schema_filtering_tag_read.name
-            _schema.value = cls._schema_filtering_tag_read.value
-            return
-
-        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
-
-        filtering_tag_read = _schema_filtering_tag_read
-        filtering_tag_read.action = AAZStrType()
-        filtering_tag_read.name = AAZStrType()
-        filtering_tag_read.value = AAZStrType()
-
-        _schema.action = cls._schema_filtering_tag_read.action
-        _schema.name = cls._schema_filtering_tag_read.name
-        _schema.value = cls._schema_filtering_tag_read.value
+class _ActivateSaasHelper:
+    """Helper class for ActivateSaas"""
 
 
-__all__ = ["Wait"]
+__all__ = ["ActivateSaas"]
