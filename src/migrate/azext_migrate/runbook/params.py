@@ -295,11 +295,8 @@ def load_runbook_arguments(self, _):
         c.argument(
             'entities', options_list=['--entities'], nargs='*',
             help='Space-separated entity ids to approve (partial approval '
-                 'steps only).')
-        c.argument(
-            'all_ready', options_list=['--all-ready'], action='store_true',
-            help='Approve every currently ready entity (partial approval '
-                 'steps only).')
+                 'steps only). Omit to approve every currently ready '
+                 'entity for the step.')
 
     with self.argument_context(
             'migrate runbook execution step complete') as c:

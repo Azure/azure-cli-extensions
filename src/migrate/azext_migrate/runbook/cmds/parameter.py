@@ -27,7 +27,7 @@ from azext_migrate.runbook.cmds.definition import (
     _artifact_download_url, _runbook_id)
 from azext_migrate.runbook.constants import (
     ARTIFACT_DOWNLOAD_MODE_DIRECTORY,
-    RUNBOOK_INPUT_FILE,
+    parameter_upload_blob_name,
 )
 
 logger = get_logger(__name__)
@@ -49,12 +49,12 @@ def download(cmd, resource_group_name, project_name, runbook_name,
     return result
 
 
-def _upload_url(cmd, resource_id):
+def _upload_url(cmd, resource_id, blob_name):
     # TODO(confirm): runbook GenerateUploadUrl is posted on the runbook
     # resource (download uses the artifact resource) — verify the resource.
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateUploadUrl',
-        models.build_artifact_upload_url_body(RUNBOOK_INPUT_FILE))
+        models.build_artifact_upload_url_body(blob_name))
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -73,7 +73,9 @@ def upload(cmd, resource_group_name, project_name, runbook_name, file):
     resource_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name)
     client = ArmClient(cmd)
-    files.upload_bytes(_upload_url(cmd, resource_id), data)
+    files.upload_bytes(
+        _upload_url(cmd, resource_id, parameter_upload_blob_name(source)),
+        data)
     logger.warning('Parameters file uploaded to Azure Migrate.')
     client.post_action(resource_id, 'ValidateInput')
     # Re-read the runbook so the caller sees the post-validation state
@@ -112,21 +114,26 @@ def configure(cmd, resource_group_name=None, project_name=None,
         spec_doc = files.read_spec_json(zip_bytes)
         schema_doc = files.read_schema_json(zip_bytes)
         name = runbook_name
+    # The parameters member keeps its downloaded name so the round-trip
+    # (edit -> upload) targets the same artifact blob whether the service
+    # ships inputs.json (legacy) or parameters.json (renamed).
+    param_file = os.path.basename(from_file if from_file else found[0])
     meta = configure_renderer.build_meta(
         resource_group_name, project_name, name, inputs_root)
+    meta['parametersFileName'] = param_file
     target = files.resolve_output_path(
         file, 'runbook-%s-parameters.html' % (name or 'runbook'))
-    # Write a real, editable inputs.json next to the editor so the file the
-    # upload command points at actually exists (the browser is offline and
-    # can only download to your Downloads folder).
+    # Write a real, editable parameters file next to the editor so the file
+    # the upload command points at actually exists (the browser is offline
+    # and can only download to your Downloads folder).
     inputs_path = os.path.join(
-        os.path.dirname(os.path.abspath(target)), RUNBOOK_INPUT_FILE)
+        os.path.dirname(os.path.abspath(target)), param_file)
     files.write_text(inputs_path, json.dumps(inputs_root, indent=2))
     meta['inputsPath'] = inputs_path
     # Best-effort Downloads path for browsers that can only download (no
     # File System Access API); the page shows it in the upload command.
     meta['downloadsPath'] = os.path.join(
-        os.path.expanduser('~'), 'Downloads', RUNBOOK_INPUT_FILE)
+        os.path.expanduser('~'), 'Downloads', param_file)
     html_text = configure_renderer.render(
         inputs_root, spec_doc, meta, schema_doc)
     path = files.write_text(target, html_text)

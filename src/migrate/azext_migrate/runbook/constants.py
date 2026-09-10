@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 """Runbook-feature constants (extends the shared api-version registry)."""
 
+import os
 from enum import Enum
 
 # Scope type used by CreateRunbook (generate).
@@ -35,7 +36,29 @@ ARTIFACT_DOWNLOAD_MODE_DIRECTORY = "Directory"
 
 # Blob paths within an artifact, used for File-mode download/upload.
 RUNBOOK_INPUT_FILE = "inputs.json"
+# The service renamed the user-parameters artifact member inputs.json ->
+# parameters.json (2026-09). The CLI reads BOTH: downloads are content-
+# classified (name-agnostic, see shared/files.py) and written under their
+# source member name, so only the File-mode upload path is name-sensitive.
+RUNBOOK_PARAMETERS_FILE = "parameters.json"
+# Recognised user-parameter file names (new canonical first).
+RUNBOOK_PARAMETER_FILE_NAMES = (RUNBOOK_PARAMETERS_FILE, RUNBOOK_INPUT_FILE)
 RUNBOOK_STATUS_FILE = "executionStatus.json"
+
+
+def parameter_upload_blob_name(file_path):
+    """Artifact blob name to upload a parameters file under.
+
+    Preserves the round-trip: a file already named ``inputs.json`` /
+    ``parameters.json`` uploads under that same name, so the CLI matches
+    whichever the service currently produces; any other name falls back to
+    the legacy ``inputs.json``.
+    """
+    base = os.path.basename(file_path or '')
+    if base.lower() in tuple(n.lower() for n in RUNBOOK_PARAMETER_FILE_NAMES):
+        return base
+    return RUNBOOK_INPUT_FILE
+
 
 # ``stepRef`` value the AddStep body binds per step type. These correlate
 # the CLI step with the partner runbook step used for execution.

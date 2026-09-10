@@ -39,7 +39,9 @@ _SAS_URL_KEYS = (
 # Derived/computed inputs the CLI must never surface or download. This
 # document shares the 'runbookInputs' shape with the user parameters, so it
 # can only be distinguished by name (content classification is not enough).
-_DERIVED_INPUTS_NAMES = ('system-derived-inputs.json',)
+# Both the legacy and post-rename (inputs -> parameters) names are excluded.
+_DERIVED_INPUTS_NAMES = (
+    'system-derived-inputs.json', 'system-derived-parameters.json')
 
 # Suffix identifying the execution status document (``executionStatus.json``)
 # fetched via a per-execution SAS download (GenerateDownloadUrl on the

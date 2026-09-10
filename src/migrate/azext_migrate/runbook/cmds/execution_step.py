@@ -32,20 +32,16 @@ def retry(cmd, resource_group_name, project_name, runbook_name,
 
 
 def approve(cmd, resource_group_name, project_name, runbook_name,
-            execution_id, step_id, entities=None, all_ready=False):
+            execution_id, step_id, entities=None):
     """Provide approval for an approval-type step during execution.
 
     A Full approval step approves the whole step (no entities). A Partial
-    approval step approves either the supplied ``entities`` or, when
-    ``all_ready`` is set, every currently ready entity (an empty entity
-    list, which the service treats as approve-all-ready for the step).
+    approval step approves either the supplied ``entities`` or, when none are
+    given, every currently ready entity (an empty entity list, which the
+    service treats as approve-all-ready for the step).
     """
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
-    if all_ready:
-        entities = None
-        logger.info(
-            "Approving every ready entity for step '%s'.", step_id)
     body = models.build_approve_step_body(step_id, entity_ids=entities)
     logger.warning("Step approval recorded.")
     return ArmClient(cmd).post_action(resource_id, 'ProvideApproval', body)

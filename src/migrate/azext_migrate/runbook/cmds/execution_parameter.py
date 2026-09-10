@@ -27,6 +27,7 @@ from azext_migrate.runbook.cmds.execution import _execution_resource_id
 from azext_migrate.runbook.constants import (
     ARTIFACT_DOWNLOAD_MODE_DIRECTORY,
     RUNBOOK_INPUT_FILE,
+    parameter_upload_blob_name,
 )
 
 logger = get_logger(__name__)
@@ -44,10 +45,10 @@ def _download_url(cmd, resource_id):
     return url
 
 
-def _upload_url(cmd, resource_id):
+def _upload_url(cmd, resource_id, blob_name):
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateUploadUrl',
-        models.build_artifact_upload_url_body(RUNBOOK_INPUT_FILE))
+        models.build_artifact_upload_url_body(blob_name))
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -82,7 +83,9 @@ def upload(cmd, resource_group_name, project_name, runbook_name,
         data = handle.read()
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
-    files.upload_bytes(_upload_url(cmd, resource_id), data)
+    files.upload_bytes(
+        _upload_url(cmd, resource_id, parameter_upload_blob_name(source)),
+        data)
     logger.warning('Execution input file uploaded to Azure Migrate.')
     return {'status': 'uploaded'}
 
@@ -117,6 +120,10 @@ def configure(cmd, resource_group_name=None, project_name=None,
         schema_doc = files.read_schema_json(zip_bytes)
     meta = configure_renderer.build_meta(
         resource_group_name, project_name, runbook_name, inputs_root)
+    # Preserve the downloaded parameters member name for the upload command
+    # (inputs.json legacy / parameters.json renamed).
+    meta['parametersFileName'] = os.path.basename(
+        from_file if from_file else (found[0] if found else RUNBOOK_INPUT_FILE))
     html_text = configure_renderer.render(
         inputs_root, spec_doc, meta, schema_doc)
     target = files.resolve_output_path(

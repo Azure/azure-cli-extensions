@@ -49,11 +49,11 @@ from azext_migrate.runbook.configure import renderer as configure_renderer
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     RUNBOOK_STATUS_VALUES,
+    parameter_upload_blob_name,
 )
 from azext_migrate.runbook.models import ExecutionAction
 from azext_migrate.runbook.validators import (
     validate_generate,
-    validate_step_approve,
     validate_step_complete,
 )
 
@@ -734,6 +734,30 @@ class FilesTests(unittest.TestCase):
             files.read_parameters_json(zip_bytes), {"stepInputs": {"u": {}}})
         self.assertNotIn("derived", data.decode())
 
+    def test_parameters_reads_renamed_parameters_json(self):
+        # After the service rename inputs.json -> parameters.json, the user
+        # parameters member is still content-classified (name-agnostic) and
+        # the renamed derived member is still excluded by name.
+        zip_bytes = _make_zip({
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "system-derived-parameters.json":
+                '{"inputs": {"stepInputs": {"d": {}}}}',
+            "parameters.json":
+                '{"inputs": {"stepInputs": {"u": {}}}}'})
+        name, _ = files.extract_parameters_file(zip_bytes)
+        self.assertEqual(name, "parameters.json")
+        self.assertEqual(
+            files.read_parameters_json(zip_bytes), {"stepInputs": {"u": {}}})
+
+    def test_extract_parameter_files_writes_renamed_name(self):
+        zip_bytes = _make_zip({
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "parameters.json": '{"inputs": {"stepInputs": {}}}'})
+        with tempfile.TemporaryDirectory() as tmp:
+            written = files.extract_parameter_files(zip_bytes, tmp)
+            names = sorted(os.path.basename(p) for p in written)
+            self.assertEqual(names, ["parameters.json"])
+
     def test_read_spec_ignores_input_documents(self):
         zip_bytes = _make_zip({
             "system-derived-inputs.json": '{"inputs": {"schema": {}}}',
@@ -1329,23 +1353,6 @@ class ExecutionStepModelTests(unittest.TestCase):
 
 class ExecutionStepValidatorTests(unittest.TestCase):
 
-    def test_approve_full_ok(self):
-        validate_step_approve(
-            SimpleNamespace(entities=None, all_ready=False))
-
-    def test_approve_entities_ok(self):
-        validate_step_approve(
-            SimpleNamespace(entities=["e1"], all_ready=False))
-
-    def test_approve_all_ready_ok(self):
-        validate_step_approve(
-            SimpleNamespace(entities=None, all_ready=True))
-
-    def test_approve_entities_and_all_ready_rejected(self):
-        with self.assertRaises(InvalidArgumentValueError):
-            validate_step_approve(
-                SimpleNamespace(entities=["e1"], all_ready=True))
-
     def test_complete_requires_comment(self):
         with self.assertRaises(RequiredArgumentMissingError):
             validate_step_complete(SimpleNamespace(comment=None))
@@ -1421,6 +1428,24 @@ _CFG_SPEC = {"spec": {
         {"stepId": "vm.agentless.setup-001", "entities": []}]}]}}
 
 
+class ParameterUploadNameTests(unittest.TestCase):
+
+    def test_known_names_preserved(self):
+        self.assertEqual(
+            parameter_upload_blob_name('/x/inputs.json'), 'inputs.json')
+        self.assertEqual(
+            parameter_upload_blob_name('/x/parameters.json'),
+            'parameters.json')
+        self.assertEqual(
+            parameter_upload_blob_name('PARAMETERS.JSON'), 'PARAMETERS.JSON')
+
+    def test_unknown_or_empty_falls_back_to_legacy(self):
+        self.assertEqual(
+            parameter_upload_blob_name('/x/my-params.json'), 'inputs.json')
+        self.assertEqual(parameter_upload_blob_name(''), 'inputs.json')
+        self.assertEqual(parameter_upload_blob_name(None), 'inputs.json')
+
+
 class ParameterCommandTests(unittest.TestCase):
 
     def setUp(self):
@@ -1491,6 +1516,28 @@ class ParameterCommandTests(unittest.TestCase):
             # Upload returns a fresh GET of the runbook, not the echoed body.
             client.get.assert_called_once_with(runbook_id)
             self.assertEqual(result, {"name": RUNBOOK, "latest": True})
+
+    def test_upload_uses_renamed_parameters_blob(self):
+        # Uploading a parameters.json file targets the parameters.json blob
+        # (round-trip preserved after the service rename).
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        runbook_id = arm_ids.runbook_id(project, RUNBOOK)
+        with mock.patch.object(parameter_cmds, 'ArmClient') as client_cls:
+            client = client_cls.return_value
+            client.post_action.side_effect = [
+                {"uploadUrl": "https://blob/u"}, {"status": "ok"}]
+            client.get.return_value = {"name": RUNBOOK}
+            with tempfile.TemporaryDirectory() as tmp:
+                src = os.path.join(tmp, "parameters.json")
+                with open(src, "wb") as handle:
+                    handle.write(b'{"runbookInputs": {}}')
+                with mock.patch.object(parameter_cmds.files, 'upload_bytes'):
+                    parameter_cmds.upload(
+                        mock.Mock(), RG, PROJECT, RUNBOOK, src)
+            self.assertEqual(
+                client.post_action.call_args_list[0],
+                mock.call(runbook_id, 'GenerateUploadUrl',
+                          {"path": "parameters.json"}))
 
     def test_configure_writes_html(self):
         self.client.get.return_value = {
@@ -1742,6 +1789,16 @@ class ConfigureRendererTests(unittest.TestCase):
         self.assertIn('id="issuePop"', html_text)
         self.assertIn('aria-modal="true"', html_text)
 
+    def test_render_flags_empty_required_array_row(self):
+        # An array row that exists but is empty is only "incomplete" when its
+        # item schema has a required field; otherwise the empty row is ignored.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn('const reqKeys = keys.filter(k => props[k].required)', html_text)
+        self.assertIn('if (reqKeys.length) return', html_text)
+        self.assertIn('${reqKeys[0]}: Required', html_text)
+
 
 _DEFINITION_DOC = {
     "workstreams": [
@@ -1855,6 +1912,29 @@ _STATUS_TOOL_DOC = {
                 {"entity": "db-vm-02",
                  "toolReportedMigrationStatus": "Migrating",
                  "status": "InProgress"}]}],
+    }],
+}
+
+
+# An execution status doc carrying step-level and per-entity ``outputs``.
+_STATUS_OUTPUTS_DOC = {
+    "workstreams": [{
+        "id": "workstream-1", "displayName": "waveapp",
+        "status": "Completed",
+        "steps": [
+            {"stepId": "setup-1", "displayName": "Setup",
+             "stepRef": "vm.agentless.setup", "status": "Succeeded",
+             "entities": [], "entityExecutions": [],
+             "outputs": {"roleAssignmentIds": ["/ra/1", "/ra/2"]}},
+            {"stepId": "migration-1", "displayName": "Migration",
+             "stepRef": "vm.agentless.migration", "status": "Succeeded",
+             "entities": ["vm-01"], "entitiesCompleted": 1,
+             "entityExecutions": [
+                 {"entity": "vm-01", "status": "Succeeded",
+                  "outputs": {"targetVmArmId": "/vm/1",
+                              "targetVmTagsUpdated": False,
+                              "validationResult": {"ok": True,
+                                                   "errors": []}}}]}],
     }],
 }
 
@@ -1979,6 +2059,162 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertIn('Migrating', html_text)
         self.assertIn('MigrationSucceeded', html_text)
 
+    def test_execution_view_captures_outputs(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        self.assertEqual(steps['setup-1'].outputs['roleAssignmentIds'],
+                         ['/ra/1', '/ra/2'])
+        ent = steps['migration-1'].entities[0]
+        self.assertEqual(ent.outputs['targetVmArmId'], '/vm/1')
+        self.assertIs(ent.outputs['targetVmTagsUpdated'], False)
+
+    def test_execution_render_shows_outputs(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_OUTPUTS_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Step-level outputs (list -> chips) and per-entity outputs.
+        self.assertIn('roleAssignmentIds', html_text)
+        self.assertIn('/ra/1', html_text)
+        self.assertIn('targetVmArmId', html_text)
+        self.assertIn('/vm/1', html_text)
+        # Booleans render as true/false, not Python True/False.
+        self.assertIn('false', html_text)
+        # Nested dict/list output values are JSON-encoded.
+        self.assertIn('validationResult', html_text)
+        self.assertIn('&quot;ok&quot;: true', html_text)
+
+    def test_execution_view_marks_entity_completed(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        self.assertTrue(steps['migration-1'].entities[0].completed)
+
+    def test_execution_view_captures_attempt_and_step_times(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        attempt = steps['dataSync-1'].entities[0].attempts[0]
+        self.assertEqual(attempt['status'], 'Failed')
+        self.assertIn('started', attempt)
+        self.assertIn('ended', attempt)
+
+    def test_execution_render_separates_partial_and_final_output(self):
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "waveapp", "status": "InProgress",
+            "steps": [{
+                "stepId": "mig-1", "displayName": "Migration",
+                "status": "InProgress", "entities": ["done-vm", "run-vm"],
+                "entityExecutions": [
+                    {"entity": "done-vm", "status": "Succeeded",
+                     "startTime": "t0", "endTime": "t1",
+                     "outputs": {"targetVmArmId": "/vm/done"}},
+                    {"entity": "run-vm", "status": "InProgress",
+                     "toolReportedMigrationStatus": "Replicating",
+                     "outputs": {"protectionState": "Replicating"}}]}],
+        }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Completed workload -> final block (no "authoritative" label).
+        self.assertIn('out out--final', html_text)
+        self.assertNotIn('authoritative', html_text)
+        self.assertIn('/vm/done', html_text)
+        # In-progress workload -> live partial block.
+        self.assertIn('out out--partial', html_text)
+        self.assertIn('may change', html_text)
+        self.assertIn('protectionState', html_text)
+
+    def test_execution_render_duration_and_times(self):
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "waveapp", "status": "Completed",
+            "steps": [{
+                "stepId": "mig-1", "displayName": "Migration",
+                "status": "Succeeded",
+                "startTime": "2026-08-21T16:43:44Z",
+                "endTime": "2026-08-21T19:36:23Z",
+                "entities": [], "entityExecutions": []}],
+        }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('Start time', html_text)
+        self.assertIn('End time', html_text)
+        self.assertIn('Duration', html_text)
+        self.assertIn('2h 52m', html_text)
+        self.assertNotIn('>Ran<', html_text)
+
+    def test_execution_render_list_output_stacks_per_line(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_OUTPUTS_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # roleAssignmentIds is a list -> each id on its own line (generic).
+        self.assertIn('<div>/ra/1</div>', html_text)
+        self.assertIn('<div>/ra/2</div>', html_text)
+
+    def test_execution_render_applications_section_matches_workloads(self):
+        doc = {"entityGroups": [{"id": "g1", "displayName": "App Tier"}],
+               "workstreams": [{
+                   "id": "ws1", "displayName": "waveapp", "status": "Completed",
+                   "steps": [{
+                       "stepId": "s1", "displayName": "Migration",
+                       "status": "Succeeded", "affectedEntityGroups": ["g1"],
+                       "entities": ["vm-01"], "entitiesCompleted": 1,
+                       "entityExecutions": [
+                           {"entity": "vm-01", "status": "Succeeded"}]}],
+               }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Applications get a titled, counted section like Workloads...
+        self.assertIn('Applications (1)', html_text)
+        self.assertIn('Workloads (1)', html_text)
+        # ...and share the workload card typography (.ent / .ent__nm).
+        self.assertIn('<span class="ent__nm">App Tier</span>', html_text)
+        # The vague "Details" section is gone.
+        self.assertNotIn('>Details<', html_text)
+
+    def test_execution_render_pending_final_for_running_entity(self):
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "waveapp", "status": "InProgress",
+            "steps": [{
+                "stepId": "s1", "displayName": "Wait", "status": "InProgress",
+                "entities": ["run-vm"],
+                "entityExecutions": [
+                    {"entity": "run-vm", "status": "InProgress"}]}],
+        }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('out out--final', html_text)
+        self.assertIn('pending', html_text)
+
+    def test_execution_render_step_scoped_output_block(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_OUTPUTS_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # setup-1 has no workloads -> blue step-scoped output block.
+        self.assertIn('out out--step', html_text)
+        self.assertIn('Shared output', html_text)
+
+    def test_execution_render_attempt_timeline_dot_classes(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_DETAIL_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Failed attempt -> red dot + error box; success -> green dot.
+        self.assertIn('att__dot fail', html_text)
+        self.assertIn('att__dot ok', html_text)
+        self.assertIn('class="timeline"', html_text)
+        self.assertIn('class="ent"', html_text)
+
     def test_execution_overview_absent_counts_returns_state_only(self):
         # _STATUS_DOC carries no stepsX aggregates or timestamps.
         overview = transformers.execution_overview(_STATUS_DOC)
@@ -2070,6 +2306,91 @@ class VisualizeGraphTests(unittest.TestCase):
         by_id = {n.id: n for n in graph.nodes}
         self.assertEqual(by_id["a"].status, "Succeeded")
         self.assertEqual(by_id["b"].status, "Running")
+
+    def test_workstream_dependencies_captured(self):
+        doc = {"workstreams": [
+            {"id": "w0", "displayName": "First",
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+            {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertIn(("w0", "w1"), graph.group_deps)
+
+    def test_workstream_dependency_dict_form_captured(self):
+        doc = {"workstreams": [
+            {"id": "w0", "displayName": "First",
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+            {"id": "w1", "displayName": "Second",
+             "dependsOn": [{"workstreamId": "w0"}],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_execution_graph(doc)
+        self.assertIn(("w0", "w1"), graph.group_deps)
+
+    def test_workstream_dependency_to_unknown_lane_ignored(self):
+        doc = {"workstreams": [
+            {"id": "w1", "displayName": "Second", "dependsOn": ["missing"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual(graph.group_deps, [])
+
+    def test_node_and_edge_repr(self):
+        node = visualize_graph.Node('s1', 'Step 1', status='InProgress')
+        self.assertIn('s1', repr(node))
+        self.assertIn('Step 1', repr(node))
+        self.assertIn("source='a'", repr(visualize_graph.Edge('a', 'b')))
+
+    def test_step_status_from_dict_shape(self):
+        doc = {"steps": [
+            {"id": "s1", "displayName": "S1",
+             "status": {"state": "InProgress"}}]}
+        graph = visualize_graph.build_execution_graph(doc)
+        self.assertEqual(graph.nodes[0].status, "InProgress")
+
+    def test_non_dict_workstream_skipped(self):
+        # A null workstream entry is skipped in both the step and the
+        # workstream-dependency passes.
+        doc = {"workstreams": [
+            None,
+            {"id": "w1", "displayName": "W1", "dependsOn": ["w0"],
+             "steps": [{"stepId": "s1", "displayName": "S1"}]},
+            {"id": "w0", "displayName": "W0",
+             "steps": [{"stepId": "s0", "displayName": "S0"}]}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual({n.id for n in graph.nodes}, {"s0", "s1"})
+        self.assertIn(("w0", "w1"), graph.group_deps)
+
+    def test_workstream_dep_without_id_ignored(self):
+        doc = {"workstreams": [
+            {"displayName": "no-id", "dependsOn": ["w0"],
+             "steps": [{"stepId": "s1", "displayName": "S1"}]},
+            {"id": "w0", "displayName": "W0",
+             "steps": [{"stepId": "s0", "displayName": "S0"}]}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual(graph.group_deps, [])
+
+    def test_root_unwraps_properties_and_defaults(self):
+        self.assertEqual(visualize_graph._root(123), {})
+        merged = visualize_graph._root(
+            {"properties": {"workstreams": []}, "x": 1})
+        self.assertEqual(merged.get("x"), 1)
+
+    def test_duplicate_step_id_collapsed(self):
+        doc = {"steps": [
+            {"id": "s1", "displayName": "First"},
+            {"id": "s1", "displayName": "Dup"}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual(len(graph.nodes), 1)
+
+    def test_step_without_id_skipped(self):
+        # A step carrying no id/stepId/name is skipped in both passes.
+        doc = {"steps": [
+            {"displayName": "no id"},
+            {"id": "s1", "displayName": "S1"}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual({n.id for n in graph.nodes}, {"s1"})
 
 
 class VisualizeRendererTests(unittest.TestCase):
@@ -2624,7 +2945,44 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertIn(
             "az migrate runbook definition step add", html_text)
 
-    def test_diagram_uses_workstream_swimlanes(self):
+    def test_help_chips_fill_context(self):
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "Init",
+             "steps": [{"stepId": "s1", "displayName": "Setup"}]}]}
+        view = visualize_viewmodel.build_definition_view(document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(
+            graph, view=view,
+            context={'resource_group': 'myRg', 'project': 'myProj',
+                     'runbook': 'myRb'})
+        # g/p/runbook are filled with real values...
+        self.assertIn('--resource-group myRg', html_text)
+        self.assertIn('--project-name myProj', html_text)
+        self.assertIn('--runbook-name myRb', html_text)
+        self.assertNotIn('&lt;rg&gt;', html_text)
+        # ...but step/workstream tokens stay as placeholders.
+        self.assertIn('--step-name &lt;stepName&gt;', html_text)
+        self.assertIn('--workstream-id &lt;workstream&gt;', html_text)
+
+    def test_help_chips_fill_execution_id(self):
+        view = visualize_viewmodel.build_execution_view(_STATUS_DOC, title="X")
+        graph = visualize_graph.build_execution_graph(_STATUS_DOC, title="X")
+        html_text = visualize_renderer.render(
+            graph, view=view,
+            context={'resource_group': 'rg', 'project': 'p',
+                     'runbook': 'rb', 'execution': 'exec-1'})
+        self.assertIn('--execution-id exec-1', html_text)
+        self.assertNotIn('--execution-id &lt;execution&gt;', html_text)
+
+    def test_help_chips_keep_placeholders_without_context(self):
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "Init",
+             "steps": [{"stepId": "s1", "displayName": "Setup"}]}]}
+        view = visualize_viewmodel.build_definition_view(document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('--resource-group &lt;rg&gt;', html_text)
+        self.assertIn('--runbook-name &lt;runbook&gt;', html_text)
         graph = visualize_graph.build_definition_graph(
             _REAL_DEFINITION, title="Def")
         html_text = visualize_renderer.render(graph)
@@ -2661,6 +3019,35 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertNotEqual(setup_at, -1)
         self.assertNotEqual(cleanup_at, -1)
         self.assertLess(setup_at, cleanup_at)
+
+    def test_diagram_orders_and_connects_dependent_workstreams(self):
+        # w1 dependsOn w0; even though the document lists w1 first, the
+        # prerequisite lane (First) must render above the dependent lane
+        # (Second) and a lane-to-lane connector is drawn.
+        document = {"workstreams": [
+            {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+            {"id": "w0", "displayName": "First",
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph)
+        self.assertLess(html_text.find('Workstream: First'),
+                        html_text.find('Workstream: Second'))
+        self.assertIn('class="lane-edge"', html_text)
+
+    def test_diagram_workstream_dependency_cycle_does_not_crash(self):
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "First", "dependsOn": ["w1"],
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+            {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph)
+        # Cyclic workstream deps fall back to document order (no crash).
+        self.assertLess(html_text.find('Workstream: First'),
+                        html_text.find('Workstream: Second'))
 
     def test_execution_grid_shows_progress_and_groups(self):
         view = visualize_viewmodel.build_execution_view(

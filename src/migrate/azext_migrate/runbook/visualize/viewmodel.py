@@ -21,8 +21,10 @@ class EntityProgress:
     """Per-entity execution state shown under an execution step."""
 
     # pylint: disable=too-few-public-methods,too-many-arguments
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, name, status, status_reason=None, error=None,
-                 total_attempts=None, attempts=None, tool_status=None):
+                 total_attempts=None, attempts=None, tool_status=None,
+                 outputs=None, completed=False):
         self.name = name
         self.status = status
         self.status_reason = status_reason
@@ -32,6 +34,11 @@ class EntityProgress:
         # Tool-reported migration status (e.g. Replicating, Migrating) — a
         # finer-grained, tool-driven state than the orchestrator ``status``.
         self.tool_status = tool_status
+        # Free-form per-entity result payload (e.g. targetVmArmId). It is the
+        # authoritative *final* result once ``completed``; while the entity is
+        # still running the same field is a live *partial* progress snapshot.
+        self.outputs = outputs or {}
+        self.completed = completed
 
 
 class StepRow:
@@ -44,7 +51,7 @@ class StepRow:
                  step_ref=None, entity_names=None, prereqs=None,
                  dep_details=None, entity_groups=None, status_reason=None,
                  error=None, retry_count=0, attempts=None,
-                 user_comment=None):
+                 user_comment=None, outputs=None, started=None, ended=None):
         self.id = step_id
         self.name = name
         self.deps = deps or []
@@ -67,6 +74,11 @@ class StepRow:
         self.retry_count = retry_count
         self.attempts = attempts or []
         self.user_comment = user_comment
+        # Free-form step-level result payload (e.g. roleAssignmentIds).
+        self.outputs = outputs or {}
+        # Step run window (for the detail-pane overview).
+        self.started = started
+        self.ended = ended
 
 
 class Workstream:
@@ -326,8 +338,13 @@ def _failed_attempts(step):
     return total
 
 
+def _output_map(outputs):
+    """Return the raw outputs object only when it is a non-empty dict."""
+    return outputs if isinstance(outputs, dict) and outputs else {}
+
+
 def _attempt_views(attempts):
-    """Project raw attempt objects to ``{number, status, error}`` dicts."""
+    """Project raw attempts to ``{number, status, error, started, ended}``."""
     views = []
     for attempt in attempts or []:
         if not isinstance(attempt, dict):
@@ -336,6 +353,8 @@ def _attempt_views(attempts):
             'number': attempt.get('attemptNumber'),
             'status': attempt.get('status'),
             'error': _error_text(attempt),
+            'started': attempt.get('startTime'),
+            'ended': attempt.get('endTime'),
         })
     return views
 
@@ -366,7 +385,10 @@ def build_execution_view(document, title):
                     total_attempts=(e.get('totalAttempts')
                                     or len(e.get('attempts') or [])),
                     attempts=_attempt_views(e.get('attempts')),
-                    tool_status=e.get('toolReportedMigrationStatus'))
+                    tool_status=e.get('toolReportedMigrationStatus'),
+                    outputs=_output_map(e.get('outputs')),
+                    completed=str(_entity_status(e) or '').lower()
+                    in ENTITY_COMPLETED_STATES)
                 for e in entity_execs]
             rows.append(StepRow(
                 step_id=_step_id(step),
@@ -380,7 +402,10 @@ def build_execution_view(document, title):
                 error=_error_text(step),
                 retry_count=_failed_attempts(step),
                 attempts=_attempt_views(step.get('attempts')),
-                user_comment=step.get('userComment')))
+                user_comment=step.get('userComment'),
+                outputs=_output_map(step.get('outputs')),
+                started=step.get('startTime'),
+                ended=step.get('endTime')))
         workstreams.append(Workstream(name, rows, ws_id))
 
     summary = _execution_summary(root, status_counts)

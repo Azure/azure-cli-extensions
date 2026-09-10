@@ -74,6 +74,9 @@
   .btn:hover { background: var(--brand-ink); border-color: var(--brand-ink); }
   .btn.ghost { background: var(--surface); color: var(--ink); border-color: var(--hair2); }
   .btn.ghost:hover { background: var(--sunken); }
+  /* transient copy confirmation shown on the button itself (visible inside popovers) */
+  .btn.copied, .btn.copied:hover { background: #f1f8f1; border-color: #cfe4cf; color: var(--ok); }
+  .btn.copyfail, .btn.copyfail:hover { background: #fdf4f4; border-color: #f0cfcf; color: var(--err); }
   .btn.sm { padding: 3px 9px; font-size: var(--fs-200); line-height: var(--lh-200); }
   .btn:disabled { opacity: .45; cursor: not-allowed; }
 
@@ -402,8 +405,6 @@
   <div class="pop__h2">Upload it with the CLI</div>
   <p class="pop__p">This page is offline and can&rsquo;t reach the service. Save the file with
      <b>Save changes</b>, then point <code class="inl">--file</code> at it and run:</p>
-  <label class="toggle"><input type="checkbox" id="useDefaults" />
-    Omit <code class="inl">-g</code>/<code class="inl">-p</code> (az config defaults set)</label>
   <div class="cmd" id="cmd"></div>
   <div class="pop__p" id="cmdHint"></div>
   <div>
@@ -434,6 +435,9 @@ const META = BOOT.meta || {
   project: armSeg(DOC.runbookId, 'migrateprojects'),
   wave: armSeg(DOC.waveId, 'waves')
 };
+// User-parameters file name (service renamed inputs.json -> parameters.json;
+// the CLI passes the actual name so the shown upload command matches).
+const PARAM_FILE = META.parametersFileName || 'inputs.json';
 const STEP_ENTITIES = {}, STEP_DISPLAY = {};
 (SPEC.workstreams || []).forEach(w => (w.steps || []).forEach(s => {
   STEP_ENTITIES[s.stepId] = s.entities || [];
@@ -512,12 +516,17 @@ function fieldError(rule, v) {
   const props = itemProps(rule);
   if (props && Array.isArray(v)) {
     const keys = Object.keys(props);
-    // inputs.json seeds arrays with an all-null placeholder row; ignore those
-    // until the user actually fills something in.
+    const reqKeys = keys.filter(k => props[k].required);
+    // inputs.json seeds arrays with an all-null placeholder row. Ignore such a
+    // row only when the item has no required fields; a row that exists but is
+    // empty while the item has a required field is an incomplete row.
     const filled = i => keys.some(k => !isEmpty((v[i] || {})[k]));
     if (rule.required && !v.some((_, i) => filled(i))) return 'Required';
     for (let i = 0; i < v.length; i++) {
-      if (!filled(i)) continue;
+      if (!filled(i)) {
+        if (reqKeys.length) return `Row ${i + 1} \u2014 ${reqKeys[0]}: Required`;
+        continue;
+      }
       for (const k of keys) {
         const e = fieldError(props[k], (v[i] || {})[k]);
         if (e) return `Row ${i + 1} \u2014 ${k}: ${e}`;
@@ -811,12 +820,12 @@ function renderGroup(title, sub, sid, kind, fields, rules, data) {
     ? `No ${word} inputs for this step.` : `No ${word} inputs match your search.`}</p>`;
   return `<section class="card">
     <div class="card__h"><h3 class="sec-h">${title}</h3><p class="sec-sub">${sub}</p></div>
-    <details class="adv" open>
+    <details class="adv" data-sec="req" open>
       <summary>Required inputs <span class="adv-n">${req.length}</span></summary>
       ${req.length ? req.map(f => inputRow(sid, kind, f, rules[f], data)).join('')
                    : note(noneRequired, 'required')}
     </details>
-    <details class="adv" ${fieldFilter ? 'open' : ''}>
+    <details class="adv" data-sec="opt" ${fieldFilter ? 'open' : ''}>
       <summary>Optional inputs <span class="adv-n">${opt.length}</span></summary>
       ${opt.length ? opt.map(f => inputRow(sid, kind, f, rules[f], data)).join('')
                    : note(noneOptional, 'optional')}
@@ -896,13 +905,13 @@ function renderOverrides() {
   const inhBad = inhF.filter(f => fieldError(rules[f], effective(sid, cur.id, f))).length;
   const sections = !vis.length
     ? `<div class="ov-empty">No inputs match &ldquo;${esc(fieldFilter)}&rdquo;.</div>`
-    : `<details class="adv" open>
+    : `<details class="adv" data-sec="ov" open>
         <summary>Overrides <span class="adv-n">${ovF.length}</span>${
           ovCount ? `<button type="button" class="lnk sum-act" id="entClear">Remove all overrides</button>` : ''}</summary>
         ${ovF.length ? ovF.map(f => overrideRow(sid, cur.id, f, rules[f], data, 'ov')).join('')
                      : `<p class="note-row">No overrides added &mdash; this workload uses every step input.</p>`}
       </details>
-      <details class="adv" ${fieldFilter || inhBad ? 'open' : ''}>
+      <details class="adv" data-sec="inh" ${fieldFilter || inhBad ? 'open' : ''}>
         <summary>Inherited from step <span class="adv-n">${inhF.length}</span>${
           inhBad ? `<span class="adv-warn">${inhBad} need${inhBad === 1 ? 's' : ''} attention</span>` : ''}</summary>
         ${inhF.map(f => overrideRow(sid, cur.id, f, rules[f], data, 'inh')).join('')}
@@ -940,6 +949,19 @@ function renderOverrides() {
   refreshValidation();
 }
 
+// Re-render a pane but keep which collapsible sections are open and the scroll
+// position, so a structural edit (add/remove row/entry) doesn't collapse the
+// section the user is working in.
+function reRenderPreserving(fn, sel) {
+  const host = document.querySelector(sel);
+  const open = new Set([...host.querySelectorAll('details.adv[open]')].map(d => d.dataset.sec));
+  const scroll = host.scrollTop;
+  fn();
+  const after = document.querySelector(sel);
+  after.querySelectorAll('details.adv').forEach(d => { d.open = open.has(d.dataset.sec); });
+  after.scrollTop = scroll;
+}
+
 // Simple controls write straight through; complex editors re-serialise their
 // whole value, and structural edits (add/remove row) re-render the pane.
 function bindInputs(scope) {
@@ -970,7 +992,10 @@ function bindInputs(scope) {
       else if (t.dataset.kvAdd) { let i = 1; while (has(val, 'key' + i)) i++; val['key' + i] = ''; }
       else delete val[t.closest('.kv-row').querySelector('[data-kv="k"]').value.trim()];
       acc.set(val);
-      path.startsWith('O|') ? renderOverrides() : renderForm();
+      // Keep the open sections + scroll so add/remove row doesn't collapse the
+      // section the user is working in.
+      const ov = path.startsWith('O|');
+      reRenderPreserving(ov ? renderOverrides : renderForm, ov ? '#ovPane' : '#form');
     });
   });
 }
@@ -1055,13 +1080,12 @@ function refreshValidation() {
 function sync() {
   const m = META;
   document.getElementById('json').textContent = JSON.stringify({ stepInputs: DOC.stepInputs }, null, 2);
-  const omit = document.getElementById('useDefaults').checked;
   const base = m.inputsPath || '';
-  const baseName = base ? base.split(/[\\/]/).pop() : 'inputs.json';
+  const baseName = base ? base.split(/[\\/]/).pop() : PARAM_FILE;
   // Reflect where the file was actually saved. Browsers never expose a file's
   // folder, so Path A can only use the full path when the picked name matches
   // the CLI baseline; Path B assumes the Downloads folder.
-  let filePath = base ? `"${base}"` : './inputs.json';
+  let filePath = base ? `"${base}"` : `./${PARAM_FILE}`;
   let hint = '';
   if (saved && saved.mode === 'A') {
     if (base && saved.name === baseName) { filePath = `"${base}"`; }
@@ -1072,7 +1096,7 @@ function sync() {
     hint = 'Assumes your Downloads folder \u2014 if the browser saved a numbered copy, update the file name.';
   }
   document.getElementById('cmd').textContent =
-    `az migrate runbook parameter upload${omit ? '' : ` -g ${m.resourceGroup} -p ${m.project}`} -n ${m.runbook} --file ${filePath}`;
+    `az migrate runbook parameter upload -g ${m.resourceGroup} -p ${m.project} -n ${m.runbook} --file ${filePath}`;
   const hintEl = document.getElementById('cmdHint');
   if (hintEl) hintEl.textContent = hint;
   const pending = Object.keys(DOC.stepInputs).filter(s => stepErrors(s) > 0).length;
@@ -1151,46 +1175,69 @@ function buildInputsJson() {
   else { root.stepInputs = DOC.stepInputs; }
   return JSON.stringify(root, null, 2);
 }
-function downloadInputs() {
-  const blob = new Blob([buildInputsJson()], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'inputs.json';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+function downloadInputs(text) {
+  try {
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = PARAM_FILE;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+  } catch (e) { return false; }
 }
 // Real disk save when the browser supports the File System Access API: the
 // first Save prompts for a location, later Saves overwrite the same file.
 // Otherwise fall back to a Downloads-folder download.
 let fileHandle = null;
 let saved = null; // {mode:'A'|'B', name} — drives the --file path shown
-async function saveToDisk() {
-  sync();
-  const text = buildInputsJson();
-  if (window.showSaveFilePicker) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'inputs.json',
-          startIn: 'downloads',
-          types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
-        });
-      }
-      const w = await fileHandle.createWritable();
-      await w.write(text); await w.close();
-      saved = { mode: 'A', name: fileHandle.name };
-      savedSnapshot = JSON.stringify(DOC.stepInputs);
-      showFile(`Saved to ${fileHandle.name}.`);
-      return;
-    } catch (e) {
-      if (e && e.name === 'AbortError') return; // user cancelled the picker
-      // any other FS error: fall back to a download
-    }
+// Fall back to a download and report the outcome honestly (never a silent no-op
+// and never a false "saved"). warnSave=true renders the amber note in showFile.
+function saveFallback(text, reason) {
+  if (!downloadInputs(text)) {
+    toast('\u2715 Save failed \u2014 open \u201cView updated parameters file\u201d and copy the JSON.');
+    return;
   }
-  downloadInputs();
-  saved = { mode: 'B', name: 'inputs.json' };
+  saved = { mode: 'B', name: PARAM_FILE };
   savedSnapshot = JSON.stringify(DOC.stepInputs);
-  showFile('Saved inputs.json to your Downloads folder.');
+  showFile(reason
+    ? `${reason} \u2014 downloaded ${PARAM_FILE} to your Downloads folder instead.`
+    : `Saved ${PARAM_FILE} to your Downloads folder.`, !!reason);
+}
+async function saveToDisk() {
+  const btn = document.getElementById('saveBtn');
+  sync();
+  let text;
+  try { text = buildInputsJson(); }
+  catch (e) { toast('\u2715 Couldn\u2019t build the file \u2014 nothing was saved.'); return; }
+  const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Saving\u2026';
+  try {
+    if (window.showSaveFilePicker) {
+      try {
+        if (!fileHandle) {
+          fileHandle = await window.showSaveFilePicker({
+            suggestedName: PARAM_FILE,
+            startIn: 'downloads',
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+          });
+        }
+        const w = await fileHandle.createWritable();
+        await w.write(text); await w.close();
+        saved = { mode: 'A', name: fileHandle.name };
+        savedSnapshot = JSON.stringify(DOC.stepInputs);
+        showFile(`Saved to ${fileHandle.name}.`);
+      } catch (e) {
+        if (e && e.name === 'AbortError') { toast('Save cancelled \u2014 no file written.'); return; }
+        fileHandle = null; // chosen location unusable; re-prompt next time
+        saveFallback(text, 'Couldn\u2019t write to the location you chose');
+      }
+      return;
+    }
+    saveFallback(text, null);
+  } finally {
+    btn.disabled = false; btn.textContent = label;
+  }
 }
 const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 let lastFocus = null;
@@ -1204,11 +1251,13 @@ function openPop(id) {
 }
 // The page cannot reach the service, so the CLI command lives with the file it
 // refers to; opened on demand and again right after a save.
-function showFile(savedMsg) {
+function showFile(savedMsg, warnSave) {
   sync();
   const note = document.getElementById('savedNote');
   note.hidden = !savedMsg;
-  if (savedMsg) note.textContent = '\u2713 ' + savedMsg;
+  note.classList.toggle('pop__ok', !warnSave);
+  note.classList.toggle('pop__warn', !!warnSave);
+  if (savedMsg) note.textContent = (warnSave ? '\u26A0 ' : '\u2713 ') + savedMsg;
   const list = allIssues();
   const steps = Object.keys(DOC.stepInputs).filter(s => stepErrors(s) > 0).length;
   const warn = document.getElementById('uploadPending');
@@ -1252,12 +1301,29 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 document.getElementById('issueClose').addEventListener('click', closePop);
 document.getElementById('popScrim').addEventListener('click', closePop);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
-document.getElementById('useDefaults').addEventListener('change', sync);
 document.getElementById('saveBtn').addEventListener('click', saveToDisk);
-document.getElementById('copyBtn').addEventListener('click', () => {
-  navigator.clipboard && navigator.clipboard.writeText(document.getElementById('cmd').textContent);
-  toast('Command copied.');
-});
+// Confirm on the button itself so the feedback is visible even inside a popover
+// (a toolbar toast is hidden behind the modal scrim), and only claim success
+// when the clipboard write actually resolves.
+function copyFeedback(btn, ok) {
+  const original = btn.dataset.label || (btn.dataset.label = btn.textContent);
+  btn.classList.add(ok ? 'copied' : 'copyfail');
+  btn.textContent = ok ? '\u2713 Copied' : '\u2715 Copy failed';
+  clearTimeout(btn._copyT);
+  btn._copyT = setTimeout(() => {
+    btn.classList.remove('copied', 'copyfail');
+    btn.textContent = original;
+  }, 1400);
+}
+function copyToClipboard(btn, text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => copyFeedback(btn, true), () => copyFeedback(btn, false));
+  } else {
+    copyFeedback(btn, false);
+  }
+}
+document.getElementById('copyBtn').addEventListener('click', e =>
+  copyToClipboard(e.currentTarget, document.getElementById('cmd').textContent));
 // Edits only reach the CLI through a saved file, so guard against losing them.
 // hasEdits is measured against the download; isDirty against the last save.
 function hasEdits() { return JSON.stringify(DOC.stepInputs) !== JSON.stringify(ORIGINAL); }
@@ -1272,10 +1338,8 @@ renderAll();
 
 document.getElementById('jsonBtn').addEventListener('click', () => showFile());
 document.getElementById('jsonClose').addEventListener('click', closePop);
-document.getElementById('jsonCopy').addEventListener('click', () => {
-  navigator.clipboard && navigator.clipboard.writeText(document.getElementById('json').textContent);
-  toast('inputs.json copied.');
-});
+document.getElementById('jsonCopy').addEventListener('click', e =>
+  copyToClipboard(e.currentTarget, document.getElementById('json').textContent));
 
 // ---- resizable panes (drag the gutters to widen the left/right panes) ------
 (function () {

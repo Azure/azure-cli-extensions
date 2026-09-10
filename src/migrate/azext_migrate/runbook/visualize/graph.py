@@ -59,8 +59,9 @@ class Edge:
 class Graph:
     """A layered DAG of runbook steps."""
 
-    # pylint: disable=too-few-public-methods
-    def __init__(self, title, nodes, edges, group_order=None):
+    # pylint: disable=too-few-public-methods,too-many-arguments
+    def __init__(self, title, nodes, edges, group_order=None,
+                 group_deps=None):
         self.title = title
         self.nodes = nodes
         self.edges = edges
@@ -69,6 +70,10 @@ class Graph:
         # so the diagram matches the grid; ``nodes`` is separately sorted by
         # dependency layer for column layout.
         self.group_order = group_order or []
+        # Workstream-level dependencies as ``(prereq_ws_id, dependent_ws_id)``
+        # pairs (from each workstream's ``dependsOn``). The renderer topo-sorts
+        # the swimlanes by these and draws lane-to-lane connectors.
+        self.group_deps = group_deps or []
 
     @property
     def layer_count(self):
@@ -99,13 +104,7 @@ def _iter_steps(document):
     Handles both the ``workstreams[].steps[]`` shape and a flat
     ``steps[]`` shape, and unwraps an execution ``properties`` envelope.
     """
-    root = document
-    if isinstance(root, dict) and isinstance(root.get('properties'), dict):
-        merged = dict(root)
-        merged.update(root['properties'])
-        root = merged
-    if not isinstance(root, dict):
-        return
+    root = _root(document)
     workstreams = root.get('workstreams') or []
     for workstream in workstreams:
         if not isinstance(workstream, dict):
@@ -119,6 +118,38 @@ def _iter_steps(document):
     for step in root.get('steps', []) or []:
         if isinstance(step, dict):
             yield step, None, None
+
+
+def _root(document):
+    """Return the root object, unwrapping an execution ``properties`` envelope."""
+    root = document
+    if isinstance(root, dict) and isinstance(root.get('properties'), dict):
+        merged = dict(root)
+        merged.update(root['properties'])
+        root = merged
+    return root if isinstance(root, dict) else {}
+
+
+def _iter_workstream_deps(document):
+    """Yield ``(dependent_ws_id, prereq_ws_id)`` from workstream ``dependsOn``.
+
+    A ``dependsOn`` entry is a plain workstream id or a dict carrying one
+    under ``workstreamId`` / ``id`` / ``workstream``.
+    """
+    for workstream in _root(document).get('workstreams') or []:
+        if not isinstance(workstream, dict):
+            continue
+        ws_id = workstream.get('id')
+        if not ws_id:
+            continue
+        for dep in workstream.get('dependsOn') or []:
+            if isinstance(dep, dict):
+                prereq = (dep.get('workstreamId') or dep.get('id')
+                          or dep.get('workstream'))
+            else:
+                prereq = dep
+            if prereq:
+                yield ws_id, prereq
 
 
 def _build_graph(document, title):
@@ -156,7 +187,16 @@ def _build_graph(document, title):
             dependencies[node_id].append(dep_id)
 
     _assign_layers(nodes, node_by_id, dependencies)
-    return Graph(title, nodes, edges, group_order=group_order)
+    known_ws = {node.group_id for node in nodes if node.group_id}
+    group_deps = []
+    seen = set()
+    for dep_ws, pre_ws in _iter_workstream_deps(document):
+        pair = (pre_ws, dep_ws)
+        if dep_ws in known_ws and pre_ws in known_ws and pair not in seen:
+            seen.add(pair)
+            group_deps.append(pair)
+    return Graph(title, nodes, edges, group_order=group_order,
+                 group_deps=group_deps)
 
 
 def _assign_layers(nodes, node_by_id, dependencies):

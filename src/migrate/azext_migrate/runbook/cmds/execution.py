@@ -293,12 +293,14 @@ def visualize(cmd, resource_group_name=None, project_name=None,
     """Render an execution's status as a self-contained HTML graph."""
     name = runbook_name or 'runbook'
     exec_label = execution_id or 'local'
+    context = {'resource_group': resource_group_name, 'project': project_name,
+               'runbook': runbook_name, 'execution': execution_id}
     target = files.resolve_output_path(
         file, 'runbook-%s-execution-%s.html' % (name, exec_label))
     if from_file:
         path = _write_visualization(
             _status_payload(files.read_json_file(from_file)),
-            name, exec_label, target)
+            name, exec_label, target, context=context)
         logger.warning(
             'Runbook execution visualization saved to %s', path)
         if not no_open:
@@ -309,9 +311,10 @@ def visualize(cmd, resource_group_name=None, project_name=None,
     if watch:
         return _watch_visualize(
             cmd, resource_id, runbook_name, execution_id, target,
-            interval, no_open)
+            interval, no_open, context=context)
     path = _write_visualization(
-        _fetch_status(cmd, resource_id), name, exec_label, target)
+        _fetch_status(cmd, resource_id), name, exec_label, target,
+        context=context)
     logger.warning(
         'Runbook execution visualization saved to %s', path)
     if not no_open:
@@ -320,18 +323,19 @@ def visualize(cmd, resource_group_name=None, project_name=None,
 
 
 def _write_visualization(execution, runbook_name, execution_id, target,
-                         refresh_interval=None):
+                         refresh_interval=None, context=None):
     title = 'Runbook execution: %s / %s' % (runbook_name, execution_id)
     dag = graph_mod.build_execution_graph(execution, title=title)
     view = viewmodel.build_execution_view(execution, title=title)
     return files.write_text(
         target,
-        renderer.render(dag, view=view, refresh_interval=refresh_interval))
+        renderer.render(dag, view=view, refresh_interval=refresh_interval,
+                        context=context))
 
 
 def _watch_visualize(cmd, resource_id, runbook_name, execution_id, target,
-                     interval,
-                     no_open):  # pragma: no cover - interactive polling loop
+                     interval, no_open,
+                     context=None):  # pragma: no cover - interactive loop
     """Regenerate the HTML snapshot on an interval until a terminal state."""
     logger.warning(
         "Watching execution '%s' (interval: %ss). Press Ctrl+C to stop.",
@@ -345,7 +349,8 @@ def _watch_visualize(cmd, resource_id, runbook_name, execution_id, target,
             # itself; on the final (terminal) snapshot omit it so it stops.
             path = _write_visualization(
                 execution, runbook_name, execution_id, target,
-                refresh_interval=None if terminal else interval)
+                refresh_interval=None if terminal else interval,
+                context=context)
             logger.warning(
                 'Runbook execution visualization saved to %s', path)
             if not no_open and not opened:

@@ -22,6 +22,7 @@ the offline/air-gapped guarantee.
 
 import datetime
 import html
+import json
 import os
 import re
 import secrets
@@ -96,18 +97,52 @@ def _status_class(status):
     return ' status-%s' % token if token else ''
 
 
-def _workstream_order(graph):
-    """Group nodes into workstream swimlanes in source-document order.
+def _sorted_group_pairs(graph):
+    """Return ``group_order`` topologically sorted by workstream deps.
 
-    Bands follow the runbook's workstream order (the same order the grid
-    uses) so the diagram is not reversed relative to the grid. Within a
-    band, nodes keep their layer-sorted order for column layout.
+    Prerequisite lanes are placed before dependent lanes; ties keep document
+    order. A dependency cycle (defensive) degrades to document order.
+    """
+    pairs = list(graph.group_order)
+    if not graph.group_deps:
+        return pairs
+    order_index = {ws_id: i for i, (_, ws_id) in enumerate(pairs)}
+    name_by_id = {ws_id: name for name, ws_id in pairs}
+    prereqs = {}
+    for pre_ws, dep_ws in graph.group_deps:
+        if pre_ws in order_index and dep_ws in order_index:
+            prereqs.setdefault(dep_ws, set()).add(pre_ws)
+    placed = set()
+    result = []
+    remaining = [ws_id for _, ws_id in pairs]
+    progressed = True
+    while remaining and progressed:
+        progressed = False
+        ready = [w for w in remaining if prereqs.get(w, set()) <= placed]
+        if not ready:
+            break
+        ready.sort(key=lambda w: order_index.get(w, 0))
+        for ws_id in ready:
+            result.append(ws_id)
+            placed.add(ws_id)
+            remaining.remove(ws_id)
+            progressed = True
+    result.extend(remaining)  # cycle fallback: keep document order
+    return [(name_by_id.get(ws_id), ws_id) for ws_id in result]
+
+
+def _workstream_order(graph):
+    """Group nodes into workstream swimlanes, ordered by workstream deps.
+
+    Bands follow a dependency-topological order (prerequisite lanes first),
+    tie-broken by the runbook's document order. Within a band, nodes keep
+    their layer-sorted order for column layout.
     """
     by_ws = {}
     for node in graph.nodes:
         by_ws.setdefault(node.group or 'Ungrouped', []).append(node)
     ordered = []
-    for name, ws_id in graph.group_order:
+    for name, ws_id in _sorted_group_pairs(graph):
         nodes = by_ws.pop(name, None)
         if nodes:
             ordered.append((name, ws_id, nodes))
@@ -167,6 +202,19 @@ def _svg(graph):
             % (_MARGIN / 2, top, width - _MARGIN, band_height,
                _MARGIN / 2 + 12, top + 16,
                _esc(name or 'Ungrouped'), _id_tspan(ws_id), count))
+
+    # Workstream-level dependency connectors: a rail down the left edge from a
+    # prerequisite lane's bottom to the dependent lane's top.
+    band_pos = {ws_id: (top, band_height)
+                for _, ws_id, top, band_height, _ in bands}
+    for pre_ws, dep_ws in graph.group_deps:
+        if pre_ws in band_pos and dep_ws in band_pos:
+            pre_top, pre_h = band_pos[pre_ws]
+            dep_top = band_pos[dep_ws][0]
+            rail = _MARGIN / 2
+            parts.append(
+                '<path class="lane-edge" d="M%.1f %.1f L%.1f %.1f"/>'
+                % (rail, pre_top + pre_h, rail, dep_top))
 
     for edge in graph.edges:
         if edge.source not in positions or edge.target not in positions:
@@ -332,36 +380,183 @@ def _status_field(label, status, default):
             % (_esc(label), _status_class(status), _esc(status or default)))
 
 
+def _output_scalar(value):
+    """Format a single outputs value for display (JSON for nested shapes)."""
+    if isinstance(value, bool):
+        return 'true' if value else 'false'
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, sort_keys=True)
+    return str(value)
+
+
+def _output_rows(outputs):
+    """Render an outputs dict as key/value rows.
+
+    A list value stacks one item per line (generic — no key is special-cased),
+    so multi-valued outputs like ``roleAssignmentIds`` read cleanly.
+    """
+    rows = []
+    for key in sorted(outputs or {}):
+        value = outputs[key]
+        if isinstance(value, list):
+            value_html = ''.join(
+                '<div>%s</div>' % _esc(_output_scalar(item))
+                for item in value) or '-'
+        else:
+            value_html = _esc(_output_scalar(value))
+        rows.append(
+            '<div class="orow"><span class="ok">%s</span>'
+            '<span class="ov">%s</span></div>' % (_esc(key), value_html))
+    return ''.join(rows)
+
+
+def _output_block(variant, heading, tag, rows_html, note=None):
+    """Render an output sub-block (``partial`` / ``final`` / ``step``)."""
+    tag_html = '<span class="tag">%s</span>' % _esc(tag) if tag else ''
+    note_html = ('<div class="muted-note">%s</div>' % _esc(note)
+                 if note else '')
+    return (
+        '<div class="out out--%s"><div class="out__h">%s%s</div>%s%s</div>'
+        % (variant, _esc(heading), tag_html, rows_html, note_html))
+
+
+def _attempt_dot(status):
+    """Map an attempt status to a timeline dot class (ok / fail / run)."""
+    token = str(status or '').lower()
+    if token == 'failed':
+        return 'fail'
+    if token in ('completed', 'succeeded'):
+        return 'ok'
+    return 'run'
+
+
+def _time_range(started, ended):
+    """Format a start/end pair as "start \u2192 end" (or whichever is present)."""
+    if started and ended:
+        return '%s \u2192 %s' % (started, ended)
+    return started or ended or ''
+
+
+def _parse_iso(value):
+    """Parse an ISO-8601 timestamp (tolerating a trailing ``Z``), else None."""
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith('Z'):
+        text = text[:-1] + '+00:00'
+    try:
+        return datetime.datetime.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def _duration(started, ended):
+    """Human-readable duration between two ISO timestamps (e.g. ``2h 52m``)."""
+    start, end = _parse_iso(started), _parse_iso(ended)
+    if start is None or end is None:
+        return ''
+    total = int((end - start).total_seconds())
+    if total < 0:
+        return ''
+    if total < 60:
+        return '%ds' % total
+    hours, rem = divmod(total, 3600)
+    minutes, seconds = divmod(rem, 60)
+    parts = []
+    if hours:
+        parts.append('%dh' % hours)
+    if minutes:
+        parts.append('%dm' % minutes)
+    if seconds and not hours:
+        parts.append('%ds' % seconds)
+    return ' '.join(parts) or '0s'
+
+
+def _attempt_timeline(attempts):
+    """Render an attempts timeline: dots, status pill, times, error box."""
+    rows = []
+    for attempt in attempts:
+        when = _time_range(attempt.get('started'), attempt.get('ended'))
+        when_html = ('<span class="att__t">%s</span>' % _esc(when)
+                     if when else '')
+        err_html = ('<div class="att__err">%s</div>' % _esc(attempt['error'])
+                    if attempt.get('error') else '')
+        rows.append(
+            '<div class="att"><span class="att__dot %s"></span><div>'
+            '<div class="att__row"><span class="att__n">Attempt %s</span>'
+            '<span class="pill%s">%s</span>%s</div>%s</div></div>'
+            % (_attempt_dot(attempt.get('status')), _esc(attempt.get('number')),
+               _status_class(attempt.get('status')),
+               _esc(attempt.get('status') or ''), when_html, err_html))
+    return '<div class="timeline">%s</div>' % ''.join(rows)
+
+
+def _entity_output_blocks(entity):
+    """Render a workload's output as partial (running) or final (completed)."""
+    if entity.outputs:
+        rows = _output_rows(entity.outputs)
+        if entity.completed:
+            return _output_block('final', 'Final output', None, rows)
+        return _output_block(
+            'partial', 'Partial output', 'live \u00b7 may change', rows,
+            'Progress snapshot from the tool; superseded when the step '
+            'completes.')
+    if not entity.completed:
+        return _output_block(
+            'final', 'Final output', 'pending', '',
+            'Available once this workload reaches a completed state.')
+    return ''
+
+
+def _entity_card(entity):
+    """Render one workload (entity) card: header, attempts, output block."""
+    meta = '<span class="pill%s">%s</span>' % (
+        _status_class(entity.status), _esc(entity.status or 'NotStarted'))
+    if entity.tool_status:
+        meta += ' <span class="chip">tool: %s</span>' % _esc(
+            entity.tool_status)
+    body = ''
+    if entity.attempts:
+        failed = sum(1 for a in entity.attempts
+                     if str(a.get('status') or '').lower() == 'failed')
+        badge = ' <span class="retry">%d failed</span>' % failed if failed \
+            else ''
+        body += ('<div><div class="field__label">Attempts%s</div>%s</div>'
+                 % (badge, _attempt_timeline(entity.attempts)))
+    if entity.error:
+        body += '<div class="att__err">%s</div>' % _esc(entity.error)
+    elif entity.status_reason:
+        body += '<div class="muted-note">%s</div>' % _esc(entity.status_reason)
+    body += _entity_output_blocks(entity)
+    return (
+        '<div class="ent"><div class="ent__h">'
+        '<span class="ent__nm">%s</span>'
+        '<span class="ent__meta">%s</span></div>'
+        '<div class="ent__body">%s</div></div>'
+        % (_esc(entity.name), meta, body))
+
+
+def _detail_section(heading, body_html, first=False):
+    """Wrap a group of detail-pane fields in a titled section."""
+    cls = 'dsec dsec--first' if first else 'dsec'
+    return ('<div class="%s"><div class="dsec__h">%s</div>%s</div>'
+            % (cls, _esc(heading), body_html))
+
+
+def _application_card(name):
+    """Render one application (entity group) with the workload-card style.
+
+    Applications and workloads share the ``.ent`` card typography so the two
+    lists read identically in the step detail pane.
+    """
+    return ('<div class="ent"><div class="ent__h">'
+            '<span class="ent__nm">%s</span></div></div>' % _esc(name))
+
+
 def _detail_html(workstream_name, step, kind):
     """Build the step detail-pane markup (shown in the side drawer)."""
     if kind == viewmodel.KIND_EXECUTION:
-        entities = []
-        for entity in step.entities:
-            label = ('%s (%s)' % (entity.name, entity.status)
-                     if entity.status else entity.name)
-            if entity.tool_status:
-                label += ' \u00b7 tool status: %s' % entity.tool_status
-            if entity.error:
-                label += ' \u2014 %s' % entity.error
-            elif entity.status_reason:
-                label += ' \u2014 %s' % entity.status_reason
-            if entity.total_attempts:
-                label += ' [%s attempt(s)]' % entity.total_attempts
-            entities.append(label)
-
-        def _fmt_attempt(prefix, attempt):
-            tail = ((' \u2014 %s' % attempt.get('error'))
-                    if attempt.get('error') else '')
-            return '%sAttempt %s: %s%s' % (
-                prefix, attempt.get('number'), attempt.get('status') or '',
-                tail)
-        # Attempt timeline lives on the step and/or each entity execution.
-        attempt_lines = [_fmt_attempt('', a) for a in step.attempts]
-        for entity in step.entities:
-            attempt_lines.extend(
-                _fmt_attempt('%s \u00b7 ' % entity.name, a)
-                for a in entity.attempts)
-        body = (
+        overview = (
             _field('Step ID', step.id)
             + _status_field('Step status', step.status, 'NotStarted')
             + (_field('Status reason', step.status_reason)
@@ -370,13 +565,31 @@ def _detail_html(workstream_name, step, kind):
             + (_field('Retries (failed attempts)', step.retry_count)
                if step.retry_count else '')
             + _field('Workload progress', step.workload_progress)
-            + _chip_field('Entities (%d)' % len(entities), entities)
-            + (_chip_field('Attempts', attempt_lines)
-               if attempt_lines else '')
+            + (_field('Start time', step.started) if step.started else '')
+            + (_field('End time', step.ended) if step.ended else '')
+            + (_field('Duration', _duration(step.started, step.ended))
+               if _duration(step.started, step.ended) else '')
             + (_field('User comment', step.user_comment)
                if step.user_comment else '')
-            + _chip_field('Applications', step.entity_groups)
             + _chip_field('Depends on', step.deps))
+        body = _detail_section('Overview', overview, first=True)
+        if step.entities:
+            cards = ''.join(_entity_card(e) for e in step.entities)
+            body += _detail_section(
+                'Workloads (%d)' % len(step.entities), cards)
+        apps = step.entity_groups
+        body += _detail_section(
+            'Applications (%d)' % len(apps),
+            ''.join(_application_card(a) for a in apps)
+            or '<div class="muted-note">No applications for this step.</div>')
+        step_out = _attempt_timeline(step.attempts) if step.attempts else ''
+        if step.outputs:
+            step_out += _output_block(
+                'step', 'Shared output', None, _output_rows(step.outputs),
+                'Step-scoped: produced once for the whole step '
+                '(no per-workload split).')
+        if step_out:
+            body += _detail_section('Step output', step_out)
     else:
         entities = step.entity_names
         body = (
@@ -410,31 +623,34 @@ def _grid_details(view):
 
 
 # CLI cmdlet help chips (static; shown above the definition grid).
+# ``<rg>``/``<project>``/``<runbook>``/``<execution>`` are auto-filled from the
+# invoking command; only the genuinely variable tokens (step/workstream/entity
+# names) stay as ``<...>`` placeholders for the user to fill.
 _HELP_CHIPS = (
     ('&#9654;', 'Start execution',
      'Runs the wave and streams live progress in the execution view.',
      'az migrate runbook execution start --resource-group <rg> '
-     '--project-name <project> --runbook-name <name>'),
+     '--project-name <project> --runbook-name <runbook>'),
     ('&#65291;', 'Add a step',
      'Adds a step to a workstream in the runbook definition.',
      'az migrate runbook definition step add --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
+     '--project-name <project> --runbook-name <runbook> '
      '--step-type <type> --step-name <stepName> --workstream-id <workstream>'),
     ('&#8649;', 'Merge workstreams',
      'Combines two workstreams into a single track.',
      'az migrate runbook definition workstream merge --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
+     '--project-name <project> --runbook-name <runbook> '
      '--source-workstream-ids <id1> <id2> --new-workstream-name <name>'),
     ('&#9649;', 'Split a workstream',
      'Splits a workstream into parallel tracks.',
      'az migrate runbook definition workstream split --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
+     '--project-name <project> --runbook-name <runbook> '
      '--source-workstream-id <id> --new-workstream-name <name> '
      '--entities-to-move <entity1> <entity2>'),
     ('&#8635;', 'Refresh this view',
      'Regenerates the HTML from the latest runbook definition.',
      'az migrate runbook definition visualize --resource-group <rg> '
-     '--project-name <project> --runbook-name <name>'),
+     '--project-name <project> --runbook-name <runbook>'),
 )
 
 
@@ -443,28 +659,51 @@ _EXEC_HELP_CHIPS = (
     ('&#10073;&#10073;', 'Pause execution',
      'Pauses the in-progress execution so it can be resumed later.',
      'az migrate runbook execution pause --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
-     '--execution-id <id>'),
+     '--project-name <project> --runbook-name <runbook> '
+     '--execution-id <execution>'),
     ('&#9654;', 'Resume execution',
      'Resumes a paused execution from where it left off.',
      'az migrate runbook execution resume --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
-     '--execution-id <id>'),
+     '--project-name <project> --runbook-name <runbook> '
+     '--execution-id <execution>'),
     ('&#10005;', 'Cancel execution',
      'Cancels an in-progress or paused execution.',
      'az migrate runbook execution cancel --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
-     '--execution-id <id>'),
+     '--project-name <project> --runbook-name <runbook> '
+     '--execution-id <execution>'),
     ('&#8635;', 'Refresh this view',
      'Regenerates the HTML from the latest execution status.',
      'az migrate runbook execution visualize --resource-group <rg> '
-     '--project-name <project> --runbook-name <name> '
-     '--execution-id <id>'),
+     '--project-name <project> --runbook-name <runbook> '
+     '--execution-id <execution>'),
 )
 
 
-def _help_bar(view):
-    """Render the static CLI cmdlet help chips (kind-aware)."""
+_CMD_CONTEXT_TOKENS = (
+    ('<rg>', 'resource_group'),
+    ('<project>', 'project'),
+    ('<runbook>', 'runbook'),
+    ('<execution>', 'execution'),
+)
+
+
+def _fill_cmd(cmd, context):
+    """Substitute known context values (g/p/runbook/execution) into a chip.
+
+    Variable tokens (step/workstream/entity names) are left as ``<...>``
+    placeholders; unfilled context tokens keep their placeholder too.
+    """
+    if not context:
+        return cmd
+    for token, key in _CMD_CONTEXT_TOKENS:
+        value = context.get(key)
+        if value:
+            cmd = cmd.replace(token, str(value))
+    return cmd
+
+
+def _help_bar(view, context=None):
+    """Render the CLI cmdlet help chips (kind-aware), context-filled."""
     if view is None:
         return ''
     chips_src = (_HELP_CHIPS if view.kind == viewmodel.KIND_DEFINITION
@@ -473,7 +712,8 @@ def _help_bar(view):
         '<button type="button" class="how-chip" data-title="%s" '
         'data-desc="%s" data-cmd="%s">'
         '<span class="how-chip__ico">%s</span>%s</button>'
-        % (_esc(title), _esc(desc), _esc(cmd), ico, _esc(title))
+        % (_esc(title), _esc(desc), _esc(_fill_cmd(cmd, context)),
+           ico, _esc(title))
         for ico, title, desc, cmd in chips_src)
     return (
         '<div class="how-bar"><span class="how-bar__label">This is a '
@@ -508,7 +748,7 @@ def _grid(view):
 # Document assembly
 # ---------------------------------------------------------------------------
 
-def render(graph, view=None, refresh_interval=None):
+def render(graph, view=None, refresh_interval=None, context=None):
     """Return a complete, self-contained HTML document for the runbook.
 
     ``graph`` drives the SVG dependency diagram; the optional ``view``
@@ -518,7 +758,8 @@ def render(graph, view=None, refresh_interval=None):
     tag is embedded so a browser viewing the file auto-reloads it from disk on
     that cadence (used by ``--watch`` so the user never has to refresh
     manually). Reloading a local file makes no network call, preserving the
-    offline/air-gapped guarantee.
+    offline/air-gapped guarantee. ``context`` (resource_group/project/runbook/
+    execution) fills the help-chip commands so users copy ready-to-run text.
     """
     with open(_TEMPLATE_PATH, encoding='utf-8') as handle:
         template = string.Template(handle.read())
@@ -536,7 +777,7 @@ def render(graph, view=None, refresh_interval=None):
         summary=_esc(summary),
         generated=_esc(generated),
         meta=_meta_block(view),
-        help=_help_bar(view),
+        help=_help_bar(view, context),
         details=_grid_details(view),
         legend=_legend(graph, view),
         refresh=_refresh_meta(refresh_interval),

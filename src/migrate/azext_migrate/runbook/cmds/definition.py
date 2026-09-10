@@ -267,7 +267,10 @@ def visualize(cmd, resource_group_name=None, project_name=None,
     title = 'Runbook definition: %s' % name
     dag = graph_mod.build_definition_graph(definition, title=title)
     view = viewmodel.build_definition_view(definition, title=title)
-    html_text = renderer.render(dag, view=view)
+    html_text = renderer.render(
+        dag, view=view,
+        context={'resource_group': resource_group_name,
+                 'project': project_name, 'runbook': runbook_name})
     target = files.resolve_output_path(
         file, 'runbook-%s-definition.html' % name)
     path = files.write_text(target, html_text)
