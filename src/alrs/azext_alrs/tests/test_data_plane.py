@@ -82,6 +82,8 @@ def test_non_https_remote_endpoint_rejected(base_url):
     [
         "https://r.eastus.api.alrs.azure.net?x=1",
         "https://r.eastus.api.alrs.azure.net#fragment",
+        "https://r.eastus.api.alrs.azure.net?",
+        "https://r.eastus.api.alrs.azure.net#",
     ],
 )
 def test_endpoint_query_or_fragment_rejected(base_url):
@@ -90,6 +92,22 @@ def test_endpoint_query_or_fragment_rejected(base_url):
     from azext_alrs.server import _data_plane
 
     with pytest.raises(ValidationError, match="query string or fragment"):
+        _data_plane.DataPlaneClient(cli_ctx=object(), base_url=base_url)
+
+
+@pytest.mark.parametrize(
+    "base_url",
+    [
+        "https://r.eastus.api.alrs.azure.net/api",
+        "https://r.eastus.api.alrs.azure.net/other",
+    ],
+)
+def test_unexpected_endpoint_path_rejected(base_url):
+    from azure.cli.core.azclierror import ValidationError
+
+    from azext_alrs.server import _data_plane
+
+    with pytest.raises(ValidationError, match="bare host or end with"):
         _data_plane.DataPlaneClient(cli_ctx=object(), base_url=base_url)
 
 
@@ -103,16 +121,47 @@ def test_request_prepends_base_url_and_attaches_auth(client):
 
     def fake_request(method, url, **kwargs):
         sent["method"], sent["url"], sent["headers"] = method, url, kwargs["headers"]
+        sent["allow_redirects"] = kwargs["allow_redirects"]
         return FakeResponse()
 
     client._session.request = fake_request
-    client.get("/repositories/")
+    client.get("/repositories/", allow_redirects=True)
 
     assert sent["method"] == "GET"
     assert sent["url"] == "https://r.eastus.api.alrs.azure.net/api/v1/repositories/"
+    assert sent["allow_redirects"] is False
     assert sent["headers"]["authorization"] == "Bearer tok123"
     assert "x-correlation-id" in sent["headers"]
     assert "alrs-cli-version" in sent["headers"]
+
+
+@pytest.mark.parametrize(
+    ("method_name", "path"),
+    [
+        ("post", "/repositories/"),
+        ("patch", "/repositories/id/"),
+        ("delete", "/repositories/id/"),
+    ],
+)
+def test_mutations_bypass_retrying_session(client, monkeypatch, method_name, path):
+    import requests
+
+    sent = {}
+    client._session.request = lambda *args, **kwargs: pytest.fail(
+        "mutations must not use the retrying session"
+    )
+    monkeypatch.setattr(
+        requests,
+        "request",
+        lambda method, url, **kwargs: (
+            sent.update(method=method, url=url, kwargs=kwargs) or FakeResponse()
+        ),
+    )
+
+    getattr(client, method_name)(path)
+
+    assert sent["method"] == method_name.upper()
+    assert sent["kwargs"]["allow_redirects"] is False
 
 
 def test_correlation_id_increments_per_request(client):
@@ -132,6 +181,7 @@ def test_correlation_id_increments_per_request(client):
         (401, "UnauthorizedError"),
         (403, "ForbiddenError"),
         (404, "ResourceNotFoundError"),
+        (307, "AzureResponseError"),
         (500, "AzureResponseError"),  # unmapped -> generic, still traceback-free
     ],
 )
@@ -167,6 +217,9 @@ def test_transport_failure_wrapped(client):
         "/publications\\..\\repositories\\id/",
         "/publications//id/",
         "/publications/\x7f/id/",
+        "//publications/id/",
+        "/publications/id//",
+        "/",
     ],
 )
 def test_unsafe_request_path_rejected_before_auth(monkeypatch, path):
@@ -249,6 +302,7 @@ def test_post_multipart_sends_streaming_body_without_retry(client, monkeypatch, 
 
     assert sent["method"] == "POST"
     assert sent["url"].endswith("/api/v1/packages/")
+    assert sent["kwargs"]["allow_redirects"] is False
     assert sent["kwargs"]["headers"]["Content-Type"].startswith("multipart/form-data; boundary=")
     assert b"package contents" in b"".join(sent["kwargs"]["data"])
 

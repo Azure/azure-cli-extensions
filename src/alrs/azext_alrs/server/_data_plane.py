@@ -155,9 +155,13 @@ class DataPlaneClient:
                 "Registry API endpoints must use HTTPS. Only loopback development "
                 "endpoints may use HTTP."
             )
-        if parsed_url.query or parsed_url.fragment:
+        if "?" in base_url or "#" in base_url:
             raise ValidationError(
                 "Registry API endpoints must not include a query string or fragment."
+            )
+        if parsed_url.path not in {"", DATA_PLANE_API_PREFIX}:
+            raise ValidationError(
+                f"Registry API endpoints must be a bare host or end with '{DATA_PLANE_API_PREFIX}'."
             )
         self.base_url = base_url
         # The CLI owns the versioned API path (see DATA_PLANE_API_PREFIX), so an
@@ -213,12 +217,12 @@ class DataPlaneClient:
             headers["authorization"] = f"Bearer {token}"
         return headers
 
-    def request(
-        self, method: str, path: str, *, retry: bool = True, **kwargs: Any
-    ) -> requests.Response:
+    def request(self, method: str, path: str, **kwargs: Any) -> requests.Response:
+        method = method.upper()
         _validate_request_path(path)
         url = f"{self._api_root}{path}"
         kwargs.setdefault("timeout", 600)
+        kwargs["allow_redirects"] = False
         kwargs["headers"] = {**self._headers(), **kwargs.get("headers", {})}
 
         logger.debug("Request: %s %s", method, url)
@@ -227,7 +231,7 @@ class DataPlaneClient:
                 logger.debug("%s: %s", key, kwargs[key])
 
         try:
-            request = self._session.request if retry else requests.request
+            request = self._session.request if method == "GET" else requests.request
             resp = request(method, url, **kwargs)
         except requests.RequestException as exc:
             raise AzureResponseError(f"Request to {url} failed: {exc}") from exc
@@ -253,7 +257,6 @@ class DataPlaneClient:
             path,
             data=body,
             headers={"Content-Type": body.content_type},
-            retry=False,
         )
 
     def patch(self, path: str, **kwargs: Any) -> requests.Response:
@@ -297,15 +300,16 @@ def is_dev_extension() -> bool:
         return False
 
 
-def _is_local_endpoint(base_url: str) -> bool:
-    return urlparse(base_url).hostname in _LOCAL_HOSTS
-
-
 def _validate_request_path(path: str) -> None:
-    segments = path.strip("/").split("/")
+    segments = path[1:].split("/") if path.startswith("/") else []
+    if segments and segments[-1] == "":
+        segments.pop()
     has_unsafe_delimiter = any(char in path for char in ("?", "#", "\\", "%"))
-    has_unsafe_segment = not path.startswith("/") or any(
-        segment in {"", ".", ".."} for segment in segments
+    has_unsafe_segment = (
+        not segments
+        or path.startswith("//")
+        or path.endswith("//")
+        or any(segment in {"", ".", ".."} for segment in segments)
     )
     has_control_character = any(ord(char) < 32 or ord(char) == 127 for char in path)
     if has_unsafe_delimiter or has_unsafe_segment or has_control_character:
@@ -341,6 +345,10 @@ def _acquire_token(cli_ctx: Any, resource: str) -> str:
 
 
 def _raise_for_status(resp: requests.Response) -> None:
+    if 300 <= resp.status_code < 400:
+        raise AzureResponseError(
+            f"Unexpected redirect from the data-plane service: {resp.status_code} {resp.reason}."
+        )
     if resp.status_code < 400:
         return
     err_cls = _STATUS_ERRORS.get(resp.status_code, AzureResponseError)
