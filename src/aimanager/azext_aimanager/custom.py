@@ -599,47 +599,55 @@ def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, name
                          model_deployment_name):  # pylint: disable=unused-argument
     deployment = client.get(
         resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
-    _annotate_model_ids(cmd, [deployment])
-    return deployment
+    return _annotate_model_ids(cmd, [deployment])[0]
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                          namespace_name):  # pylint: disable=unused-argument
-    deployments = list(client.list_by_ai_manager_namespace(
-        resource_group_name, ai_manager_name, namespace_name))
-    _annotate_model_ids(cmd, deployments)
-    return deployments
+    deployments = client.list_by_ai_manager_namespace(
+        resource_group_name, ai_manager_name, namespace_name)
+    return _annotate_model_ids(cmd, list(deployments))
 
 
 def _annotate_model_ids(cmd, deployments):
     """Resolve the human-readable model id (e.g. "meta-llama/Llama-3-8B") for each deployment
-    from its ``modelResourceId`` and stash it on the deployment as ``modelId`` for table
-    rendering.
+    from its ``modelResourceId`` and return plain dicts with the id stashed under ``modelId``
+    for table rendering.
+
+    Plain dicts are returned (rather than the SDK model objects with an extra attribute)
+    because ``modelId`` is not a declared field on ``ModelDeployment``. azure-cli core 2.76+
+    copies only declared fields when converting a model to output, which would silently drop
+    an injected attribute; a plain dict passes through untouched.
 
     The AIModel client is built once and lookups are memoized by ``(location, ai_model_name)``
     so a namespace with many deployments referencing the same model incurs a single GET per
     distinct model rather than one per deployment.
 
-    Best-effort: on any failure the affected deployment is left unchanged and table output
-    falls back to the AIModel resource name parsed from the id.
+    Best-effort: on any failure the affected deployment is returned unchanged (without a
+    ``modelId``) and the table shows a blank ModelId.
     """
     from azure.mgmt.core.tools import parse_resource_id
     from azext_aimanager._client_factory import cf_ai_models
 
     ai_models_client = None
     resolved = {}  # (location, ai_model_name) -> modelId
+    results = []
 
     for deployment in deployments:
+        # Normalize to a plain dict so an injected ``modelId`` survives CLI output conversion.
+        deployment = dict(deployment)
         try:
             properties = deployment.get('properties') or {}
             model_resource_id = properties.get('modelResourceId')
             if not model_resource_id:
+                results.append(deployment)
                 continue
 
             parsed = parse_resource_id(model_resource_id)
             location = parsed.get('name')  # the location segment for an AIModel id
             ai_model_name = parsed.get('resource_name')
             if not location or not ai_model_name:
+                results.append(deployment)
                 continue
 
             key = (location, ai_model_name)
@@ -655,7 +663,8 @@ def _annotate_model_ids(cmd, deployments):
         except Exception:  # pylint: disable=broad-except
             logger.debug("Failed to resolve human-readable modelId for a model deployment.",
                          exc_info=True)
-    return deployments
+        results.append(deployment)
+    return results
 
 
 def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
