@@ -19,3 +19,15 @@ def test_new_relic_secret_scrubber():
         scrubbed = process(entity)
 
         assert scrubbed["body"]["string"] == expected
+
+
+def test_new_relic_secret_scrubber_ignores_unsupported_body():
+    processor = NewRelicSecretScrubber()
+
+    for process in (processor.process_request, processor.process_response):
+        for entity in (
+            {"headers": {}},
+            {"headers": {}, "body": None},
+            {"headers": {}, "body": "not-a-dictionary"},
+        ):
+            assert process(entity) == entity

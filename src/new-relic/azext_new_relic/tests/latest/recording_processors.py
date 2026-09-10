@@ -26,7 +26,10 @@ class NewRelicSecretScrubber(RecordingProcessor):
 
     @staticmethod
     def _scrub(entity):
-        body = entity.get("body", {})
+        body = entity.get("body")
+        if not isinstance(body, dict):
+            return entity
+
         if is_text_payload(entity) and body.get("string"):
             entity["body"]["string"] = _INGESTION_KEY_RE.sub(
                 rf"\g<1>{MOCK_INGESTION_KEY}\g<2>",
