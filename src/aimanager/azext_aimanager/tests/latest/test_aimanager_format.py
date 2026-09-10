@@ -163,11 +163,13 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         self.assertEqual(result["ModelId"], "meta-llama/Llama-3-8B")
         self.assertEqual(result["Endpoint"], "https://md1.example.com")
 
-    def test_model_id_fallback_to_resource_name(self):
+    def test_model_id_blank_when_unresolved(self):
+        # When the human-readable modelId was not injected, the column is blank rather than
+        # falling back to the (unreadable) AIModel resource name.
         sample = self._sample()
         del sample["modelId"]
         result = modeldeployment_table_format(sample)
-        self.assertEqual(result["ModelId"], "llama3")
+        self.assertEqual(result["ModelId"], "")
 
     def test_replicas_missing_status(self):
         result = modeldeployment_table_format({"name": "md1", "properties": None})

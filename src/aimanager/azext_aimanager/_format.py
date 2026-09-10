@@ -99,11 +99,9 @@ def modeldeployment_table_format(result):
 
     # ``modelId`` (human-readable, e.g. "meta-llama/Llama-3-8B") is resolved from the
     # deployment's ``modelResourceId`` by the custom list/show functions and injected onto
-    # the result. Fall back to the AIModel resource name when resolution is unavailable.
-    model_id = result.get('modelId')
-    if not model_id:
-        model_ref = _parse_resource_id(properties.get('modelResourceId', ''))
-        model_id = model_ref.get('resource_name', '')
+    # the result. Shown blank when resolution is unavailable (the raw AIModel resource name
+    # is not human-readable, so it is intentionally not used as a fallback).
+    model_id = result.get('modelId') or ''
 
     replicas = '{}/{}'.format(
         _replica_display(status.get('currentReplicas')),
@@ -116,7 +114,7 @@ def modeldeployment_table_format(result):
         ('ProvisioningState', properties.get('provisioningState', '')),
         ('Replicas', replicas),
         ('Age', _age_display(result)),
-        ('ModelId', model_id or ''),
+        ('ModelId', model_id),
         ('Endpoint', status.get('endpoint', '')),
     ])
 
