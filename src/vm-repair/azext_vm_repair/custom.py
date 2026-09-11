@@ -44,6 +44,8 @@ from .repair_utils import (
     _check_linux_hyperV_gen,
     _select_distro_linux_gen2,
     _set_repair_map_url,
+    REPAIR_LIBRARY_FORK,
+    REPAIR_LIBRARY_BRANCH,
     _is_gen2,
     _unlock_encrypted_vm_run,
     _create_repair_vm,
@@ -57,6 +59,33 @@ from .repair_utils import (
 )
 
 logger = get_logger(__name__)
+
+PREVIEW_URL_ERROR = ('Invalid preview url. Write full URL of map.json file. '
+                     'example https://github.com/Azure/repair-script-library/blob/main/map.json')
+
+
+def _build_repo_params(preview, is_linux):
+    """Build the run-command parameters telling the run driver which script library to download.
+
+    The Linux driver receives parameters positionally, so the fork and branch are always sent for
+    Linux. Omitting them there would both shift the positions of the script parameters that follow
+    and leave the driver downloading the default library while the run id resolved from a fork.
+    """
+    fork_name = REPAIR_LIBRARY_FORK
+    branch_name = REPAIR_LIBRARY_BRANCH
+
+    if preview:
+        parts = preview.split('/')
+        if len(parts) < 7 or 'map.json' not in parts:
+            raise ValueError(PREVIEW_URL_ERROR)
+        last_index = parts.index('map.json')
+        fork_name = parts[last_index - 4]
+        branch_name = parts[last_index - 1]
+    elif not is_linux:
+        # The Windows driver declares these as named parameters with the same defaults.
+        return []
+
+    return ['repo_fork="{}"'.format(fork_name), 'repo_branch="{}"'.format(branch_name)]
 
 
 def _set_source_resource_context(command, source_vm, source_vm_instance_view=None, disk_controller_type=None):
@@ -728,15 +757,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             additional_scripts.append(custom_script_file)
 
         # If a preview URL is provided, validate it and extract the fork and branch names
-        if preview:
-            parts = preview.split('/')
-            if len(parts) < 7 or parts.index('map.json') == -1:
-                raise ValueError('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
-            last_index = parts.index('map.json')
-            fork_name = parts[last_index - 4]
-            branch_name = parts[last_index - 1]
-            run_command_params.append('repo_fork="{}"'.format(fork_name))
-            run_command_params.append('repo_branch="{}"'.format(branch_name))
+        run_command_params.extend(_build_repo_params(preview, is_linux))
 
         # Append parameters for the script
         if parameters:

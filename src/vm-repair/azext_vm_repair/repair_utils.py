@@ -20,7 +20,12 @@ from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNo
 
 from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
-REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/main/map.json'
+# The run drivers download the script bundle from this same fork and branch. Keep the map
+# URL derived from them so a run id cannot resolve from one branch and execute from another.
+REPAIR_LIBRARY_FORK = 'Azure'
+REPAIR_LIBRARY_BRANCH = 'main'
+REPAIR_MAP_URL = 'https://raw.githubusercontent.com/{fork}/repair-script-library/{branch}/map.json' \
+                 .format(fork=REPAIR_LIBRARY_FORK, branch=REPAIR_LIBRARY_BRANCH)
 
 logger = get_logger(__name__)
 

@@ -9,6 +9,7 @@ import unittest
 from unittest import mock
 
 from azext_vm_repair import repair_utils
+from azext_vm_repair.custom import _build_repo_params
 from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
 
 
@@ -69,18 +70,52 @@ class RepairMapUrlTest(unittest.TestCase):
         # The map resolves a run id to a path, then the driver downloads the bundle that
         # path lives in. If the two disagree on a branch, a run id can resolve and then
         # execute against different content, or not be present in the bundle at all.
+        patterns = (
+            r"\$repo_branch\s*=\s*'([\w.-]+)'",          # win-run-driver.ps1 default
+            r'repo_branch="\$\{\d+:-([\w.-]+)\}"',       # linux-run-driver.sh default
+            r'repair-script-library/(?:tarball|zipball)/(?!\$)([\w.-]+)',   # any literal branch
+        )
         scripts_dir = os.path.join(os.path.dirname(repair_utils.__file__), 'scripts')
         for driver in ('linux-run-driver.sh', 'win-run-driver.ps1'):
             with open(os.path.join(scripts_dir, driver), 'r') as handle:
                 content = handle.read()
-            branches = set(re.findall(r'repair-script-library/(?:tarball|zipball)/([\w.-]+)', content))
-            branches.update(re.findall(r"repo_branch\s*=\s*'([\w.-]+)'", content))
-            branches.discard('$repo_branch')
+            branches = set()
+            for pattern in patterns:
+                branches.update(re.findall(pattern, content))
             self.assertTrue(branches, '{} declares no library branch'.format(driver))
             self.assertEqual(
                 {self.EXPECTED_BRANCH}, branches,
                 '{} fetches from {} but the map URL uses {}'.format(
                     driver, sorted(branches), self.EXPECTED_BRANCH))
+
+
+class BuildRepoParamsTest(unittest.TestCase):
+
+    PREVIEW = 'https://github.com/SomeUser/repair-script-library/blob/my-branch/map.json'
+
+    def test_linux_always_receives_fork_and_branch(self):
+        # The Linux driver reads these positionally. Omitting them shifts every parameter
+        # after them, so the repair script used to receive the fork and branch as its own
+        # first two arguments whenever --preview was supplied.
+        self.assertEqual(
+            ['repo_fork="Azure"', 'repo_branch="main"'],
+            _build_repo_params(None, is_linux=True))
+
+    def test_windows_omits_them_when_no_preview_is_given(self):
+        # The Windows driver declares them as named parameters with the same defaults.
+        self.assertEqual([], _build_repo_params(None, is_linux=False))
+
+    def test_preview_fork_and_branch_are_used_on_both_platforms(self):
+        expected = ['repo_fork="SomeUser"', 'repo_branch="my-branch"']
+        self.assertEqual(expected, _build_repo_params(self.PREVIEW, is_linux=True))
+        self.assertEqual(expected, _build_repo_params(self.PREVIEW, is_linux=False))
+
+    def test_url_without_map_json_is_rejected_with_guidance(self):
+        # str.index raises before the length guard can report anything useful, so a URL
+        # that is long enough but has no map.json used to surface a bare ValueError.
+        with self.assertRaises(ValueError) as caught:
+            _build_repo_params('https://github.com/SomeUser/repair-script-library/blob/main/', True)
+        self.assertIn('map.json', str(caught.exception))
 
 
 if __name__ == '__main__':
