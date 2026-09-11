@@ -41,6 +41,7 @@ ALLOWED_CONFIG_SETTINGS_KEYS = [
     "nodeLabels",
     "autoscaling.minSize",
     "autoscaling.maxSize",
+    "autoscaling.enabled"
 ]
 
 
@@ -182,9 +183,9 @@ def check_aks_cluster_network_config(cluster):
             "This cluster does not meet the requirements."
         )
 
-    if policy != "calico":
+    if policy not in ("calico", "none"):
         raise InvalidArgumentValueError(
-            f"Calico network policy is not enabled for this AKS cluster. "
+            "Microsoft.Virtualnodes extension requires the AKS cluster network policy to be 'calico' or 'none'. "
             f"It is instead: {network_profile.network_policy}."
         )
 
