@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
+import re
 import shlex
 import timeit
 import traceback
@@ -14,6 +15,7 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.mgmt.core.tools import parse_resource_id
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
@@ -60,8 +62,28 @@ from .repair_utils import (
 
 logger = get_logger(__name__)
 
-PREVIEW_URL_ERROR = ('Invalid preview url. Write full URL of map.json file. '
-                     'example https://github.com/Azure/repair-script-library/blob/main/map.json')
+PREVIEW_URL_ERROR = ("Invalid preview url. Write full URL of map.json file. "
+                     "example https://github.com/{user}/repair-script-library/blob/main/map.json. "
+                     "The branch name must be a single path segment.")
+
+# The driver downloads from https://github.com/<fork>/repair-script-library/tarball/<branch>/,
+# so the repository name and a single-segment branch are both part of the contract.
+PREVIEW_URL_PATTERN = re.compile(
+    r'^https://github\.com/(?P<fork>[^/]+)/repair-script-library/(?:blob|tree)/(?P<branch>[^/]+)/map\.json$')
+
+
+def _parse_preview_url(preview):
+    """Extract the fork and branch from a preview map.json URL.
+
+    The URL is read positionally, so a branch name containing a slash shifts the fork to the
+    repository name and resolves to an entirely different GitHub organization. Reject anything
+    that does not match the documented shape rather than downloading scripts from a repository
+    the caller never named.
+    """
+    match = PREVIEW_URL_PATTERN.match(str(preview).strip())
+    if not match:
+        raise InvalidArgumentValueError(PREVIEW_URL_ERROR)
+    return match.group('fork'), match.group('branch')
 
 
 def _build_repo_params(preview, is_linux):
@@ -75,12 +97,7 @@ def _build_repo_params(preview, is_linux):
     branch_name = REPAIR_LIBRARY_BRANCH
 
     if preview:
-        parts = preview.split('/')
-        if len(parts) < 7 or 'map.json' not in parts:
-            raise ValueError(PREVIEW_URL_ERROR)
-        last_index = parts.index('map.json')
-        fork_name = parts[last_index - 4]
-        branch_name = parts[last_index - 1]
+        fork_name, branch_name = _parse_preview_url(preview)
     elif not is_linux:
         # The Windows driver declares these as named parameters with the same defaults.
         return []

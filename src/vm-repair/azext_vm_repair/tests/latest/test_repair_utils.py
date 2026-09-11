@@ -8,6 +8,8 @@ import re
 import unittest
 from unittest import mock
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 from azext_vm_repair import repair_utils
 from azext_vm_repair.custom import _build_repo_params
 from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
@@ -111,11 +113,23 @@ class BuildRepoParamsTest(unittest.TestCase):
         self.assertEqual(expected, _build_repo_params(self.PREVIEW, is_linux=False))
 
     def test_url_without_map_json_is_rejected_with_guidance(self):
-        # str.index raises before the length guard can report anything useful, so a URL
-        # that is long enough but has no map.json used to surface a bare ValueError.
-        with self.assertRaises(ValueError) as caught:
+        with self.assertRaises(InvalidArgumentValueError) as caught:
             _build_repo_params('https://github.com/SomeUser/repair-script-library/blob/main/', True)
         self.assertIn('map.json', str(caught.exception))
+
+    def test_branch_containing_a_slash_is_rejected(self):
+        # The URL is read positionally, so 'blob/feature/nvme/map.json' used to resolve the fork
+        # to 'repair-script-library' and download the bundle from a different GitHub organization
+        # than the caller named, without reporting anything.
+        with self.assertRaises(InvalidArgumentValueError):
+            _build_repo_params(
+                'https://github.com/SomeUser/repair-script-library/blob/feature/nvme/map.json', True)
+
+    def test_url_for_another_repository_is_rejected(self):
+        # The driver hard-codes the repository name, so a URL naming a different repository
+        # would silently download repair-script-library from that owner instead.
+        with self.assertRaises(InvalidArgumentValueError):
+            _build_repo_params('https://github.com/SomeUser/something-else/blob/main/map.json', True)
 
 
 if __name__ == '__main__':
