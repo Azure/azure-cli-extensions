@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b3
+++++++
+* Adds ``monitor health-models arrange``: rearranges and saves the entity positions.
+
 1.0.0b2
 ++++++
 * Mark the ``az monitor health-models`` command group and all of its commands as preview (``[Preview]``), matching the extension's preview status.

@@ -30,6 +30,13 @@ az monitor health-models update --name "myModel" --resource-group "myRG" --tags 
 ```
 az monitor health-models delete --name "myModel" --resource-group "myRG"
 ```
+##### Arrange #####
+Recompute and save every entity's canvas position. Lists what it will change and asks for
+confirmation first; `--yes` skips the prompt. See [LAYOUT.md](azext_health_models/LAYOUT.md) for
+the algorithm, `--priority` ordering and worked examples.
+```
+az monitor health-models arrange --name "myModel" --resource-group "myRG" --yes
+```
 #### Sub-resources ####
 The model is composed of `entity`, `signal-definition`, `relationship`, `authentication-setting`, and `discovery-rule` collections, plus `identity` for managed-identity assignment. Each follows the same `create / show / list / update / delete` pattern.
 
