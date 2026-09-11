@@ -132,7 +132,7 @@ def _oras_client(registry):
 
     try:
         token = _get_acr_token(registry.name, subscription)
-        client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
+        client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="basic")
         client.login(BEARER_TOKEN_USERNAME, token)
         logger.debug(f"Login to ACR {registry.name} completed successfully.")
     except Exception as exception:
