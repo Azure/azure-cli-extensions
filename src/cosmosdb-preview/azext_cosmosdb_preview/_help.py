@@ -965,7 +965,7 @@ helps['cosmosdb sql container redistribute-partition-throughput'] = """
                az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --evenly-distribute
       - name: Redistributes the partition throughput for a sql container from source partitions to target partitions
         text: |-
-               az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200]' --source-partition-info 9]'
+               az cosmosdb sql container redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200 --source-partition-info 9
 """
 
 helps['cosmosdb mongodb collection retrieve-partition-throughput'] = """
@@ -989,7 +989,7 @@ helps['cosmosdb mongodb collection redistribute-partition-throughput'] = """
                az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --evenly-distribute
       - name: Redistributes the partition throughput for a mongodb collection from source partitions to target partitions
         text: |-
-               az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200' --source-partition-info 9'
+               az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200 --source-partition-info 9
 """
 
 # in-account restore of a deleted sql database
