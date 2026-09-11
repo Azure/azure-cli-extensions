@@ -24,7 +24,7 @@ from azure.cli.command_modules.containerapp.containerapp_decorator import BaseCo
 from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
 from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
                                                            _convert_object_from_snake_to_camel_case,
-                                                           _object_to_dict, _remove_additional_attributes,
+                                                           _remove_additional_attributes,
                                                            _remove_readonly_attributes,
                                                            is_registry_msi_system, validate_container_app_name, AppType,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
@@ -69,7 +69,8 @@ from ._decorator_utils import (create_deserializer,
                                infer_runtime_option
                                )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
-    env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector
+    env_has_managed_identity, create_acrpull_role_assignment_if_needed, is_cloud_supported_by_service_connector, \
+    _object_to_dict
 from ._validators import validate_create, validate_runtime
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,

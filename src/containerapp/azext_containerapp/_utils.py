@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, unused-variable, redefined-outer-name, reimported, unused-import, consider-using-generator, broad-exception-raised
+import datetime
+import json
 import platform
 import subprocess
 import stat
@@ -47,6 +49,15 @@ from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, ACR_IMAGE_SUFFIX)
 
 logger = get_logger(__name__)
+
+
+def _object_to_dict(obj):
+    def default_handler(x):
+        if isinstance(x, (datetime.date, datetime.datetime)):
+            return x.isoformat()
+        return x.__dict__
+
+    return json.loads(json.dumps(obj, default=default_handler))
 
 
 def process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name, name,

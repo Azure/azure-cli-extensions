@@ -14,7 +14,7 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (clean_null_values, _convert_object_from_snake_to_camel_case, safe_get, safe_set,
-                                                           _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
+                                                           _remove_additional_attributes, _remove_readonly_attributes)
 
 from ._decorator_utils import load_yaml_file, create_deserializer, process_dapr_component_resiliency_yaml
 from ._models import (
@@ -22,6 +22,7 @@ from ._models import (
 
 from ._clients import DaprComponentResiliencyPreviewClient
 from ._client_factory import handle_raw_exception
+from ._utils import _object_to_dict
 from ._constants import (DEFAULT_COMPONENT_HTTP_RETRY_MAX,
                          DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_INITIAL_DELAY,
                          DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_MAX_DELAY)

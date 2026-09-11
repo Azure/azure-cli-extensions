@@ -12,7 +12,7 @@ from azure.cli.core.azclierror import (
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobCreateDecorator, \
     ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp._utils import safe_get, _convert_object_from_snake_to_camel_case, \
-    _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes, clean_null_values, \
+    _remove_additional_attributes, _remove_readonly_attributes, clean_null_values, \
     _populate_secret_values, _add_or_update_tags, ensure_workload_profile_supported, _add_or_update_env_vars, \
     parse_env_var_flags, _remove_env_vars, _get_acr_cred, store_as_secret_and_return_secret_ref, \
     parse_metadata_flags, parse_auth_flags, safe_set, _ensure_identity_resource_id, is_registry_msi_system, \
@@ -47,7 +47,7 @@ from ._models import (
     ContainerResources as ContainerResourcesModel,
     Container as ContainerModel,
     ScaleRule as ScaleRuleModel)
-from ._utils import is_registry_msi_system_environment, env_has_managed_identity
+from ._utils import is_registry_msi_system_environment, env_has_managed_identity, _object_to_dict
 from ._validators import validate_create
 
 logger = get_logger(__name__)
