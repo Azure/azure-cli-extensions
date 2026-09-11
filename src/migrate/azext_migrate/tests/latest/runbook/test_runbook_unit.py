@@ -490,7 +490,7 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         # A parameters/inputs document must never be rendered as a single
         # bogus step row (regression: -o table showed one empty 3-column
         # row when the parameters file was mis-selected as the definition).
-        params = {"runbookInputs": {
+        params = {"inputs": {
             "schema": {"vm.agentless.setup": {}},
             "stepInputs": {"vm.agentless.setup-1": {}}}}
         self.assertEqual(transformers.definition_table(params), [])
@@ -574,8 +574,8 @@ class FilesTests(unittest.TestCase):
 
     def test_read_status_json_zip_prefers_status_member(self):
         zip_bytes = _make_zip({
-            "spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "inputs.json": '{"runbookInputs": {"schema": {}}}',
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
             "executionStatus.json": '{"workstreams": [{"steps": []}]}',
         })
         self.assertEqual(
@@ -597,7 +597,7 @@ class FilesTests(unittest.TestCase):
         # Zip-slip is designed out: a member with a traversal path is
         # written by its base name, staying inside the destination.
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {}}',
+            "runbook.json": '{"spec": {}}',
             "../../evil.md": "# bad",
         })
         with tempfile.TemporaryDirectory() as tmp:
@@ -648,7 +648,7 @@ class FilesTests(unittest.TestCase):
         self.assertIn(b"inputs", data)
 
     def test_extract_parameters_file_none_when_only_spec(self):
-        zip_bytes = _make_zip({"rb-x-spec.json": '{"runbookSpec": {}}'})
+        zip_bytes = _make_zip({"rb-x-spec.json": '{"spec": {}}'})
         self.assertIsNone(files.extract_parameters_file(zip_bytes))
 
     def test_read_spec_json_selects_spec_by_content(self):
@@ -669,7 +669,7 @@ class FilesTests(unittest.TestCase):
     def test_read_spec_json_none_when_only_parameters(self):
         zip_bytes = _make_zip({
             "user-inputs.json":
-                '{"runbookInputs": {"stepInputs": {}}}'})
+                '{"inputs": {"stepInputs": {}}}'})
         self.assertIsNone(files.read_spec_json(zip_bytes))
 
     def test_describe_archive_reports_member_roles(self):
@@ -786,17 +786,17 @@ class FilesTests(unittest.TestCase):
                     os.path.join(tmp, "system-derived-inputs.json")))
 
     def test_read_spec_json_accepts_raw_blob(self):
-        raw = b'{"runbookSpec": {"workstreams": [{"id": "w1"}]}}'
+        raw = b'{"spec": {"workstreams": [{"id": "w1"}]}}'
         self.assertEqual(
             files.read_spec_json(raw),
-            {"runbookSpec": {"workstreams": [{"id": "w1"}]}})
+            {"spec": {"workstreams": [{"id": "w1"}]}})
 
     def test_extract_parameters_file_none_for_raw_blob(self):
         self.assertIsNone(
-            files.extract_parameters_file(b'{"runbookSpec": {}}'))
+            files.extract_parameters_file(b'{"spec": {}}'))
 
     def test_extract_definition_files_writes_raw_blob(self):
-        raw = b'{"runbookSpec": {"workstreams": []}}'
+        raw = b'{"spec": {"workstreams": []}}'
         with tempfile.TemporaryDirectory() as tmp:
             written = files.extract_definition_files(raw, tmp)
             self.assertEqual(
@@ -852,7 +852,7 @@ class DefinitionCommandTests(unittest.TestCase):
             "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        zip_bytes = _make_zip({"user-inputs.json": '{"runbookInputs": {}}'})
+        zip_bytes = _make_zip({"user-inputs.json": '{"inputs": {}}'})
         with mock.patch.object(
                 definition_cmds.files, 'download_bytes',
                 return_value=zip_bytes):
@@ -883,12 +883,14 @@ class DefinitionCommandTests(unittest.TestCase):
                 return_value=b'zip'), \
                 mock.patch.object(
                 definition_cmds.files, 'extract_definition_files',
-                return_value=["/tmp/runbook.json", "/tmp/readme.md"]) as ex:
+                return_value=["/tmp/runbook.json", "/tmp/parameters.json",
+                              "/tmp/readme.md"]) as ex:
             result = definition_cmds.download(
                 mock.Mock(), RG, PROJECT, RUNBOOK, destination="/tmp")
         ex.assert_called_once_with(b'zip', "/tmp")
         self.assertEqual(result, [
             {"kind": "definition", "path": "/tmp/runbook.json"},
+            {"kind": "parameters", "path": "/tmp/parameters.json"},
             {"kind": "documentation", "path": "/tmp/readme.md"},
         ])
 
@@ -3020,13 +3022,14 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertNotEqual(cleanup_at, -1)
         self.assertLess(setup_at, cleanup_at)
 
-    def test_diagram_orders_and_connects_dependent_workstreams(self):
+    def test_diagram_orders_dependent_workstreams(self):
         # w1 dependsOn w0; even though the document lists w1 first, the
         # prerequisite lane (First) must render above the dependent lane
-        # (Second) and a lane-to-lane connector is drawn.
+        # (Second) so the diagram is not reversed relative to the grid.
         document = {"workstreams": [
             {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
-             "steps": [{"stepId": "b", "displayName": "B"}]},
+             "steps": [{"stepId": "b", "displayName": "B",
+                        "dependsOn": ["a"]}]},
             {"id": "w0", "displayName": "First",
              "steps": [{"stepId": "a", "displayName": "A"}]},
         ]}
@@ -3034,7 +3037,8 @@ class VisualizeGridTests(unittest.TestCase):
         html_text = visualize_renderer.render(graph)
         self.assertLess(html_text.find('Workstream: First'),
                         html_text.find('Workstream: Second'))
-        self.assertIn('class="lane-edge"', html_text)
+        # Only step-to-step edges are drawn, in a single uniform style.
+        self.assertIn('class="edge"', html_text)
 
     def test_diagram_workstream_dependency_cycle_does_not_crash(self):
         document = {"workstreams": [

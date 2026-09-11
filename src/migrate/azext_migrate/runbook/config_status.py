@@ -6,8 +6,8 @@
 
 A runbook is *shipped* as two documents inside the same download archive:
 
-* the **definition** (``runbookSpec``) — the immutable step graph, and
-* the **parameters** (``runbookInputs``) — the per-step input *schema* plus
+* the **definition** (``spec``) — the immutable step graph, and
+* the **parameters** (``inputs``) — the per-step input *schema* plus
   the customer-supplied *values*.
 
 A step is only runnable once every *required* input has a value. Required
@@ -67,7 +67,7 @@ def _field_is_set(field, meta, step, step_inputs):
 def compute(step, runbook_inputs):
     """Return the configuration status string for a definition ``step``.
 
-    ``runbook_inputs`` is the ``runbookInputs`` object from the parameters
+    ``runbook_inputs`` is the ``inputs`` object from the parameters
     document (with ``schema`` and ``stepInputs``). Returns :data:`UNKNOWN`
     only when the step is not tracked under ``stepInputs`` (or no parameters
     are available). A step tracked with an empty inputs object and no schema

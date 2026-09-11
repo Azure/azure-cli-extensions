@@ -168,8 +168,8 @@ def _load_definition(cmd, resource_group_name, project_name, runbook_name,
                      quiet_lro=False):
     """Download the runbook archive and return an annotated definition.
 
-    The archive holds both the definition (``runbookSpec``) and the
-    parameters (``runbookInputs``); the latter is used to stamp each step
+    The archive holds both the definition (``spec``) and the
+    parameters (``inputs``); the latter is used to stamp each step
     with its computed ``configurationStatus`` so downstream table/grid/graph
     rendering can show configuration readiness without re-fetching.
 
@@ -202,8 +202,8 @@ def _load_definition_from_file(spec_file, parameters_file=None):
     """Load and annotate a runbook definition from local JSON files.
 
     ``spec_file`` is a runbook spec JSON (optionally wrapping the definition
-    under ``runbookSpec``). ``parameters_file`` is an optional parameters
-    JSON (a ``runbookInputs`` body, or a document that wraps it) used to
+    under ``spec``). ``parameters_file`` is an optional parameters
+    JSON (an ``inputs`` body, or a document that wraps it) used to
     compute each step's ``configurationStatus``. Enables offline
     rendering/testing without contacting the service.
     """
@@ -242,7 +242,7 @@ def download(cmd, resource_group_name, project_name, runbook_name,
         lower = os.path.basename(path).lower()
         if lower.endswith('.md'):
             kind = 'documentation'
-        elif 'input' in lower:
+        elif 'input' in lower or 'parameter' in lower:
             kind = 'parameters'
         else:
             kind = 'definition'

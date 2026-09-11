@@ -203,19 +203,6 @@ def _svg(graph):
                _MARGIN / 2 + 12, top + 16,
                _esc(name or 'Ungrouped'), _id_tspan(ws_id), count))
 
-    # Workstream-level dependency connectors: a rail down the left edge from a
-    # prerequisite lane's bottom to the dependent lane's top.
-    band_pos = {ws_id: (top, band_height)
-                for _, ws_id, top, band_height, _ in bands}
-    for pre_ws, dep_ws in graph.group_deps:
-        if pre_ws in band_pos and dep_ws in band_pos:
-            pre_top, pre_h = band_pos[pre_ws]
-            dep_top = band_pos[dep_ws][0]
-            rail = _MARGIN / 2
-            parts.append(
-                '<path class="lane-edge" d="M%.1f %.1f L%.1f %.1f"/>'
-                % (rail, pre_top + pre_h, rail, dep_top))
-
     for edge in graph.edges:
         if edge.source not in positions or edge.target not in positions:
             continue

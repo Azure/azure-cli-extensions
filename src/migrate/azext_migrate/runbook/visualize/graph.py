@@ -72,7 +72,7 @@ class Graph:
         self.group_order = group_order or []
         # Workstream-level dependencies as ``(prereq_ws_id, dependent_ws_id)``
         # pairs (from each workstream's ``dependsOn``). The renderer topo-sorts
-        # the swimlanes by these and draws lane-to-lane connectors.
+        # the swimlanes by these (prerequisite lanes render first).
         self.group_deps = group_deps or []
 
     @property

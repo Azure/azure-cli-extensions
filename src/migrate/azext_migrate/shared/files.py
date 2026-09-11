@@ -37,7 +37,7 @@ _SAS_URL_KEYS = (
     'sasUrl', 'sasUri', 'url', 'uri')
 
 # Derived/computed inputs the CLI must never surface or download. This
-# document shares the 'runbookInputs' shape with the user parameters, so it
+# document shares the 'inputs' shape with the user parameters, so it
 # can only be distinguished by name (content classification is not enough).
 # Both the legacy and post-rename (inputs -> parameters) names are excluded.
 _DERIVED_INPUTS_NAMES = (
@@ -137,8 +137,8 @@ def _classify_archive(zip_bytes):
     Returns ``{'definition': (name, bytes) | None,
     'parameters': (name, bytes) | None, 'docs': [(name, bytes), ...]}``.
 
-    The archive ships the definition (``runbookSpec``), the user parameters
-    (``runbookInputs``), the ``system-derived-inputs.json`` computed inputs,
+    The archive ships the definition (``spec``), the user parameters
+    (``inputs``), the ``system-derived-inputs.json`` computed inputs,
     and a documentation markdown. ``system-derived-inputs.json`` shares the
     parameters shape and is distinguished only by name, so it is skipped
     here; every other member is classified by content. This is the single
@@ -174,7 +174,7 @@ def _classify_archive(zip_bytes):
 
 
 def read_spec_json(zip_bytes):
-    """Return the parsed runbook definition (``runbookSpec``) or None.
+    """Return the parsed runbook definition (``spec``) or None.
 
     Accepts either a ZIP archive (definition classified out of it) or a raw
     ``spec.json`` blob (file-mode download), returning the parsed JSON.
@@ -279,8 +279,8 @@ def read_status_json(raw_bytes):
 
     The per-execution SAS blob may be either the raw ``executionStatus.json``
     bytes or a ZIP archive that contains it. A not-yet-run execution's download
-    archive ships only the input parameters (``runbookInputs``) and/or the
-    definition (``runbookSpec``); those are NOT a status document and are
+    archive ships only the input parameters (``inputs``) and/or the
+    definition (``spec``); those are NOT a status document and are
     rejected here so callers can fall back to the execution resource. Raises
     :class:`CLIInternalError` when no status document is present.
     """
@@ -408,8 +408,8 @@ def open_in_browser(path, required=False):
 def extract_definition_files(zip_bytes, destination):
     """Write the runbook definition, its parameters and docs to disk.
 
-    Writes the definition (``runbookSpec``), the user parameters
-    (``runbookInputs``) and any ``.md`` docs; the redundant
+    Writes the definition (``spec``), the user parameters
+    (``inputs``) and any ``.md`` docs; the redundant
     ``derived-input.json`` is skipped (see :func:`_classify_archive`). The
     parameters file is downloaded because the definition's per-step
     ``configurationStatus`` is computed from it, but callers still render only

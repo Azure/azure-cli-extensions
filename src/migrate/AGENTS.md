@@ -95,8 +95,8 @@ behavior are updated in the SAME change and the suite is green.
 ## Domain facts to preserve
 
 - Downloaded runbook archive members (service renamed 2026-08-25):
-  - `spec.json` → the **definition** (`{"runbookSpec": {...}}`).
-  - `inputs.json` → the **parameters** (`{"runbookInputs": {...}}`). `definition download`
+  - `spec.json` → the **definition** (`{"spec": {...}}`).
+  - `inputs.json` → the **parameters** (`{"inputs": {...}}`). `definition download`
     writes this alongside the definition (per-step `configurationStatus` is derived from it), but
     table/CLI output (`show`, `visualize` grid) still renders the definition only.
   - `system-derived-inputs.json` → same shape as inputs; **never downloaded/rendered** by any CLI.
