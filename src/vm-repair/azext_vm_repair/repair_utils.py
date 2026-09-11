@@ -24,6 +24,7 @@ from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 # URL derived from them so a run id cannot resolve from one branch and execute from another.
 REPAIR_LIBRARY_FORK = 'Azure'
 REPAIR_LIBRARY_BRANCH = 'main'
+# external-url-exempt: Azure/repair-script-library is the upstream source this command fetches scripts from
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/{fork}/repair-script-library/{branch}/map.json' \
                  .format(fork=REPAIR_LIBRARY_FORK, branch=REPAIR_LIBRARY_BRANCH)
 
@@ -43,6 +44,7 @@ def _get_cloud_init_script():
 def _set_repair_map_url(url):
     raw_url = str(url)
     if "github.com" in raw_url:
+        # external-url-exempt: --preview names a user fork, which cannot be mirrored internally
         raw_url = raw_url.replace("https://github.com/", "https://raw.githubusercontent.com/", 1)
         # Both forms reach here because the preview URL validator accepts either.
         raw_url = re.sub(r'/(?:blob|tree)/', '/', raw_url, count=1)
