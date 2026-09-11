@@ -60,6 +60,8 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
 
 
 class WorkspaceInfo:
+    _ENDPOINT_CACHE_KEY = 'workspace_endpoint_cache'
+
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, endpoint=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -75,7 +77,35 @@ class WorkspaceInfo:
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
-        self.endpoint = select_value('endpoint', endpoint)
+        self.endpoint = endpoint if endpoint is not None else self._get_cached_endpoint(cmd)
+
+    def _endpoint_cache_identity(self, cmd):
+        from azure.cli.core._profile import Profile
+
+        if not all((self.subscription, self.resource_group, self.name)):
+            return None
+        subscription = Profile(cli_ctx=cmd.cli_ctx).get_subscription(self.subscription)
+        return {
+            'resource_id': _get_workspace_resource_id(self).lower(),
+            'arm_endpoint': cmd.cli_ctx.cloud.endpoints.resource_manager.rstrip('/').lower(),
+            'tenant_id': subscription['tenantId'].lower(),
+        }
+
+    def _get_cached_endpoint(self, cmd):
+        value = cmd.cli_ctx.config.get('quantum', self._ENDPOINT_CACHE_KEY, None)
+        if not value:
+            return None
+        try:
+            cache = json.loads(value)
+        except (TypeError, ValueError):
+            return None
+        if not isinstance(cache, dict) or cache.get('version') != 1:
+            return None
+        identity = self._endpoint_cache_identity(cmd)
+        if not identity or any(cache.get(key) != value for key, value in identity.items()):
+            return None
+        endpoint = cache.get('endpoint')
+        return endpoint if isinstance(endpoint, str) and endpoint else None
 
     def clear(self):
         self.subscription = ''
@@ -86,11 +116,15 @@ class WorkspaceInfo:
     def save(self, cmd, endpoint=''):
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        # Save in the global [defaults] section of the .azure\config file
+        identity = self._endpoint_cache_identity(cmd) if endpoint else None
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
-            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'endpoint', endpoint)
+            if identity:
+                cache = dict(identity, version=1, endpoint=endpoint)
+                cmd.cli_ctx.config.set_value('quantum', self._ENDPOINT_CACHE_KEY, json.dumps(cache))
+            else:
+                cmd.cli_ctx.config.remove_option('quantum', self._ENDPOINT_CACHE_KEY)
 
 
 def _show_tip(msg):
@@ -454,7 +488,7 @@ def quotas(cmd, resource_group_name, workspace_name):
 
 def set(cmd, workspace_name, resource_group_name):
     """
-    Set the default Azure Quantum workspace.
+    Save resource-group and workspace-name defaults and the workspace's data-plane endpoint cache.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
