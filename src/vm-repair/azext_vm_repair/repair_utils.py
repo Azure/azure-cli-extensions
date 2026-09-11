@@ -44,7 +44,8 @@ def _set_repair_map_url(url):
     raw_url = str(url)
     if "github.com" in raw_url:
         raw_url = raw_url.replace("github.com", "raw.githubusercontent.com")
-        raw_url = raw_url.replace("/blob/", "/")
+        # Both forms reach here because the preview URL validator accepts either.
+        raw_url = re.sub(r'/(?:blob|tree)/', '/', raw_url, count=1)
         global REPAIR_MAP_URL
         REPAIR_MAP_URL = raw_url
         print(REPAIR_MAP_URL)

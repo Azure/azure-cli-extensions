@@ -11,7 +11,7 @@ from unittest import mock
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_vm_repair import repair_utils
-from azext_vm_repair.custom import _build_repo_params, list_scripts, run
+from azext_vm_repair.custom import _build_repo_params, _parse_preview_url, list_scripts, run
 from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
 
 
@@ -134,24 +134,51 @@ class BuildRepoParamsTest(unittest.TestCase):
 
 class PreviewUrlIsValidatedBeforeUseTest(unittest.TestCase):
 
-    # The map URL is a module-level global that --preview overwrites. Validating it only when
-    # the driver parameters are built left list-scripts unguarded, and left run fetching the
-    # map from an unvalidated location before the error was raised.
+    # The map URL is a module-level global that --preview overwrites. Validating it only when the
+    # driver parameters are built left list-scripts unguarded and left run fetching the map from an
+    # unvalidated location. The check also has to run before the command helper is constructed: the
+    # helper reports telemetry from its destructor, which runs at interpreter shutdown when the
+    # command aborts early, losing the event and printing a shutdown traceback over the real error.
     BAD_PREVIEW = 'https://github.com/SomeUser/something-else/blob/feature/nvme/map.json'
 
-    def test_list_scripts_rejects_the_url_before_overwriting_the_map(self):
-        with mock.patch('azext_vm_repair.custom.command_helper'), \
+    def test_list_scripts_rejects_the_url_before_doing_anything(self):
+        with mock.patch('azext_vm_repair.custom.command_helper') as helper, \
                 mock.patch('azext_vm_repair.custom._set_repair_map_url') as set_map_url:
             with self.assertRaises(InvalidArgumentValueError):
                 list_scripts(None, preview=self.BAD_PREVIEW)
         set_map_url.assert_not_called()
+        helper.assert_not_called()
 
-    def test_run_rejects_the_url_before_overwriting_the_map(self):
-        with mock.patch('azext_vm_repair.custom.command_helper'), \
+    def test_run_rejects_the_url_before_doing_anything(self):
+        with mock.patch('azext_vm_repair.custom.command_helper') as helper, \
                 mock.patch('azext_vm_repair.custom._set_repair_map_url') as set_map_url:
             with self.assertRaises(InvalidArgumentValueError):
                 run(None, 'vm', 'rg', run_id='win-hello-world', preview=self.BAD_PREVIEW)
         set_map_url.assert_not_called()
+        helper.assert_not_called()
+
+
+class AcceptedPreviewUrlsResolveToARawMapTest(unittest.TestCase):
+
+    # _parse_preview_url decides which URLs are usable and _set_repair_map_url turns them into the
+    # raw location that is actually fetched. They were written separately, so the validator accepted
+    # a /tree/ URL that the rewrite left intact, producing a raw URL that 404s before the run id
+    # could be resolved. Drive both together so neither can widen without the other.
+    ACCEPTED = (
+        'https://github.com/SomeUser/repair-script-library/blob/my-branch/map.json',
+        'https://github.com/SomeUser/repair-script-library/tree/my-branch/map.json',
+    )
+    EXPECTED_RAW = 'https://raw.githubusercontent.com/SomeUser/repair-script-library/my-branch/map.json'
+
+    def setUp(self):
+        self.addCleanup(setattr, repair_utils, 'REPAIR_MAP_URL', repair_utils.REPAIR_MAP_URL)
+
+    def test_every_accepted_url_rewrites_to_the_raw_map(self):
+        for url in self.ACCEPTED:
+            with self.subTest(url=url):
+                self.assertEqual(('SomeUser', 'my-branch'), _parse_preview_url(url))
+                repair_utils._set_repair_map_url(url)
+                self.assertEqual(self.EXPECTED_RAW, repair_utils.REPAIR_MAP_URL)
 
 
 if __name__ == '__main__':

@@ -720,6 +720,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     logger.debug('vm repair run parameters: vm_name: %s, resource_group_name: %s, run_id: %s, repair_vm_id: %s, custom_script_file: %s, parameters: %s, run_on_repair: %s, preview: %s',
                  vm_name, resource_group_name, run_id, repair_vm_id, custom_script_file, parameters, run_on_repair, preview)
 
+    # Reject a bad preview url before the command helper exists: its destructor runs at interpreter
+    # shutdown when the command aborts early, which loses the telemetry and prints a shutdown traceback.
+    if preview:
+        _parse_preview_url(preview)
+
     # Initiate a command helper object for logging and status tracking
     command = command_helper(logger, cmd, 'vm repair run')
 
@@ -727,9 +732,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
 
-    # Validate and set the repair map URL if a preview is available
     if preview:
-        _parse_preview_url(preview)
         _set_repair_map_url(preview)
 
     try:
@@ -885,11 +888,12 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 # This method lists all available repair scripts
 def list_scripts(cmd, preview=None):
     # Initiate a command helper object for logging and status tracking
-    command = command_helper(logger, cmd, 'vm repair list-scripts')
-
-    # Validate and set the repair map URL if a preview is available
     if preview:
         _parse_preview_url(preview)
+
+    command = command_helper(logger, cmd, 'vm repair list-scripts')
+
+    if preview:
         _set_repair_map_url(preview)
 
     try:
