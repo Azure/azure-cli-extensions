@@ -134,6 +134,17 @@ class SessionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The session timed out."""
 
 
+class SuiteOfferScope(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The scope at which the suite offer quota usage is applied."""
+
+    TARGET = "Target"
+    """The usage is applied at the target level."""
+    SUBSCRIPTION_TARGET = "SubscriptionTarget"
+    """The usage is applied at the subscription target level."""
+    WORKSPACE_TARGET = "WorkspaceTarget"
+    """The usage is applied at the workspace target level."""
+
+
 class TargetAvailability(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Target availability."""
 

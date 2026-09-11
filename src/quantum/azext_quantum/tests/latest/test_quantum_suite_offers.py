@@ -3,13 +3,131 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
+
 from azure.cli.testsdk.scenario_tests import live_only
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from ...commands import transform_suite_offers
+from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_suite_offer_targets
+from ... import _client_factory
+from ..._client_factory import base_url_v2
+from ...operations.suite_offers import (
+    _get_suite_offer,
+    _merge_suite_offer_quotas,
+    suite_offer_quotas,
+    suite_offer_targets,
+)
+from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus, Usage
+from ...vendored_sdks.azure_quantum_python._client._utils.model_base import _deserialize
+from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
+    build_services_suite_offers_list_quota_usages_request,
+    build_services_suite_offers_get_provider_status_request,
+    ServicesSuiteOffersOperations,
+)
+
+
+def _allocation(standard=None, high=None, target_id=None):
+    ns = SimpleNamespace(standard_minutes_lifetime=standard, high_minutes_lifetime=high)
+    if target_id is not None:
+        ns.target_id = target_id
+    return ns
+
+
+def _offer(provider_id='ionq', location='eastus', quotas=None, target_quotas=None):
+    properties = SimpleNamespace(
+        provider_id=provider_id,
+        location=location,
+        quotas=quotas,
+        target_quotas=target_quotas or [],
+    )
+    return SimpleNamespace(properties=properties)
+
+
+def _usage(target_id=None, standard=None, high=None, last_modified_time=None,
+           scope='SubscriptionTarget'):
+    return SimpleNamespace(
+        target_id=target_id,
+        scope=scope,
+        usage=Usage({
+            "standardMinutesLifetime": standard,
+            "highMinutesLifetime": high,
+        }),
+        last_modified_time=last_modified_time,
+    )
 
 
 class QuantumSuiteOffersScenarioTest(ScenarioTest):
+
+    def test_get_suite_offer(self):
+        offer = _offer(provider_id='IonQ')
+        client = SimpleNamespace(list_by_subscription=lambda: [
+            SimpleNamespace(properties=None),
+            offer,
+        ])
+
+        with patch('azext_quantum.operations.suite_offers.cf_suite_offers', return_value=client):
+            self.assertIs(_get_suite_offer(SimpleNamespace(cli_ctx=object()), 'sub', 'ionq'), offer)
+
+            with self.assertRaisesRegex(
+                    InvalidArgumentValueError,
+                    "No suite offer was found for provider 'other' in subscription 'sub'"):
+                _get_suite_offer(SimpleNamespace(cli_ctx=object()), 'sub', 'other')
+
+    def test_suite_offer_quotas_uses_canonical_provider_id(self):
+        offer = _offer(provider_id='IonQ', target_quotas=[
+            _allocation(standard=30, high=15, target_id='ionq.qpu'),
+        ])
+        client = SimpleNamespace(list_quota_usages=lambda subscription_id, provider_id: [])
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        with patch('azext_quantum.operations.suite_offers.get_subscription_id', return_value='sub'), \
+                patch('azext_quantum.operations.suite_offers._get_suite_offer', return_value=offer), \
+                patch('azext_quantum.operations.suite_offers.cf_suite_offers_data_plane',
+                      return_value=client) as client_factory, \
+                patch.object(client, 'list_quota_usages', wraps=client.list_quota_usages) as list_usages:
+            rows = suite_offer_quotas(cmd, 'ionq')
+
+        client_factory.assert_called_once_with(cmd.cli_ctx, 'sub', 'eastus')
+        list_usages.assert_called_once_with('sub', 'IonQ')
+        self.assertEqual(rows[0]['providerId'], 'IonQ')
+
+    def test_suite_offer_targets_uses_canonical_provider_id(self):
+        offer = _offer(provider_id='IonQ')
+        status = SimpleNamespace(id='IonQ', targets=[])
+        client = SimpleNamespace(get_provider_status=lambda subscription_id, provider_id: status)
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        with patch('azext_quantum.operations.suite_offers.get_subscription_id', return_value='sub'), \
+                patch('azext_quantum.operations.suite_offers._get_suite_offer', return_value=offer), \
+                patch('azext_quantum.operations.suite_offers.cf_suite_offers_data_plane', return_value=client), \
+                patch.object(client, 'get_provider_status', wraps=client.get_provider_status) as get_status:
+            result = suite_offer_targets(cmd, 'ionq')
+
+        get_status.assert_called_once_with('sub', 'IonQ')
+        self.assertEqual(result, [status])
+
+    def test_suite_offer_quotas_returns_cli_error_when_usage_is_not_found(self):
+        offer = _offer(provider_id='IonQ')
+        client = SimpleNamespace(list_quota_usages=Mock(side_effect=AzureResourceNotFoundError()))
+
+        with patch('azext_quantum.operations.suite_offers.get_subscription_id', return_value='sub'), \
+                patch('azext_quantum.operations.suite_offers._get_suite_offer', return_value=offer), \
+                patch('azext_quantum.operations.suite_offers.cf_suite_offers_data_plane', return_value=client):
+            with self.assertRaisesRegex(ResourceNotFoundError, "No quota usages were found for provider 'ionq'"):
+                suite_offer_quotas(SimpleNamespace(cli_ctx=object()), 'ionq')
+
+    def test_suite_offer_targets_returns_cli_error_when_status_is_not_found(self):
+        offer = _offer(provider_id='IonQ')
+        client = SimpleNamespace(get_provider_status=Mock(side_effect=AzureResourceNotFoundError()))
+
+        with patch('azext_quantum.operations.suite_offers.get_subscription_id', return_value='sub'), \
+                patch('azext_quantum.operations.suite_offers._get_suite_offer', return_value=offer), \
+                patch('azext_quantum.operations.suite_offers.cf_suite_offers_data_plane', return_value=client):
+            with self.assertRaisesRegex(ResourceNotFoundError, "No target status was found for provider 'ionq'"):
+                suite_offer_targets(SimpleNamespace(cli_ctx=object()), 'ionq')
 
     def test_transform_suite_offers(self):
         suite_offers = [
@@ -36,7 +154,360 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(row['Company'], 'IonQ, Inc.')
         self.assertEqual(row['Location'], 'eastus')
 
+    def test_transform_suite_offer_quotas(self):
+        quotas = [
+            {
+                'providerId': 'ionq',
+                'scope': 'SubscriptionTarget',
+                'targetId': 'ionq.qpu',
+                'allocation': {'standardMinutesLifetime': 100, 'highMinutesLifetime': 50},
+                'usage': {'standardMinutesLifetime': 40, 'highMinutesLifetime': 10},
+            },
+            {
+                'providerId': 'ionq',
+                'scope': 'SubscriptionTarget',
+                'targetId': 'ionq.simulator',
+                'allocation': {'standardMinutesLifetime': None, 'highMinutesLifetime': None},
+                'usage': {'standardMinutesLifetime': None, 'highMinutesLifetime': None},
+            }
+        ]
+
+        table = transform_suite_offer_quotas(quotas)
+
+        self.assertEqual(len(table), 2)
+        row = table[0]
+        self.assertEqual(list(row.keys()), [
+            'Target', 'Std Allocated (hrs)', 'Std Used (hrs)', 'High Allocated (hrs)', 'High Used (hrs)'
+        ])
+        self.assertEqual(row['Target'], 'ionq.qpu')
+        self.assertEqual(row['Std Allocated (hrs)'], '1.67')
+        self.assertEqual(row['Std Used (hrs)'], '0.67')
+        self.assertEqual(row['High Allocated (hrs)'], '0.83')
+        self.assertEqual(row['High Used (hrs)'], '0.17')
+        missing_row = table[1]
+        self.assertEqual(missing_row['Std Allocated (hrs)'], '0.00')
+        self.assertEqual(missing_row['Std Used (hrs)'], '0.00')
+        self.assertEqual(missing_row['High Allocated (hrs)'], '0.00')
+        self.assertEqual(missing_row['High Used (hrs)'], '0.00')
+
+    def test_base_url_v2(self):
+        self.assertEqual(base_url_v2('East US'), 'https://eastus-v2.quantum.azure.com/')
+
+        with patch.dict('os.environ', {'AZURE_QUANTUM_ENV': 'canary'}, clear=True):
+            self.assertEqual(base_url_v2('West US'), 'https://westus-v2.quantum.azure.com/')
+
+    def test_suite_offers_data_plane_factory_builds_endpoint_from_location(self):
+        suite_offers = object()
+        client = SimpleNamespace(services=SimpleNamespace(suite_offers=suite_offers))
+        cli_ctx = object()
+
+        with patch.object(_client_factory, 'cf_quantum', return_value=client) as quantum_factory:
+            result = _client_factory.cf_suite_offers_data_plane(cli_ctx, 'sub', 'East US')
+
+        self.assertIs(result, suite_offers)
+        quantum_factory.assert_called_once_with(
+            cli_ctx, 'sub', None, None, 'https://eastus-v2.quantum.azure.com/')
+
+    def test_build_suite_offers_list_quota_usages_request(self):
+        request = build_services_suite_offers_list_quota_usages_request(
+            subscription_id='00000000-0000-0000-0000-000000000000',
+            provider_id='ionq',
+        )
+        self.assertEqual(request.method, 'GET')
+        self.assertIn(
+            '/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/suiteOffers/ionq/quotaUsages',
+            request.url,
+        )
+        self.assertIn('api-version=2026-01-15-preview', request.url)
+
+    def test_deserialize_quota_usages(self):
+        data = [
+            {
+                'id': 'usage-1',
+                'providerId': 'ionq',
+                'scope': 'Subscription',
+                'usage': {'standardMinutesLifetime': 40.0, 'highMinutesLifetime': 10.0},
+                'lastModifiedTime': '2026-01-15T00:00:00Z',
+            },
+            {
+                'id': 'usage-2',
+                'providerId': 'ionq',
+                'scope': 'SubscriptionTarget',
+                'targetId': 'ionq.qpu',
+                'usage': {'standardMinutesLifetime': 5.0, 'highMinutesLifetime': 1.0},
+            },
+        ]
+
+        usages = _deserialize(list[QuotaUsage], data)
+
+        self.assertEqual(len(usages), 2)
+        self.assertEqual(usages[0].scope, 'Subscription')
+        self.assertIsNone(usages[0].target_id)
+        self.assertEqual(usages[0].usage['standardMinutesLifetime'], 40.0)
+        self.assertEqual(usages[1].scope, 'SubscriptionTarget')
+        self.assertEqual(usages[1].target_id, 'ionq.qpu')
+
+    def test_list_quota_usages_accepts_array_response(self):
+        data = [{
+            'id': 'usage-1',
+            'providerId': 'ionq',
+            'scope': 'SubscriptionTarget',
+            'targetId': 'ionq.qpu',
+            'usage': {'standardMinutesLifetime': 5.0, 'highMinutesLifetime': 1.0},
+            'lastModifiedTime': '2026-01-15T00:00:00Z',
+        }]
+        http_response = SimpleNamespace(status_code=200, json=lambda: data)
+        pipeline_response = SimpleNamespace(http_response=http_response)
+        fake_client = SimpleNamespace(
+            _pipeline=SimpleNamespace(run=lambda request, **kwargs: pipeline_response),
+            format_url=lambda url, **kwargs: url,
+        )
+        fake_config = SimpleNamespace(api_version='2026-01-15-preview', endpoint='https://example')
+        fake_serialize = SimpleNamespace(url=lambda name, value, kind, **kwargs: value)
+        operations = ServicesSuiteOffersOperations(fake_client, fake_config, fake_serialize, object())
+
+        usages = list(operations.list_quota_usages('sub', 'ionq'))
+
+        self.assertEqual(len(usages), 1)
+        self.assertEqual(usages[0].target_id, 'ionq.qpu')
+        self.assertEqual(usages[0].usage['standardMinutesLifetime'], 5.0)
+
+    def test_build_suite_offers_get_provider_status_request(self):
+        request = build_services_suite_offers_get_provider_status_request(
+            subscription_id='00000000-0000-0000-0000-000000000000',
+            provider_id='ionq',
+        )
+        self.assertEqual(request.method, 'GET')
+        self.assertIn(
+            '/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/suiteOffers/ionq/providerStatus',
+            request.url,
+        )
+        self.assertIn('api-version=2026-01-15-preview', request.url)
+
+    def test_deserialize_provider_status_single_object(self):
+        data = {
+            'id': 'ionq',
+            'currentAvailability': 'Available',
+            'targets': [
+                {
+                    'id': 'ionq.qpu',
+                    'currentAvailability': 'Available',
+                    'averageQueueTime': 42,
+                    'averageQueueTimeHighPriority': 10,
+                    'averageQueueTimeStandardPriority': 60,
+                },
+                {'id': 'ionq.simulator', 'currentAvailability': 'Available', 'averageQueueTime': 0},
+            ],
+        }
+
+        provider = _deserialize(ProviderStatus, data)
+
+        self.assertEqual(provider.id, 'ionq')
+        self.assertEqual(provider.current_availability, 'Available')
+        self.assertEqual(len(provider.targets), 2)
+        self.assertEqual(provider.targets[0].id, 'ionq.qpu')
+        self.assertEqual(provider.targets[0].average_queue_time, 42)
+        self.assertEqual(provider.targets[0].average_queue_time_high_priority, 10)
+        self.assertEqual(provider.targets[0].average_queue_time_standard_priority, 60)
+        self.assertIsNone(provider.targets[1].average_queue_time_high_priority)
+        self.assertIsNone(provider.targets[1].average_queue_time_standard_priority)
+
+    def test_get_provider_status_returns_single_object(self):
+        # The service returns a single ProviderStatus object, not a paged envelope or array.
+        single = {
+            'id': 'ionq',
+            'currentAvailability': 'Available',
+            'targets': [
+                {
+                    'id': 'ionq.qpu',
+                    'currentAvailability': 'Available',
+                    'averageQueueTime': 7,
+                    'averageQueueTimeHighPriority': 2,
+                    'averageQueueTimeStandardPriority': 9,
+                },
+            ],
+        }
+        http_response = SimpleNamespace(status_code=200, json=lambda: single)
+        pipeline_response = SimpleNamespace(http_response=http_response)
+        fake_client = SimpleNamespace(
+            _pipeline=SimpleNamespace(run=lambda request, **kwargs: pipeline_response),
+            format_url=lambda url, **kwargs: url,
+        )
+        fake_config = SimpleNamespace(api_version='2026-01-15-preview', endpoint='https://example')
+        fake_serialize = SimpleNamespace(url=lambda name, value, kind, **kwargs: value)
+
+        operations = ServicesSuiteOffersOperations(
+            fake_client, fake_config, fake_serialize, object()
+        )
+
+        result = operations.get_provider_status(
+            '00000000-0000-0000-0000-000000000000', 'ionq'
+        )
+
+        self.assertEqual(result.id, 'ionq')
+        self.assertEqual(result.current_availability, 'Available')
+        self.assertEqual(result.targets[0].id, 'ionq.qpu')
+        self.assertEqual(result.targets[0].average_queue_time, 7)
+        self.assertEqual(result.targets[0].average_queue_time_high_priority, 2)
+        self.assertEqual(result.targets[0].average_queue_time_standard_priority, 9)
+
+    def test_transform_targets_suite_offer_shape(self):
+        providers = [
+            {
+                'id': 'ionq',
+                'currentAvailability': 'Available',
+                'targets': [
+                    {
+                        'id': 'ionq.qpu',
+                        'currentAvailability': 'Available',
+                        'averageQueueTime': 42,
+                        'averageQueueTimeHighPriority': 10,
+                        'averageQueueTimeStandardPriority': 60,
+                    },
+                    {'id': 'ionq.simulator', 'currentAvailability': 'Available', 'averageQueueTime': 0},
+                ],
+            }
+        ]
+
+        table = transform_suite_offer_targets(providers)
+
+        self.assertEqual(len(table), 2)
+        row = table[0]
+        self.assertEqual(list(row.keys()), [
+            'Target-id', 'Current Availability', 'Average Queue Time (seconds)',
+            'Average Standard Queue Time (seconds)', 'Average High Queue Time (seconds)'
+        ])
+        self.assertEqual(row['Target-id'], 'ionq.qpu')
+        self.assertEqual(row['Current Availability'], 'Available')
+        self.assertEqual(row['Average Queue Time (seconds)'], 42)
+        self.assertEqual(row['Average Standard Queue Time (seconds)'], 60)
+        self.assertEqual(row['Average High Queue Time (seconds)'], 10)
+        self.assertIsNone(table[1]['Average Standard Queue Time (seconds)'])
+        self.assertIsNone(table[1]['Average High Queue Time (seconds)'])
+
+    def test_merge_quotas_target_with_usage(self):
+        offer = _offer(
+            quotas=_allocation(standard=100, high=50),  # subscription-level allocation is ignored
+            target_quotas=[_allocation(standard=30, high=15, target_id='ionq.qpu')],
+        )
+        usages = [
+            _usage(target_id=None, standard=40, high=10),        # subscription-scope usage ignored
+            _deserialize(QuotaUsage, {
+                'providerId': 'ionq',
+                'scope': 'SubscriptionTarget',
+                'targetId': 'ionq.qpu',
+                'usage': {'standardMinutesLifetime': 5, 'highMinutesLifetime': 2},
+                'lastModifiedTime': '2026-01-15T00:00:00Z',
+            }),
+        ]
+
+        rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
+
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(list(row.keys()), ['providerId', 'scope', 'targetId', 'allocation', 'usage'])
+        self.assertEqual(row['providerId'], 'ionq')
+        self.assertEqual(row['scope'], 'SubscriptionTarget')
+        self.assertEqual(row['targetId'], 'ionq.qpu')
+        self.assertEqual(row['allocation'], {'standardMinutesLifetime': 30, 'highMinutesLifetime': 15})
+        self.assertEqual(row['usage'], {'standardMinutesLifetime': 5, 'highMinutesLifetime': 2})
+
+    def test_merge_quotas_matches_target_case_insensitively(self):
+        offer = _offer(target_quotas=[
+            _allocation(standard=30, high=15, target_id='IonQ.QPU'),
+        ])
+        usages = [_usage(target_id='ionq.qpu', standard=5, high=2)]
+
+        rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
+
+        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': 5, 'highMinutesLifetime': 2})
+
+    def test_merge_quotas_preserves_backend_allocation_order(self):
+        offer = _offer(target_quotas=[
+            _allocation(standard=30, high=15, target_id='ionq.z-target'),
+            _allocation(standard=20, high=10, target_id='ionq.a-target'),
+        ])
+
+        rows = _merge_suite_offer_quotas(offer, [], 'ionq')
+
+        self.assertEqual([row['targetId'] for row in rows], ['ionq.z-target', 'ionq.a-target'])
+
+    def test_merge_quotas_target_without_usage(self):
+        offer = _offer(
+            target_quotas=[_allocation(standard=30, high=None, target_id='ionq.qpu')],
+        )
+
+        rows = _merge_suite_offer_quotas(offer, [], 'ionq')
+
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row['allocation'], {'standardMinutesLifetime': 30, 'highMinutesLifetime': None})
+        self.assertEqual(row['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
+
+    def test_merge_quotas_null_usage_values_as_zero(self):
+        offer = _offer(
+            target_quotas=[_allocation(standard=30, high=15, target_id='ionq.qpu')],
+        )
+        usages = [_usage(target_id='ionq.qpu', standard=None, high=None)]
+
+        rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
+
+        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
+
+    def test_merge_quotas_ignores_subscription_and_unmatched_usage(self):
+        offer = _offer(
+            quotas=_allocation(standard=100, high=50),
+            target_quotas=[_allocation(standard=30, high=15, target_id='ionq.qpu')],
+        )
+        usages = [
+            _usage(target_id=None, standard=40, high=10),           # subscription scope -> ignored
+            _usage(target_id='ionq.qpu', standard=8, high=4,
+                   scope='WorkspaceTarget'),                        # wrong target scope -> ignored
+            _usage(target_id='other.target', standard=7, high=3),   # no matching allocation -> ignored
+        ]
+
+        rows = _merge_suite_offer_quotas(offer, usages, 'ionq')
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['targetId'], 'ionq.qpu')
+        self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
+
     @live_only()
     def test_quantum_suite_offer_list(self):
         offers = self.cmd('az quantum suite-offer list').get_output_in_json()
         assert isinstance(offers, list)
+
+    @live_only()
+    def test_quantum_suite_offer_quotas(self):
+        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
+        if not offers:
+            self.skipTest('No suite offers available in the subscription.')
+
+        provider_id = offers[0]['properties']['providerId']
+        quotas = self.cmd(f'az quantum suite-offer quotas -p {provider_id}').get_output_in_json()
+
+        assert isinstance(quotas, list)
+        for row in quotas:
+            self.assertEqual(set(row.keys()), {'providerId', 'scope', 'targetId', 'allocation', 'usage'})
+            self.assertEqual(row['scope'], 'SubscriptionTarget')
+            self.assertEqual(row['providerId'], provider_id)
+            self.assertEqual(set(row['allocation'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
+            self.assertEqual(set(row['usage'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
+
+    @live_only()
+    def test_quantum_suite_offer_target_list(self):
+        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
+        if not offers:
+            self.skipTest('No suite offers available in the subscription.')
+
+        provider_id = offers[0]['properties']['providerId']
+        providers = self.cmd(f'az quantum suite-offer target list -p {provider_id}').get_output_in_json()
+
+        assert isinstance(providers, list)
+        for provider in providers:
+            self.assertIn('id', provider)
+            self.assertIn('targets', provider)
+            for target in provider['targets']:
+                self.assertIn('id', target)
+                self.assertIn('currentAvailability', target)
+                self.assertIn('averageQueueTime', target)

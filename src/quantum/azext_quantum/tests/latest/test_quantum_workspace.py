@@ -6,6 +6,7 @@
 import os
 import argparse
 import pytest
+import re
 import unittest
 import time
 from types import SimpleNamespace
@@ -14,14 +15,21 @@ from unittest.mock import patch
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, get_test_workspace_v2_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_storage_account, _autoadd_providers, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_target_quota_bounds, _validate_storage_account, _autoadd_providers, create, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _merge_workspace_quotas
+from ...commands import transform_workspace_quotas
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
+from ...vendored_sdks.azure_quantum_python._client.models import Usage
+from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
+    build_services_quotas_list_workspace_usages_request,
+)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -124,7 +132,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             results = self.cmd('az quantum workspace quotas -o json').get_output_in_json()
             assert len(results) > 0
             assert len(results[0]["dimension"]) > 0
-            assert (results[0]["holds"]) >= 0.0
+            assert results[0]["holds"] >= 0.0
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -236,7 +244,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("name", test_workspace_temp),
             self.check("properties.provisioningState", "Deleting")
         ])
-
 
     @live_only()
     def test_workspace_keys(self):
@@ -557,9 +564,39 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         assert provider.target_quotas[0].standard_minutes_lifetime == 0
         assert provider.target_quotas[0].high_minutes_lifetime == 50
 
+    def test_skip_role_assignment_api_key_matches_workspace_kind(self):
+        from ...operations import workspace as workspace_ops
+
+        for workspace_kind, expected_api_key_enabled in ((None, True), ('V1', True), ('V2', False)):
+            workspace = SimpleNamespace(properties=SimpleNamespace(providers=[]))
+            poller = SimpleNamespace(done=lambda: True, result=lambda: workspace)
+            client = SimpleNamespace(begin_create_or_update=lambda *args, **kwargs: poller)
+            info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+
+            with patch.object(workspace_ops, 'cf_workspaces', return_value=client), \
+                    patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                    patch.object(workspace_ops, '_get_basic_quantum_workspace', return_value=workspace), \
+                    patch.object(workspace_ops, '_add_quantum_providers') as add_providers:
+                result = create(
+                    SimpleNamespace(cli_ctx=object()),
+                    resource_group_name='group',
+                    workspace_name='workspace',
+                    location='eastus',
+                    storage_account='storage',
+                    skip_role_assignment=True,
+                    workspace_kind=workspace_kind,
+                )
+
+            self.assertIs(result, workspace)
+            self.assertEqual(workspace.properties.api_key_enabled, expected_api_key_enabled)
+            self.assertEqual(add_providers.call_args.args[-1], workspace_kind == 'V2')
+
     def test_target_quota_validation_errors(self):
         with self.assertRaises(InvalidArgumentValueError):
             _require_v2_workspace('V1')
+
+        with self.assertRaises(InvalidArgumentValueError):
+            _require_v2_workspace(None)
 
         with self.assertRaises(InvalidArgumentValueError):
             _apply_target_quotas([Provider(provider_id='provider')], [{
@@ -574,6 +611,238 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 'targetId': 'provider.target',
                 'highMinutesLifetime': 50
             }])
+
+    def test_target_quota_bounds_allow_equality_and_match_case_insensitively(self):
+        provider = Provider(provider_id='Provider', target_quotas=[TargetQuotaAllocations(
+            target_id='Provider.Target', standard_minutes_lifetime=25, high_minutes_lifetime=100
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(
+            provider_id='PROVIDER', target_quotas=[TargetQuotaAllocations(
+                target_id='PROVIDER.TARGET', standard_minutes_lifetime=100, high_minutes_lifetime=100
+            )]
+        ))
+        usage = SimpleNamespace(
+            target_id='provider.target',
+            usage=Usage({'standardMinutesLifetime': 25, 'highMinutesLifetime': 10})
+        )
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+            quota_factory.return_value.list_workspace_usages.return_value = [usage]
+
+            _validate_target_quota_bounds(cmd, info, workspace, [{
+                'providerId': 'provider', 'targetId': 'provider.target'
+            }], include_usage=True)
+
+        quota_factory.return_value.list_workspace_usages.assert_called_once_with(
+            'sub', 'group', 'workspace', provider_id='Provider')
+
+    def test_target_quota_bounds_reject_values_outside_inclusive_range(self):
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        for final_value, usage_value, expected_text, expected_command in (
+            (24, 25, 'below the 25 minutes the workspace has already used. Specify at least 25.',
+             'az quantum workspace quotas -g group -w workspace'),
+            (25, 25.5, 'below the 25.5 minutes the workspace has already used. Specify at least 25.5.',
+             'az quantum workspace quotas -g group -w workspace'),
+            (101, 25, 'above the 100 minutes allocated to the subscription. Specify at most 100.',
+             'az quantum suite-offer quotas --provider-id provider')):
+            provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target', standard_minutes_lifetime=final_value
+            )])
+            workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+                endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+            suite_offer = SimpleNamespace(properties=SimpleNamespace(
+                provider_id='provider', target_quotas=[TargetQuotaAllocations(
+                    target_id='provider.target', standard_minutes_lifetime=100
+                )]
+            ))
+            usage = SimpleNamespace(
+                target_id='provider.target',
+                usage=Usage({'standardMinutesLifetime': usage_value})
+            )
+
+            from ...operations import workspace as workspace_ops
+            with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                    patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+                suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+                quota_factory.return_value.list_workspace_usages.return_value = [usage]
+
+                with self.assertRaises(InvalidArgumentValueError) as error:
+                    _validate_target_quota_bounds(cmd, info, workspace, [{
+                        'providerId': 'provider', 'targetId': 'provider.target'
+                    }], include_usage=True)
+                self.assertIn(expected_text, str(error.exception))
+                self.assertIn(expected_command, str(error.exception))
+
+    def test_target_quota_bounds_validate_high_priority_independently(self):
+        provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+            target_id='provider.target', standard_minutes_lifetime=50, high_minutes_lifetime=21
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(
+            provider_id='provider', target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target', standard_minutes_lifetime=100, high_minutes_lifetime=20
+            )]
+        ))
+        usage = SimpleNamespace(
+            target_id='provider.target',
+            usage=Usage({'standardMinutesLifetime': 50, 'highMinutesLifetime': 5})
+        )
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+            quota_factory.return_value.list_workspace_usages.return_value = [usage]
+
+            with self.assertRaisesRegex(InvalidArgumentValueError, 'high minutes lifetime quota.*above the 20 minutes'):
+                _validate_target_quota_bounds(cmd, info, workspace, [{
+                    'providerId': 'provider', 'targetId': 'provider.target'
+                }], include_usage=True)
+
+    def test_target_quota_bounds_require_matching_suite_capacity(self):
+        provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+            target_id='provider.target', standard_minutes_lifetime=50, high_minutes_lifetime=10
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[provider]))
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        cases = (
+            ([], "no suite offer was found for provider 'provider'"),
+            ([SimpleNamespace(properties=SimpleNamespace(
+                provider_id='provider', target_quotas=[TargetQuotaAllocations(
+                    target_id='provider.target', standard_minutes_lifetime=100
+                )]
+            ))], 'suite offer has no high minutes lifetime quota'),
+        )
+
+        from ...operations import workspace as workspace_ops
+        for suite_offers, expected_text in cases:
+            with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                    patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+                suite_factory.return_value.list_by_subscription.return_value = suite_offers
+                with self.assertRaisesRegex(InvalidArgumentValueError, re.escape(expected_text)):
+                    _validate_target_quota_bounds(cmd, info, workspace, [{
+                        'providerId': 'provider', 'targetId': 'provider.target'
+                    }], include_usage=True)
+                quota_factory.assert_not_called()
+
+    def test_target_quota_bounds_reject_missing_suite_target(self):
+        provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+            target_id='provider.target', standard_minutes_lifetime=50
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(provider_id='provider', target_quotas=[]))
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+            quota_factory.return_value.list_workspace_usages.return_value = []
+
+            with self.assertRaisesRegex(
+                    InvalidArgumentValueError,
+                    r"(?s)--quota requests a standard minutes lifetime quota of 50 minutes.*"
+                    r"subscription has no allocation for that target.*"
+                    r"Allocate it at the subscription level first.*"
+                    r"az quantum suite-offer quotas --provider-id provider"):
+                _validate_target_quota_bounds(cmd, info, workspace, [{
+                    'providerId': 'provider', 'targetId': 'provider.target'
+                }], include_usage=True)
+            quota_factory.assert_not_called()
+
+    def test_target_quota_bounds_query_usage_once_per_provider(self):
+        provider = Provider(provider_id='provider', target_quotas=[
+            TargetQuotaAllocations(target_id='provider.target-1', standard_minutes_lifetime=50),
+            TargetQuotaAllocations(target_id='provider.target-2', standard_minutes_lifetime=50),
+        ])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(
+            provider_id='provider', target_quotas=[
+                TargetQuotaAllocations(target_id='provider.target-1', standard_minutes_lifetime=100),
+                TargetQuotaAllocations(target_id='provider.target-2', standard_minutes_lifetime=100),
+            ]
+        ))
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+        quota = [
+            {'providerId': 'provider', 'targetId': 'provider.target-1'},
+            {'providerId': 'provider', 'targetId': 'provider.target-2'},
+        ]
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+            quota_factory.return_value.list_workspace_usages.return_value = []
+
+            _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage=True)
+
+        quota_factory.return_value.list_workspace_usages.assert_called_once()
+
+    def test_target_quota_bounds_treat_usage_404_as_zero(self):
+        provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+            target_id='provider.target', standard_minutes_lifetime=0
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            endpoint_uri='https://workspace.eastus-v2.quantum.azure.com/', providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(
+            provider_id='provider', target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target', standard_minutes_lifetime=100
+            )]
+        ))
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+            quota_factory.return_value.list_workspace_usages.side_effect = AzureResourceNotFoundError()
+
+            _validate_target_quota_bounds(cmd, info, workspace, [{
+                'providerId': 'provider', 'targetId': 'provider.target'
+            }], include_usage=True)
+
+    def test_target_quota_bounds_create_does_not_query_usage(self):
+        provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
+            target_id='provider.target', standard_minutes_lifetime=100
+        )])
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[provider]))
+        suite_offer = SimpleNamespace(properties=SimpleNamespace(
+            provider_id='provider', target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target', standard_minutes_lifetime=100
+            )]
+        ))
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        from ...operations import workspace as workspace_ops
+        with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
+                patch.object(workspace_ops, 'cf_quotas') as quota_factory:
+            suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
+
+            _validate_target_quota_bounds(cmd, info, workspace, [{
+                'providerId': 'provider', 'targetId': 'provider.target'
+            }], include_usage=False)
+
+        quota_factory.assert_not_called()
 
     @unittest.mock.patch('azext_quantum.operations.workspace.WorkspaceInfo')
     @unittest.mock.patch('azext_quantum.operations.workspace.cf_workspaces')
@@ -600,23 +869,61 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         info.resource_group = 'group'
         info.name = 'workspace'
 
-        result = update(
-            unittest.mock.MagicMock(),
-            resource_group_name='group',
-            workspace_name='workspace',
-            enable_key='true',
-            quota=[{
-                'providerId': 'provider',
-                'targetId': 'provider.target',
-                'standardMinutesLifetime': 0
-            }]
-        )
+        with patch('azext_quantum.operations.workspace._validate_target_quota_bounds') as validate_bounds:
+            result = update(
+                unittest.mock.MagicMock(),
+                resource_group_name='group',
+                workspace_name='workspace',
+                enable_key='true',
+                quota=[{
+                    'providerId': 'provider',
+                    'targetId': 'provider.target',
+                    'standardMinutesLifetime': 0
+                }]
+            )
 
         assert result is workspace
         assert workspace.properties.api_key_enabled is True
         assert provider.target_quotas[0].standard_minutes_lifetime == 0
         assert provider.target_quotas[0].high_minutes_lifetime == 50
+        validate_bounds.assert_called_once()
         client.begin_create_or_update.assert_called_once_with('group', 'workspace', workspace)
+
+    @unittest.mock.patch('azext_quantum.operations.workspace.WorkspaceInfo')
+    @unittest.mock.patch('azext_quantum.operations.workspace.cf_workspaces')
+    def test_update_quota_validation_failure_prevents_write(self, mock_cf_workspaces, mock_workspace_info):
+        provider = Provider(
+            provider_id='provider',
+            target_quotas=[TargetQuotaAllocations(
+                target_id='provider.target', standard_minutes_lifetime=500, high_minutes_lifetime=50
+            )]
+        )
+        workspace = SimpleNamespace(
+            location='eastus',
+            properties=SimpleNamespace(workspace_kind='V2', providers=[provider], api_key_enabled=False)
+        )
+        client = mock_cf_workspaces.return_value
+        client.get.return_value = workspace
+        info = mock_workspace_info.return_value
+        info.resource_group = 'group'
+        info.name = 'workspace'
+
+        with patch('azext_quantum.operations.workspace._validate_target_quota_bounds',
+                   side_effect=InvalidArgumentValueError('invalid quota')):
+            with self.assertRaisesRegex(InvalidArgumentValueError, 'invalid quota'):
+                update(
+                    unittest.mock.MagicMock(),
+                    resource_group_name='group',
+                    workspace_name='workspace',
+                    quota=[{
+                        'providerId': 'provider',
+                        'targetId': 'provider.target',
+                        'standardMinutesLifetime': 100
+                    }]
+                )
+
+        assert provider.target_quotas[0].high_minutes_lifetime == 50
+        client.begin_create_or_update.assert_not_called()
 
     def test_autoadd_providers(self):
         print("test_autoadd_providers")
@@ -651,6 +958,237 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         resource_id = _get_workspace_resource_id(TestWorkspaceInfo())
         assert resource_id == "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Quantum/Workspaces/MyWorkspace"
+
+
+class QuantumWorkspaceQuotasTest(unittest.TestCase):
+
+    def test_build_workspace_quotas_list_quota_usages_request(self):
+        request = build_services_quotas_list_workspace_usages_request(
+            subscription_id='00000000-0000-0000-0000-000000000000',
+            resource_group_name='MyResourceGroup',
+            workspace_name='MyWorkspace',
+            provider_id='ionq',
+        )
+        self.assertEqual(request.method, 'GET')
+        self.assertIn(
+            '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Quantum/workspaces/MyWorkspace/quotaUsages',
+            request.url,
+        )
+        self.assertIn('providerId=ionq', request.url)
+        self.assertIn('api-version=2026-01-15-preview', request.url)
+
+    def test_merge_workspace_quotas_with_usage(self):
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[
+            SimpleNamespace(provider_id='ionq', target_quotas=[
+                SimpleNamespace(target_id='ionq.qpu', standard_minutes_lifetime=30, high_minutes_lifetime=15),
+            ]),
+        ]))
+        v1_quotas = [{
+            'dimension': 'emulator_hours', 'providerId': 'pasqal', 'scope': 'Subscription',
+            'limit': 5.0, 'utilization': 1.0, 'holds': 0.0, 'period': 'Monthly'
+        }]
+        usages = [
+            SimpleNamespace(provider_id='ionq', target_id='ionq.qpu',
+                            usage=Usage({'standardMinutesLifetime': 5, 'highMinutesLifetime': 2})),
+        ]
+
+        rows = _merge_workspace_quotas(workspace, usages, v1_quotas)
+
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[0], v1_quotas[0])
+        self.assertEqual(rows[1], {
+            'dimension': 'StandardMinutesLifetime',
+            'providerId': 'ionq',
+            'scope': 'Workspace',
+            'limit': 30,
+            'utilization': 5,
+            'holds': 0.0,
+            'period': 'None',
+            'targetId': 'ionq.qpu',
+        })
+        self.assertEqual(rows[2], {
+            'dimension': 'HighMinutesLifetime',
+            'providerId': 'ionq',
+            'scope': 'Workspace',
+            'limit': 15,
+            'utilization': 2,
+            'holds': 0.0,
+            'period': 'None',
+            'targetId': 'ionq.qpu',
+        })
+
+    def test_merge_workspace_quotas_without_usage(self):
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[
+            SimpleNamespace(provider_id='ionq', target_quotas=[
+                SimpleNamespace(target_id='ionq.qpu', standard_minutes_lifetime=30, high_minutes_lifetime=None),
+            ]),
+        ]))
+
+        rows = _merge_workspace_quotas(workspace, [])
+
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]['dimension'], 'StandardMinutesLifetime')
+        self.assertEqual(rows[0]['limit'], 30)
+        self.assertEqual(rows[0]['utilization'], 0)
+        self.assertEqual(rows[1]['dimension'], 'HighMinutesLifetime')
+        self.assertEqual(rows[1]['limit'], 0)
+        self.assertEqual(rows[1]['utilization'], 0)
+
+    def test_merge_workspace_quotas_matches_on_provider_and_target(self):
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[
+            SimpleNamespace(provider_id='ionq', target_quotas=[
+                SimpleNamespace(target_id='shared.target', standard_minutes_lifetime=30, high_minutes_lifetime=15),
+            ]),
+        ]))
+        usages = [
+            # Same target id but a different provider -> must not match.
+            SimpleNamespace(provider_id='quantinuum', target_id='shared.target',
+                            usage=Usage({'standardMinutesLifetime': 9, 'highMinutesLifetime': 4})),
+        ]
+
+        rows = _merge_workspace_quotas(workspace, usages)
+
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]['providerId'], 'ionq')
+        self.assertEqual(rows[0]['utilization'], 0)
+
+    def test_merge_workspace_quotas_includes_usage_without_allocation(self):
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[
+            SimpleNamespace(provider_id='ionq', target_quotas=[]),
+        ]))
+        usages = [
+            SimpleNamespace(provider_id='IONQ', target_id='ionq.retired-target',
+                            usage=Usage({'standardMinutesLifetime': 9})),
+        ]
+
+        rows = _merge_workspace_quotas(workspace, usages)
+
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]['targetId'], 'ionq.retired-target')
+        self.assertEqual(rows[0]['limit'], 0)
+        self.assertEqual(rows[0]['utilization'], 9)
+        self.assertEqual(rows[1]['limit'], 0)
+        self.assertEqual(rows[1]['utilization'], 0)
+
+    def test_merge_workspace_quotas_preserves_backend_order(self):
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(providers=[
+            SimpleNamespace(provider_id='z-provider', target_quotas=[
+                SimpleNamespace(target_id='z-provider.z-target', standard_minutes_lifetime=30,
+                                high_minutes_lifetime=15),
+                SimpleNamespace(target_id='z-provider.a-target', standard_minutes_lifetime=20,
+                                high_minutes_lifetime=10),
+            ]),
+            SimpleNamespace(provider_id='a-provider', target_quotas=[
+                SimpleNamespace(target_id='a-provider.target', standard_minutes_lifetime=10,
+                                high_minutes_lifetime=5),
+            ]),
+        ]))
+
+        rows = _merge_workspace_quotas(workspace, [])
+
+        self.assertEqual(
+            [(row['providerId'], row['targetId']) for row in rows[::2]],
+            [
+                ('z-provider', 'z-provider.z-target'),
+                ('z-provider', 'z-provider.a-target'),
+                ('a-provider', 'a-provider.target'),
+            ]
+        )
+
+    def test_merge_workspace_quotas_handles_missing_properties(self):
+        workspace = SimpleNamespace(location='eastus', properties=None)
+        v1_quotas = [{'dimension': 'v1'}]
+        self.assertEqual(_merge_workspace_quotas(workspace, [], v1_quotas), v1_quotas)
+
+    def test_transform_workspace_quotas_preserves_mixed_dimensions(self):
+        quotas = [
+            {
+                'dimension': 'emulator_hours', 'providerId': 'pasqal', 'scope': 'Subscription',
+                'limit': 5.0, 'utilization': 1.0, 'holds': 0.0, 'period': 'Monthly'
+            },
+            {
+                'dimension': 'StandardMinutesLifetime', 'providerId': 'ionq', 'scope': 'Workspace',
+                'limit': 1200, 'utilization': 27.000000000000007, 'holds': 0.0, 'period': 'None',
+                'targetId': 'ionq.qpu'
+            },
+        ]
+
+        table = transform_workspace_quotas(quotas)
+
+        self.assertEqual(list(table[0].keys()), [
+            'Scope', 'Provider ID', 'Target', 'Dimension', 'Limit', 'Utilization', 'Holds', 'Period'
+        ])
+        self.assertEqual(table[0]['Target'], '')
+        self.assertEqual(table[0]['Limit'], 5.0)
+        self.assertEqual(table[0]['Utilization'], 1.0)
+        self.assertEqual(table[1]['Target'], 'ionq.qpu')
+        self.assertEqual(table[1]['Limit'], 1200)
+        self.assertEqual(table[1]['Utilization'], 27.0)
+
+    def test_quotas_handler_queries_v2_usages_without_v1_quotas(self):
+        info = SimpleNamespace(subscription='sub', resource_group='rg', name='ws', endpoint=None)
+        endpoint = 'https://ws.eastus-v2.quantum.azure.com/'
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            workspace_kind='V2', endpoint_uri=endpoint, providers=[
+                SimpleNamespace(provider_id='ionq', target_quotas=[
+                    SimpleNamespace(target_id='ionq.qpu', standard_minutes_lifetime=30, high_minutes_lifetime=15),
+                ]),
+                SimpleNamespace(provider_id='pasqal', target_quotas=None),
+            ]))
+
+        usage_by_provider = {
+            'ionq': [SimpleNamespace(provider_id='ionq', target_id='ionq.qpu',
+                                     usage=Usage({'standardMinutesLifetime': 5, 'highMinutesLifetime': 2}))],
+            'pasqal': [],
+        }
+        queried = []
+
+        def fake_list_workspace_usages(*args, **kwargs):
+            provider_id = kwargs['provider_id']
+            queried.append(provider_id)
+            return usage_by_provider[provider_id]
+
+        v2_client = SimpleNamespace(list_workspace_usages=fake_list_workspace_usages)
+
+        from ...operations import workspace as workspace_ops
+        cli_ctx = object()
+        with patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                patch.object(workspace_ops, 'cf_workspaces', return_value=SimpleNamespace(get=lambda rg, ws: workspace)), \
+                patch.object(workspace_ops, 'cf_quotas', return_value=v2_client) as client_factory:
+            cmd = SimpleNamespace(cli_ctx=cli_ctx)
+            rows = workspace_ops.quotas(cmd, 'rg', 'ws')
+
+        self.assertEqual(set(queried), {'ionq', 'pasqal'})
+        client_factory.assert_called_once_with(cli_ctx, 'sub', 'rg', 'ws', endpoint)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]['dimension'], 'StandardMinutesLifetime')
+        self.assertEqual(rows[0]['limit'], 30)
+        self.assertEqual(rows[0]['utilization'], 5)
+        self.assertEqual(rows[1]['dimension'], 'HighMinutesLifetime')
+        self.assertEqual(rows[1]['limit'], 15)
+        self.assertEqual(rows[1]['utilization'], 2)
+
+    def test_quotas_handler_keeps_v1_behavior_without_v2_usage_calls(self):
+        info = SimpleNamespace(subscription='sub', resource_group='rg', name='ws', endpoint=None)
+        endpoint = 'https://ws.eastus.quantum.azure.com/'
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            workspace_kind='V1', endpoint_uri=endpoint,
+            providers=[SimpleNamespace(provider_id='pasqal', target_quotas=None)]))
+        v1_row = {
+            'dimension': 'emulator_hours', 'providerId': 'pasqal', 'scope': 'Subscription',
+            'limit': 5.0, 'utilization': 1.0, 'holds': 0.0, 'period': 'Monthly'
+        }
+        v1_client = SimpleNamespace(list=lambda subscription, resource_group, workspace_name: [v1_row])
+
+        from ...operations import workspace as workspace_ops
+        cli_ctx = object()
+        with patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                patch.object(workspace_ops, 'cf_workspaces', return_value=SimpleNamespace(get=lambda rg, ws: workspace)), \
+                patch.object(workspace_ops, 'cf_quotas', return_value=v1_client) as client_factory:
+            rows = workspace_ops.quotas(SimpleNamespace(cli_ctx=cli_ctx), 'rg', 'ws')
+
+        self.assertEqual(rows, [v1_row])
+        client_factory.assert_called_once_with(cli_ctx, 'sub', 'rg', 'ws', endpoint)
 
 
 class QuantumWorkspaceUserListTest(unittest.TestCase):

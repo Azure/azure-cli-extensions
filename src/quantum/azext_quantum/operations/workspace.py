@@ -21,12 +21,14 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
                                        RequiredArgumentMissingError, ResourceNotFoundError,
                                        MutuallyExclusiveArgumentError)
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_offers, _get_data_credentials
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, KeyType, WorkspaceKind, WorkspaceResourceProperties, TargetQuotaAllocations
+from ..vendored_sdks.azure_quantum_python._client.models import DimensionScope, MeterPeriod
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 from knack.log import get_logger
@@ -57,6 +59,13 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
                                "https://privacy.microsoft.com/privacystatement\n" \
                                "https://azure.microsoft.com/support/legal/preview-supplemental-terms/\n\n" \
                                "Continue? (Y/N) "
+
+_TARGET_QUOTA_TYPES = {
+    "standard_minutes_lifetime": "standardMinutesLifetime",
+    "high_minutes_lifetime": "highMinutesLifetime",
+}
+_WORKSPACE_QUOTA_SCOPE = DimensionScope.WORKSPACE.value
+_WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
 
 
 class WorkspaceInfo:
@@ -214,7 +223,7 @@ def _enum_to_value(value):
 
 
 def _require_v2_workspace(workspace_kind):
-    if str(_enum_to_value(workspace_kind)).upper() != 'V2':
+    if str(_enum_to_value(workspace_kind)).upper() != WorkspaceKind.V2.value:
         raise InvalidArgumentValueError("--quota is supported only for V2 workspaces.")
 
 
@@ -267,6 +276,112 @@ def _apply_target_quotas(providers, quota, preserve_existing=False):
         provider.target_quotas = target_quotas
 
 
+def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
+    if not quota:
+        return
+
+    requested_keys = sorted({
+        (allocation['providerId'].lower(), allocation['targetId'].lower())
+        for allocation in quota
+    })
+    workspace_providers = {
+        provider.provider_id.lower(): provider
+        for provider in workspace.properties.providers or []
+        if provider.provider_id
+    }
+    suite_offers = {
+        offer.properties.provider_id.lower(): offer
+        for offer in cf_suite_offers(cmd.cli_ctx).list_by_subscription()
+        if offer.properties is not None and offer.properties.provider_id
+    }
+
+    final_targets = {}
+    suite_targets = {}
+    for provider_id, target_id in requested_keys:
+        provider = workspace_providers[provider_id]
+        target_quota = next(
+            item for item in provider.target_quotas or []
+            if item.target_id is not None and item.target_id.lower() == target_id
+        )
+        final_targets[(provider_id, target_id)] = target_quota
+        suite_offer = suite_offers.get(provider_id)
+        if suite_offer is None:
+            raise InvalidArgumentValueError(
+                f"Cannot validate --quota because no suite offer was found for provider '{provider.provider_id}'. "
+                "Run 'az quantum suite-offer list' to view available suite offers."
+            )
+        suite_target = next(
+            (item for item in suite_offer.properties.target_quotas or []
+             if item.target_id is not None and item.target_id.lower() == target_id),
+            None
+        )
+        for quota_attribute in _TARGET_QUOTA_TYPES:
+            requested_allocation = getattr(target_quota, quota_attribute, None)
+            if requested_allocation is None:
+                continue
+            quota_type = quota_attribute.replace("_", " ")
+            if suite_target is None:
+                raise InvalidArgumentValueError(
+                    f"--quota requests a {quota_type} quota of {requested_allocation} minutes for provider "
+                    f"'{provider.provider_id}', target '{target_quota.target_id}', but the subscription has no "
+                    "allocation for that target.\n"
+                    "Allocate it at the subscription level first, then retry. To see current allocations run:\n"
+                    f"\taz quantum suite-offer quotas --provider-id {provider.provider_id}"
+                )
+            if getattr(suite_target, quota_attribute, None) is None:
+                raise InvalidArgumentValueError(
+                    f"Cannot validate the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}', because the suite offer has no {quota_type} quota."
+                )
+        suite_targets[(provider_id, target_id)] = suite_target
+
+    usage_by_key = {}
+    if include_usage:
+        usage_client = cf_quotas(
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, workspace.properties.endpoint_uri)
+        for provider_id in sorted({provider_id for provider_id, _ in requested_keys}):
+            provider = workspace_providers[provider_id]
+            try:
+                usages = usage_client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
+            except AzureResourceNotFoundError:
+                usages = None
+            for usage in usages or []:
+                if usage.target_id is not None:
+                    usage_by_key[(provider_id, usage.target_id.lower())] = usage.usage
+
+    for provider_id, target_id in requested_keys:
+        provider = workspace_providers[provider_id]
+        target_quota = final_targets[(provider_id, target_id)]
+        suite_target = suite_targets[(provider_id, target_id)]
+
+        usage = usage_by_key.get((provider_id, target_id))
+        for quota_attribute, usage_field in _TARGET_QUOTA_TYPES.items():
+            requested_allocation = getattr(target_quota, quota_attribute, None)
+            if requested_allocation is None:
+                continue
+            quota_type = quota_attribute.replace("_", " ")
+            suite_allocation = getattr(suite_target, quota_attribute)
+            current_usage = usage.get(usage_field) if usage is not None else None
+            current_usage = current_usage if current_usage is not None else 0
+            if requested_allocation < current_usage:
+                raise InvalidArgumentValueError(
+                    f"--quota would set the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' to {requested_allocation} minutes, below the {current_usage} minutes "
+                    f"the workspace has already used. Specify at least {current_usage}.\n"
+                    "To see current usage run:\n"
+                    f"\taz quantum workspace quotas -g {info.resource_group} -w {info.name}"
+                )
+            if requested_allocation > suite_allocation:
+                raise InvalidArgumentValueError(
+                    f"--quota would set the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' to {requested_allocation} minutes, above the {suite_allocation} minutes "
+                    f"allocated to the subscription. Specify at most {suite_allocation}.\n"
+                    "To see subscription allocations run:\n"
+                    f"\taz quantum suite-offer quotas --provider-id {provider.provider_id}"
+                )
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
@@ -283,14 +398,18 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace: QuantumWorkspace = _get_basic_quantum_workspace(location, info, storage_account)
+    workspace_kind_value = str(_enum_to_value(workspace_kind)).upper()
     if quota:
         _require_v2_workspace(workspace_kind)
+    if workspace_kind_value == WorkspaceKind.V2.value:
+        skip_autoadd = True
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
-        quantum_workspace.properties.api_key_enabled = True
+        _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
+        quantum_workspace.properties.api_key_enabled = workspace_kind_value != WorkspaceKind.V2.value
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -307,6 +426,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
 
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
     _apply_target_quotas(quantum_workspace.properties.providers, quota)
+    _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
         provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
@@ -444,12 +564,91 @@ def get(cmd, resource_group_name=None, workspace_name=None):
 
 def quotas(cmd, resource_group_name, workspace_name):
     """
-    List the quotas for the given (or current) Azure Quantum workspace.
+    List quota allocations and usages for the given (or current) Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
-    response = client.list(info.subscription, info.resource_group, info.name)
-    return repack_response_json(response)
+
+    workspace = cf_workspaces(cmd.cli_ctx).get(info.resource_group, info.name)
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+    endpoint = properties.endpoint_uri if properties is not None else info.endpoint
+    usages = []
+    v1_quotas = []
+    client = cf_quotas(
+        cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
+    workspace_kind = getattr(properties, 'workspace_kind', None) if properties is not None else None
+    if str(_enum_to_value(workspace_kind)).upper() == WorkspaceKind.V2.value:
+        for provider in providers or []:
+            try:
+                provider_usages = client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
+            except AzureResourceNotFoundError:
+                provider_usages = None
+            usages.extend(provider_usages or [])
+    else:
+        v1_quotas = repack_response_json(
+            client.list(info.subscription, info.resource_group, info.name))
+
+    return _merge_workspace_quotas(workspace, usages, v1_quotas)
+
+
+def _target_quota_row(provider_id, target_id, dimension, allocation, usage):
+    return {
+        "dimension": dimension,
+        "providerId": provider_id,
+        "scope": _WORKSPACE_QUOTA_SCOPE,
+        "limit": allocation if allocation is not None else 0,
+        "utilization": usage if usage is not None else 0,
+        "holds": 0.0,
+        "period": _WORKSPACE_QUOTA_PERIOD,
+        "targetId": target_id,
+    }
+
+
+def _merge_workspace_quotas(workspace, usages, v1_quotas=None):
+    """
+    Preserve v1 quota rows and append one flat row per target and quota type for v2 quotas.
+    """
+    usage_by_key = {
+        ((usage.provider_id or '').lower(), usage.target_id.lower()): usage
+        for usage in (usages or [])
+        if usage.target_id is not None
+    }
+
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+
+    rows = [row for row in (v1_quotas or [])]
+    for provider in providers or []:
+        allocations_by_target = {
+            quota.target_id.lower(): quota
+            for quota in (provider.target_quotas or [])
+            if quota.target_id is not None
+        }
+        usage_targets = {
+            target_id: usage
+            for (provider_id, target_id), usage in usage_by_key.items()
+            if provider_id == (provider.provider_id or '').lower()
+        }
+        target_ids = [target_id for target_id in allocations_by_target]
+        target_ids.extend(target_id for target_id in usage_targets if target_id not in allocations_by_target)
+
+        for target_id in target_ids:
+            target_quota = allocations_by_target.get(target_id)
+            usage = usage_targets.get(target_id)
+            usage_values = usage.usage if usage is not None else None
+            display_target_id = target_quota.target_id if target_quota is not None else usage.target_id
+
+            for attribute, usage_field in _TARGET_QUOTA_TYPES.items():
+                rows.append(_target_quota_row(
+                    provider.provider_id,
+                    display_target_id,
+                    usage_field[0].upper() + usage_field[1:],
+                    getattr(target_quota, attribute, None),
+                    usage_values.get(usage_field) if usage_values is not None else None,
+                ))
+
+    return rows
 
 
 def set(cmd, workspace_name, resource_group_name):
@@ -534,6 +733,7 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     if quota:
         _require_v2_workspace(ws.properties.workspace_kind)
         _apply_target_quotas(ws.properties.providers, quota, preserve_existing=True)
+        _validate_target_quota_bounds(cmd, info, ws, quota, include_usage=True)
 
     if enable_key in ["True", "true"]:
         ws.properties.api_key_enabled = True

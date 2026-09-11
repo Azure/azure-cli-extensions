@@ -30,6 +30,20 @@ def transform_targets(providers):
     ]
 
 
+def transform_suite_offer_targets(providers):
+    return [
+        OrderedDict([
+            ('Target-id', target['id']),
+            ('Current Availability', target['currentAvailability']),
+            ('Average Queue Time (seconds)', target['averageQueueTime']),
+            ('Average Standard Queue Time (seconds)', target.get('averageQueueTimeStandardPriority')),
+            ('Average High Queue Time (seconds)', target.get('averageQueueTimeHighPriority'))
+        ])
+        for provider in providers
+        for target in provider['targets']
+    ]
+
+
 def transform_job(result):
     transformed_result = OrderedDict([
         ('Name', result['name']),
@@ -103,6 +117,55 @@ def transform_suite_offers(suite_offers):
     return [one(offer) for offer in suite_offers]
 
 
+def _quota_hours(minutes):
+    """Convert lifetime quota minutes to hours (2 dp)."""
+    hours = 0 if minutes is None else minutes / 60
+    return f"{hours:.2f}"
+
+
+def transform_suite_offer_quotas(quotas):
+    def one(quota):
+        allocation = quota.get('allocation') or {}
+        usage = quota.get('usage') or {}
+
+        def cell(source, key):
+            return _quota_hours(source.get(key))
+
+        return OrderedDict([
+            ('Target', quota.get('targetId', '')),
+            ('Std Allocated (hrs)', cell(allocation, 'standardMinutesLifetime')),
+            ('Std Used (hrs)', cell(usage, 'standardMinutesLifetime')),
+            ('High Allocated (hrs)', cell(allocation, 'highMinutesLifetime')),
+            ('High Used (hrs)', cell(usage, 'highMinutesLifetime'))
+        ])
+
+    return [one(quota) for quota in quotas]
+
+
+def transform_workspace_quotas(quotas):
+    def one(quota):
+        is_target_quota = quota.get('targetId') is not None
+
+        def value(key):
+            result = quota.get(key, 0)
+            if is_target_quota and isinstance(result, float):
+                return round(result, 2)
+            return result
+
+        return OrderedDict([
+            ('Scope', quota.get('scope', '')),
+            ('Provider ID', quota.get('providerId', '')),
+            ('Target', quota.get('targetId', '')),
+            ('Dimension', quota.get('dimension', '')),
+            ('Limit', value('limit')),
+            ('Utilization', value('utilization')),
+            ('Holds', value('holds')),
+            ('Period', quota.get('period', '')),
+        ])
+
+    return [one(quota) for quota in quotas]
+
+
 def transform_output(results):
     def one(key, value):
         repeat = round(20 * value)
@@ -167,7 +230,7 @@ def load_command_table(self, _):
         w.show_command('show', validator=validate_workspace_info)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
-        w.command('quotas', 'quotas', validator=validate_workspace_info)
+        w.command('quotas', 'quotas', validator=validate_workspace_info, table_transformer=transform_workspace_quotas)
         w.command('keys list', 'list_keys')
         w.command('keys regenerate', 'regenerate_keys')
         w.command('update', 'update')
@@ -206,3 +269,7 @@ def load_command_table(self, _):
 
     with self.command_group('quantum suite-offer', suite_offers_ops) as s:
         s.command('list', 'list_suite_offers', table_transformer=transform_suite_offers)
+        s.command('quotas', 'suite_offer_quotas', table_transformer=transform_suite_offer_quotas)
+
+    with self.command_group('quantum suite-offer target', suite_offers_ops) as st:
+        st.command('list', 'suite_offer_targets', table_transformer=transform_suite_offer_targets)
