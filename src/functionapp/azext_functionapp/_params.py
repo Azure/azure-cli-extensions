@@ -29,3 +29,16 @@ def load_arguments(self, _):
                    required=False)
         c.argument('github_repository', help="Fullname of your Github repository (e.g. Azure/azure-cli)",
                    required=False)
+
+    with self.argument_context('functionapp deployment source config-zip') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the function app')
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'],
+                   help='Name of the resource group')
+        c.argument('src', options_list=['--src', '-s'], help='A zip file path for deployment')
+        c.argument('build_remote', options_list=['--build-remote'],
+                   help='Enable remote build during deployment',
+                   arg_type=get_three_state_flag(return_label=True))
+        c.argument('timeout', type=int, options_list=['--timeout', '-t'],
+                   help='Configurable timeout in seconds for checking the status of deployment')
+        c.argument('slot', options_list=['--slot'],
+                   help='The name of the slot. Defaults to the productions slot if not specified')
