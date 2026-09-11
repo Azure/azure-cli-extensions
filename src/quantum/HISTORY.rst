@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b26
+++++++++++
+* Scoped the workspace endpoint cache to its subscription, resource group, workspace, cloud, and tenant so it is not reused for other workspaces.
+* Moved the cache to ``quantum.workspace_endpoint_cache``. Re-run ``az quantum workspace set`` to populate the new cache.
+* Clarified the persistent flag defaults and endpoint caching performed by ``az quantum workspace set``. Automatic stale-endpoint invalidation is not included.
+
 1.0.0b25
 ++++++++++++++
 * Added the ``az quantum suite-offer list`` command to list the suite offers available to the subscription, including provider, location, and subscription-level quota allocations.

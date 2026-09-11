@@ -317,6 +317,8 @@ helps['quantum workspace'] = """
 helps['quantum workspace clear'] = """
     type: command
     short-summary: Clear the default Azure Quantum workspace.
+    long-summary: |
+        Clear the saved resource-group and workspace-name defaults and the workspace's cached endpoint. Other settings, including the default subscription, location, and target, are unchanged.
     examples:
       - name: Clear the default Azure Quantum workspace if previously set.
         text: |-
@@ -379,6 +381,12 @@ helps['quantum workspace quotas'] = """
 helps['quantum workspace set'] = """
     type: command
     short-summary: Select a default Azure Quantum workspace for future commands.
+    long-summary: |
+        Save the resource group and workspace name as persistent Azure CLI flag defaults, and save the workspace's data-plane endpoint in quantum.workspace_endpoint_cache. The resource-group default is shared with other Azure CLI commands. These settings persist across terminal sessions.
+
+        Explicit --resource-group and --workspace-name arguments override their respective defaults independently. The endpoint cache is reused only when the resolved subscription, resource group, workspace name, cloud, and tenant match the saved identity. Data-plane commands targeting another workspace discover its endpoint through Azure Resource Manager without changing the saved defaults.
+
+        This command does not change the default subscription or location. Cached endpoints are not automatically refreshed; run this command again to refresh the saved endpoint. Use 'az quantum workspace clear' to clear the saved flag defaults and Quantum endpoint cache.
     examples:
       - name: Set the default Azure Quantum workspace.
         text: |-

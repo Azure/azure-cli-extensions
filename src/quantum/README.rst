@@ -87,23 +87,33 @@ Prepare to submit and manage jobs in Azure Quantum using the `az quantum` extens
 
 
 4. You can use `quantum workspace set` to select a default workspace you want to use to list and submit jobs.
-   Note that you also need to specify the resource group. If you set a default workspace by providing a resource group,
-   workspace name and location, you don't need to include those parameters in commands #5 to #8 below.
-   Anternatively, you can include them in each call.
+   This saves the resource group and workspace name as persistent Azure CLI flag defaults. The resource-group default
+   also applies to other Azure CLI commands. The default subscription and location are not changed. Alternatively,
+   you can specify the resource group and workspace name in each call without setting defaults.
 
    .. code-block::
 
-      az quantum workspace set -g MyResourceGroup -w MyWorkspace -l MyLocation -o table
+      az quantum workspace set -g MyResourceGroup -w MyWorkspace -o table
 
       Location     Name                               ResourceGroup
       -----------  ---------------------------------  --------------------------------
       westus       ws-yyyyyy                          rg-yyyyyyyyy
 
 
-.. note:
+.. note::
    Commands below assume that a default workspace has been set. If you prefer to specify it
    for each call, include the following parameters with commands below:
-   `-g MyResourceGroup -w MyWorkspace -l MyLocation`
+   `-g MyResourceGroup -w MyWorkspace`.
+
+   Explicit flags override their respective defaults independently. For example, specifying only `-w OtherWorkspace`
+   uses the saved resource group. A one-off job read does not change the saved defaults:
+
+   .. code-block::
+
+      az quantum job show --subscription OtherSubscription -g OtherGroup -w OtherWorkspace -j MyJobId
+
+   Use `az quantum workspace clear` to clear the resource-group and workspace-name defaults without changing
+   other settings.
 
 
 5. You can check the current default workspace with command `az quantum workspace show`.
