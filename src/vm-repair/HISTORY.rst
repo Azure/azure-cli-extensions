@@ -5,7 +5,7 @@ Release History
 2.4.2
 ++++++
 Adding examples to ``az vm repair run -h`` for checking whether Windows and Linux guests are ready to boot from an NVMe controller. Both examples run the corresponding read-only readiness detector on the linked repair VM. The README now also lists which platform-migration scenarios the extension can currently help with, so that an unsupported combination is not mistaken for a supported one.
-Scripts are now looked up from the ``main`` branch of the repair script library instead of ``master``. The library renamed its default branch, and the old name only kept working through a redirect that can be withdrawn at any time; if that happened, every ``az vm repair run --run-id`` and ``az vm repair list-scripts`` invocation would fail to find any script. The set of available scripts is unchanged.
+Scripts are now fetched from the ``main`` branch of the repair script library instead of ``master``, both when a run id is resolved and when the Linux run driver downloads the script bundle. The library renamed its default branch, and the old name only kept working through a redirect that can be withdrawn at any time; if that happened, ``az vm repair run --run-id`` and ``az vm repair list-scripts`` would stop finding any script in the default library. Invocations that pass ``--preview`` are unaffected, because they replace the library location before it is used. The set of available scripts is unchanged.
 
 2.4.1
 ++++++

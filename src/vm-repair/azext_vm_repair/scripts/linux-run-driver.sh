@@ -10,7 +10,7 @@ if [ $(ls | wc -l) -eq 3 ]; then
 		logFile="$(pwd)/$line$logFileName" &&
 		# Log Start
 		echo "[Log-Start  $(date "+%m/%d/%Y %T")]" >> $logFile &&
-		curl -s -S -L -o repair-script-library.tar.gz https://github.com/Azure/repair-script-library/tarball/master/ &&
+		curl -s -S -L -o repair-script-library.tar.gz https://github.com/Azure/repair-script-library/tarball/main/ &&
 		mkdir repair-script-library &&
 		tar -xf repair-script-library.tar.gz -C repair-script-library &&
 		cd repair-script-library &&

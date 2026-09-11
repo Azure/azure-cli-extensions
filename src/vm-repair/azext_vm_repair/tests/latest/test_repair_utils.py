@@ -3,9 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+import os
+import re
 import unittest
 from unittest import mock
 
+from azext_vm_repair import repair_utils
 from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
 
 
@@ -52,13 +55,32 @@ class CheckExtensionVersionTest(unittest.TestCase):
 
 class RepairMapUrlTest(unittest.TestCase):
 
+    # Azure/repair-script-library renamed its default branch to main. The old name only
+    # resolves through a rename redirect, so pinning to it leaves every run-id lookup
+    # dependent on a redirect GitHub is free to withdraw.
+    EXPECTED_BRANCH = 'main'
+
     def test_map_url_targets_the_libraries_default_branch(self):
-        # Azure/repair-script-library renamed its default branch to main. The old name only
-        # resolves through a rename redirect, so pinning to it leaves every run-id lookup
-        # dependent on a redirect GitHub is free to withdraw.
         self.assertEqual(
             REPAIR_MAP_URL,
             'https://raw.githubusercontent.com/Azure/repair-script-library/main/map.json')
+
+    def test_run_drivers_agree_with_the_map_url(self):
+        # The map resolves a run id to a path, then the driver downloads the bundle that
+        # path lives in. If the two disagree on a branch, a run id can resolve and then
+        # execute against different content, or not be present in the bundle at all.
+        scripts_dir = os.path.join(os.path.dirname(repair_utils.__file__), 'scripts')
+        for driver in ('linux-run-driver.sh', 'win-run-driver.ps1'):
+            with open(os.path.join(scripts_dir, driver), 'r') as handle:
+                content = handle.read()
+            branches = set(re.findall(r'repair-script-library/(?:tarball|zipball)/([\w.-]+)', content))
+            branches.update(re.findall(r"repo_branch\s*=\s*'([\w.-]+)'", content))
+            branches.discard('$repo_branch')
+            self.assertTrue(branches, '{} declares no library branch'.format(driver))
+            self.assertEqual(
+                {self.EXPECTED_BRANCH}, branches,
+                '{} fetches from {} but the map URL uses {}'.format(
+                    driver, sorted(branches), self.EXPECTED_BRANCH))
 
 
 if __name__ == '__main__':

@@ -40,7 +40,8 @@ The table below lists only what is available today. Combinations that are not li
 | NVMe boot-driver recovery | Linux | — | Not available yet |
 
 Both detectors run against the source VM's OS disk attached to a repair VM, so they require
-`--run-on-repair`. They make no changes.
+`--run-on-repair`. Neither one modifies the attached source OS disk. Both write a log and an evidence
+bundle on the repair VM itself, under the Public desktop on Windows and under `/tmp` on Linux.
 
 ```
 az vm repair create -g MyResourceGroup -n MyBrokenVM --verbose
