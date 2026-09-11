@@ -8,11 +8,12 @@ from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import live_only
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_suite_offer_targets
 from ... import _client_factory
 from ..._client_factory import base_url_v2
-from ...operations.suite_offers import _merge_suite_offer_quotas
+from ...operations.suite_offers import _get_suite_offer, _merge_suite_offer_quotas
 from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus, Usage
 from ...vendored_sdks.azure_quantum_python._client._utils.model_base import _deserialize
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
@@ -51,6 +52,21 @@ def _usage(target_id=None, standard=None, high=None, last_modified_time=None):
 
 
 class QuantumSuiteOffersScenarioTest(ScenarioTest):
+
+    def test_get_suite_offer(self):
+        offer = _offer(provider_id='IonQ')
+        client = SimpleNamespace(list_by_subscription=lambda: [
+            SimpleNamespace(properties=None),
+            offer,
+        ])
+
+        with patch('azext_quantum.operations.suite_offers.cf_suite_offers', return_value=client):
+            self.assertIs(_get_suite_offer(SimpleNamespace(cli_ctx=object()), 'sub', 'ionq'), offer)
+
+            with self.assertRaisesRegex(
+                    InvalidArgumentValueError,
+                    "No suite offer was found for provider 'other' in subscription 'sub'"):
+                _get_suite_offer(SimpleNamespace(cli_ctx=object()), 'sub', 'other')
 
     def test_transform_suite_offers(self):
         suite_offers = [

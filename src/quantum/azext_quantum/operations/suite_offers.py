@@ -30,6 +30,22 @@ def list_suite_offers(cmd):
     return client.list_by_subscription()
 
 
+def _get_suite_offer(cmd, subscription_id, provider_id):
+    offers = cf_suite_offers(cmd.cli_ctx).list_by_subscription()
+    offer = next(
+        (item for item in offers
+         if item.properties is not None
+         and item.properties.provider_id is not None
+         and item.properties.provider_id.lower() == provider_id.lower()),
+        None,
+    )
+    if offer is None:
+        raise InvalidArgumentValueError(
+            f"No suite offer was found for provider '{provider_id}' in subscription '{subscription_id}'."
+        )
+    return offer
+
+
 def suite_offer_quotas(cmd, provider_id):
     """
     Return the v2 quota allocations, merged with their consumed usages, for a suite offer
@@ -38,18 +54,7 @@ def suite_offer_quotas(cmd, provider_id):
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     # 1. Control-plane: locate the suite offer for the requested provider.
-    offers = cf_suite_offers(cmd.cli_ctx).list_by_subscription()
-    offer = next(
-        (o for o in offers
-         if o.properties is not None
-         and o.properties.provider_id is not None
-         and o.properties.provider_id.lower() == provider_id.lower()),
-        None,
-    )
-    if offer is None:
-        raise InvalidArgumentValueError(
-            f"No suite offer was found for provider '{provider_id}' in subscription '{subscription_id}'."
-        )
+    offer = _get_suite_offer(cmd, subscription_id, provider_id)
 
     # 2. Data-plane (v2): fetch the consumed quota usages for that provider.
     client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, offer.properties.location)
@@ -72,18 +77,7 @@ def suite_offer_targets(cmd, provider_id):
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     # 1. Control-plane: locate the suite offer to resolve its region.
-    offers = cf_suite_offers(cmd.cli_ctx).list_by_subscription()
-    offer = next(
-        (o for o in offers
-         if o.properties is not None
-         and o.properties.provider_id is not None
-         and o.properties.provider_id.lower() == provider_id.lower()),
-        None,
-    )
-    if offer is None:
-        raise InvalidArgumentValueError(
-            f"No suite offer was found for provider '{provider_id}' in subscription '{subscription_id}'."
-        )
+    offer = _get_suite_offer(cmd, subscription_id, provider_id)
 
     # 2. Data-plane (v2): fetch the provider and target status.
     client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, offer.properties.location)
