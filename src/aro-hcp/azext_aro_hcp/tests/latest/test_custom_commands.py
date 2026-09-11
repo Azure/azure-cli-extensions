@@ -381,11 +381,12 @@ class GetVersionsTest(unittest.TestCase):
 
 class RequestCredentialTest(unittest.TestCase):
 
-    def test_handler_without_admin_does_not_call_service(self):
+    def test_handler_without_admin_raises_invalid_argument_value_error(self):
         command = object.__new__(RequestCredential)
-        with mock.patch.object(RequestCredential.__mro__[1], "_handler") as base_handler:
-            self.assertIsNone(command._handler({"admin": False}))
-        base_handler.assert_not_called()
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError,
+                "Requesting a non-admin credential is not supported yet"):
+            command._handler({"admin": False})
 
     @mock.patch(
         "azext_aro_hcp._kubeconfig._generate_admin_credential_request",
