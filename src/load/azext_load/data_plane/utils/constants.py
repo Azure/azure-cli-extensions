@@ -10,6 +10,7 @@ from .models import AllowedTrendsResponseTimeAggregations
 
 @dataclass
 class LoadTestConfigKeys:
+    TEST_ID = "testId"
     DISPLAY_NAME = "displayName"
     DESCRIPTION = "description"
     TEST_PLAN = "testPlan"
