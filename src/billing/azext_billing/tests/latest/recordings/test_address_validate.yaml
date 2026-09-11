@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"addressLine1": "1 Microsoft Way", "city": "Redmond", "country": "US",
+      "postalCode": "98052", "region": "wa"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing address validate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '110'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --address-line1 --city --country --postal-code --region
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/validateAddress?api-version=2024-04-01
+  response:
+    body:
+      string: '{"status":"Valid","suggestedAddresses":[{"addressLine1":"1 Microsoft
+        Way","city":"Redmond","country":"US","postalCode":"98052-8300","region":"WA","isValidAddress":true}]}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '170'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 30 Sep 2024 18:18:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '99'
+      x-ms-service-version:
+      - 10.6.2811.738
+      x-msedge-ref:
+      - 'Ref A: 849A9EBB47834650A78AADF48936D94A Ref B: CO6AA3150219053 Ref C: 2024-09-30T18:18:51Z'
+    status:
+      code: 200
+      message: OK
+version: 1

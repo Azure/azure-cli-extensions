@@ -1,0 +1,149 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing account list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --filter
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts?filter=properties%2FagreementType%20eq%20%27EnterpriseAgreement%27&includeAll=false&includeAllWithoutBillingProfiles=false&includeDeleted=false&includePendingAgreement=false&includeResellee=false&api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/6467779","name":"6467779","properties":{"accountStatus":"Extended","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        EA RI VSOID#6684 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"6/1/2020
+        12:00:00 AM +00:00","endDate":"5/31/2023 12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"IN
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        EA RI VSOID#6684 Cust1 (DO NOT USE)","country":"IN ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/6575495","name":"6575495","properties":{"accountStatus":"Extended","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        Invoice Testing Customer1 (DO NOT USE)","enrollmentDetails":{"startDate":"6/1/2020
+        12:00:00 AM +00:00","endDate":"5/31/2023 12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"US
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        Invoice Testing Customer1 (DO NOT USE)","country":"US ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/7217421","name":"7217421","properties":{"accountStatus":"Extended","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        ExtendedTerm VSOID#6747 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"9/1/2020
+        12:00:00 AM +00:00","endDate":"8/31/2023 12:00:00 AM +00:00","currency":"USD","channel":"EaIndirect","language":"en","countryCode":"IN
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        ExtendedTerm VSOID#6747 Cust1 (DO NOT USE)","country":"IN ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/7238735","name":"7238735","properties":{"accountStatus":"Disabled","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        EARI VSOID#6761 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"12/1/2022
+        12:00:00 AM +00:00","endDate":"4/10/2024 12:00:00 AM +00:00","currency":"USD","channel":"EaIndirect","language":"en","countryCode":"US
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        EARI VSOID#6761 Cust1 (DO NOT USE)","country":"US ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/7538232","name":"7538232","properties":{"accountStatus":"Disabled","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        EAPortal VSOID#6794 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"6/1/2022
+        12:00:00 AM +00:00","endDate":"6/19/2024 12:00:00 AM +00:00","currency":"USD","channel":"EaIndirect","language":"en","countryCode":"IN
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        EAPortal VSOID#6794 Cust1 (DO NOT USE)","country":"IN ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/8323948","name":"8323948","properties":{"accountStatus":"Active","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        MILAN VSOID#6772 Cust1 (DO NOT USE)","hasReadAccess":false,"soldTo":{"companyName":"BVT
+        MILAN VSOID#6772 Cust1 (DO NOT USE)","country":"US ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/8608480","name":"8608480","properties":{"accountStatus":"Extended","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"Contoso
+        (Demo)","enrollmentDetails":{"startDate":"7/1/2018 12:00:00 AM +00:00","endDate":"6/30/2024
+        12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"US
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"Contoso
+        (Demo)","country":"US ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/8676948","name":"8676948","properties":{"accountStatus":"Disabled","accountType":"Enterprise","accountSubType":"Other","accountStatusReasonCode":"Transferred","agreementType":"EnterpriseAgreement","displayName":"BVT
+        ExtendedTerm VSOID#6747 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"9/1/2020
+        12:00:00 AM +00:00","endDate":"8/31/2023 12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"IN
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        ExtendedTerm VSOID#6747 Cust1 (DO NOT USE)","country":"IN ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"},{"id":"/providers/Microsoft.Billing/billingAccounts/8769452","name":"8769452","properties":{"accountStatus":"Disabled","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        Milan VSOID#6719 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"5/1/2022
+        12:00:00 AM +00:00","endDate":"5/28/2024 12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"IN
+        ","billingCycle":"Monthly","extendedTermOption":"Other","supportLevel":"Other"},"hasReadAccess":true,"soldTo":{"companyName":"BVT
+        Milan VSOID#6719 Cust1 (DO NOT USE)","country":"IN ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"}]}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '6017'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 03:39:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 6BD5E4950C5F44BA8DD84CC6E1EF4CA9 Ref B: MAA201060513019 Ref C: 2024-11-18T03:39:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing account get
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6467779?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6467779","name":"6467779","properties":{"accountStatus":"Extended","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        EA RI VSOID#6684 Cust1 (DO NOT USE)","enrollmentDetails":{"startDate":"6/1/2020
+        12:00:00 AM +00:00","endDate":"5/31/2023 12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"IN
+        ","billingCycle":"Monthly","extendedTermOption":"Opted-In","supportLevel":"Other","supportCoverage":"
+        - ","cloud":"Azure Commercial","poNumber":"6467779-O150","invoiceRecipient":"mrudup@microsoft.com"},"hasReadAccess":false,"soldTo":{"companyName":"BVT
+        EA RI VSOID#6684 Cust1 (DO NOT USE)","country":"IN ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '814'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 03:39:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-initialbilling:
+      - 'False'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: 56E2DB677BA44552B2AE068B1A8611A9 Ref B: MAA201060516027 Ref C: 2024-11-18T03:39:15Z'
+    status:
+      code: 200
+      message: OK
+version: 1

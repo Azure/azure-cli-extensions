@@ -1,0 +1,98 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing savings-plan-order list-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --filter
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15%3Aeb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders?filter=properties%2FbillingProfileId%20eq%20%27%2Fproviders%2FMicrosoft.Billing%2FbillingAccounts%2Fe599e039-711f-52e8-69a0-cb0876584b15%3Aeb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31%2FbillingProfiles%2FMT3O-U4IM-BG7-TGB%27&api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/9abc6c63-c1a3-4bc5-943a-ac30ea6ef74d","name":"9abc6c63-c1a3-4bc5-943a-ac30ea6ef74d","type":"microsoft.billing/billingAccounts/savingsPlanOrders","properties":{"billingScopeId":"c6931bcb-9a94-49e1-80fd-0ad5cb8ecc70","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/9abc6c63-c1a3-4bc5-943a-ac30ea6ef74d/savingsPlans/9e2e5111-36e3-4c05-9456-041f29d80e13"],"billingPlan":"P1M","term":"P3Y","displayName":"Compute_SavingsPlan_01-09-2024_00-38","benefitStartTime":"2024-01-09T08:40:24.3880168Z","provisioningState":"Succeeded","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingProfiles/MT3O-U4IM-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31","expiryDateTime":"2027-01-09T08:40:24.3880168Z","productCode":"0001d726-0000-0160-ab43-b8473ce57f1d"},"sku":{"name":"Compute_Savings_Plan"}},{"id":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/7313a529-85e1-42e9-8e52-14d848566eb4","name":"7313a529-85e1-42e9-8e52-14d848566eb4","type":"microsoft.billing/billingAccounts/savingsPlanOrders","properties":{"billingScopeId":"c6931bcb-9a94-49e1-80fd-0ad5cb8ecc70","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/7313a529-85e1-42e9-8e52-14d848566eb4/savingsPlans/28f45863-4ec0-4509-a9de-9137d6808522"],"billingPlan":"P1M","term":"P3Y","displayName":"Compute_SavingsPlan_02-21-2024_16-11","benefitStartTime":"2024-02-22T00:13:57.8283141Z","provisioningState":"Succeeded","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingProfiles/MT3O-U4IM-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31","expiryDateTime":"2027-02-22T00:13:57.8283141Z","productCode":"0001d726-0000-0160-ab43-b8473ce57f1d"},"sku":{"name":"Compute_Savings_Plan"}},{"id":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/8cc1df8b-788b-45ea-a60b-eb2bfbc927df","name":"8cc1df8b-788b-45ea-a60b-eb2bfbc927df","type":"microsoft.billing/billingAccounts/savingsPlanOrders","properties":{"billingScopeId":"c6931bcb-9a94-49e1-80fd-0ad5cb8ecc70","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/8cc1df8b-788b-45ea-a60b-eb2bfbc927df/savingsPlans/71436ea6-1065-4ae3-9bff-5ea7020c64b3"],"billingPlan":"P1M","term":"P3Y","displayName":"Compute_SavingsPlan_02-21-2024_16-13","benefitStartTime":"2024-02-22T00:16:25.4949292Z","provisioningState":"Succeeded","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingProfiles/MT3O-U4IM-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31","expiryDateTime":"2027-02-22T00:16:25.4949292Z","productCode":"0001d726-0000-0160-ab43-b8473ce57f1d"},"sku":{"name":"Compute_Savings_Plan"}},{"id":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/3aa85cc2-1756-47a6-8bdc-8b90f70ba554","name":"3aa85cc2-1756-47a6-8bdc-8b90f70ba554","type":"microsoft.billing/billingAccounts/savingsPlanOrders","properties":{"billingScopeId":"c6931bcb-9a94-49e1-80fd-0ad5cb8ecc70","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/3aa85cc2-1756-47a6-8bdc-8b90f70ba554/savingsPlans/8887f177-224f-4a8f-aeb1-6c1ac0cb31b4"],"billingPlan":"P1M","term":"P3Y","displayName":"Compute_SavingsPlan_02-21-2024_16-18","benefitStartTime":"2024-02-22T00:20:36.5020209Z","provisioningState":"Succeeded","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingProfiles/MT3O-U4IM-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31","expiryDateTime":"2027-02-22T00:20:36.5020209Z","productCode":"0001d726-0000-0160-ab43-b8473ce57f1d"},"sku":{"name":"Compute_Savings_Plan"},"tags":{"key1":"val1","key2":"value2"}},{"id":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/44b86816-8ab2-4768-a425-a11b35344fd9","name":"44b86816-8ab2-4768-a425-a11b35344fd9","type":"microsoft.billing/billingAccounts/savingsPlanOrders","properties":{"billingScopeId":"c6931bcb-9a94-49e1-80fd-0ad5cb8ecc70","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/44b86816-8ab2-4768-a425-a11b35344fd9/savingsPlans/6ef5514b-8ccf-463c-967e-fa0dbe1f8eb1"],"billingPlan":"P1M","term":"P3Y","displayName":"Cosmos_Compute_SavingsPlan_10-07-2024_12-34","benefitStartTime":"2024-10-07T19:36:00.3641260Z","provisioningState":"Succeeded","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingProfiles/MT3O-U4IM-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31","expiryDateTime":"2027-10-07T19:36:00.3641260Z","productCode":"0001d726-0000-0160-ab43-b8473ce57f1d"},"sku":{"name":"Compute_Savings_Plan"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5937'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Oct 2024 03:39:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2837.793
+      x-msedge-ref:
+      - 'Ref A: 38A578E0B95446FD92B01B3D51E967AA Ref B: CO6AA3150219051 Ref C: 2024-10-22T03:39:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing savings-plan list-by-savings-plan-order
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --savings-plan-order-id
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15%3Aeb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/9abc6c63-c1a3-4bc5-943a-ac30ea6ef74d/savingsPlans?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/savingsPlanOrders/9abc6c63-c1a3-4bc5-943a-ac30ea6ef74d/savingsPlans/9e2e5111-36e3-4c05-9456-041f29d80e13","name":"9e2e5111-36e3-4c05-9456-041f29d80e13","type":"microsoft.billing/billingAccounts/savingsPlanOrders/savingsPlans","sku":{"name":"Compute_Savings_Plan"},"properties":{"productCode":"0001d726-0000-0160-ab43-b8473ce57f1d","billingScopeId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingSubscriptions/c6931bcb-9a94-49e1-80fd-0ad5cb8ecc70","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e599e039-711f-52e8-69a0-cb0876584b15:eb5be248-66d2-43f1-abb7-ff3a0f618fb5_2019-05-31/billingProfiles/MT3O-U4IM-BG7-TGB","billingPlan":"P1M","commitment":{"grain":"Hourly","currencyCode":"USD","amount":0.001},"renew":false,"appliedScopeType":"Shared","displayName":"Compute_SavingsPlan_01-09-2024_00-38","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2027-01-09T08:40:24.3880168Z","purchaseDateTime":"2024-01-09T08:38:15.1658294Z","benefitStartTime":"2024-01-09T08:40:24.3880168Z","effectiveDateTime":"2024-01-09T08:40:25.3413989Z","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1787'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Oct 2024 03:39:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2837.793
+      x-msedge-ref:
+      - 'Ref A: ADB45A70AF22412AA3283FD86D833FCC Ref B: CO6AA3150217021 Ref C: 2024-10-22T03:39:53Z'
+    status:
+      code: 200
+      message: OK
+version: 1

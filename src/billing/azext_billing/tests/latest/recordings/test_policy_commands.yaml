@@ -1,0 +1,167 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing policy get-by-customer-at-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --customer-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/edbb014c-80ca-55f8-ffe8-5b0e223f3c96%3A9e80edc1-bbbf-427e-a185-8a8f50a8a1ca_2019-05-31/customers/da904b39-8d5f-420f-9d2c-c3b3923d78fe/policies/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/edbb014c-80ca-55f8-ffe8-5b0e223f3c96:9e80edc1-bbbf-427e-a185-8a8f50a8a1ca_2019-05-31/billingProfiles/SXJ7-5ZRB-BG7-TGB/customers/da904b39-8d5f-420f-9d2c-c3b3923d78fe/policies/default","name":"default","properties":{"viewCharges":"Allowed"},"type":"Microsoft.Billing/billingAccounts/billingProfiles/customers/policies"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '370'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 23:09:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: E042785530724EDEBBCBFEC1160E4C41 Ref B: CO6AA3150220035 Ref C: 2024-10-23T23:09:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing policy update-by-customer-at-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --customer-name --view-charges
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/edbb014c-80ca-55f8-ffe8-5b0e223f3c96%3A9e80edc1-bbbf-427e-a185-8a8f50a8a1ca_2019-05-31/customers/da904b39-8d5f-420f-9d2c-c3b3923d78fe/policies/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/edbb014c-80ca-55f8-ffe8-5b0e223f3c96:9e80edc1-bbbf-427e-a185-8a8f50a8a1ca_2019-05-31/billingProfiles/SXJ7-5ZRB-BG7-TGB/customers/da904b39-8d5f-420f-9d2c-c3b3923d78fe/policies/default","name":"default","properties":{"viewCharges":"Allowed"},"type":"Microsoft.Billing/billingAccounts/billingProfiles/customers/policies"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '370'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 23:09:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 57CD583A1F1A404CB7B48CE7F479E9E6 Ref B: CO6AA3150220053 Ref C: 2024-10-23T23:09:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"viewCharges": "Allowed"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing policy update-by-customer-at-billing-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '42'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --customer-name --view-charges
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/edbb014c-80ca-55f8-ffe8-5b0e223f3c96%3A9e80edc1-bbbf-427e-a185-8a8f50a8a1ca_2019-05-31/customers/da904b39-8d5f-420f-9d2c-c3b3923d78fe/policies/default?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/edbb014c-80ca-55f8-ffe8-5b0e223f3c96:9e80edc1-bbbf-427e-a185-8a8f50a8a1ca_2019-05-31/billingProfiles/SXJ7-5ZRB-BG7-TGB/customers/da904b39-8d5f-420f-9d2c-c3b3923d78fe/policies/default","name":"default","properties":{"viewCharges":"Allowed"},"type":"Microsoft.Billing/billingAccounts/billingProfiles/customers/policies"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '370'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 23:09:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '199'
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 036F04A824464E76BA72AE2F7E499EDC Ref B: CO6AA3150220053 Ref C: 2024-10-23T23:09:09Z'
+    status:
+      code: 200
+      message: OK
+version: 1

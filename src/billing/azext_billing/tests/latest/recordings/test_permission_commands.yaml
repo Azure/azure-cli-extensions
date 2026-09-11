@@ -1,0 +1,338 @@
+interactions:
+- request:
+    body: '{"actions": ["Microsoft.Billing/billingAccounts/read"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission check-access-by-billing-account
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '55'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --actions
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/checkAccess?api-version=2024-04-01
+  response:
+    body:
+      string: '[{"accessDecision":"NotAllowed","action":"Microsoft.Billing/billingAccounts/read"}]'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '83'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 08:25:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 305CC905D29C4093B7CDC17EFD382196 Ref B: CO6AA3150218035 Ref C: 2024-10-23T08:25:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"actions": ["Microsoft.Billing/billingAccounts/billingProfiles/read"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission check-access-by-billing-profile
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name --actions
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/checkAccess?api-version=2024-04-01
+  response:
+    body:
+      string: '[{"accessDecision":"NotAllowed","action":"Microsoft.Billing/billingAccounts/billingProfiles/read"}]'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '99'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 08:25:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 9800C18616704B2EBB15C0855A179CBC Ref B: CO6AA3150217047 Ref C: 2024-10-23T08:25:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"actions": ["Microsoft.Billing/billingAccounts/billingProfiles/invoiceSections/read"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission check-access-by-invoice-section
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name --invoice-section-name --actions
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/invoiceSections/YB7U-KJHC-PJA-TGB/checkAccess?api-version=2024-04-01
+  response:
+    body:
+      string: '[{"accessDecision":"NotAllowed","action":"Microsoft.Billing/billingAccounts/billingProfiles/invoiceSections/read"}]'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '115'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 08:25:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: A5004EB7E2544133B0E24B40D4F6CE72 Ref B: CO6AA3150219053 Ref C: 2024-10-23T08:25:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission list-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingPermissions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"actions":[]}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '26'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 08:25:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 185A2ECFB3FB4166A0F4DAA7D8593E25 Ref B: CO6AA3150220031 Ref C: 2024-10-23T08:25:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission list-by-billing-profile
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/billingPermissions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"actions":[]}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '26'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 08:25:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: CBAA4807F0D9462DB07AC9A41BB8CB53 Ref B: CO6AA3150217011 Ref C: 2024-10-23T08:25:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing permission list-by-invoice-section
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name --invoice-section-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/invoiceSections/YB7U-KJHC-PJA-TGB/billingPermissions?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"actions":[]}]}'
+    headers:
+      api-supported-versions:
+      - 2019-10-01-preview, 2020-05-01, 2020-12-15-privatepreview, 2022-10-01-privatepreview,
+        2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '26'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 08:25:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: C52DE79131D249958D535F99796B4427 Ref B: CO6AA3150220051 Ref C: 2024-10-23T08:25:08Z'
+    status:
+      code: 200
+      message: OK
+version: 1
