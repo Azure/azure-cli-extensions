@@ -727,8 +727,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
 
-    # Set the repair map URL if a preview is available
+    # Validate and set the repair map URL if a preview is available
     if preview:
+        _parse_preview_url(preview)
         _set_repair_map_url(preview)
 
     try:
@@ -886,8 +887,9 @@ def list_scripts(cmd, preview=None):
     # Initiate a command helper object for logging and status tracking
     command = command_helper(logger, cmd, 'vm repair list-scripts')
 
-    # Set the repair map URL if a preview is available
+    # Validate and set the repair map URL if a preview is available
     if preview:
+        _parse_preview_url(preview)
         _set_repair_map_url(preview)
 
     try:

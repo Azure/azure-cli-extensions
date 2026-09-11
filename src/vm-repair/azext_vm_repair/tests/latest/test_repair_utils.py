@@ -11,7 +11,7 @@ from unittest import mock
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_vm_repair import repair_utils
-from azext_vm_repair.custom import _build_repo_params
+from azext_vm_repair.custom import _build_repo_params, list_scripts, run
 from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
 
 
@@ -130,6 +130,28 @@ class BuildRepoParamsTest(unittest.TestCase):
         # would silently download repair-script-library from that owner instead.
         with self.assertRaises(InvalidArgumentValueError):
             _build_repo_params('https://github.com/SomeUser/something-else/blob/main/map.json', True)
+
+
+class PreviewUrlIsValidatedBeforeUseTest(unittest.TestCase):
+
+    # The map URL is a module-level global that --preview overwrites. Validating it only when
+    # the driver parameters are built left list-scripts unguarded, and left run fetching the
+    # map from an unvalidated location before the error was raised.
+    BAD_PREVIEW = 'https://github.com/SomeUser/something-else/blob/feature/nvme/map.json'
+
+    def test_list_scripts_rejects_the_url_before_overwriting_the_map(self):
+        with mock.patch('azext_vm_repair.custom.command_helper'), \
+                mock.patch('azext_vm_repair.custom._set_repair_map_url') as set_map_url:
+            with self.assertRaises(InvalidArgumentValueError):
+                list_scripts(None, preview=self.BAD_PREVIEW)
+        set_map_url.assert_not_called()
+
+    def test_run_rejects_the_url_before_overwriting_the_map(self):
+        with mock.patch('azext_vm_repair.custom.command_helper'), \
+                mock.patch('azext_vm_repair.custom._set_repair_map_url') as set_map_url:
+            with self.assertRaises(InvalidArgumentValueError):
+                run(None, 'vm', 'rg', run_id='win-hello-world', preview=self.BAD_PREVIEW)
+        set_map_url.assert_not_called()
 
 
 if __name__ == '__main__':
