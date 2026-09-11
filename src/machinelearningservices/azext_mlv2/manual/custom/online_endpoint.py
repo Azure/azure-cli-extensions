@@ -18,6 +18,7 @@ from azure.cli.core.commands import LongRunningOperation
 from .raise_error import log_and_raise_error
 from .utils import (
     _dump_entity_with_warnings,
+    _normalize_enum_values,
     convert_str_to_dict,
     get_ml_client,
     is_not_found_error,
@@ -38,7 +39,7 @@ def ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name, loca
         endpoint = ml_client.online_endpoints.get(name=name, local=local)
         if web:
             open_online_endpoint_in_browser(endpoint)
-        return endpoint.dump()
+        return _normalize_enum_values(endpoint.dump())
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
@@ -137,7 +138,7 @@ def ml_online_endpoint_create(
         if isinstance(endpoint, OnlineEndpoint):
             if web:
                 open_online_endpoint_in_browser(endpoint)
-            return endpoint.dump()
+            return _normalize_enum_values(endpoint.dump())
     except Exception as err:  # pylint: disable=broad-exception-caught
         yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
@@ -268,7 +269,7 @@ def ml_online_endpoint_update(
         if isinstance(endpoint_return, OnlineEndpoint):
             if web:
                 open_online_endpoint_in_browser(endpoint_return)
-            return endpoint_return.dump()
+            return _normalize_enum_values(endpoint_return.dump())
         return endpoint_return
 
     except Exception as err:  # pylint: disable=broad-exception-caught
