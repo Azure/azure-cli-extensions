@@ -43,7 +43,7 @@ def _get_cloud_init_script():
 def _set_repair_map_url(url):
     raw_url = str(url)
     if "github.com" in raw_url:
-        raw_url = raw_url.replace("github.com", "raw.githubusercontent.com")
+        raw_url = raw_url.replace("https://github.com/", "https://raw.githubusercontent.com/", 1)
         # Both forms reach here because the preview URL validator accepts either.
         raw_url = re.sub(r'/(?:blob|tree)/', '/', raw_url, count=1)
         global REPAIR_MAP_URL
