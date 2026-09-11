@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database access-policy-assignment create",
-    is_preview=True,
+    "redisenterprise migration start",
 )
-class Create(AAZCommand):
-    """Create access policy assignment for database
+class Start(AAZCommand):
+    """Create a new migration
 
-    :example: Configure Redis User for role based access control
-        az redisenterprise database access-policy-assignment create --resource-group rg1 --cluster-name cache1 --database-name default --access-policy-assignment-name defaultTestEntraApp1 --access-policy-name default --object-id 6497c918-11ad-41e7-1b0f-7c518a87d0b0
+    :example: Start a migration from an Azure Cache for Redis source
+        az redisenterprise migration start --cluster-name "cache1" --resource-group "rg1" --source-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache" --skip-data-migration true --switch-dns true
     """
 
     _aaz_info = {
         "version": "2026-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-06-01-preview"],
         ]
     }
 
@@ -46,26 +45,11 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.access_policy_assignment_name = AAZStrArg(
-            options=["-n", "--name", "--access-policy-assignment-name"],
-            help="The name of the Redis Enterprise database access policy assignment.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
-            ),
-        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the Redis Enterprise cluster.",
+            help="The name of the Redis Enterprise cluster. Name must be 1-60 characters long. Allowed characters(A-Z, a-z, 0-9) and hyphen(-). There can be no leading nor trailing nor consecutive hyphens",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the Redis Enterprise database.",
-            required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
@@ -77,34 +61,36 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.access_policy_name = AAZStrArg(
-            options=["--access-policy-name"],
+        _args_schema.azure_cache_for_redis = AAZObjectArg(
+            options=["--azure-cache-for-redis"],
             arg_group="Properties",
-            help="Name of access policy under specific access policy assignment. Only \"default\" policy is supported for now.",
-            default="default",
-            fmt=AAZStrArgFormat(
-                pattern="^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[a-zA-Z0-9])$",
-            ),
-        )
-        _args_schema.access_string = AAZStrArg(
-            options=["--access-string"],
-            arg_group="Properties",
-            help="The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Defaults to `+@all ~*` if not specified.",
         )
 
-        # define Arg Group "User"
-
-        _args_schema = cls._args_schema
-        _args_schema.object_id = AAZStrArg(
-            options=["--object-id"],
-            arg_group="User",
-            help="The object ID of the user.",
+        azure_cache_for_redis = cls._args_schema.azure_cache_for_redis
+        azure_cache_for_redis.force_migrate = AAZBoolArg(
+            options=["force-migrate"],
+            help="Sets whether to ignore warnings when performing validation of the migration request. If this property is true, warning-level disparities between the source and target resources will be ignored, and the request will only fail validation if there are error-level disparities. The default value is false.",
+        )
+        azure_cache_for_redis.skip_data_migration = AAZBoolArg(
+            options=["skip-data-migration"],
+            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            required=True,
+        )
+        azure_cache_for_redis.source_resource_id = AAZResourceIdArg(
+            options=["source-resource-id"],
+            help="The source resource ID to migrate from. This is the resource ID of the Azure Cache for Redis.",
+            required=True,
+        )
+        azure_cache_for_redis.switch_dns = AAZBoolArg(
+            options=["switch-dns"],
+            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache. This property must be true during the preview.",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AccessPolicyAssignmentCreateUpdate(ctx=self.ctx)()
+        yield self.MigrationsStart(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -119,7 +105,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AccessPolicyAssignmentCreateUpdate(AAZHttpOperation):
+    class MigrationsStart(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -149,7 +135,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/accessPolicyAssignments/{accessPolicyAssignmentName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/migrations/default",
                 **self.url_parameters
             )
 
@@ -165,15 +151,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "accessPolicyAssignmentName", self.ctx.args.access_policy_assignment_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "databaseName", self.ctx.args.database_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -216,17 +194,19 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name")
-                properties.set_prop("accessString", AAZStrType, ".access_string")
-                properties.set_prop("user", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("sourceType", "AzureCacheForRedis", AAZStrType, ".azure_cache_for_redis", typ_kwargs={"flags": {"required": True}})
+                properties.discriminate_by("sourceType", "AzureCacheForRedis")
 
-            user = _builder.get(".properties.user")
-            if user is not None:
-                user.set_prop("objectId", AAZStrType, ".object_id")
+            disc_azure_cache_for_redis = _builder.get(".properties{sourceType:AzureCacheForRedis}")
+            if disc_azure_cache_for_redis is not None:
+                disc_azure_cache_for_redis.set_prop("forceMigrate", AAZBoolType, ".azure_cache_for_redis.force_migrate")
+                disc_azure_cache_for_redis.set_prop("skipDataMigration", AAZBoolType, ".azure_cache_for_redis.skip_data_migration", typ_kwargs={"flags": {"required": True}})
+                disc_azure_cache_for_redis.set_prop("sourceResourceId", AAZStrType, ".azure_cache_for_redis.source_resource_id", typ_kwargs={"flags": {"required": True}})
+                disc_azure_cache_for_redis.set_prop("switchDns", AAZBoolType, ".azure_cache_for_redis.switch_dns", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -254,9 +234,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -266,36 +244,46 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.access_policy_name = AAZStrType(
-                serialized_name="accessPolicyName",
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+                flags={"read_only": True},
             )
-            properties.access_string = AAZStrType(
-                serialized_name="accessString",
-            )
-            properties.provisioning_error = AAZObjectType(
-                serialized_name="provisioningError",
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user = AAZObjectType(
+            properties.source_type = AAZStrType(
+                serialized_name="sourceType",
                 flags={"required": True},
+            )
+            properties.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"read_only": True},
+            )
+            properties.target_resource_id = AAZStrType(
+                serialized_name="targetResourceId",
+                flags={"read_only": True},
             )
 
-            provisioning_error = cls._schema_on_200_201.properties.provisioning_error
-            provisioning_error.code = AAZStrType(
+            disc_azure_cache_for_redis = cls._schema_on_200_201.properties.discriminate_by("source_type", "AzureCacheForRedis")
+            disc_azure_cache_for_redis.force_migrate = AAZBoolType(
+                serialized_name="forceMigrate",
+            )
+            disc_azure_cache_for_redis.skip_data_migration = AAZBoolType(
+                serialized_name="skipDataMigration",
                 flags={"required": True},
             )
-            provisioning_error.message = AAZStrType(
+            disc_azure_cache_for_redis.source_resource_id = AAZStrType(
+                serialized_name="sourceResourceId",
                 flags={"required": True},
             )
-            provisioning_error.target = AAZStrType()
-
-            user = cls._schema_on_200_201.properties.user
-            user.object_id = AAZStrType(
-                serialized_name="objectId",
+            disc_azure_cache_for_redis.switch_dns = AAZBoolType(
+                serialized_name="switchDns",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200_201.system_data
@@ -321,8 +309,8 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _StartHelper:
+    """Helper class for Start"""
 
 
-__all__ = ["Create"]
+__all__ = ["Start"]

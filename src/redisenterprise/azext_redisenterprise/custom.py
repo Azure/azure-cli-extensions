@@ -25,6 +25,8 @@ from .aaz.latest.redisenterprise import List as _ClusterList
 from .aaz.latest.redisenterprise import Show as _ClusterShow
 from .aaz.latest.redisenterprise import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import Update as _Update
+from .aaz.latest.redisenterprise.migration import Start as _MigrationStart
+from .aaz.latest.redisenterprise.migration import Undo as _MigrationUndo
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
@@ -461,6 +463,91 @@ class DatabaseList(_DatabaseList):
         self.ctx.args.database_name = "default"
 
 
+class MigrationStart(_MigrationStart):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZBoolArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        if getattr(args_schema, "source_resource_id", None) is not None:
+            return args_schema
+        args_schema.source_resource_id = AAZResourceIdArg(
+            options=["--source-resource-id"],
+            arg_group="Properties",
+            help="The source resource ID to migrate from. This is the resource ID of the Azure Cache for Redis.",
+            required=True,
+        )
+        args_schema.skip_data_migration = AAZBoolArg(
+            options=["--skip-data-migration"],
+            arg_group="Properties",
+            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            required=True,
+        )
+        args_schema.switch_dns = AAZBoolArg(
+            options=["--switch-dns"],
+            arg_group="Properties",
+            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache. This property must be true during the preview.",
+            required=True,
+        )
+        args_schema.force_migrate = AAZBoolArg(
+            options=["--force-migrate"],
+            arg_group="Properties",
+            help="Sets whether to ignore warnings when performing validation of the migration request. If this property is true, warning-level disparities between the source and target resources will be ignored, and the request will only fail validation if there are error-level disparities. The default value is false.",
+        )
+        args_schema.azure_cache_for_redis._registered = False
+        args_schema.azure_cache_for_redis._required = False
+        return args_schema
+
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+        args = self.ctx.args
+        args.azure_cache_for_redis.source_resource_id = args.source_resource_id
+        args.azure_cache_for_redis.skip_data_migration = args.skip_data_migration
+        args.azure_cache_for_redis.switch_dns = args.switch_dns
+        if has_value(args.force_migrate):
+            args.azure_cache_for_redis.force_migrate = args.force_migrate
+
+
+class MigrationUndo(_MigrationUndo):
+    """Override ``redisenterprise migration undo`` to avoid an AAZ-generated
+    ``NoneType`` crash on successful LRO completion.
+
+    The service's ``Migrations_Cancel`` operation is a 202 LRO declared with
+    ``final-state-via: location`` in swagger, but the ``Location`` header points
+    at the migration resource itself, so the final GET returns a non-empty body.
+    The generated ``MigrationsCancel.__call__`` passes ``None`` as the LRO
+    success deserializer to ``build_lro_polling``; azure-core's
+    ``base_polling._parse_resource`` then tries to call that ``None`` on the
+    non-empty final response and raises
+    ``TypeError: 'NoneType' object is not callable``. The cancel returns no
+    resource of interest, so we pass a no-op deserializer (``on_200``) instead,
+    mirroring how the generated ``delete`` handles its empty response.
+
+    Remove this subclass (and the ``commands.py`` registration) once the
+    ``Migrations_Cancel`` swagger contract is fixed to use
+    ``final-state-via: azure-async-operation`` like the other bodyless actions.
+    """
+
+    class MigrationsCancel(_MigrationUndo.MigrationsCancel):
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            return self.on_error(session.http_response)
+
+        def on_200(self, session):
+            pass
+
+
 def _get_cluster_with_databases(cluster,
                                 databases):
     result = dict(cluster)
@@ -515,6 +602,7 @@ def redisenterprise_create(cmd,
                            zones=None,
                            high_availability=None,
                            public_network_access=None,
+                           maintenance_configuration=None,
                            key_encryption_key_url=None,
                            identity_type=None,
                            user_assigned_identities=None,
@@ -588,6 +676,7 @@ def redisenterprise_create(cmd,
             "zones": zones,
             "high_availability": high_availability,
             "public_network_access": public_network_access,
+            "maintenance_configuration": maintenance_configuration,
             "minimum_tls_version": minimum_tls_version,
             "key_encryption_key_url": key_encryption_key_url,
             "identity_type": identity_type,
@@ -608,6 +697,7 @@ def redisenterprise_create(cmd,
         "zones": zones,
         "high_availability": high_availability,
         "public_network_access": public_network_access,
+        "maintenance_configuration": maintenance_configuration,
         "minimum_tls_version": minimum_tls_version,
         "key_encryption_key_url": key_encryption_key_url,
         "identity_type": identity_type,
