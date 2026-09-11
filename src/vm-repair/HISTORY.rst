@@ -4,7 +4,7 @@ Release History
 
 2.4.2
 ++++++
-Adding examples to ``az vm repair run -h`` for checking whether Windows and Linux guests are ready to boot from an NVMe controller. Both examples run the corresponding read-only readiness detector on the linked repair VM.
+Adding examples to ``az vm repair run -h`` for checking whether Windows and Linux guests are ready to boot from an NVMe controller. Both examples run the corresponding read-only readiness detector on the linked repair VM. The README now also lists which platform-migration scenarios the extension can currently help with, so that an unsupported combination is not mistaken for a supported one.
 
 2.4.1
 ++++++
