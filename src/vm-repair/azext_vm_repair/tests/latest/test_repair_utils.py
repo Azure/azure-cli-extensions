@@ -6,7 +6,7 @@
 import unittest
 from unittest import mock
 
-from azext_vm_repair.repair_utils import check_extension_version
+from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
 
 
 class CheckExtensionVersionTest(unittest.TestCase):
@@ -48,6 +48,17 @@ class CheckExtensionVersionTest(unittest.TestCase):
         with mock.patch('azext_vm_repair.repair_utils.logger') as mock_logger:
             self._run(installed, available)
             mock_logger.warning.assert_not_called()
+
+
+class RepairMapUrlTest(unittest.TestCase):
+
+    def test_map_url_targets_the_libraries_default_branch(self):
+        # Azure/repair-script-library renamed its default branch to main. The old name only
+        # resolves through a rename redirect, so pinning to it leaves every run-id lookup
+        # dependent on a redirect GitHub is free to withdraw.
+        self.assertEqual(
+            REPAIR_MAP_URL,
+            'https://raw.githubusercontent.com/Azure/repair-script-library/main/map.json')
 
 
 if __name__ == '__main__':

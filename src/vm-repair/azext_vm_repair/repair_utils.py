@@ -20,7 +20,7 @@ from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNo
 
 from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
 
-REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
+REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/main/map.json'
 
 logger = get_logger(__name__)
 
