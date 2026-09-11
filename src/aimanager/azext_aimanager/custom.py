@@ -597,14 +597,74 @@ def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
 
 def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
                          model_deployment_name):  # pylint: disable=unused-argument
-    return client.get(
+    deployment = client.get(
         resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+    return _annotate_model_ids(cmd, [deployment])[0]
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                          namespace_name):  # pylint: disable=unused-argument
-    return client.list_by_ai_manager_namespace(
+    deployments = client.list_by_ai_manager_namespace(
         resource_group_name, ai_manager_name, namespace_name)
+    return _annotate_model_ids(cmd, list(deployments))
+
+
+def _annotate_model_ids(cmd, deployments):
+    """Resolve the human-readable model id (e.g. "meta-llama/Llama-3-8B") for each deployment
+    from its ``modelResourceId`` and return plain dicts with the id stashed under ``modelId``
+    for table rendering.
+
+    Plain dicts are returned (rather than the SDK model objects with an extra attribute)
+    because ``modelId`` is not a declared field on ``ModelDeployment``. azure-cli core 2.76+
+    copies only declared fields when converting a model to output, which would silently drop
+    an injected attribute; a plain dict passes through untouched.
+
+    The AIModel client is built once and lookups are memoized by ``(location, ai_model_name)``
+    so a namespace with many deployments referencing the same model incurs a single GET per
+    distinct model rather than one per deployment.
+
+    Best-effort: on any failure the affected deployment is returned unchanged (without a
+    ``modelId``) and the table shows a blank ModelId.
+    """
+    from azure.mgmt.core.tools import parse_resource_id
+    from azure.cli.core.util import todict
+    from azext_aimanager._client_factory import cf_ai_models
+
+    # Convert to plain (recursively nested) dicts first with todict, so an injected ``modelId``
+    # survives CLI output conversion and nested camelCase keys (e.g. ``modelResourceId``,
+    # ``currentReplicas``) are preserved for the table formatter.
+    annotated = [todict(deployment) for deployment in deployments]
+
+    ai_models_client = None
+    resolved = {}  # (location, ai_model_name) -> modelId
+
+    for deployment in annotated:
+        try:
+            properties = deployment.get('properties') or {}
+            model_resource_id = properties.get('modelResourceId')
+            if not model_resource_id:
+                continue
+
+            parsed = parse_resource_id(model_resource_id)
+            location = parsed.get('name')  # the location segment for an AIModel id
+            ai_model_name = parsed.get('resource_name')
+            if not location or not ai_model_name:
+                continue
+
+            key = (location, ai_model_name)
+            if key not in resolved:
+                if ai_models_client is None:
+                    ai_models_client = cf_ai_models(cmd.cli_ctx)
+                model = ai_models_client.get(location, ai_model_name)
+                resolved[key] = (todict(model).get('properties') or {}).get('modelId')
+
+            model_id = resolved[key]
+            if model_id:
+                deployment['modelId'] = model_id
+        except Exception:  # pylint: disable=broad-except
+            logger.debug("Failed to resolve human-readable modelId for a model deployment.",
+                         exc_info=True)
+    return annotated
 
 
 def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
