@@ -851,8 +851,9 @@ def upload_generic_files_helper(
 def upload_properties_file_helper(
     client, test_id, yaml_data, load_test_config_file, existing_test_files, wait
 ):
-    if yaml_data and yaml_data.get("properties", {}).get("userPropertyFile") is not None:
-        user_prop_file = yaml_data.get("properties", {}).get("userPropertyFile")
+    properties = yaml_data.get("properties") if isinstance(yaml_data, dict) else None
+    if isinstance(properties, dict) and properties.get("userPropertyFile") is not None:
+        user_prop_file = properties.get("userPropertyFile")
         existing_properties_files = []
         for file in existing_test_files:
             if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
