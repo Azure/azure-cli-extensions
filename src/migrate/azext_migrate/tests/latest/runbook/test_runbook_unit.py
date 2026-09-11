@@ -7,6 +7,7 @@ import io
 import json
 import os
 import copy
+import re
 import tempfile
 import unittest
 import zipfile
@@ -29,6 +30,7 @@ from azext_migrate.shared.constants import WAVE_OPERATIONS_API_VERSION
 from azext_migrate.runbook import models, transformers
 from azext_migrate.runbook import deps as deps_mod
 from azext_migrate.runbook import config_status as config_status_mod
+from azext_migrate.runbook import validators as validators_mod
 from azext_migrate.runbook.cmds import runbook as runbook_cmds
 from azext_migrate.runbook.cmds import definition as definition_cmds
 from azext_migrate.runbook.cmds import definition_step as step_cmds
@@ -43,14 +45,15 @@ from azext_migrate.runbook.cmds import (
 from azext_migrate.runbook.visualize import graph as visualize_graph
 from azext_migrate.runbook.visualize import renderer as visualize_renderer
 from azext_migrate.runbook.visualize import viewmodel as visualize_viewmodel
+from azext_migrate.runbook.configure import renderer as configure_renderer
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     RUNBOOK_STATUS_VALUES,
+    parameter_upload_blob_name,
 )
 from azext_migrate.runbook.models import ExecutionAction
 from azext_migrate.runbook.validators import (
     validate_generate,
-    validate_step_approve,
     validate_step_complete,
 )
 
@@ -279,6 +282,28 @@ class ArmClientLroTests(unittest.TestCase):
 
         self.assertEqual(self.send.call_count, 1)
 
+    def test_list_reroutes_foreign_next_link_to_arm(self):
+        # Migrate paging can return a nextLink on an internal backend host;
+        # called directly it 500s (missing partition-key header). list()
+        # must re-route the follow-up page through the ARM endpoint.
+        page1 = _fake_response(200, body={
+            "value": [{"name": "a"}],
+            "nextLink": (
+                "https://wave.ecy.prod.migration.windowsazure.com"
+                "/subscriptions/s/resourceGroups/rg/providers/"
+                "Microsoft.Migrate/migrateProjects/p/runbooks"
+                "?api-version=2020-06-01-preview&continuationToken=TOKEN")})
+        page2 = _fake_response(200, body={"value": [{"name": "b"}]})
+        self.send.side_effect = [page1, page2]
+
+        items = _arm_client().list("/runbooks")
+
+        self.assertEqual([i["name"] for i in items], ["a", "b"])
+        page2_url = self.send.call_args_list[1][0][2]
+        self.assertTrue(page2_url.startswith("https://management.azure.com/"))
+        self.assertIn("continuationToken=TOKEN", page2_url)
+        self.assertNotIn("windowsazure.com", page2_url)
+
 
 class RunbookWaitTests(unittest.TestCase):
 
@@ -380,6 +405,29 @@ class RunbookUpdateRegenerateTests(unittest.TestCase):
         with self.assertRaises(CLIError):
             runbook_cmds.regenerate(mock.Mock(), RG, PROJECT, RUNBOOK)
 
+    def test_regenerate_opens_definition_view_by_default(self):
+        wave_id = (arm_ids.migrate_project_id(SUB, RG, PROJECT)
+                   + '/waves/w')
+        self.client.get.return_value = {
+            "properties": {"scope": {"waveId": wave_id}}}
+        self.client.put.return_value = {"ok": True}
+        with mock.patch.object(
+                runbook_cmds, '_open_definition_view') as ov:
+            runbook_cmds.regenerate(mock.Mock(), RG, PROJECT, RUNBOOK)
+        ov.assert_called_once()
+
+    def test_regenerate_no_visualize_skips_view(self):
+        wave_id = (arm_ids.migrate_project_id(SUB, RG, PROJECT)
+                   + '/waves/w')
+        self.client.get.return_value = {
+            "properties": {"scope": {"waveId": wave_id}}}
+        self.client.put.return_value = {"ok": True}
+        with mock.patch.object(
+                runbook_cmds, '_open_definition_view') as ov:
+            runbook_cmds.regenerate(
+                mock.Mock(), RG, PROJECT, RUNBOOK, no_visualize=True)
+        ov.assert_not_called()
+
 
 class RunbookDefinitionTransformerTests(unittest.TestCase):
 
@@ -387,8 +435,8 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         definition = {"workstreams": [
             {"id": "w1", "steps": [
                 {"stepId": "s1", "displayName": "Step One",
-                 "prerequisite": [{"step": "b"}],
-                 "dependsOn": [{"step": "a"}],
+                 "prerequisites": [{"stepId": "b"}],
+                 "dependsOn": [{"stepId": "a"}],
                  "configurationStatus": "Configured",
                  "entities": ["e1", "e2"]}]},
             {"id": "w2", "steps": [{"stepId": "s2"}]},
@@ -399,8 +447,20 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         self.assertEqual(rows[0]["Step Name"], "Step One")
         self.assertEqual(rows[0]["Depends On"], "b\na")
         self.assertEqual(rows[0]["Configuration Status"], "Configured")
-        self.assertEqual(rows[0]["Workloads"], 2)
-        self.assertEqual(rows[0]["Applications"], "-")
+        self.assertEqual(rows[0]["Entities"], 2)
+        self.assertEqual(rows[0]["Applications"], 0)
+
+    def test_applications_count_from_affected_entity_groups(self):
+        definition = {
+            "workstreams": [{"id": "w1", "steps": [
+                {"stepId": "s1",
+                 "affectedEntityGroups": ["group-app", "group-db"]},
+                {"stepId": "s2", "affectedEntityGroups": ["group-app"]},
+                {"stepId": "s3"}]}]}
+        rows = transformers.definition_table(definition)
+        self.assertEqual(rows[0]["Applications"], 2)
+        self.assertEqual(rows[1]["Applications"], 1)
+        self.assertEqual(rows[2]["Applications"], 0)
 
     def test_single_workstream(self):
         rows = transformers.definition_table(
@@ -430,7 +490,7 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         # A parameters/inputs document must never be rendered as a single
         # bogus step row (regression: -o table showed one empty 3-column
         # row when the parameters file was mis-selected as the definition).
-        params = {"runbookInputs": {
+        params = {"inputs": {
             "schema": {"vm.agentless.setup": {}},
             "stepInputs": {"vm.agentless.setup-1": {}}}}
         self.assertEqual(transformers.definition_table(params), [])
@@ -497,10 +557,10 @@ class FilesTests(unittest.TestCase):
     def test_read_spec_json_prefers_spec_suffix(self):
         zip_bytes = _make_zip({
             "extra.json": '{"a": 1}',
-            "rb-x-spec.json": '{"runbookSpec": {"id": "r"}}',
+            "rb-x-spec.json": '{"spec": {"id": "r"}}',
         })
         spec = files.read_spec_json(zip_bytes)
-        self.assertEqual(spec, {"runbookSpec": {"id": "r"}})
+        self.assertEqual(spec, {"spec": {"id": "r"}})
 
     def test_read_status_json_raw_status_doc(self):
         raw = json.dumps({"state": "InProgress"}).encode('utf-8')
@@ -508,15 +568,15 @@ class FilesTests(unittest.TestCase):
             files.read_status_json(raw), {"state": "InProgress"})
 
     def test_read_status_json_raw_rejects_parameters(self):
-        raw = json.dumps({"runbookInputs": {"schema": {}}}).encode('utf-8')
+        raw = json.dumps({"inputs": {"schema": {}}}).encode('utf-8')
         with self.assertRaises(CLIInternalError):
             files.read_status_json(raw)
 
     def test_read_status_json_zip_prefers_status_member(self):
         zip_bytes = _make_zip({
-            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
-            "status.json": '{"workstreams": [{"steps": []}]}',
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "executionStatus.json": '{"workstreams": [{"steps": []}]}',
         })
         self.assertEqual(
             files.read_status_json(zip_bytes),
@@ -526,9 +586,9 @@ class FilesTests(unittest.TestCase):
         # A not-yet-run execution archive (definition + parameters, no
         # status) must not be mistaken for a status document.
         zip_bytes = _make_zip({
-            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
-            "derived-input.json": '{"runbookInputs": {"schema": {}}}',
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "system-derived-inputs.json": '{"inputs": {"schema": {}}}',
         })
         with self.assertRaises(CLIInternalError):
             files.read_status_json(zip_bytes)
@@ -537,7 +597,7 @@ class FilesTests(unittest.TestCase):
         # Zip-slip is designed out: a member with a traversal path is
         # written by its base name, staying inside the destination.
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {}}',
+            "runbook.json": '{"spec": {}}',
             "../../evil.md": "# bad",
         })
         with tempfile.TemporaryDirectory() as tmp:
@@ -549,8 +609,8 @@ class FilesTests(unittest.TestCase):
 
     def test_extract_definition_files_round_trip(self):
         zip_bytes = _make_zip({
-            "rb-x-spec.json": '{"runbookSpec": {"workstreams": []}}',
-            "rb-x-input.json": '{"runbookInputs": {"a": 1}}',
+            "rb-x-spec.json": '{"spec": {"workstreams": []}}',
+            "rb-x-input.json": '{"inputs": {"a": 1}}',
             "docs/readme.md": "# hello",
         })
         with tempfile.TemporaryDirectory() as tmp:
@@ -566,7 +626,7 @@ class FilesTests(unittest.TestCase):
 
     def test_extract_definition_files_flattens_paths(self):
         zip_bytes = _make_zip({
-            "../evil-spec.json": '{"runbookSpec": {}}',
+            "../evil-spec.json": '{"spec": {}}',
             "../../notes.md": "# n",
         })
         with tempfile.TemporaryDirectory() as tmp:
@@ -580,117 +640,163 @@ class FilesTests(unittest.TestCase):
 
     def test_extract_parameters_file_by_content(self):
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {}}',
-            "user-inputs.json": '{"runbookInputs": {"stepInputs": {}}}',
+            "runbook.json": '{"spec": {}}',
+            "user-inputs.json": '{"inputs": {"stepInputs": {}}}',
         })
         name, data = files.extract_parameters_file(zip_bytes)
         self.assertEqual(name, "user-inputs.json")
-        self.assertIn(b"runbookInputs", data)
+        self.assertIn(b"inputs", data)
 
     def test_extract_parameters_file_none_when_only_spec(self):
-        zip_bytes = _make_zip({"rb-x-spec.json": '{"runbookSpec": {}}'})
+        zip_bytes = _make_zip({"rb-x-spec.json": '{"spec": {}}'})
         self.assertIsNone(files.extract_parameters_file(zip_bytes))
 
     def test_read_spec_json_selects_spec_by_content(self):
-        # Real service names the members runbook.json / user-inputs.json,
-        # neither of which carries a -spec.json suffix. Selection must fall
-        # back to content so the parameters file is never returned as the
-        # definition.
+        # The service members carry no -spec.json suffix, so selection must
+        # fall back to content (name-agnostic) rather than a filename match,
+        # ensuring the parameters file is never returned as the definition.
         for members in (
-                {"user-inputs.json": '{"runbookInputs": {"schema": {}}}',
+                {"user-inputs.json": '{"inputs": {"schema": {}}}',
                  "runbook.json":
-                     '{"runbookSpec": {"workstreams": []}}'},
+                     '{"spec": {"workstreams": []}}'},
                 {"runbook.json":
-                     '{"runbookSpec": {"workstreams": []}}',
-                 "user-inputs.json": '{"runbookInputs": {"schema": {}}}'}):
+                     '{"spec": {"workstreams": []}}',
+                 "user-inputs.json": '{"inputs": {"schema": {}}}'}):
             spec = files.read_spec_json(_make_zip(members))
-            self.assertIn("runbookSpec", spec)
-            self.assertIn("workstreams", spec["runbookSpec"])
+            self.assertIn("spec", spec)
+            self.assertIn("workstreams", spec["spec"])
 
     def test_read_spec_json_none_when_only_parameters(self):
         zip_bytes = _make_zip({
             "user-inputs.json":
-                '{"runbookInputs": {"stepInputs": {}}}'})
+                '{"inputs": {"stepInputs": {}}}'})
         self.assertIsNone(files.read_spec_json(zip_bytes))
+
+    def test_describe_archive_reports_member_roles(self):
+        zip_bytes = _make_zip({
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "runbook.md": "# docs"})
+        summary = files.describe_archive(zip_bytes)
+        self.assertIn('spec.json (definition)', summary)
+        self.assertIn('inputs.json (parameters)', summary)
+        self.assertIn('runbook.md (docs)', summary)
+
+    def test_describe_archive_flags_unrecognized_member(self):
+        # A stale/mismatched contract (old runbookSpec key) is not a spec.
+        zip_bytes = _make_zip({
+            "runbook.json": '{"runbookSpec": {"workstreams": []}}'})
+        self.assertIn('runbook.json (unrecognized)',
+                      files.describe_archive(zip_bytes))
+
+    def test_describe_archive_raw_blob(self):
+        self.assertEqual(
+            files.describe_archive(b'{"spec": {}}'), 'raw non-archive blob')
 
     def test_extract_parameters_selects_inputs_by_content(self):
         # Mirror of the spec test: the params file must win over the spec
         # regardless of member ordering or non-standard names.
         for members in (
                 {"runbook.json":
-                 '{"runbookSpec": {"workstreams": []}}',
+                 '{"spec": {"workstreams": []}}',
                  "user-inputs.json":
-                 '{"runbookInputs": {"schema": {}}}'},
+                 '{"inputs": {"schema": {}}}'},
                 {"user-inputs.json":
-                 '{"runbookInputs": {"schema": {}}}',
+                 '{"inputs": {"schema": {}}}',
                  "runbook.json":
-                 '{"runbookSpec": {"workstreams": []}}'}):
+                 '{"spec": {"workstreams": []}}'}):
             name, data = files.extract_parameters_file(_make_zip(members))
             self.assertEqual(name, "user-inputs.json")
-            self.assertIn("runbookInputs", json.loads(data.decode()))
+            self.assertIn("inputs", json.loads(data.decode()))
 
     def test_read_parameters_json_by_content(self):
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {"workstreams": []}}',
+            "runbook.json": '{"spec": {"workstreams": []}}',
             "user-inputs.json":
-                '{"runbookInputs": {"stepInputs": {"s1": {}}}}'})
+                '{"inputs": {"stepInputs": {"s1": {}}}}'})
         params = files.read_parameters_json(zip_bytes)
         self.assertEqual(params, {"stepInputs": {"s1": {}}})
 
     def test_parameters_excludes_derived_input(self):
-        # The real archive ships runbook.json (spec), user-inputs.json and
-        # derived-input.json (both runbookInputs-shaped). Only user-inputs
-        # is the parameters file; derived-input must never be selected.
+        # The real archive ships spec.json (spec), inputs.json and
+        # system-derived-inputs.json (both runbookInputs-shaped). Only the
+        # user inputs file is the parameters file; the derived inputs must
+        # never be selected.
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {"workstreams": []}}',
-            "derived-input.json":
-                '{"runbookInputs": {"stepInputs": {"d": {}}}}',
-            "user-inputs.json":
-                '{"runbookInputs": {"stepInputs": {"u": {}}}}'})
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "system-derived-inputs.json":
+                '{"inputs": {"stepInputs": {"d": {}}}}',
+            "inputs.json":
+                '{"inputs": {"stepInputs": {"u": {}}}}'})
         name, data = files.extract_parameters_file(zip_bytes)
-        self.assertEqual(name, "user-inputs.json")
+        self.assertEqual(name, "inputs.json")
         self.assertEqual(
             files.read_parameters_json(zip_bytes), {"stepInputs": {"u": {}}})
         self.assertNotIn("derived", data.decode())
 
+    def test_parameters_reads_renamed_parameters_json(self):
+        # After the service rename inputs.json -> parameters.json, the user
+        # parameters member is still content-classified (name-agnostic) and
+        # the renamed derived member is still excluded by name.
+        zip_bytes = _make_zip({
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "system-derived-parameters.json":
+                '{"inputs": {"stepInputs": {"d": {}}}}',
+            "parameters.json":
+                '{"inputs": {"stepInputs": {"u": {}}}}'})
+        name, _ = files.extract_parameters_file(zip_bytes)
+        self.assertEqual(name, "parameters.json")
+        self.assertEqual(
+            files.read_parameters_json(zip_bytes), {"stepInputs": {"u": {}}})
+
+    def test_extract_parameter_files_writes_renamed_name(self):
+        zip_bytes = _make_zip({
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "parameters.json": '{"inputs": {"stepInputs": {}}}'})
+        with tempfile.TemporaryDirectory() as tmp:
+            written = files.extract_parameter_files(zip_bytes, tmp)
+            names = sorted(os.path.basename(p) for p in written)
+            self.assertEqual(names, ["parameters.json"])
+
     def test_read_spec_ignores_input_documents(self):
         zip_bytes = _make_zip({
-            "derived-input.json": '{"runbookInputs": {"schema": {}}}',
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}',
-            "runbook.json":
-                '{"runbookSpec": {"workstreams": [{"id": "w1"}]}}'})
+            "system-derived-inputs.json": '{"inputs": {"schema": {}}}',
+            "inputs.json": '{"inputs": {"schema": {}}}',
+            "spec.json":
+                '{"spec": {"workstreams": [{"id": "w1"}]}}'})
         spec = files.read_spec_json(zip_bytes)
-        self.assertIn("runbookSpec", spec)
+        self.assertIn("spec", spec)
 
     def test_extract_definition_files_includes_inputs_not_derived(self):
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {"workstreams": []}}',
-            "user-inputs.json": '{"runbookInputs": {}}',
-            "derived-input.json": '{"runbookInputs": {}}',
+            "spec.json": '{"spec": {"workstreams": []}}',
+            "inputs.json": '{"inputs": {}}',
+            "system-derived-inputs.json": '{"inputs": {}}',
             "runbook.md": "# docs",
         })
         with tempfile.TemporaryDirectory() as tmp:
             written = files.extract_definition_files(zip_bytes, tmp)
             names = sorted(os.path.basename(p) for p in written)
             self.assertEqual(
-                names, ["runbook.json", "runbook.md", "user-inputs.json"])
+                names, ["inputs.json", "runbook.md", "spec.json"])
             self.assertTrue(
-                os.path.exists(os.path.join(tmp, "user-inputs.json")))
+                os.path.exists(os.path.join(tmp, "inputs.json")))
             self.assertFalse(
-                os.path.exists(os.path.join(tmp, "derived-input.json")))
+                os.path.exists(
+                    os.path.join(tmp, "system-derived-inputs.json")))
 
     def test_read_spec_json_accepts_raw_blob(self):
-        raw = b'{"runbookSpec": {"workstreams": [{"id": "w1"}]}}'
+        raw = b'{"spec": {"workstreams": [{"id": "w1"}]}}'
         self.assertEqual(
             files.read_spec_json(raw),
-            {"runbookSpec": {"workstreams": [{"id": "w1"}]}})
+            {"spec": {"workstreams": [{"id": "w1"}]}})
 
     def test_extract_parameters_file_none_for_raw_blob(self):
         self.assertIsNone(
-            files.extract_parameters_file(b'{"runbookSpec": {}}'))
+            files.extract_parameters_file(b'{"spec": {}}'))
 
     def test_extract_definition_files_writes_raw_blob(self):
-        raw = b'{"runbookSpec": {"workstreams": []}}'
+        raw = b'{"spec": {"workstreams": []}}'
         with tempfile.TemporaryDirectory() as tmp:
             written = files.extract_definition_files(raw, tmp)
             self.assertEqual(
@@ -721,7 +827,7 @@ class DefinitionCommandTests(unittest.TestCase):
             "downloadUrl": "https://blob/x"}
         zip_bytes = _make_zip({
             "rb-x-spec.json":
-                '{"runbookSpec": {"workstreams": '
+                '{"spec": {"workstreams": '
                 '[{"id": "w1", "steps": []}]}}'})
         with mock.patch.object(
                 definition_cmds.files, 'download_bytes',
@@ -732,7 +838,7 @@ class DefinitionCommandTests(unittest.TestCase):
         project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
         self.client.post_action.assert_called_once_with(
             arm_ids.artifact_id(project, ARTIFACT), 'generateDownloadUrl',
-            {"mode": "directory", "path": "/", "includeMetadata": True},
+            {"mode": "Directory"},
             return_final_poll=True)
         self.assertEqual(result["id"], "w1")
 
@@ -746,7 +852,7 @@ class DefinitionCommandTests(unittest.TestCase):
             "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        zip_bytes = _make_zip({"user-inputs.json": '{"runbookInputs": {}}'})
+        zip_bytes = _make_zip({"user-inputs.json": '{"inputs": {}}'})
         with mock.patch.object(
                 definition_cmds.files, 'download_bytes',
                 return_value=zip_bytes):
@@ -764,7 +870,7 @@ class DefinitionCommandTests(unittest.TestCase):
         with mock.patch.object(
                 definition_cmds.files, 'download_bytes',
                 return_value=_make_zip({
-                    "s.json": '{"runbookSpec": {"workstreams": []}}'})):
+                    "s.json": '{"spec": {"workstreams": []}}'})):
             definition_cmds.show(mock.Mock(), RG, PROJECT, RUNBOOK)
         called_id = self.client.post_action.call_args[0][0]
         self.assertEqual(called_id, full_id)
@@ -777,12 +883,14 @@ class DefinitionCommandTests(unittest.TestCase):
                 return_value=b'zip'), \
                 mock.patch.object(
                 definition_cmds.files, 'extract_definition_files',
-                return_value=["/tmp/runbook.json", "/tmp/readme.md"]) as ex:
+                return_value=["/tmp/runbook.json", "/tmp/parameters.json",
+                              "/tmp/readme.md"]) as ex:
             result = definition_cmds.download(
                 mock.Mock(), RG, PROJECT, RUNBOOK, destination="/tmp")
         ex.assert_called_once_with(b'zip', "/tmp")
         self.assertEqual(result, [
             {"kind": "definition", "path": "/tmp/runbook.json"},
+            {"kind": "parameters", "path": "/tmp/parameters.json"},
             {"kind": "documentation", "path": "/tmp/readme.md"},
         ])
 
@@ -809,8 +917,8 @@ class StepModelTests(unittest.TestCase):
             "displayName": "Approve",
             "description": "desc",
             "stepRef": "common.approval",
-            "dependsOn": [{"mode": "Step", "stepId": "s0"}],
-            "migrationEntityIds": ["e1", "e2"],
+            "dependsOn": [{"waitFor": "Step", "stepId": "s0"}],
+            "entities": ["e1", "e2"],
         })
 
     def test_build_update_step_body_minimal(self):
@@ -824,7 +932,7 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "stepId": "s1", "displayName": "New",
             "description": "d",
-            "dependsOn": [{"mode": "Step", "stepId": "s0"}]})
+            "dependsOn": [{"waitFor": "Step", "stepId": "s0"}]})
 
     def test_build_delete_step_body(self):
         self.assertEqual(
@@ -836,13 +944,13 @@ class StepModelTests(unittest.TestCase):
         self.assertEqual(body, {
             "sourceWorkstreamId": "ws1",
             "stepIds": ["e1", "e2"],
-            "newWorkstreamName": "new"})
+            "displayName": "new"})
 
     def test_build_merge_workstreams_body(self):
         body = models.build_merge_workstreams_body(["w1", "w2"], "merged")
         self.assertEqual(body, {
             "workstreamIds": ["w1", "w2"],
-            "newWorkstreamName": "merged"})
+            "displayName": "merged"})
 
     def test_build_merge_workstreams_body_requires_name(self):
         with self.assertRaises(TypeError):
@@ -866,20 +974,40 @@ class StepCommandTests(unittest.TestCase):
 
     def test_add_posts_add_step(self):
         self.client.post_action.return_value = {"ok": True}
-        result = step_cmds.add(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Step 1", "ws1")
-        self.assertEqual(result, {"ok": True})
+        definition = {"workstreams": [{"id": "ws1", "steps": [
+            {"stepId": "s-new", "displayName": "Step 1"}]}]}
+        with mock.patch.object(
+                step_cmds, '_load_definition', return_value=definition):
+            result = step_cmds.add(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Step 1", "ws1")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'AddStep',
             models.build_add_step_body("Manual", "Step 1", "ws1"))
+        # Returns the freshly-added step (projected), not the raw response.
+        self.assertEqual(result.get("stepId"), "s-new")
+
+    def test_add_falls_back_to_workstream(self):
+        self.client.post_action.return_value = {"ok": True}
+        definition = {"workstreams": [{"id": "ws1", "displayName": "Init",
+                                       "steps": [{"stepId": "other"}]}]}
+        with mock.patch.object(
+                step_cmds, '_load_definition', return_value=definition):
+            result = step_cmds.add(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "Absent", "ws1")
+        self.assertEqual(result.get("id"), "ws1")
 
     def test_update_posts_update_step(self):
         self.client.post_action.return_value = {"ok": True}
-        step_cmds.update(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "s1", step_name="New")
+        definition = {"workstreams": [{"id": "ws1", "steps": [
+            {"stepId": "s1", "displayName": "New"}]}]}
+        with mock.patch.object(
+                step_cmds, '_load_definition', return_value=definition):
+            result = step_cmds.update(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "s1", step_name="New")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'UpdateStep',
             {"stepId": "s1", "displayName": "New"})
+        self.assertEqual(result.get("stepId"), "s1")
 
     def test_remove_posts_delete_step(self):
         self.client.post_action.return_value = {"ok": True}
@@ -905,39 +1033,50 @@ class WorkstreamCommandTests(unittest.TestCase):
 
     def test_split_posts_split_workstream(self):
         self.client.post_action.return_value = {"ok": True}
-        workstream_cmds.split(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "ws1", "new", ["e1"])
+        definition = {"workstreams": [
+            {"id": "ws1", "displayName": "src", "steps": []},
+            {"id": "ws-new", "displayName": "new",
+             "steps": [{"stepId": "e1"}]}]}
+        with mock.patch.object(
+                workstream_cmds, '_load_definition',
+                return_value=definition):
+            result = workstream_cmds.split(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "ws1", "new", ["e1"])
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'SplitWorkstream',
             models.build_split_workstream_body("ws1", "new", ["e1"]))
+        # Shows the new workstream (matched by name), projected.
+        self.assertEqual(result.get("id"), "ws-new")
 
     def test_merge_posts_merge_workstreams(self):
         self.client.post_action.return_value = {"ok": True}
-        workstream_cmds.merge(
-            mock.Mock(), RG, PROJECT, RUNBOOK, ["w1", "w2"], "merged")
+        definition = {"workstreams": [
+            {"id": "w1", "displayName": "merged", "steps": []}]}
+        with mock.patch.object(
+                workstream_cmds, '_load_definition',
+                return_value=definition):
+            result = workstream_cmds.merge(
+                mock.Mock(), RG, PROJECT, RUNBOOK, ["w1", "w2"], "merged")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'MergeWorkstreams',
             {"workstreamIds": ["w1", "w2"],
-             "newWorkstreamName": "merged"})
+             "displayName": "merged"})
+        self.assertEqual(result.get("id"), "w1")
 
 
 class ExecutionModelTests(unittest.TestCase):
 
-    def test_start_body_is_empty_properties(self):
-        self.assertEqual(
-            models.build_start_execution_body(), {"properties": {}})
-
     def test_build_artifact_download_url_body(self):
         self.assertEqual(
-            models.build_artifact_download_url_body(),
-            {"mode": "file", "path": "runbook.json",
-             "includeMetadata": True})
+            models.build_artifact_download_url_body(mode="Directory"),
+            {"mode": "Directory"})
         self.assertEqual(
             models.build_artifact_download_url_body(
-                path="reports/r.xlsx", mode="directory",
-                include_metadata=False),
-            {"mode": "directory", "path": "reports/r.xlsx",
-             "includeMetadata": False})
+                mode="File", path="inputs.json"),
+            {"mode": "File", "path": "inputs.json"})
+        self.assertEqual(
+            models.build_artifact_upload_url_body("inputs.json"),
+            {"path": "inputs.json"})
 
     def test_action_enum_values(self):
         self.assertEqual(ExecutionAction.START.value, "Start")
@@ -951,7 +1090,7 @@ class ExecutionModelTests(unittest.TestCase):
         self.assertEqual(
             body,
             {"action": "Pause", "targetId": "",
-             "migrationEntityIds": []})
+             "entities": []})
         self.assertIsInstance(body["action"], str)
 
     def test_perform_action_body_with_target(self):
@@ -960,7 +1099,7 @@ class ExecutionModelTests(unittest.TestCase):
         self.assertEqual(
             body,
             {"action": "Resume", "targetId": "t1",
-             "migrationEntityIds": ["e1"]})
+             "entities": ["e1"]})
 
 
 class ExecutionTransformerTests(unittest.TestCase):
@@ -1035,6 +1174,14 @@ class ExecutionCommandTests(unittest.TestCase):
         client_patch = mock.patch.object(execution_cmds, 'ArmClient')
         self.addCleanup(client_patch.stop)
         self.client = client_patch.start().return_value
+        open_patch = mock.patch.object(
+            execution_cmds, '_open_execution_view')
+        self.addCleanup(open_patch.stop)
+        self.open_view = open_patch.start()
+        emit_patch = mock.patch.object(
+            execution_cmds, '_emit_execution')
+        self.addCleanup(emit_patch.stop)
+        self.emit = emit_patch.start()
 
     def _runbook_id(self):
         project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
@@ -1045,8 +1192,7 @@ class ExecutionCommandTests(unittest.TestCase):
         result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
         self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
-            self._runbook_id(), 'execute', {"properties": {}},
-            no_wait=False)
+            self._runbook_id(), 'execute', no_wait=False)
 
     def test_start_no_wait(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1057,21 +1203,56 @@ class ExecutionCommandTests(unittest.TestCase):
 
     def test_start_final_get_reads_execution(self):
         # After the execute action settles, start re-reads the created
-        # execution resource so the caller sees the latest status rather
-        # than the initial (stale) accepted body.
+        # execution, emits it to stdout, then opens the live watch view.
         self.client.post_action.return_value = {"name": "e5"}
         fresh = {"name": "e5", "properties": {"status": "InProgress"}}
         self.client.get.return_value = fresh
         result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
-        self.assertEqual(result, fresh)
+        self.assertIsNone(result)
         self.client.get.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e5"))
+        self.emit.assert_called_once_with(mock.ANY, fresh)
 
     def test_start_no_wait_skips_final_get(self):
         self.client.post_action.return_value = {"name": "e5"}
         execution_cmds.start(
             mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
         self.client.get.assert_not_called()
+
+    def test_start_uses_execution_id_from_resource_id(self):
+        # Async path: the final operation status carries the full resource
+        # id (no bare 'name'); start extracts the trailing GUID from it.
+        exec_arm = arm_ids.execution_id(self._runbook_id(), "exec-guid-9")
+        self.client.post_action.return_value = {"id": exec_arm}
+        fresh = {"name": "exec-guid-9"}
+        self.client.get.return_value = fresh
+        execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
+        self.client.get.assert_called_once_with(exec_arm)
+        self.emit.assert_called_once_with(mock.ANY, fresh)
+
+    def test_start_opens_execution_view(self):
+        self.client.post_action.return_value = {"name": "e5"}
+        self.client.get.return_value = {"name": "e5"}
+        execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
+        self.open_view.assert_called_once()
+
+    def test_start_no_wait_skips_execution_view(self):
+        self.client.post_action.return_value = {"name": "e5"}
+        execution_cmds.start(
+            mock.Mock(), RG, PROJECT, RUNBOOK, no_wait=True)
+        self.open_view.assert_not_called()
+
+    def test_start_no_visualize_returns_execution_without_view(self):
+        # --no-visualize re-reads the execution and returns it for normal
+        # output, but never opens the blocking watch view.
+        self.client.post_action.return_value = {"name": "e5"}
+        fresh = {"name": "e5", "properties": {"status": "InProgress"}}
+        self.client.get.return_value = fresh
+        result = execution_cmds.start(
+            mock.Mock(), RG, PROJECT, RUNBOOK, no_visualize=True)
+        self.assertEqual(result, fresh)
+        self.open_view.assert_not_called()
+        self.emit.assert_not_called()
 
     def test_list_calls_executions_collection(self):
         self.client.list.return_value = []
@@ -1090,7 +1271,8 @@ class ExecutionCommandTests(unittest.TestCase):
         self.assertEqual(result, status)
         self.client.post_action.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e1"),
-            'GenerateDownloadUrl')
+            'GenerateDownloadUrl',
+            {"mode": "File", "path": "executionStatus.json"})
         dl.assert_called_once_with("https://b/x")
 
     def test_show_projects_step(self):
@@ -1113,7 +1295,7 @@ class ExecutionCommandTests(unittest.TestCase):
         # inputs blob as if it were a status document.
         self.client.post_action.return_value = {"downloadUrl": "https://b/x"}
         inputs_zip = _make_zip({
-            "user-inputs.json": '{"runbookInputs": {"schema": {}}}'})
+            "user-inputs.json": '{"inputs": {"schema": {}}}'})
         with mock.patch.object(
                 execution_cmds.files, 'download_bytes',
                 return_value=inputs_zip):
@@ -1129,7 +1311,7 @@ class ExecutionCommandTests(unittest.TestCase):
             arm_ids.execution_id(self._runbook_id(), "e1"),
             'PerformAction',
             {"action": "Pause", "targetId": "",
-             "migrationEntityIds": []})
+             "entities": []})
 
     def test_resume_posts_perform_action(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1150,45 +1332,28 @@ class ExecutionStepModelTests(unittest.TestCase):
         body = models.build_retry_step_body("step1")
         self.assertEqual(body, {
             "action": "Retry", "targetId": "step1",
-            "migrationEntityIds": []})
+            "entities": []})
         self.assertIsInstance(body["action"], str)
 
     def test_build_approve_step_body_full(self):
         body = models.build_approve_step_body("step1")
         self.assertEqual(body, {
             "action": "Approve", "targetId": "step1",
-            "migrationEntityIds": []})
+            "entities": []})
 
     def test_build_approve_step_body_partial(self):
         body = models.build_approve_step_body(
             "step1", entity_ids=["e1", "e2"])
-        self.assertEqual(body["migrationEntityIds"], ["e1", "e2"])
+        self.assertEqual(body["entities"], ["e1", "e2"])
 
     def test_build_complete_step_body(self):
         body = models.build_complete_step_body("step1", "done")
         self.assertEqual(body, {
             "action": "Complete", "targetId": "step1",
-            "migrationEntityIds": [], "comment": "done"})
+            "entities": [], "comment": "done"})
 
 
 class ExecutionStepValidatorTests(unittest.TestCase):
-
-    def test_approve_full_ok(self):
-        validate_step_approve(
-            SimpleNamespace(entities=None, all_ready=False))
-
-    def test_approve_entities_ok(self):
-        validate_step_approve(
-            SimpleNamespace(entities=["e1"], all_ready=False))
-
-    def test_approve_all_ready_ok(self):
-        validate_step_approve(
-            SimpleNamespace(entities=None, all_ready=True))
-
-    def test_approve_entities_and_all_ready_rejected(self):
-        with self.assertRaises(InvalidArgumentValueError):
-            validate_step_approve(
-                SimpleNamespace(entities=["e1"], all_ready=True))
 
     def test_complete_requires_comment(self):
         with self.assertRaises(RequiredArgumentMissingError):
@@ -1222,7 +1387,7 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'PerformAction',
             {"action": "Retry", "targetId": "step1",
-             "migrationEntityIds": []})
+             "entities": []})
 
     def test_approve_posts_provide_approval(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1232,7 +1397,7 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'ProvideApproval',
             {"action": "Approve", "targetId": "step1",
-             "migrationEntityIds": ["ent1"]})
+             "entities": ["ent1"]})
 
     def test_complete_posts_update_step_status(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1241,7 +1406,46 @@ class ExecutionStepCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'UpdateStepStatus',
             {"action": "Complete", "targetId": "step1",
-             "migrationEntityIds": [], "comment": "done"})
+             "entities": [], "comment": "done"})
+
+
+_CFG_INPUTS = {
+    "runbookId": (
+        "/subscriptions/s/resourceGroups/myRg/providers/Microsoft.Migrate"
+        "/migrateProjects/myProject/runbooks/testrunbook"),
+    "waveId": (
+        "/subscriptions/s/resourceGroups/myRg/providers/Microsoft.Migrate"
+        "/migrateProjects/myProject/waves/wave-1"),
+    "inputs": {
+        "schema": {"vm.agentless.setup": {"applianceName": {
+            "type": "string", "required": True, "scope": "Appliance",
+            "isEditable": False}}},
+        "stepInputs": {"vm.agentless.setup-001": {
+            "applianceName": "appl-1"}},
+    },
+}
+_CFG_SPEC = {"spec": {
+    "entities": [{"displayName": "vm1"}],
+    "workstreams": [{"steps": [
+        {"stepId": "vm.agentless.setup-001", "entities": []}]}]}}
+
+
+class ParameterUploadNameTests(unittest.TestCase):
+
+    def test_known_names_preserved(self):
+        self.assertEqual(
+            parameter_upload_blob_name('/x/inputs.json'), 'inputs.json')
+        self.assertEqual(
+            parameter_upload_blob_name('/x/parameters.json'),
+            'parameters.json')
+        self.assertEqual(
+            parameter_upload_blob_name('PARAMETERS.JSON'), 'PARAMETERS.JSON')
+
+    def test_unknown_or_empty_falls_back_to_legacy(self):
+        self.assertEqual(
+            parameter_upload_blob_name('/x/my-params.json'), 'inputs.json')
+        self.assertEqual(parameter_upload_blob_name(''), 'inputs.json')
+        self.assertEqual(parameter_upload_blob_name(None), 'inputs.json')
 
 
 class ParameterCommandTests(unittest.TestCase):
@@ -1265,45 +1469,127 @@ class ParameterCommandTests(unittest.TestCase):
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
         zip_bytes = _make_zip({
-            "runbook.json": '{"runbookSpec": {}}',
-            "user-inputs.json": '{"runbookInputs": {"stepInputs": {}}}',
-        })
+            "inputs.json": json.dumps(_CFG_INPUTS),
+            "schema.json": json.dumps({"vm.agentless.setup": {}})})
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(
                     parameter_cmds.files, 'download_bytes',
                     return_value=zip_bytes) as dl:
                 result = parameter_cmds.download(
-                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
+                    mock.Mock(), RG, PROJECT, RUNBOOK, directory=tmp)
             dl.assert_called_once_with("https://blob/x")
             project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
             self.client.post_action.assert_called_once_with(
                 arm_ids.artifact_id(project, ARTIFACT),
                 'generateDownloadUrl',
-                {"mode": "directory", "path": "/",
-                 "includeMetadata": True},
+                {"mode": "Directory"},
                 return_final_poll=True)
-            expected = os.path.join(tmp, "user-inputs.json")
-            self.assertEqual(result, {"path": expected})
-            with open(expected) as handle:
-                self.assertEqual(
-                    handle.read(), '{"runbookInputs": {"stepInputs": {}}}')
+            names = sorted(os.path.basename(r['path']) for r in result)
+            self.assertEqual(names, ['inputs.json', 'schema.json'])
+            for row in result:
+                self.assertEqual(row['kind'], 'parameters')
+                self.assertTrue(os.path.isfile(row['path']))
 
-    def test_download_writes_raw_input_blob(self):
+    def test_upload_posts_generate_upload_url(self):
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        runbook_id = arm_ids.runbook_id(project, RUNBOOK)
+        with mock.patch.object(parameter_cmds, 'ArmClient') as client_cls:
+            client = client_cls.return_value
+            client.post_action.side_effect = [
+                {"uploadUrl": "https://blob/u"}, {"status": "ok"}]
+            client.get.return_value = {"name": RUNBOOK, "latest": True}
+            with tempfile.TemporaryDirectory() as tmp:
+                src = os.path.join(tmp, "inputs.json")
+                with open(src, "wb") as handle:
+                    handle.write(b'{"runbookInputs": {}}')
+                with mock.patch.object(
+                        parameter_cmds.files, 'upload_bytes') as up:
+                    result = parameter_cmds.upload(
+                        mock.Mock(), RG, PROJECT, RUNBOOK, src)
+                up.assert_called_once_with(
+                    "https://blob/u", b'{"runbookInputs": {}}')
+            self.assertEqual(
+                client.post_action.call_args_list[0],
+                mock.call(runbook_id, 'GenerateUploadUrl',
+                          {"path": "inputs.json"}))
+            self.assertEqual(
+                client.post_action.call_args_list[1],
+                mock.call(runbook_id, 'ValidateInput'))
+            # Upload returns a fresh GET of the runbook, not the echoed body.
+            client.get.assert_called_once_with(runbook_id)
+            self.assertEqual(result, {"name": RUNBOOK, "latest": True})
+
+    def test_upload_uses_renamed_parameters_blob(self):
+        # Uploading a parameters.json file targets the parameters.json blob
+        # (round-trip preserved after the service rename).
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        runbook_id = arm_ids.runbook_id(project, RUNBOOK)
+        with mock.patch.object(parameter_cmds, 'ArmClient') as client_cls:
+            client = client_cls.return_value
+            client.post_action.side_effect = [
+                {"uploadUrl": "https://blob/u"}, {"status": "ok"}]
+            client.get.return_value = {"name": RUNBOOK}
+            with tempfile.TemporaryDirectory() as tmp:
+                src = os.path.join(tmp, "parameters.json")
+                with open(src, "wb") as handle:
+                    handle.write(b'{"runbookInputs": {}}')
+                with mock.patch.object(parameter_cmds.files, 'upload_bytes'):
+                    parameter_cmds.upload(
+                        mock.Mock(), RG, PROJECT, RUNBOOK, src)
+            self.assertEqual(
+                client.post_action.call_args_list[0],
+                mock.call(runbook_id, 'GenerateUploadUrl',
+                          {"path": "parameters.json"}))
+
+    def test_configure_writes_html(self):
         self.client.get.return_value = {
             "properties": {"artifactId": ARTIFACT}}
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        raw = b'{"runbookInputs": {"stepInputs": {}}}'
+        zip_bytes = _make_zip({
+            "inputs.json": json.dumps(_CFG_INPUTS),
+            "spec.json": json.dumps(_CFG_SPEC)})
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(
                     parameter_cmds.files, 'download_bytes',
-                    return_value=raw):
-                result = parameter_cmds.download(
+                    return_value=zip_bytes), \
+                    mock.patch.object(
+                        parameter_cmds.files, 'open_in_browser') as op:
+                result = parameter_cmds.configure(
                     mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
-            expected = os.path.join(tmp, "input.json")
-            self.assertEqual(result, {"path": expected})
-            with open(expected, "rb") as handle:
-                self.assertEqual(handle.read(), raw)
+            path = result['path']
+            self.assertTrue(path.endswith('.html'))
+            self.assertTrue(os.path.isfile(path))
+            # A real, editable inputs.json is written next to the editor and
+            # its path is surfaced (so upload --file points at a real file).
+            inputs_path = result['inputsPath']
+            self.assertTrue(inputs_path.endswith('inputs.json'))
+            self.assertTrue(os.path.isfile(inputs_path))
+            with open(path, encoding='utf-8') as handle:
+                html_text = handle.read()
+            self.assertIn('vm.agentless.setup-001', html_text)
+            self.assertIn('inputsPath', html_text)
+            self.assertNotIn('__RUNBOOK_DATA__', html_text)
+            op.assert_called_once()
+
+    def test_configure_from_file_skips_service(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ip = os.path.join(tmp, 'inputs.json')
+            sp = os.path.join(tmp, 'spec.json')
+            with open(ip, 'w', encoding='utf-8') as handle:
+                json.dump(_CFG_INPUTS, handle)
+            with open(sp, 'w', encoding='utf-8') as handle:
+                json.dump(_CFG_SPEC, handle)
+            with mock.patch.object(parameter_cmds, 'ArmClient') as client, \
+                    mock.patch.object(
+                        parameter_cmds.files, 'download_bytes') as dl, \
+                    mock.patch.object(
+                        parameter_cmds.files, 'open_in_browser'):
+                result = parameter_cmds.configure(
+                    mock.Mock(), file=tmp, from_file=ip, spec_file=sp)
+            client.assert_not_called()
+            dl.assert_not_called()
+            self.assertTrue(result['path'].endswith('.html'))
 
 
 class ExecutionParameterCommandTests(unittest.TestCase):
@@ -1326,20 +1612,20 @@ class ExecutionParameterCommandTests(unittest.TestCase):
     def test_download_writes_input_file(self):
         self.client.post_action.return_value = {
             "downloadUrl": "https://blob/x"}
-        raw = b'{"runbookInputs": {"stepInputs": {}}}'
+        zip_bytes = _make_zip({"inputs.json": json.dumps(_CFG_INPUTS)})
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(
                     execution_parameter_cmds.files, 'download_bytes',
-                    return_value=raw) as dl:
+                    return_value=zip_bytes) as dl:
                 result = execution_parameter_cmds.download(
-                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", file=tmp)
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", directory=tmp)
             dl.assert_called_once_with("https://blob/x")
             self.client.post_action.assert_called_once_with(
-                self._execution_id(), 'GenerateInputDownloadUrl')
-            expected = os.path.join(tmp, "input.json")
-            self.assertEqual(result, {"path": expected})
-            with open(expected, "rb") as handle:
-                self.assertEqual(handle.read(), raw)
+                self._execution_id(), 'GenerateDownloadUrl',
+                {"mode": "Directory"})
+            names = sorted(os.path.basename(r['path']) for r in result)
+            self.assertEqual(names, ['inputs.json'])
+            self.assertEqual(result[0]['kind'], 'parameters')
 
     def test_upload_puts_input_file(self):
         self.client.post_action.return_value = {
@@ -1353,10 +1639,167 @@ class ExecutionParameterCommandTests(unittest.TestCase):
                 result = execution_parameter_cmds.upload(
                     mock.Mock(), RG, PROJECT, RUNBOOK, "e1", src)
             self.client.post_action.assert_called_once_with(
-                self._execution_id(), 'GenerateInputUploadUrl')
+                self._execution_id(), 'GenerateUploadUrl',
+                {"path": "inputs.json"})
             up.assert_called_once_with(
                 "https://blob/u", b'{"runbookInputs": {}}')
             self.assertEqual(result, {"status": "uploaded"})
+
+    def test_configure_writes_html(self):
+        self.client.post_action.return_value = {
+            "downloadUrl": "https://blob/x"}
+        blob = json.dumps(_CFG_INPUTS).encode('utf-8')
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(
+                    execution_parameter_cmds.files, 'download_bytes',
+                    return_value=blob), \
+                    mock.patch.object(
+                        execution_parameter_cmds.files,
+                        'open_in_browser') as op:
+                result = execution_parameter_cmds.configure(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", file=tmp)
+            path = result['path']
+            self.assertTrue(path.endswith('.html'))
+            with open(path, encoding='utf-8') as handle:
+                self.assertIn('vm.agentless.setup-001', handle.read())
+            op.assert_called_once()
+
+    def test_configure_from_file_skips_service(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ip = os.path.join(tmp, 'inputs.json')
+            with open(ip, 'w', encoding='utf-8') as handle:
+                json.dump(_CFG_INPUTS, handle)
+            with mock.patch.object(
+                    execution_parameter_cmds.files, 'download_bytes') as dl, \
+                    mock.patch.object(
+                        execution_parameter_cmds.files, 'open_in_browser'):
+                result = execution_parameter_cmds.configure(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp,
+                    from_file=ip)
+            dl.assert_not_called()
+            self.assertTrue(result['path'].endswith('.html'))
+
+
+class ConfigureRendererTests(unittest.TestCase):
+
+    def test_build_meta_parses_ids_when_args_absent(self):
+        meta = configure_renderer.build_meta(
+            None, None, None, _CFG_INPUTS)
+        self.assertEqual(meta['resourceGroup'], 'myRg')
+        self.assertEqual(meta['project'], 'myProject')
+        self.assertEqual(meta['runbook'], 'testrunbook')
+        self.assertEqual(meta['wave'], 'wave-1')
+
+    def test_build_meta_prefers_explicit_args(self):
+        meta = configure_renderer.build_meta(
+            'argRg', 'argProj', 'argRb', _CFG_INPUTS)
+        self.assertEqual(meta['resourceGroup'], 'argRg')
+        self.assertEqual(meta['project'], 'argProj')
+        self.assertEqual(meta['runbook'], 'argRb')
+
+    def test_render_embeds_data_and_escapes_script(self):
+        root = {"runbookId": "/x", "inputs": {"schema": {},
+                "stepInputs": {"s-1": {"note": "</script><b>x"}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertNotIn('__RUNBOOK_DATA__', html_text)
+        self.assertNotIn('</script><b>x', html_text)
+        self.assertIn('\\u003c', html_text)
+        self.assertIn('s-1', html_text)
+
+    def test_normalize_doc_unwraps_inputs(self):
+        doc = configure_renderer._normalize_doc(_CFG_INPUTS)
+        self.assertEqual(
+            doc['stepInputs'], {"vm.agentless.setup-001": {
+                "applianceName": "appl-1"}})
+        self.assertIn('vm.agentless.setup', doc['schema'])
+        self.assertTrue(doc['runbookId'].endswith('testrunbook'))
+
+    def test_normalize_spec_unwraps_payload(self):
+        spec = configure_renderer._normalize_spec(_CFG_SPEC)
+        self.assertEqual(spec['entities'], [{"displayName": "vm1"}])
+        self.assertEqual(len(spec['workstreams']), 1)
+
+    def test_render_uses_separate_schema_doc(self):
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"vm.agentless.setup-001": {}}}}
+        schema = {"vm.agentless.setup": {"applianceName": {
+            "type": "string", "required": True}}}
+        html_text = configure_renderer.render(
+            root, None, {"runbook": "r"}, schema_doc=schema)
+        self.assertIn('applianceName', html_text)
+        self.assertIn('vm.agentless.setup-001', html_text)
+
+    def test_render_emits_csp_and_per_file_nonce(self):
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertNotIn('__CSP_NONCE__', html_text)
+        self.assertIn(
+            '<meta http-equiv="Content-Security-Policy"', html_text)
+        # The nonce on the <script> tag must also appear in script-src, and
+        # 'unsafe-inline' must not weaken the script policy.
+        match = re.search(r'<script nonce="([A-Za-z0-9_-]+)"', html_text)
+        self.assertIsNotNone(match)
+        nonce = match.group(1)
+        self.assertIn("script-src 'nonce-%s'" % nonce, html_text)
+        self.assertNotIn("script-src 'unsafe-inline'", html_text)
+
+    def test_render_nonce_is_unique_per_file(self):
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        first = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            configure_renderer.render(root, None, {"runbook": "r"})).group(1)
+        second = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            configure_renderer.render(root, None, {"runbook": "r"})).group(1)
+        self.assertNotEqual(first, second)
+
+    def test_render_ships_client_side_escaper(self):
+        # The page builds its UI from the embedded JSON via innerHTML, so the
+        # client-side esc() guard must be present and applied at render time.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn("replace(/</g, '&lt;')", html_text)
+        self.assertIn("replace(/>/g, '&gt;')", html_text)
+
+    def test_render_has_phase1_ui(self):
+        # Phase 1 UX: legend, workload-override pane, JSON popover button,
+        # spec-driven labels, and no per-field Appliance/Entity scope pill.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn('Workload level overrides', html_text)
+        self.assertIn('View updated parameters file', html_text)
+        self.assertIn('function stepLabel(', html_text)
+        self.assertIn('id="genAt"', html_text)
+        self.assertIn("'Must match: '", html_text)
+        self.assertNotIn('scope-pill', html_text)
+        self.assertNotIn('id="validateBtn"', html_text)
+
+    def test_render_has_phase23_ui(self):
+        # Phase 2/3: structured grid/kv editors, issues navigator, search,
+        # and accessibility roles.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn('function gridCtrl(', html_text)
+        self.assertIn('function kvCtrl(', html_text)
+        self.assertIn('function showIssues(', html_text)
+        self.assertIn('const matchField', html_text)
+        self.assertIn('id="issuePop"', html_text)
+        self.assertIn('aria-modal="true"', html_text)
+
+    def test_render_flags_empty_required_array_row(self):
+        # An array row that exists but is empty is only "incomplete" when its
+        # item schema has a required field; otherwise the empty row is ignored.
+        root = {"runbookId": "/x",
+                "inputs": {"stepInputs": {"s-1": {}}}}
+        html_text = configure_renderer.render(root, None, {"runbook": "r"})
+        self.assertIn('const reqKeys = keys.filter(k => props[k].required)', html_text)
+        self.assertIn('if (reqKeys.length) return', html_text)
+        self.assertIn('${reqKeys[0]}: Required', html_text)
 
 
 _DEFINITION_DOC = {
@@ -1409,6 +1852,95 @@ _STATUS_DOC = {
 }
 
 
+# Rich failure shape: failed step with a per-entity attempt timeline
+# (fail then recover) plus a downstream skipped step with a statusReason.
+_STATUS_DETAIL_DOC = {
+    "status": "Failed",
+    "workstreams": [{
+        "id": "ws1", "displayName": "Unmapped",
+        "steps": [
+            {"stepId": "dataSync-1", "displayName": "Data Sync",
+             "status": "Failed",
+             "errorDetails": {
+                 "code": "StepFailed",
+                 "message": "invalid parameter logStorageAccountId"},
+             "entityExecutions": [
+                 {"entity": "vm-a", "status": "Failed",
+                  "errorDetails": {
+                      "code": "StepFailed",
+                      "message": "invalid parameter logStorageAccountId"},
+                  "totalAttempts": 0,
+                  "attempts": [
+                      {"attemptNumber": 1, "status": "Failed",
+                       "errorDetails": {"code": "StepFailed",
+                                        "message": "boom"}},
+                      {"attemptNumber": 2, "status": "Completed"}]}],
+             "attempts": []},
+            {"stepId": "test-1", "displayName": "Test Migration",
+             "status": "Skipped",
+             "statusReason": "Dependency dataSync-1 failed",
+             "entityExecutions": [
+                 {"entity": "vm-a", "status": "Skipped",
+                  "statusReason": "Dependency dataSync-1 failed",
+                  "attempts": [{"attemptNumber": 1, "status": "Skipped"}]}]},
+        ],
+    }],
+}
+
+
+# Execution status carrying the service-provided step aggregate counts and the
+# per-entity ``toolReportedMigrationStatus`` field.
+_STATUS_TOOL_DOC = {
+    "stepsCompleted": 2,
+    "stepsInProgress": 1,
+    "stepsAwaitingUserAction": 0,
+    "stepsFailed": 0,
+    "stepsNotStarted": 1,
+    "status": "InProgress",
+    "startTime": "2026-08-21T10:00:00Z",
+    "lastUpdatedTime": "2026-08-21T10:30:00Z",
+    "workstreams": [{
+        "id": "workstream-1", "displayName": "waveapp",
+        "status": "InProgress",
+        "steps": [{
+            "stepId": "vm.agentless.migration-1", "displayName": "Migration",
+            "stepRef": "vm.agentless.migration", "status": "InProgress",
+            "entities": ["web-vm-01", "db-vm-02"],
+            "entitiesCompleted": 1,
+            "entityExecutions": [
+                {"entity": "web-vm-01",
+                 "toolReportedMigrationStatus": "MigrationSucceeded",
+                 "status": "Completed"},
+                {"entity": "db-vm-02",
+                 "toolReportedMigrationStatus": "Migrating",
+                 "status": "InProgress"}]}],
+    }],
+}
+
+
+# An execution status doc carrying step-level and per-entity ``outputs``.
+_STATUS_OUTPUTS_DOC = {
+    "workstreams": [{
+        "id": "workstream-1", "displayName": "waveapp",
+        "status": "Completed",
+        "steps": [
+            {"stepId": "setup-1", "displayName": "Setup",
+             "stepRef": "vm.agentless.setup", "status": "Succeeded",
+             "entities": [], "entityExecutions": [],
+             "outputs": {"roleAssignmentIds": ["/ra/1", "/ra/2"]}},
+            {"stepId": "migration-1", "displayName": "Migration",
+             "stepRef": "vm.agentless.migration", "status": "Succeeded",
+             "entities": ["vm-01"], "entitiesCompleted": 1,
+             "entityExecutions": [
+                 {"entity": "vm-01", "status": "Succeeded",
+                  "outputs": {"targetVmArmId": "/vm/1",
+                              "targetVmTagsUpdated": False,
+                              "validationResult": {"ok": True,
+                                                   "errors": []}}}]}],
+    }],
+}
+
+
 class ExecutionStatusParsingTests(unittest.TestCase):
 
     def test_read_status_json_raw_bytes(self):
@@ -1442,6 +1974,284 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertEqual(
             by_id['dataSync']['Workload Progress'], '1/2 completed')
         self.assertIsNone(by_id['setup']['Workload Progress'])
+
+    def test_execution_table_surfaces_error_and_retries(self):
+        rows = transformers.execution_table(_STATUS_DETAIL_DOC)
+        by_id = {row['Step Id']: row for row in rows}
+        # One failed attempt on the entity -> 1 retry; error message shown.
+        self.assertEqual(by_id['dataSync-1']['Retries'], 1)
+        self.assertIn('logStorageAccountId', by_id['dataSync-1']['Details'])
+        # A skipped step shows its statusReason and no retries.
+        self.assertEqual(by_id['test-1']['Retries'], 0)
+        self.assertIn('Dependency', by_id['test-1']['Details'])
+
+    def test_execution_view_captures_error_retry_attempts(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        ds = steps['dataSync-1']
+        self.assertIn('logStorageAccountId', ds.error)
+        self.assertEqual(ds.retry_count, 1)
+        ent = ds.entities[0]
+        self.assertEqual(ent.status, 'Failed')
+        self.assertIn('logStorageAccountId', ent.error)
+        self.assertEqual(len(ent.attempts), 2)
+        self.assertEqual(
+            steps['test-1'].status_reason, 'Dependency dataSync-1 failed')
+
+    def test_execution_render_shows_error_and_attempts(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_DETAIL_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('logStorageAccountId', html_text)
+        self.assertIn('Attempt 1', html_text)
+        self.assertIn('class="retry"', html_text)
+        self.assertIn('Dependency', html_text)
+
+    def test_execution_overview_uses_service_counts(self):
+        overview = transformers.execution_overview(_STATUS_TOOL_DOC)
+        self.assertEqual(overview['State'], 'InProgress')
+        self.assertEqual(overview['Completed'], 2)
+        self.assertEqual(overview['In Progress'], 1)
+        self.assertEqual(overview['Awaiting Action'], 0)
+        self.assertEqual(overview['Failed'], 0)
+        self.assertEqual(overview['Not Started'], 1)
+        self.assertEqual(overview['Last Updated'], '2026-08-21T10:30:00Z')
+
+    def test_execution_table_omits_tool_reported_status(self):
+        # Tool status is per-entity and belongs only in the step side-pane,
+        # never in the (per-step) status table.
+        rows = transformers.execution_table(_STATUS_TOOL_DOC)
+        by_id = {row['Step Id']: row for row in rows}
+        progress = by_id['vm.agentless.migration-1']['Workload Progress']
+        self.assertEqual(progress, '1/2 completed')
+        self.assertNotIn('MigrationSucceeded', progress)
+        self.assertNotIn('Migrating', progress)
+
+    def test_execution_view_summary_uses_service_counts(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_TOOL_DOC, title='X')
+        summary = dict(view.summary)
+        self.assertEqual(summary['State'], 'InProgress')
+        self.assertEqual(summary['Completed'], 2)
+        self.assertEqual(summary['In progress'], 1)
+        self.assertEqual(summary['Not started'], 1)
+        meta = dict(view.meta)
+        self.assertEqual(meta['Started'], '2026-08-21T10:00:00Z')
+        self.assertEqual(meta['Last updated'], '2026-08-21T10:30:00Z')
+
+    def test_execution_view_captures_tool_reported_status(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_TOOL_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        entities = {e.name: e
+                    for e in steps['vm.agentless.migration-1'].entities}
+        self.assertEqual(
+            entities['web-vm-01'].tool_status, 'MigrationSucceeded')
+        self.assertEqual(entities['db-vm-02'].tool_status, 'Migrating')
+
+    def test_execution_render_shows_tool_reported_status(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_TOOL_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_TOOL_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('Migrating', html_text)
+        self.assertIn('MigrationSucceeded', html_text)
+
+    def test_execution_view_captures_outputs(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        self.assertEqual(steps['setup-1'].outputs['roleAssignmentIds'],
+                         ['/ra/1', '/ra/2'])
+        ent = steps['migration-1'].entities[0]
+        self.assertEqual(ent.outputs['targetVmArmId'], '/vm/1')
+        self.assertIs(ent.outputs['targetVmTagsUpdated'], False)
+
+    def test_execution_render_shows_outputs(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_OUTPUTS_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Step-level outputs (list -> chips) and per-entity outputs.
+        self.assertIn('roleAssignmentIds', html_text)
+        self.assertIn('/ra/1', html_text)
+        self.assertIn('targetVmArmId', html_text)
+        self.assertIn('/vm/1', html_text)
+        # Booleans render as true/false, not Python True/False.
+        self.assertIn('false', html_text)
+        # Nested dict/list output values are JSON-encoded.
+        self.assertIn('validationResult', html_text)
+        self.assertIn('&quot;ok&quot;: true', html_text)
+
+    def test_execution_view_marks_entity_completed(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        self.assertTrue(steps['migration-1'].entities[0].completed)
+
+    def test_execution_view_captures_attempt_and_step_times(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        attempt = steps['dataSync-1'].entities[0].attempts[0]
+        self.assertEqual(attempt['status'], 'Failed')
+        self.assertIn('started', attempt)
+        self.assertIn('ended', attempt)
+
+    def test_execution_render_separates_partial_and_final_output(self):
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "waveapp", "status": "InProgress",
+            "steps": [{
+                "stepId": "mig-1", "displayName": "Migration",
+                "status": "InProgress", "entities": ["done-vm", "run-vm"],
+                "entityExecutions": [
+                    {"entity": "done-vm", "status": "Succeeded",
+                     "startTime": "t0", "endTime": "t1",
+                     "outputs": {"targetVmArmId": "/vm/done"}},
+                    {"entity": "run-vm", "status": "InProgress",
+                     "toolReportedMigrationStatus": "Replicating",
+                     "outputs": {"protectionState": "Replicating"}}]}],
+        }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Completed workload -> final block (no "authoritative" label).
+        self.assertIn('out out--final', html_text)
+        self.assertNotIn('authoritative', html_text)
+        self.assertIn('/vm/done', html_text)
+        # In-progress workload -> live partial block.
+        self.assertIn('out out--partial', html_text)
+        self.assertIn('may change', html_text)
+        self.assertIn('protectionState', html_text)
+
+    def test_execution_render_duration_and_times(self):
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "waveapp", "status": "Completed",
+            "steps": [{
+                "stepId": "mig-1", "displayName": "Migration",
+                "status": "Succeeded",
+                "startTime": "2026-08-21T16:43:44Z",
+                "endTime": "2026-08-21T19:36:23Z",
+                "entities": [], "entityExecutions": []}],
+        }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('Start time', html_text)
+        self.assertIn('End time', html_text)
+        self.assertIn('Duration', html_text)
+        self.assertIn('2h 52m', html_text)
+        self.assertNotIn('>Ran<', html_text)
+
+    def test_execution_render_list_output_stacks_per_line(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_OUTPUTS_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # roleAssignmentIds is a list -> each id on its own line (generic).
+        self.assertIn('<div>/ra/1</div>', html_text)
+        self.assertIn('<div>/ra/2</div>', html_text)
+
+    def test_execution_render_applications_section_matches_workloads(self):
+        doc = {"entityGroups": [{"id": "g1", "displayName": "App Tier"}],
+               "workstreams": [{
+                   "id": "ws1", "displayName": "waveapp", "status": "Completed",
+                   "steps": [{
+                       "stepId": "s1", "displayName": "Migration",
+                       "status": "Succeeded", "affectedEntityGroups": ["g1"],
+                       "entities": ["vm-01"], "entitiesCompleted": 1,
+                       "entityExecutions": [
+                           {"entity": "vm-01", "status": "Succeeded"}]}],
+               }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Applications get a titled, counted section like Workloads...
+        self.assertIn('Applications (1)', html_text)
+        self.assertIn('Workloads (1)', html_text)
+        # ...and share the workload card typography (.ent / .ent__nm).
+        self.assertIn('<span class="ent__nm">App Tier</span>', html_text)
+        # The vague "Details" section is gone.
+        self.assertNotIn('>Details<', html_text)
+
+    def test_execution_render_pending_final_for_running_entity(self):
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "waveapp", "status": "InProgress",
+            "steps": [{
+                "stepId": "s1", "displayName": "Wait", "status": "InProgress",
+                "entities": ["run-vm"],
+                "entityExecutions": [
+                    {"entity": "run-vm", "status": "InProgress"}]}],
+        }]}
+        graph = visualize_graph.build_execution_graph(doc, title='X')
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('out out--final', html_text)
+        self.assertIn('pending', html_text)
+
+    def test_execution_render_step_scoped_output_block(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_OUTPUTS_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_OUTPUTS_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # setup-1 has no workloads -> blue step-scoped output block.
+        self.assertIn('out out--step', html_text)
+        self.assertIn('Shared output', html_text)
+
+    def test_execution_render_attempt_timeline_dot_classes(self):
+        graph = visualize_graph.build_execution_graph(
+            _STATUS_DETAIL_DOC, title='X')
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DETAIL_DOC, title='X')
+        html_text = visualize_renderer.render(graph, view=view)
+        # Failed attempt -> red dot + error box; success -> green dot.
+        self.assertIn('att__dot fail', html_text)
+        self.assertIn('att__dot ok', html_text)
+        self.assertIn('class="timeline"', html_text)
+        self.assertIn('class="ent"', html_text)
+
+    def test_execution_overview_absent_counts_returns_state_only(self):
+        # _STATUS_DOC carries no stepsX aggregates or timestamps.
+        overview = transformers.execution_overview(_STATUS_DOC)
+        self.assertEqual(overview.get('State'), 'InProgress')
+        self.assertNotIn('Completed', overview)
+        self.assertNotIn('Start Time', overview)
+
+    def test_execution_overview_empty_for_non_dict(self):
+        self.assertEqual(dict(transformers.execution_overview(None)), {})
+        self.assertEqual(dict(transformers.execution_overview([])), {})
+
+    def test_execution_table_progress_without_tool_status(self):
+        # Entities lacking toolReportedMigrationStatus render plainly.
+        rows = transformers.execution_table(_STATUS_DOC)
+        by_id = {row['Step Id']: row for row in rows}
+        self.assertEqual(
+            by_id['dataSync']['Workload Progress'], '1/2 completed')
+
+    def test_execution_view_summary_falls_back_when_counts_absent(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DOC, title='X')
+        summary = dict(view.summary)
+        self.assertEqual(summary.get('State'), 'InProgress')
+        # No service counts -> self-counted per-status keys instead.
+        self.assertIn('Failed', summary)
+        meta = dict(view.meta)
+        self.assertNotIn('Started', meta)
+        self.assertNotIn('Last updated', meta)
+
+    def test_execution_view_entity_tool_status_none_when_absent(self):
+        view = visualize_viewmodel.build_execution_view(
+            _STATUS_DOC, title='X')
+        steps = {s.id: s for ws in view.workstreams for s in ws.steps}
+        for entity in steps['dataSync'].entities:
+            self.assertIsNone(entity.tool_status)
 
     def test_execution_graph_edges_from_step_key(self):
         graph = visualize_graph.build_execution_graph(_STATUS_DOC)
@@ -1499,6 +2309,91 @@ class VisualizeGraphTests(unittest.TestCase):
         self.assertEqual(by_id["a"].status, "Succeeded")
         self.assertEqual(by_id["b"].status, "Running")
 
+    def test_workstream_dependencies_captured(self):
+        doc = {"workstreams": [
+            {"id": "w0", "displayName": "First",
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+            {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertIn(("w0", "w1"), graph.group_deps)
+
+    def test_workstream_dependency_dict_form_captured(self):
+        doc = {"workstreams": [
+            {"id": "w0", "displayName": "First",
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+            {"id": "w1", "displayName": "Second",
+             "dependsOn": [{"workstreamId": "w0"}],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_execution_graph(doc)
+        self.assertIn(("w0", "w1"), graph.group_deps)
+
+    def test_workstream_dependency_to_unknown_lane_ignored(self):
+        doc = {"workstreams": [
+            {"id": "w1", "displayName": "Second", "dependsOn": ["missing"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual(graph.group_deps, [])
+
+    def test_node_and_edge_repr(self):
+        node = visualize_graph.Node('s1', 'Step 1', status='InProgress')
+        self.assertIn('s1', repr(node))
+        self.assertIn('Step 1', repr(node))
+        self.assertIn("source='a'", repr(visualize_graph.Edge('a', 'b')))
+
+    def test_step_status_from_dict_shape(self):
+        doc = {"steps": [
+            {"id": "s1", "displayName": "S1",
+             "status": {"state": "InProgress"}}]}
+        graph = visualize_graph.build_execution_graph(doc)
+        self.assertEqual(graph.nodes[0].status, "InProgress")
+
+    def test_non_dict_workstream_skipped(self):
+        # A null workstream entry is skipped in both the step and the
+        # workstream-dependency passes.
+        doc = {"workstreams": [
+            None,
+            {"id": "w1", "displayName": "W1", "dependsOn": ["w0"],
+             "steps": [{"stepId": "s1", "displayName": "S1"}]},
+            {"id": "w0", "displayName": "W0",
+             "steps": [{"stepId": "s0", "displayName": "S0"}]}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual({n.id for n in graph.nodes}, {"s0", "s1"})
+        self.assertIn(("w0", "w1"), graph.group_deps)
+
+    def test_workstream_dep_without_id_ignored(self):
+        doc = {"workstreams": [
+            {"displayName": "no-id", "dependsOn": ["w0"],
+             "steps": [{"stepId": "s1", "displayName": "S1"}]},
+            {"id": "w0", "displayName": "W0",
+             "steps": [{"stepId": "s0", "displayName": "S0"}]}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual(graph.group_deps, [])
+
+    def test_root_unwraps_properties_and_defaults(self):
+        self.assertEqual(visualize_graph._root(123), {})
+        merged = visualize_graph._root(
+            {"properties": {"workstreams": []}, "x": 1})
+        self.assertEqual(merged.get("x"), 1)
+
+    def test_duplicate_step_id_collapsed(self):
+        doc = {"steps": [
+            {"id": "s1", "displayName": "First"},
+            {"id": "s1", "displayName": "Dup"}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual(len(graph.nodes), 1)
+
+    def test_step_without_id_skipped(self):
+        # A step carrying no id/stepId/name is skipped in both passes.
+        doc = {"steps": [
+            {"displayName": "no id"},
+            {"id": "s1", "displayName": "S1"}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        self.assertEqual({n.id for n in graph.nodes}, {"s1"})
+
 
 class VisualizeRendererTests(unittest.TestCase):
 
@@ -1527,7 +2422,7 @@ class VisualizeRendererTests(unittest.TestCase):
     def test_no_auto_reload_by_default(self):
         graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
         html_text = visualize_renderer.render(graph)
-        self.assertNotIn("http-equiv", html_text)
+        self.assertNotIn('http-equiv="refresh"', html_text)
 
     def test_auto_reload_meta_when_interval_set(self):
         graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
@@ -1543,7 +2438,29 @@ class VisualizeRendererTests(unittest.TestCase):
         for value in (0, -1, None, "x"):
             html_text = visualize_renderer.render(
                 graph, refresh_interval=value)
-            self.assertNotIn("http-equiv", html_text)
+            self.assertNotIn('http-equiv="refresh"', html_text)
+
+    def test_render_emits_csp_and_per_file_nonce(self):
+        graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
+        html_text = visualize_renderer.render(graph)
+        self.assertNotIn('$nonce', html_text)
+        self.assertIn(
+            '<meta http-equiv="Content-Security-Policy"', html_text)
+        match = re.search(r'<script nonce="([A-Za-z0-9_-]+)"', html_text)
+        self.assertIsNotNone(match)
+        nonce = match.group(1)
+        self.assertIn("script-src 'nonce-%s'" % nonce, html_text)
+        self.assertNotIn("script-src 'unsafe-inline'", html_text)
+
+    def test_render_nonce_is_unique_per_file(self):
+        graph = visualize_graph.build_definition_graph(_DEFINITION_DOC)
+        first = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            visualize_renderer.render(graph)).group(1)
+        second = re.search(
+            r'<script nonce="([A-Za-z0-9_-]+)"',
+            visualize_renderer.render(graph)).group(1)
+        self.assertNotEqual(first, second)
 
 
 class VisualizeCommandTests(unittest.TestCase):
@@ -1557,11 +2474,53 @@ class VisualizeCommandTests(unittest.TestCase):
             execution_cmds, 'get_subscription_id', return_value=SUB)
         self.addCleanup(exec_sub_patch.stop)
         exec_sub_patch.start()
+        # visualize opens by default; stub the launch so tests never spawn a
+        # browser (and never fail on a headless CI agent).
+        for module in (definition_cmds, execution_cmds):
+            open_patch = mock.patch.object(
+                module.files, 'open_in_browser', return_value=True)
+            self.addCleanup(open_patch.stop)
+            open_patch.start()
+
+    def test_definition_visualize_fails_when_browser_cannot_open(self):
+        zip_bytes = _make_zip({"rb-x-spec.json": json.dumps(
+            {"spec": _DEFINITION_DOC})})
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(definition_cmds, 'ArmClient') as client, \
+                    mock.patch.object(
+                        definition_cmds.files, 'download_bytes',
+                        return_value=zip_bytes), \
+                    mock.patch.object(
+                        definition_cmds.files, 'open_in_browser',
+                        side_effect=CLIInternalError('no browser')):
+                client.return_value.post_action.return_value = {
+                    "downloadUrl": "https://blob/x"}
+                with self.assertRaises(CLIInternalError):
+                    definition_cmds.visualize(
+                        mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp)
+
+    def test_definition_visualize_no_open_skips_browser(self):
+        zip_bytes = _make_zip({"rb-x-spec.json": json.dumps(
+            {"spec": _DEFINITION_DOC})})
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(definition_cmds, 'ArmClient') as client, \
+                    mock.patch.object(
+                        definition_cmds.files, 'download_bytes',
+                        return_value=zip_bytes), \
+                    mock.patch.object(
+                        definition_cmds.files, 'open_in_browser') as op:
+                client.return_value.post_action.return_value = {
+                    "downloadUrl": "https://blob/x"}
+                result = definition_cmds.visualize(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, file=tmp,
+                    no_open=True)
+            op.assert_not_called()
+            self.assertTrue(result['path'].endswith('.html'))
 
     def test_definition_visualize_writes_html(self):
         zip_bytes = _make_zip({
             "rb-x-spec.json": json.dumps(
-                {"runbookSpec": _DEFINITION_DOC}),
+                {"spec": _DEFINITION_DOC}),
         })
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(definition_cmds, 'ArmClient') as client, \
@@ -1601,7 +2560,7 @@ class VisualizeCommandTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             spec_path = os.path.join(tmp, 'rb-local-spec.json')
             with open(spec_path, 'w', encoding='utf-8') as handle:
-                json.dump({"runbookSpec": _DEFINITION_DOC}, handle)
+                json.dump({"spec": _DEFINITION_DOC}, handle)
             with mock.patch.object(
                     definition_cmds, 'ArmClient') as client, \
                     mock.patch.object(
@@ -1621,9 +2580,9 @@ class VisualizeCommandTests(unittest.TestCase):
             spec_path = os.path.join(tmp, 'rb-local-spec.json')
             params_path = os.path.join(tmp, 'rb-local-parameters.json')
             with open(spec_path, 'w', encoding='utf-8') as handle:
-                json.dump({"runbookSpec": _REAL_DEFINITION}, handle)
+                json.dump({"spec": _REAL_DEFINITION}, handle)
             with open(params_path, 'w', encoding='utf-8') as handle:
-                json.dump({"runbookInputs": _REAL_PARAMS}, handle)
+                json.dump({"inputs": _REAL_PARAMS}, handle)
             result = definition_cmds.visualize(
                 mock.Mock(), file=tmp, from_file=spec_path,
                 parameters_file=params_path)
@@ -1673,28 +2632,28 @@ _REAL_DEFINITION = {
         {"id": "workstream-0", "displayName": "Initialization", "steps": [
             {"stepId": "vm.agentless.setup-1", "displayName": "Setup",
              "stepRef": "vm.agentless.setup", "entities": [],
-             "prerequisite": [], "dependsOn": []},
+             "prerequisites": [], "dependsOn": []},
         ]},
         {"id": "workstream-1", "displayName": "waveapp", "steps": [
             {"stepId": "vm.agentless.prepareEntity-1",
              "displayName": "Prepare Entity",
              "stepRef": "vm.agentless.prepareEntity",
              "entities": [_ENT_A, _ENT_B],
-             "prerequisite": [
-                 {"step": "vm.agentless.setup-1", "mode": "step"}],
+             "prerequisites": [
+                 {"stepId": "vm.agentless.setup-1", "waitFor": "wholeStep"}],
              "dependsOn": []},
             {"stepId": "common.approval-1", "displayName": "Approval Gate",
              "stepRef": "common.approval", "entities": [_ENT_A, _ENT_B],
-             "prerequisite": [],
-             "dependsOn": [{"step": "vm.agentless.prepareEntity-1",
-                            "mode": "migrationEntity"}]},
+             "prerequisites": [],
+             "dependsOn": [{"stepId": "vm.agentless.prepareEntity-1",
+                            "waitFor": "sameEntity"}]},
             {"stepId": "vm.agentless.migration-1", "displayName": "Migration",
              "stepRef": "vm.agentless.migration",
              "entities": [_ENT_A, _ENT_B],
-             "prerequisite": [{"step": "vm.agentless.prepareEntity-1",
-                               "mode": "migrationEntity"}],
-             "dependsOn": [{"step": "common.approval-1",
-                            "mode": "migrationEntity"}]},
+             "prerequisites": [{"stepId": "vm.agentless.prepareEntity-1",
+                               "waitFor": "sameEntity"}],
+             "dependsOn": [{"stepId": "common.approval-1",
+                            "waitFor": "sameEntity"}]},
         ]},
     ],
 }
@@ -1749,13 +2708,13 @@ def _annotated_definition():
 class DepsHelperTests(unittest.TestCase):
 
     def test_merges_prerequisite_and_depends_on(self):
-        step = {"prerequisite": [{"step": "a"}],
-                "dependsOn": [{"step": "b"}]}
+        step = {"prerequisites": [{"stepId": "a"}],
+                "dependsOn": [{"stepId": "b"}]}
         self.assertEqual(deps_mod.merged_dep_ids(step), ["a", "b"])
 
     def test_dedupes_preserving_order(self):
-        step = {"prerequisite": [{"step": "a"}, {"step": "b"}],
-                "dependsOn": [{"step": "b"}, "c"]}
+        step = {"prerequisites": [{"stepId": "a"}, {"stepId": "b"}],
+                "dependsOn": [{"stepId": "b"}, "c"]}
         self.assertEqual(deps_mod.merged_dep_ids(step), ["a", "b", "c"])
 
     def test_handles_missing_and_blank(self):
@@ -1829,8 +2788,8 @@ class DefinitionTableRealShapeTests(unittest.TestCase):
         rows = transformers.definition_table(_annotated_definition())
         by_id = {row["Step Id"]: row for row in rows}
         migration = by_id["vm.agentless.migration-1"]
-        self.assertEqual(migration["Workloads"], 2)
-        self.assertEqual(migration["Applications"], "-")
+        self.assertEqual(migration["Entities"], 2)
+        self.assertEqual(migration["Applications"], 0)
         self.assertEqual(migration["Configuration Status"], "Configured")
         self.assertIn(
             "waveapp:Prepare Entity", migration["Depends On"])
@@ -1887,12 +2846,11 @@ class VisualizeGridTests(unittest.TestCase):
 
     def test_definition_metadata_header_renders(self):
         document = {
-            "runbookResourceId": "/subscriptions/s/rb/testrunbook",
-            "metadata": {
-                "waveId": "/subscriptions/s/waves/testwave",
-                "generatedAt": "2026-07-25T06:51:42.6972548Z",
-            },
-            "stepLibraryVersions": {"vm.agentless": "1.0"},
+            "runbookId": "/subscriptions/s/rb/testrunbook",
+            "waveId": "/subscriptions/s/waves/testwave",
+            "generatedAt": "2026-07-25T06:51:42.6972548Z",
+            "stepLibraryVersions": [
+                {"namespace": "vm.agentless", "version": "1.0"}],
             "workstreams": [
                 {"id": "w0", "displayName": "Init", "steps": [
                     {"stepId": "s1", "displayName": "Setup"}]},
@@ -1915,8 +2873,8 @@ class VisualizeGridTests(unittest.TestCase):
 
     def test_definition_rows_open_detail_drawer(self):
         document = {
-            "runbookResourceId": "/subscriptions/s/rb/tr",
-            "metadata": {"generatedAt": "2026-01-01T00:00:00Z"},
+            "runbookId": "/subscriptions/s/rb/tr",
+            "generatedAt": "2026-01-01T00:00:00Z",
             "entities": [{"id": "e1", "displayName": "VM-App01"}],
             "workstreams": [
                 {"id": "w0", "displayName": "Init", "steps": [
@@ -1924,8 +2882,8 @@ class VisualizeGridTests(unittest.TestCase):
                      "stepRef": "vm.prep"},
                     {"stepId": "s2", "displayName": "Migrate",
                      "stepRef": "vm.migrate", "entities": ["e1"],
-                     "prerequisite": [{"step": "s1", "mode": "Blocking"}],
-                     "dependsOn": [{"step": "s1", "mode": "Soft"}]}]},
+                     "prerequisites": [{"stepId": "s1", "waitFor": "wholeStep"}],
+                     "dependsOn": [{"stepId": "s1", "waitFor": "sameEntity"}]}]},
             ],
         }
         view = visualize_viewmodel.build_definition_view(
@@ -1948,6 +2906,29 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertNotIn("https://", html_text)
         self.assertNotIn("http://", html_text)
 
+    def test_definition_grid_and_drawer_show_applications(self):
+        document = {
+            "entityGroups": [
+                {"id": "group-app", "displayName": "Application Tier"},
+                {"id": "group-db", "displayName": "DB Tier"}],
+            "workstreams": [{"id": "w0", "displayName": "Init", "steps": [
+                {"stepId": "s1", "displayName": "Migrate",
+                 "affectedEntityGroups": ["group-app", "group-db"]},
+                {"stepId": "s2", "displayName": "Setup"}]}],
+        }
+        view = visualize_viewmodel.build_definition_view(
+            document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph, view=view)
+        # Grid header + per-step Applications COUNT (not the full list).
+        self.assertIn('class="col-apps">Applications<', html_text)
+        self.assertIn('class="col-apps">2<', html_text)
+        self.assertIn('class="col-apps">0<', html_text)
+        # The full application list appears only in the detail drawer.
+        self.assertNotIn('class="col-apps">Application Tier', html_text)
+        self.assertIn("Application Tier", html_text)
+        self.assertIn("DB Tier", html_text)
+
     def test_definition_renders_brand_bar_and_cli_help(self):
         document = {
             "workstreams": [
@@ -1966,7 +2947,44 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertIn(
             "az migrate runbook definition step add", html_text)
 
-    def test_diagram_uses_workstream_swimlanes(self):
+    def test_help_chips_fill_context(self):
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "Init",
+             "steps": [{"stepId": "s1", "displayName": "Setup"}]}]}
+        view = visualize_viewmodel.build_definition_view(document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(
+            graph, view=view,
+            context={'resource_group': 'myRg', 'project': 'myProj',
+                     'runbook': 'myRb'})
+        # g/p/runbook are filled with real values...
+        self.assertIn('--resource-group myRg', html_text)
+        self.assertIn('--project-name myProj', html_text)
+        self.assertIn('--runbook-name myRb', html_text)
+        self.assertNotIn('&lt;rg&gt;', html_text)
+        # ...but step/workstream tokens stay as placeholders.
+        self.assertIn('--step-name &lt;stepName&gt;', html_text)
+        self.assertIn('--workstream-id &lt;workstream&gt;', html_text)
+
+    def test_help_chips_fill_execution_id(self):
+        view = visualize_viewmodel.build_execution_view(_STATUS_DOC, title="X")
+        graph = visualize_graph.build_execution_graph(_STATUS_DOC, title="X")
+        html_text = visualize_renderer.render(
+            graph, view=view,
+            context={'resource_group': 'rg', 'project': 'p',
+                     'runbook': 'rb', 'execution': 'exec-1'})
+        self.assertIn('--execution-id exec-1', html_text)
+        self.assertNotIn('--execution-id &lt;execution&gt;', html_text)
+
+    def test_help_chips_keep_placeholders_without_context(self):
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "Init",
+             "steps": [{"stepId": "s1", "displayName": "Setup"}]}]}
+        view = visualize_viewmodel.build_definition_view(document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn('--resource-group &lt;rg&gt;', html_text)
+        self.assertIn('--runbook-name &lt;runbook&gt;', html_text)
         graph = visualize_graph.build_definition_graph(
             _REAL_DEFINITION, title="Def")
         html_text = visualize_renderer.render(graph)
@@ -2003,6 +3021,37 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertNotEqual(setup_at, -1)
         self.assertNotEqual(cleanup_at, -1)
         self.assertLess(setup_at, cleanup_at)
+
+    def test_diagram_orders_dependent_workstreams(self):
+        # w1 dependsOn w0; even though the document lists w1 first, the
+        # prerequisite lane (First) must render above the dependent lane
+        # (Second) so the diagram is not reversed relative to the grid.
+        document = {"workstreams": [
+            {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
+             "steps": [{"stepId": "b", "displayName": "B",
+                        "dependsOn": ["a"]}]},
+            {"id": "w0", "displayName": "First",
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph)
+        self.assertLess(html_text.find('Workstream: First'),
+                        html_text.find('Workstream: Second'))
+        # Only step-to-step edges are drawn, in a single uniform style.
+        self.assertIn('class="edge"', html_text)
+
+    def test_diagram_workstream_dependency_cycle_does_not_crash(self):
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "First", "dependsOn": ["w1"],
+             "steps": [{"stepId": "a", "displayName": "A"}]},
+            {"id": "w1", "displayName": "Second", "dependsOn": ["w0"],
+             "steps": [{"stepId": "b", "displayName": "B"}]},
+        ]}
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph)
+        # Cyclic workstream deps fall back to document order (no crash).
+        self.assertLess(html_text.find('Workstream: First'),
+                        html_text.find('Workstream: Second'))
 
     def test_execution_grid_shows_progress_and_groups(self):
         view = visualize_viewmodel.build_execution_view(
@@ -2106,6 +3155,311 @@ class CommandRegistrationTests(unittest.TestCase):
                 'migrate runbook execution parameter download',
                 'migrate runbook execution parameter upload'):
             self.assertIn(expected, commands)
+
+
+class RunbookValidatorTests(unittest.TestCase):
+
+    def test_definition_visualize_requires_identity(self):
+        ns = SimpleNamespace(from_file=None, resource_group_name=None,
+                             project_name=None, runbook_name=None)
+        with self.assertRaises(RequiredArgumentMissingError):
+            validators_mod.validate_definition_visualize(ns)
+
+    def test_definition_visualize_from_file_ok(self):
+        validators_mod.validate_definition_visualize(
+            SimpleNamespace(from_file='x.json'))
+
+    def test_execution_visualize_requires_execution_id(self):
+        ns = SimpleNamespace(from_file=None, resource_group_name=RG,
+                             project_name=PROJECT, runbook_name=RUNBOOK,
+                             execution_id=None)
+        with self.assertRaises(RequiredArgumentMissingError):
+            validators_mod.validate_execution_visualize(ns)
+
+    def test_execution_visualize_full_identity_ok(self):
+        validators_mod.validate_execution_visualize(
+            SimpleNamespace(from_file=None, resource_group_name=RG,
+                            project_name=PROJECT, runbook_name=RUNBOOK,
+                            execution_id='e1'))
+
+    def test_execution_visualize_from_file_ok(self):
+        validators_mod.validate_execution_visualize(
+            SimpleNamespace(from_file='x.json'))
+
+
+class ExecutionHelperTests(unittest.TestCase):
+
+    def test_status_payload_unwraps_execution_status(self):
+        payload = execution_cmds._status_payload({
+            'generatedAt': 't', 'runbookId': 'r',
+            'executionStatus': {'status': 'InProgress'}})
+        self.assertEqual(payload['status'], 'InProgress')
+        self.assertEqual(payload['generatedAt'], 't')
+        self.assertEqual(payload['runbookId'], 'r')
+
+    def test_status_payload_unwraps_properties(self):
+        payload = execution_cmds._status_payload({
+            'executionId': 'e', 'properties': {'status': 'Completed'}})
+        self.assertEqual(payload['status'], 'Completed')
+        self.assertEqual(payload['executionId'], 'e')
+
+    def test_status_payload_passthrough(self):
+        self.assertIsNone(execution_cmds._status_payload(None))
+        bare = {'workstreams': []}
+        self.assertIs(execution_cmds._status_payload(bare), bare)
+
+    def test_execution_id_from_result_variants(self):
+        self.assertEqual(
+            execution_cmds._execution_id_from_result({'name': 'e1'}), 'e1')
+        self.assertEqual(
+            execution_cmds._execution_id_from_result(
+                {'id': '/a/executions/e2'}), 'e2')
+        self.assertEqual(
+            execution_cmds._execution_id_from_result(
+                {'properties': {'executionId': 'e3'}}), 'e3')
+        self.assertIsNone(execution_cmds._execution_id_from_result('x'))
+
+    def test_project_filters_step(self):
+        doc = {'workstreams': [{'steps': [
+            {'stepId': 's1'}, {'stepId': 's2'}]}]}
+        self.assertEqual(
+            execution_cmds._project(doc, 's2'), {'stepId': 's2'})
+
+    def test_project_flat_and_not_found(self):
+        doc = {'steps': [{'id': 'a'}]}
+        self.assertEqual(execution_cmds._project(doc, 'a'), {'id': 'a'})
+        self.assertIs(execution_cmds._project(doc, 'zzz'), doc)
+        self.assertIs(execution_cmds._project(doc, None), doc)
+        self.assertEqual(execution_cmds._project('x', 'a'), 'x')
+
+    def test_terminal_states(self):
+        self.assertTrue(execution_cmds._terminal({'status': 'Completed'}))
+        self.assertTrue(
+            execution_cmds._terminal({'properties': {'state': 'Failed'}}))
+        self.assertFalse(execution_cmds._terminal({'status': 'InProgress'}))
+        self.assertFalse(execution_cmds._terminal({}))
+
+    def test_render_does_not_crash(self):
+        execution_cmds._render(_STATUS_TOOL_DOC)
+        execution_cmds._render({})
+
+
+class ExecutionStatusCommandTests(unittest.TestCase):
+
+    def setUp(self):
+        sub_patch = mock.patch.object(
+            execution_cmds, 'get_subscription_id', return_value=SUB)
+        self.addCleanup(sub_patch.stop)
+        sub_patch.start()
+        client_patch = mock.patch.object(execution_cmds, 'ArmClient')
+        self.addCleanup(client_patch.stop)
+        self.client = client_patch.start().return_value
+
+    def _exec_id(self):
+        project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
+        return arm_ids.execution_id(
+            arm_ids.runbook_id(project, RUNBOOK), 'e1')
+
+    def test_status_download_url_error_when_no_sas(self):
+        self.client.post_action.return_value = {}
+        with self.assertRaises(CLIInternalError):
+            execution_cmds._status_download_url(mock.Mock(), self._exec_id())
+
+    def test_status_download_url_returns_sas(self):
+        self.client.post_action.return_value = {
+            'properties': {'sasUrl': 'https://x/blob'}}
+        self.assertEqual(
+            execution_cmds._status_download_url(mock.Mock(), self._exec_id()),
+            'https://x/blob')
+
+    def test_fetch_status_downloads_and_unwraps(self):
+        with mock.patch.object(execution_cmds, '_status_download_url',
+                               return_value='https://x'), \
+             mock.patch.object(execution_cmds.files, 'download_bytes',
+                               return_value=b'{}'), \
+             mock.patch.object(
+                 execution_cmds.files, 'read_status_json',
+                 return_value={'executionStatus': {'status': 'InProgress'}}):
+            result = execution_cmds._fetch_status(
+                mock.Mock(), self._exec_id())
+        self.assertEqual(result['status'], 'InProgress')
+
+    def test_show_returns_projected_status(self):
+        with mock.patch.object(
+                execution_cmds, '_fetch_status',
+                return_value={'workstreams': [
+                    {'steps': [{'stepId': 's1'}]}]}):
+            result = execution_cmds.show(
+                mock.Mock(), RG, PROJECT, RUNBOOK, 'e1', step_id='s1')
+        self.assertEqual(result, {'stepId': 's1'})
+
+    def test_pause_resume_cancel_perform_action(self):
+        for fn in (execution_cmds.pause, execution_cmds.resume,
+                   execution_cmds.cancel):
+            self.client.post_action.reset_mock()
+            self.client.post_action.return_value = {'ok': True}
+            self.assertEqual(
+                fn(mock.Mock(), RG, PROJECT, RUNBOOK, 'e1'), {'ok': True})
+            self.client.post_action.assert_called_once()
+
+    def test_visualize_from_file_writes_and_opens(self):
+        status = {'executionStatus': {'status': 'InProgress',
+                                      'workstreams': []}}
+        with mock.patch.object(execution_cmds.files, 'read_json_file',
+                               return_value=status), \
+             mock.patch.object(execution_cmds.files, 'resolve_output_path',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files, 'write_text',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files,
+                               'open_in_browser') as browser:
+            result = execution_cmds.visualize(
+                mock.Mock(), runbook_name=RUNBOOK, execution_id='e1',
+                from_file='f.json')
+        self.assertEqual(result, {'path': 'out.html'})
+        browser.assert_called_once()
+
+    def test_visualize_service_path_writes_and_opens(self):
+        with mock.patch.object(
+                execution_cmds, '_fetch_status',
+                return_value={'status': 'InProgress', 'workstreams': []}), \
+             mock.patch.object(execution_cmds.files, 'resolve_output_path',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files, 'write_text',
+                               return_value='out.html'), \
+             mock.patch.object(execution_cmds.files,
+                               'open_in_browser') as browser:
+            result = execution_cmds.visualize(
+                mock.Mock(), RG, PROJECT, RUNBOOK, 'e1')
+        self.assertEqual(result, {'path': 'out.html'})
+        browser.assert_called_once()
+
+
+class ConfigStatusBranchTests(unittest.TestCase):
+
+    def test_is_empty_variants(self):
+        self.assertTrue(config_status_mod._is_empty(''))
+        self.assertTrue(config_status_mod._is_empty('  '))
+        self.assertTrue(config_status_mod._is_empty([]))
+        self.assertFalse(config_status_mod._is_empty('x'))
+        self.assertFalse(config_status_mod._is_empty([1]))
+
+    def test_compute_unknown_when_no_inputs(self):
+        self.assertEqual(
+            config_status_mod.compute({'stepId': 's'}, None),
+            config_status_mod.UNKNOWN)
+
+    def test_compute_unknown_when_untracked(self):
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'}, {'stepInputs': {}}),
+            config_status_mod.UNKNOWN)
+
+    def test_compute_configured_when_no_required(self):
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'},
+                {'stepInputs': {'s': {}}, 'schema': {}}),
+            config_status_mod.CONFIGURED)
+
+    def test_compute_partial_and_not_configured(self):
+        schema = {'t': {'a': {'required': True}, 'b': {'required': True}}}
+        partial = config_status_mod.compute(
+            {'stepId': 's', 'stepRef': 't'},
+            {'schema': schema, 'stepInputs': {'s': {'a': 'x'}}})
+        self.assertTrue(partial.startswith('Partial'))
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'},
+                {'schema': schema, 'stepInputs': {'s': {}}}),
+            config_status_mod.NOT_CONFIGURED)
+
+    def test_compute_entity_scope(self):
+        schema = {'t': {'a': {'required': True, 'scope': 'Entity'}}}
+        step = {'stepId': 's', 'stepRef': 't', 'entities': ['vm1']}
+        self.assertEqual(
+            config_status_mod.compute(step, {
+                'schema': schema,
+                'stepInputs': {'s': {'workloadOverrides': {'vm1': {}}}}}),
+            config_status_mod.NOT_CONFIGURED)
+        self.assertEqual(
+            config_status_mod.compute(step, {
+                'schema': schema,
+                'stepInputs': {
+                    's': {'workloadOverrides': {'vm1': {'a': 'x'}}}}}),
+            config_status_mod.CONFIGURED)
+
+    def test_compute_entity_scope_no_entities(self):
+        schema = {'t': {'a': {'required': True, 'scope': 'Entity'}}}
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't', 'entities': []},
+                {'schema': schema, 'stepInputs': {'s': {}}}),
+            config_status_mod.NOT_CONFIGURED)
+
+    def test_annotate_non_dict_passthrough(self):
+        self.assertIsNone(config_status_mod.annotate(None, {}))
+
+
+class TransformerBranchTests(unittest.TestCase):
+
+    def test_execution_table_single_step_dict(self):
+        rows = transformers.execution_table(
+            {'stepId': 's1', 'status': 'Completed'})
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['Step Id'], 's1')
+
+    def test_workload_progress_explicit_scalar(self):
+        rows = transformers.execution_table(
+            {'steps': [{'stepId': 's', 'workloadProgress': '5 of 5'}]})
+        self.assertEqual(rows[0]['Workload Progress'], '5 of 5')
+
+    def test_workload_progress_none_without_entities(self):
+        rows = transformers.execution_table({'steps': [{'stepId': 's'}]})
+        self.assertIsNone(rows[0]['Workload Progress'])
+
+
+class DepsBranchTests(unittest.TestCase):
+
+    def test_dep_labels_execution_properties_envelope(self):
+        labels = deps_mod.build_dep_labels({'properties': {'workstreams': [
+            None,
+            {'displayName': 'WS', 'steps': [
+                {'stepId': 's1', 'displayName': 'Step One'}]}]}})
+        self.assertEqual(labels['s1'], 'WS:Step One')
+
+    def test_dep_labels_flat_steps_no_workstream(self):
+        labels = deps_mod.build_dep_labels(
+            {'steps': [{'stepId': 's2', 'displayName': 'Solo'}]})
+        self.assertEqual(labels['s2'], 'Solo')
+
+    def test_dep_labels_non_dict_document(self):
+        self.assertEqual(deps_mod.build_dep_labels([1, 2]), {})
+
+
+class ViewmodelBranchTests(unittest.TestCase):
+
+    def test_unwrap_properties_envelope(self):
+        view = visualize_viewmodel.build_execution_view(
+            {'properties': {'status': 'InProgress', 'workstreams': [
+                {'displayName': 'W', 'steps': [
+                    {'stepId': 's', 'status': 'Completed'}]}]}}, title='X')
+        self.assertEqual(view.workstreams[0].name, 'W')
+
+    def test_progress_text_explicit_scalar(self):
+        view = visualize_viewmodel.build_execution_view(
+            {'workstreams': [{'steps': [
+                {'stepId': 's', 'workloadProgress': '3 of 3'}]}]}, title='X')
+        self.assertEqual(
+            view.workstreams[0].steps[0].workload_progress, '3 of 3')
+
+    def test_entity_status_dict_shape(self):
+        view = visualize_viewmodel.build_execution_view(
+            {'workstreams': [{'steps': [{'stepId': 's', 'entityExecutions': [
+                {'entity': 'e1', 'status': {'state': 'Completed'}}]}]}]},
+            title='X')
+        self.assertEqual(
+            view.workstreams[0].steps[0].entities[0].status, 'Completed')
 
 
 if __name__ == '__main__':

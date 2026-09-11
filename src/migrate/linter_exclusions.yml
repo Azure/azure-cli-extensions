@@ -98,3 +98,24 @@ migrate runbook:
         resource_group_name:
             rule_exclusions:
                 - missing_parameter_test_coverage
+
+# -g/-p are identity/scope parameters that carry a configured_default (set via
+# `az configure --defaults group=<rg> migrate_project=<name>`). The
+# no-defaults-on-update rule targets update *content* parameters; excluding the
+# scope parameters here keeps the linter green when az config defaults are set.
+migrate runbook update:
+    parameters:
+        resource_group_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+        project_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+migrate runbook definition step update:
+    parameters:
+        resource_group_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+        project_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands

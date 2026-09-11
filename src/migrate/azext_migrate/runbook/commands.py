@@ -85,6 +85,7 @@ def load_runbook_command_table(self):
             is_preview=True) as g:
         g.custom_command('download', 'parameter#download')
         g.custom_command('upload', 'parameter#upload')
+        g.custom_command('configure', 'parameter#configure')
 
     with self.command_group(
             'migrate runbook execution',
@@ -112,6 +113,7 @@ def load_runbook_command_table(self):
             is_preview=True) as g:
         g.custom_command('download', 'execution_parameter#download')
         g.custom_command('upload', 'execution_parameter#upload')
+        g.custom_command('configure', 'execution_parameter#configure')
 
     with self.command_group(
             'migrate runbook execution step',

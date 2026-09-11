@@ -37,14 +37,17 @@ _SAS_URL_KEYS = (
     'sasUrl', 'sasUri', 'url', 'uri')
 
 # Derived/computed inputs the CLI must never surface or download. This
-# document shares the 'runbookInputs' shape with the user parameters, so it
+# document shares the 'inputs' shape with the user parameters, so it
 # can only be distinguished by name (content classification is not enough).
-_DERIVED_INPUTS_NAMES = ('derived-input.json', 'derived-inputs.json')
+# Both the legacy and post-rename (inputs -> parameters) names are excluded.
+_DERIVED_INPUTS_NAMES = (
+    'system-derived-inputs.json', 'system-derived-parameters.json')
 
-# File name of the execution status document fetched via a per-execution
-# SAS download (GenerateDownloadUrl on the execution resource). Confirmed
-# against the live API: the blob may be either the raw status.json bytes or
-# a ZIP that contains it; read_status_json handles both.
+# Suffix identifying the execution status document (``executionStatus.json``)
+# fetched via a per-execution SAS download (GenerateDownloadUrl on the
+# execution resource). The blob may be the raw status bytes or a ZIP that
+# contains it; read_status_json handles both (``status.json`` suffix also
+# matches the renamed ``executionStatus.json``).
 _STATUS_SUFFIX = 'status.json'
 
 # Local ZIP file magic; a SAS download may be a ZIP archive or a raw blob.
@@ -103,13 +106,13 @@ def upload_bytes(url, data):
 def _looks_like_spec(parsed):
     """True when a parsed JSON document is a runbook definition/spec."""
     return isinstance(parsed, dict) and (
-        'runbookSpec' in parsed or 'workstreams' in parsed)
+        'spec' in parsed or 'workstreams' in parsed)
 
 
 def _looks_like_parameters(parsed):
     """True when a parsed JSON document is a runbook parameters file."""
     return isinstance(parsed, dict) and (
-        'runbookInputs' in parsed
+        'inputs' in parsed
         or 'stepInputs' in parsed
         or 'schema' in parsed)
 
@@ -118,14 +121,13 @@ def _looks_like_status(parsed):
     """True when a parsed JSON document is an execution status document.
 
     The per-execution download archive can also carry the definition
-    (wrapped in ``runbookSpec``) and the input parameters (``runbookInputs``
-    / ``schema`` / ``stepInputs``); neither is a status document. A status
-    document has a bare ``workstreams`` / ``steps`` / ``state`` shape, so it
-    is anything that is a dict and is not the definition wrapper or the
-    parameters file.
+    (wrapped in ``spec``) and the input parameters (``inputs`` / ``schema``
+    / ``stepInputs``); neither is a status document. A status document is
+    wrapped in ``executionStatus`` (or is a bare ``workstreams`` shape), so
+    it is anything that is a dict and is not the definition or parameters.
     """
     return (isinstance(parsed, dict)
-            and 'runbookSpec' not in parsed
+            and 'spec' not in parsed
             and not _looks_like_parameters(parsed))
 
 
@@ -135,12 +137,12 @@ def _classify_archive(zip_bytes):
     Returns ``{'definition': (name, bytes) | None,
     'parameters': (name, bytes) | None, 'docs': [(name, bytes), ...]}``.
 
-    The archive ships the definition (``runbookSpec``), the user parameters
-    (``runbookInputs``), the ``derived-input.json`` computed inputs, and a
-    documentation markdown. ``derived-input.json`` shares the parameters
-    shape and is distinguished only by name, so it is skipped here; every
-    other member is classified by content. This is the single source of
-    truth for the archive layout.
+    The archive ships the definition (``spec``), the user parameters
+    (``inputs``), the ``system-derived-inputs.json`` computed inputs,
+    and a documentation markdown. ``system-derived-inputs.json`` shares the
+    parameters shape and is distinguished only by name, so it is skipped
+    here; every other member is classified by content. This is the single
+    source of truth for the archive layout.
     """
     definition = parameters = None
     docs = []
@@ -172,10 +174,10 @@ def _classify_archive(zip_bytes):
 
 
 def read_spec_json(zip_bytes):
-    """Return the parsed runbook definition (``runbookSpec``) or None.
+    """Return the parsed runbook definition (``spec``) or None.
 
     Accepts either a ZIP archive (definition classified out of it) or a raw
-    ``runbook.json`` blob (file-mode download), returning the parsed JSON.
+    ``spec.json`` blob (file-mode download), returning the parsed JSON.
     """
     if not _is_zip(zip_bytes):
         try:
@@ -186,12 +188,74 @@ def read_spec_json(zip_bytes):
     return json.loads(found[1].decode('utf-8')) if found else None
 
 
+def describe_archive(zip_bytes):
+    """Summarize a download for diagnostics: each member and its detected role.
+
+    Returns a short string such as ``spec.json (definition), inputs.json
+    (parameters), runbook.md (docs)`` so a "definition not found" failure can
+    tell whether the archive genuinely lacks a definition or the member was
+    rejected by the content classifier (e.g. an unexpected contract shape).
+    """
+    if not _is_zip(zip_bytes):
+        return 'raw non-archive blob'
+    roles = []
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
+        for info in archive.infolist():
+            if info.is_dir():
+                continue
+            name = os.path.basename(info.filename.replace('\\', '/'))
+            lower = name.lower()
+            if lower in _DERIVED_INPUTS_NAMES:
+                roles.append('%s (derived-inputs, skipped)' % name)
+            elif lower.endswith('.md'):
+                roles.append('%s (docs)' % name)
+            elif not lower.endswith('.json'):
+                roles.append('%s (ignored)' % name)
+            else:
+                try:
+                    parsed = json.loads(archive.read(info).decode('utf-8'))
+                except ValueError:
+                    roles.append('%s (invalid JSON)' % name)
+                    continue
+                if _looks_like_spec(parsed):
+                    roles.append('%s (definition)' % name)
+                elif _looks_like_parameters(parsed):
+                    roles.append('%s (parameters)' % name)
+                else:
+                    roles.append('%s (unrecognized)' % name)
+    return ', '.join(roles) if roles else 'empty archive'
+
+
+def read_schema_json(zip_bytes):
+    """Return the parsed standalone ``schema.json`` from the archive, or None.
+
+    When the input schema is shipped as its own file (rather than embedded in
+    ``inputs.json``), configure/validation read it here. A standalone schema
+    document is keyed by step type and matches neither the definition nor the
+    parameters content classifiers, so it is located by name.
+    """
+    if not _is_zip(zip_bytes):
+        return None
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
+        _guard_archive(archive.infolist())
+        for info in archive.infolist():
+            if info.is_dir():
+                continue
+            name = os.path.basename(info.filename.replace('\\', '/')).lower()
+            if name == 'schema.json':
+                try:
+                    return json.loads(archive.read(info).decode('utf-8'))
+                except ValueError:
+                    return None
+    return None
+
+
 def extract_parameters_file(zip_bytes):
     """Return ``(filename, raw_bytes)`` for the user parameters, or None.
 
-    ``derived-input.json`` (which shares the parameters shape) is never
-    returned; see :func:`_classify_archive`. A raw (non-ZIP) blob carries
-    no separate parameters file, so None is returned.
+    ``system-derived-inputs.json`` (which shares the parameters shape) is
+    never returned; see :func:`_classify_archive`. A raw (non-ZIP) blob
+    carries no separate parameters file, so None is returned.
     """
     if not _is_zip(zip_bytes):
         return None
@@ -199,24 +263,24 @@ def extract_parameters_file(zip_bytes):
 
 
 def read_parameters_json(zip_bytes):
-    """Return the parsed ``runbookInputs`` object from the ZIP, or None."""
+    """Return the parsed ``inputs`` object from the ZIP, or None."""
     found = extract_parameters_file(zip_bytes)
     if not found:
         return None
     parsed = json.loads(found[1].decode('utf-8'))
     if isinstance(parsed, dict) and isinstance(
-            parsed.get('runbookInputs'), dict):
-        return parsed['runbookInputs']
+            parsed.get('inputs'), dict):
+        return parsed['inputs']
     return parsed
 
 
 def read_status_json(raw_bytes):
     """Return the parsed execution status document from a SAS download.
 
-    The per-execution SAS blob may be either the raw ``status.json`` bytes
-    or a ZIP archive that contains it. A not-yet-run execution's download
-    archive ships only the input parameters (``runbookInputs``) and/or the
-    definition (``runbookSpec``); those are NOT a status document and are
+    The per-execution SAS blob may be either the raw ``executionStatus.json``
+    bytes or a ZIP archive that contains it. A not-yet-run execution's download
+    archive ships only the input parameters (``inputs``) and/or the
+    definition (``spec``); those are NOT a status document and are
     rejected here so callers can fall back to the execution resource. Raises
     :class:`CLIInternalError` when no status document is present.
     """
@@ -319,20 +383,33 @@ def write_text(path, text):
     return absolute
 
 
-def open_in_browser(path):
-    """Best-effort open a local file in the default browser."""
+def open_in_browser(path, required=False):
+    """Open a local file in the default browser; return True on success.
+
+    ``visualize`` passes ``required=True`` so it fails loudly when no browser
+    can be launched (the HTML is already written, so the message points to it
+    and to ``--no-open``). Other callers open best-effort.
+    """
     import webbrowser
+    url = 'file://' + os.path.abspath(path)
     try:
-        webbrowser.open('file://' + os.path.abspath(path))
-    except OSError as ex:  # pragma: no cover - environment dependent
-        logger.warning('Could not open the file in a browser: %s', ex)
+        opened = bool(webbrowser.open(url))
+    except (OSError, webbrowser.Error) as ex:  # pragma: no cover
+        logger.debug('Could not open a browser: %s', ex)
+        opened = False
+    if not opened and required:
+        raise CLIInternalError(
+            'Rendered the HTML file but could not open a browser to display '
+            "it: {}. Open the file manually, or re-run with '--no-open'."
+            .format(path))
+    return opened
 
 
 def extract_definition_files(zip_bytes, destination):
     """Write the runbook definition, its parameters and docs to disk.
 
-    Writes the definition (``runbookSpec``), the user parameters
-    (``runbookInputs``) and any ``.md`` docs; the redundant
+    Writes the definition (``spec``), the user parameters
+    (``inputs``) and any ``.md`` docs; the redundant
     ``derived-input.json`` is skipped (see :func:`_classify_archive`). The
     parameters file is downloaded because the definition's per-step
     ``configurationStatus`` is computed from it, but callers still render only
@@ -357,6 +434,54 @@ def extract_definition_files(zip_bytes, destination):
     written = []
     for name, data in selected:
         target = os.path.join(destination, os.path.basename(name))
+        with open(target, 'wb') as handle:
+            handle.write(data)
+        written.append(target)
+    return written
+
+
+# Parameter-side files shipped alongside ``inputs.json`` (schema is moving to
+# its own file; captured by name for forward-compatibility).
+_PARAM_EXTRA_NAMES = ('schema.json',)
+
+
+def extract_parameter_files(zip_bytes, destination):
+    """Write the runbook parameters file(s) to ``destination``.
+
+    Writes the user parameters (``inputs.json``) and, when the schema is
+    shipped as its own file, ``schema.json`` (needed for validation). The
+    definition, docs and the redundant ``system-derived-inputs.json`` are
+    skipped. A raw (non-ZIP) blob is written as ``inputs.json``. Member names
+    are flattened to their base name (zip-slip is designed out). Returns the
+    absolute paths written.
+    """
+    destination = os.path.abspath(destination)
+    os.makedirs(destination, exist_ok=True)
+    if not _is_zip(zip_bytes):
+        target = os.path.join(destination, 'inputs.json')
+        with open(target, 'wb') as handle:
+            handle.write(zip_bytes)
+        return [target]
+    selected = []
+    parameters = _classify_archive(zip_bytes)['parameters']
+    if parameters:
+        selected.append(parameters)
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
+        _guard_archive(archive.infolist())
+        for info in archive.infolist():
+            if info.is_dir():
+                continue
+            name = os.path.basename(info.filename.replace('\\', '/'))
+            if name.lower() in _PARAM_EXTRA_NAMES:
+                selected.append((name, archive.read(info)))
+    written = []
+    seen = set()
+    for name, data in selected:
+        base = os.path.basename(name)
+        if base in seen:
+            continue
+        seen.add(base)
+        target = os.path.join(destination, base)
         with open(target, 'wb') as handle:
             handle.write(data)
         written.append(target)

@@ -13,6 +13,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_migrate.shared import arm_ids
 from azext_migrate.shared.arm_client import ArmClient
 from azext_migrate.runbook import models
+from azext_migrate.runbook.cmds import definition as definition_cmds
 
 logger = get_logger(__name__)
 
@@ -36,12 +37,27 @@ def _matches(runbook, wave_name, status):
 
 
 def generate(cmd, resource_group_name, project_name, runbook_name,
-             wave_name, no_wait=False):
+             wave_name, no_wait=False, no_visualize=False):
     """Generate (create) a runbook scoped to a wave."""
     project = _project_id(cmd, resource_group_name, project_name)
     resource_id = arm_ids.runbook_id(project, runbook_name)
     body = models.build_generate_body(models.wave_id(project, wave_name))
-    return ArmClient(cmd).put(resource_id, body, no_wait=no_wait)
+    result = ArmClient(cmd).put(resource_id, body, no_wait=no_wait)
+    if not no_wait and not no_visualize:
+        _open_definition_view(
+            cmd, resource_group_name, project_name, runbook_name)
+    return result
+
+
+def _open_definition_view(cmd, resource_group_name, project_name,
+                          runbook_name):
+    """Best-effort: render and open the runbook definition HTML view."""
+    try:
+        definition_cmds.visualize(
+            cmd, resource_group_name, project_name, runbook_name)
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.warning(
+            'Could not open the runbook definition view: %s', ex)
 
 
 def show(cmd, resource_group_name, project_name, runbook_name):
@@ -78,7 +94,7 @@ def update(cmd, resource_group_name, project_name, runbook_name,
 
 
 def regenerate(cmd, resource_group_name, project_name, runbook_name,
-               no_wait=False):
+               no_wait=False, no_visualize=False):
     """Regenerate a runbook: delete it, then re-create it from its scope.
 
     The service has no Regenerate action, so the CLI reads the runbook's
@@ -100,7 +116,11 @@ def regenerate(cmd, resource_group_name, project_name, runbook_name,
         "wave scope.", runbook_name)
     client.delete(resource_id)
     body = models.build_generate_body(wave_id)
-    return client.put(resource_id, body, no_wait=no_wait)
+    result = client.put(resource_id, body, no_wait=no_wait)
+    if not no_wait and not no_visualize:
+        _open_definition_view(
+            cmd, resource_group_name, project_name, runbook_name)
+    return result
 
 
 def _provisioning_state(runbook):

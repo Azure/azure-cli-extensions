@@ -20,10 +20,25 @@ KIND_EXECUTION = 'execution'
 class EntityProgress:
     """Per-entity execution state shown under an execution step."""
 
-    # pylint: disable=too-few-public-methods
-    def __init__(self, name, status):
+    # pylint: disable=too-few-public-methods,too-many-arguments
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self, name, status, status_reason=None, error=None,
+                 total_attempts=None, attempts=None, tool_status=None,
+                 outputs=None, completed=False):
         self.name = name
         self.status = status
+        self.status_reason = status_reason
+        self.error = error
+        self.total_attempts = total_attempts
+        self.attempts = attempts or []
+        # Tool-reported migration status (e.g. Replicating, Migrating) — a
+        # finer-grained, tool-driven state than the orchestrator ``status``.
+        self.tool_status = tool_status
+        # Free-form per-entity result payload (e.g. targetVmArmId). It is the
+        # authoritative *final* result once ``completed``; while the entity is
+        # still running the same field is a live *partial* progress snapshot.
+        self.outputs = outputs or {}
+        self.completed = completed
 
 
 class StepRow:
@@ -34,7 +49,9 @@ class StepRow:
     def __init__(self, step_id, name, deps=None, status=None,
                  workloads=None, workload_progress=None, entities=None,
                  step_ref=None, entity_names=None, prereqs=None,
-                 dep_details=None):
+                 dep_details=None, entity_groups=None, status_reason=None,
+                 error=None, retry_count=0, attempts=None,
+                 user_comment=None, outputs=None, started=None, ended=None):
         self.id = step_id
         self.name = name
         self.deps = deps or []
@@ -48,6 +65,20 @@ class StepRow:
         self.entity_names = entity_names or []
         self.prereqs = prereqs or []
         self.dep_details = dep_details or []
+        # Affected entity groups ("applications"), as display names.
+        self.entity_groups = entity_groups or []
+        # Execution detail: failure reason/error, retry (failed-attempt)
+        # count, per-attempt history, and any manual sign-off comment.
+        self.status_reason = status_reason
+        self.error = error
+        self.retry_count = retry_count
+        self.attempts = attempts or []
+        self.user_comment = user_comment
+        # Free-form step-level result payload (e.g. roleAssignmentIds).
+        self.outputs = outputs or {}
+        # Step run window (for the detail-pane overview).
+        self.started = started
+        self.ended = ended
 
 
 class Workstream:
@@ -139,18 +170,44 @@ def _entity_name_map(root):
     return names
 
 
+def _entity_group_map(root):
+    """Map every entity-group id to its display name (the "applications")."""
+    names = {}
+    for group in root.get('entityGroups') or []:
+        if isinstance(group, dict):
+            gid = group.get('id') or group.get('name')
+            if gid:
+                names[gid] = (
+                    group.get('displayName') or group.get('name') or gid)
+    return names
+
+
+def _step_groups(step, group_map):
+    """A step's ``affectedEntityGroups`` resolved to display names."""
+    return [group_map.get(gid, gid)
+            for gid in step.get('affectedEntityGroups') or []]
+
+
+_WAIT_FOR_LABELS = {
+    'wholeStep': 'Blocking',
+    'sameEntity': 'Soft',
+    'mappedEntities': 'Mapped',
+}
+
+
 def _dep_entries(raw, id_to_name):
     """Label a prerequisite/dependsOn list with resolved names and mode."""
     entries = []
     for dep in raw or []:
         if isinstance(dep, dict):
-            dep_id = dep.get('step') or dep.get('stepId')
-            mode = dep.get('mode')
+            dep_id = dep.get('stepId') or dep.get('step')
+            mode = dep.get('waitFor') or dep.get('mode')
         else:
             dep_id, mode = dep, None
         if not dep_id:
             continue
         name = id_to_name.get(dep_id, dep_id)
+        mode = _WAIT_FOR_LABELS.get(mode, mode)
         entries.append('%s (%s)' % (name, mode) if mode else name)
     return entries
 
@@ -161,6 +218,7 @@ def build_definition_view(document, title):
     id_to_name = _step_name_map(root)
     dep_labels = dep_utils.build_dep_labels(root)
     entity_map = _entity_name_map(root)
+    group_map = _entity_group_map(root)
     workstreams = []
     status_counts = {}
     for name, ws_id, steps in _iter_workstreams(root):
@@ -180,8 +238,9 @@ def build_definition_view(document, title):
                 step_ref=step.get('stepRef'),
                 entity_names=[entity_map.get(eid, eid)
                               for eid in entity_ids],
-                prereqs=_dep_entries(step.get('prerequisite'), id_to_name),
-                dep_details=_dep_entries(step.get('dependsOn'), id_to_name)))
+                prereqs=_dep_entries(step.get('prerequisites'), id_to_name),
+                dep_details=_dep_entries(step.get('dependsOn'), id_to_name),
+                entity_groups=_step_groups(step, group_map)))
         workstreams.append(Workstream(name, rows, ws_id))
 
     step_total = sum(len(ws.steps) for ws in workstreams)
@@ -198,23 +257,24 @@ def _definition_meta(root):
 
     Returns ``(meta, generated)`` where ``meta`` is a list of
     ``(label, value)`` header fields and ``generated`` is the
-    source-declared generation timestamp (or ``None``).
+    source-declared generation timestamp (or ``None``). The identifiers
+    (generatedAt / runbookId / waveId) live on the document envelope and are
+    carried onto the payload by the loading command.
     """
-    metadata = root.get('metadata') if isinstance(
-        root.get('metadata'), dict) else {}
-    generated = metadata.get('generatedAt')
+    generated = root.get('generatedAt')
     meta = []
     versions = root.get('stepLibraryVersions')
-    if isinstance(versions, dict) and versions:
+    if isinstance(versions, list) and versions:
         meta.append(('Runbook version', ', '.join(
-            '%s %s' % (name, ver) for name, ver in sorted(versions.items()))))
+            '%s %s' % (v.get('namespace'), v.get('version'))
+            for v in versions if isinstance(v, dict))))
     if generated:
         meta.append(('Generated', generated))
-    meta.append(('Data source', 'runbook.json'))
-    resource_id = root.get('runbookResourceId')
+    meta.append(('Data source', 'spec.json'))
+    resource_id = root.get('runbookId')
     if resource_id:
         meta.append(('Runbook resource id', resource_id))
-    wave_id = metadata.get('waveId')
+    wave_id = root.get('waveId')
     if wave_id:
         meta.append(('Wave id', wave_id))
     return meta, generated
@@ -228,10 +288,14 @@ def _entity_status(entity):
 
 
 def _progress_text(step):
-    """Return a "n/m completed" summary from ``entityExecutions``."""
+    """Return a "n/m completed" summary for an execution step."""
     explicit = step.get('workloadProgress')
     if explicit is not None:
         return str(explicit)
+    total = len(step.get('entities') or [])
+    done = step.get('entitiesCompleted')
+    if isinstance(done, int) and total:
+        return '%d/%d completed' % (done, total)
     entities = step.get('entityExecutions')
     if not isinstance(entities, list) or not entities:
         return None
@@ -248,10 +312,58 @@ def _exec_status(step):
             or step.get('state'))
 
 
+def _error_text(node):
+    """Flatten an ``errorDetails`` object to "code: message (details)"."""
+    err = node.get('errorDetails') if isinstance(node, dict) else None
+    if not isinstance(err, dict):
+        return None
+    parts = [str(v) for v in (err.get('code'), err.get('message')) if v]
+    text = ': '.join(parts) if parts else None
+    details = err.get('details')
+    if text and details:
+        text = '%s (%s)' % (text, details)
+    return text
+
+
+def _failed_attempts(step):
+    """Count failed attempts on a step and its per-entity executions."""
+    def _failed(attempts):
+        return sum(
+            1 for a in attempts or []
+            if str((a or {}).get('status') or '').lower() == 'failed')
+
+    total = _failed(step.get('attempts'))
+    for entity in step.get('entityExecutions') or []:
+        total += _failed((entity or {}).get('attempts'))
+    return total
+
+
+def _output_map(outputs):
+    """Return the raw outputs object only when it is a non-empty dict."""
+    return outputs if isinstance(outputs, dict) and outputs else {}
+
+
+def _attempt_views(attempts):
+    """Project raw attempts to ``{number, status, error, started, ended}``."""
+    views = []
+    for attempt in attempts or []:
+        if not isinstance(attempt, dict):
+            continue
+        views.append({
+            'number': attempt.get('attemptNumber'),
+            'status': attempt.get('status'),
+            'error': _error_text(attempt),
+            'started': attempt.get('startTime'),
+            'ended': attempt.get('endTime'),
+        })
+    return views
+
+
 def build_execution_view(document, title):
     """Build the grid view model for a runbook execution status document."""
     root = _unwrap(document)
     dep_labels = dep_utils.build_dep_labels(root)
+    group_map = _entity_group_map(root)
     workstreams = []
     status_counts = {}
     for name, ws_id, steps in _iter_workstreams(root):
@@ -265,8 +377,18 @@ def build_execution_view(document, title):
                             if isinstance(e, dict)]
             entities = [
                 EntityProgress(
-                    e.get('displayName') or e.get('entityId') or e.get('name'),
-                    _entity_status(e))
+                    e.get('entity') or e.get('displayName')
+                    or e.get('entityId') or e.get('name'),
+                    _entity_status(e),
+                    status_reason=e.get('statusReason'),
+                    error=_error_text(e),
+                    total_attempts=(e.get('totalAttempts')
+                                    or len(e.get('attempts') or [])),
+                    attempts=_attempt_views(e.get('attempts')),
+                    tool_status=e.get('toolReportedMigrationStatus'),
+                    outputs=_output_map(e.get('outputs')),
+                    completed=str(_entity_status(e) or '').lower()
+                    in ENTITY_COMPLETED_STATES)
                 for e in entity_execs]
             rows.append(StepRow(
                 step_id=_step_id(step),
@@ -274,13 +396,54 @@ def build_execution_view(document, title):
                 deps=dep_utils.label_deps(step, dep_labels),
                 status=status,
                 workload_progress=_progress_text(step),
-                entities=entities))
+                entities=entities,
+                entity_groups=_step_groups(step, group_map),
+                status_reason=step.get('statusReason'),
+                error=_error_text(step),
+                retry_count=_failed_attempts(step),
+                attempts=_attempt_views(step.get('attempts')),
+                user_comment=step.get('userComment'),
+                outputs=_output_map(step.get('outputs')),
+                started=step.get('startTime'),
+                ended=step.get('endTime')))
         workstreams.append(Workstream(name, rows, ws_id))
 
+    summary = _execution_summary(root, status_counts)
+    meta = [('Data source', 'executionStatus.json')]
+    start_time = root.get('startTime')
+    if start_time:
+        meta.append(('Started', start_time))
+    last_updated = root.get('lastUpdatedTime')
+    if last_updated:
+        meta.append(('Last updated', last_updated))
+    return RunbookView(title, KIND_EXECUTION, workstreams, summary, meta=meta)
+
+
+# Service-provided step aggregate counts, in display order (label, key).
+_STEP_COUNT_FIELDS = (
+    ('Completed', 'stepsCompleted'),
+    ('In progress', 'stepsInProgress'),
+    ('Awaiting action', 'stepsAwaitingUserAction'),
+    ('Failed', 'stepsFailed'),
+    ('Not started', 'stepsNotStarted'),
+)
+
+
+def _execution_summary(root, status_counts):
+    """Build the summary cards for an execution.
+
+    Prefer the service-supplied top-level step aggregates
+    (``stepsCompleted`` etc.); only when the document carries none of them do
+    we fall back to counting the steps ourselves.
+    """
     summary = []
-    overall = root.get('state') or root.get('status')
+    overall = root.get('status') or root.get('state')
     if overall:
         summary.append(('State', overall))
-    summary.extend(sorted(status_counts.items()))
-    meta = [('Data source', 'status.json')]
-    return RunbookView(title, KIND_EXECUTION, workstreams, summary, meta=meta)
+    provided = [(label, root.get(key)) for label, key in _STEP_COUNT_FIELDS
+                if isinstance(root.get(key), int)]
+    if provided:
+        summary.extend(provided)
+    else:
+        summary.extend(sorted(status_counts.items()))
+    return summary
