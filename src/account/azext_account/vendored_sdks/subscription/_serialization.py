@@ -142,7 +142,7 @@ class RawDeserializer:
         """
         # Try to use content-type from headers if available
         content_type = None
-        if "content-type" in headers:
+        if headers and "content-type" in headers:
             content_type = headers["content-type"].split(";")[0].strip().lower()
         # Ouch, this server did not declare what it sent...
         # Let's guess it's JSON...
