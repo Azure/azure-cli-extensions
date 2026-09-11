@@ -9,3 +9,6 @@ def load_command_table(self, _):
 
     with self.command_group('functionapp devops-pipeline') as g:
         g.custom_command('create', 'create_devops_pipeline')
+
+    with self.command_group('functionapp scale config always-ready') as g:
+        g.custom_command('delete', 'delete_always_ready_settings')
