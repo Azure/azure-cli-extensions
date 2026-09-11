@@ -647,10 +647,13 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
         cmd = SimpleNamespace(cli_ctx=object())
 
-        for final_value, usage_value, expected_text in (
-                (24, 25, 'current workspace usage (25 minutes)'),
-                (25, 25.5, 'current workspace usage (25.5 minutes)'),
-                (101, 25, 'suite allocation (100 minutes)')):
+        for final_value, usage_value, expected_text, expected_command in (
+            (24, 25, 'below the 25 minutes the workspace has already used. Specify at least 25.',
+             'az quantum workspace quotas -g group -w workspace'),
+            (25, 25.5, 'below the 25.5 minutes the workspace has already used. Specify at least 25.5.',
+             'az quantum workspace quotas -g group -w workspace'),
+            (101, 25, 'above the 100 minutes allocated to the subscription. Specify at most 100.',
+             'az quantum suite-offer quotas --provider-id provider')):
             provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
                 target_id='provider.target', standard_minutes_lifetime=final_value
             )])
@@ -672,10 +675,12 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
                 quota_factory.return_value.list_workspace_usages.return_value = [usage]
 
-                with self.assertRaisesRegex(InvalidArgumentValueError, re.escape(expected_text)):
+                with self.assertRaises(InvalidArgumentValueError) as error:
                     _validate_target_quota_bounds(cmd, info, workspace, [{
                         'providerId': 'provider', 'targetId': 'provider.target'
                     }], include_usage=True)
+                self.assertIn(expected_text, str(error.exception))
+                self.assertIn(expected_command, str(error.exception))
 
     def test_target_quota_bounds_validate_high_priority_independently(self):
         provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
@@ -701,7 +706,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
             quota_factory.return_value.list_workspace_usages.return_value = [usage]
 
-            with self.assertRaisesRegex(InvalidArgumentValueError, 'final High allocation'):
+            with self.assertRaisesRegex(InvalidArgumentValueError, 'High allocation.*above the 20 minutes'):
                 _validate_target_quota_bounds(cmd, info, workspace, [{
                     'providerId': 'provider', 'targetId': 'provider.target'
                 }], include_usage=True)
@@ -734,7 +739,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                     }], include_usage=True)
                 quota_factory.assert_not_called()
 
-    def test_target_quota_bounds_treat_missing_suite_target_as_zero(self):
+    def test_target_quota_bounds_reject_missing_suite_target(self):
         provider = Provider(provider_id='provider', target_quotas=[TargetQuotaAllocations(
             target_id='provider.target', standard_minutes_lifetime=50
         )])
@@ -752,15 +757,13 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             with self.assertRaisesRegex(
                     InvalidArgumentValueError,
-                    r'suite allocation \(0 minutes\).*Set the target quota allocation at the subscription level first'):
+                    r"(?s)subscription has no allocation for that target.*"
+                    r"Allocate it at the subscription level first.*"
+                    r"az quantum suite-offer quotas --provider-id provider"):
                 _validate_target_quota_bounds(cmd, info, workspace, [{
                     'providerId': 'provider', 'targetId': 'provider.target'
                 }], include_usage=True)
-
-            provider.target_quotas[0].standard_minutes_lifetime = 0
-            _validate_target_quota_bounds(cmd, info, workspace, [{
-                'providerId': 'provider', 'targetId': 'provider.target'
-            }], include_usage=True)
+            quota_factory.assert_not_called()
 
     def test_target_quota_bounds_query_usage_once_per_provider(self):
         provider = Provider(provider_id='provider', target_quotas=[
@@ -1087,7 +1090,7 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         table = transform_workspace_quotas(quotas)
 
         self.assertEqual(list(table[0].keys()), [
-            'Dimension', 'Provider ID', 'Scope', 'Target', 'Limit', 'Utilization', 'Holds', 'Period'
+            'Scope', 'Provider ID', 'Target', 'Dimension', 'Limit', 'Utilization', 'Holds', 'Period'
         ])
         self.assertEqual(table[0]['Target'], '')
         self.assertEqual(table[0]['Limit'], 5.0)

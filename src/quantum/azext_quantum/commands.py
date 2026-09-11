@@ -118,7 +118,7 @@ def transform_suite_offers(suite_offers):
 
 
 def _quota_hours(minutes):
-    """Convert lifetime quota minutes to hours (2 dp), matching the Quantum studio UI."""
+    """Convert lifetime quota minutes to hours (2 dp)."""
     hours = 0 if minutes is None else minutes / 60
     return f"{hours:.2f}"
 
@@ -153,10 +153,10 @@ def transform_workspace_quotas(quotas):
             return result
 
         return OrderedDict([
-            ('Dimension', quota.get('dimension', '')),
-            ('Provider ID', quota.get('providerId', '')),
             ('Scope', quota.get('scope', '')),
+            ('Provider ID', quota.get('providerId', '')),
             ('Target', quota.get('targetId', '')),
+            ('Dimension', quota.get('dimension', '')),
             ('Limit', value('limit')),
             ('Utilization', value('utilization')),
             ('Holds', value('holds')),

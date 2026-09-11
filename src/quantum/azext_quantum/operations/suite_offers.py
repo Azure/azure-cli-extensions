@@ -11,9 +11,9 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoun
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_suite_offers, cf_suite_offers_data_plane, base_url_v2
+from .._client_factory import cf_suite_offers, cf_suite_offers_data_plane
 
-# Suite offer quota allocations are always reported at the per-target scope.
+# Scope used for target quota rows returned by this command.
 _SUITE_OFFER_QUOTA_SCOPE = "SubscriptionTarget"
 
 
@@ -33,11 +33,11 @@ def list_suite_offers(cmd):
 def suite_offer_quotas(cmd, provider_id):
     """
     Return the v2 quota allocations, merged with their consumed usages, for a suite offer
-    provider account in the current subscription.
+    in the current subscription.
     """
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    # 1. Control-plane: locate the suite offer for the requested provider account.
+    # 1. Control-plane: locate the suite offer for the requested provider.
     offers = cf_suite_offers(cmd.cli_ctx).list_by_subscription()
     offer = next(
         (o for o in offers
@@ -48,17 +48,16 @@ def suite_offer_quotas(cmd, provider_id):
     )
     if offer is None:
         raise InvalidArgumentValueError(
-            f"No suite offer was found for provider account '{provider_id}' in subscription '{subscription_id}'."
+            f"No suite offer was found for provider '{provider_id}' in subscription '{subscription_id}'."
         )
 
-    # 2. Data-plane (v2): fetch the consumed quota usages for that provider account.
-    endpoint = base_url_v2(offer.properties.location)
-    client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, endpoint)
+    # 2. Data-plane (v2): fetch the consumed quota usages for that provider.
+    client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, offer.properties.location)
     try:
         usages = client.list_quota_usages(subscription_id, provider_id)
     except AzureResourceNotFoundError as ex:
         raise ResourceNotFoundError(
-            f"No quota usages were found for provider account '{provider_id}'."
+            f"No quota usages were found for provider '{provider_id}'."
         ) from ex
 
     # 3. Merge allocations (limits) with usages (consumed).
@@ -67,7 +66,7 @@ def suite_offer_quotas(cmd, provider_id):
 
 def suite_offer_targets(cmd, provider_id):
     """
-    List the targets and their status available through a suite offer provider account,
+    List the targets and their status available through a suite offer,
     without requiring an Azure Quantum workspace.
     """
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -83,17 +82,16 @@ def suite_offer_targets(cmd, provider_id):
     )
     if offer is None:
         raise InvalidArgumentValueError(
-            f"No suite offer was found for provider account '{provider_id}' in subscription '{subscription_id}'."
+            f"No suite offer was found for provider '{provider_id}' in subscription '{subscription_id}'."
         )
 
-    # 2. Data-plane (v2): fetch the provider/target status for that provider account.
-    endpoint = base_url_v2(offer.properties.location)
-    client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, endpoint)
+    # 2. Data-plane (v2): fetch the provider and target status.
+    client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, offer.properties.location)
     try:
         status = client.get_provider_status(subscription_id, provider_id)
     except AzureResourceNotFoundError as ex:
         raise ResourceNotFoundError(
-            f"No target status was found for provider account '{provider_id}'."
+            f"No target status was found for provider '{provider_id}'."
         ) from ex
 
     # The endpoint returns a single provider; wrap it so the table transformer shared with
@@ -120,7 +118,7 @@ def _merge_suite_offer_quotas(offer, usages, provider_id):
     }
 
     rows = []
-    for target_quota in sorted(offer.properties.target_quotas or [], key=lambda q: q.target_id or ""):
+    for target_quota in offer.properties.target_quotas or []:
         usage = usage_by_target.get(target_quota.target_id)
         usage_values = usage.usage if usage is not None else None
 

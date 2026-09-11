@@ -28,7 +28,7 @@ from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
-from ..vendored_sdks.azure_quantum_python._client.models import DimensionScope, MeterPeriod, Priority
+from ..vendored_sdks.azure_quantum_python._client.models import DimensionScope, MeterPeriod
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 from knack.log import get_logger
@@ -318,13 +318,23 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
              if item.target_id is not None and item.target_id.lower() == target_id),
             None
         )
-        if suite_target is not None:
-            for priority, attribute in _TARGET_QUOTA_PRIORITIES:
-                if getattr(target_quota, attribute, None) is not None and getattr(suite_target, attribute, None) is None:
-                    raise InvalidArgumentValueError(
-                        f"Cannot validate the {priority} allocation for provider '{provider.provider_id}', target "
-                        f"'{target_quota.target_id}', because the suite offer has no {priority} allocation."
-                    )
+        for priority, attribute in _TARGET_QUOTA_PRIORITIES:
+            final_allocation = getattr(target_quota, attribute, None)
+            if final_allocation is None:
+                continue
+            if suite_target is None:
+                raise InvalidArgumentValueError(
+                    f"--quota requests {final_allocation} minutes of {priority} time for provider "
+                    f"'{provider.provider_id}', target '{target_quota.target_id}', but the subscription has no "
+                    "allocation for that target.\n"
+                    "Allocate it at the subscription level first, then retry. To see current allocations run:\n"
+                    f"\taz quantum suite-offer quotas --provider-id {provider.provider_id}"
+                )
+            if getattr(suite_target, attribute, None) is None:
+                raise InvalidArgumentValueError(
+                    f"Cannot validate the {priority} allocation for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}', because the suite offer has no {priority} allocation."
+                )
         suite_targets[(provider_id, target_id)] = suite_target
 
     usage_by_key = {}
@@ -352,19 +362,25 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
             final_allocation = getattr(target_quota, attribute, None)
             if final_allocation is None:
                 continue
-            suite_allocation = getattr(suite_target, attribute, 0)
+            suite_allocation = getattr(suite_target, attribute)
             current_usage = usage.get(_TARGET_QUOTA_USAGE_FIELDS[attribute]) if usage is not None else None
             current_usage = current_usage if current_usage is not None else 0
-            if final_allocation < current_usage or final_allocation > suite_allocation:
-                message = (
-                    f"The final {priority} allocation for provider '{provider.provider_id}', target "
-                    f"'{target_quota.target_id}' is {final_allocation} minutes. It must be between the current "
-                    f"workspace usage ({current_usage} minutes) and suite allocation ({suite_allocation} minutes), "
-                    "inclusive."
+            if final_allocation < current_usage:
+                raise InvalidArgumentValueError(
+                    f"--quota would set the {priority} allocation for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' to {final_allocation} minutes, below the {current_usage} minutes "
+                    f"the workspace has already used. Specify at least {current_usage}.\n"
+                    "To see current usage run:\n"
+                    f"\taz quantum workspace quotas -g {info.resource_group} -w {info.name}"
                 )
-                if suite_target is None:
-                    message += " Set the target quota allocation at the subscription level first."
-                raise InvalidArgumentValueError(message)
+            if final_allocation > suite_allocation:
+                raise InvalidArgumentValueError(
+                    f"--quota would set the {priority} allocation for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' to {final_allocation} minutes, above the {suite_allocation} minutes "
+                    f"allocated to the subscription. Specify at most {suite_allocation}.\n"
+                    "To see subscription allocations run:\n"
+                    f"\taz quantum suite-offer quotas --provider-id {provider.provider_id}"
+                )
 
 
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
@@ -582,8 +598,8 @@ def quotas(cmd, resource_group_name, workspace_name):
 _WORKSPACE_QUOTA_SCOPE = DimensionScope.WORKSPACE.value
 _WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
 _TARGET_QUOTA_DIMENSIONS = (
-    (f"{Priority.STANDARD.value}MinutesLifetime", "standard_minutes_lifetime"),
-    (f"{Priority.HIGH.value}MinutesLifetime", "high_minutes_lifetime"),
+    ("StandardMinutesLifetime", "standard_minutes_lifetime"),
+    ("HighMinutesLifetime", "high_minutes_lifetime"),
 )
 
 

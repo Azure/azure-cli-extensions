@@ -235,18 +235,18 @@ helps['quantum suite-offer list'] = """
 
 helps['quantum suite-offer quotas'] = """
     type: command
-    short-summary: View quota allocations and their consumed usages for a suite offer provider account in the current subscription.
+    short-summary: View quota allocations and their consumed usages for a suite offer in the current subscription.
     long-summary: |
-        Returns the v2 quota allocations (limits) for each target of the provider account together
+        Returns the v2 quota allocations (limits) for each target of the suite offer together
         with the consumed usages. Each entry reports the allocated and used standard and high priority
-        minutes over the lifetime of the provider account. Missing usage values are returned as 0.
+        minutes. Missing usage values are returned as 0.
     examples:
-      - name: View the quota usages for a suite offer provider account.
+      - name: View the quota usages for a suite offer.
         text: |-
-            az quantum suite-offer quotas --provider-id MyProviderAccount -o table
-      - name: View the raw quota usage details for a suite offer provider account.
+            az quantum suite-offer quotas --provider-id MyProvider -o table
+      - name: View the raw quota usage details for a suite offer.
         text: |-
-            az quantum suite-offer quotas -p MyProviderAccount
+            az quantum suite-offer quotas -p MyProvider
 """
 
 helps['quantum suite-offer target'] = """
@@ -258,17 +258,17 @@ helps['quantum suite-offer target list'] = """
     type: command
     short-summary: List the targets and their status available through a suite offer, without requiring a workspace.
     long-summary: |
-        Returns each target exposed by the suite offer provider account together with its current
+        Returns each target exposed by the suite offer together with its current
         availability and overall average queue time. Standard- and High-priority average queue times
         are also returned when supplied by the provider. Data is resolved directly from the data plane
         without requiring an Azure Quantum workspace.
     examples:
       - name: List the targets available in a suite offer.
         text: |-
-            az quantum suite-offer target list --provider-id MyProviderAccount -o table
-      - name: List the raw target status details for a suite offer provider account.
+            az quantum suite-offer target list --provider-id MyProvider -o table
+      - name: List the raw target status details for a suite offer.
         text: |-
-            az quantum suite-offer target list -p MyProviderAccount
+            az quantum suite-offer target list -p MyProvider
 """
 
 helps['quantum offerings'] = """
@@ -365,7 +365,7 @@ helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
     long-summary: >-
-        Target quota values are absolute. For V2 workspaces, each final Standard and High allocation is validated
+        Target quota values are absolute. For V2 workspaces, each requested Standard and High allocation is validated
         against the provider's suite target allocation before the workspace is created.
     examples:
       - name: Create a new Azure Quantum workspace with the providers that offer free credit.
@@ -446,7 +446,7 @@ helps['quantum workspace update'] = """
     type: command
     short-summary: Update the given (or current) Azure Quantum workspace.
     long-summary: >-
-        Target quota values are absolute. Each final Standard and High allocation is validated against the current
+        Target quota values are absolute. Each requested Standard and High allocation is validated against the current
         workspace target usage and provider's suite target allocation, with equality allowed at both boundaries.
         Priority values omitted from an existing target allocation are preserved and validated.
     examples:

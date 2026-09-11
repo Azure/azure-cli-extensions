@@ -4,11 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from azure.cli.testsdk.scenario_tests import live_only
 from azure.cli.testsdk import ScenarioTest
 
 from ...commands import transform_suite_offers, transform_suite_offer_quotas, transform_suite_offer_targets
+from ... import _client_factory
 from ..._client_factory import base_url_v2
 from ...operations.suite_offers import _merge_suite_offer_quotas
 from ...vendored_sdks.azure_quantum_python._client.models import QuotaUsage, ProviderStatus, Usage
@@ -113,6 +115,21 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
 
     def test_base_url_v2(self):
         self.assertEqual(base_url_v2('East US'), 'https://eastus-v2.quantum.azure.com/')
+
+        with patch.dict('os.environ', {'AZURE_QUANTUM_ENV': 'canary'}, clear=True):
+            self.assertEqual(base_url_v2('West US'), 'https://westus-v2.quantum.azure.com/')
+
+    def test_suite_offers_data_plane_factory_builds_endpoint_from_location(self):
+        suite_offers = object()
+        client = SimpleNamespace(services=SimpleNamespace(suite_offers=suite_offers))
+        cli_ctx = object()
+
+        with patch.object(_client_factory, 'cf_quantum', return_value=client) as quantum_factory:
+            result = _client_factory.cf_suite_offers_data_plane(cli_ctx, 'sub', 'East US')
+
+        self.assertIs(result, suite_offers)
+        quantum_factory.assert_called_once_with(
+            cli_ctx, 'sub', None, None, 'https://eastus-v2.quantum.azure.com/')
 
     def test_build_suite_offers_list_quota_usages_request(self):
         request = build_services_suite_offers_list_quota_usages_request(
@@ -317,6 +334,16 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(row['targetId'], 'ionq.qpu')
         self.assertEqual(row['allocation'], {'standardMinutesLifetime': 30, 'highMinutesLifetime': 15})
         self.assertEqual(row['usage'], {'standardMinutesLifetime': 5, 'highMinutesLifetime': 2})
+
+    def test_merge_quotas_preserves_backend_allocation_order(self):
+        offer = _offer(target_quotas=[
+            _allocation(standard=30, high=15, target_id='ionq.z-target'),
+            _allocation(standard=20, high=10, target_id='ionq.a-target'),
+        ])
+
+        rows = _merge_suite_offer_quotas(offer, [], 'ionq')
+
+        self.assertEqual([row['targetId'] for row in rows], ['ionq.z-target', 'ionq.a-target'])
 
     def test_merge_quotas_target_without_usage(self):
         offer = _offer(

@@ -5,15 +5,15 @@ Release History
 
 1.0.0b27
 ++++++++++++++
-* Added the ``az quantum suite-offer target list`` command to list the targets, availability, and overall, Standard, and High average queue times available through a suite offer provider account, without requiring a workspace.
+* Added the ``az quantum suite-offer target list`` command to list the targets, availability, and overall, Standard, and High average queue times available through a suite offer, without requiring a workspace.
 * Removed the redundant provider column from the ``az quantum suite-offer target list`` table output.
 * Updated ``az quantum suite-offer quotas`` to return ``0`` for missing Standard and High usage values.
 * Updated the ``az quantum workspace quotas`` command to include v2 target quota allocations and usages while preserving the existing response format for v1 providers.
-* Added always-on validation for V2 workspace target quota allocations on create and update, allowing final Standard and High values between current workspace usage and suite target allocation, inclusive.
+* Added always-on validation for V2 workspace target quota allocations on create and update, allowing requested Standard and High values between current workspace usage and suite target allocation, inclusive.
 
 1.0.0b26
 ++++++++++++++
-* Added the ``az quantum suite-offer quotas`` command to view quota allocations merged with their consumed usages for a suite offer provider account in the subscription.
+* Added the ``az quantum suite-offer quotas`` command to view quota allocations merged with their consumed usages for a suite offer in the subscription.
 
 1.0.0b25
 ++++++++++++++
