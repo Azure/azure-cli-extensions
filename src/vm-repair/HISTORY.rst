@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.4.2
+++++++
+Adding examples to ``az vm repair run -h`` for checking whether Windows and Linux guests are ready to boot from an NVMe controller. Both examples run the corresponding read-only readiness detector on the linked repair VM.
+
 2.4.1
 ++++++
 Adding resource-shape dimensions to ``vm repair`` telemetry: operating system family, VM size, source and repair VM disk controller type, and Hyper-V generation. Until now the telemetry recorded which command ran and whether it succeeded, but nothing about the shape of the VM it ran against, so it was not possible to tell how often repairs run against NVMe-attached disks or whether the repair VM controller selection added in 2.3.1 changes anything in practice. The new dimensions are resource shape only; no resource names or customer content are recorded by them.
