@@ -170,6 +170,7 @@ Helm_Timeout_ImagePull_Fault_Type = "helm-timeout-image-pull-failure"
 Helm_Timeout_PendingOrUnschedulable_Fault_Type = "helm-timeout-pending-or-unschedulable"
 Helm_Timeout_ClusterIdentity_Fault_Type = "helm-timeout-cluster-identity-error"
 Helm_Timeout_Generic_Fault_Type = "helm-timeout-error"
+Helm_Client_Error_Type = "helm-client-error"
 Install_Prediagnostics_Fault_Type = "prediagnostics-failure"
 Install_Prediagnostics_Job_Execution_Error_Fault_Type = (
     "prediagnostics-job-execution-error"

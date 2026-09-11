@@ -520,7 +520,7 @@ def build_connected_cluster_arm_id(
 
 
 def set_connected_cluster_arm_id_telemetry_context(
-    cmd: Any,
+    cmd: CLICommand,
     resource_group_name: str,
     cluster_name: str,
     subscription_id: str | None = None,
@@ -535,7 +535,7 @@ def set_connected_cluster_arm_id_telemetry_context(
 
 
 def add_connectedk8s_telemetry_event(
-    cmd: Any | None, properties: dict[str, Any]
+    cmd: CLICommand | None, properties: dict[str, Any]
 ) -> None:
     event_properties = properties.copy()
     if cmd is not None:
@@ -549,8 +549,8 @@ def add_connectedk8s_telemetry_event(
     telemetry.add_extension_event("connectedk8s", event_properties)
 
 
-def report_connectedk8s_error(
-    cmd: Any | None,
+def report_connectedk8s_diagnostic(
+    cmd: CLICommand | None,
     error: errors.ArcError,
     *,
     exception: BaseException | None = None,
@@ -558,16 +558,17 @@ def report_connectedk8s_error(
     telemetry_properties: dict[str, Any] | None = None,
     fault_type: str | None = None,
     **context: object,
-) -> AzCLIError:
-    """Report one standardized error to telemetry and return its console exception."""
+) -> str:
+    """Report one standardized diagnostic to telemetry without raising it."""
     message = error.format(**context)
+    telemetry_message = message.replace("'", "")
     properties = (telemetry_properties or {}).copy()
     properties.update(
         {
             consts.Telemetry_Error_Code_Key: error.code,
             consts.Telemetry_Error_Fault_Type_Key: fault_type or error.fault_type,
             consts.Telemetry_Error_Name_Key: error.name,
-            consts.Telemetry_Error_Message_Key: message,
+            consts.Telemetry_Error_Message_Key: telemetry_message,
         }
     )
     if error.tsg_link:
@@ -579,12 +580,37 @@ def report_connectedk8s_error(
     telemetry.set_exception(
         exception=exception if exception is not None else Exception(message),
         fault_type=fault_type or error.fault_type,
-        summary=message,
+        summary=telemetry_message,
+    )
+    return message
+
+
+def report_connectedk8s_error(
+    cmd: CLICommand | None,
+    error: errors.ArcError,
+    *,
+    exception: BaseException | None = None,
+    user_fault: bool = False,
+    telemetry_properties: dict[str, Any] | None = None,
+    fault_type: str | None = None,
+    **context: object,
+) -> AzCLIError:
+    """Report one standardized error to telemetry and return its console exception."""
+    report_connectedk8s_diagnostic(
+        cmd,
+        error,
+        exception=exception,
+        user_fault=user_fault,
+        telemetry_properties=telemetry_properties,
+        fault_type=fault_type,
+        **context,
     )
     return error.as_error(**context)
 
 
-def report_helm_timeout_error(cmd: Any | None, report: HelmTimeoutReport) -> AzCLIError:
+def report_helm_timeout_error(
+    cmd: CLICommand | None, report: HelmTimeoutReport
+) -> AzCLIError:
     """Report and build the console exception for a classified Helm timeout."""
     message = report.error.format(details=report.details)
     telemetry_properties = report.telemetry_properties.copy()
@@ -740,6 +766,7 @@ def get_chart_path(
     chart_folder_name: str = "AzureArcCharts",
     chart_name: str = "azure-arc-k8sagents",
     new_path: bool = True,
+    cmd: CLICommand | None = None,
 ) -> str:
     print(f"Step: {get_utctimestring()}: Determine Helmchart Export Path")
     # Exporting Helm chart
@@ -765,6 +792,7 @@ def get_chart_path(
         helm_client_location,
         new_path,
         chart_name,
+        cmd=cmd,
     )
 
     # Returning helm chart path
@@ -773,6 +801,15 @@ def get_chart_path(
         chart_path = helm_chart_path
     else:
         chart_path = os.getenv("HELMCHART", helm_chart_path)
+
+    if not os.path.isdir(chart_path):
+        details = f"Expected exported chart directory was not found: {chart_path}"
+        raise report_connectedk8s_error(
+            cmd,
+            errors.HELM_CHART_EXPORT_FAILED,
+            exception=FileNotFoundError(details),
+            details=details,
+        )
 
     return chart_path
 
@@ -787,6 +824,7 @@ def pull_helm_chart(
     chart_name: str = "azure-arc-k8sagents",
     retry_count: int = 5,
     retry_delay: int = 3,
+    cmd: CLICommand | None = None,
 ) -> None:
     chart_url = registry_path.split(":")[0]
     chart_version = registry_path.split(":")[1]
@@ -836,16 +874,18 @@ def pull_helm_chart(
         )
         _, error_helm_chart_pull = response_helm_chart_pull.communicate()
         if response_helm_chart_pull.returncode != 0:
-            error = error_helm_chart_pull.decode("ascii")
             if i == retry_count - 1:
-                telemetry.set_exception(
-                    exception=Exception(error),
-                    fault_type=consts.Pull_HelmChart_Fault_Type,
-                    summary=f"Unable to pull {chart_name} helm charts from the registry",
+                error = process_helm_error_detail(
+                    error_helm_chart_pull.decode("ascii", errors="replace")
                 )
-                raise CLIInternalError(
-                    f"Unable to pull {chart_name} helm chart from the registry"
-                    f" '{registry_path}': {error}"
+                raise report_connectedk8s_error(
+                    cmd,
+                    errors.HELM_CHART_PULL_FAILED,
+                    exception=Exception(error),
+                    details=(
+                        f"Unable to pull {chart_name} from registry "
+                        f"'{registry_path}': {error}"
+                    ),
                 )
             time.sleep(retry_delay)
         else:
@@ -1052,7 +1092,7 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
     storage_space_available: bool,
     diagnoser_output: list[str],
     outbound_connectivity_check_for: str = "pre-onboarding-inspector",
-    cmd: Any | None = None,
+    cmd: CLICommand | None = None,
 ) -> tuple[str, bool]:
     try:
         if outbound_connectivity_check_for == "pre-onboarding-inspector":
@@ -1414,7 +1454,10 @@ def create_folder_diagnosticlogs(time_stamp: str, folder_name: str) -> tuple[str
 
 
 def add_helm_repo(
-    kube_config: str | None, kube_context: str | None, helm_client_location: str
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    cmd: CLICommand | None = None,
 ) -> None:
     print(f"Step: {get_utctimestring()}: Adding Helm Repo")
     repo_name = os.environ["HELMREPONAME"]
@@ -1427,13 +1470,16 @@ def add_helm_repo(
     response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
     _, error_helm_repo = response_helm_repo.communicate()
     if response_helm_repo.returncode != 0:
-        error = error_helm_repo.decode("ascii")
-        telemetry.set_exception(
-            exception=Exception(error),
-            fault_type=consts.Add_HelmRepo_Fault_Type,
-            summary="Failed to add helm repository",
+        error = process_helm_error_detail(
+            error_helm_repo.decode("ascii", errors="replace")
         )
-        raise CLIInternalError(f"Unable to add repository {repo_url} to helm: {error}")
+        details = f"Helm repository could not be added: {error}"
+        raise report_connectedk8s_error(
+            cmd,
+            errors.HELM_REPO_ADD_FAILED,
+            exception=Exception(details),
+            details=details,
+        )
 
 
 def get_helm_registry(
@@ -1858,6 +1904,7 @@ def delete_arc_agents(
     helm_client_location: str,
     is_arm64_cluster: bool = False,
     no_hooks: bool = False,
+    cmd: CLICommand | None = None,
 ) -> None:
     print(f"Step: {get_utctimestring()}: Uninstalling Arc Agents' Helm release")
     if no_hooks:
@@ -1886,25 +1933,24 @@ def delete_arc_agents(
     response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
     _, error_helm_delete = response_helm_delete.communicate()
     if response_helm_delete.returncode != 0:
-        if (
-            "forbidden" in error_helm_delete.decode("ascii")
-            or "Error: warning: Hook pre-delete" in error_helm_delete.decode("ascii")
-            or "Error: timed out waiting for the condition"
-            in error_helm_delete.decode("ascii")
-        ):
-            telemetry.set_user_fault()
-        telemetry.set_exception(
-            exception=Exception(error_helm_delete.decode("ascii")),
-            fault_type=consts.Delete_HelmRelease_Fault_Type,
-            summary="Unable to delete helm release",
+        error = process_helm_error_detail(
+            error_helm_delete.decode("ascii", errors="replace")
         )
-        err_msg = (
-            "Error occured while cleaning up arc agents. Helm release deletion failed: "
-            + error_helm_delete.decode("ascii")
-            + f" Please run 'helm delete azure-arc --namespace {release_namespace}' to ensure that "
-            "the release is deleted."
+        user_fault = bool(
+            "forbidden" in error
+            or "Error: warning: Hook pre-delete" in error
+            or "Error: timed out waiting for the condition" in error
         )
-        raise CLIInternalError(err_msg)
+        raise report_connectedk8s_error(
+            cmd,
+            errors.HELM_RELEASE_DELETE_FAILED,
+            exception=Exception(error),
+            user_fault=user_fault,
+            details=(
+                f"{error} Run 'helm delete azure-arc --namespace "
+                f"{release_namespace}' to ensure the release is deleted."
+            ),
+        )
     ensure_namespace_cleanup()
     # Cleanup azure-arc-release NS if present (created during helm installation)
     cleanup_release_install_namespace_if_exists()
@@ -2164,7 +2210,7 @@ def helm_install_release(
     aad_identity_principal_id: str | None,
     onboarding_timeout: str = consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
     inject_private_key_via_helm: bool = True,
-    cmd: Any | None = None,
+    cmd: CLICommand | None = None,
 ) -> None:
     cmd_helm_install = [
         helm_client_location,
@@ -2287,7 +2333,9 @@ def helm_install_release(
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        helm_install_error_message = error_helm_install.decode("ascii")
+        helm_install_error_message = error_helm_install.decode(
+            "ascii", errors="replace"
+        )
         helm_install_error_message = process_helm_error_detail(
             helm_install_error_message
         )
@@ -2387,11 +2435,63 @@ def get_helm_major_version(helm_client_location: str) -> int:
     return 3  # assume Helm 3 if we cannot determine version
 
 
+def validate_helm_client(cmd: CLICommand, helm_client_location: str) -> None:
+    try:
+        response = Popen(
+            [helm_client_location, "version", "--short"],
+            stdout=PIPE,
+            stderr=PIPE,
+        )
+        output, error = response.communicate()
+    except OSError as ex:
+        raise report_connectedk8s_error(
+            cmd,
+            errors.HELM_CLIENT_ERROR,
+            exception=ex,
+            user_fault=True,
+            details=(
+                f"Helm client '{helm_client_location}' could not be executed: {ex}"
+            ),
+        ) from ex
+
+    if response.returncode != 0:
+        details = process_helm_error_detail(error.decode("ascii", errors="replace"))
+        logger.debug(
+            "Unable to validate Helm client %s; continuing so the requested Helm "
+            "operation can provide the authoritative failure: %s",
+            helm_client_location,
+            details,
+        )
+        return
+
+    version_output = output.decode("ascii", errors="replace").strip()
+    major_version_match = re.search(r"v?(\d+)\.", version_output)
+    if not major_version_match:
+        logger.debug(
+            "Unable to determine the Helm major version from %r; continuing so the "
+            "requested Helm operation can diagnose compatibility",
+            version_output,
+        )
+        return
+    if int(major_version_match.group(1)) < 3:
+        raise report_connectedk8s_error(
+            cmd,
+            errors.HELM_VERSION_TOO_OLD,
+            exception=Exception(version_output),
+            user_fault=True,
+            details=(
+                f"Detected Helm version '{version_output}'. Helm version 3 or later "
+                "is required."
+            ),
+        )
+
+
 def get_release_namespace(
     kube_config: str | None,
     kube_context: str | None,
     helm_client_location: str,
     release_name: str = "azure-arc",
+    cmd: CLICommand | None = None,
 ) -> str | None:
     print(f"Step: {get_utctimestring()}: Get namespace of release: {release_name}")
     cmd_helm_release = [
@@ -2412,18 +2512,20 @@ def get_release_namespace(
     response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
     output_helm_release, error_helm_release = response_helm_release.communicate()
     if response_helm_release.returncode != 0:
-        error = error_helm_release.decode("ascii")
-        if "forbidden" in error or "Kubernetes cluster unreachable" in error:
-            telemetry.set_user_fault()
-
-        telemetry.set_exception(
-            exception=Exception(error),
-            fault_type=consts.List_HelmRelease_Fault_Type,
-            summary="Unable to list helm release",
+        error = process_helm_error_detail(
+            error_helm_release.decode("ascii", errors="replace")
         )
-        raise CLIInternalError(f"Helm list release failed: {error}")
+        raise report_connectedk8s_error(
+            cmd,
+            errors.HELM_RELEASE_LIST_FAILED,
+            exception=Exception(error),
+            user_fault=(
+                "forbidden" in error or "Kubernetes cluster unreachable" in error
+            ),
+            details=error,
+        )
 
-    output_helm_release_str = output_helm_release.decode("ascii")
+    output_helm_release_str = output_helm_release.decode("ascii", errors="replace")
     try:
         output_helm_release_dict = json.loads(output_helm_release_str)
     except json.decoder.JSONDecodeError:
@@ -2678,7 +2780,7 @@ def helm_update_agent(
     cluster_name: str,
     release_namespace: str,
     chart_path: str,
-    cmd: Any | None = None,
+    cmd: CLICommand | None = None,
 ) -> None:
     cmd_helm_values = [
         helm_client_location,
@@ -2703,7 +2805,9 @@ def helm_update_agent(
         _, error_helm_get_values = response_helm_values_get.communicate()
 
     if response_helm_values_get.returncode != 0:
-        error = error_helm_get_values.decode("ascii")
+        error = process_helm_error_detail(
+            error_helm_get_values.decode("ascii", errors="replace")
+        )
         if "forbidden" in error or "timed out waiting for the condition" in error:
             raise report_connectedk8s_error(
                 cmd,
@@ -2738,7 +2842,7 @@ def helm_update_agent(
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
         helm_upgrade_error_message = process_helm_error_detail(
-            error_helm_upgrade.decode("ascii")
+            error_helm_upgrade.decode("ascii", errors="replace")
         )
         timeout_report = build_helm_timeout_report(
             helm_upgrade_error_message, helm_operation="update"

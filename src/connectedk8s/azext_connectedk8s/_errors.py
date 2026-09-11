@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
+    ClientRequestError,
     CLIInternalError,
     FileOperationError,
     InvalidArgumentValueError,
@@ -432,6 +433,7 @@ RELEASE_NAMESPACE_NOT_FOUND = _define(
     name="ReleaseNamespaceNotFound",
     description="The azure-arc Helm release namespace was not found.",
     fault_type=consts.Release_Namespace_Not_Found_Fault_Type,
+    az_error_cls=ClientRequestError,
 )
 HELM_VALUES_GET_FAILED = _define(
     code="AZK8S0509",
@@ -478,6 +480,12 @@ HELM_TIMEOUT_GENERIC = _define(
         "onboarding or inspect the 'azure-arc' namespace for pods that are not ready."
     ),
     fault_type=consts.Helm_Timeout_Generic_Fault_Type,
+)
+HELM_CLIENT_ERROR = _define(
+    code="AZK8S0515",
+    name="HelmClientError",
+    description="The Helm client failed to execute.",
+    fault_type=consts.Helm_Client_Error_Type,
 )
 
 # Pre-onboarding Diagnostics (AZK8S0600-AZK8S0699)
@@ -660,6 +668,7 @@ ALL_ERRORS: tuple[ArcError, ...] = (
     HELM_TIMEOUT_PENDING_OR_UNSCHEDULABLE,
     HELM_TIMEOUT_IMAGE_PULL_FAILED,
     HELM_TIMEOUT_GENERIC,
+    HELM_CLIENT_ERROR,
     PREDIAGNOSTICS_FAILED,
     PREDIAGNOSTICS_JOB_EXECUTION_FAILED,
     POST_DIAGNOSTIC_PRECHECK_FAILED,

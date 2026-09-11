@@ -33,7 +33,9 @@ from subprocess import PIPE, Popen
 from typing import TYPE_CHECKING, Any
 
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.azclierror import (
+    AzCLIError,
+)
 from knack.log import get_logger
 from kubernetes import config, watch
 
@@ -657,7 +659,11 @@ def executing_cluster_diagnostic_checks_job(
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
     release_namespace = azext_utils.get_release_namespace(
-        kube_config, kube_context, helm_client_location, "cluster-diagnostic-checks"
+        kube_config,
+        kube_context,
+        helm_client_location,
+        "cluster-diagnostic-checks",
+        cmd=cmd,
     )
     cmd_helm_delete = [
         helm_client_location,
@@ -725,6 +731,7 @@ def executing_cluster_diagnostic_checks_job(
             consts.Pre_Onboarding_Helm_Charts_Folder_Name,
             consts.Pre_Onboarding_Helm_Charts_Release_Name,
             False,
+            cmd,
         )
 
         logger.debug(
@@ -1055,16 +1062,16 @@ def helm_install_release_cluster_diagnostic_checks(
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        error = error_helm_install.decode("ascii")
+        error = error_helm_install.decode("ascii", errors="replace")
         error = azext_utils.process_helm_error_detail(error)
-        user_fault = (
-            "forbidden" in error or "timed out waiting for the condition" in error
-        )
+
         raise azext_utils.report_connectedk8s_error(
             cmd,
             errors.PREDIAGNOSTICS_HELM_INSTALL_FAILED,
             exception=Exception(error),
-            user_fault=user_fault,
+            user_fault=(
+                "forbidden" in error or "timed out waiting for the condition" in error
+            ),
             details=error,
         )
 
