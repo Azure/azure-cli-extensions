@@ -1,0 +1,31 @@
+[
+  {
+    "name": "per-project-monthly",
+    "counterKey": [
+      {
+        "type": "project"
+      }
+    ],
+    "unit": "usd",
+    "amount": 500,
+    "period": "month",
+    "recurring": true,
+    "match": {
+      "foundryProjectId": [
+        "project-456"
+      ]
+    },
+    "thresholds": [
+      {
+        "type": "percentage",
+        "value": 90,
+        "action": "alert"
+      },
+      {
+        "type": "absolute",
+        "value": 500,
+        "action": "audit"
+      }
+    ]
+  }
+]
