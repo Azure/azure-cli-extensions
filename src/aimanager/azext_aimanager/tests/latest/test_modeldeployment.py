@@ -11,6 +11,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core import MatchConditions
 
 from azext_aimanager import custom
+from azext_aimanager._params import load_arguments
 from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
 
 
@@ -39,6 +40,40 @@ class TestModelDeployment(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             custom._construct_scaling_profile(
                 self.cmd, max_replicas=3, required=True)
+
+    def test_namespace_name_supports_short_alias(self):
+        class ArgumentContext:
+            def __init__(self, loader, command):
+                self.loader = loader
+                self.command = command
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                return False
+
+            def argument(self, name, *args, **kwargs):
+                self.loader.arguments.setdefault(self.command, {})[name] = kwargs
+
+            def ignore(self, *_):
+                pass
+
+        class Loader:
+            def __init__(self):
+                self.arguments = {}
+                self.cli_ctx = MagicMock()
+
+            def argument_context(self, command, **kwargs):
+                return ArgumentContext(self, command)
+
+        loader = Loader()
+        load_arguments(loader, None)
+
+        namespace_argument = loader.arguments[
+            "aimanager namespace modeldeployment"]["namespace_name"]
+        self.assertEqual(
+            ["--namespace-name", "--ns"], namespace_argument["options_list"])
 
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
