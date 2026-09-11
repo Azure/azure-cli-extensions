@@ -7,6 +7,11 @@
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 from azure.cli.core.commands.parameters import get_three_state_flag
 
+from ._validators import (
+    validate_dotnet_ten_linux_fx_version_for_config_set,
+    validate_dotnet_ten_runtime_for_create
+)
+
 
 def load_arguments(self, _):
     # pylint: disable=line-too-long
@@ -29,3 +34,9 @@ def load_arguments(self, _):
                    required=False)
         c.argument('github_repository', help="Fullname of your Github repository (e.g. Azure/azure-cli)",
                    required=False)
+
+    with self.argument_context('functionapp config set') as c:
+        c.argument('linux_fx_version', validator=validate_dotnet_ten_linux_fx_version_for_config_set)
+
+    with self.argument_context('functionapp create') as c:
+        c.argument('runtime_version', validator=validate_dotnet_ten_runtime_for_create)
