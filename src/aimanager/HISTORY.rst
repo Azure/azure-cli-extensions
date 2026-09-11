@@ -13,8 +13,13 @@ Release History
   with ``Namespace``, ``Name``, ``ProvisioningState``, ``Replicas`` (current/desired),
   ``Age``, ``ModelId`` (human-readable, resolved from the model) and ``Endpoint`` columns.
 
+1.5.2b2
++++++++
+* ``az aimanager namespace modeldeployment``: Accept ``--ns`` as an alias of
+  ``--namespace-name``.
+
 1.5.2b1
-++++++
++++++++
 * Refactor validation code to make the name validators consistent
 
 1.5.1

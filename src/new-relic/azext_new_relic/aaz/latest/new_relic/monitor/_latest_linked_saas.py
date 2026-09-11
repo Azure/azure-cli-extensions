@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor vm-host-payload",
+    "new-relic monitor latest-linked-saas",
 )
-class VmHostPayload(AAZCommand):
-    """Returns the payload that needs to be passed in the request body for installing the New Relic agent on a VM, providing the necessary configuration details.
+class LatestLinkedSaas(AAZCommand):
+    """Returns the latest SaaS linked to the newrelic organization of the underlying monitor.
 
-    :example: Get MonitorsVmHostPayload.
-        az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
+    :example: Get the latest SaaS resource linked to a New Relic monitor
+        az new-relic monitor latest-linked-saas --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
         "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/vmhostpayloads", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/latestlinkedsaas", "2026-06-01"],
         ]
     }
 
@@ -46,7 +46,7 @@ class VmHostPayload(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
-            help="Name of the Monitoring resource",
+            help="Name of the Monitors resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -54,14 +54,13 @@ class VmHostPayload(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group", "-g"],
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsVmHostPayload(ctx=self.ctx)()
+        self.MonitorsLatestLinkedSaaS(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +75,7 @@ class VmHostPayload(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsVmHostPayload(AAZHttpOperation):
+    class MonitorsLatestLinkedSaaS(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +89,7 @@ class VmHostPayload(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/vmHostPayloads",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/latestLinkedSaaS",
                 **self.url_parameters
             )
 
@@ -157,15 +156,18 @@ class VmHostPayload(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
+            _schema_on_200.is_hidden_saa_s = AAZBoolType(
+                serialized_name="isHiddenSaaS",
+            )
+            _schema_on_200.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
             )
 
             return cls._schema_on_200
 
 
-class _VmHostPayloadHelper:
-    """Helper class for VmHostPayload"""
+class _LatestLinkedSaasHelper:
+    """Helper class for LatestLinkedSaas"""
 
 
-__all__ = ["VmHostPayload"]
+__all__ = ["LatestLinkedSaas"]

@@ -59,6 +59,55 @@ from .repair_utils import (
 logger = get_logger(__name__)
 
 
+def _set_source_resource_context(command, source_vm, source_vm_instance_view=None, disk_controller_type=None):
+    """Populate telemetry-only resource shape without allowing enrichment to fail a command."""
+    source_controller = disk_controller_type
+    if source_controller is None:
+        try:
+            # Shared helper falls back to an ARM query when the SDK does not model the field.
+            source_controller = _fetch_source_disk_controller_type(source_vm)
+        except Exception as exception:
+            logger.debug('Could not determine source VM disk controller type for telemetry: %s', exception)
+
+    hyperv_generation = None
+    if source_vm_instance_view:
+        try:
+            hyperv_generation = 'V{}'.format(_is_gen2(source_vm_instance_view))
+        except (AttributeError, TypeError, ValueError) as exception:
+            logger.debug('Could not determine source VM Hyper-V generation for telemetry: %s', exception)
+
+    if hasattr(command, 'set_resource_context'):
+        hardware_profile = getattr(source_vm, 'hardware_profile', None)
+        command.set_resource_context(
+            os_family='linux' if _is_linux_os(source_vm) else 'windows',
+            vm_size=getattr(hardware_profile, 'vm_size', None),
+            disk_controller_type=source_controller,
+            hyperv_generation=hyperv_generation)
+    return source_controller
+
+
+def _enrich_source_resource_context(command, cmd, source_vm, resource_group_name, vm_name):
+    """Add instance-view telemetry when available without changing command success or failure."""
+    try:
+        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+    except Exception as exception:
+        logger.debug('Could not fetch source VM instance view for telemetry: %s', exception)
+        source_vm_instance_view = None
+    _set_source_resource_context(command, source_vm, source_vm_instance_view)
+
+
+def _enrich_repair_controller_context(command, cmd, resource_group_name, vm_name):
+    """Add the actual repair VM controller when available without changing command behavior."""
+    if not hasattr(command, 'set_resource_context'):
+        return
+    try:
+        repair_vm = get_vm(cmd, resource_group_name, vm_name)
+        repair_controller = _fetch_source_disk_controller_type(repair_vm)
+        command.set_resource_context(repair_vm_disk_controller_type=repair_controller)
+    except Exception as exception:
+        logger.debug('Could not fetch repair VM disk controller type for telemetry: %s', exception)
+
+
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, disk_controller_type=None, yes=False):
     """
     This function creates a repair VM.
@@ -114,6 +163,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Checking if the OS of the source VM is Linux and what the Hyper-V generation is.
         is_linux = _is_linux_os(source_vm)
         vm_hypervgen = _is_gen2(source_vm_instance_view)
+        source_controller = _fetch_source_disk_controller_type(source_vm)
+        _set_source_resource_context(command, source_vm, source_vm_instance_view,
+                                     disk_controller_type=source_controller)
 
         # Fetching the name of the OS disk and checking if it's managed.
         target_disk_name = source_vm.storage_profile.os_disk.name
@@ -232,15 +284,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Adding the size to the command.
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
-        source_controller = None if disk_controller_type else _fetch_source_disk_controller_type(source_vm)
         supported_controllers = []
-        if source_controller and str(source_controller).lower() == 'nvme':
+        if not disk_controller_type and source_controller and str(source_controller).lower() == 'nvme':
             supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
         selected_controller, level, message = _select_repair_disk_controller_type(
             source_controller, supported_controllers, disk_controller_type)
         getattr(logger, level)(message)
         if selected_controller:
             create_repair_vm_command += ' --disk-controller-type {controller}'.format(controller=selected_controller)
+        if hasattr(command, 'set_resource_context'):
+            command.set_resource_context(repair_vm_disk_controller_type=selected_controller)
 
         # Setting the availability zone for the repair VM.
         # If the source VM has availability zones, the first one is chosen for the repair VM.
@@ -521,12 +574,16 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     try:
         # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)  # Fetch the source VM data
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)  # Check if the source VM uses managed disks
         if repair_vm_id:
             logger.info('Repair VM ID: %s', repair_vm_id)
             repair_vm_id = parse_resource_id(repair_vm_id)  # Parse the repair VM ID
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
+            _enrich_repair_controller_context(
+                command, cmd, repair_resource_group, repair_vm_name)
 
             # For MANAGED DISK
             if is_managed:
@@ -634,6 +691,8 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
         # Determine the OS of the source VM
         is_linux = _is_linux_os(source_vm)
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
 
         # Choose the appropriate script based on the OS of the source VM
         if is_linux:
@@ -646,9 +705,14 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             repair_vm_id = parse_resource_id(repair_vm_id)
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
+            _enrich_repair_controller_context(
+                command, cmd, repair_resource_group, repair_vm_name)
         else:
             repair_vm_name = vm_name
             repair_resource_group = resource_group_name
+            if hasattr(command, 'set_resource_context'):
+                command.set_resource_context(
+                    repair_vm_disk_controller_type=command.disk_controller_type)
 
         run_command_params = []
         additional_scripts = []
@@ -1010,6 +1074,13 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     # Initialize command helper object
     command = command_helper(logger, cmd, 'vm repair repair-and-restore')
 
+    try:
+        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
+    except Exception as exception:
+        logger.debug('Could not fetch source VM resource shape for telemetry: %s', exception)
+
     # Generate a random password for the repair operation
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
@@ -1039,6 +1110,8 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_vm_name = create_out['repair_vm_name']
     copy_disk_name = create_out['copied_disk_name']
     repair_group_name = create_out['repair_resource_group']
+    _enrich_repair_controller_context(
+        command, cmd, repair_group_name, repair_vm_name)
 
     # Log that the fstab run command is about to be executed
     logger.info('Running fstab run command')
