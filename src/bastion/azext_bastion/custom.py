@@ -293,7 +293,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
         resource_port = 3389
 
     if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or \
-       bastion['enableTunneling'] is not True:
+       bastion.get('enableTunneling') is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
@@ -392,7 +392,7 @@ def _is_nativeclient_enabled(bastion):
     if bastion['sku']['name'] == BastionSku.Developer.value:
         return True
     if _is_sku_standard_or_higher(bastion['sku']['name']):
-        return bastion['enableTunneling']
+        return bastion.get('enableTunneling', False)
     return False
 
 
@@ -459,7 +459,7 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
     })
 
     if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or \
-       bastion['enableTunneling'] is not True:
+       bastion.get('enableTunneling') is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
