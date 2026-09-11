@@ -20,14 +20,30 @@ from azext_confcom.os_util import base64_to_str
 
 
 _DEFAULT_MOUNTS = config.DEFAULT_MOUNTS_USER
-_DEFAULT_MOUNTS_VN2 = config.DEFAULT_MOUNTS_USER_VIRTUAL_NODE
 
 _DEFAULT_USER = config.DEFAULT_USER
+
+
+def _with_default_container_signals(signals: List) -> List:
+    signal_values = signals if isinstance(signals, list) else [signals]
+    translated_signals = translate_signals(list(signal_values or []))
+    return list(dict.fromkeys(config.DEFAULT_CONTAINER_SIGNALS + translated_signals))
+
 
 _INJECTED_CUSTOMER_ENV_RULES = (
     config.OPENGCS_ENV_RULES
     + config.FABRIC_ENV_RULES
     + config.MANAGED_IDENTITY_ENV_RULES
+    + config.ENABLE_RESTART_ENV_RULE
+)
+
+# Windows containers get every injected rule except OPENGCS: TERM=xterm comes
+# from the Linux GCS (opengcs) guest and has no Windows equivalent. FABRIC
+# (Service Fabric / ACI infra) and the restart marker apply regardless of guest
+# OS, and Windows managed identity additionally exposes IDENTITY_ENDPOINT.
+_INJECTED_CUSTOMER_ENV_RULES_WINDOWS = (
+    config.FABRIC_ENV_RULES
+    + config.MANAGED_IDENTITY_ENV_RULES_WINDOWS
     + config.ENABLE_RESTART_ENV_RULE
 )
 
@@ -157,6 +173,16 @@ def extract_command(container_json: Any) -> List[str]:
             + f'["{config.ACI_FIELD_CONTAINERS_COMMAND}"] must be list of Strings.'
         )
     return command
+
+
+def extract_registry_changes(container_json: Any) -> Any:
+    # registry_changes is a Windows-only, --input-only field passed through in
+    # the hcsshim framework shape ({"add_values": [...], "delete_keys": [...]}).
+    # There is no ARM property for it, so it is emitted per container only when
+    # supplied on the input.
+    return case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_REGISTRY_CHANGES
+    )
 
 
 def extract_mounts(container_json: Any) -> List:
@@ -553,6 +579,7 @@ class ContainerImage:
         seccomp_profile_sha256 = extract_seccomp_profile_sha256(container_json)
         allow_stdio_access = extract_allow_stdio_access(container_json)
         allow_privilege_escalation = extract_allow_privilege_escalation(container_json)
+        registry_changes = extract_registry_changes(container_json)
         return ContainerImage(
             containerImage=container_image,
             containerName=container_name,
@@ -572,6 +599,7 @@ class ContainerImage:
             allowStdioAccess=allow_stdio_access,
             allowPrivilegeEscalation=allow_privilege_escalation,
             id_val=id_val,
+            registryChanges=registry_changes,
         )
 
     def __init__(
@@ -594,6 +622,7 @@ class ContainerImage:
         execProcesses: List = None,
         signals: List = None,
         containerName: str = "",
+        registryChanges: Any = None,
     ) -> None:
         self.containerImage = containerImage
         self.containerName = containerName
@@ -616,9 +645,10 @@ class ContainerImage:
         self._allow_privilege_escalation = allowPrivilegeEscalation
         self._identifier = id_val
         self._exec_processes = execProcesses or []
-        self._signals = signals or []
+        self._signals = _with_default_container_signals(signals)
         self._extraEnvironmentRules = extraEnvironmentRules
         self._platform = platform
+        self._registry_changes = registryChanges
 
     def get_policy_json(self, omit_id: bool = False) -> str:
         return self._populate_policy_json_elements(omit_id=omit_id)
@@ -636,8 +666,10 @@ class ContainerImage:
         return self._workingDir
 
     def set_signals(self, signals: List) -> None:
-        signals = translate_signals([signals] if not isinstance(signals, list) else signals)
-        self._signals = signals
+        signal_values = signals if isinstance(signals, list) else [signals]
+        self._signals = _with_default_container_signals(
+            self._signals + signal_values
+        )
 
     def set_working_dir(self, workingDir: str) -> None:
         self._workingDir = workingDir
@@ -794,6 +826,9 @@ class ContainerImage:
             # Add mounted_cim for Windows if present
             if self._mounted_cim:
                 elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM] = self._mounted_cim
+            # registry_changes is Windows-only and emitted only when supplied
+            if self._registry_changes:
+                elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGISTRY_CHANGES] = self._registry_changes
 
         if not omit_id:
             elements[config.POLICY_FIELD_CONTAINERS_ID] = self._identifier
@@ -812,23 +847,29 @@ class UserContainerImage(ContainerImage):
     ) -> "UserContainerImage":
         image = super().from_json(container_json)
         image.__class__ = UserContainerImage
+        platform = container_json.get("platform", "linux/amd64")
+        is_linux = platform.startswith("linux")
         # inject default mounts for user container
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (not is_vn2):
-            if container_json.get("platform", "linux/amd64").startswith("linux"):
+            if is_linux:
                 image.get_mounts().extend(_DEFAULT_MOUNTS)
 
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (is_vn2):
-            image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
+            image.get_mounts().extend(config.get_default_mounts_user_virtual_node(platform))
 
-        # Start with the customer environment rules
-        env_rules = (
-            copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
-            if container_json.get("platform", "linux/amd64").startswith("linux") else []
-        )
+        # Start with the customer environment rules. Windows gets the same rules
+        # except OPENGCS (TERM=xterm is a Linux-GCS-only value) and uses the
+        # Windows managed-identity set (which adds IDENTITY_ENDPOINT).
+        if is_linux:
+            env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
+        else:
+            env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES_WINDOWS)
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES
-            image.set_mounts(image.get_mounts() + copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE))
+            image.set_mounts(
+                image.get_mounts() + copy.deepcopy(config.get_default_mounts_virtual_node(platform))
+            )
 
         image.set_extra_environment_rules(env_rules)
         return image

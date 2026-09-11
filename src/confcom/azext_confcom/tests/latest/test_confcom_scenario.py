@@ -633,7 +633,7 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             output = aci_policy.get_serialized_output(OutputType.PRETTY_PRINT)
 
-            self.assertTrue('"0.2.3"' in output)
+            self.assertTrue('"0.5.0"' in output)
 
     def test_environment_variables_parsing(self):
         custom_json = """

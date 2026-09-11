@@ -4,7 +4,7 @@
         "maxVersion": "1.0.0",
         "minVersion": "0.0.1"
     },
-    "version_api": "0.11.0",
+    "version_api": "0.12.0",
     "openGCS": {
         "environmentVariables": [
             {
@@ -151,6 +151,34 @@
             }
         ]
     },
+    "managedIdentityWindows": {
+        "environmentVariables": [
+            {
+                "name": "IDENTITY_API_VERSION",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "IDENTITY_ENDPOINT",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "IDENTITY_HEADER",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "IDENTITY_SERVER_THUMBPRINT",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ]
+    },
     "enableRestart": {
         "environmentVariables": [
             {
@@ -224,6 +252,10 @@
             {
                 "mountType": "azureFile",
                 "source": "sandbox:///tmp/atlas/azureFileVolume/.+"
+            },
+            {
+                "mountType": "elasticSan",
+                "source": "sandbox:///tmp/atlas/esanVolume/.+"
             },
             {
                 "mountType": "secret",
@@ -313,6 +345,36 @@
                 "mountPath": "/var/run/secrets/azure/tokens",
                 "readonly": true
             }
+        ],
+        "default_mounts_user_virtual_node_windows": [],
+        "default_mounts_virtual_node_privileged_windows": [],
+        "default_mounts_virtual_node_windows": [
+            {
+                "name": "kube-api-access",
+                "mountType": "emptyDir",
+                "mountPath": "C:\\var\\run\\secrets\\kubernetes.io\\serviceaccount",
+                "readonly": true
+            },
+            {
+                "name": "kube-hosts",
+                "mountType": "emptyDir",
+                "mountPath": "C:\\Windows\\System32\\drivers\\etc\\hosts",
+                "readonly": false
+            },
+            {
+                "name": "kube-termination-log",
+                "mountType": "emptyDir",
+                "mountPath": "C:\\dev\\termination-log",
+                "readonly": false
+            }
+        ],
+        "default_mounts_workload_identity_virtual_node_windows": [
+            {
+                "name": "azure-tokens",
+                "mountType": "emptyDir",
+                "mountPath": "C:\\var\\run\\secrets\\azure\\tokens",
+                "readonly": true
+            }
         ]
     },
     "sidecar_base_names": [
@@ -367,7 +429,10 @@
             ],
             "mounts": [],
             "exec_processes": [],
-            "signals": [],
+            "signals": [
+                9,
+                15
+            ],
             "allow_elevated": false,
             "allow_stdio_access": true,
             "working_dir": "/",

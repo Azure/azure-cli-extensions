@@ -107,5 +107,9 @@
       "required": false
     }
   ],
-  "working_dir": "/"
+  "working_dir": "/",
+  "signals": [
+    9,
+    15
+  ]
 }

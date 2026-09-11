@@ -12,6 +12,13 @@ ACI_FIELD_RESOURCES = "resources"
 ACI_FIELD_RESOURCES_NAME = "name"
 ACI_FIELD_CONTAINERS = "containers"
 ACI_FIELD_SCENARIO = "scenario"
+ACI_FIELD_ALLOWED_LOG_PROVIDERS = "allowedLogProviders"
+ACI_FIELD_ALLOW_LOG_PROVIDER_DROPPING = "allowLogProviderDropping"
+ACI_FIELD_ALLOW_HOST_NETWORK = "allowHostNetwork"
+ACI_FIELD_ALLOW_REGISTRY_CHANGES_DROPPING = "allowRegistryChangesDropping"
+ACI_FIELD_MAPPED_DIRECTORIES = "mappedDirectories"
+ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH = "containerPath"
+ACI_FIELD_MAPPED_DIRECTORIES_READONLY = "readOnly"
 ACI_FIELD_CONTAINERS_NAME = "name"
 ACI_FIELD_CONTAINERS_CONTAINERIMAGE = "containerImage"
 ACI_FIELD_CONTAINERS_ENVS = "environmentVariables"
@@ -23,6 +30,7 @@ ACI_FIELD_CONTAINERS_COMMAND = "command"
 ACI_FIELD_CONTAINERS_WORKINGDIR = "workingDir"
 ACI_FIELD_CONTAINERS_MOUNTS = "mounts"
 ACI_FIELD_CONTAINERS_MOUNTS_TYPE = "mountType"
+ACI_FIELD_CONTAINERS_MOUNTS_TYPE_ELASTIC_SAN = "elasticSan"
 ACI_FIELD_CONTAINERS_MOUNTS_PATH = "mountPath"
 ACI_FIELD_CONTAINERS_MOUNTS_READONLY = "readonly"
 ACI_FIELD_CONTAINERS_WAIT_MOUNT_POINTS = "wait_mount_points"
@@ -46,6 +54,7 @@ ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE = "amd64"
 
 
 ACI_FIELD_CONTAINERS_EXEC_PROCESSES = "execProcesses"
+ACI_FIELD_CONTAINERS_REGISTRY_CHANGES = "registryChanges"
 ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS = "allowStdioAccess"
 ACI_FIELD_CONTAINERS_LIVENESS_PROBE = "livenessProbe"
 ACI_FIELD_CONTAINERS_READINESS_PROBE = "readinessProbe"
@@ -128,6 +137,10 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE = "pattern"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED = "required"
 POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS = "layers"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM = "mounted_cim"
+POLICY_FIELD_CONTAINERS_ELEMENTS_REGISTRY_CHANGES = "registry_changes"
+POLICY_FIELD_MAPPED_DIRECTORIES = "mapped_directories"
+POLICY_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH = "container_path"
+POLICY_FIELD_MAPPED_DIRECTORIES_READONLY = "read_only"
 POLICY_FIELD_CONTAINERS_ELEMENTS_WORKINGDIR = "working_dir"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS = "mounts"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_SOURCE = "source"
@@ -194,6 +207,9 @@ OPENGCS_ENV_RULES = _config["openGCS"]["environmentVariables"]
 FABRIC_ENV_RULES = _config["fabric"]["environmentVariables"]
 # Managed Identity environment variables for customer containers
 MANAGED_IDENTITY_ENV_RULES = _config["managedIdentity"]["environmentVariables"]
+# Managed Identity environment variables for Windows (WCOW) customer containers
+# (Windows adds IDENTITY_ENDPOINT in addition to the shared set)
+MANAGED_IDENTITY_ENV_RULES_WINDOWS = _config["managedIdentityWindows"]["environmentVariables"]
 # VN2 environment variables
 VIRTUAL_NODE_ENV_RULES = _config["default_envs_virtual_node"]["environmentVariables"]
 # VN2 environment variables for workload identities
@@ -207,6 +223,14 @@ DEFAULT_MOUNTS_USER_VIRTUAL_NODE = _config["mount"]["default_mounts_user_virtual
 DEFAULT_MOUNTS_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node"]
 DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node_privileged"]
 DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE = _config["mount"]["default_mounts_workload_identity_virtual_node"]
+# default mounts used for Windows VN2 (mount sources are unchanged; only the
+# container destination paths differ, e.g. C:\\var\\run\\secrets\\... )
+DEFAULT_MOUNTS_USER_VIRTUAL_NODE_WINDOWS = _config["mount"]["default_mounts_user_virtual_node_windows"]
+DEFAULT_MOUNTS_VIRTUAL_NODE_WINDOWS = _config["mount"]["default_mounts_virtual_node_windows"]
+DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE_WINDOWS = _config["mount"]["default_mounts_virtual_node_privileged_windows"]
+DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS = (
+    _config["mount"]["default_mounts_workload_identity_virtual_node_windows"]
+)
 # default mounts policy options for all containers
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers
@@ -285,6 +309,8 @@ SIGNALS = {
     "SIGSYS": 31,
     "SIGUNUSED": 31
 }
+DEFAULT_CONTAINER_SIGNALS = [SIGNALS["SIGKILL"], SIGNALS["SIGTERM"]]
+
 # these algorithms are the only supported ones in https://github.com/veraison/go-cose/blob/main/algorithm.go
 SUPPORTED_ALGOS = [
     "PS256",
@@ -295,3 +321,31 @@ SUPPORTED_ALGOS = [
     "ES512",
     "EdDSA",
 ]
+
+
+def _is_windows_platform(platform):
+    return bool(platform) and platform.lower().startswith("windows")
+
+
+def get_default_mounts_user_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_USER_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_USER_VIRTUAL_NODE
+
+
+def get_default_mounts_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_VIRTUAL_NODE
+
+
+def get_default_mounts_privileged_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+
+
+def get_default_mounts_workload_identity_virtual_node(platform=None):
+    if _is_windows_platform(platform):
+        return DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS
+    return DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE

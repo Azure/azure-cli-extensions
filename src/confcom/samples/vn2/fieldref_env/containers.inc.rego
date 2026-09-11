@@ -161,6 +161,10 @@
       }
     ],
     "working_dir": "/",
-    "command": []
+    "command": [],
+    "signals": [
+      9,
+      15
+    ]
   }
 ]

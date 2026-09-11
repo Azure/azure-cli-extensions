@@ -25,18 +25,40 @@ logger = get_logger(__name__)
 
 
 _binaries_dir = get_binaries_dir()
-_dmverity_vhd_binaries = {
-    "Linux": {
+
+# NOTE: These binaries are downloaded once when building the extension package
+# (which always happens on Linux), not on the user's machine.  The resulting
+# package bundles the binaries for every supported platform, so we always fetch
+# all of them here.
+
+_INTEGRITY_VHD_VERSION = "v2.2"
+_INTEGRITY_VHD_RELEASE_URL = (
+    f"https://github.com/microsoft/integrity-vhd/releases/download/{_INTEGRITY_VHD_VERSION}"
+)
+_dmverity_vhd_binaries = [
+    # Linux
+    {
         "path": _binaries_dir / "dmverity-vhd",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.1/dmverity-vhd",
-        "sha256": "a75eb11f3ad3058bfdef0b5cf0bf64c1bef714a2afa054f3e242932d25d9e57d",
+        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd",
+        "sha256": "85b383bcce609e7acf0b0eae4b6e214d795b30c4d9d96c21377ab97ea3161a28",
     },
-    "Windows": {
+    # Windows
+    {
         "path": _binaries_dir / "dmverity-vhd.exe",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.1/dmverity-vhd.exe",
-        "sha256": "5e371f86a2b552e5e69759421a81a26a07450dc404c1c88a08a4f983322598a2",
+        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd.exe",
+        "sha256": "83681d2e26b8406098e06e24db80c8eaf7b17eee08a5f8b313c88620f0612b66",
     },
-}
+    {
+        "path": _binaries_dir / "CimWriter.dll",
+        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/CimWriter.dll",
+        "sha256": "3e4ddf7bbe5ac23ff4f20e467352ea17b82d7517e527663fb1e73e96437896c0",
+    },
+    {
+        "path": _binaries_dir / "CimWriter.LICENSE.pdf",
+        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/CimWriter.LICENSE.pdf",
+        "sha256": "a8099a63704a7aaa672e82a3785bf6921400da28dc9c2958bf512e440c39e787",
+    },
+]
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -46,7 +68,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
     @staticmethod
     def download_binaries():
 
-        for binary_info in _dmverity_vhd_binaries.values():
+        for binary_info in _dmverity_vhd_binaries:
             dmverity_vhd_fetch_resp = requests.get(binary_info["url"], verify=True)
             dmverity_vhd_fetch_resp.raise_for_status()
 
