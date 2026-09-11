@@ -276,8 +276,10 @@ class AroHcpScenario(ScenarioTest):
             ('cloud_network_identity', 'be7a6435-15ae-4171-8f30-4a343eff9e8f', 'subnet_id'),
             ('cloud_network_identity', 'be7a6435-15ae-4171-8f30-4a343eff9e8f', 'vnet_id'),
             ('kms_identity', '12338af0-0e69-4776-bea7-57ae8d297424', 'keyvault_id'),
+            ('dp_file_csi_identity', '0d7aedc0-15fd-4a67-a412-efad370c947e', 'vnet_id'),
             ('dp_file_csi_identity', '0d7aedc0-15fd-4a67-a412-efad370c947e', 'subnet_id'),
             ('dp_file_csi_identity', '0d7aedc0-15fd-4a67-a412-efad370c947e', 'nsg_id'),
+            ('dp_image_registry_identity', '8b32b316-c2f5-4ddf-b05b-83dacd2d08b5', 'vnet_id'),
         )
         for assignee_key, role, scope_key in role_assignments:
             self._assign_role(assignee_key, role, scope_key)
