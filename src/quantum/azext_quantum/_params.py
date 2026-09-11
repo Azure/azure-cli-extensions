@@ -183,7 +183,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_output_format_type = CLIArgumentType(help='The expected job output format')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
-    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', choices=['V1', 'V2'])
+    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', arg_type=get_enum_type(['V1', 'V2']))
     quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation for a V2 workspace as provider-id, target-id, standard-minutes-lifetime, and optional high-minutes-lifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. Use --workspace-kind V2 when creating a workspace. Values are absolute and cannot exceed the suite target allocation or, when updating, be below current workspace usage. standard-minutes-lifetime is required for a new allocation. camelCase keys (providerId, targetId, ...) are also accepted. Repeat --quota once per target.', action=QuotaAction, nargs='+')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')

@@ -27,7 +27,7 @@ from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_o
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, KeyType, WorkspaceKind, WorkspaceResourceProperties, TargetQuotaAllocations
 from ..vendored_sdks.azure_quantum_python._client.models import DimensionScope, MeterPeriod
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
@@ -60,20 +60,12 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
                                "https://azure.microsoft.com/support/legal/preview-supplemental-terms/\n\n" \
                                "Continue? (Y/N) "
 
-_TARGET_QUOTA_ATTRIBUTES = (
-    "standard_minutes_lifetime",
-    "high_minutes_lifetime",
-)
-_TARGET_QUOTA_USAGE_FIELDS = {
+_TARGET_QUOTA_TYPES = {
     "standard_minutes_lifetime": "standardMinutesLifetime",
     "high_minutes_lifetime": "highMinutesLifetime",
 }
 _WORKSPACE_QUOTA_SCOPE = DimensionScope.WORKSPACE.value
 _WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
-_TARGET_QUOTA_DIMENSIONS = (
-    ("StandardMinutesLifetime", "standard_minutes_lifetime"),
-    ("HighMinutesLifetime", "high_minutes_lifetime"),
-)
 
 
 class WorkspaceInfo:
@@ -231,7 +223,7 @@ def _enum_to_value(value):
 
 
 def _require_v2_workspace(workspace_kind):
-    if str(_enum_to_value(workspace_kind)).upper() != 'V2':
+    if str(_enum_to_value(workspace_kind)).upper() != WorkspaceKind.V2.value:
         raise InvalidArgumentValueError("--quota is supported only for V2 workspaces.")
 
 
@@ -323,14 +315,14 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
              if item.target_id is not None and item.target_id.lower() == target_id),
             None
         )
-        for quota_attribute in _TARGET_QUOTA_ATTRIBUTES:
+        for quota_attribute in _TARGET_QUOTA_TYPES:
             requested_allocation = getattr(target_quota, quota_attribute, None)
             if requested_allocation is None:
                 continue
-            priority = quota_attribute.partition("_")[0].capitalize()
+            quota_type = quota_attribute.replace("_", " ")
             if suite_target is None:
                 raise InvalidArgumentValueError(
-                    f"--quota requests {requested_allocation} minutes of {priority} time for provider "
+                    f"--quota requests a {quota_type} quota of {requested_allocation} minutes for provider "
                     f"'{provider.provider_id}', target '{target_quota.target_id}', but the subscription has no "
                     "allocation for that target.\n"
                     "Allocate it at the subscription level first, then retry. To see current allocations run:\n"
@@ -338,8 +330,8 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
                 )
             if getattr(suite_target, quota_attribute, None) is None:
                 raise InvalidArgumentValueError(
-                    f"Cannot validate the {priority} allocation for provider '{provider.provider_id}', target "
-                    f"'{target_quota.target_id}', because the suite offer has no {priority} allocation."
+                    f"Cannot validate the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}', because the suite offer has no {quota_type} quota."
                 )
         suite_targets[(provider_id, target_id)] = suite_target
 
@@ -364,17 +356,17 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
         suite_target = suite_targets[(provider_id, target_id)]
 
         usage = usage_by_key.get((provider_id, target_id))
-        for quota_attribute in _TARGET_QUOTA_ATTRIBUTES:
+        for quota_attribute, usage_field in _TARGET_QUOTA_TYPES.items():
             requested_allocation = getattr(target_quota, quota_attribute, None)
             if requested_allocation is None:
                 continue
-            priority = quota_attribute.partition("_")[0].capitalize()
+            quota_type = quota_attribute.replace("_", " ")
             suite_allocation = getattr(suite_target, quota_attribute)
-            current_usage = usage.get(_TARGET_QUOTA_USAGE_FIELDS[quota_attribute]) if usage is not None else None
+            current_usage = usage.get(usage_field) if usage is not None else None
             current_usage = current_usage if current_usage is not None else 0
             if requested_allocation < current_usage:
                 raise InvalidArgumentValueError(
-                    f"--quota would set the {priority} allocation for provider '{provider.provider_id}', target "
+                    f"--quota would set the {quota_type} quota for provider '{provider.provider_id}', target "
                     f"'{target_quota.target_id}' to {requested_allocation} minutes, below the {current_usage} minutes "
                     f"the workspace has already used. Specify at least {current_usage}.\n"
                     "To see current usage run:\n"
@@ -382,7 +374,7 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
                 )
             if requested_allocation > suite_allocation:
                 raise InvalidArgumentValueError(
-                    f"--quota would set the {priority} allocation for provider '{provider.provider_id}', target "
+                    f"--quota would set the {quota_type} quota for provider '{provider.provider_id}', target "
                     f"'{target_quota.target_id}' to {requested_allocation} minutes, above the {suite_allocation} minutes "
                     f"allocated to the subscription. Specify at most {suite_allocation}.\n"
                     "To see subscription allocations run:\n"
@@ -409,7 +401,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     workspace_kind_value = str(_enum_to_value(workspace_kind)).upper()
     if quota:
         _require_v2_workspace(workspace_kind)
-    if workspace_kind_value == 'V2':
+    if workspace_kind_value == WorkspaceKind.V2.value:
         skip_autoadd = True
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
@@ -417,7 +409,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
         _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
-        quantum_workspace.properties.api_key_enabled = workspace_kind_value != 'V2'
+        quantum_workspace.properties.api_key_enabled = workspace_kind_value != WorkspaceKind.V2.value
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -581,25 +573,23 @@ def quotas(cmd, resource_group_name, workspace_name):
     providers = properties.providers if properties is not None else None
     endpoint = properties.endpoint_uri if properties is not None else info.endpoint
     usages = []
-    legacy_quotas = []
+    v1_quotas = []
+    client = cf_quotas(
+        cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
     workspace_kind = getattr(properties, 'workspace_kind', None) if properties is not None else None
-    if str(_enum_to_value(workspace_kind)).upper() == 'V2':
-        v2_client = cf_quotas(
-            cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
+    if str(_enum_to_value(workspace_kind)).upper() == WorkspaceKind.V2.value:
         for provider in providers or []:
             try:
-                provider_usages = v2_client.list_workspace_usages(
+                provider_usages = client.list_workspace_usages(
                     info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
             except AzureResourceNotFoundError:
                 provider_usages = None
             usages.extend(provider_usages or [])
     else:
-        legacy_client = cf_quotas(
-            cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
-        legacy_quotas = repack_response_json(
-            legacy_client.list(info.subscription, info.resource_group, info.name))
+        v1_quotas = repack_response_json(
+            client.list(info.subscription, info.resource_group, info.name))
 
-    return _merge_workspace_quotas(workspace, usages, legacy_quotas)
+    return _merge_workspace_quotas(workspace, usages, v1_quotas)
 
 
 def _target_quota_row(provider_id, target_id, dimension, allocation, usage):
@@ -615,9 +605,9 @@ def _target_quota_row(provider_id, target_id, dimension, allocation, usage):
     }
 
 
-def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
+def _merge_workspace_quotas(workspace, usages, v1_quotas=None):
     """
-    Preserve legacy quota rows and append one flat row per target and priority for v2 quotas.
+    Preserve v1 quota rows and append one flat row per target and quota type for v2 quotas.
     """
     usage_by_key = {
         ((usage.provider_id or '').lower(), usage.target_id.lower()): usage
@@ -628,8 +618,8 @@ def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
     properties = workspace.properties
     providers = properties.providers if properties is not None else None
 
-    rows = [row for row in (legacy_quotas or [])]
-    for provider in sorted(providers or [], key=lambda p: p.provider_id or ""):
+    rows = [row for row in (v1_quotas or [])]
+    for provider in providers or []:
         allocations_by_target = {
             quota.target_id.lower(): quota
             for quota in (provider.target_quotas or [])
@@ -640,7 +630,8 @@ def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
             for (provider_id, target_id), usage in usage_by_key.items()
             if provider_id == (provider.provider_id or '').lower()
         }
-        target_ids = sorted(builtin_set(allocations_by_target) | builtin_set(usage_targets))
+        target_ids = [target_id for target_id in allocations_by_target]
+        target_ids.extend(target_id for target_id in usage_targets if target_id not in allocations_by_target)
 
         for target_id in target_ids:
             target_quota = allocations_by_target.get(target_id)
@@ -648,13 +639,13 @@ def _merge_workspace_quotas(workspace, usages, legacy_quotas=None):
             usage_values = usage.usage if usage is not None else None
             display_target_id = target_quota.target_id if target_quota is not None else usage.target_id
 
-            for dimension, attribute in _TARGET_QUOTA_DIMENSIONS:
+            for attribute, usage_field in _TARGET_QUOTA_TYPES.items():
                 rows.append(_target_quota_row(
                     provider.provider_id,
                     display_target_id,
-                    dimension,
+                    usage_field[0].upper() + usage_field[1:],
                     getattr(target_quota, attribute, None),
-                    usage_values.get(_TARGET_QUOTA_USAGE_FIELDS[attribute]) if usage_values is not None else None,
+                    usage_values.get(usage_field) if usage_values is not None else None,
                 ))
 
     return rows
