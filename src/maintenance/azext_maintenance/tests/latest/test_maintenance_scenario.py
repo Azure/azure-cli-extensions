@@ -9,7 +9,6 @@
 # --------------------------------------------------------------------------
 
 import os
-import json
 from datetime import datetime, timezone, timedelta
 import time
 from azure.cli.testsdk import ScenarioTest
@@ -39,8 +38,8 @@ def setup_scenario(test):
 
     # Create NetworkSecurityGroup
     test.cmd('az network nsg create --resource-group "{rg}" --name "clitestnsg"', checks=[])
-    test.cmd('az network vnet create --resource-group "{rg}" --name "clitestvnet" --subnet-name "clitestsubnet" --network-security-group "clitestnsg"', checks=[])
-    test.cmd('az network vnet subnet create --name "clitestsubnet" --vnet-name "clitestvnet" --resource-group "{rg}" --address-prefixes "10.0.0.0/24"  --network-security-group "clitestnsg"', checks=[])
+    test.cmd('az network vnet create --resource-group "{rg}" --name "clitestvnet"', checks=[])
+    test.cmd('az network vnet subnet create --resource-group "{rg}" --vnet-name "clitestvnet" --name "clitestsubnet" --address-prefixes "10.0.0.0/24" --network-security-group "clitestnsg" --default-outbound-access false', checks=[])
 
     #Load balancer and health probe
     test.cmd('az network public-ip create --resource-group "{rg}" --name clitestip --sku Standard --allocation-method Static --ip-tags "FirstPartyUsage=/PlannedMaintenanceNonProd"')
@@ -515,34 +514,27 @@ def step__configurationassignments_put_configurationassignments_delete_resourceg
 
 
 def step__scheduledevents_acknowledge(test):
-    from azure.core.exceptions import ResourceNotFoundError
-    try:
-        test.cmd('az maintenance scheduledevents acknowledge '
-             '--resource-group "{rg}" '
-             '--resource-name "clitestvmss" '
-             '--resource-type "virtualMachineScaleSets" '
-             '--scheduled-events-id "8482AE8A-ED76-48E8-A055-8E8B40CF8A57" ',
-             checks=[])
-    except ResourceNotFoundError as e:
-        test.assertIn("InvalidScheduledEventId", str(e))
+    response = test.cmd('az maintenance scheduledevents acknowledge '
+                        '--resource-group "{rg}" '
+                        '--resource-name "clitestvmss" '
+                        '--resource-type "virtualMachineScaleSets" '
+                        '--scheduled-events-id "8482AE8A-ED76-48E8-A055-8E8B40CF8A57" ',
+                        checks=[]).get_output_in_json()
+    test.assertEqual("InvalidScheduledEventId", response["Error"]["Code"])
+    test.assertEqual("Scheduled event not found", response["Error"]["Message"])
 
 def step__scheduledevents_list_acknowledge(test):
-    from azure.core.exceptions import HttpResponseError
-    try:
-        test.cmd('az maintenance scheduledevents list acknowledge '
-             '--resource-group "{rg}" '
-             '--resource-name "clitestvmss" '
-             '--resource-type "virtualMachineScaleSets" '
-             "--value '[\"8482AE8A-ED76-48E8-A055-8E8B40CF8A57\", \"42086D38-19CC-4A01-882A-DE2A884C534D\"]' ",
-             checks=[])
-    except HttpResponseError as e:
-        test.assertEqual(207, e.response.status_code)
-        response = json.loads(e.response.text())
-        test.assertEqual("MultiStatusResponse", response["Response"]["Code"])
-        test.assertEqual(2, len(response["Details"]))
-        for detail in response["Details"]:
-            test.assertEqual("NotFound", detail["Code"])
-            test.assertEqual("Scheduled event not found", detail["Message"])
+    response = test.cmd('az maintenance scheduledevents list-acknowledge '
+                        '--resource-group "{rg}" '
+                        '--resource-name "clitestvmss" '
+                        '--resource-type "virtualMachineScaleSets" '
+                        "--value '[\"8482AE8A-ED76-48E8-A055-8E8B40CF8A57\", \"42086D38-19CC-4A01-882A-DE2A884C534D\"]' ",
+                        checks=[]).get_output_in_json()
+    test.assertEqual("MultiStatusResponse", response["Response"]["Code"])
+    test.assertEqual(2, len(response["Details"]))
+    for detail in response["Details"]:
+        test.assertEqual("NotFound", detail["Code"])
+        test.assertEqual("Scheduled event not found", detail["Message"])
 
 
 def step_assignment_create_or_update_parent_with_retry(test):

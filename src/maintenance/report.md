@@ -64,7 +64,7 @@
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az maintenance scheduledevents acknowledge](#ScheduledEventsAcknowledge)|Acknowledge|[Parameters](#ParametersScheduledEventsAcknowledge)|[Example](#ExamplesScheduledEventsAcknowledge)|
-|[az maintenance scheduledevents list acknowledge](#ScheduledEventsListAcknowledge)|AcknowledgeList|[Parameters](#ParametersScheduledEventsListAcknowledge)|[Example](#ExamplesScheduledEventsListAcknowledge)|
+|[az maintenance scheduledevents list-acknowledge](#ScheduledEventsListAcknowledge)|AcknowledgeList|[Parameters](#ParametersScheduledEventsListAcknowledge)|[Example](#ExamplesScheduledEventsListAcknowledge)|
 
 ## COMMAND DETAILS
 ### group `az maintenance applyupdate`
@@ -481,11 +481,11 @@ az maintenance scheduledevents acknowledge --resource-group "examplerg"  --resou
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 |**--scheduled-events-id**|string|ScheduledEvents Id|scheduled_events_id|scheduledEventId|
 
-#### <a name="ScheduledEventsListAcknowledge">Command `az maintenance scheduledevents list acknowledge`</a>
+#### <a name="ScheduledEventsListAcknowledge">Command `az maintenance scheduledevents list-acknowledge`</a>
 
 ##### <a name="ExamplesScheduledEventsListAcknowledge">Example</a>
 ```
-az maintenance scheduledevents list acknowledge --resource-group "examplerg"  --resource-type "virtualMachinesScaleSets" \
+az maintenance scheduledevents list-acknowledge --resource-group "examplerg"  --resource-type "virtualMachinesScaleSets" \
  --resource-name "exampleres" --subscription "examplesubid" --value ["eventid1", "eventid2"]
 ```
 ##### <a name="ParametersScheduledEventsListAcknowledge">Parameters</a> 
