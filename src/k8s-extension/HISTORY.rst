@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.9.0
++++++++++++++++++++
+* Add Microsoft.ChaosStudio partner customization for AKS workspace connectivity and owned prerequisite lifecycle management.
+
 1.8.0
 +++++++++++++++++++
 * Migrate Extensions api-version to 2025-03-01 and bump extension version to 1.8.0.
