@@ -5,6 +5,7 @@ Release History
 1.0.0b7
 ++++++
 * ``az provisionedmachine os-image list`` - Added an optional ``--architecture`` filter (``amd64``/``arm64``) and a new ``Architecture`` column to the table output. The ``OsImageType`` column is now populated from the ``solutionType`` returned by the service.
+* ``az provisionedmachine show`` / ``list`` / ``create`` - Moved to API version ``2026-10-15-preview``. Earlier versions omit ``architecture`` from the reported hardware profile and from the ownership voucher validation result, so those fields were being dropped before reaching the caller.
 
 1.0.0b6
 ++++++
