@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 """
 Check format of service_name.json. Command and AzureServiceName are required. Others are optional.
-Each highest level command group should have reference in service_name.json.
+Each extension command should be covered by a command or parent command in service_name.json.
 """
 import json
 
@@ -63,7 +63,7 @@ def get_extension_help_files(cli_ctx):
         except Exception as ex:
             print("Skipped '{}' due to '{}'".format(cmd, ex))
     help_files = sorted(help_files, key=lambda x: x.command)
-    return help_files
+    return help_files, set(cmd_table)
 
 
 def _store_parsers(parser, parser_keys, parser_values, sub_parser_keys, sub_parser_values):
@@ -86,20 +86,23 @@ def _is_group(parser):
         or getattr(parser, 'choices', None) is not None
 
 
+def _get_uncovered_commands(extension_commands, service_commands):
+    return {
+        command for command in extension_commands
+        if not any(command == service_command or command.startswith(service_command + ' ')
+                   for service_command in service_commands)
+    }
+
+
 def check():
     az_cli = AzCli(cli_name='az',
                    commands_loader_cls=MainCommandsLoader,
                    invocation_cls=AzCliCommandInvoker,
                    parser_cls=AzCliCommandParser,
                    help_cls=AzCliHelp)
-    help_files = get_extension_help_files(az_cli)
-    # High command represents left most word in a command, e.g., vm, disk.
-    high_command_set = set()
-    for help_file in help_files:
-        if help_file.command:
-            high_command_set.add(help_file.command.split()[0])
-    print('high_command_set:')
-    print(high_command_set)
+    _, extension_commands = get_extension_help_files(az_cli)
+    print('extension_commands:')
+    print(extension_commands)
 
     # Load and check service_name.json
     with open('src/service_name.json') as f:
@@ -117,10 +120,11 @@ def check():
     print('service_name_map:')
     print(service_name_map)
 
-    # Check existence in service_name.json
-    for high_command in high_command_set:
-        if high_command not in service_name_map:
-            raise Exception('No entry of {} in service_name.json. Please add one to the file.'.format(high_command))
+    # Check that every extension command is covered by an exact or parent command entry.
+    uncovered_commands = _get_uncovered_commands(extension_commands, service_name_map)
+    if uncovered_commands:
+        raise Exception('No entry covering {} in service_name.json. Please add one to the file.'.format(
+            ', '.join(sorted(uncovered_commands))))
 
 
 if __name__ == "__main__":
