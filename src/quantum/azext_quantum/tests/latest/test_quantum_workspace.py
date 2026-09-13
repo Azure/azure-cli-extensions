@@ -34,6 +34,11 @@ from ...vendored_sdks.azure_quantum_python._client.operations._operations import
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+def _not_found_pager():
+    yield from ()
+    raise AzureResourceNotFoundError()
+
+
 # Classes patterned after classes in azext_quantum.vendored_sdks.azure_mgmt_quantum.models._models_py3.py
 # Used in test_autoadd_providers()
 class TestSkuDescription(object):
@@ -814,7 +819,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with patch.object(workspace_ops, 'cf_suite_offers') as suite_factory, \
                 patch.object(workspace_ops, 'cf_quotas') as quota_factory:
             suite_factory.return_value.list_by_subscription.return_value = [suite_offer]
-            quota_factory.return_value.list_workspace_usages.side_effect = AzureResourceNotFoundError()
+            quota_factory.return_value.list_workspace_usages.return_value = _not_found_pager()
 
             _validate_target_quota_bounds(cmd, info, workspace, [{
                 'providerId': 'provider', 'targetId': 'provider.target'
@@ -1167,6 +1172,26 @@ class QuantumWorkspaceQuotasTest(unittest.TestCase):
         self.assertEqual(rows[1]['dimension'], 'HighMinutesLifetime')
         self.assertEqual(rows[1]['limit'], 15)
         self.assertEqual(rows[1]['utilization'], 2)
+
+    def test_quotas_handler_treats_deferred_usage_404_as_zero(self):
+        info = SimpleNamespace(subscription='sub', resource_group='rg', name='ws', endpoint=None)
+        endpoint = 'https://ws.eastus-v2.quantum.azure.com/'
+        workspace = SimpleNamespace(location='eastus', properties=SimpleNamespace(
+            workspace_kind='V2', endpoint_uri=endpoint, providers=[
+                SimpleNamespace(provider_id='ionq', target_quotas=[
+                    SimpleNamespace(target_id='ionq.qpu', standard_minutes_lifetime=30, high_minutes_lifetime=15),
+                ]),
+            ]))
+        v2_client = SimpleNamespace(list_workspace_usages=lambda *args, **kwargs: _not_found_pager())
+
+        from ...operations import workspace as workspace_ops
+        cli_ctx = object()
+        with patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                patch.object(workspace_ops, 'cf_workspaces', return_value=SimpleNamespace(get=lambda rg, ws: workspace)), \
+                patch.object(workspace_ops, 'cf_quotas', return_value=v2_client):
+            rows = workspace_ops.quotas(SimpleNamespace(cli_ctx=cli_ctx), 'rg', 'ws')
+
+        self.assertEqual([row['utilization'] for row in rows], [0, 0])
 
     def test_quotas_handler_keeps_v1_behavior_without_v2_usage_calls(self):
         info = SimpleNamespace(subscription='sub', resource_group='rg', name='ws', endpoint=None)

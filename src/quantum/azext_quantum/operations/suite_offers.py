@@ -39,7 +39,7 @@ def suite_offer_quotas(cmd, provider_id):
     # 2. Data-plane (v2): fetch the consumed quota usages for that provider.
     client = cf_suite_offers_data_plane(cmd.cli_ctx, subscription_id, offer.properties.location)
     try:
-        usages = client.list_quota_usages(subscription_id, canonical_provider_id)
+        usages = list(client.list_quota_usages(subscription_id, canonical_provider_id))
     except AzureResourceNotFoundError as ex:
         raise ResourceNotFoundError(
             f"No quota usages were found for provider '{provider_id}'."

@@ -46,6 +46,11 @@ def _offer(provider_id='ionq', location='eastus', quotas=None, target_quotas=Non
     return SimpleNamespace(properties=properties)
 
 
+def _not_found_pager():
+    yield from ()
+    raise AzureResourceNotFoundError()
+
+
 def _usage(target_id=None, standard=None, high=None, last_modified_time=None,
            scope='SubscriptionTarget'):
     return SimpleNamespace(
@@ -111,7 +116,7 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
 
     def test_suite_offer_quotas_returns_cli_error_when_usage_is_not_found(self):
         offer = _offer(provider_id='IonQ')
-        client = SimpleNamespace(list_quota_usages=Mock(side_effect=AzureResourceNotFoundError()))
+        client = SimpleNamespace(list_quota_usages=lambda *_: _not_found_pager())
 
         with patch('azext_quantum.operations.suite_offers.get_subscription_id', return_value='sub'), \
                 patch('azext_quantum.operations.suite_offers._get_suite_offer', return_value=offer), \

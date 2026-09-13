@@ -342,8 +342,8 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
         for provider_id in sorted({provider_id for provider_id, _ in requested_keys}):
             provider = workspace_providers[provider_id]
             try:
-                usages = usage_client.list_workspace_usages(
-                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
+                usages = tuple(usage_client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id))
             except AzureResourceNotFoundError:
                 usages = None
             for usage in usages or []:
@@ -580,8 +580,8 @@ def quotas(cmd, resource_group_name, workspace_name):
     if str(_enum_to_value(workspace_kind)).upper() == WorkspaceKind.V2.value:
         for provider in providers or []:
             try:
-                provider_usages = client.list_workspace_usages(
-                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id)
+                provider_usages = tuple(client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id))
             except AzureResourceNotFoundError:
                 provider_usages = None
             usages.extend(provider_usages or [])
