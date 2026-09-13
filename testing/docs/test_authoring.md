@@ -106,6 +106,26 @@ The above test calls `az k8s-extension create` to create the `azuremonitor-conta
 
 ## Tips/Notes
 
+### Chaos Studio private-preview tests
+
+`test/extensions/private-preview/ChaosStudio.Tests.ps1` covers create, show, list,
+update and delete on a dedicated AKS cluster without an existing Chaos Studio
+extension. The cluster must already have Workload Identity, the OIDC issuer and
+Azure RBAC for Kubernetes enabled. Supply an existing Chaos Studio workspace with
+a system-assigned identity or exactly one user-assigned identity.
+
+Add `chaosWorkspaceId`, `chaosExtensionVersion` (an available dev train version)
+and `chaosStressToolsImage` to your local `testing/settings.json`. The image must
+be a chart-supported test value; the test does not execute faults. Optionally set
+`chaosExistingRoleDefinitionId` to reuse a compatible custom role rather than
+create one. The test creates an identity, federated credential, cluster role
+assignment and workspace connection. Delete removes owned resources but preserves
+the reusable role definition and the workspace.
+
+After installing the candidate wheel and configuring the harness, run
+`.\Test.ps1 -Type k8s-extension -SkipInstall -Path .\test\extensions\private-preview\ChaosStudio.Tests.ps1`
+from `testing`. This is a live resource lifecycle test, not an offline unit test.
+
 ### Accessing Extension Data
 
 `.\Test.ps1` assumes that the user has `kubectl` and `az` installed in their environment; therefore, tests are able to access information on the extension at the service and on the arc cluster. For instance, in the above test, we access the `extensionconfig` CRDs on the arc cluster by calling
@@ -139,4 +159,3 @@ Write-Host "Some example output"
 ### Global Constants
 
 Looking at the above test, we can see that we are accessing the `ENVCONFIG` to retrieve the environment variables from the `settings.json`. All variables in the `settings.json` are accessible from the `ENVCONFIG`. The most useful ones for testing will be `ENVCONFIG.arcClusterName` and `ENVCONFIG.resourceGroup`.
-

@@ -14,6 +14,27 @@ az extension add --name k8s-extension
 ```
 
 ### Included Features
+#### Chaos Studio (private preview)
+
+`Microsoft.ChaosStudio` supports cluster-scoped AKS installations. Pass
+`chaos-workspace-id=<workspace-resource-id>` in `--configuration-settings` to
+validate AKS Workload Identity, OIDC and Azure RBAC prerequisites and configure
+the subscriber identity, federated credential, workspace identity role assignment
+and workspace connection. The workspace must have a system-assigned identity or
+exactly one user-assigned identity. The subscriber endpoint comes from the service.
+
+The partner defaults to the `dev` train, version `0.1.0`, namespace
+`chaos-infrastructure`, with automatic upgrades disabled. Supply `--version` for
+another available chart version and any chart-required configuration settings.
+Without `chaos-workspace-id`, prerequisite provisioning is not performed.
+
+`chaos-existing-role-definition-id=<role-resource-id>` explicitly reuses a
+compatible custom role in the cluster subscription without modifying it.
+Updates retain existing configuration and reconcile prerequisites. Changing the
+workspace or release namespace requires deleting and recreating the extension.
+Delete removes the matching owned connection before owned prerequisites; it
+preserves shared role definitions and resources that fail ownership checks.
+
 #### Kubernetes Extensions:
 Kubernetes Extensions: [more info](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions)\
 *Examples:*
