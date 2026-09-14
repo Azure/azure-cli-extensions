@@ -108,7 +108,7 @@ class FoundryCostControlScenario(ScenarioTest):
         self.cmd(
             'resource patch '
             '--ids {account_id} '
-            '--api-version 2026-07-15-preview '
+            '--api-version 2026-09-15-preview '
             '--properties '
             '\'{{'
             '"costControlConnections":{{'
@@ -187,7 +187,7 @@ class FoundryCostControlScenario(ScenarioTest):
         self.cmd(
             'resource patch '
             '--ids {account_id} '
-            '--api-version 2026-07-15-preview '
+            '--api-version 2026-09-15-preview '
             '--properties \'{{"costControlIds":[]}}\'',
             checks=[self.check('properties.costControlIds', [])]
         )

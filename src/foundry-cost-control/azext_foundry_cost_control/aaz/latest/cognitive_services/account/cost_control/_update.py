@@ -19,13 +19,13 @@ class Update(AAZCommand):
     """Update a cost control.
 
     :example: Create a cost control with all settings
-        az cognitive-services account cost-control update --resource-group foundry-resource-group --account-name foundry-account --cost-control-name production-agents --if-none-match * --display-name Production agent monthly budget --rules "[{name:monthly-agent-budget,counter-key:[{type:agent}],unit:usd,amount:1000,period:month,recurring:True,match:{foundry-caller-agent-id:[customer-support-agent,sales-assistant-agent],foundry-caller-identity-oid:[11111111-2222-3333-4444-555555555555],foundry-caller-session-id:[production-session],foundry-project-id:[/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/foundry-resource-group/providers/Microsoft.CognitiveServices/accounts/foundry-account/projects/production]},thresholds:[{type:percentage,value:80,action:alert},{type:absolute,value:1000,action:audit}]},{name:daily-tenant-budget,counter-key:[{type:custom,attribute:x-tenant-id}],unit:usd,amount:100,period:day,recurring:True,thresholds:[{type:percentage,value:90,action:alert}]}]"
+        az cognitive-services account cost-control update --resource-group foundry-resource-group --account-name foundry-account --cost-control-name production-agents --if-none-match * --display-name Production agent monthly budget --rules "[{name:monthly-agent-budget,counter-key:[{type:agent}],unit:usd,amount:1000,period:month,recurring:True,match:{foundry-caller-agent-id:[customer-support-agent,sales-assistant-agent],foundry-caller-identity-oid:[11111111-2222-3333-4444-555555555555],foundry-caller-session-id:[production-session],foundry-project-id:[/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/foundry-resource-group/providers/Microsoft.CognitiveServices/accounts/foundry-account/projects/production]},thresholds:[{type:percentage,value:80,action:alert},{type:absolute,value:0,action:audit}]},{name:daily-tenant-budget,counter-key:[{type:custom,attribute:x-tenant-id}],unit:usd,amount:100,period:day,recurring:True,thresholds:[{type:percentage,value:90,action:alert}]}]"
     """
 
     _aaz_info = {
-        "version": "2026-07-15-preview",
+        "version": "2026-09-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cognitiveservices/accounts/{}/costcontrols/{}", "2026-07-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cognitiveservices/accounts/{}/costcontrols/{}", "2026-09-15-preview"],
         ]
     }
 
@@ -172,6 +172,7 @@ class Update(AAZCommand):
             help="The request attribute used by a custom dimension. This property is required for custom dimensions and must be omitted for built-in dimensions.",
             nullable=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9_.-]{0,127}$",
                 max_length=128,
             ),
         )
@@ -359,7 +360,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15-preview",
+                    "api-version", "2026-09-15-preview",
                     required=True,
                 ),
             }
@@ -555,7 +556,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15-preview",
+                    "api-version", "2026-09-15-preview",
                     required=True,
                 ),
             }
