@@ -88,17 +88,8 @@ class WorkspaceInfo:
         self.name = select_value('workspace', workspace_name)
         self.endpoint = endpoint if endpoint is not None else self._get_cached_endpoint(cmd)
 
-    def _endpoint_cache_identity(self, cmd):
-        from azure.cli.core._profile import Profile
-
-        if not all((self.subscription, self.resource_group, self.name)):
-            return None
-        subscription = Profile(cli_ctx=cmd.cli_ctx).get_subscription(self.subscription)
-        return {
-            'resource_id': _get_workspace_resource_id(self).lower(),
-            'arm_endpoint': cmd.cli_ctx.cloud.endpoints.resource_manager.rstrip('/').lower(),
-            'tenant_id': subscription['tenantId'].lower(),
-        }
+    def _endpoint_cache_key(self):
+        return _get_workspace_resource_id(self).lower()
 
     def _get_cached_endpoint(self, cmd):
         value = cmd.cli_ctx.config.get('quantum', self._ENDPOINT_CACHE_KEY, None)
@@ -108,10 +99,7 @@ class WorkspaceInfo:
             cache = json.loads(value)
         except (TypeError, ValueError):
             return None
-        if not isinstance(cache, dict) or cache.get('version') != 1:
-            return None
-        identity = self._endpoint_cache_identity(cmd)
-        if not identity or any(cache.get(key) != value for key, value in identity.items()):
+        if not isinstance(cache, dict) or cache.get('resource_id') != self._endpoint_cache_key():
             return None
         endpoint = cache.get('endpoint')
         return endpoint if isinstance(endpoint, str) and endpoint else None
@@ -125,12 +113,11 @@ class WorkspaceInfo:
     def save(self, cmd, endpoint=''):
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        identity = self._endpoint_cache_identity(cmd) if endpoint else None
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
-            if identity:
-                cache = dict(identity, version=1, endpoint=endpoint)
+            if endpoint:
+                cache = {'resource_id': self._endpoint_cache_key(), 'endpoint': endpoint}
                 cmd.cli_ctx.config.set_value('quantum', self._ENDPOINT_CACHE_KEY, json.dumps(cache))
             else:
                 cmd.cli_ctx.config.remove_option('quantum', self._ENDPOINT_CACHE_KEY)

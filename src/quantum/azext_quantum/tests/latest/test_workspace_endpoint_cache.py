@@ -20,14 +20,13 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
         self.addCleanup(directory.cleanup)
         self.config = CLIConfig(config_dir=directory.name, config_env_var_prefix='QUANTUM_CACHE_TEST',
                                 use_local_config=False)
-        self.cloud = SimpleNamespace(endpoints=SimpleNamespace(resource_manager='https://management.azure.com/'))
-        self.cmd = SimpleNamespace(cli_ctx=SimpleNamespace(config=self.config, cloud=self.cloud))
+        self.cmd = SimpleNamespace(cli_ctx=SimpleNamespace(config=self.config))
         stack = ExitStack()
         self.addCleanup(stack.close)
         self.subscription = stack.enter_context(patch(
             'azure.cli.core.commands.client_factory.get_subscription_id', return_value='saved-subscription'))
-        self.profile = stack.enter_context(patch('azure.cli.core._profile.Profile'))
-        self.profile.return_value.get_subscription.return_value = {'tenantId': 'saved-tenant'}
+        self.profile = stack.enter_context(patch(
+            'azure.cli.core._profile.Profile', side_effect=AssertionError('Cache must not create a Profile')))
         self.endpoint = 'https://saved-workspace.eastus.quantum.azure.com'
         self.other_endpoint = 'https://other-workspace.westus-v2.quantum.azure.com'
         self.arm = stack.enter_context(patch('azext_quantum._client_factory.cf_workspaces'))
@@ -44,17 +43,14 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
 
         cache = json.loads(self.config.get('quantum', 'workspace_endpoint_cache', '{}'))
         self.assertEqual(cache, {
-            'version': 1,
             'resource_id': '/subscriptions/saved-subscription/resourcegroups/saved-group/'
                            'providers/microsoft.quantum/workspaces/saved-workspace',
-            'arm_endpoint': 'https://management.azure.com',
-            'tenant_id': 'saved-tenant',
             'endpoint': self.endpoint,
         })
         self.assertEqual(self.config.get('defaults', 'endpoint'), 'devcenter-endpoint')
         self.assertEqual(self.config.get('defaults', 'group'), 'saved-group')
         self.assertEqual(self.config.get('defaults', 'workspace'), 'saved-workspace')
-        self.profile.return_value.get_subscription.assert_called_with('saved-subscription')
+        self.profile.assert_not_called()
 
     def test_matching_identity_uses_cache_without_arm(self):
         self.save_workspace()
@@ -95,16 +91,6 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
     def test_other_subscription_does_not_reuse_cache(self):
         self.save_workspace()
         self.subscription.return_value = 'other-subscription'
-        self.assertIsNone(WorkspaceInfo(self.cmd).endpoint)
-
-    def test_other_cloud_does_not_reuse_cache(self):
-        self.save_workspace()
-        self.cloud.endpoints.resource_manager = 'https://management.usgovcloudapi.net/'
-        self.assertIsNone(WorkspaceInfo(self.cmd).endpoint)
-
-    def test_other_tenant_does_not_reuse_cache(self):
-        self.save_workspace()
-        self.profile.return_value.get_subscription.return_value = {'tenantId': 'other-tenant'}
         self.assertIsNone(WorkspaceInfo(self.cmd).endpoint)
 
     def test_changed_defaults_do_not_reuse_cache(self):
@@ -150,16 +136,9 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
         self.arm.assert_not_called()
         self.assertEqual(self.config.get('quantum', 'workspace_endpoint_cache'), before)
 
-    def test_missing_workspace_identity_does_not_use_cache(self):
-        self.save_workspace()
-        self.config.remove_option('defaults', 'workspace')
-        self.assertIsNone(WorkspaceInfo(self.cmd).endpoint)
-
     def test_cache_identity_is_case_insensitive(self):
         self.save_workspace()
         self.subscription.return_value = 'SAVED-SUBSCRIPTION'
-        self.profile.return_value.get_subscription.return_value = {'tenantId': 'SAVED-TENANT'}
-        self.cloud.endpoints.resource_manager = 'https://MANAGEMENT.AZURE.COM'
         self.assertEqual(WorkspaceInfo(self.cmd, 'SAVED-GROUP', 'SAVED-WORKSPACE').endpoint, self.endpoint)
 
     def test_clear_removes_owned_cache_and_preserves_unrelated_settings(self):
@@ -186,9 +165,29 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
 
     def test_unreadable_cache_is_a_miss(self):
         self.save_workspace()
-        for value in ('not-json', '[]', 'null', '{"version": 99}', '{"version": 1}', ''):
+        for value in ('not-json', '[]', 'null', 'true', '42', '"text"', '{}', ''):
             with self.subTest(value=value):
                 self.config.set_value('quantum', 'workspace_endpoint_cache', value)
+                self.assertIsNone(WorkspaceInfo(self.cmd).endpoint)
+
+    def test_existing_json_cache_ignores_unused_fields(self):
+        self.save_workspace()
+        cache = json.loads(self.config.get('quantum', 'workspace_endpoint_cache'))
+        for version in (1, 99):
+            with self.subTest(version=version):
+                cache.update(version=version, arm_endpoint='https://other-cloud.example', tenant_id='other-tenant')
+                self.config.set_value('quantum', 'workspace_endpoint_cache', json.dumps(cache))
+                self.assertEqual(WorkspaceInfo(self.cmd).endpoint, self.endpoint)
+                self.assertIsNone(WorkspaceInfo(self.cmd, 'other-group', 'other-workspace').endpoint)
+        self.profile.assert_not_called()
+
+    def test_cache_requires_nonempty_string_endpoint(self):
+        self.save_workspace()
+        cache = json.loads(self.config.get('quantum', 'workspace_endpoint_cache'))
+        for endpoint in (None, '', 42, False, [], {}):
+            with self.subTest(endpoint=endpoint):
+                cache['endpoint'] = endpoint
+                self.config.set_value('quantum', 'workspace_endpoint_cache', json.dumps(cache))
                 self.assertIsNone(WorkspaceInfo(self.cmd).endpoint)
 
     def test_incomplete_cache_is_a_miss(self):
