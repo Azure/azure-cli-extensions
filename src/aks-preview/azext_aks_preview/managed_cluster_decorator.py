@@ -60,7 +60,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_VERSION_V1,
-    CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -95,8 +95,8 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
     perform_disable_azure_container_storage_v1,
     perform_enable_azure_container_storage_v1,
     perform_azure_container_storage_update,
-    perform_enable_distributed_cache,
-    perform_disable_distributed_cache,
+    perform_enable_distributed_accelerator,
+    perform_disable_distributed_accelerator,
 )
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
@@ -294,11 +294,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = perform_disable_azure_container_storage_v1
             external_functions["perform_azure_container_storage_update"] = perform_azure_container_storage_update
             external_functions[
-                "perform_enable_distributed_cache"
-            ] = perform_enable_distributed_cache
+                "perform_enable_distributed_accelerator"
+            ] = perform_enable_distributed_accelerator
             external_functions[
-                "perform_disable_distributed_cache"
-            ] = perform_disable_distributed_cache
+                "perform_disable_distributed_accelerator"
+            ] = perform_disable_distributed_accelerator
             external_functions["sanitize_loganalytics_ws_resource_id"] = sanitize_loganalytics_ws_resource_id
             # Override base module function with preview version that uses REST API to avoid
             # "Request Header Fields Too Large" errors
@@ -5172,15 +5172,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         enable_azure_container_storage_param = self.context.raw_param.get("enable_azure_container_storage")
         if enable_azure_container_storage_param:
-            from azext_aks_preview.azurecontainerstorage._helpers import is_distributed_cache_requested
+            from azext_aks_preview.azurecontainerstorage._helpers import is_distributed_accelerator_requested
 
-            # Distributed cache installs the install controller only and does
+            # Distributed accelerator installs the install controller only and does
             # not go through the v1/v2 storage pool logic below.
-            if is_distributed_cache_requested(enable_azure_container_storage_param):
+            if is_distributed_accelerator_requested(enable_azure_container_storage_param):
                 from azext_aks_preview.azurecontainerstorage._validators import (
-                    validate_enable_distributed_cache_params,
+                    validate_enable_distributed_accelerator_params,
                 )
-                validate_enable_distributed_cache_params(
+                validate_enable_distributed_accelerator_params(
                     enable_azure_container_storage_param,
                     False,
                     self.context.raw_param.get("storage_pool_name"),
@@ -5192,7 +5192,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.context.raw_param.get("container_storage_version"),
                 )
                 self.context.set_intermediate(
-                    "enable_distributed_cache",
+                    "enable_distributed_accelerator",
                     True,
                     overwrite_exists=True,
                 )
@@ -5865,8 +5865,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             "enable_azure_container_storage",
             default_value=False
         )
-        enable_distributed_cache = self.context.get_intermediate(
-            "enable_distributed_cache",
+        enable_distributed_accelerator = self.context.get_intermediate(
+            "enable_distributed_accelerator",
             default_value=False
         )
         enable_backup = self.context.raw_param.get("enable_backup", False)
@@ -5880,7 +5880,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             (enable_managed_identity and attach_acr) or
             need_grant_vnet_permission_to_cluster_identity or
             enable_azure_container_storage or
-            enable_distributed_cache or
+            enable_distributed_accelerator or
             enable_backup
         ):
             return True
@@ -6071,12 +6071,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         container_storage_version = self.context.get_intermediate("container_storage_version")
 
-        # enable distributed cache (independent of the storage pool flow)
-        enable_distributed_cache = self.context.get_intermediate(
-            "enable_distributed_cache"
+        # enable distributed accelerator (independent of the storage pool flow)
+        enable_distributed_accelerator = self.context.get_intermediate(
+            "enable_distributed_accelerator"
         )
-        if enable_distributed_cache:
-            self.context.external_functions.perform_enable_distributed_cache(
+        if enable_distributed_accelerator:
+            self.context.external_functions.perform_enable_distributed_accelerator(
                 self.cmd,
                 self.context.get_resource_group_name(),
                 self.context.get_name(),
@@ -6621,16 +6621,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # pylint: disable=too-many-nested-blocks
         if enable_azure_container_storage_param is not None or disable_azure_container_storage_param is not None:
             from azext_aks_preview.azurecontainerstorage._helpers import (
-                is_distributed_cache_requested,
+                is_distributed_accelerator_requested,
                 should_delete_extension,
                 get_container_storage_extension_installed,
             )
 
-            # Distributed cache is enabled/disabled independently of the storage
-            # pool flow. Disable happens explicitly (`distributedcache`) or
+            # Distributed accelerator is enabled/disabled independently of the storage
+            # pool flow. Disable happens explicitly (`distributedaccelerator`) or
             # implicitly on a full teardown (bare `--disable...` or `all`).
-            dc_enable_requested = is_distributed_cache_requested(enable_azure_container_storage_param)
-            dc_disable_requested_explicit = is_distributed_cache_requested(disable_azure_container_storage_param)
+            dc_enable_requested = is_distributed_accelerator_requested(enable_azure_container_storage_param)
+            dc_disable_requested_explicit = is_distributed_accelerator_requested(disable_azure_container_storage_param)
             disable_all_or_flag = should_delete_extension(disable_azure_container_storage_param)
 
             if dc_enable_requested or dc_disable_requested_explicit or disable_all_or_flag:
@@ -6642,15 +6642,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
 
                 try:
-                    is_distributed_cache_installed, _ = get_container_storage_extension_installed(
+                    is_distributed_accelerator_installed, _ = get_container_storage_extension_installed(
                         self.cmd,
                         self.context.get_resource_group_name(),
                         self.context.get_name(),
-                        CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+                        CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
                     )
                 except Exception as ex:
                     raise UnknownError(
-                        f"An error occurred while checking if distributed cache "
+                        f"An error occurred while checking if distributed accelerator "
                         f"is installed on the cluster: {str(ex)}"
                     ) from ex
 
@@ -6661,11 +6661,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
                 if dc_enable_requested:
                     from azext_aks_preview.azurecontainerstorage._validators import (
-                        validate_enable_distributed_cache_params,
+                        validate_enable_distributed_accelerator_params,
                     )
-                    validate_enable_distributed_cache_params(
+                    validate_enable_distributed_accelerator_params(
                         enable_azure_container_storage_param,
-                        is_distributed_cache_installed,
+                        is_distributed_accelerator_installed,
                         storage_pool_name,
                         pool_sku,
                         pool_option,
@@ -6675,15 +6675,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         self.context.raw_param.get("container_storage_version"),
                     )
                     self.context.set_intermediate(
-                        "enable_distributed_cache", True, overwrite_exists=True
+                        "enable_distributed_accelerator", True, overwrite_exists=True
                     )
                 elif dc_disable_requested_explicit:
                     from azext_aks_preview.azurecontainerstorage._validators import (
-                        validate_disable_distributed_cache_params,
+                        validate_disable_distributed_accelerator_params,
                     )
-                    validate_disable_distributed_cache_params(
+                    validate_disable_distributed_accelerator_params(
                         disable_azure_container_storage_param,
-                        is_distributed_cache_installed,
+                        is_distributed_accelerator_installed,
                         storage_pool_name,
                         pool_sku,
                         pool_option,
@@ -6691,19 +6691,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         self.context.raw_param.get("container_storage_version"),
                     )
                     self.context.set_intermediate(
-                        "disable_distributed_cache", True, overwrite_exists=True
+                        "disable_distributed_accelerator", True, overwrite_exists=True
                     )
-                elif disable_all_or_flag and is_distributed_cache_installed:
-                    # Bare `--disable...` / `all` also tears down distributed cache.
+                elif disable_all_or_flag and is_distributed_accelerator_installed:
+                    # Bare `--disable...` / `all` also tears down distributed accelerator.
                     self.context.set_intermediate(
-                        "disable_distributed_cache", True, overwrite_exists=True
+                        "disable_distributed_accelerator", True, overwrite_exists=True
                     )
 
                 self.context.set_intermediate(
-                    "is_distributed_cache_installed", is_distributed_cache_installed, overwrite_exists=True
+                    "is_distributed_accelerator_installed", is_distributed_accelerator_installed, overwrite_exists=True
                 )
 
-                # Explicit distributed cache operations do not touch the storage
+                # Explicit distributed accelerator operations do not touch the storage
                 # pool flow.
                 if dc_enable_requested or dc_disable_requested_explicit:
                     return mc
@@ -6731,7 +6731,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if not (is_storage_v1_installed or is_storage_v2_installed):
                     # Distributed-cache-only cluster: teardown already queued,
                     # nothing more to disable.
-                    if is_distributed_cache_installed:
+                    if is_distributed_accelerator_installed:
                         return mc
                     raise InvalidArgumentValueError(
                         'Cannot disable Azure Container Storage as it could not be found on the cluster.'
@@ -9027,11 +9027,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             disable_azure_container_storage = self.context.get_intermediate(
                 "disable_azure_container_storage", default_value=False
             )
-            enable_distributed_cache = self.context.get_intermediate(
-                "enable_distributed_cache", default_value=False
+            enable_distributed_accelerator = self.context.get_intermediate(
+                "enable_distributed_accelerator", default_value=False
             )
-            disable_distributed_cache = self.context.get_intermediate(
-                "disable_distributed_cache", default_value=False
+            disable_distributed_accelerator = self.context.get_intermediate(
+                "disable_distributed_accelerator", default_value=False
             )
             keyvault_id = self.context.get_keyvault_id()
             enable_azure_keyvault_secrets_provider_addon = self.context.get_enable_kv() or (
@@ -9044,7 +9044,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Note: monitoring_addon_disable_postprocessing_required is no longer used - cleanup is done upfront
             # pylint: disable=too-many-boolean-expressions
             if (enable_azure_container_storage or disable_azure_container_storage) or \
-               (enable_distributed_cache or disable_distributed_cache) or \
+               (enable_distributed_accelerator or disable_distributed_accelerator) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
                (monitoring_addon_postprocessing_required) or \
                enable_backup:
@@ -9129,28 +9129,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         existing_ephemeral_nvme_perf_tier = self.context.get_intermediate("current_ephemeral_nvme_perf_tier")
         pool_option = self.context.raw_param.get("storage_pool_option")
 
-        # enable/disable distributed cache (independent of the storage pool flow)
-        enable_distributed_cache = self.context.get_intermediate(
-            "enable_distributed_cache"
+        # enable/disable distributed accelerator (independent of the storage pool flow)
+        enable_distributed_accelerator = self.context.get_intermediate(
+            "enable_distributed_accelerator"
         )
-        disable_distributed_cache = self.context.get_intermediate(
-            "disable_distributed_cache"
+        disable_distributed_accelerator = self.context.get_intermediate(
+            "disable_distributed_accelerator"
         )
-        is_distributed_cache_installed = self.context.get_intermediate("is_distributed_cache_installed")
-        if enable_distributed_cache:
-            self.context.external_functions.perform_enable_distributed_cache(
+        is_distributed_accelerator_installed = self.context.get_intermediate("is_distributed_accelerator_installed")
+        if enable_distributed_accelerator:
+            self.context.external_functions.perform_enable_distributed_accelerator(
                 self.cmd,
                 self.context.get_resource_group_name(),
                 self.context.get_name(),
-                is_distributed_cache_installed,
+                is_distributed_accelerator_installed,
                 is_called_from_extension=True,
             )
-        if disable_distributed_cache:
-            self.context.external_functions.perform_disable_distributed_cache(
+        if disable_distributed_accelerator:
+            self.context.external_functions.perform_disable_distributed_accelerator(
                 self.cmd,
                 self.context.get_resource_group_name(),
                 self.context.get_name(),
-                is_distributed_cache_installed,
+                is_distributed_accelerator_installed,
                 is_called_from_extension=True,
             )
 
