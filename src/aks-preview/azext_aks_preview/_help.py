@@ -338,6 +338,16 @@ helps['aks create'] = f"""
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
+        - name: --syslog-port
+          type: int
+          short-summary: Host port used by the Azure Monitor agent to collect syslog. Defaults to 28330 when unset.
+          long-summary: Applies to the Azure Monitor profile, configured with --enable-azure-monitor-logs. Distinct from --enable-syslog, which toggles syslog collection itself.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -869,6 +879,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --enable-addons monitoring
         - name: Create a kubernetes cluster with Azure Monitor logs enabled (shorthand)
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+        - name: Create a kubernetes cluster with Azure Monitor logs, Prometheus scraping disabled and a custom syslog port
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs --disable-prometheus-metrics-scraping --syslog-port 28331
         - name: Create a kubernetes cluster with OpenTelemetry metrics on custom port
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --enable-azure-monitor-metrics
         - name: Create a kubernetes cluster with OpenTelemetry logs and traces on custom ports
@@ -1166,6 +1178,16 @@ helps['aks update'] = """
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
+        - name: --syslog-port
+          type: int
+          short-summary: Host port used by the Azure Monitor agent to collect syslog. Defaults to 28330 when unset.
+          long-summary: Applies to the Azure Monitor profile, configured with --enable-azure-monitor-logs. Distinct from --enable-syslog, which toggles syslog collection itself.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -1715,6 +1737,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
       - name: Enable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+      - name: Re-enable Prometheus scraping and change the syslog port on a cluster with Azure Monitor logs enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-prometheus-metrics-scraping --syslog-port 29000
       - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
       - name: Enable Azure Backup with a custom strategy using an existing vault and policy

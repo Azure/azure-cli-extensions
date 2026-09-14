@@ -62,6 +62,27 @@ azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
 ]
 
 
+def warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addons):
+    """Warn when the user explicitly opts into legacy shared key authentication for monitoring.
+
+    The argument level deprecation already fires for any explicit use of
+    --enable-msi-auth-for-monitoring. This adds the migration pointer for the value that actually
+    leaves the cluster on shared key authentication, which is also the state that later blocks
+    --enable-azure-monitor-logs.
+    """
+    if enable_msi_auth_for_monitoring is not False:
+        return
+    if "monitoring" not in (addons or ""):
+        return
+    logger.warning(
+        "--enable-msi-auth-for-monitoring false configures Container Insights with legacy shared "
+        "key authentication. Managed identity authentication is recommended, and is required by "
+        "'--enable-azure-monitor-logs'. See "
+        "https://learn.microsoft.com/en-us/azure/azure-monitor/containers/"
+        "container-insights-authentication?tabs=cli#migrate-to-managed-identity-authentication"
+    )
+
+
 # pylint: disable=too-many-locals
 def enable_addons(
     cmd,
@@ -90,6 +111,7 @@ def enable_addons(
     ampls_resource_id=None,
     enable_high_log_scale_mode=False,
 ):
+    warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addons)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
     msi_auth = False

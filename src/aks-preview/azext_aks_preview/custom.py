@@ -94,6 +94,7 @@ from azext_aks_preview.addonconfiguration import (
     add_ingress_appgw_addon_role_assignment,
     add_virtual_node_role_assignment,
     enable_addons,
+    warn_on_legacy_monitoring_auth,
 )
 
 from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
@@ -1316,6 +1317,9 @@ def aks_create(
     data_collection_settings=None,
     ampls_resource_id=None,
     enable_high_log_scale_mode=None,
+    syslog_port=None,
+    enable_prometheus_metrics_scraping=False,
+    disable_prometheus_metrics_scraping=False,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -1610,6 +1614,9 @@ def aks_update(
     data_collection_settings=None,
     enable_high_log_scale_mode=None,
     ampls_resource_id=None,
+    syslog_port=None,
+    enable_prometheus_metrics_scraping=False,
+    disable_prometheus_metrics_scraping=False,
     enable_secret_rotation=False,
     disable_secret_rotation=False,
     rotation_poll_interval=None,
@@ -3728,6 +3735,7 @@ def aks_enable_addons(
     enable_high_log_scale_mode=None,
     aks_custom_headers=None,
 ):
+    warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addons)
     headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here

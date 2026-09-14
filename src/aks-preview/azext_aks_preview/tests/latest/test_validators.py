@@ -2802,3 +2802,80 @@ class TestValidateOsSku(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ContainerInsightsSettingsNamespace(SimpleNamespace):
+    """Namespace for the R4 containerInsights tuning flags, with CLI defaults."""
+
+    def __init__(self, **kwargs):
+        defaults = {
+            "syslog_port": None,
+            "enable_prometheus_metrics_scraping": False,
+            "disable_prometheus_metrics_scraping": False,
+            "enable_azure_monitor_logs": False,
+            "disable_azure_monitor_logs": False,
+        }
+        defaults.update(kwargs)
+        super().__init__(**defaults)
+
+
+class TestValidateContainerInsightsSettings(unittest.TestCase):
+    def test_no_flags_is_valid(self):
+        namespace = ContainerInsightsSettingsNamespace()
+        validators.validate_container_insights_settings_for_create(namespace)
+        validators.validate_container_insights_settings_for_update(namespace)
+
+    def test_scraping_flags_are_mutually_exclusive(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            enable_prometheus_metrics_scraping=True,
+            disable_prometheus_metrics_scraping=True,
+            enable_azure_monitor_logs=True,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_syslog_port_out_of_range(self):
+        for bad_port in (0, -1, 65536):
+            namespace = ContainerInsightsSettingsNamespace(
+                syslog_port=bad_port, enable_azure_monitor_logs=True
+            )
+            with self.assertRaises(InvalidArgumentValueError):
+                validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_syslog_port_boundaries_are_valid(self):
+        for port in (1, 28330, 65535):
+            namespace = ContainerInsightsSettingsNamespace(
+                syslog_port=port, enable_azure_monitor_logs=True
+            )
+            validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_create_requires_enable_azure_monitor_logs(self):
+        # Without the AMP profile these flags would be silently dropped, so fail fast.
+        namespace = ContainerInsightsSettingsNamespace(syslog_port=28331)
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_create(namespace)
+        self.assertIn("--syslog-port", str(cm.exception))
+        self.assertIn("--enable-azure-monitor-logs", str(cm.exception))
+
+    def test_create_lists_every_specified_flag_in_the_error(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            syslog_port=28331, disable_prometheus_metrics_scraping=True
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_create(namespace)
+        self.assertIn("--syslog-port", str(cm.exception))
+        self.assertIn("--disable-prometheus-metrics-scraping", str(cm.exception))
+
+    def test_update_defers_dependency_check_to_the_decorator(self):
+        # On update the cluster may already have Azure Monitor logs enabled, which the namespace
+        # validator cannot see, so it must not reject the flag on its own.
+        namespace = ContainerInsightsSettingsNamespace(syslog_port=29000)
+        validators.validate_container_insights_settings_for_update(namespace)
+
+    def test_conflicts_with_disable_azure_monitor_logs(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            syslog_port=29000, disable_azure_monitor_logs=True
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_update(namespace)
+        self.assertIn("--disable-azure-monitor-logs", str(cm.exception))

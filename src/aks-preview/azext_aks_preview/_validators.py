@@ -1264,6 +1264,59 @@ def validate_azure_monitor_logs_enable_disable(namespace):
         )
 
 
+def _specified_container_insights_setting_flags(namespace):
+    """Return the AMP containerInsights tuning flags explicitly present on the command line."""
+    flags = []
+    if getattr(namespace, 'syslog_port', None) is not None:
+        flags.append("--syslog-port")
+    if getattr(namespace, 'enable_prometheus_metrics_scraping', False):
+        flags.append("--enable-prometheus-metrics-scraping")
+    if getattr(namespace, 'disable_prometheus_metrics_scraping', False):
+        flags.append("--disable-prometheus-metrics-scraping")
+    return flags
+
+
+def _validate_container_insights_settings_common(namespace):
+    """Validations for the containerInsights tuning flags that do not depend on cluster state."""
+    if (getattr(namespace, 'enable_prometheus_metrics_scraping', False) and
+            getattr(namespace, 'disable_prometheus_metrics_scraping', False)):
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-prometheus-metrics-scraping and "
+            "--disable-prometheus-metrics-scraping at the same time."
+        )
+
+    syslog_port = getattr(namespace, 'syslog_port', None)
+    if syslog_port is not None and not 1 <= syslog_port <= 65535:
+        raise InvalidArgumentValueError(
+            f"--syslog-port must be a valid TCP port between 1 and 65535, got {syslog_port}."
+        )
+
+    flags = _specified_container_insights_setting_flags(namespace)
+    if flags and getattr(namespace, 'disable_azure_monitor_logs', False):
+        raise ArgumentUsageError(
+            f"{', '.join(flags)} cannot be specified with --disable-azure-monitor-logs."
+        )
+
+
+def validate_container_insights_settings_for_create(namespace):
+    """Validate the containerInsights tuning flags for create operations."""
+    _validate_container_insights_settings_common(namespace)
+
+    flags = _specified_container_insights_setting_flags(namespace)
+    if flags and not getattr(namespace, 'enable_azure_monitor_logs', False):
+        raise ArgumentUsageError(
+            f"{', '.join(flags)} requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+
+
+def validate_container_insights_settings_for_update(namespace):
+    """Validate the containerInsights tuning flags for update operations."""
+    _validate_container_insights_settings_common(namespace)
+    # Whether Azure Monitor logs is already enabled on the cluster is only visible once the
+    # ManagedCluster has been fetched, so that dependency check is deferred to the decorator.
+
+
 def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
     """validate NAT gateway profile managed outbound IPv6 count"""
     if namespace.nat_gateway_managed_outbound_ipv6_count is not None:
