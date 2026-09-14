@@ -5,6 +5,8 @@ Release History
 
 1.0.0b27
 ++++++++++
+* [BREAKING CHANGE] ``az quantum workspace update`` no longer changes saved resource-group or workspace-name defaults or the workspace endpoint cache. Use ``az quantum workspace set`` to save or refresh these settings.
+* Fixed ``az quantum workspace delete`` to clear saved defaults only when deleting the saved workspace, including subscription and case-insensitive name matching. Environment and local defaults no longer cause unrelated global settings to be cleared.
 * Scoped the workspace endpoint cache to its subscription, resource group, and workspace so it is not reused for other workspaces.
 * Moved the cache to ``quantum.workspace_endpoint_cache``. Re-run ``az quantum workspace set`` to populate the new cache.
 * Clarified the persistent flag defaults and endpoint caching performed by ``az quantum workspace set``. Automatic stale-endpoint invalidation is not included.

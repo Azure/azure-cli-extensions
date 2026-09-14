@@ -104,6 +104,17 @@ class WorkspaceInfo:
         endpoint = cache.get('endpoint')
         return endpoint if isinstance(endpoint, str) and endpoint else None
 
+    def is_saved(self, cmd):
+        from configparser import ConfigParser
+
+        config = ConfigParser(interpolation=None)
+        config.read(cmd.cli_ctx.config.config_path, encoding='utf-8')
+        try:
+            cache = json.loads(config.get('quantum', self._ENDPOINT_CACHE_KEY, fallback='{}'))
+        except ValueError:
+            return False
+        return isinstance(cache, dict) and cache.get('resource_id') == self._endpoint_cache_key()
+
     def clear(self):
         self.subscription = ''
         self.resource_group = ''
@@ -554,10 +565,8 @@ def delete(cmd, resource_group_name, workspace_name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
-    curr_ws = WorkspaceInfo(cmd)
-    if (curr_ws.resource_group == info.resource_group and curr_ws.name == info.name):
-        curr_ws.clear()
-        curr_ws.save(cmd)
+    if info.is_saved(cmd):
+        clear(cmd)
     # Get updated information from the affected workspace
     ws = client.get(info.resource_group, info.name)
     return ws
@@ -736,7 +745,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
 
 def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, quota=None):
     """
-    Update the default Azure Quantum workspace.
+    Update the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -763,7 +772,6 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     lropoller = client.begin_create_or_update(info.resource_group, info.name, ws)
     if lropoller:
         ws = lropoller.result()
-        info.save(cmd, ws.properties.endpoint_uri)
     return ws
 
 
