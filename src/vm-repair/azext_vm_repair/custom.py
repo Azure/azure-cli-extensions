@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
+import re
 import shlex
 import timeit
 import traceback
@@ -14,6 +15,7 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.mgmt.core.tools import parse_resource_id
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
@@ -44,6 +46,8 @@ from .repair_utils import (
     _check_linux_hyperV_gen,
     _select_distro_linux_gen2,
     _set_repair_map_url,
+    REPAIR_LIBRARY_FORK,
+    REPAIR_LIBRARY_BRANCH,
     _is_gen2,
     _unlock_encrypted_vm_run,
     _create_repair_vm,
@@ -57,6 +61,97 @@ from .repair_utils import (
 )
 
 logger = get_logger(__name__)
+
+PREVIEW_URL_ERROR = ("Invalid preview url. Write full URL of map.json file. "
+                     "example https://github.com/{user}/repair-script-library/blob/main/map.json. "
+                     "The branch name must be a single path segment.")
+
+# The driver downloads from https://github.com/<fork>/repair-script-library/tarball/<branch>/,
+# so the repository name and a single-segment branch are both part of the contract.
+PREVIEW_URL_PATTERN = re.compile(
+    r'^https://github\.com/(?P<fork>[^/]+)/repair-script-library/(?:blob|tree)/(?P<branch>[^/]+)/map\.json$')
+
+
+def _parse_preview_url(preview):
+    """Extract the fork and branch from a preview map.json URL.
+
+    The URL is read positionally, so a branch name containing a slash shifts the fork to the
+    repository name and resolves to an entirely different GitHub organization. Reject anything
+    that does not match the documented shape rather than downloading scripts from a repository
+    the caller never named.
+    """
+    match = PREVIEW_URL_PATTERN.match(str(preview).strip())
+    if not match:
+        raise InvalidArgumentValueError(PREVIEW_URL_ERROR)
+    return match.group('fork'), match.group('branch')
+
+
+def _build_repo_params(preview, is_linux):
+    """Build the run-command parameters telling the run driver which script library to download.
+
+    The Linux driver receives parameters positionally, so the fork and branch are always sent for
+    Linux. Omitting them there would both shift the positions of the script parameters that follow
+    and leave the driver downloading the default library while the run id resolved from a fork.
+    """
+    fork_name = REPAIR_LIBRARY_FORK
+    branch_name = REPAIR_LIBRARY_BRANCH
+
+    if preview:
+        fork_name, branch_name = _parse_preview_url(preview)
+    elif not is_linux:
+        # The Windows driver declares these as named parameters with the same defaults.
+        return []
+
+    return ['repo_fork="{}"'.format(fork_name), 'repo_branch="{}"'.format(branch_name)]
+
+
+def _set_source_resource_context(command, source_vm, source_vm_instance_view=None, disk_controller_type=None):
+    """Populate telemetry-only resource shape without allowing enrichment to fail a command."""
+    source_controller = disk_controller_type
+    if source_controller is None:
+        try:
+            # Shared helper falls back to an ARM query when the SDK does not model the field.
+            source_controller = _fetch_source_disk_controller_type(source_vm)
+        except Exception as exception:
+            logger.debug('Could not determine source VM disk controller type for telemetry: %s', exception)
+
+    hyperv_generation = None
+    if source_vm_instance_view:
+        try:
+            hyperv_generation = 'V{}'.format(_is_gen2(source_vm_instance_view))
+        except (AttributeError, TypeError, ValueError) as exception:
+            logger.debug('Could not determine source VM Hyper-V generation for telemetry: %s', exception)
+
+    if hasattr(command, 'set_resource_context'):
+        hardware_profile = getattr(source_vm, 'hardware_profile', None)
+        command.set_resource_context(
+            os_family='linux' if _is_linux_os(source_vm) else 'windows',
+            vm_size=getattr(hardware_profile, 'vm_size', None),
+            disk_controller_type=source_controller,
+            hyperv_generation=hyperv_generation)
+    return source_controller
+
+
+def _enrich_source_resource_context(command, cmd, source_vm, resource_group_name, vm_name):
+    """Add instance-view telemetry when available without changing command success or failure."""
+    try:
+        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+    except Exception as exception:
+        logger.debug('Could not fetch source VM instance view for telemetry: %s', exception)
+        source_vm_instance_view = None
+    _set_source_resource_context(command, source_vm, source_vm_instance_view)
+
+
+def _enrich_repair_controller_context(command, cmd, resource_group_name, vm_name):
+    """Add the actual repair VM controller when available without changing command behavior."""
+    if not hasattr(command, 'set_resource_context'):
+        return
+    try:
+        repair_vm = get_vm(cmd, resource_group_name, vm_name)
+        repair_controller = _fetch_source_disk_controller_type(repair_vm)
+        command.set_resource_context(repair_vm_disk_controller_type=repair_controller)
+    except Exception as exception:
+        logger.debug('Could not fetch repair VM disk controller type for telemetry: %s', exception)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, disk_controller_type=None, yes=False):
@@ -114,6 +209,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Checking if the OS of the source VM is Linux and what the Hyper-V generation is.
         is_linux = _is_linux_os(source_vm)
         vm_hypervgen = _is_gen2(source_vm_instance_view)
+        source_controller = _fetch_source_disk_controller_type(source_vm)
+        _set_source_resource_context(command, source_vm, source_vm_instance_view,
+                                     disk_controller_type=source_controller)
 
         # Fetching the name of the OS disk and checking if it's managed.
         target_disk_name = source_vm.storage_profile.os_disk.name
@@ -232,15 +330,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Adding the size to the command.
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
-        source_controller = None if disk_controller_type else _fetch_source_disk_controller_type(source_vm)
         supported_controllers = []
-        if source_controller and str(source_controller).lower() == 'nvme':
+        if not disk_controller_type and source_controller and str(source_controller).lower() == 'nvme':
             supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
         selected_controller, level, message = _select_repair_disk_controller_type(
             source_controller, supported_controllers, disk_controller_type)
         getattr(logger, level)(message)
         if selected_controller:
             create_repair_vm_command += ' --disk-controller-type {controller}'.format(controller=selected_controller)
+        if hasattr(command, 'set_resource_context'):
+            command.set_resource_context(repair_vm_disk_controller_type=selected_controller)
 
         # Setting the availability zone for the repair VM.
         # If the source VM has availability zones, the first one is chosen for the repair VM.
@@ -521,12 +620,16 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     try:
         # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)  # Fetch the source VM data
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)  # Check if the source VM uses managed disks
         if repair_vm_id:
             logger.info('Repair VM ID: %s', repair_vm_id)
             repair_vm_id = parse_resource_id(repair_vm_id)  # Parse the repair VM ID
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
+            _enrich_repair_controller_context(
+                command, cmd, repair_resource_group, repair_vm_name)
 
             # For MANAGED DISK
             if is_managed:
@@ -617,6 +720,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     logger.debug('vm repair run parameters: vm_name: %s, resource_group_name: %s, run_id: %s, repair_vm_id: %s, custom_script_file: %s, parameters: %s, run_on_repair: %s, preview: %s',
                  vm_name, resource_group_name, run_id, repair_vm_id, custom_script_file, parameters, run_on_repair, preview)
 
+    # Reject a bad preview url before the command helper exists: its destructor runs at interpreter
+    # shutdown when the command aborts early, which loses the telemetry and prints a shutdown traceback.
+    if preview:
+        _parse_preview_url(preview)
+
     # Initiate a command helper object for logging and status tracking
     command = command_helper(logger, cmd, 'vm repair run')
 
@@ -624,7 +732,6 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
 
-    # Set the repair map URL if a preview is available
     if preview:
         _set_repair_map_url(preview)
 
@@ -634,6 +741,8 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
         # Determine the OS of the source VM
         is_linux = _is_linux_os(source_vm)
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
 
         # Choose the appropriate script based on the OS of the source VM
         if is_linux:
@@ -646,9 +755,14 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             repair_vm_id = parse_resource_id(repair_vm_id)
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
+            _enrich_repair_controller_context(
+                command, cmd, repair_resource_group, repair_vm_name)
         else:
             repair_vm_name = vm_name
             repair_resource_group = resource_group_name
+            if hasattr(command, 'set_resource_context'):
+                command.set_resource_context(
+                    repair_vm_disk_controller_type=command.disk_controller_type)
 
         run_command_params = []
         additional_scripts = []
@@ -664,15 +778,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             additional_scripts.append(custom_script_file)
 
         # If a preview URL is provided, validate it and extract the fork and branch names
-        if preview:
-            parts = preview.split('/')
-            if len(parts) < 7 or parts.index('map.json') == -1:
-                raise ValueError('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
-            last_index = parts.index('map.json')
-            fork_name = parts[last_index - 4]
-            branch_name = parts[last_index - 1]
-            run_command_params.append('repo_fork="{}"'.format(fork_name))
-            run_command_params.append('repo_branch="{}"'.format(branch_name))
+        run_command_params.extend(_build_repo_params(preview, is_linux))
 
         # Append parameters for the script
         if parameters:
@@ -782,9 +888,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 # This method lists all available repair scripts
 def list_scripts(cmd, preview=None):
     # Initiate a command helper object for logging and status tracking
+    if preview:
+        _parse_preview_url(preview)
+
     command = command_helper(logger, cmd, 'vm repair list-scripts')
 
-    # Set the repair map URL if a preview is available
     if preview:
         _set_repair_map_url(preview)
 
@@ -1010,6 +1118,13 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     # Initialize command helper object
     command = command_helper(logger, cmd, 'vm repair repair-and-restore')
 
+    try:
+        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
+    except Exception as exception:
+        logger.debug('Could not fetch source VM resource shape for telemetry: %s', exception)
+
     # Generate a random password for the repair operation
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
@@ -1039,6 +1154,8 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_vm_name = create_out['repair_vm_name']
     copy_disk_name = create_out['copied_disk_name']
     repair_group_name = create_out['repair_resource_group']
+    _enrich_repair_controller_context(
+        command, cmd, repair_group_name, repair_vm_name)
 
     # Log that the fstab run command is about to be executed
     logger.info('Running fstab run command')

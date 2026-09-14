@@ -3,11 +3,18 @@
 Release History
 ===============
 
-1.0.0b26
+1.0.0b27
 ++++++++++
 * Scoped the workspace endpoint cache to its subscription, resource group, workspace, cloud, and tenant so it is not reused for other workspaces.
 * Moved the cache to ``quantum.workspace_endpoint_cache``. Re-run ``az quantum workspace set`` to populate the new cache.
 * Clarified the persistent flag defaults and endpoint caching performed by ``az quantum workspace set``. Automatic stale-endpoint invalidation is not included.
+
+1.0.0b26
+++++++++++++++
+* Added the ``az quantum suite-offer quotas`` command to view quota allocations merged with their consumed usages for a suite offer in the subscription.
+* Added the ``az quantum suite-offer target list`` command to list the targets, availability, and overall, Standard, and High average queue times available through a suite offer, without requiring a workspace.
+* Updated the ``az quantum workspace quotas`` command to include v2 target quota allocations and usages while preserving the existing response fields for v1 workspaces.
+* Added always-on validation for V2 workspace target quota allocations on create and update, allowing requested Standard and High values between current workspace usage and suite target allocation, inclusive.
 
 1.0.0b25
 ++++++++++++++
