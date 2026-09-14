@@ -23,7 +23,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
-    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
     CONST_ACSTOR_V1_K8S_EXTENSION_NAME,
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
 )
@@ -305,13 +305,13 @@ def should_delete_extension(storage_options_to_remove) -> bool:
     )
 
 
-def is_distributed_cache_requested(storage_options) -> bool:
-    # Detect whether distributed cache is among the requested storage options.
+def is_distributed_accelerator_requested(storage_options) -> bool:
+    # Detect whether distributed accelerator is among the requested storage options.
     if storage_options is None or storage_options is True:
         return False
     if isinstance(storage_options, list):
-        return CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE in storage_options
-    return storage_options == CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE
+        return CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR in storage_options
+    return storage_options == CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR
 
 
 def get_container_storage_extension_installed(

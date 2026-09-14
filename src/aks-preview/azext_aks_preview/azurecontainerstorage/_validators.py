@@ -21,7 +21,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
-    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
 )
 from azext_aks_preview.azurecontainerstorage._helpers import (
     get_vm_sku_details
@@ -572,7 +572,7 @@ def validate_disable_azure_container_storage_params(
         )
 
 
-def validate_enable_distributed_cache_params(
+def validate_enable_distributed_accelerator_params(
     enablement_option,
     is_extension_installed,
     storage_pool_name,
@@ -583,25 +583,25 @@ def validate_enable_distributed_cache_params(
     ephemeral_disk_nvme_perf_tier,
     container_storage_version=None,
 ):
-    # Distributed cache has no storage pool construct, so none of the storage
+    # Distributed accelerator has no storage pool construct, so none of the storage
     # pool parameters are supported.
     enablement_option_arr = enablement_option if isinstance(enablement_option, list) else [enablement_option]
     other_pool_types = [
         opt for opt in enablement_option_arr
-        if opt != CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE
+        if opt != CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR
     ]
     if other_pool_types:
         options_display = "', '".join(other_pool_types)
         raise InvalidArgumentValueError(
-            f"'{CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE}' cannot be combined with other storage "
-            f"options ('{options_display}'). Distributed cache is enabled independently. "
-            f"Please run --enable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE} "
+            f"'{CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}' cannot be combined with other storage "
+            f"options ('{options_display}'). Distributed accelerator is enabled independently. "
+            f"Please run --enable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR} "
             "on its own."
         )
 
     if is_extension_installed:
         raise InvalidArgumentValueError(
-            'Cannot enable distributed cache as it is already enabled on the cluster.'
+            'Cannot enable distributed accelerator as it is already enabled on the cluster.'
         )
 
     unsupported_params = []
@@ -624,13 +624,13 @@ def validate_enable_distributed_cache_params(
         params_defined = ', '.join(unsupported_params)
         raise InvalidArgumentValueError(
             f'{params_defined} cannot be used with '
-            f'--enable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE}. '
-            'Distributed cache does not require or support any storage pool configuration. '
+            f'--enable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
 
 
-def validate_disable_distributed_cache_params(
+def validate_disable_distributed_accelerator_params(
     disablement_option,
     is_extension_installed,
     storage_pool_name,
@@ -642,20 +642,20 @@ def validate_disable_distributed_cache_params(
     disablement_option_arr = disablement_option if isinstance(disablement_option, list) else [disablement_option]
     other_pool_types = [
         opt for opt in disablement_option_arr
-        if opt != CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE
+        if opt != CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR
     ]
     if other_pool_types:
         options_display = "', '".join(other_pool_types)
         raise InvalidArgumentValueError(
-            f"'{CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE}' cannot be combined with other storage "
-            f"options ('{options_display}'). Distributed cache is disabled independently. "
-            f"Please run --disable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE} "
+            f"'{CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}' cannot be combined with other storage "
+            f"options ('{options_display}'). Distributed accelerator is disabled independently. "
+            f"Please run --disable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR} "
             "on its own."
         )
 
     if not is_extension_installed:
         raise InvalidArgumentValueError(
-            'Cannot disable distributed cache as it could not be found on the cluster.'
+            'Cannot disable distributed accelerator as it could not be found on the cluster.'
         )
 
     unsupported_params = []
@@ -674,8 +674,8 @@ def validate_disable_distributed_cache_params(
         params_defined = ', '.join(unsupported_params)
         raise InvalidArgumentValueError(
             f'{params_defined} cannot be used with '
-            f'--disable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE}. '
-            'Distributed cache does not require or support any storage pool configuration. '
+            f'--disable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
 
