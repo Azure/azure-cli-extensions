@@ -12,9 +12,9 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_EXT_INSTALLATION_NAMESPACE,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
-    CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
-    CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAMESPACE,
-    CONST_DISTRIBUTED_CACHE_K8S_EXTENSION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAMESPACE,
+    CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
     CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
@@ -802,7 +802,7 @@ def perform_azure_container_storage_update(
             ) from delete_ex
 
 
-def perform_enable_distributed_cache(
+def perform_enable_distributed_accelerator(
     cmd,
     resource_group,
     cluster_name,
@@ -811,7 +811,7 @@ def perform_enable_distributed_cache(
 ):
     # This will be set true only when aks-preview extension is used
     # and we want the aks-preview ManagedClusterDecorator to call the
-    # perform_enable_distributed_cache function.
+    # perform_enable_distributed_accelerator function.
     if not is_called_from_extension:
         return
 
@@ -822,7 +822,7 @@ def perform_enable_distributed_cache(
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
 
     if is_extension_installed:
-        logger.warning("Distributed cache is already enabled on the cluster.")
+        logger.warning("Distributed accelerator is already enabled on the cluster.")
         return
 
     try:
@@ -831,43 +831,43 @@ def perform_enable_distributed_cache(
             client,
             resource_group,
             cluster_name,
-            CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+            CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
             "managedClusters",
-            CONST_DISTRIBUTED_CACHE_K8S_EXTENSION_NAME,
+            CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
             auto_upgrade_minor_version=True,
             release_train="stable",
             scope="cluster",
-            release_namespace=CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAMESPACE,
+            release_namespace=CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAMESPACE,
         )
         long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
         if long_op_result.provisioning_state == "Succeeded":
-            logger.warning("Distributed cache successfully installed")
+            logger.warning("Distributed accelerator successfully installed")
     except Exception as ex:  # pylint: disable=broad-except
-        logger.error("Distributed cache failed to install.\nError: %s", ex)
-        logger.warning("Cleaning up the cluster by disabling distributed cache")
+        logger.error("Distributed accelerator failed to install.\nError: %s", ex)
+        logger.warning("Cleaning up the cluster by disabling distributed accelerator")
         try:
             delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
                 cmd,
                 client,
                 resource_group,
                 cluster_name,
-                CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+                CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
                 "managedClusters",
                 yes=True,
             )
             LongRunningOperation(cmd.cli_ctx)(delete_op_result)
             logger.warning(
-                "Please retry enabling distributed cache by running "
+                "Please retry enabling distributed accelerator by running "
                 "`az aks update` along with "
-                "`--enable-azure-container-storage distributedcache`"
+                "`--enable-azure-container-storage distributedaccelerator`"
             )
         except Exception as delete_ex:  # pylint: disable=broad-except
             raise UnknownError(
-                "Failed to clean up distributed cache with error: %s" % delete_ex
+                "Failed to clean up distributed accelerator with error: %s" % delete_ex
             ) from delete_ex
 
 
-def perform_disable_distributed_cache(
+def perform_disable_distributed_accelerator(
     cmd,
     resource_group,
     cluster_name,
@@ -876,7 +876,7 @@ def perform_disable_distributed_cache(
 ):
     # This will be set true only when aks-preview extension is used
     # and we want the aks-preview ManagedClusterDecorator to call the
-    # perform_disable_distributed_cache function.
+    # perform_disable_distributed_accelerator function.
     if not is_called_from_extension:
         return
 
@@ -885,7 +885,7 @@ def perform_disable_distributed_cache(
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
 
     if not is_extension_installed:
-        logger.warning("Distributed cache is not enabled on the cluster.")
+        logger.warning("Distributed accelerator is not enabled on the cluster.")
         return
 
     # Deleting the install controller triggers removal of the remaining cache
@@ -896,13 +896,13 @@ def perform_disable_distributed_cache(
             client,
             resource_group,
             cluster_name,
-            CONST_DISTRIBUTED_CACHE_EXT_INSTALLATION_NAME,
+            CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
             "managedClusters",
             yes=True,
         )
         LongRunningOperation(cmd.cli_ctx)(delete_op_result)
-        logger.warning("Distributed cache has been disabled.")
+        logger.warning("Distributed accelerator has been disabled.")
     except Exception as delete_ex:  # pylint: disable=broad-except
         raise UnknownError(
-            "Failed to disable distributed cache with error: %s" % delete_ex
+            "Failed to disable distributed accelerator with error: %s" % delete_ex
         ) from delete_ex

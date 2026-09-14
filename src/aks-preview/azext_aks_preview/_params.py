@@ -280,7 +280,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
-    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_STANDARD_LRS,
     CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
@@ -530,14 +530,14 @@ storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
-    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
 ]
 
 disable_storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
-    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_CACHE,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
     CONST_ACSTOR_ALL,
 ]
 
@@ -1297,7 +1297,7 @@ def load_arguments(self, _):
             "enable_azure_container_storage",
             arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
-            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan, distributedcache)",
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan, distributedaccelerator)",
         )
         c.argument(
             "container_storage_version",
@@ -2045,14 +2045,14 @@ def load_arguments(self, _):
             "enable_azure_container_storage",
             arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
-            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan, distributedcache)",
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan, distributedaccelerator)",
         )
         c.argument(
             "disable_azure_container_storage",
             arg_type=_get_container_storage_enum_type(disable_storage_pool_types),
             help="disable azure container storage or any one of the storage types."
             " Can be used as a flag (defaults to True) or with a storage type value:"
-            " azureDisk, ephemeralDisk, elasticSan, distributedcache, all (to disable all storage types).",
+            " azureDisk, ephemeralDisk, elasticSan, distributedaccelerator, all (to disable all storage types).",
         )
         c.argument(
             "container_storage_version",
