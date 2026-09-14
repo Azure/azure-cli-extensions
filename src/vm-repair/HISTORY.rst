@@ -2,6 +2,13 @@
 Release History
 ===============
 
+2.4.2
+++++++
+Adding examples to ``az vm repair run -h`` for checking whether Windows and Linux guests are ready to boot from an NVMe controller. Both examples run the corresponding read-only readiness detector on the linked repair VM. The README now also lists which platform-migration scenarios the extension can currently help with, so that an unsupported combination is not mistaken for a supported one.
+Scripts are now fetched from the ``main`` branch of the repair script library instead of ``master``, both when a run id is resolved and when the Linux run driver downloads the script bundle. The library renamed its default branch, and the old name only kept working through a redirect that can be withdrawn at any time; if that happened, ``az vm repair run --run-id`` and ``az vm repair list-scripts`` would stop finding any script in the default library. Invocations that pass ``--preview`` are unaffected, because they replace the library location before it is used. The set of available scripts is unchanged.
+Fixing ``az vm repair run --preview`` on Linux source VMs. The fork and branch taken from the preview URL were sent to the Linux VM but never used, so the run id was resolved from the fork while the scripts themselves were still downloaded from ``Azure``. The two values were also passed on to the repair script as its first two arguments, which shifted every parameter supplied with ``--parameters``. Previewing a forked script library now works the same way on Linux as it already did on Windows.
+A preview URL that does not name a ``repair-script-library`` repository, or whose branch name contains a slash, is now rejected with guidance instead of being accepted. The URL is read positionally, so ``.../blob/feature/nvme/map.json`` previously resolved the owner to ``repair-script-library`` and downloaded scripts from an unrelated GitHub organization without reporting anything. The same check is applied by ``az vm repair run`` and ``az vm repair list-scripts``, and it runs before the library location is replaced, so a rejected URL is never fetched from.
+
 2.4.1
 ++++++
 Adding resource-shape dimensions to ``vm repair`` telemetry: operating system family, VM size, source and repair VM disk controller type, and Hyper-V generation. Until now the telemetry recorded which command ran and whether it succeeded, but nothing about the shape of the VM it ran against, so it was not possible to tell how often repairs run against NVMe-attached disks or whether the repair VM controller selection added in 2.3.1 changes anything in practice. The new dimensions are resource shape only; no resource names or customer content are recorded by them.
