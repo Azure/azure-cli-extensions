@@ -217,9 +217,9 @@ class MccEntNodeCreate(_MccEntNodeCreate):
                 "resource_group": args.resource_group
             })
             args.location = str(ShowOutput["location"])
-        except:
-            err_msg = "Cache node resource creation failed. CLI could not find the specified MCC resource with name \'" + str(args.cache_node_name) + "\' that the cache node would be created on."
-            raise CLIError(err_msg)
+        except Exception as ex:
+            err_msg = "Cache node resource creation failed. CLI could not find the MCC resource \'" + str(args.mcc_resource_name) + "\' in resource group \'" + str(args.resource_group) + "\' that the cache node would be created on. " + str(ex)
+            raise CLIError(err_msg) from ex
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -286,10 +286,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
         if has_value(args.proxy):
             if args.proxy == "Required":
-                err_msg = "ValidationError: Parameter --enable-proxy is set to \"Required\", must set to \"Enabled\"."
+                err_msg = "ValidationError: Parameter --proxy is set to \"Required\", must set to \"Enabled\"."
                 raise ValidationError(err_msg)
             if args.proxy == "None":
-                err_msg = "ValidationError: Parameter --enable-proxy is set to \"None\", must set to \"Disabled\"."
+                err_msg = "ValidationError: Parameter --proxy is set to \"None\", must set to \"Disabled\"."
                 raise ValidationError(err_msg)
 
         if has_value(args.cache_drive):
@@ -368,7 +368,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 if has_value(args.proxy):
                     if args.proxy == "Disabled":
                         if has_value(args.proxy_host) or has_value(args.proxy_port):
-                            err_msg = "ValidationError: Parameter --enable-proxy is set to \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                            err_msg = "ValidationError: Parameter --proxy is set to \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                             raise ValidationError(err_msg)
                         args.proxy_host = None
                         args.proxy_port = None
@@ -423,7 +423,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 if has_value(args.proxy):
                     if args.proxy == "Enabled":
                         if not has_value(args.proxy_host) or not has_value(args.proxy_port):
-                            err_msg = "ValidationError: Parameter --enable-proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
+                            err_msg = "ValidationError: Parameter --proxy is set to \"Enabled\", must provide both --proxy-host and --proxy-port parameters."
                             raise ValidationError(err_msg)
 
                         if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
@@ -433,16 +433,16 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port)
                     else:
                         if has_value(args.proxy_host) or has_value(args.proxy_port):
-                            err_msg = "ValidationError: Parameter --enable-proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                            err_msg = "ValidationError: Parameter --proxy is not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                             raise ValidationError(err_msg)
                 else:
                     if has_value(args.proxy_host) or has_value(args.proxy_port):
-                        err_msg = "ValidationError: Parameter --enable-proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                        err_msg = "ValidationError: Parameter --proxy is not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                         raise ValidationError(err_msg)
         else:
             if args.proxy == "Enabled":
                 if not has_value(args.proxy_host) or not has_value(args.proxy_port):
-                    err_msg = "ValidationError: Parameter --enable-proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
+                    err_msg = "ValidationError: Parameter --proxy is set to \"Enabled\", must provide both --proxy-host and --proxy-port parameters."
                     raise ValidationError(err_msg)
 
                 if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
@@ -452,7 +452,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port)
             else:
                 if has_value(args.proxy_host) or has_value(args.proxy_port):
-                    err_msg = "ValidationError: Parameter --enable-proxy is set to \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                    err_msg = "ValidationError: Parameter --proxy is set to \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                     raise ValidationError(err_msg)
 
         instanceAutoUpdateRing = None
@@ -971,9 +971,9 @@ class MccEntNodeGetDeploymentDetails(_MccEntNodeGetDeploymentDetails):
                 "mcc_resource_name": args.mcc_resource_name,
                 "resource_group": args.resource_group
             })
-        except:
-            err_msg = "Cache node get-deployment-details failed. CLI could not find the specified MCC cache node resource with name \'" + str(args.cache_node_name) + "\'."
-            raise CLIError(err_msg)
+        except Exception as ex:
+            err_msg = "Cache node get-deployment-details failed. CLI could not find the specified MCC cache node resource with name \'" + str(args.cache_node_name) + "\'. " + str(ex)
+            raise CLIError(err_msg) from ex
 
         cleanOutput = {}
 

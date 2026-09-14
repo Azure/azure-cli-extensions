@@ -20,6 +20,27 @@ from azext_aks_preview.tests.latest.recording_processors import MOCK_GUID, MOCK_
 ENV_VAR_FORCE_RESOURCE_GROUP_LOCATION = "AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION"
 
 
+def skip_test_if_location_unsupported(test_case, location, supported_locations, feature_name):
+    """Skip precisely (not via a broad decorator) when the resolved resource group
+    location -- which may have been overridden by ``AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION``
+    for compliance-approved live-test environments -- does not support a region-gated
+    feature. This keeps the skip scoped to the individual test instead of disabling
+    unrelated tests that happen to run in the same file/region.
+    """
+    normalized_location = (location or "").replace(" ", "").lower()
+    normalized_supported = {loc.replace(" ", "").lower() for loc in supported_locations}
+    if normalized_location not in normalized_supported:
+        test_case.skipTest(
+            "{} is only supported in {}, but the resolved resource group location "
+            "is '{}' (possibly overridden by {}).".format(
+                feature_name,
+                sorted(supported_locations),
+                location,
+                ENV_VAR_FORCE_RESOURCE_GROUP_LOCATION,
+            )
+        )
+
+
 class AKSCustomResourceGroupPreparer(ResourceGroupPreparer):
     def __init__(
         self,

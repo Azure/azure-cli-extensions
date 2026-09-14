@@ -12,9 +12,12 @@ from azure.cli.core.style import print_styled_text, Style
 
 from .custom import list_folders
 from .custom import list_data_sources
-from .custom import list_dashboards, show_dashboard, delete_dashboard, _create_dashboard
+from .custom import list_dashboards, delete_dashboard, _create_dashboard
 from .custom import _health_endpoint_reachable, _get_grafana_endpoint, _get_data_plane_creds
 from .utils import send_grafana_get, send_grafana_post, send_grafana_patch
+from .dashboard_v2 import (is_v2_dashboard_definition, dashboard_identity, dashboard_folder_uid,
+                           remap_v2_datasource_uids, is_dashboard_provisioned, get_v2_library_panel_uids,
+                           resolve_dashboard_v2_api_version, read_dashboard)
 
 logger = get_logger(__name__)
 
@@ -95,20 +98,27 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
 
     source_dashboards = list_dashboards(cmd, source_workspace, resource_group_name=source_resource_group,
                                         subscription=source_subscription)
+    source_v2_version = resolve_dashboard_v2_api_version(source_endpoint, http_headers)
 
     data_source_missed = set()
 
     for dashboard in source_dashboards:
         dashboard_uid = dashboard["uid"]
-        source_dashboard = show_dashboard(cmd, source_workspace, dashboard_uid,
-                                          resource_group_name=source_resource_group,
-                                          subscription=source_subscription)
-        folder_title = source_dashboard["meta"]["folderTitle"]
-        folder_uid = source_dashboard["meta"]["folderUid"]
-        dashboard_title = source_dashboard["dashboard"]["title"]
+        source_dashboard = read_dashboard(source_endpoint, http_headers, dashboard_uid, source_v2_version)
+        is_v2 = is_v2_dashboard_definition(source_dashboard)
+        provisioned = is_dashboard_provisioned(source_dashboard)
+        if is_v2:
+            # v2 (dynamic dashboards) resource: folder lives in an annotation, title in spec.
+            _, dashboard_title = dashboard_identity(source_dashboard)
+            folder_uid = dashboard_folder_uid(source_dashboard)
+            folder_title = source_folders.get(folder_uid, folder_uid) if folder_uid else "General"
+        else:
+            folder_title = source_dashboard["meta"]["folderTitle"]
+            folder_uid = source_dashboard["meta"]["folderUid"]
+            dashboard_title = source_dashboard["dashboard"]["title"]
 
         should_skip = False
-        if source_dashboard["meta"].get("provisioned"):
+        if provisioned:
             should_skip = True
         else:
             if folders_to_include:
@@ -125,17 +135,23 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
             dashboards_skipped_summary[folder_title].append(dashboard_title)
             continue
 
-        # Figure out whether we shall correct the data sources. It is possible the Uids are different
-        remap_datasource_uids(source_dashboard["dashboard"], uid_mapping, data_source_missed)
+        # Figure out whether we shall correct the data sources. It is possible the Uids are different.
+        # v2 and classic encode datasource refs differently ({"datasource": {"name"}} vs {"uid"}), so
+        # use the matching remapper.
+        if is_v2:
+            remap_v2_datasource_uids(source_dashboard["spec"], uid_mapping)
+        else:
+            remap_datasource_uids(source_dashboard["dashboard"], uid_mapping, data_source_missed)
 
         if not dry_run:
             delete_dashboard(cmd, destination_workspace, dashboard_uid,
                              resource_group_name=destination_resource_group,
                              ignore_error=True, subscription=destination_subscription)
 
-        # sync library panels
+        # sync library panels (v2 references them as LibraryPanel elements in spec.elements)
         library_panel_skipped = False
-        library_panel_uids = _get_library_panels_uids_in_dashboard(source_dashboard["dashboard"])
+        library_panel_uids = (get_v2_library_panel_uids(source_dashboard["spec"]) if is_v2
+                              else _get_library_panels_uids_in_dashboard(source_dashboard["dashboard"]))
         for library_panel_uid in library_panel_uids:
             (status, content) = send_grafana_get(f'{source_endpoint}/api/library-elements/{library_panel_uid}',
                                                  http_headers)

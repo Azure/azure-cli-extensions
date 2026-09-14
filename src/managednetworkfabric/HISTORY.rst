@@ -3,6 +3,26 @@
 Release History
 ===============
 
+10.0.0b3
+++++++++
+* Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).
+* [Breaking Change] The `--network-fabric-name` alias will be removed from the following commands; use `--resource-name` instead:
+*  - `fabric commit-batch-status`.
+*  - `fabric discard-commit-batch`.
+*  - `fabric view-device-config`.
+*  - `fabric lock-fabric`.
+*  - `fabric resync-certificate`.
+*  - `fabric resync-password`.
+*  - `fabric rotate-certificate`.
+*  - `fabric rotate-password`.
+* [Breaking Change] The `-n`, `--name`, and `--network-monitor-name` aliases will be removed from the following commands; use `--resource-name` instead:
+*  - `networkmonitor create`.
+*  - `networkmonitor delete`.
+*  - `networkmonitor show`.
+*  - `networkmonitor update`.
+*  - `networkmonitor wait`.
+* [Breaking Change] The `--network-tap-name` alias will be removed from `tap resync`; use `--resource-name` instead.
+
 10.0.0b2
 ++++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).
