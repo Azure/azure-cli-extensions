@@ -35,6 +35,41 @@ workspace or release namespace requires deleting and recreating the extension.
 Delete removes the matching owned connection before owned prerequisites; it
 preserves shared role definitions and resources that fail ownership checks.
 
+##### Tested private-preview installation
+
+Use a CLI build containing this partner customization and an existing workspace.
+The following configuration was used for installation and pod-delete validation
+with dev chart `0.1.3`. Replace the resource placeholders with your own values:
+
+```bash
+az k8s-extension create \
+    --resource-group groupName \
+    --cluster-name clusterName \
+    --cluster-type managedClusters \
+    --name chaos-studio \
+    --extension-type Microsoft.ChaosStudio \
+    --scope cluster \
+    --release-namespace chaos-infrastructure \
+    --release-train dev \
+    --version 0.1.3 \
+    --configuration-settings \
+        "chaos-workspace-id=/subscriptions/<subscription-id>/resourceGroups/<workspace-group>/providers/Microsoft.Chaos/workspaces/<workspace-name>" \
+        "experiments.stressToolsImage=PLACEHOLDER.invalid/never-pulled:0"
+```
+
+The chart requires `experiments.stressToolsImage`. This inert placeholder was
+used only for pod-delete validation, which doesn't pull a stress-tools image.
+It isn't usable for CPU or memory faults; those require a supported, pullable
+stress-tools image. If reusing a compatible custom role, also include
+`"chaos-existing-role-definition-id=/subscriptions/<subscription-id>/providers/Microsoft.Authorization/roleDefinitions/<role-definition-id>"`
+in the configuration settings.
+
+Installation and authorized data-plane polling succeeded with this configuration.
+A five-minute pod-delete test passed in Litmus and the workload recovered to
+2/2 replicas, but the ARM run failed/remained Stopping. This isn't a successful
+ARM end-to-end result or proof of live update/delete behavior. The explicit
+`--version 0.1.3` here doesn't change the partner's `0.1.0` default.
+
 #### Kubernetes Extensions:
 Kubernetes Extensions: [more info](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions)\
 *Examples:*
