@@ -12,23 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database show",
+    "redisenterprise migration list",
 )
-class Show(AAZCommand):
-    """Get information about a database in a RedisEnterprise cluster.
+class List(AAZCommand):
+    """List information about all migrations attempts in a Redis Enterprise cluster.
     """
 
     _aaz_info = {
         "version": "2026-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations", "2026-06-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -43,19 +44,8 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            help="The name of the Redis Enterprise cluster. Name must be 1-60 characters long. Allowed characters(A-Z, a-z, 0-9) and hyphen(-). There can be no leading nor trailing nor consecutive hyphens",
             required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
-            ),
-        )
-        _args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
-            required=True,
-            id_part="child_name_1",
-            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{1,60}$)[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
@@ -67,7 +57,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DatabasesGet(ctx=self.ctx)()
+        self.MigrationsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,10 +69,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class DatabasesGet(AAZHttpOperation):
+    class MigrationsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +87,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/migrations",
                 **self.url_parameters
             )
 
@@ -113,10 +104,6 @@ class Show(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "databaseName", self.ctx.args.database_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -167,105 +154,76 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.access_keys_authentication = AAZStrType(
-                serialized_name="accessKeysAuthentication",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.creation_time = AAZStrType(
+                serialized_name="creationTime",
+                flags={"read_only": True},
             )
-            properties.client_protocol = AAZStrType(
-                serialized_name="clientProtocol",
+            properties.last_modified_time = AAZStrType(
+                serialized_name="lastModifiedTime",
+                flags={"read_only": True},
             )
-            properties.clustering_policy = AAZStrType(
-                serialized_name="clusteringPolicy",
-            )
-            properties.defer_upgrade = AAZStrType(
-                serialized_name="deferUpgrade",
-            )
-            properties.eviction_policy = AAZStrType(
-                serialized_name="evictionPolicy",
-            )
-            properties.geo_replication = AAZObjectType(
-                serialized_name="geoReplication",
-            )
-            properties.modules = AAZListType()
-            properties.notify_keyspace_events = AAZStrType(
-                serialized_name="notifyKeyspaceEvents",
-            )
-            properties.persistence = AAZObjectType()
-            properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.redis_version = AAZStrType(
-                serialized_name="redisVersion",
-                flags={"read_only": True},
-            )
-            properties.resource_state = AAZStrType(
-                serialized_name="resourceState",
-                flags={"read_only": True},
-            )
-
-            geo_replication = cls._schema_on_200.properties.geo_replication
-            geo_replication.group_nickname = AAZStrType(
-                serialized_name="groupNickname",
-            )
-            geo_replication.linked_databases = AAZListType(
-                serialized_name="linkedDatabases",
-            )
-
-            linked_databases = cls._schema_on_200.properties.geo_replication.linked_databases
-            linked_databases.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.geo_replication.linked_databases.Element
-            _element.id = AAZStrType()
-            _element.state = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            modules = cls._schema_on_200.properties.modules
-            modules.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.modules.Element
-            _element.args = AAZStrType()
-            _element.name = AAZStrType(
+            properties.source_type = AAZStrType(
+                serialized_name="sourceType",
                 flags={"required": True},
             )
-            _element.version = AAZStrType(
+            properties.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"read_only": True},
+            )
+            properties.target_resource_id = AAZStrType(
+                serialized_name="targetResourceId",
                 flags={"read_only": True},
             )
 
-            persistence = cls._schema_on_200.properties.persistence
-            persistence.aof_enabled = AAZBoolType(
-                serialized_name="aofEnabled",
+            disc_azure_cache_for_redis = cls._schema_on_200.value.Element.properties.discriminate_by("source_type", "AzureCacheForRedis")
+            disc_azure_cache_for_redis.force_migrate = AAZBoolType(
+                serialized_name="forceMigrate",
             )
-            persistence.aof_frequency = AAZStrType(
-                serialized_name="aofFrequency",
+            disc_azure_cache_for_redis.skip_data_migration = AAZBoolType(
+                serialized_name="skipDataMigration",
+                flags={"required": True},
             )
-            persistence.rdb_enabled = AAZBoolType(
-                serialized_name="rdbEnabled",
+            disc_azure_cache_for_redis.source_resource_id = AAZStrType(
+                serialized_name="sourceResourceId",
+                flags={"required": True},
             )
-            persistence.rdb_frequency = AAZStrType(
-                serialized_name="rdbFrequency",
+            disc_azure_cache_for_redis.switch_dns = AAZBoolType(
+                serialized_name="switchDns",
+                flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -288,8 +246,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]
