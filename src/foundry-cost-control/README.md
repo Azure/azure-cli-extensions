@@ -2,7 +2,7 @@
 
 This is an extension to Azure CLI to manage Foundry Cost Control policies.
 
-## Install and get usage help
+## Install the extension
 
 Add the extension:
 
@@ -16,15 +16,14 @@ Verify your installation by viewing all extensions:
 az extension list --output table
 ```
 
-Get help on the commands:
+## Get usage help on affected commands
 
 ```
-az cognitiveservices account --help
-az cognitiveservices account deployment --help
+az cognitiveservices account update --help
+az cognitiveservices account deployment create --help
+az cognitiveservices account deployment update --help
 az cognitiveservices account costcontrol --help
 ```
-
-For usage examples see the test file `azext_foundry_cost_control/tests/latest/test_foundry_cost_control.py`.
 
 ## Cost control CRUD operations
 
