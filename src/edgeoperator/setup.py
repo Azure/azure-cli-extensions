@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import find_packages, setup
 
-VERSION = "0.1.0"
+VERSION = "1.0.0b1"
 
 with open("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
