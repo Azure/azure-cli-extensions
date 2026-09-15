@@ -56,6 +56,10 @@ class command_helper:
         # Return message
         self.message = ''
 
+        # Advisory messages that also went to the log. Returned so a caller can act on them without
+        # parsing stderr, which is where they would otherwise only exist.
+        self.warnings = []
+
         # Return error message
         self.error_message = ''
 
@@ -131,6 +135,8 @@ class command_helper:
         self.return_dict = {}
         self.return_dict["status"] = self.status
         self.return_dict["message"] = self.message
+        if self.warnings:
+            self.return_dict["warnings"] = list(self.warnings)
         if not self.is_status_success():
             self.return_dict["error_message"] = self.error_message
             if self.error_message:
