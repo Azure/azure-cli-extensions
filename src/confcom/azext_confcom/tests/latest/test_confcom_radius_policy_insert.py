@@ -161,3 +161,49 @@ mount_device := data.framework.mount_device
 
     for name in PRERELEASE_COMMON_ENFORCEMENT_POINTS:
         assert f"{name} := data.framework.{name}" in result
+
+
+def test_serialization_preserves_mapped_directories_and_registry_changes():
+    policy_text = """package policy
+api_version := "0.12.0"
+framework_version := "0.5.0"
+containers := [
+  {
+    "registry_changes": {
+      "add_values": [],
+      "delete_keys": []
+    }
+  }
+]
+mapped_directories := [
+  {
+    "container_path": "C:\\\\data",
+    "read_only": true
+  }
+]
+mount_cims := data.framework.mount_cims
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        policy = policy_deserialize(policy_file.name)
+        result = policy_serialize(policy)
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as result_file:
+        result_file.write(result)
+        result_file.flush()
+        round_tripped_policy = policy_deserialize(result_file.name)
+
+    assert policy.mapped_directories == [
+        {"container_path": "C:\\data", "read_only": True}
+    ]
+    assert policy.containers[0].registry_changes == {
+        "add_values": [],
+        "delete_keys": [],
+    }
+    assert '"registry_changes": {' in result
+    assert "mapped_directories := [" in result
+    assert round_tripped_policy.mapped_directories == policy.mapped_directories
+    assert (
+        round_tripped_policy.containers[0].registry_changes
+        == policy.containers[0].registry_changes
+    )

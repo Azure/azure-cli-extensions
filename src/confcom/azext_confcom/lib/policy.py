@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import Literal, Optional, List
+from typing import Any, Dict, List, Literal, Optional
 from azext_confcom.lib.orderless_dataclasses import dataclass, OrderlessField, Field
 
 
@@ -96,6 +96,7 @@ class Container:
     mounts: List[ContainerMount] = OrderlessField(default_factory=list)
     name: Optional[str] = None
     no_new_privileges: bool = False
+    registry_changes: Optional[Dict[str, Any]] = None
     seccomp_profile_sha256: str = ""
     signals: List[int] = OrderlessField(default_factory=list)
     user: ContainerUser = Field(default_factory=ContainerUser)
@@ -121,6 +122,7 @@ class Policy:
     allow_capability_dropping: bool = True
     allow_registry_changes_dropping: bool = False
     allowed_log_providers: List[str] = OrderlessField(default_factory=list)
+    mapped_directories: List[Dict[str, Any]] = OrderlessField(default_factory=list)
 
 
 @dataclass
