@@ -1182,6 +1182,7 @@ def load_policy_from_json_file(
     )
 
 
+# pylint: disable=too-many-branches
 def load_policy_from_json(
     data: str,
     debug_mode: bool = False,
