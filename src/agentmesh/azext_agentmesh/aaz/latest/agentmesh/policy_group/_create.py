@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a PolicyGroup
 
     :example: PolicyGroups_CreateOrUpdate
-        az agentmesh policy-group create --resource-group rgnetworksecurity --name testPolicyGroup --location eastus --tags "{env:test}" --display-name Test Policy Group --description A policy group for testing --priority 100 --network-security-policies "[{name:allowOutbound,priority:10,direction:Outbound,ports:[443,80],source:{type:WorkloadIdPatterns,patterns:[workload1,workload2]},destination:{type:Fqdns,fqdns:[example.com,contoso.com]},fqdn-filtering:{name:allowOutbound,priority:10,direction:Outbound,ports:[443,80],source:{patterns:[workload1,workload2],workload-id-patterns:{patterns:[workload1,workload2]}},destination:{fqdns:{fqdns:[example.com,contoso.com]}}}}]"
+        az agentmesh policy-group create --resource-group rgnetworksecurity --name testPolicyGroup --location eastus --tags "{env:test}" --display-name "Test Policy Group" --description "A policy group for testing" --priority 100 --network-security-policies "[{fqdn-filtering:{name:allowOutbound,priority:10,direction:Outbound,ports:[443,80],source:{workload-id-patterns:{patterns:[workload1,workload2]}},destination:{fqdns:{fqdns:[example.com,contoso.com]}}}}]"
     """
 
     _aaz_info = {

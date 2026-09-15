@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a Member
 
     :example: Members_CreateOrUpdate
-        az agentmesh fabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember --location eastus --workload "{resourceId:/subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgnetworksecurity/providers/Microsoft.ContainerInstance/containerGroups/testContainerGroup,aci:{resource-id:/subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgnetworksecurity/providers/Microsoft.ContainerInstance/containerGroups/testContainerGroup}}"
+        az agentmesh fabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember --location eastus --workload "{aci:{resource-id:/subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgnetworksecurity/providers/Microsoft.ContainerInstance/containerGroups/testContainerGroup}}"
     """
 
     _aaz_info = {
