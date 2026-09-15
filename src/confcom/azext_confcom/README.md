@@ -400,7 +400,7 @@ import future.keywords.every
 import future.keywords.in
 
 api_version := "0.12.0"
-framework_version := "0.1.0"
+framework_version := "0.5.0"
 
 fragments := [...]
 
