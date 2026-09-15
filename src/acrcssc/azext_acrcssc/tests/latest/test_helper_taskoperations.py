@@ -5,6 +5,7 @@
 
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest import mock
 from azure.cli.core.mock import DummyCli
 from azext_acrcssc.helper._taskoperations import (create_update_continuous_patch_v1, delete_continuous_patch_v1, list_continuous_patch_v1, acr_cssc_dry_run, cancel_continuous_patch_runs, track_scan_progress)
@@ -209,17 +210,28 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.cf_acr_runs")
     @mock.patch('azext_acrcssc._validators.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
+    @mock.patch("azext_acrcssc.helper._taskoperations.get_acr_tasks_models", create=True)
     @mock.patch("azext_acrcssc.helper._taskoperations.LongRunningOperation")
-    def test_acr_cssc_dry_run(self, mock_LongRunningOperation, mock_cf_acr_tasks_taskoperations, mock_cf_acr_tasks_validator, mock_cf_acr_runs, mock_cf_acr_registries_tasks, mock_prepare_source_location, mock_delete_temporary_dry_run_file, mock_create_temporary_dry_run_file, mock_generate_logs, mock_check_continuous_task_exists):
+    def test_acr_cssc_dry_run(self, mock_LongRunningOperation, mock_get_acr_tasks_models, mock_cf_acr_tasks_taskoperations, mock_cf_acr_tasks_validator, mock_cf_acr_runs, mock_cf_acr_registries_tasks, mock_prepare_source_location, mock_delete_temporary_dry_run_file, mock_create_temporary_dry_run_file, mock_generate_logs, mock_check_continuous_task_exists):
         # Mock the necessary dependencies
         config_file_path = "test_config_file_path"
-        mock_acr_registries_task_client = mock.MagicMock()
+        mock_acr_registries_task_client = mock.Mock(spec_set=["begin_schedule_run"])
         mock_cf_acr_registries_tasks.return_value = mock_acr_registries_task_client
-        mock_acr_run_client = mock.MagicMock()
+        mock_acr_run_client = mock.Mock(spec_set=[])
         mock_cf_acr_runs.return_value = mock_acr_run_client
-        mock_acr_task_client = mock.MagicMock()
+        mock_acr_task_client = mock.Mock(spec_set=[])
         mock_cf_acr_tasks_validator.return_value = mock_acr_task_client
         mock_cf_acr_tasks_taskoperations.return_value = mock_acr_task_client
+        task_run_request = mock.sentinel.task_run_request
+        platform = mock.sentinel.platform
+        credentials = mock.sentinel.credentials
+        task_models = SimpleNamespace(
+            OS=SimpleNamespace(linux=SimpleNamespace(value="linux")),
+            Architecture=SimpleNamespace(amd64=SimpleNamespace(value="amd64")),
+            FileTaskRunRequest=mock.Mock(return_value=task_run_request),
+            PlatformProperties=mock.Mock(return_value=platform),
+            Credentials=mock.Mock(return_value=credentials))
+        mock_get_acr_tasks_models.return_value = task_models
         mock_LongRunningOperation.return_value.return_value.run_id = "test_run_id"
         mock_generate_logs.return_value = "mock_logs"
         mock_check_continuous_task_exists.return_value = False, []
@@ -233,6 +245,24 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_LongRunningOperation.assert_called_once()
         mock_delete_temporary_dry_run_file.assert_called_once()
         mock_generate_logs.assert_called_once()
+        mock_get_acr_tasks_models.assert_called_with(self.cmd.cli_ctx)
+        task_models.PlatformProperties.assert_called_once_with(
+            os="linux",
+            architecture="amd64",
+            variant=None)
+        task_models.Credentials.assert_called_once_with(
+            source_registry=None,
+            custom_registries=None)
+        task_models.FileTaskRunRequest.assert_called_once_with(
+            task_file_path="tmp_dry_run_template.yaml",
+            values_file_path=None,
+            values=[{"name": "CONFIGPATH", "value": "test_config_file_path"}],
+            source_location=mock_prepare_source_location.return_value,
+            timeout=None,
+            platform=platform,
+            credentials=credentials,
+            agent_pool_name=None,
+            log_template=None)
         self.assertIsNotNone(result)
 
     @mock.patch("azext_acrcssc.helper._taskoperations.WorkflowTaskStatus.get_taskruns_with_filter")
