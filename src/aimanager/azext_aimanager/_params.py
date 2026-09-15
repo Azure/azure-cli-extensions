@@ -121,7 +121,7 @@ def load_arguments(self, _):
         c.argument('ai_manager_name', options_list=['--aimanager-name', '--manager', '-m'],
                    validator=validate_ai_manager_name,
                    help='The name of the AI Manager resource.')
-        c.argument('namespace_name', options_list=['--namespace-name'],
+        c.argument('namespace_name', options_list=['--namespace-name', '--ns'],
                    validator=validate_namespace_name,
                    help='The name of the AI Manager namespace.')
         c.argument('model_deployment_name', options_list=['--name', '-n'],

@@ -9,6 +9,14 @@ from azext_aimanager.constants import (
     AI_MODEL_TABLE_TRANSFORMER,
     CALCULATE_COST_TABLE_TRANSFORMER,
 )
+from azext_aimanager._format import (
+    aimanager_table_format,
+    aimanager_list_table_format,
+    namespace_table_format,
+    namespace_list_table_format,
+    modeldeployment_table_format,
+    modeldeployment_list_table_format,
+)
 from azext_aimanager._client_factory import (
     cf_ai_managers,
     cf_ai_manager_namespaces,
@@ -48,8 +56,8 @@ def load_command_table(self, _):
     with self.command_group("aimanager", ai_managers_sdk, client_factory=cf_ai_managers, is_preview=True) as g:
         g.custom_command("create", "create_aimanager", supports_no_wait=True)
         g.custom_command("update", "update_aimanager", supports_no_wait=True)
-        g.custom_show_command("show", "show_aimanager")
-        g.custom_command("list", "list_aimanager")
+        g.custom_show_command("show", "show_aimanager", table_transformer=aimanager_table_format)
+        g.custom_command("list", "list_aimanager", table_transformer=aimanager_list_table_format)
         g.custom_command("delete", "delete_aimanager", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "aimanager_get_credentials")
         g.wait_command("wait")
@@ -58,8 +66,8 @@ def load_command_table(self, _):
     with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces, is_preview=True) as g:
         g.custom_command("add", "add_aimanager_namespace", supports_no_wait=True)
         g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True)
-        g.custom_show_command("show", "show_aimanager_namespace")
-        g.custom_command("list", "list_aimanager_namespace")
+        g.custom_show_command("show", "show_aimanager_namespace", table_transformer=namespace_table_format)
+        g.custom_command("list", "list_aimanager_namespace", table_transformer=namespace_list_table_format)
         g.custom_command("delete", "delete_aimanager_namespace", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "aimanager_namespace_get_credentials")
         g.custom_command("list-accesskeys", "aimanager_namespace_list_accesskeys")
@@ -86,8 +94,8 @@ def load_command_table(self, _):
                             client_factory=cf_model_deployments, is_preview=True) as g:
         g.custom_command("add", "add_modeldeployment", supports_no_wait=True)
         g.custom_command("update", "update_modeldeployment", supports_no_wait=True)
-        g.custom_show_command("show", "show_modeldeployment")
-        g.custom_command("list", "list_modeldeployment")
+        g.custom_show_command("show", "show_modeldeployment", table_transformer=modeldeployment_table_format)
+        g.custom_command("list", "list_modeldeployment", table_transformer=modeldeployment_list_table_format)
         g.custom_command("delete", "delete_modeldeployment", supports_no_wait=True, confirmation=True)
         g.custom_wait_command("wait", "show_modeldeployment")
 

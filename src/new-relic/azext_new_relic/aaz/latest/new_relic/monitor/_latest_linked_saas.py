@@ -12,28 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "lambda-test hyper-execute organization delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "new-relic monitor latest-linked-saas",
 )
-class Delete(AAZCommand):
-    """Delete a OrganizationResource
+class LatestLinkedSaas(AAZCommand):
+    """Returns the latest SaaS linked to the newrelic organization of the underlying monitor.
 
-    :example: Delete a Organization
-        az lambda-test hyper-execute organization delete --resource-group abdul-test --organizationname test-cli-instance-4
+    :example: Get the latest SaaS resource linked to a New Relic monitor
+        az new-relic monitor latest-linked-saas --resource-group myResourceGroup --monitor-name myMonitor
     """
 
     _aaz_info = {
-        "version": "2024-02-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/lambdatest.hyperexecute/organizations/{}", "2024-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/latestlinkedsaas", "2026-06-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,15 +44,13 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.organizationname = AAZStrArg(
-            options=["-n", "--name", "--organizationname"],
-            help="Name of the Organization resource",
+        _args_schema.monitor_name = AAZStrArg(
+            options=["--monitor-name"],
+            help="Name of the Monitors resource",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
-                max_length=50,
-                min_length=1,
+                pattern="^.*$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -64,7 +60,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.OrganizationsDelete(ctx=self.ctx)()
+        self.MonitorsLatestLinkedSaaS(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,52 +71,31 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class OrganizationsDelete(AAZHttpOperation):
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+    class MonitorsLatestLinkedSaaS(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/LambdaTest.HyperExecute/organizations/{organizationname}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/latestLinkedSaaS",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -130,7 +105,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationname", self.ctx.args.organizationname,
+                    "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -148,21 +123,51 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_204(self, session):
-            pass
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
 
-        def on_200_201(self, session):
-            pass
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.is_hidden_saa_s = AAZBoolType(
+                serialized_name="isHiddenSaaS",
+            )
+            _schema_on_200.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
+            )
+
+            return cls._schema_on_200
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _LatestLinkedSaasHelper:
+    """Helper class for LatestLinkedSaas"""
 
 
-__all__ = ["Delete"]
+__all__ = ["LatestLinkedSaas"]
