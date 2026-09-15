@@ -211,8 +211,8 @@ class RegistryChangesInput(unittest.TestCase):
 
 class MappedDirectoriesInput(unittest.TestCase):
     # mappedDirectories backs the mapped_directory_mount/unmount enforcement
-    # points (Windows-only, --input-only). The list and wiring are emitted
-    # together and only when the list is non-empty.
+    # points (Windows-only, --input-only). The list and wiring are always
+    # emitted so an undeclared hot-add receives a normal policy denial.
     mapped_directories = [
         {
             config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: "C:\\data",
@@ -235,13 +235,62 @@ class MappedDirectoriesInput(unittest.TestCase):
         self.assertIn("mapped_directory_mount := data.framework.mapped_directory_mount", boilerplate)
         self.assertIn("mapped_directory_unmount := data.framework.mapped_directory_unmount", boilerplate)
 
-    def test_mapped_directories_absent_no_wiring(self):
+    def test_mapped_directories_absent_emits_empty_list_and_wiring(self):
         policy = _load_policy(WINDOWS_IMAGE, "windows/amd64")
         self.assertEqual(policy._mapped_directories, [])
         boilerplate = policy._add_rego_boilerplate("[]")
-        self.assertNotIn("mapped_directories := ", boilerplate)
-        self.assertNotIn("mapped_directory_mount", boilerplate)
-        self.assertNotIn("mapped_directory_unmount", boilerplate)
+        self.assertIn("mapped_directories := []", boilerplate)
+        self.assertIn(
+            "mapped_directory_mount := data.framework.mapped_directory_mount",
+            boilerplate,
+        )
+        self.assertIn(
+            "mapped_directory_unmount := data.framework.mapped_directory_unmount",
+            boilerplate,
+        )
+
+    def test_read_only_defaults_to_false(self):
+        policy = _load_policy(
+            WINDOWS_IMAGE,
+            "windows/amd64",
+            top_level={
+                config.ACI_FIELD_MAPPED_DIRECTORIES: [
+                    {
+                        config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: "C:\\data",
+                    }
+                ]
+            },
+        )
+        self.assertFalse(
+            policy._mapped_directories[0][
+                config.POLICY_FIELD_MAPPED_DIRECTORIES_READONLY
+            ]
+        )
+
+    def test_invalid_mapped_directories_are_rejected(self):
+        invalid_values = [
+            "not-a-list",
+            [None],
+            [{}],
+            [
+                {
+                    config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: "",
+                }
+            ],
+            [
+                {
+                    config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: "C:\\data",
+                    config.ACI_FIELD_MAPPED_DIRECTORIES_READONLY: "false",
+                }
+            ],
+        ]
+        for value in invalid_values:
+            with self.subTest(value=value), self.assertRaises(SystemExit):
+                _load_policy(
+                    WINDOWS_IMAGE,
+                    "windows/amd64",
+                    top_level={config.ACI_FIELD_MAPPED_DIRECTORIES: value},
+                )
 
 
 class AllowedLogProvidersInput(unittest.TestCase):
