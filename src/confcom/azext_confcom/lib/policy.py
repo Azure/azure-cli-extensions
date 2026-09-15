@@ -110,12 +110,17 @@ class Policy:
     framework_version: str = "0.2.3"
     fragments: List[FragmentReference] = OrderlessField(default_factory=list)
     containers: List[Container] = OrderlessField(default_factory=list)
+    is_windows: bool = False
     allow_properties_access: bool = True
     allow_dump_stacks: bool = False
     allow_runtime_logging: bool = False
     allow_environment_variable_dropping: bool = True
+    allow_log_provider_dropping: bool = True
+    allow_host_network: bool = False
     allow_unencrypted_scratch: bool = False
     allow_capability_dropping: bool = True
+    allow_registry_changes_dropping: bool = False
+    allowed_log_providers: List[str] = OrderlessField(default_factory=list)
 
 
 @dataclass

@@ -10,7 +10,14 @@ Tests the core regex replacement that inserts base64-encoded policy strings
 into bicep template ccePolicy annotation values.
 """
 
+import tempfile
+
 from azext_confcom.command.radius_policy_insert import insert_policy_into_template
+from azext_confcom.lib.serialization import (
+  WINDOWS_ENFORCEMENT_POINTS,
+  policy_deserialize,
+  policy_serialize,
+)
 
 
 def test_replaces_first_ccepolicy_in_bicep():
@@ -92,3 +99,55 @@ def test_matches_case_insensitive_annotation():
     template = "{ 'Microsoft.ContainerInstance.VirtualNode.CcePolicy': '' }"
     result = insert_policy_into_template("p2", template, 0)
     assert "'p2'" in result
+
+
+def test_serialization_preserves_allowed_log_providers():
+    policy_text = """package policy
+allowed_log_providers := ["Microsoft-Windows-Provider"]
+mount_cims := data.framework.mount_cims
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    assert 'allowed_log_providers := [\n  "Microsoft-Windows-Provider"\n]' in result
+
+
+def test_serialization_uses_windows_enforcement_points():
+    policy_text = """package policy
+mount_cims := data.framework.mount_cims
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    for name in (
+        "log_provider",
+        "registry_changes",
+        "mount_cims",
+        "unmount_cims",
+        "mapped_directory_mount",
+        "mapped_directory_unmount",
+    ):
+        assert f"{name} := data.framework.{name}" in result
+
+
+def test_serialization_omits_windows_enforcement_points_for_linux():
+    policy_text = "package policy\nmount_device := data.framework.mount_device\n"
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    assert "host_network := data.framework.host_network" in result
+    assert "load_transparency_trust_list := data.framework.load_transparency_trust_list" in result
+    for name in (
+      "allow_log_provider_dropping",
+      "allow_registry_changes_dropping",
+      "allowed_log_providers",
+    ):
+      assert f"{name} :=" not in result
+    for name in WINDOWS_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" not in result
