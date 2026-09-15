@@ -75,6 +75,7 @@ def ml_compute_list_nodes(cmd, resource_group_name, workspace_name, name):
                 ("nodeState", "node_state"),
                 ("privateIpAddress", "private_ip_address"),
                 ("publicIpAddress", "public_ip_address"),
+                ("runId", "run_id"),
             ):
                 if getattr(node, entity_name, None) is None and hasattr(node, rest_name):
                     setattr(node, entity_name, getattr(node, rest_name))
