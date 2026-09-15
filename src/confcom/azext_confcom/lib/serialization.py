@@ -65,6 +65,13 @@ def _api_version_at_least(version: str, minimum: str) -> bool:
     )
 
 
+def _serialize_containers(containers: list) -> str:
+    for container in containers:
+        if container.get("registry_changes") is None:
+            container.pop("registry_changes")
+    return json.dumps(containers, indent=2)
+
+
 # This is a single entrypoint for serializing both Policy and Fragment objects
 def policy_serialize(policy: Union[Policy, Fragment]):
 
@@ -73,7 +80,7 @@ def policy_serialize(policy: Union[Policy, Fragment]):
 
     policy_dict = asdict(policy)
     fragments_json = json.dumps(policy_dict.pop("fragments"), indent=2)
-    containers_json = json.dumps(policy_dict.pop("containers"), indent=2)
+    containers_json = _serialize_containers(policy_dict.pop("containers"))
     is_windows = policy_dict.pop("is_windows")
     mapped_directories_json = json.dumps(
         policy_dict.pop("mapped_directories"), indent=2
@@ -119,7 +126,7 @@ def fragment_serialize(fragment: Fragment):
 
     fragment_dict = asdict(fragment)
     fragments_json = json.dumps(fragment_dict.pop("fragments"), indent=2)
-    containers_json = json.dumps(fragment_dict.pop("containers"), indent=2)
+    containers_json = _serialize_containers(fragment_dict.pop("containers"))
 
     return dedent(f"""
 package {fragment_dict.pop('package')}

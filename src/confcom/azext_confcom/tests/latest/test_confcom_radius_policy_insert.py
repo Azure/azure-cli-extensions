@@ -207,3 +207,16 @@ mount_cims := data.framework.mount_cims
         round_tripped_policy.containers[0].registry_changes
         == policy.containers[0].registry_changes
     )
+
+
+def test_serialization_omits_absent_registry_changes():
+    policy_text = """package policy
+containers := [{}]
+mount_device := data.framework.mount_device
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    assert '"registry_changes"' not in result
