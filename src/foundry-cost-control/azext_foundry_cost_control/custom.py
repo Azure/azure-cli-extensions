@@ -8,7 +8,269 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+import json
+
+from azure.cli.command_modules.cognitiveservices.custom import (
+    deployment_begin_create_or_update as core_deployment_create,
+    update as core_account_update,
+)
+from azure.cli.command_modules.resource.custom import patch_resource, show_resource, update_resource
+from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.mgmt.core.tools import resource_id
+from azure.mgmt.resource.resources.models import GenericResource
 from knack.log import get_logger
 
 
 logger = get_logger(__name__)
+
+_API_VERSION = "2026-09-15-preview"
+_MAX_COST_CONTROL_IDS = 20
+_MAX_DEPLOYMENT_COST_CONTROL_IDS = 1
+_DEPLOYMENT_MUTABLE_PROPERTIES = {
+    "model",
+    "contextCacheContainerId",
+    "speculativeDecoding",
+    "scaleSettings",
+    "raiPolicyName",
+    "versionUpgradeOption",
+    "capacitySettings",
+    "parentDeploymentName",
+    "spilloverDeploymentName",
+    "serviceTier",
+    "deploymentState",
+    "routing",
+    "costControlIds",
+}
+
+
+def _validate_cost_control_ids(cost_control_ids):
+    if cost_control_ids is not None and len(cost_control_ids) > _MAX_COST_CONTROL_IDS:
+        raise InvalidArgumentValueError(
+            "--cost-control-ids accepts at most {} resource IDs.".format(
+                _MAX_COST_CONTROL_IDS
+            )
+        )
+
+
+def _validate_deployment_cost_control_ids(cost_control_ids):
+    if (
+            cost_control_ids is not None
+            and len(cost_control_ids) > _MAX_DEPLOYMENT_COST_CONTROL_IDS):
+        raise InvalidArgumentValueError(
+            "--cost-control-ids accepts at most one resource ID for a deployment."
+        )
+
+
+def _deployment_resource_id(cmd, resource_group_name, account_name, deployment_name):
+    return resource_id(
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group_name,
+        namespace="Microsoft.CognitiveServices",
+        type="accounts",
+        name=account_name,
+        child_type_1="deployments",
+        child_name_1=deployment_name,
+    )
+
+
+def account_update(
+        cmd,
+        client,
+        resource_group_name,
+        account_name,
+        sku_name=None,
+        custom_domain=None,
+        tags=None,
+        api_properties=None,
+        storage=None,
+        encryption=None,
+        allow_project_management=None,
+        kind=None,
+        cost_control_ids=None,
+        cost_control_connections=None,
+        clear_cost_control_connections=False):
+    """Update a Cognitive Services account, including preview cost-control settings."""
+    if cost_control_connections is not None and clear_cost_control_connections:
+        raise MutuallyExclusiveArgumentError(
+            "--cost-control-connections and --clear-cost-control-connections "
+            "cannot be used together."
+        )
+
+    _validate_cost_control_ids(cost_control_ids)
+
+    has_cost_control_update = (
+        cost_control_ids is not None
+        or cost_control_connections is not None
+        or clear_cost_control_connections
+    )
+
+    legacy_arguments = (
+        sku_name,
+        custom_domain,
+        tags,
+        api_properties,
+        storage,
+        encryption,
+        allow_project_management,
+        kind,
+    )
+    has_legacy_update = any(value is not None for value in legacy_arguments)
+
+    core_update_arguments = {
+        "client": client,
+        "resource_group_name": resource_group_name,
+        "account_name": account_name,
+        "sku_name": sku_name,
+        "custom_domain": custom_domain,
+        "tags": tags,
+        "api_properties": api_properties,
+        "storage": storage,
+        "encryption": encryption,
+        "allow_project_management": allow_project_management,
+        "kind": kind,
+    }
+
+    if not has_cost_control_update:
+        return core_account_update(**core_update_arguments)
+
+    if has_legacy_update:
+        legacy_result = core_account_update(**core_update_arguments)
+        if hasattr(legacy_result, "result"):
+            legacy_result.result()
+
+    properties = {}
+    if cost_control_ids is not None:
+        properties["costControlIds"] = cost_control_ids
+
+    if cost_control_connections is not None:
+        properties["costControlConnections"] = cost_control_connections
+    elif clear_cost_control_connections:
+        properties["costControlConnections"] = None
+
+    account_id = resource_id(
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group_name,
+        namespace="Microsoft.CognitiveServices",
+        type="accounts",
+        name=account_name,
+    )
+
+    return patch_resource(
+        cmd,
+        properties=json.dumps(properties),
+        resource_ids=[account_id],
+        api_version=_API_VERSION,
+    )
+
+
+def deployment_create(
+        cmd,
+        client,
+        resource_group_name,
+        account_name,
+        deployment_name,
+        model_format,
+        model_name,
+        model_version,
+        model_source=None,
+        sku_name=None,
+        sku_capacity=None,
+        scale_settings_scale_type=None,
+        scale_settings_capacity=None,
+        spillover_deployment_name=None,
+        cost_control_ids=None):
+    """Create or replace a deployment using the preview cost-control API."""
+    _validate_deployment_cost_control_ids(cost_control_ids)
+    if cost_control_ids is None:
+        return core_deployment_create(
+            client=client,
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            deployment_name=deployment_name,
+            model_format=model_format,
+            model_name=model_name,
+            model_version=model_version,
+            model_source=model_source,
+            sku_name=sku_name,
+            sku_capacity=sku_capacity,
+            scale_settings_scale_type=scale_settings_scale_type,
+            scale_settings_capacity=scale_settings_capacity,
+            spillover_deployment_name=spillover_deployment_name,
+        )
+
+    model = {
+        "format": model_format,
+        "name": model_name,
+        "version": model_version,
+    }
+    if model_source is not None:
+        model["source"] = model_source
+
+    properties = {"model": model}
+    if scale_settings_scale_type is not None:
+        properties["scaleSettings"] = {"scaleType": scale_settings_scale_type}
+        if scale_settings_capacity is not None:
+            properties["scaleSettings"]["capacity"] = scale_settings_capacity
+    if spillover_deployment_name is not None:
+        properties["spilloverDeploymentName"] = spillover_deployment_name
+    if cost_control_ids is not None:
+        properties["costControlIds"] = cost_control_ids
+
+    sku = None
+    if sku_name is not None:
+        sku = {"name": sku_name}
+        if sku_capacity is not None:
+            sku["capacity"] = sku_capacity
+
+    deployment_id = _deployment_resource_id(
+        cmd, resource_group_name, account_name, deployment_name
+    )
+    deployment = GenericResource(properties=properties, sku=sku)
+    return update_resource(
+        cmd,
+        parameters=deployment,
+        resource_ids=[deployment_id],
+        api_version=_API_VERSION,
+    )
+
+
+def deployment_update(
+        cmd,
+        resource_group_name,
+        account_name,
+        deployment_name,
+        cost_control_ids=None):
+    """Update the cost-control attachment on an existing deployment."""
+    _validate_deployment_cost_control_ids(cost_control_ids)
+    if cost_control_ids is None:
+        raise InvalidArgumentValueError(
+            "Specify --cost-control-ids to update the deployment."
+        )
+
+    deployment_id = _deployment_resource_id(
+        cmd, resource_group_name, account_name, deployment_name
+    )
+    current = show_resource(
+        cmd,
+        resource_ids=[deployment_id],
+        api_version=_API_VERSION,
+    )
+    properties = {
+        name: value
+        for name, value in (current.properties or {}).items()
+        if name in _DEPLOYMENT_MUTABLE_PROPERTIES
+    }
+    properties["costControlIds"] = cost_control_ids
+
+    deployment = GenericResource(
+        properties=properties,
+        sku=current.sku,
+        tags=current.tags,
+    )
+    return update_resource(
+        cmd,
+        parameters=deployment,
+        resource_ids=[deployment_id],
+        api_version=_API_VERSION,
+    )

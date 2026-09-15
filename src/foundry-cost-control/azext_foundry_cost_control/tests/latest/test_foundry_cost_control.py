@@ -104,19 +104,16 @@ class FoundryCostControlScenario(ScenarioTest):
         )
 
         # Attach the first cost control to the account.
-        # TODO: Update command "cognitiveservices account update" to support setting costControlConnections and costControlIds.
         self.cmd(
-            'resource patch '
-            '--ids {account_id} '
-            '--api-version 2026-09-15-preview '
-            '--properties '
+            'cognitiveservices account update '
+            '--resource-group {resource_group} '
+            '--name {account_name} '
+            '--cost-control-connections '
             '\'{{'
-            '"costControlConnections":{{'
             '"appInsightsConnectionId":"{app_insights_connection_id}",'
             '"eventGridConnectionId":"{event_grid_connection_id}"'
-            '}},'
-            '"costControlIds":["{cost_control_id_1}"]'
-            '}}\'',
+            '}}\' '
+            '--cost-control-ids {cost_control_id_1}',
             checks=[
                 self.check(
                     'properties.costControlConnections.appInsightsConnectionId',
@@ -183,12 +180,11 @@ class FoundryCostControlScenario(ScenarioTest):
         )
 
         # Detach the cost control before deleting it.
-        # TODO: Update command "cognitiveservices account update" to support resetting costControlIds.
         self.cmd(
-            'resource patch '
-            '--ids {account_id} '
-            '--api-version 2026-09-15-preview '
-            '--properties \'{{"costControlIds":[]}}\'',
+            'cognitiveservices account update '
+            '--resource-group {resource_group} '
+            '--name {account_name} '
+            '--cost-control-ids',
             checks=[self.check('properties.costControlIds', [])]
         )
 

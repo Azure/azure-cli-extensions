@@ -9,3 +9,48 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+
+helps["cognitiveservices account update"] = """
+type: command
+short-summary: Update a Cognitive Services account.
+examples:
+  - name: Attach cost controls and configure telemetry and event connections
+    text: |-
+      az cognitiveservices account update --name my-account --resource-group my-resource-group
+      --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
+      --cost-control-connections '{"appInsightsConnectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/connections/application-insights","eventGridConnectionId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/connections/event-grid"}'
+  - name: Remove all cost-control attachments
+    text: |-
+      az cognitiveservices account update --name my-account --resource-group my-resource-group
+      --cost-control-ids
+"""
+
+helps["cognitiveservices account deployment create"] = """
+type: command
+short-summary: Create a Cognitive Services account deployment.
+examples:
+  - name: Create a deployment with a cost-control attachment
+    text: |-
+      az cognitiveservices account deployment create --name my-account
+      --resource-group my-resource-group --deployment-name my-deployment
+      --model-name gpt-4.1 --model-version 2025-04-14 --model-format OpenAI
+      --sku-name GlobalStandard --sku-capacity 10
+      --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
+"""
+
+helps["cognitiveservices account deployment update"] = """
+type: command
+short-summary: Update a Cognitive Services account deployment.
+examples:
+  - name: Attach a cost control to an existing deployment
+    text: |-
+      az cognitiveservices account deployment update --name my-account
+      --resource-group my-resource-group --deployment-name my-deployment
+      --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
+  - name: Remove the cost-control attachment
+    text: |-
+      az cognitiveservices account deployment update --name my-account
+      --resource-group my-resource-group --deployment-name my-deployment
+      --cost-control-ids
+"""

@@ -8,6 +8,154 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.commands.parameters import get_enum_type
+from azure.cli.core.util import shell_safe_json_parse
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.cognitiveservices.models import DeploymentScaleType
+
+
+_CONNECTION_PROPERTIES = {
+    "appInsightsConnectionId",
+    "eventGridConnectionId",
+}
+
+
+def _parse_resource_id(value):
+    if not isinstance(value, str) or not is_valid_resource_id(value):
+        raise InvalidArgumentValueError(
+            "Expected a fully qualified Azure resource ID: '{}'".format(value)
+        )
+    return value
+
+
+def _parse_cost_control_id(value):
+    _parse_resource_id(value)
+    parsed_id = parse_resource_id(value)
+    if (
+            parsed_id.get("namespace", "").lower() != "microsoft.cognitiveservices"
+            or parsed_id.get("type", "").lower() != "accounts"
+            or parsed_id.get("child_type_1", "").lower() != "costcontrols"
+            or not parsed_id.get("child_name_1")
+            or parsed_id.get("last_child_num") != 1):
+        raise InvalidArgumentValueError(
+            "Expected a Microsoft.CognitiveServices/accounts/costControls resource ID: "
+            "'{}'".format(value)
+        )
+    return value
+
+
+def _parse_cost_control_connections(value):
+    connections = shell_safe_json_parse(value)
+    if not isinstance(connections, dict):
+        raise InvalidArgumentValueError(
+            "--cost-control-connections must be a JSON object."
+        )
+
+    unsupported = set(connections) - _CONNECTION_PROPERTIES
+    if unsupported:
+        raise InvalidArgumentValueError(
+            "Unsupported cost-control connection properties: {}".format(
+                ", ".join(sorted(unsupported))
+            )
+        )
+
+    for resource_id in connections.values():
+        if resource_id is not None:
+            _parse_resource_id(resource_id)
+
+    return connections
+
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context(
+            "cognitiveservices account update",
+            arg_group="Cost Control") as context:
+        context.argument(
+            "cost_control_ids",
+            options_list=["--cost-control-ids"],
+            nargs="*",
+            type=_parse_cost_control_id,
+            help=(
+                "Space-separated resource IDs of cost controls attached to the account. "
+                "Specify the option without values to remove all cost-control attachments."
+            ),
+        )
+        context.argument(
+            "cost_control_connections",
+            options_list=["--cost-control-connections"],
+            type=_parse_cost_control_connections,
+            help=(
+                "JSON object containing appInsightsConnectionId and/or "
+                "eventGridConnectionId."
+            ),
+        )
+        context.argument(
+            "clear_cost_control_connections",
+            options_list=["--clear-cost-control-connections"],
+            action="store_true",
+            help="Remove the account-level cost-control connections.",
+        )
+
+    with self.argument_context(
+            "cognitiveservices account update",
+            arg_group="AI Services") as context:
+        context.argument(
+            "kind",
+            arg_type=get_enum_type(data=["AIServices", "OpenAI"]),
+            help="The target API name to transform the existing account into.",
+        )
+
+    with self.argument_context(
+            "cognitiveservices account deployment",
+            arg_group="Cost Control") as context:
+        context.argument(
+            "cost_control_ids",
+            options_list=["--cost-control-ids"],
+            nargs="*",
+            type=_parse_cost_control_id,
+            help=(
+                "Resource ID of the cost control attached to the deployment. "
+                "Specify the option without a value to remove the attachment."
+            ),
+        )
+
+    with self.argument_context("cognitiveservices account deployment") as context:
+        context.argument(
+            "account_name",
+            options_list=["--name", "-n"],
+            help="Cognitive service account name.",
+        )
+        context.argument(
+            "deployment_name",
+            options_list=["--deployment-name"],
+            help="Cognitive Services account deployment name.",
+            required=True,
+        )
+        context.argument(
+            "spillover_deployment_name",
+            options_list=["--spillover-deployment-name", "--spillover-name"],
+            help="The standard deployment to use as a spillover when at capacity.",
+        )
+        context.argument(
+            "sku_capacity",
+            options_list=["--capacity", "--sku-capacity"],
+            type=int,
+            help="Capacity value of the Sku of Cognitive Services account/deployment.",
+        )
+
+    with self.argument_context(
+            "cognitiveservices account deployment",
+            arg_group="DeploymentScaleSettings") as context:
+        context.argument(
+            "scale_settings_scale_type",
+            arg_type=get_enum_type(DeploymentScaleType),
+            options_list=["--scale-type", "--scale-settings-scale-type"],
+            help="Cognitive Services account deployment scale settings scale type.",
+        )
+        context.argument(
+            "scale_settings_capacity",
+            options_list=["--scale-capacity", "--scale-settings-capacity"],
+            type=int,
+            help="Cognitive Services account deployment scale settings capacity.",
+        )

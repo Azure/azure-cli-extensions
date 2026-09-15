@@ -8,8 +8,20 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
-
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from azure.cli.command_modules.cognitiveservices._client_factory import (
+        cf_accounts,
+        cf_deployments,
+    )
+
+    with self.command_group(
+            "cognitiveservices account",
+            client_factory=cf_accounts) as group:
+        group.custom_command("update", "account_update")
+
+    with self.command_group(
+            "cognitiveservices account deployment",
+            client_factory=cf_deployments) as group:
+        group.custom_command("create", "deployment_create")
+        group.custom_command("update", "deployment_update")
