@@ -18,7 +18,28 @@ from knack.util import CLIError
 
 from azure.ai.ml._scope_dependent_operations import OperationScope
 
+from ...manual.custom.online_endpoint import _normalize_online_endpoint_output
 from ..util import private_flag
+
+
+def test_normalize_online_endpoint_output_preserves_user_strings() -> None:
+    output = {
+        "provisioning_state": "EndpointProvisioningState.SUCCEEDED",
+        "description": "EndpointProvisioningState.SUCCEEDED",
+        "tags": {
+            "state": "EndpointProvisioningState.SUCCEEDED",
+            "note": "EndpointProvisioningState.customer-note",
+        },
+    }
+
+    assert _normalize_online_endpoint_output(output) == {
+        "provisioning_state": "Succeeded",
+        "description": "EndpointProvisioningState.SUCCEEDED",
+        "tags": {
+            "state": "EndpointProvisioningState.SUCCEEDED",
+            "note": "EndpointProvisioningState.customer-note",
+        },
+    }
 
 
 class OnlineEndpointScenarioTest(MLBaseScenarioTest):

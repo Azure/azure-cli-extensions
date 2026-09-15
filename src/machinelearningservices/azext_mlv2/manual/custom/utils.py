@@ -21,7 +21,7 @@ from webbrowser import open_new_tab
 from azext_mlv2.manual.user_agent import USER_AGENT
 from azure.ai.ml import MLClient
 from azure.ai.ml._azure_environments import _environments, _get_aml_resource_id_from_metadata, _get_default_cloud_name
-from azure.ai.ml._restclient.arm_ml_service.models import EndpointProvisioningState, ListViewType
+from azure.ai.ml._restclient.arm_ml_service.models import ListViewType
 from azure.ai.ml._utils._storage_utils import AzureMLDatastorePathUri
 from azure.ai.ml.constants._common import (
     ARM_ID_PREFIX,
@@ -59,8 +59,6 @@ module_logger = get_logger(__name__)
 def _normalize_enum_values(value):
     if isinstance(value, Enum):
         return value.value
-    if isinstance(value, str) and value.startswith("EndpointProvisioningState."):
-        return EndpointProvisioningState[value.rsplit(".", 1)[1]].value
     if isinstance(value, dict):
         return {key: _normalize_enum_values(item) for key, item in value.items()}
     if isinstance(value, list):

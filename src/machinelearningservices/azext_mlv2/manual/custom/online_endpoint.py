@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 import logging
 
+from azure.ai.ml._restclient.arm_ml_service.models import EndpointProvisioningState
 from azure.ai.ml.constants._endpoint import EndpointKeyType
 from azure.ai.ml.entities import OnlineEndpoint
 from azure.ai.ml.entities._load_functions import load_online_endpoint
@@ -30,6 +31,17 @@ module_logger = logging.getLogger(__name__)
 module_logger.propagate = 0
 
 
+def _normalize_online_endpoint_output(output):
+    result = _normalize_enum_values(output)
+    provisioning_state = result.get("provisioning_state")
+    if isinstance(provisioning_state, str) and provisioning_state.startswith("EndpointProvisioningState."):
+        member_name = provisioning_state.rsplit(".", 1)[1]
+        enum_value = EndpointProvisioningState.__members__.get(member_name)
+        if enum_value:
+            result["provisioning_state"] = enum_value.value
+    return result
+
+
 def ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name, local: bool = False, web: bool = False):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
@@ -39,7 +51,7 @@ def ml_online_endpoint_show(cmd, resource_group_name, workspace_name, name, loca
         endpoint = ml_client.online_endpoints.get(name=name, local=local)
         if web:
             open_online_endpoint_in_browser(endpoint)
-        return _normalize_enum_values(endpoint.dump())
+        return _normalize_online_endpoint_output(endpoint.dump())
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
@@ -138,7 +150,7 @@ def ml_online_endpoint_create(
         if isinstance(endpoint, OnlineEndpoint):
             if web:
                 open_online_endpoint_in_browser(endpoint)
-            return _normalize_enum_values(endpoint.dump())
+            return _normalize_online_endpoint_output(endpoint.dump())
     except Exception as err:  # pylint: disable=broad-exception-caught
         yaml_operation = bool(file)
         log_and_raise_error(err, debug, yaml_operation=yaml_operation)
@@ -203,7 +215,7 @@ def ml_online_endpoint_list(cmd, resource_group_name, workspace_name, local: boo
     )
     try:
         results = ml_client.online_endpoints.list(local=local)
-        return [_dump_entity_with_warnings(x) for x in results]
+        return [_normalize_online_endpoint_output(_dump_entity_with_warnings(x)) for x in results]
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
@@ -269,7 +281,7 @@ def ml_online_endpoint_update(
         if isinstance(endpoint_return, OnlineEndpoint):
             if web:
                 open_online_endpoint_in_browser(endpoint_return)
-            return _normalize_enum_values(endpoint_return.dump())
+            return _normalize_online_endpoint_output(endpoint_return.dump())
         return endpoint_return
 
     except Exception as err:  # pylint: disable=broad-exception-caught
