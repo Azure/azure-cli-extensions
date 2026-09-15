@@ -17,6 +17,7 @@ class AzureResilienceManagementGeneratedTests(unittest.TestCase):
     AAZ_ROOT = pathlib.Path(__file__).resolve().parents[2] / 'aaz' / 'latest' / 'resilience'
     EXTENSION_ROOT = pathlib.Path(__file__).resolve().parents[3]
     README = EXTENSION_ROOT / 'README.md'
+    TEAM_TESTING_README = EXTENSION_ROOT / 'TEAM-TESTING-README.md'
     API_VERSION = '2026-08-31-preview'
     EXPECTED_GROUPS = {
         'resilience',
@@ -81,6 +82,18 @@ class AzureResilienceManagementGeneratedTests(unittest.TestCase):
         self.assertEqual(92, len(referenced_commands))
         self.assertEqual(len(referenced_commands), len(set(referenced_commands)))
         self.assertEqual(set(self._registered_commands()), set(referenced_commands))
+
+    def test_team_testing_guide_matches_generated_commands(self):
+        guide = self.TEAM_TESTING_README.read_text(encoding='utf-8')
+        documented_commands = re.findall(
+            r'^\| `az (resilience [^`]+)` \|',
+            guide,
+            re.MULTILINE,
+        )
+
+        self.assertEqual(92, len(documented_commands))
+        self.assertEqual(len(documented_commands), len(set(documented_commands)))
+        self.assertEqual(set(self._registered_commands()), set(documented_commands))
 
     def test_expected_command_groups_are_generated(self):
         group_pattern = re.compile(r'@register_command_group\(\s*"([^"]+)"')

@@ -3,6 +3,10 @@
 This extension provides commands for managing Azure Resilience Management
 resources through the `az resilience` command group.
 
+For team-based validation of every command, required parameters, optional
+parameter effects, and lifecycle order, see
+[TEAM-TESTING-README.md](TEAM-TESTING-README.md).
+
 ## Install
 
 ```bash
