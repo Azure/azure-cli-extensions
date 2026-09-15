@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     "apr registry",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Azure Package Registry registries."""
+    """Manage Azure Package Registry (APR) registries."""
 
     pass
 

@@ -2,7 +2,8 @@
 
 The data plane returns Pulp-style ``{"task": "<id>"}`` bodies for long-running
 ops; poll ``/tasks/{id}/`` to completion by default, or return the handle on
-``--no-wait``. ARM long-running operations use the AAZ runtime instead.
+``--no-wait``. Mirrors pmc/client.py:poll_task. (ARM LROs use the SDK's
+``LROPoller`` instead — that's not this module.)
 """
 
 import time
@@ -13,15 +14,16 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-# A task in any of these states is complete.
+# A task in any of these states is done (matches PMC's FINISHED_TASK_STATES).
 FINISHED_TASK_STATES = ("skipped", "completed", "failed", "canceled")
 
 
 def poll_task(client: Any, task_id: str, interval: float = 1.0) -> dict[str, Any]:
     """Poll ``/tasks/{task_id}/`` until it reaches a finished state.
 
-    Raises on a non-completed terminal state. The client reacquires its token
-    per request, so a token that expires mid-poll is refreshed on the next GET.
+    Raises on a non-completed terminal state. No 401-retry dance (PMC needs one
+    because it caches the token; our client re-acquires per request, so a token
+    that expires mid-poll is refreshed on the next GET automatically).
     """
     task: dict[str, Any] = client.get(f"/tasks/{task_id}/").json()
     logger.warning("Waiting for task %s...", task.get("id", task_id))

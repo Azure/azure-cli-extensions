@@ -1,4 +1,7 @@
+import pytest
 from azure.cli.testsdk import ScenarioTest
+
+pytestmark = pytest.mark.azdev
 
 
 class AprCommandScenarioTest(ScenarioTest):

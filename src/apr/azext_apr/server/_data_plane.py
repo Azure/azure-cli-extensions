@@ -2,8 +2,8 @@
 
 Foundation for every data-plane command (repository, package, distro, remote,
 publication, task), which hit the registry's API endpoint directly, not ARM.
-Uses the active Azure CLI login for authentication and maps service failures to
-``azclierror`` exceptions.
+Mirrors pmc/client.py but Azure-CLI-native: token from ``az login`` (no MSAL),
+errors as ``azclierror``. REST contract: docs/design/server.md (mirrors Pulp).
 """
 
 import json
@@ -32,17 +32,24 @@ from requests.adapters import HTTPAdapter, Retry
 
 logger = get_logger(__name__)
 
-# The service team must confirm the final Entra audience before publication.
+# FILL-IN: the Entra audience for the data-plane API is not finalized. The plane
+# is MISE-protected (docs/design/server.md §MISE); the audience GUID/URI hasn't
+# been published. Using the API host as the resource URI is the conventional
+# default for *.azure.net data planes — confirm with the server team before GA.
 DATA_PLANE_RESOURCE = "https://api.apr.azure.net"
 
 # Data-plane API version. The CLI owns the version segment (rather than baking it
 # into ARM's apiEndpoint) so that the ARM-published endpoint stays a bare host;
-# the service mounts its routes under this prefix. Path-versioning lets an older,
-# independently distributed CLI keep working while the service evolves. Bump in
-# lockstep with a breaking data-plane contract change.
+# the server mounts its routes under this same prefix (container_images/server,
+# settings.API_PREFIX). Path-versioning lets an old, independently-distributed CLI
+# keep working while the server evolves — mirrors PMC's /api/v4 and upstream Pulp's
+# /pulp/api/v3. Bump in lockstep with a breaking data-plane contract change (and
+# pair with a server-advertised minimum CLI version when that handshake lands).
 DATA_PLANE_API_PREFIX = "/api/v1"
 
-# Keep this aligned with the reviewed ARM API specification.
+# FILL-IN: the RP publishes preview api-versions (docs/design/rp.md §"API
+# versioning") but none is pinned yet. Bump when the registry RT registration
+# lands.
 REGISTRY_API_VERSION = "2026-04-01-preview"
 
 REGISTRY_RESOURCE_TYPE = "Microsoft.PackageRegistry/registries"
@@ -60,7 +67,9 @@ EXTENSION_NAME = "apr"
 # server, and an installed build always resolves the real endpoint via ARM.
 DEV_LOCAL_ENDPOINT = "http://localhost:8100"
 
-# Hosts treated as a local development server, where authentication is skipped.
+# Hosts treated as a local dev server: no Entra app exists to mint a token for,
+# and the server assumes every request is authenticated (AGENTS.md), so we skip
+# auth for these.
 _LOCAL_HOSTS = frozenset({"localhost", "127.0.0.1", "::1"})
 
 # Transient statuses worth retrying for safe read operations.
@@ -105,7 +114,8 @@ def _cli_version() -> str:
 
 
 class _LoggedRetry(Retry):
-    """Retry policy that logs each attempt through the Azure CLI logger."""
+    """Retry that logs each attempt — mirrors pmc/client.py:LoggedRetry, but via
+    the knack logger instead of typer.echo (§3.7: never print())."""
 
     # Keep Retry.increment's positional compatibility across urllib3 versions.
     def increment(  # pylint: disable=keyword-arg-before-vararg
@@ -118,7 +128,8 @@ class _LoggedRetry(Retry):
         return retry
 
 
-# HTTP status to azclierror. Unmapped failures use AzureResponseError.
+# HTTP status -> azclierror. Anything unmapped falls through to AzureResponseError
+# so the user still gets a clean, traceback-free message (§3.8).
 _STATUS_ERRORS = {
     400: BadRequestError,
     401: UnauthorizedError,
@@ -205,13 +216,15 @@ class DataPlaneClient:
 
     def _headers(self) -> dict[str, str]:
         # Increment the correlation id per request so a single command's calls
-        # share a traceable sequence in service logs.
+        # share a traceable, monotonically-related sequence in the server logs
+        # (mirrors pmc/client.py:_get_headers).
         self._cid = format(int(self._cid, 16) + 1, "x")
         headers = {
             "x-correlation-id": self._cid,
             "apr-cli-version": _cli_version(),
         }
-        # A local development server has no Entra app, so skip auth for localhost.
+        # A local dev server has no Entra app to mint a token against and assumes
+        # every request is authenticated (AGENTS.md), so skip auth for localhost.
         if not self._local:
             token = _acquire_token(self._cli_ctx, self._resource)
             headers["authorization"] = f"Bearer {token}"
@@ -273,8 +286,8 @@ def is_dev_extension() -> bool:
     Azure CLI tags each loaded extension with an ``ext_type`` of ``'dev'`` (added
     via ``azdev`` / ``extension.dev_sources``) or ``'whl'`` (added via
     ``az extension add``). We match by path rather than by name: a dev extension's
-    name is derived from the directory that holds its ``*.egg-info``, not from
-    the package or project name, so a name lookup is
+    name is derived from the directory that holds its ``*.egg-info`` (``apr`` in
+    this repo layout), not from the package/project name, so a name lookup is
     unreliable. Instead we find the loaded extension whose path contains this
     module and read its ``ext_type``.
 
