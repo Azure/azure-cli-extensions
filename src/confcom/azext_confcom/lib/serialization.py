@@ -75,6 +75,9 @@ def policy_serialize(policy: Union[Policy, Fragment]):
     fragments_json = json.dumps(policy_dict.pop("fragments"), indent=2)
     containers_json = json.dumps(policy_dict.pop("containers"), indent=2)
     is_windows = policy_dict.pop("is_windows")
+    mapped_directories_json = json.dumps(
+        policy_dict.pop("mapped_directories"), indent=2
+    )
     policy_values = "\n".join(
         f"{key} := {json.dumps(value, indent=2)}"
         for key, value in policy_dict.items()
@@ -103,6 +106,8 @@ fragments := {fragments_json}
 containers := {containers_json}
 
 {policy_values}
+
+{"mapped_directories := " + mapped_directories_json if is_windows else ""}
 
 {enforcement_bindings}
 
