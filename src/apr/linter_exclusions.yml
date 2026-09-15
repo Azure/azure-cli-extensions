@@ -1,0 +1,35 @@
+# APR data-plane operations return service task IDs and share `az apr task wait`
+# instead of duplicating a wait command under every resource group.
+apr distro:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr package:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr publication:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr remote:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr repository:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr repository package:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr repository release:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+apr repository release component:
+    rule_exclusions:
+        - require_wait_command_if_no_wait
+
+# Registry commands are generated from the AAZ model. Examples will be added
+# with the reviewed model instead of edited into generated source.
+apr registry create:
+    rule_exclusions:
+        - missing_command_example
+apr registry update:
+    rule_exclusions:
+        - missing_command_example
