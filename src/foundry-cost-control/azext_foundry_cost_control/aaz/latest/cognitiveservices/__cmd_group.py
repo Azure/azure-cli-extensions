@@ -12,13 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "cognitiveservices account costcontrol",
+    "cognitiveservices",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Cost Control Policies in Foundry
-
-    A set of commands to manage Cost Control Policies in Foundry. Supported commands are `create`, `delete`, `list`, `show` and `update`. Use those policies to set a threshold on the cost (in USD) per time period for token use by your account or deployment. You can also set alerts to get notified when this threshold approaches.
+    """Manage Cognitive Services
     """
     pass
 

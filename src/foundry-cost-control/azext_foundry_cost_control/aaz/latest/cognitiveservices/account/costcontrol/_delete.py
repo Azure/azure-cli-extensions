@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "cognitive-services account cost-control delete",
+    "cognitiveservices account costcontrol delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )

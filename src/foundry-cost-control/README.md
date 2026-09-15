@@ -19,16 +19,16 @@ az extension list --output table
 Get help on the commands:
 
 ```
-az cognitiveservices account cost-control --help
 az cognitiveservices account --help
 az cognitiveservices account deployment --help
+az cognitiveservices account costcontrol --help
 ```
 
 For usage examples see the test file `azext_foundry_cost_control/tests/latest/test_foundry_cost_control.py`.
 
 ## Cost control CRUD operations
 
-Cost-control policy commands use `az cognitive-services` (with a hyphen).
+Cost-control policy commands use `az cognitiveservices account costcontrol`.
 The examples below assume that the owning AI Services account already exists.
 
 First, save the following rule definition as `cost-control-rules.json`:
@@ -82,7 +82,7 @@ Create a cost control and save its resource ID for use when attaching it to an
 account or deployment:
 
 ```powershell
-$costControlId = az cognitive-services account cost-control create `
+$costControlId = az cognitiveservices account costcontrol create `
   --resource-group $resourceGroup `
   --account-name $accountName `
   --cost-control-name $costControlName `
@@ -97,7 +97,7 @@ $costControlId = az cognitive-services account cost-control create `
 List all cost controls owned by an account:
 
 ```powershell
-az cognitive-services account cost-control list `
+az cognitiveservices account costcontrol list `
   --resource-group $resourceGroup `
   --account-name $accountName `
   --output table
@@ -108,7 +108,7 @@ az cognitive-services account cost-control list `
 Get a specific cost control:
 
 ```powershell
-az cognitive-services account cost-control show `
+az cognitiveservices account costcontrol show `
   --resource-group $resourceGroup `
   --account-name $accountName `
   --cost-control-name $costControlName
@@ -119,7 +119,7 @@ az cognitive-services account cost-control show `
 Update the display name while preserving the existing rules:
 
 ```powershell
-az cognitive-services account cost-control update `
+az cognitiveservices account costcontrol update `
   --resource-group $resourceGroup `
   --account-name $accountName `
   --cost-control-name $costControlName `
@@ -135,7 +135,7 @@ Detach the cost control from any accounts or deployments that use it, and then
 delete it:
 
 ```powershell
-az cognitive-services account cost-control delete `
+az cognitiveservices account costcontrol delete `
   --resource-group $resourceGroup `
   --account-name $accountName `
   --cost-control-name $costControlName `

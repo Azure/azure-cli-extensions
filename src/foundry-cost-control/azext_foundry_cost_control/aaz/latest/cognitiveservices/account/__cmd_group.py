@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "cognitive-services",
+    "cognitiveservices account",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Cognitive Services
+    """Manage Account
     """
     pass
 

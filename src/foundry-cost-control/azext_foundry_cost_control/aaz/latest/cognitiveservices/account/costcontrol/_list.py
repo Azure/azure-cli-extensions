@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "cognitive-services account cost-control list",
+    "cognitiveservices account costcontrol list",
     is_preview=True,
 )
 class List(AAZCommand):

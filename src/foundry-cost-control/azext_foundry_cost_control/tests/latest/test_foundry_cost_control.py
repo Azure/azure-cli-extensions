@@ -74,7 +74,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Create the first cost control with the agent-based rules.
         cost_control_1 = self.cmd(
-            'cognitive-services account cost-control create '
+            'cognitiveservices account costcontrol create '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_1} '
@@ -90,7 +90,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Create the second cost control with the project-based rules.
         self.cmd(
-            'cognitive-services account cost-control create '
+            'cognitiveservices account costcontrol create '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_2} '
@@ -129,7 +129,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # List the account's cost controls and verify both were created.
         self.cmd(
-            'cognitive-services account cost-control list '
+            'cognitiveservices account costcontrol list '
             '--resource-group {resource_group} '
             '--account-name {account_name}',
             checks=[
@@ -141,7 +141,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Show the first cost control and verify its configured values.
         self.cmd(
-            'cognitive-services account cost-control show '
+            'cognitiveservices account costcontrol show '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_1}',
@@ -154,7 +154,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Update the first cost control and verify unspecified rules are preserved.
         self.cmd(
-            'cognitive-services account cost-control update '
+            'cognitiveservices account costcontrol update '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_1} '
@@ -168,7 +168,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Show the first cost control again and verify the update persisted.
         self.cmd(
-            'cognitive-services account cost-control show '
+            'cognitiveservices account costcontrol show '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_1}',
@@ -190,7 +190,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Delete the first cost control.
         self.cmd(
-            'cognitive-services account cost-control delete '
+            'cognitiveservices account costcontrol delete '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_1} '
@@ -199,7 +199,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # Delete the second cost control.
         self.cmd(
-            'cognitive-services account cost-control delete '
+            'cognitiveservices account costcontrol delete '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
             '--cost-control-name {cost_control_name_2} '
@@ -208,7 +208,7 @@ class FoundryCostControlScenario(ScenarioTest):
 
         # List the account's cost controls and verify both were deleted.
         self.cmd(
-            'cognitive-services account cost-control list '
+            'cognitiveservices account costcontrol list '
             '--resource-group {resource_group} '
             '--account-name {account_name}',
             checks=[self.check('length(@)', 0)]
