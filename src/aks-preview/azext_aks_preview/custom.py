@@ -2405,7 +2405,7 @@ def aks_agentpool_update(
     enable_managed_dranet=False,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
-    enable_managed_gpu=False,
+    enable_managed_gpu=None,
     managed_gpu_driver_mode=None,
     os_sku=None,
     ssh_access=None,
