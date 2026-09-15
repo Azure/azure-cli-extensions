@@ -140,8 +140,8 @@ class AmgMigrateScenarioTest(ScenarioTest):
             # Close-out Instance
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
-            final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            final_count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
+            self.assertEqual(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -217,8 +217,8 @@ class AmgMigrateScenarioTest(ScenarioTest):
             # Close-out Instance
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
-            final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            final_count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
+            self.assertEqual(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -307,8 +307,8 @@ class AmgMigrateScenarioTest(ScenarioTest):
             # Close-out Instance
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
-            final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            final_count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
+            self.assertEqual(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -379,8 +379,8 @@ class AmgMigrateScenarioTest(ScenarioTest):
             # Close-out Instance
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
-            final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            final_count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
+            self.assertEqual(final_count, 0)
 
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()

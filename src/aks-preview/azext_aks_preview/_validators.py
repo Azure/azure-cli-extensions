@@ -1275,6 +1275,21 @@ def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
             )
 
 
+def _reject_legacy_managed_nat_gateway_v2(namespace):
+    """Reject the retired ``managedNATGatewayV2`` outbound type value.
+
+    This extension targets the GA-aligned api-version, where NAT Gateway V2 is expressed as
+    ``--outbound-type managedNATGateway --outbound-type-sku StandardV2`` and the legacy
+    ``managedNATGatewayV2`` string is rejected by the server. Fail fast locally with an actionable
+    message instead of surfacing the RP's 400.
+    """
+    if getattr(namespace, 'outbound_type', None) == 'managedNATGatewayV2':
+        raise InvalidArgumentValueError(
+            "--outbound-type managedNATGatewayV2 is no longer supported. "
+            "Use --outbound-type managedNATGateway --outbound-type-sku StandardV2 instead."
+        )
+
+
 def validate_nat_gateway_v2_params(namespace):
     """Validate V2-only NAT gateway params on create.
 
@@ -1284,6 +1299,7 @@ def validate_nat_gateway_v2_params(namespace):
     cannot carry them. On create --outbound-type must be set explicitly to managedNATGateway;
     omitting it defaults the cluster to loadBalancer and produces an incompatible request.
     """
+    _reject_legacy_managed_nat_gateway_v2(namespace)
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
         getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
@@ -1310,6 +1326,7 @@ def validate_nat_gateway_v2_params_for_update(namespace):
     only an explicit non-managed-NAT-gateway outbound type or the Standard SKU is rejected here. The
     update decorator additionally verifies the cluster's existing outbound type.
     """
+    _reject_legacy_managed_nat_gateway_v2(namespace)
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
         getattr(namespace, 'nat_gateway_outbound_ip_ids', None),

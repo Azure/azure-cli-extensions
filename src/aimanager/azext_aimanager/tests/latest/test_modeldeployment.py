@@ -11,6 +11,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core import MatchConditions
 
 from azext_aimanager import custom
+from azext_aimanager._params import load_arguments
 from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
 
 
@@ -39,6 +40,40 @@ class TestModelDeployment(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             custom._construct_scaling_profile(
                 self.cmd, max_replicas=3, required=True)
+
+    def test_namespace_name_supports_short_alias(self):
+        class ArgumentContext:
+            def __init__(self, loader, command):
+                self.loader = loader
+                self.command = command
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                return False
+
+            def argument(self, name, *args, **kwargs):
+                self.loader.arguments.setdefault(self.command, {})[name] = kwargs
+
+            def ignore(self, *_):
+                pass
+
+        class Loader:
+            def __init__(self):
+                self.arguments = {}
+                self.cli_ctx = MagicMock()
+
+            def argument_context(self, command, **kwargs):
+                return ArgumentContext(self, command)
+
+        loader = Loader()
+        load_arguments(loader, None)
+
+        namespace_argument = loader.arguments[
+            "aimanager namespace modeldeployment"]["namespace_name"]
+        self.assertEqual(
+            ["--namespace-name", "--ns"], namespace_argument["options_list"])
 
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
@@ -90,6 +125,78 @@ class TestModelDeployment(unittest.TestCase):
             etag='"etag-value"',
             match_condition=MatchConditions.IfNotModified,
         )
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_returns_plain_dicts_with_model_id(self, cf_ai_models):
+        # The AIModel GET resolves the human-readable modelId.
+        model = models.AIModel({"properties": {"modelId": "meta-llama/Llama-3-8B"}})
+        cf_ai_models.return_value.get.return_value = model
+
+        deployment = models.ModelDeployment({
+            "name": "md1",
+            "properties": {
+                "modelResourceId": (
+                    "/subscriptions/s/providers/Microsoft.ContainerService"
+                    "/locations/westus2/aiModels/llama3"
+                ),
+            },
+        })
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        results = custom._annotate_model_ids(cmd, [deployment])
+
+        # Must be a plain dict (not the SDK model) so the injected modelId — which is not a
+        # declared ModelDeployment field — survives azure-cli 2.76+ output conversion.
+        self.assertEqual(len(results), 1)
+        self.assertIsInstance(results[0], dict)
+        self.assertEqual(results[0]["modelId"], "meta-llama/Llama-3-8B")
+        # A single distinct model is fetched once.
+        cf_ai_models.return_value.get.assert_called_once_with("westus2", "llama3")
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_memoizes_repeated_models(self, cf_ai_models):
+        model = models.AIModel({"properties": {"modelId": "meta-llama/Llama-3-8B"}})
+        cf_ai_models.return_value.get.return_value = model
+
+        def make(name):
+            return models.ModelDeployment({
+                "name": name,
+                "properties": {
+                    "modelResourceId": (
+                        "/subscriptions/s/providers/Microsoft.ContainerService"
+                        "/locations/westus2/aiModels/llama3"
+                    ),
+                },
+            })
+
+        cmd = SimpleNamespace(cli_ctx=object())
+        results = custom._annotate_model_ids(cmd, [make("md1"), make("md2")])
+
+        self.assertEqual([r["modelId"] for r in results],
+                         ["meta-llama/Llama-3-8B", "meta-llama/Llama-3-8B"])
+        # Two deployments, same model -> one GET.
+        cf_ai_models.return_value.get.assert_called_once()
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_blank_on_resolution_failure(self, cf_ai_models):
+        cf_ai_models.return_value.get.side_effect = Exception("not found")
+
+        deployment = models.ModelDeployment({
+            "name": "md1",
+            "properties": {
+                "modelResourceId": (
+                    "/subscriptions/s/providers/Microsoft.ContainerService"
+                    "/locations/westus2/aiModels/llama3"
+                ),
+            },
+        })
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        results = custom._annotate_model_ids(cmd, [deployment])
+
+        # No modelId injected; formatter will render a blank column.
+        self.assertIsInstance(results[0], dict)
+        self.assertNotIn("modelId", results[0])
 
 
 if __name__ == '__main__':

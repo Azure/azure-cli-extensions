@@ -45,6 +45,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
         c.argument('yes', help='Deletes the repair resources without confirmation.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources without confirmation. Use for unattended runs that need the repair VM and disk copy preserved for inspection. Cannot be combined with --yes.')
 
     with self.argument_context('vm repair run') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
@@ -52,10 +53,10 @@ def load_arguments(self, _):
         c.argument('custom_script_file', help='Custom script file to run on VM. Script should be PowerShell for windows, Bash for Linux.')
         c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts. To avoid splitting on =, use the prefix \'++\' to send the entire string.")
         c.argument('run_on_repair', help="Script will be run on the linked repair VM.")
-        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
+        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/main/map.json. The branch name must be a single path segment: a branch containing '/' resolves to a different repository.")
 
     with self.argument_context('vm repair list-scripts') as c:
-        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
+        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/main/map.json. The branch name must be a single path segment: a branch containing '/' resolves to a different repository.")
 
     with self.argument_context('vm repair reset-nic') as c:
         c.argument('subscriptionid', help='Subscription id to default subscription using `az account set -s NAME_OR_ID`.')
@@ -71,6 +72,7 @@ def load_arguments(self, _):
         c.argument('tags', help='Quoted string with space-separated key-value pairs in "key=value" format. Will be appended to the tags required for repair resources.')
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources instead of deleting them, including when the repair script fails. Use to inspect a failed repair.')
 
     with self.argument_context('vm repair repair-button') as c:
         c.argument('button_command', help='Button_command for repair VM.')
@@ -84,3 +86,4 @@ def load_arguments(self, _):
         c.argument('copy_tags', help='Copy tags from the source VM to the repair VM and its resources. Can be combined with --tags.')
         c.argument('size', help='The size of the repair VM to create. If not specified, a size matching the source VM will be used.')
         c.argument('yes', help='Deprecated - Creates the repair VM without confirmation.  No current behavior change, this parameter will be removed in a future release.')
+        c.argument('no_cleanup', options_list=['--no-cleanup', '--no'], help='Keeps the repair resources instead of deleting them, including when the repair script fails. Use to inspect a failed repair.')
