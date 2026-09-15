@@ -8,7 +8,8 @@
 # Test recording location: recordings/test_foundry_cost_control.yaml
 
 # To run this test live with full request/response logs:
-# azdev test foundry-cost-control --live --series -a -s --log-cli-level=DEBUG --log-file="cost-control-http-debug.log" --log-file-level=DEBUG
+# azdev test foundry-cost-control --live --series -a -s --log-cli-level=DEBUG `
+#   --log-file="cost-control-http-debug.log" --log-file-level=DEBUG
 
 import os
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
@@ -33,6 +34,7 @@ class FoundryCostControlScenario(ScenarioTest):
             'account_name': self.create_random_name('test-account-', 23),
             'cost_control_name_1': 'test-1',
             'cost_control_name_2': 'test-2',
+            'deployment_name': 'test-deployment',
             'display_name_1': 'first display name',
             'display_name_2': 'second display name',
             'updated_display_name_1': 'updated first display name',
@@ -89,7 +91,7 @@ class FoundryCostControlScenario(ScenarioTest):
         self.kwargs['cost_control_id_1'] = cost_control_1['id']
 
         # Create the second cost control with the project-based rules.
-        self.cmd(
+        cost_control_2 = self.cmd(
             'cognitiveservices account costcontrol create '
             '--resource-group {resource_group} '
             '--account-name {account_name} '
@@ -101,7 +103,8 @@ class FoundryCostControlScenario(ScenarioTest):
                 self.check('properties.displayName', '{display_name_2}'),
                 self.check('properties.rules[0].name', 'per-project-monthly'),
             ]
-        )
+        ).get_output_in_json()
+        self.kwargs['cost_control_id_2'] = cost_control_2['id']
 
         # Attach the first cost control to the account.
         self.cmd(
@@ -124,6 +127,45 @@ class FoundryCostControlScenario(ScenarioTest):
                     '{event_grid_connection_id}'
                 ),
                 self.check('properties.costControlIds[0]', '{cost_control_id_1}'),
+            ]
+        )
+
+        # Create a deployment with the first cost control attached.
+        self.cmd(
+            'cognitiveservices account deployment create '
+            '--resource-group {resource_group} '
+            '--name {account_name} '
+            '--deployment-name {deployment_name} '
+            '--model-name gpt-4o-mini '
+            '--model-version 2024-07-18 '
+            '--model-format OpenAI '
+            '--sku-name GlobalStandard '
+            '--sku-capacity 1 '
+            '--cost-control-ids {cost_control_id_1}',
+            checks=[
+                self.check('properties.model.name', 'gpt-4o-mini'),
+                self.check('length(properties.costControlIds)', 1),
+                self.check(
+                    'properties.costControlIds[0]',
+                    '{cost_control_id_1}'
+                ),
+            ]
+        )
+
+        # Replace the deployment's attachment with the second cost control.
+        self.cmd(
+            'cognitiveservices account deployment update '
+            '--resource-group {resource_group} '
+            '--name {account_name} '
+            '--deployment-name {deployment_name} '
+            '--cost-control-ids {cost_control_id_2}',
+            checks=[
+                self.check('properties.model.name', 'gpt-4o-mini'),
+                self.check('length(properties.costControlIds)', 1),
+                self.check(
+                    'properties.costControlIds[0]',
+                    '{cost_control_id_2}'
+                ),
             ]
         )
 
@@ -179,7 +221,17 @@ class FoundryCostControlScenario(ScenarioTest):
             ]
         )
 
-        # Detach the cost control before deleting it.
+        # Detach the second cost control from the deployment before deleting it.
+        self.cmd(
+            'cognitiveservices account deployment update '
+            '--resource-group {resource_group} '
+            '--name {account_name} '
+            '--deployment-name {deployment_name} '
+            '--cost-control-ids',
+            checks=[self.check('properties.costControlIds', [])]
+        )
+
+        # Detach the first cost control from the account before deleting it.
         self.cmd(
             'cognitiveservices account update '
             '--resource-group {resource_group} '
