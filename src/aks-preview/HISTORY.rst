@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+22.0.0b7
++++++++++
 * `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
 * Add `az aks alert-config` commands to manage AKS-managed alert configurations.
 * `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
