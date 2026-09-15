@@ -557,7 +557,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
 
         policy += [
-            TypeAdapter(Container).dump_python(Container(**c), mode="json")
+            TypeAdapter(Container).dump_python(
+                Container(**c), mode="json", exclude_none=True
+            )
             for c in self._container_definitions
         ]
 
