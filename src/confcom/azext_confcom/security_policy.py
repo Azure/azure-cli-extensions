@@ -261,12 +261,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         )
 
     def _get_mapped_directory_rego(self) -> str:
-        # Emit the mapped_directories data together with the
-        # mapped_directory_mount/unmount wiring, but only when directories were
-        # provided. Without data the wiring would be an unusable deny-only rule,
-        # and an undeclared hot-add is denied by the framework regardless.
-        if not self._mapped_directories:
-            return ""
         return (
             f"mapped_directories := {pretty_print_func(self._mapped_directories)}\n"
             "mapped_directory_mount := data.framework.mapped_directory_mount\n"
@@ -1243,19 +1237,48 @@ def load_policy_from_json(
         policy_input_json, config.ACI_FIELD_ALLOW_REGISTRY_CHANGES_DROPPING
     )
 
-    mapped_directories = [
-        {
-            config.POLICY_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: case_insensitive_dict_get(
-                entry, config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH
-            ),
-            config.POLICY_FIELD_MAPPED_DIRECTORIES_READONLY: bool(
-                case_insensitive_dict_get(entry, config.ACI_FIELD_MAPPED_DIRECTORIES_READONLY)
-            ),
-        }
-        for entry in (
-            case_insensitive_dict_get(policy_input_json, config.ACI_FIELD_MAPPED_DIRECTORIES) or []
+    raw_mapped_directories = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_MAPPED_DIRECTORIES
+    )
+    if raw_mapped_directories is None:
+        raw_mapped_directories = []
+    if not isinstance(raw_mapped_directories, list):
+        eprint(f'Field ["{config.ACI_FIELD_MAPPED_DIRECTORIES}"] must be a list')
+
+    mapped_directories = []
+    for index, entry in enumerate(raw_mapped_directories):
+        field_name = f'{config.ACI_FIELD_MAPPED_DIRECTORIES}[{index}]'
+        if not isinstance(entry, dict):
+            eprint(f'Field ["{field_name}"] must be an object')
+
+        container_path = case_insensitive_dict_get(
+            entry, config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH
         )
-    ]
+        if not isinstance(container_path, str) or not container_path.strip():
+            eprint(
+                f'Field ["{field_name}.'
+                f'{config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH}"] '
+                "must be a non-empty string"
+            )
+
+        read_only = case_insensitive_dict_get(
+            entry, config.ACI_FIELD_MAPPED_DIRECTORIES_READONLY
+        )
+        if read_only is None:
+            read_only = False
+        elif not isinstance(read_only, bool):
+            eprint(
+                f'Field ["{field_name}.'
+                f'{config.ACI_FIELD_MAPPED_DIRECTORIES_READONLY}"] '
+                "must be a boolean"
+            )
+
+        mapped_directories.append(
+            {
+                config.POLICY_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: container_path,
+                config.POLICY_FIELD_MAPPED_DIRECTORIES_READONLY: read_only,
+            }
+        )
 
     # 3) Process rego_fragments
     standalone_rego_fragments = case_insensitive_dict_get(
