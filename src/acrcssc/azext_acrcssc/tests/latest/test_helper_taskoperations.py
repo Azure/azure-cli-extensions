@@ -225,10 +225,12 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         task_run_request = mock.sentinel.task_run_request
         platform = mock.sentinel.platform
         credentials = mock.sentinel.credentials
+        file_task_run_request = mock.Mock(return_value=task_run_request)
+        file_task_run_request.__annotations__ = {"values_property": list}
         task_models = SimpleNamespace(
             OS=SimpleNamespace(linux=SimpleNamespace(value="linux")),
             Architecture=SimpleNamespace(amd64=SimpleNamespace(value="amd64")),
-            FileTaskRunRequest=mock.Mock(return_value=task_run_request),
+            FileTaskRunRequest=file_task_run_request,
             PlatformProperties=mock.Mock(return_value=platform),
             Credentials=mock.Mock(return_value=credentials))
         mock_get_acr_tasks_models.return_value = task_models
@@ -256,7 +258,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         task_models.FileTaskRunRequest.assert_called_once_with(
             task_file_path="tmp_dry_run_template.yaml",
             values_file_path=None,
-            values=[{"name": "CONFIGPATH", "value": "test_config_file_path"}],
+            values_property=[{"name": "CONFIGPATH", "value": "test_config_file_path"}],
             source_location=mock_prepare_source_location.return_value,
             timeout=None,
             platform=platform,

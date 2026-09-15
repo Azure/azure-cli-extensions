@@ -62,6 +62,19 @@ def _get_task_operation(client, operation_name):
     return getattr(client, operation_name), False
 
 
+def _get_file_task_run_values_parameter(file_task_run_request):
+    annotations = getattr(file_task_run_request, "__annotations__", {})
+    if isinstance(annotations, dict) and "values_property" in annotations:
+        return "values_property"
+
+    attribute_map = getattr(file_task_run_request, "_attribute_map", {})
+    if isinstance(attribute_map, dict) and "values" in attribute_map:
+        return "values"
+
+    raise TypeError(
+        "FileTaskRunRequest defines neither values_property nor values")
+
+
 def create_update_continuous_patch_v1(cmd,
                                       registry,
                                       cssc_config_file,
@@ -281,10 +294,12 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
         platform_variant = None
 
         value_pair = [{"name": "CONFIGPATH", "value": f"{file_name}"}]
+        values_parameter = _get_file_task_run_values_parameter(
+            acr_tasks_models.FileTaskRunRequest)
         request = acr_tasks_models.FileTaskRunRequest(
             task_file_path=TMP_DRY_RUN_FILE_NAME,
             values_file_path=None,
-            values=value_pair,
+            **{values_parameter: value_pair},
             source_location=source_location,
             timeout=None,
             platform=acr_tasks_models.PlatformProperties(

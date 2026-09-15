@@ -3,13 +3,10 @@
 Release History
 ===============
 
-1.0.0b9
-++++++++
-* Support current and legacy ACR task operation method names.
-
 1.0.0b8
 ++++++++
 * Restore task operations compatibility with current Azure CLI versions.
+* Support current and legacy ACR task operation method names.
 
 1.0.0b7
 ++++++++

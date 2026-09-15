@@ -12,6 +12,7 @@ from azure.cli.core.mock import DummyCli
 from azext_acrcssc.helper._taskoperations import (
     _cancel_task_runs,
     _delete_task,
+    _get_file_task_run_values_parameter,
     _get_task_operation,
     _update_task_schedule,
     _update_task_yaml)
@@ -70,6 +71,33 @@ class TestTaskOperationCompatibility(unittest.TestCase):
             "mockregistry",
             "mocktask")
         mock_long_running_operation.assert_not_called()
+
+    def test_file_task_run_values_parameter_uses_current_sdk_name(self):
+        model = SimpleNamespace(
+            __annotations__={"values_property": list})
+
+        self.assertEqual(
+            _get_file_task_run_values_parameter(model),
+            "values_property")
+
+    def test_file_task_run_values_parameter_uses_legacy_sdk_name(self):
+        model = SimpleNamespace(
+            __annotations__={},
+            _attribute_map={"values": {}})
+
+        self.assertEqual(
+            _get_file_task_run_values_parameter(model),
+            "values")
+
+    def test_file_task_run_values_parameter_rejects_unknown_model(self):
+        model = SimpleNamespace(
+            __annotations__={},
+            _attribute_map={})
+
+        with self.assertRaisesRegex(
+                TypeError,
+                "defines neither values_property nor values"):
+            _get_file_task_run_values_parameter(model)
 
     @mock.patch("azext_acrcssc.helper._taskoperations.LongRunningOperation")
     @mock.patch("azext_acrcssc.helper._taskoperations._delete_task_role_assignment")
