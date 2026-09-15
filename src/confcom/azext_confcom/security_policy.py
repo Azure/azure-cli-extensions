@@ -76,6 +76,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         allow_host_network: Optional[bool] = None,
         allow_registry_changes_dropping: Optional[bool] = None,
         mapped_directories: Optional[list] = None,
+        prerelease_policy_api: bool = False,
     ) -> None:
         self._rootfs_proxy = None
         self._platform = None
@@ -84,7 +85,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._disable_stdio = disable_stdio
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
-        self._api_version = config.API_VERSION
+        self._prerelease_policy_api = prerelease_policy_api
         self._fragment_contents = fragment_contents
         self._container_definitions = container_definitions or []
 
@@ -287,10 +288,38 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         return False
 
     def _add_rego_boilerplate(self, output: str) -> str:
+        requires_host_network = (
+            self._allow_host_network or self._has_elastic_san_mount()
+        )
+        if (
+            self._platform.startswith("linux")
+            and requires_host_network
+            and not self._prerelease_policy_api
+        ):
+            eprint(
+                "Linux host-network policy generation requires "
+                "--prerelease-policy-api."
+            )
+
+        use_prerelease_policy = (
+            self._platform.startswith("windows") or self._prerelease_policy_api
+        )
+        api_version = (
+            config.PRERELEASE_POLICY_API_VERSION
+            if use_prerelease_policy
+            else config.DEFAULT_POLICY_API_VERSION
+        )
+        framework_version = (
+            config.PRERELEASE_POLICY_FRAMEWORK_VERSION
+            if use_prerelease_policy
+            else config.DEFAULT_POLICY_FRAMEWORK_VERSION
+        )
+
         # determine if we're outputting for a sidecar or not
         if self._images and self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
             return config.SIDECAR_REGO_POLICY % (
-                pretty_print_func(self._api_version),
+                pretty_print_func(api_version),
+                pretty_print_func(framework_version),
                 output
             )
 
@@ -298,8 +327,23 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
 
         if self._platform.startswith("linux"):
+            if self._prerelease_policy_api:
+                return config.CUSTOMER_REGO_POLICY_PRERELEASE % (
+                    pretty_print_func(api_version),
+                    pretty_print_func(framework_version),
+                    pretty_print_func(sanitized_fragments),
+                    output,
+                    pretty_print_func(self._allow_properties_access),
+                    pretty_print_func(self._allow_dump_stacks),
+                    pretty_print_func(self._allow_runtime_logging),
+                    pretty_print_func(self._allow_environment_variable_dropping),
+                    pretty_print_func(self._allow_unencrypted_scratch),
+                    pretty_print_func(self._allow_capability_dropping),
+                    pretty_print_func(requires_host_network),
+                )
             return config.CUSTOMER_REGO_POLICY % (
-                pretty_print_func(self._api_version),
+                pretty_print_func(api_version),
+                pretty_print_func(framework_version),
                 pretty_print_func(sanitized_fragments),
                 output,
                 pretty_print_func(self._allow_properties_access),
@@ -308,11 +352,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 pretty_print_func(self._allow_environment_variable_dropping),
                 pretty_print_func(self._allow_unencrypted_scratch),
                 pretty_print_func(self._allow_capability_dropping),
-                pretty_print_func(self._allow_host_network or self._has_elastic_san_mount()),
             )
         if self._platform.startswith("windows"):
             return config.CUSTOMER_REGO_POLICY_WINDOWS % (
-                pretty_print_func(self._api_version),
+                pretty_print_func(api_version),
+                pretty_print_func(framework_version),
                 pretty_print_func(sanitized_fragments),
                 output,
                 pretty_print_func(self._allow_properties_access),
@@ -840,6 +884,7 @@ def load_policy_from_arm_template_str(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -1034,6 +1079,7 @@ def load_policy_from_arm_template_str(
                 existing_rego_fragments=fragments,
                 debug_mode=debug_mode,
                 fragment_contents=fragment_contents,
+                prerelease_policy_api=prerelease_policy_api,
             )
         )
     return container_groups
@@ -1052,6 +1098,7 @@ def load_policy_from_arm_template_file(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -1071,12 +1118,13 @@ def load_policy_from_arm_template_file(
         exclude_default_fragments=exclude_default_fragments,
         platform=platform,
         tar_mapping=tar_mapping,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
 def load_policy_from_image_name(
     image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False,
-    platform: str = "linux/amd64", tar_mapping=None,
+    platform: str = "linux/amd64", tar_mapping=None, prerelease_policy_api: bool = False,
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -1111,6 +1159,7 @@ def load_policy_from_image_name(
         },
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1122,6 +1171,7 @@ def load_policy_from_json_file(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> AciPolicy:
     json_content = os_util.load_str_from_file(data)
     return load_policy_from_json(
@@ -1132,6 +1182,7 @@ def load_policy_from_json_file(
         exclude_default_fragments=exclude_default_fragments,
         platform=platform,
         tar_mapping=tar_mapping,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1143,6 +1194,7 @@ def load_policy_from_json(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> AciPolicy:
     output_containers = []
     # 1) Parse incoming string as JSON
@@ -1335,6 +1387,7 @@ def load_policy_from_json(
         allow_host_network=allow_host_network,
         allow_registry_changes_dropping=allow_registry_changes_dropping,
         mapped_directories=mapped_directories,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1350,6 +1403,7 @@ def load_policy_from_virtual_node_yaml_file(
         infrastructure_svn: str = None,
         platform: str = "linux/amd64",
         tar_mapping=None,
+        prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
@@ -1364,6 +1418,7 @@ def load_policy_from_virtual_node_yaml_file(
         infrastructure_svn=infrastructure_svn,
         platform=platform,
         tar_mapping=tar_mapping,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1380,6 +1435,7 @@ def load_policy_from_virtual_node_yaml_str(
         infrastructure_svn: str = None,
         platform: str = "linux/amd64",
         tar_mapping=None,
+        prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -1603,6 +1659,7 @@ def load_policy_from_virtual_node_yaml_str(
                 is_vn2=True,
                 existing_rego_fragments=existing_fragments,
                 fragment_contents=fragment_contents,
+                prerelease_policy_api=prerelease_policy_api,
             )
         )
     return all_policies

@@ -33,6 +33,9 @@ COMMON_ENFORCEMENT_POINTS = (
     "scratch_mount",
     "scratch_unmount",
     "rw_mount_device",
+)
+
+PRERELEASE_COMMON_ENFORCEMENT_POINTS = (
     "host_network",
     "load_transparency_trust_list",
 )
@@ -41,6 +44,9 @@ WINDOWS_ENFORCEMENT_POINTS = (
     "log_provider",
     "registry_changes",
     "mount_cims",
+)
+
+PRERELEASE_WINDOWS_ENFORCEMENT_POINTS = (
     "unmount_cims",
     "mapped_directory_mount",
     "mapped_directory_unmount",
@@ -51,6 +57,12 @@ WINDOWS_POLICY_VALUES = (
     "allow_registry_changes_dropping",
     "allowed_log_providers",
 )
+
+
+def _api_version_at_least(version: str, minimum: str) -> bool:
+    return tuple(int(part) for part in version.split(".")) >= tuple(
+        int(part) for part in minimum.split(".")
+    )
 
 
 # This is a single entrypoint for serializing both Policy and Fragment objects
@@ -70,8 +82,12 @@ def policy_serialize(policy: Union[Policy, Fragment]):
         and (is_windows or key not in WINDOWS_POLICY_VALUES)
     )
     enforcement_points = COMMON_ENFORCEMENT_POINTS
+    if _api_version_at_least(policy_dict["api_version"], "0.12.0"):
+        enforcement_points += PRERELEASE_COMMON_ENFORCEMENT_POINTS
     if is_windows:
         enforcement_points += WINDOWS_ENFORCEMENT_POINTS
+        if _api_version_at_least(policy_dict["api_version"], "0.12.0"):
+            enforcement_points += PRERELEASE_WINDOWS_ENFORCEMENT_POINTS
     enforcement_bindings = "\n".join(
         f"{name} := data.framework.{name}" for name in enforcement_points
     )

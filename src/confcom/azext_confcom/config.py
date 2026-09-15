@@ -254,6 +254,9 @@ REGO_IMPORT_FILE_STRUCTURE = """
 }
 """
 CUSTOMER_REGO_POLICY = load_str_from_file(REGO_FILE_PATH)
+CUSTOMER_REGO_POLICY_PRERELEASE = load_str_from_file(
+    f"{script_directory}/data/customer_rego_policy_prerelease.txt"
+)
 CUSTOMER_REGO_POLICY_WINDOWS = load_str_from_file(f"{script_directory}/data/customer_rego_policy_windows.txt")
 CUSTOMER_REGO_FRAGMENT = load_str_from_file(REGO_FRAGMENT_FILE_PATH)
 # sidecar rego file
@@ -263,8 +266,12 @@ SIDECAR_REGO_POLICY = load_str_from_file(SIDECAR_REGO_FILE_PATH)
 # data folder
 DATA_FOLDER = os.path.join(script_directory, "data")
 
-# api version
-API_VERSION = _config["version_api"]
+# Policy versions. Linux defaults to the deployed contract; Windows and
+# explicitly requested prerelease Linux policies use the latest bundled contract.
+DEFAULT_POLICY_API_VERSION = "0.11.0"
+DEFAULT_POLICY_FRAMEWORK_VERSION = "0.2.3"
+PRERELEASE_POLICY_API_VERSION = _config["version_api"]
+PRERELEASE_POLICY_FRAMEWORK_VERSION = "0.5.0"
 # default containers to be added to all container groups
 DEFAULT_CONTAINERS = _config["default_containers"]
 # default container user config to be added for security context

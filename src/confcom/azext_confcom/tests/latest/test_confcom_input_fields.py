@@ -16,7 +16,13 @@ LINUX_IMAGE = "mcr.microsoft.com/azurelinux/distroless/base:3.0"
 WINDOWS_IMAGE = "mcr.microsoft.com/windows/nanoserver:ltsc2022"
 
 
-def _load_policy(image, platform, top_level=None, container_props=None):
+def _load_policy(
+    image,
+    platform,
+    top_level=None,
+    container_props=None,
+    prerelease_policy_api=False,
+):
     properties = {
         config.ACI_FIELD_TEMPLATE_IMAGE: image,
         config.ACI_FIELD_TEMPLATE_ENVS: [],
@@ -37,7 +43,74 @@ def _load_policy(image, platform, top_level=None, container_props=None):
         body.update(top_level)
     security_policy = importlib.import_module("azext_confcom.security_policy")
     with patch.object(security_policy, "validate_image_platform"):
-        return security_policy.load_policy_from_json(json.dumps(body), platform=platform)
+        return security_policy.load_policy_from_json(
+            json.dumps(body),
+            platform=platform,
+            prerelease_policy_api=prerelease_policy_api,
+        )
+
+
+class PolicyVersions(unittest.TestCase):
+    def test_linux_defaults_to_deployed_policy_versions(self):
+        policy = _load_policy(LINUX_IMAGE, "linux/amd64")
+        boilerplate = policy._add_rego_boilerplate("[]")
+        self.assertIn('api_version := "0.11.0"', boilerplate)
+        self.assertIn('framework_version := "0.2.3"', boilerplate)
+        self.assertNotIn("host_network :=", boilerplate)
+        self.assertNotIn("load_transparency_trust_list :=", boilerplate)
+
+    def test_linux_prerelease_policy_api_uses_latest_versions(self):
+        policy = _load_policy(
+            LINUX_IMAGE,
+            "linux/amd64",
+            prerelease_policy_api=True,
+        )
+        boilerplate = policy._add_rego_boilerplate("[]")
+        self.assertIn('api_version := "0.12.0"', boilerplate)
+        self.assertIn('framework_version := "0.5.0"', boilerplate)
+
+    def test_windows_always_uses_latest_versions(self):
+        policy = _load_policy(WINDOWS_IMAGE, "windows/amd64")
+        boilerplate = policy._add_rego_boilerplate("[]")
+        self.assertIn('api_version := "0.12.0"', boilerplate)
+        self.assertIn('framework_version := "0.5.0"', boilerplate)
+
+    def test_elastic_san_requires_explicit_prerelease_policy_api(self):
+        policy = _load_policy(
+            LINUX_IMAGE,
+            "linux/amd64",
+            container_props={
+                config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS: [
+                    {
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE:
+                            config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE_ELASTIC_SAN,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: "/mnt/esan",
+                    }
+                ]
+            },
+        )
+        with self.assertRaises(SystemExit):
+            policy._add_rego_boilerplate("[]")
+
+    def test_elastic_san_uses_prerelease_versions_when_requested(self):
+        policy = _load_policy(
+            LINUX_IMAGE,
+            "linux/amd64",
+            container_props={
+                config.ACI_FIELD_TEMPLATE_VOLUME_MOUNTS: [
+                    {
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE:
+                            config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE_ELASTIC_SAN,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: "/mnt/esan",
+                    }
+                ]
+            },
+            prerelease_policy_api=True,
+        )
+        boilerplate = policy._add_rego_boilerplate("[]")
+        self.assertIn('api_version := "0.12.0"', boilerplate)
+        self.assertIn('framework_version := "0.5.0"', boilerplate)
+        self.assertIn("allow_host_network := true", boilerplate)
 
 
 class HostNetworkInput(unittest.TestCase):
@@ -47,6 +120,7 @@ class HostNetworkInput(unittest.TestCase):
         policy = _load_policy(
             LINUX_IMAGE, "linux/amd64",
             top_level={config.ACI_FIELD_ALLOW_HOST_NETWORK: True},
+            prerelease_policy_api=True,
         )
         self.assertTrue(policy._allow_host_network)
         boilerplate = policy._add_rego_boilerplate("[]")
@@ -56,7 +130,7 @@ class HostNetworkInput(unittest.TestCase):
         policy = _load_policy(LINUX_IMAGE, "linux/amd64")
         self.assertFalse(policy._allow_host_network)
         boilerplate = policy._add_rego_boilerplate("[]")
-        self.assertIn("allow_host_network := false", boilerplate)
+        self.assertNotIn("allow_host_network :=", boilerplate)
 
     def test_allow_host_network_windows(self):
         policy = _load_policy(

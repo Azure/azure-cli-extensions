@@ -14,6 +14,8 @@ import tempfile
 
 from azext_confcom.command.radius_policy_insert import insert_policy_into_template
 from azext_confcom.lib.serialization import (
+  PRERELEASE_COMMON_ENFORCEMENT_POINTS,
+  PRERELEASE_WINDOWS_ENFORCEMENT_POINTS,
   WINDOWS_ENFORCEMENT_POINTS,
   policy_deserialize,
   policy_serialize,
@@ -116,6 +118,7 @@ mount_cims := data.framework.mount_cims
 
 def test_serialization_uses_windows_enforcement_points():
     policy_text = """package policy
+api_version := "0.12.0"
 mount_cims := data.framework.mount_cims
 """
     with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
@@ -123,14 +126,7 @@ mount_cims := data.framework.mount_cims
         policy_file.flush()
         result = policy_serialize(policy_deserialize(policy_file.name))
 
-    for name in (
-        "log_provider",
-        "registry_changes",
-        "mount_cims",
-        "unmount_cims",
-        "mapped_directory_mount",
-        "mapped_directory_unmount",
-    ):
+    for name in WINDOWS_ENFORCEMENT_POINTS + PRERELEASE_WINDOWS_ENFORCEMENT_POINTS:
         assert f"{name} := data.framework.{name}" in result
 
 
@@ -141,8 +137,8 @@ def test_serialization_omits_windows_enforcement_points_for_linux():
         policy_file.flush()
         result = policy_serialize(policy_deserialize(policy_file.name))
 
-    assert "host_network := data.framework.host_network" in result
-    assert "load_transparency_trust_list := data.framework.load_transparency_trust_list" in result
+    for name in PRERELEASE_COMMON_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" not in result
     for name in (
       "allow_log_provider_dropping",
       "allow_registry_changes_dropping",
@@ -151,3 +147,17 @@ def test_serialization_omits_windows_enforcement_points_for_linux():
       assert f"{name} :=" not in result
     for name in WINDOWS_ENFORCEMENT_POINTS:
         assert f"{name} := data.framework.{name}" not in result
+
+
+def test_serialization_uses_prerelease_linux_enforcement_points():
+    policy_text = """package policy
+api_version := "0.12.0"
+mount_device := data.framework.mount_device
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    for name in PRERELEASE_COMMON_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" in result
