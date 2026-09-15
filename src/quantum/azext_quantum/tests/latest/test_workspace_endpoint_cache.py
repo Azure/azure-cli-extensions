@@ -163,11 +163,6 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
         self.assertEqual(self.config.get('defaults', 'target_id'), 'target')
         self.assertEqual(self.config.get('quantum', 'version_check_date'), '2026-09-10')
 
-    def test_explicit_internal_endpoint_still_takes_precedence(self):
-        self.save_workspace()
-        self.assertEqual(WorkspaceInfo(self.cmd, endpoint=self.other_endpoint).endpoint, self.other_endpoint)
-        self.assertEqual(WorkspaceInfo(self.cmd, endpoint='').endpoint, '')
-
     def test_delete_clears_only_the_saved_identity(self):
         for subscription, group, workspace, should_clear in [
             ('saved-subscription', 'saved-group', 'saved-workspace', True),
@@ -290,17 +285,29 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
         workspaces.return_value.get.assert_not_called()
         self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
 
-    def test_delete_saved_workspace_clears_independently_changed_defaults(self):
-        self.save_workspace()
-        self.config.set_value('defaults', 'group', 'other-group')
-        self.config.set_value('defaults', 'workspace', 'other-workspace')
+    def test_delete_saved_workspace_preserves_independently_changed_defaults(self):
+        for group, workspace in [
+            ('other-group', 'other-workspace'),
+            ('other-group', 'saved-workspace'),
+            ('saved-group', 'other-workspace'),
+            (None, 'saved-workspace'),
+            ('saved-group', None),
+            ('', 'saved-workspace'),
+            ('saved-group', ''),
+        ]:
+            with self.subTest(group=group, workspace=workspace):
+                self.save_workspace()
+                for key, value in (('group', group), ('workspace', workspace)):
+                    if value is None:
+                        self.config.remove_option('defaults', key)
+                    else:
+                        self.config.set_value('defaults', key, value)
+                before = self.config.items('defaults'), self.config.items('quantum')
 
-        with patch('azext_quantum.operations.workspace.cf_workspaces'):
-            delete(self.cmd, 'saved-group', 'saved-workspace')
+                with patch('azext_quantum.operations.workspace.cf_workspaces'):
+                    delete(self.cmd, 'saved-group', 'saved-workspace')
 
-        self.assertEqual(self.config.get('defaults', 'group'), '')
-        self.assertEqual(self.config.get('defaults', 'workspace'), '')
-        self.assertFalse(self.config.has_option('quantum', 'workspace_endpoint_cache'))
+                self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
 
     def test_delete_without_saved_identity_preserves_defaults(self):
         for cache in (None, 'not-json', '[]', '{}', '{"resource_id": 42}'):

@@ -69,9 +69,10 @@ _WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
 
 
 class WorkspaceInfo:
+    _CONFIG_SECTION = 'quantum'
     _ENDPOINT_CACHE_KEY = 'workspace_endpoint_cache'
 
-    def __init__(self, cmd, resource_group_name=None, workspace_name=None, endpoint=None):
+    def __init__(self, cmd, resource_group_name=None, workspace_name=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
@@ -86,34 +87,43 @@ class WorkspaceInfo:
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
-        self.endpoint = endpoint if endpoint is not None else self._get_cached_endpoint(cmd)
+        self.endpoint = self._get_cached_endpoint(cmd)
 
-    def _endpoint_cache_key(self):
+    def _normalized_resource_id(self):
         return _get_workspace_resource_id(self).lower()
 
     def _get_cached_endpoint(self, cmd):
-        value = cmd.cli_ctx.config.get('quantum', self._ENDPOINT_CACHE_KEY, None)
+        value = cmd.cli_ctx.config.get(self._CONFIG_SECTION, self._ENDPOINT_CACHE_KEY, None)
         if not value:
             return None
         try:
             cache = json.loads(value)
-        except (TypeError, ValueError):
+        except ValueError:
             return None
-        if not isinstance(cache, dict) or cache.get('resource_id') != self._endpoint_cache_key():
+        if not isinstance(cache, dict) or cache.get('resource_id') != self._normalized_resource_id():
             return None
         endpoint = cache.get('endpoint')
         return endpoint if isinstance(endpoint, str) and endpoint else None
 
-    def is_saved(self, cmd):
+    def is_global_default(self, cmd):
+        """
+        Checks if the set default workspace matches this one.
+        """
+
         from configparser import ConfigParser
+        from knack.config import CONFIG_FILE_ENCODING
 
         config = ConfigParser(interpolation=None)
-        config.read(cmd.cli_ctx.config.config_path, encoding='utf-8')
+        config.read(cmd.cli_ctx.config.config_path, encoding=CONFIG_FILE_ENCODING)
+        defaults_section = cmd.cli_ctx.config.defaults_section_name
+        if (config.get(defaults_section, 'group', fallback='').lower() != self.resource_group.lower() or
+                config.get(defaults_section, 'workspace', fallback='').lower() != self.name.lower()):
+            return False
         try:
-            cache = json.loads(config.get('quantum', self._ENDPOINT_CACHE_KEY, fallback='{}'))
+            cache = json.loads(config.get(self._CONFIG_SECTION, self._ENDPOINT_CACHE_KEY, fallback='{}'))
         except ValueError:
             return False
-        return isinstance(cache, dict) and cache.get('resource_id') == self._endpoint_cache_key()
+        return isinstance(cache, dict) and cache.get('resource_id') == self._normalized_resource_id()
 
     def clear(self):
         self.subscription = ''
@@ -122,16 +132,22 @@ class WorkspaceInfo:
         self.endpoint = ''
 
     def save(self, cmd, endpoint=''):
+        """
+        Persist this workspace's group/name defaults in global CLI config.
+
+        Cache the supplied endpoint with the workspace identity, or remove the cache if empty.
+        Local configuration is left unchanged.
+        """
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
+        with ConfiguredDefaultSetter(cmd.cli_ctx.config, use_local_config=False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
             if endpoint:
-                cache = {'resource_id': self._endpoint_cache_key(), 'endpoint': endpoint}
-                cmd.cli_ctx.config.set_value('quantum', self._ENDPOINT_CACHE_KEY, json.dumps(cache))
+                cache = {'resource_id': self._normalized_resource_id(), 'endpoint': endpoint}
+                cmd.cli_ctx.config.set_value(self._CONFIG_SECTION, self._ENDPOINT_CACHE_KEY, json.dumps(cache))
             else:
-                cmd.cli_ctx.config.remove_option('quantum', self._ENDPOINT_CACHE_KEY)
+                cmd.cli_ctx.config.remove_option(self._CONFIG_SECTION, self._ENDPOINT_CACHE_KEY)
 
 
 def _show_tip(msg):
@@ -565,7 +581,7 @@ def delete(cmd, resource_group_name, workspace_name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
-    if info.is_saved(cmd):
+    if info.is_global_default(cmd):
         clear(cmd)
     # Get updated information from the affected workspace
     ws = client.get(info.resource_group, info.name)
