@@ -11,11 +11,13 @@ Release History
   modeldeployment``: Rename the ``--aimanager-name`` argument to the shorter ``--aimanager``.
   The ``--manager`` and ``-m`` aliases are unchanged.
 * ``az aimanager namespace modeldeployment list``: Make ``--namespace``/``--ns`` optional.
-  When omitted, model deployments are listed across all readable namespaces of the AI Manager
-  (mirroring ``kubectl get pods --all-namespaces``), which requires permission to read
-  namespaces on the AI Manager. Namespaces the caller cannot read are skipped with a per-
-  namespace warning; if no namespace is readable, an actionable error explains the required
-  permission and suggests using ``--namespace``/``--ns`` for a single namespace.
+  When omitted, model deployments are listed across the namespaces of the AI Manager
+  (mirroring ``kubectl get pods --all-namespaces``). This first lists namespaces (requires
+  namespace read on the AI Manager) and then lists deployments per namespace (requires model
+  deployment read on each namespace). Namespaces the caller cannot read model deployments in
+  are skipped with a per-namespace warning; if namespaces cannot be listed at all, or the
+  caller lacks access to every one, an actionable error explains the specific permission
+  needed and suggests ``--namespace``/``--ns`` for a single namespace.
 
 1.5.3b1
 ++++++

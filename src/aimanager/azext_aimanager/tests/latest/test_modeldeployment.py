@@ -168,11 +168,13 @@ class TestModelDeployment(unittest.TestCase):
 
         client = MagicMock()
 
-        # The caller cannot even enumerate namespaces, so an actionable unauthorized error that
-        # points at --namespace/--ns is surfaced.
+        # The caller cannot enumerate namespaces (permission layer 1): the error names the
+        # namespace-read requirement on the AI Manager and points at --namespace/--ns.
         with self.assertRaises(UnauthorizedError) as ctx:
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
-        self.assertTrue(any("--namespace/--ns" in r for r in ctx.exception.recommendations))
+        recs = " ".join(ctx.exception.recommendations)
+        self.assertIn("namespace read permission", recs)
+        self.assertIn("--namespace/--ns", recs)
         client.list_by_ai_manager_namespace.assert_not_called()
 
     @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
@@ -194,11 +196,14 @@ class TestModelDeployment(unittest.TestCase):
         client = MagicMock()
         client.list_by_ai_manager_namespace.side_effect = [forbidden, forbidden]
 
-        # Caller can enumerate namespaces but cannot read deployments in any of them: rather than
-        # returning an empty list, surface an actionable unauthorized error.
+        # Namespaces list fine, but the caller lacks model deployment read on every one
+        # (permission layer 2): the error names the per-namespace model-deployment-read
+        # requirement rather than returning an empty list.
         with self.assertRaises(UnauthorizedError) as ctx:
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
-        self.assertTrue(any("--namespace/--ns" in r for r in ctx.exception.recommendations))
+        recs = " ".join(ctx.exception.recommendations).lower()
+        self.assertIn("model deployment read", recs)
+        self.assertIn("--namespace/--ns", recs)
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
     @patch.object(custom, "sdk_no_wait")
