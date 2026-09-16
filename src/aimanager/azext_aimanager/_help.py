@@ -277,10 +277,11 @@ helps['aimanager namespace modeldeployment list'] = """
         If --namespace/--ns is omitted, model deployments are listed across namespaces of the
         AI Manager. This first lists the namespaces, which requires namespace read permission on
         the AI Manager resource; without it, no namespaces can be listed. Model deployments are
-        then listed per namespace, which requires model deployment read permission on each
-        namespace resource — you may have this on some namespaces but not others. Namespaces you
-        are not authorized to read model deployments in are skipped with a warning. To list a
-        single namespace you have model deployment read access to, specify --namespace/--ns.
+        then listed per namespace, which requires model deployment read permission for each
+        namespace (granted on the namespace resource, or inherited from the AI Manager resource)
+        — you may have this for some namespaces but not others. Namespaces you are not authorized
+        to read model deployments in are skipped with a warning. To list a single namespace you
+        have model deployment read access to, specify --namespace/--ns.
     examples:
         - name: List model deployments in a namespace
           text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --namespace team-alpha

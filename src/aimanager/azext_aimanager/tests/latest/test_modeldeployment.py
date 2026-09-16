@@ -210,8 +210,8 @@ class TestModelDeployment(unittest.TestCase):
         recs = " ".join(ctx.exception.recommendations)
         self.assertEqual(
             "Not authorized to read model deployments in any namespace of AI Manager 'mgr'. "
-            "Model deployment read permission is granted per namespace; ask for model "
-            "deployment read access on a namespace of this AI Manager.",
+            "Ask for model deployment read access on a namespace of this AI Manager, or on the "
+            "AI Manager resource itself to cover all its namespaces.",
             recs)
         self.assertNotIn("--namespace", recs)
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)

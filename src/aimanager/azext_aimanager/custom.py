@@ -664,8 +664,8 @@ def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
             raise UnauthorizedError(
                 last_auth_error.message,
                 "Not authorized to read model deployments in any namespace of AI Manager "
-                "'{}'. Model deployment read permission is granted per namespace; ask for "
-                "model deployment read access on a namespace of this AI Manager.".format(
+                "'{}'. Ask for model deployment read access on a namespace of this AI Manager, "
+                "or on the AI Manager resource itself to cover all its namespaces.".format(
                     ai_manager_name))
     return _annotate_model_ids(cmd, deployments)
 

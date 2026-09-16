@@ -14,7 +14,8 @@ Release History
   When omitted, model deployments are listed across the namespaces of the AI Manager
   (mirroring ``kubectl get pods --all-namespaces``). This first lists namespaces (requires
   namespace read on the AI Manager) and then lists deployments per namespace (requires model
-  deployment read on each namespace). Namespaces the caller cannot read model deployments in
+  deployment read for each namespace, granted on the namespace or inherited from the AI
+  Manager). Namespaces the caller cannot read model deployments in
   are skipped with a per-namespace warning; if namespaces cannot be listed at all, or the
   caller lacks access to every one, an actionable error explains the specific permission
   needed and suggests ``--namespace``/``--ns`` for a single namespace.
