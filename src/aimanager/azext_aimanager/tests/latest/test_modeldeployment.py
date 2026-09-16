@@ -148,6 +148,51 @@ class TestModelDeployment(unittest.TestCase):
         with self.assertRaises(HttpResponseError):
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
 
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_propagates_namespace_list_unauthorized(
+            self, cf_namespaces, _annotate):
+        from azure.core.exceptions import HttpResponseError
+
+        unauthorized = HttpResponseError(message="Forbidden")
+        unauthorized.status_code = 403
+
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.side_effect = unauthorized
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        client = MagicMock()
+
+        # The caller cannot even enumerate namespaces, so the normal unauthorized error surfaces.
+        with self.assertRaises(HttpResponseError):
+            custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        client.list_by_ai_manager_namespace.assert_not_called()
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_all_forbidden_raises(
+            self, cf_namespaces, _annotate):
+        from azure.core.exceptions import HttpResponseError
+
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        forbidden = HttpResponseError(message="Forbidden")
+        forbidden.status_code = 403
+
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = [forbidden, forbidden]
+
+        # Caller can enumerate namespaces but cannot read deployments in any of them: rather than
+        # returning an empty list, surface the normal unauthorized error.
+        with self.assertRaises(HttpResponseError):
+            custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
+
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
     def test_update_preserves_omitted_properties_and_uses_etag(

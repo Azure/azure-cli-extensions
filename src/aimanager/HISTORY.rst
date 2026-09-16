@@ -13,7 +13,7 @@ Release History
 * ``az aimanager namespace modeldeployment list``: Make ``--namespace``/``--ns`` optional.
   When omitted, model deployments are listed across all readable namespaces of the AI Manager
   (mirroring ``kubectl get pods --all-namespaces``); namespaces the caller cannot read are
-  skipped.
+  skipped, and if no namespace is readable the normal unauthorized error is surfaced.
 
 1.5.3b1
 ++++++

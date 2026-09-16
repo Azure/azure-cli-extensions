@@ -617,20 +617,27 @@ def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
         from azext_aimanager._client_factory import cf_ai_manager_namespaces
         namespaces_client = cf_ai_manager_namespaces(cmd.cli_ctx)
         deployments = []
+        any_readable = False
+        last_auth_error = None
         for ns in namespaces_client.list_by_ai_manager(resource_group_name, ai_manager_name):
             try:
                 deployments.extend(
                     client.list_by_ai_manager_namespace(
                         resource_group_name, ai_manager_name, ns.name))
+                any_readable = True
             except HttpResponseError as ex:
-                # Skip namespaces the caller cannot read (e.g. authorization denied) so a
-                # partially-authorized caller still sees the deployments they can read. If the
-                # caller can read no namespace at all, the namespace enumeration above raises and
-                # the normal error surfaces.
+                # Skip namespaces the caller cannot read (authorization denied) so a
+                # partially-authorized caller still sees the deployments they can read. Other
+                # errors propagate immediately.
                 if ex.status_code in (401, 403):
                     logger.warning("Skipping namespace '%s': %s", ns.name, ex.message)
+                    last_auth_error = ex
                     continue
                 raise
+        # If there were namespaces but the caller could read none of them, surface the normal
+        # unauthorized error rather than silently returning an empty list.
+        if last_auth_error is not None and not any_readable:
+            raise last_auth_error
     return _annotate_model_ids(cmd, deployments)
 
 
