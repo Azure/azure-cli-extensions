@@ -247,9 +247,9 @@ helps['aimanager namespace modeldeployment add'] = """
     short-summary: Add a model deployment to an AI Manager namespace.
     examples:
         - name: Add a manually scaled model deployment
-          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --replicas 1
+          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --replicas 1
         - name: Add an autoscaled model deployment
-          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --min-replicas 1 --max-replicas 3
+          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --min-replicas 1 --max-replicas 3
 """
 
 helps['aimanager namespace modeldeployment update'] = """
@@ -257,9 +257,9 @@ helps['aimanager namespace modeldeployment update'] = """
     short-summary: Update a model deployment within an AI Manager namespace.
     examples:
         - name: Change the fixed replica count
-          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --replicas 2
+          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace team-alpha -n phi --replicas 2
         - name: Change the performance mode
-          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --performance-mode Throughput
+          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace team-alpha -n phi --performance-mode Throughput
 """
 
 helps['aimanager namespace modeldeployment show'] = """
@@ -267,7 +267,7 @@ helps['aimanager namespace modeldeployment show'] = """
     short-summary: Show a model deployment within an AI Manager namespace.
     examples:
         - name: Show a model deployment
-          text: az aimanager namespace modeldeployment show -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi
+          text: az aimanager namespace modeldeployment show -g myrg --aimanager-name my-ai-manager --namespace team-alpha -n phi
 """
 
 helps['aimanager namespace modeldeployment list'] = """
@@ -275,7 +275,7 @@ helps['aimanager namespace modeldeployment list'] = """
     short-summary: List model deployments within an AI Manager namespace.
     examples:
         - name: List model deployments
-          text: az aimanager namespace modeldeployment list -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha
+          text: az aimanager namespace modeldeployment list -g myrg --aimanager-name my-ai-manager --namespace team-alpha
 """
 
 helps['aimanager namespace modeldeployment delete'] = """
@@ -283,7 +283,7 @@ helps['aimanager namespace modeldeployment delete'] = """
     short-summary: Delete a model deployment from an AI Manager namespace.
     examples:
         - name: Delete a model deployment
-          text: az aimanager namespace modeldeployment delete -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi
+          text: az aimanager namespace modeldeployment delete -g myrg --aimanager-name my-ai-manager --namespace team-alpha -n phi
 """
 
 helps['aimanager namespace modeldeployment wait'] = """
