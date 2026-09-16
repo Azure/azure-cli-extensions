@@ -250,6 +250,12 @@ def create_k8s_extension(
                 location,
             )
 
+    if isinstance(extension_class, ChaosStudio):
+        return extension_class.Install(
+            cmd, client, resource_group_name, cluster_rp, cluster_type,
+            cluster_name, name, extension_instance, no_wait=no_wait,
+        )
+
     # Try to create the resource
     return sdk_no_wait(
         no_wait,

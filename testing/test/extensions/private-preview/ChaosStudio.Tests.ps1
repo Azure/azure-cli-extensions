@@ -34,6 +34,11 @@ Describe 'Chaos Studio Testing' {
             $created.autoUpgradeMinorVersion | Should -BeFalse
             $created.configurationSettings.'subscriber.workspaceId' | Should -Be $ENVCONFIG.chaosWorkspaceId
             $created.configurationSettings.'subscriber.serverEndpoint' | Should -Not -BeNullOrEmpty
+            $created.configurationSettings.'subscriber.enabled' | Should -Be "true"
+            $created.aksAssignedIdentity.principalId | Should -Not -BeNullOrEmpty
+            $created.aksAssignedIdentity.tenantId | Should -Not -BeNullOrEmpty
+            $created.configurationSettings.'workloadIdentity.clientId' | Should -BeNullOrEmpty
+            $created.configurationSettings.'workloadIdentity.tenantId' | Should -BeNullOrEmpty
 
             $output = az $Env:K8sExtensionName show @clusterArgs -n $extensionName -o json
             $LASTEXITCODE | Should -Be 0
@@ -47,7 +52,9 @@ Describe 'Chaos Studio Testing' {
             $LASTEXITCODE | Should -Be 0
             $updated = $output | ConvertFrom-Json
             $updated.provisioningState | Should -Be "Succeeded"
-            $updated.configurationSettings.'workloadIdentity.clientId' | Should -Be $created.configurationSettings.'workloadIdentity.clientId'
+            $updated.aksAssignedIdentity.principalId | Should -Be $created.aksAssignedIdentity.principalId
+            $updated.aksAssignedIdentity.tenantId | Should -Be $created.aksAssignedIdentity.tenantId
+            $updated.configurationSettings.'subscriber.enabled' | Should -Be "true"
             $updated.configurationSettings.'subscriber.serverEndpoint' | Should -Be $created.configurationSettings.'subscriber.serverEndpoint'
             $updated.configurationSettings.'experiments.stressToolsImage' | Should -Be $ENVCONFIG.chaosStressToolsImage
         }

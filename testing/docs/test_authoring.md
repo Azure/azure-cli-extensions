@@ -114,13 +114,16 @@ extension. The cluster must already have Workload Identity, the OIDC issuer and
 Azure RBAC for Kubernetes enabled. Supply an existing Chaos Studio workspace with
 a system-assigned identity or exactly one user-assigned identity.
 
-Add `chaosWorkspaceId`, `chaosExtensionVersion` (an available dev train version)
+Add `chaosWorkspaceId`, `chaosExtensionVersion` (`0.1.6`, once published and registered)
 and `chaosStressToolsImage` to your local `testing/settings.json`. The image must
 be a chart-supported test value; the test does not execute faults. Optionally set
 `chaosExistingRoleDefinitionId` to reuse a compatible custom role rather than
-create one. The test creates an identity, federated credential, cluster role
-assignment and workspace connection. Delete removes owned resources but preserves
-the reusable role definition and the workspace.
+create one. The CLI first installs with the subscriber stopped, reads the
+completed platform identity, creates the workspace connection and activates the
+subscriber. The platform owns identity/federation creation and deletion; the CLI
+owns the workspace role assignment and connection. Delete preserves the reusable
+role definition and workspace. The compatible chart and Workload Identity
+registration are prerequisites; this test hasn't been run for the staged flow.
 
 After installing the candidate wheel and configuring the harness, run
 `.\Test.ps1 -Type k8s-extension -SkipInstall -Path .\test\extensions\private-preview\ChaosStudio.Tests.ps1`

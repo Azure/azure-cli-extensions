@@ -7,15 +7,20 @@
 
 import hashlib
 import json
+import time
 import uuid
+from urllib.parse import urlsplit
 
+from azure.core.exceptions import AzureError, ResourceNotFoundError
+from azure.core.pipeline.policies import RetryPolicy
 from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import send_raw_request
+from azure.cli.core.util import send_raw_request, sdk_no_wait
 from knack.log import get_logger
 from knack.util import CLIError
-
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
+from .._client_factory import cf_k8s_extension_types
 from .DefaultExtension import DefaultExtension
 
 logger = get_logger(__name__)
@@ -99,20 +104,25 @@ class ChaosStudio(DefaultExtension):
     DEFAULT_CLUSTER_TYPE = "managedclusters"
     DEFAULT_RELEASE_NAMESPACE = "chaos-infrastructure"
     DEFAULT_RELEASE_TRAIN = "dev"
-    DEFAULT_VERSION = "0.1.0"
+    DEFAULT_VERSION = "0.1.6"
     WORKSPACE_ID_KEY = "chaos-workspace-id"
     EXISTING_ROLE_KEY = "chaos-existing-role-definition-id"
 
     AKS_API_VERSION = "2024-10-01"
     WORKSPACE_API_VERSION = "2026-08-01-preview"
     CONNECTION_API_VERSION = "2026-08-01-preview"
-    IDENTITY_API_VERSION = "2023-01-31"
     AUTHORIZATION_API_VERSION = "2022-04-01"
     CONNECTION_KIND = "AksExtension"
     SERVER_ENDPOINT_KEY = "subscriber.serverEndpoint"
-
-    FEDERATED_CREDENTIAL_NAME = "chaos-subscriber"
-    FEDERATED_CREDENTIAL_AUDIENCE = "api://AzureADTokenExchange"
+    ENABLED_KEY = "subscriber.enabled"
+    PENDING_STATES = ("creating", "updating", "accepted", "running", "inprogress")
+    MANAGED_KEYS = (
+        "subscriber.enabled", "subscriber.serverEndpoint",
+        "subscriber.workspaceId", "subscriber.clusterResourceId",
+        "workspaceManagedIdentity.objectId",
+        "workloadIdentity.enabled", "workloadIdentity.clientId", "workloadIdentity.tenantId",
+        "IsWorkloadIdentityEnabled", "IdentityClientId", "IdentityTenantId",
+    )
 
     ROLE_NAME = "Chaos Studio Kubernetes Operator"
     ROLE_DESCRIPTION = (
@@ -132,9 +142,6 @@ class ChaosStudio(DefaultExtension):
         )
     )
 
-    OWNER_TAG = "ChaosStudioAksExtension"
-    OWNER_TAG_VALUE = "true"
-    CLUSTER_TAG = "ChaosStudioClusterResourceId"
     ROLE_ASSIGNMENT_DESCRIPTION = (
         "Owned by the Microsoft.ChaosStudio AKS extension."
     )
@@ -178,26 +185,18 @@ class ChaosStudio(DefaultExtension):
         configuration_protected_settings = dict(
             configuration_protected_settings or {}
         )
+        self._reject_managed_overrides(configuration_settings, configuration_protected_settings)
         workspace_id = self._take_workspace_id(
             configuration_settings, configuration_protected_settings
         )
+        if not workspace_id:
+            raise InvalidArgumentValueError("'chaos-workspace-id' is required.")
+        self._validate_version(version or self.DEFAULT_VERSION)
         release_namespace = self._resolve_release_namespace(
             release_namespace
         )
-        if workspace_id is not None:
-            configuration_protected_settings.pop(
-                self.SERVER_ENDPOINT_KEY, None
-            )
-            configuration_settings.update(
-                self._reconcile_prerequisites(
-                    cmd,
-                    resource_group_name,
-                    cluster_name,
-                    workspace_id,
-                    release_namespace,
-                    configuration_settings.get(self.EXISTING_ROLE_KEY),
-                )
-            )
+        configuration_settings["subscriber.workspaceId"] = self._validate_workspace_id(workspace_id)
+        configuration_settings[self.ENABLED_KEY] = "false"
 
         configuration_settings["namespace"] = release_namespace
         extension_scope = Scope(
@@ -216,6 +215,219 @@ class ChaosStudio(DefaultExtension):
         )
         return extension, name, False
 
+    @classmethod
+    def _validate_version(cls, version):
+        # Only the coordinated bootstrap contract is known compatible. Availability
+        # remains an extension-RP registration check, not a version-number inference.
+        if version != cls.DEFAULT_VERSION:
+            raise InvalidArgumentValueError(
+                "Microsoft.ChaosStudio staged installation requires chart {}. "
+                "It must be published and registered before installation.".format(cls.DEFAULT_VERSION)
+            )
+
+    @classmethod
+    def _reject_managed_overrides(cls, *settings):
+        for values in settings:
+            conflicts = set(values).intersection(cls.MANAGED_KEYS)
+            if conflicts:
+                raise InvalidArgumentValueError(
+                    "These settings are managed by Microsoft.ChaosStudio: {}.".format(
+                        ", ".join(sorted(conflicts))
+                    )
+                )
+
+    @staticmethod
+    def _platform_identity(extension):
+        identity = getattr(extension, "aks_assigned_identity", None)
+        values = []
+        for field in ("principal_id", "tenant_id"):
+            value = getattr(identity, field, None)
+            try:
+                parsed = uuid.UUID(value) if isinstance(value, str) else None
+            except ValueError:
+                parsed = None
+            if not parsed or parsed.int == 0:
+                raise AzureResponseError(
+                    "Completed extension did not expose a valid aksAssignedIdentity.{}.".format(field)
+                )
+            values.append(str(parsed))
+        return tuple(values)
+
+    @classmethod
+    def _stage(cls, extension):
+        settings = dict(extension.configuration_settings or {})
+        value = settings.get(cls.ENABLED_KEY)
+        if value not in ("true", "false") or any(
+            key in settings for key in ("workloadIdentity.clientId", "workloadIdentity.tenantId")
+        ):
+            raise InvalidArgumentValueError(
+                "The existing extension is not a staged platform-identity installation. "
+                "Automatic migration of older manual identities is not supported."
+            )
+        cls._validate_version(extension.version)
+        return value
+
+    def Install(self, cmd, client, resource_group_name, cluster_rp, cluster_type,
+                cluster_name, name, extension, no_wait=False):
+        """Bootstrap and activate one extension; persisted ARM state is the resume record."""
+        args = (resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        arm = self._arm_client_factory(cmd)
+        cluster_id = self._cluster_resource_id(arm.subscription_id, resource_group_name, cluster_name)
+        extension_id = "{}/providers/Microsoft.KubernetesConfiguration/extensions/{}".format(cluster_id, name)
+        workspace_id = extension.configuration_settings["subscriber.workspaceId"]
+        connection_id = "{}/connections/{}".format(
+            workspace_id, self._recommended_connection_name(workspace_id, cluster_id)
+        )
+        phase = "inspection"
+        try:
+            versions = cf_k8s_extension_types(cmd.cli_ctx).cluster_list_versions(
+                resource_group_name, cluster_rp, cluster_type, cluster_name,
+                "Microsoft.ChaosStudio", release_train=extension.release_train,
+            )
+            if not any(item.properties.version == extension.version for item in versions):
+                raise InvalidArgumentValueError(
+                    "Bootstrap chart {} is not registered for this cluster/train.".format(extension.version)
+                )
+            try:
+                existing = client.get(*args)
+            except ResourceNotFoundError:
+                existing = None
+            connection = arm.get(connection_id, self.CONNECTION_API_VERSION,
+                                 "Chaos Studio workspace connection", allow_not_found=True)
+            if existing is not None:
+                self._validate_existing(existing, extension, cluster_id)
+                stage = self._stage(existing)
+                if stage == "true":
+                    self._check_active_connection(existing, connection, workspace_id, cluster_id)
+                    if self._state(existing) == "succeeded":
+                        return existing
+                    if self._state(existing) not in ("failed", "canceled", "cancelled"):
+                        if no_wait:
+                            return existing
+                        final = self._wait_existing(cmd, client, args)
+                        self._check_active_connection(final, connection, workspace_id, cluster_id)
+                        return final
+                elif self._state(existing) not in ("succeeded", "failed", "canceled", "cancelled"):
+                    existing = self._wait_existing(cmd, client, args)
+                if connection is not None:
+                    principal, tenant = self._platform_identity(existing)
+                    self._connection_endpoint(connection, cluster_id, principal, tenant)
+                # Creation on rerun is not a settings-update interface.
+                extension = existing
+            elif connection is not None:
+                raise InvalidArgumentValueError(
+                    "A connection already exists without its extension; refusing to adopt its identity."
+                )
+
+            phase = "workspace permissions"
+            settings = dict(extension.configuration_settings or {})
+            settings.update(self._reconcile_prerequisites(
+                cmd, resource_group_name, cluster_name, workspace_id,
+                self._existing_release_namespace(extension, settings),
+                settings.get(self.EXISTING_ROLE_KEY),
+            ))
+            phase = "bootstrap"
+            if existing is None or (
+                self._stage(existing) == "false" and self._state(existing) != "succeeded"
+            ):
+                settings[self.ENABLED_KEY] = "false"
+                settings.pop(self.SERVER_ENDPOINT_KEY, None)
+                extension.configuration_settings = settings
+                LongRunningOperation(cmd.cli_ctx)(client.begin_create(*args, extension))
+                existing = client.get(*args)
+                self._require_success(existing)
+
+            phase = "connection"
+            principal, tenant = self._platform_identity(existing)
+            endpoint = self._reconcile_workspace_connection(
+                arm, workspace_id, cluster_id, principal, tenant
+            )
+            if self._stage(existing) == "true" and (
+                existing.configuration_settings.get(self.SERVER_ENDPOINT_KEY) != endpoint
+            ):
+                raise InvalidArgumentValueError("The active endpoint conflicts with its workspace connection.")
+            phase = "activation"
+            settings[self.ENABLED_KEY] = "true"
+            settings[self.SERVER_ENDPOINT_KEY] = endpoint
+            update = PatchExtension(configuration_settings=settings)
+            # Protected settings are deliberately omitted: GET cannot reconstruct secrets.
+            result = sdk_no_wait(no_wait, client.begin_update, *args, update)
+            if no_wait:
+                logger.warning("Chaos bootstrap is complete; subscriber activation is still in progress.")
+                return result
+            LongRunningOperation(cmd.cli_ctx)(result)
+            final = client.get(*args)
+            self._require_success(final)
+            if self._platform_identity(final) != (principal, tenant):
+                raise AzureResponseError("Platform identity changed during activation; connection was retained.")
+            if self._stage(final) != "true" or final.configuration_settings.get(self.SERVER_ENDPOINT_KEY) != endpoint:
+                raise AzureResponseError("Completed activation does not match the requested subscriber settings.")
+            return final
+        except (CLIError, AzureError, ValueError) as error:
+            raise AzureResponseError(
+                "Chaos {} failed. Extension '{}', connection '{}' and workspace permissions "
+                "were retained; rerun after correcting the error. {}".format(
+                    phase, extension_id, connection_id, error
+                )
+            ) from error
+
+    @staticmethod
+    def _state(extension):
+        state = getattr(extension, "provisioning_state", "") or ""
+        return str(getattr(state, "value", state)).lower()
+
+    @classmethod
+    def _require_success(cls, extension):
+        if cls._state(extension) != "succeeded":
+            raise AzureResponseError(
+                "Extension operation ended in state '{}'.".format(cls._state(extension))
+            )
+
+    def _wait_existing(self, cmd, client, args):
+        # Resume has no LRO continuation token. Poll the existing resource with
+        # the SDK's cadence and retry policy, never submitting another mutation.
+        while True:
+            delays = []
+
+            def read_response(response, value, _):
+                delays.append(RetryPolicy().get_retry_after(response))
+                return value
+
+            existing = client.get(*args, cls=read_response)
+            state = self._state(existing)
+            if state in ("succeeded", "failed", "canceled", "cancelled"):
+                self._require_success(existing)
+                return existing
+            if state not in self.PENDING_STATES:
+                raise AzureResponseError("Cannot resume extension state '{}'.".format(state))
+            retry_after = delays[0]
+            delay = retry_after if retry_after is not None else client._config.polling_interval  # pylint: disable=protected-access
+            time.sleep(delay)
+
+    def _validate_existing(self, existing, requested, cluster_id):
+        settings = dict(existing.configuration_settings or {})
+        if (str(existing.extension_type).lower() != "microsoft.chaosstudio"
+                or self._state(existing) not in self.PENDING_STATES + ("succeeded", "failed", "canceled", "cancelled")
+                or not self._same_resource_id(settings.get("subscriber.workspaceId"),
+                                              requested.configuration_settings["subscriber.workspaceId"])
+                or not self._same_resource_id(settings.get("subscriber.clusterResourceId"), cluster_id)
+                or self._existing_release_namespace(existing, settings)
+                != self._existing_release_namespace(requested, requested.configuration_settings)
+                or existing.version != requested.version
+                or existing.release_train != requested.release_train):
+            raise InvalidArgumentValueError("Existing extension ownership, namespace, version or state conflicts.")
+        for key, value in requested.configuration_settings.items():
+            if key not in self.MANAGED_KEYS and settings.get(key) != value:
+                raise InvalidArgumentValueError("Resume cannot change setting '{}'; use update after completion.".format(key))
+        if requested.configuration_protected_settings:
+            raise InvalidArgumentValueError("Resume cannot replace protected settings; use update after completion.")
+
+    def _check_active_connection(self, extension, connection, workspace_id, cluster_id):
+        principal, tenant = self._platform_identity(extension)
+        endpoint = self._connection_endpoint(connection, cluster_id, principal, tenant)
+        if extension.configuration_settings.get(self.SERVER_ENDPOINT_KEY) != endpoint:
+            raise InvalidArgumentValueError("Installed endpoint conflicts with the workspace connection.")
+
     def Update(
         self,
         cmd,
@@ -230,7 +442,7 @@ class ChaosStudio(DefaultExtension):
         original_extension,
         yes=False,
     ):
-        """Reconcile prerequisites while retaining deterministic identities."""
+        """Update only an already active platform-identity installation."""
         self._warn_ignored_auto_upgrade(
             auto_upgrade_minor_version, auto_upgrade_mode
         )
@@ -238,6 +450,11 @@ class ChaosStudio(DefaultExtension):
         configuration_protected_settings = dict(
             configuration_protected_settings or {}
         )
+        self._reject_managed_overrides(supplied_settings, configuration_protected_settings)
+        self._validate_version(version or original_extension.version)
+        if self._stage(original_extension) != "true":
+            raise InvalidArgumentValueError("Resume bootstrap with create before updating settings.")
+        self._require_success(original_extension)
         original_settings = dict(
             getattr(original_extension, "configuration_settings", None) or {}
         )
@@ -261,9 +478,13 @@ class ChaosStudio(DefaultExtension):
             original_settings,
         )
         if workspace_id is not None:
-            configuration_protected_settings.pop(
-                self.SERVER_ENDPOINT_KEY, None
+            arm = self._arm_client_factory(cmd)
+            cluster_id = self._cluster_resource_id(arm.subscription_id, resource_group_name, cluster_name)
+            connection = arm.get(
+                "{}/connections/{}".format(workspace_id, self._recommended_connection_name(workspace_id, cluster_id)),
+                self.CONNECTION_API_VERSION, "Chaos Studio workspace connection"
             )
+            self._check_active_connection(original_extension, connection, workspace_id, cluster_id)
             configuration_settings.update(
                 self._reconcile_prerequisites(
                     cmd,
@@ -347,7 +568,7 @@ class ChaosStudio(DefaultExtension):
             self.AKS_API_VERSION,
             "AKS cluster",
         )
-        issuer, location = self._validate_cluster(cluster)
+        self._validate_cluster(cluster)
         workspace = arm.get(
             workspace_id,
             self.WORKSPACE_API_VERSION,
@@ -367,20 +588,6 @@ class ChaosStudio(DefaultExtension):
             "Chaos Studio Kubernetes Operator role definition",
             allow_not_found=existing_role_id is None,
         )
-        identity = arm.get(
-            resource_ids["identity"],
-            self.IDENTITY_API_VERSION,
-            "subscriber managed identity",
-            allow_not_found=True,
-        )
-        federated_credential = None
-        if identity is not None:
-            federated_credential = arm.get(
-                resource_ids["federated_credential"],
-                self.IDENTITY_API_VERSION,
-                "subscriber federated credential",
-                allow_not_found=True,
-            )
         role_assignment = arm.get(
             resource_ids["role_assignment"],
             self.AUTHORIZATION_API_VERSION,
@@ -391,12 +598,6 @@ class ChaosStudio(DefaultExtension):
         if role_definition is not None:
             self._validate_role_definition(
                 role_definition, arm.subscription_id, existing_role_id is not None
-            )
-        if identity is not None:
-            self._validate_identity(identity, cluster_id, location)
-        if federated_credential is not None:
-            self._validate_federated_credential(
-                federated_credential, issuer, release_namespace
             )
         if role_assignment is not None:
             self._validate_role_assignment(
@@ -412,28 +613,6 @@ class ChaosStudio(DefaultExtension):
                 "Chaos Studio Kubernetes Operator role definition",
                 self._role_definition_body(arm.subscription_id),
             )
-        if identity is None:
-            arm.put(
-                resource_ids["identity"],
-                self.IDENTITY_API_VERSION,
-                "subscriber managed identity",
-                self._identity_body(cluster_id, location),
-            )
-            identity = arm.get(
-                resource_ids["identity"],
-                self.IDENTITY_API_VERSION,
-                "subscriber managed identity",
-            )
-            self._validate_identity(identity, cluster_id, location)
-        if federated_credential is None:
-            arm.put(
-                resource_ids["federated_credential"],
-                self.IDENTITY_API_VERSION,
-                "subscriber federated credential",
-                self._federated_credential_body(
-                    issuer, release_namespace
-                ),
-            )
         if role_assignment is None:
             arm.put(
                 resource_ids["role_assignment"],
@@ -445,21 +624,10 @@ class ChaosStudio(DefaultExtension):
                 ),
             )
 
-        identity_properties = identity.get("properties") or {}
-        data_plane_endpoint = self._reconcile_workspace_connection(
-            arm,
-            workspace_id,
-            cluster_id,
-            identity_properties["principalId"],
-            identity_properties["tenantId"],
-        )
         return {
-            "workloadIdentity.clientId": identity_properties["clientId"],
-            "workloadIdentity.tenantId": identity_properties["tenantId"],
             "workspaceManagedIdentity.objectId": workspace_principal_id,
             "subscriber.workspaceId": workspace_id,
             "subscriber.clusterResourceId": cluster_id,
-            self.SERVER_ENDPOINT_KEY: data_plane_endpoint,
         }
 
     @classmethod
@@ -489,24 +657,27 @@ class ChaosStudio(DefaultExtension):
             "Chaos Studio workspace connection",
             {"properties": expected},
         )
+        return cls._connection_endpoint(connection, cluster_id, principal_id, tenant_id)
 
+    @classmethod
+    def _connection_endpoint(cls, connection, cluster_id, principal_id, tenant_id):
         if not isinstance(connection, dict):
             raise AzureResponseError(
-                "The Chaos Studio workspace connection PUT returned an "
+                "The Chaos Studio workspace connection returned an "
                 "invalid response."
             )
         properties = connection.get("properties") or {}
         if not (
-            properties.get("kind") == expected["kind"]
+            properties.get("kind") == cls.CONNECTION_KIND
             and cls._same_resource_id(
                 properties.get("targetResourceId"),
-                expected["targetResourceId"],
+                cluster_id,
             )
             and cls._same_identifier(
-                properties.get("principalId"), expected["principalId"]
+                properties.get("principalId"), principal_id
             )
             and cls._same_identifier(
-                properties.get("tenantId"), expected["tenantId"]
+                properties.get("tenantId"), tenant_id
             )
         ):
             raise AzureResponseError(
@@ -515,7 +686,9 @@ class ChaosStudio(DefaultExtension):
             )
 
         endpoint = properties.get("dataPlaneEndpoint")
-        if not isinstance(endpoint, str) or not endpoint.strip():
+        uri = urlsplit(endpoint) if isinstance(endpoint, str) else None
+        if (not uri or uri.scheme != "https" or not uri.hostname
+                or uri.username or uri.password or uri.fragment):
             raise AzureResponseError(
                 "The Chaos Studio workspace connection response did not "
                 "include 'properties.dataPlaneEndpoint'."
@@ -572,12 +745,13 @@ class ChaosStudio(DefaultExtension):
         settings = dict(
             getattr(extension, "configuration_settings", None) or {}
         )
+        self._stage(extension)
+        if self._state(extension) not in ("succeeded", "failed", "canceled", "cancelled"):
+            raise InvalidArgumentValueError("Wait for the extension operation before deleting workspace resources.")
         workspace_id = settings.get("subscriber.workspaceId")
         managed_keys = (
             "subscriber.workspaceId",
             "subscriber.clusterResourceId",
-            "workloadIdentity.clientId",
-            "workloadIdentity.tenantId",
         )
         if workspace_id is None:
             if any(key in settings for key in managed_keys[1:]):
@@ -623,50 +797,7 @@ class ChaosStudio(DefaultExtension):
         if connection is None:
             return settings.get(self.EXISTING_ROLE_KEY)
 
-        resource_ids = self._prerequisite_resource_ids(
-            arm.subscription_id,
-            resource_group_name,
-            cluster_name,
-            cluster_id,
-        )
-        cluster = arm.get(
-            cluster_id,
-            self.AKS_API_VERSION,
-            "AKS cluster",
-        )
-        location = cluster.get("location")
-        if not location:
-            raise InvalidArgumentValueError(
-                "The AKS cluster response did not include a location."
-            )
-        identity = arm.get(
-            resource_ids["identity"],
-            self.IDENTITY_API_VERSION,
-            "subscriber managed identity",
-            allow_not_found=True,
-        )
-        if identity is None:
-            raise InvalidArgumentValueError(
-                "The extension-owned subscriber managed identity could not "
-                "be found. The workspace connection was not deleted."
-            )
-        self._validate_identity(identity, cluster_id, location)
-        identity_properties = identity.get("properties") or {}
-        if not (
-            self._same_identifier(
-                identity_properties.get("clientId"),
-                settings["workloadIdentity.clientId"],
-            )
-            and self._same_identifier(
-                identity_properties.get("tenantId"),
-                settings["workloadIdentity.tenantId"],
-            )
-        ):
-            raise InvalidArgumentValueError(
-                "The installed Microsoft.ChaosStudio extension settings do "
-                "not match the extension-owned subscriber managed identity. "
-                "The workspace connection was not deleted."
-            )
+        principal_id, tenant_id = self._platform_identity(extension)
 
         if not isinstance(connection, dict):
             raise AzureResponseError(
@@ -681,16 +812,16 @@ class ChaosStudio(DefaultExtension):
             )
             and self._same_identifier(
                 properties.get("principalId"),
-                identity_properties.get("principalId"),
+                principal_id,
             )
             and self._same_identifier(
                 properties.get("tenantId"),
-                identity_properties.get("tenantId"),
+                tenant_id,
             )
         ):
             raise InvalidArgumentValueError(
                 "The Chaos Studio workspace connection does not match the "
-                "installed extension and its owned subscriber identity. It "
+                "installed extension and its platform subscriber identity. It "
                 "was not deleted."
             )
 
@@ -721,12 +852,6 @@ class ChaosStudio(DefaultExtension):
             "workspace managed identity role assignment",
             allow_not_found=True,
         )
-        identity = arm.get(
-            resource_ids["identity"],
-            self.IDENTITY_API_VERSION,
-            "subscriber managed identity",
-            allow_not_found=True,
-        )
 
         if role_assignment is not None:
             properties = role_assignment.get("properties") or {}
@@ -748,20 +873,6 @@ class ChaosStudio(DefaultExtension):
                     "Preserving role assignment '%s' because it is not owned "
                     "by the Microsoft.ChaosStudio extension.",
                     resource_ids["role_assignment"],
-                )
-
-        if identity is not None:
-            if self._identity_is_owned(identity, cluster_id):
-                arm.delete(
-                    resource_ids["identity"],
-                    self.IDENTITY_API_VERSION,
-                    "subscriber managed identity",
-                )
-            else:
-                logger.warning(
-                    "Preserving managed identity '%s' because it is not owned "
-                    "by the Microsoft.ChaosStudio extension.",
-                    resource_ids["identity"],
                 )
 
     @classmethod
@@ -931,38 +1042,6 @@ class ChaosStudio(DefaultExtension):
             )
 
     @classmethod
-    def _validate_identity(cls, identity, cluster_id, location):
-        properties = identity.get("properties") or {}
-        if (
-            not cls._identity_is_owned(identity, cluster_id)
-            or (identity.get("location") or "").lower() != location.lower()
-            or not properties.get("clientId")
-            or not properties.get("principalId")
-            or not properties.get("tenantId")
-        ):
-            raise InvalidArgumentValueError(
-                "The deterministic subscriber managed identity already "
-                "exists but is incompatible. It was not overwritten."
-            )
-
-    @classmethod
-    def _validate_federated_credential(
-        cls, federated_credential, issuer, release_namespace
-    ):
-        properties = federated_credential.get("properties") or {}
-        if not (
-            properties.get("issuer") == issuer
-            and properties.get("subject")
-            == cls._federated_credential_subject(release_namespace)
-            and properties.get("audiences")
-            == [cls.FEDERATED_CREDENTIAL_AUDIENCE]
-        ):
-            raise InvalidArgumentValueError(
-                "The existing subscriber federated credential is "
-                "incompatible. It was not overwritten."
-            )
-
-    @classmethod
     def _validate_role_assignment(
         cls, role_assignment, role_definition_id, workspace_principal_id
     ):
@@ -980,15 +1059,6 @@ class ChaosStudio(DefaultExtension):
                 "The deterministic AKS role assignment already exists but is "
                 "incompatible. It was not overwritten."
             )
-
-    @classmethod
-    def _identity_is_owned(cls, identity, cluster_id):
-        tags = identity.get("tags") or {}
-        return (
-            str(tags.get(cls.OWNER_TAG, "")).lower()
-            == cls.OWNER_TAG_VALUE
-            and cls._same_resource_id(tags.get(cls.CLUSTER_TAG), cluster_id)
-        )
 
     @classmethod
     def _role_definition_body(cls, subscription_id):
@@ -1010,34 +1080,6 @@ class ChaosStudio(DefaultExtension):
                 ],
             }
         }
-
-    @classmethod
-    def _identity_body(cls, cluster_id, location):
-        return {
-            "location": location,
-            "tags": {
-                cls.OWNER_TAG: cls.OWNER_TAG_VALUE,
-                cls.CLUSTER_TAG: cluster_id,
-            },
-        }
-
-    @classmethod
-    def _federated_credential_body(cls, issuer, release_namespace):
-        return {
-            "properties": {
-                "issuer": issuer,
-                "subject": cls._federated_credential_subject(
-                    release_namespace
-                ),
-                "audiences": [cls.FEDERATED_CREDENTIAL_AUDIENCE],
-            }
-        }
-
-    @classmethod
-    def _federated_credential_subject(cls, release_namespace):
-        return "system:serviceaccount:{}:chaos-subscriber".format(
-            release_namespace
-        )
 
     @classmethod
     def _resolve_release_namespace(cls, release_namespace):
@@ -1075,13 +1117,6 @@ class ChaosStudio(DefaultExtension):
         cluster_name,
         cluster_id,
     ):
-        identity_name = "chaos-subscriber-{}".format(
-            hashlib.sha256(cluster_id.lower().encode("utf-8")).hexdigest()
-        )
-        identity_id = (
-            "/subscriptions/{}/resourceGroups/{}/providers/"
-            "Microsoft.ManagedIdentity/userAssignedIdentities/{}"
-        ).format(subscription_id, resource_group_name, identity_name)
         role_definition_id = (
             "/subscriptions/{}/providers/Microsoft.Authorization/"
             "roleDefinitions/{}"
@@ -1093,10 +1128,6 @@ class ChaosStudio(DefaultExtension):
             )
         )
         return {
-            "identity": identity_id,
-            "federated_credential": (
-                "{}/federatedIdentityCredentials/{}"
-            ).format(identity_id, cls.FEDERATED_CREDENTIAL_NAME),
             "role_definition": role_definition_id,
             "role_assignment": (
                 "{}/providers/Microsoft.Authorization/roleAssignments/{}"
