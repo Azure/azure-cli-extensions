@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create an Azure Red Hat OpenShift with hosted control plane external authentication instance
 
     :example: Create an external authentication provider
-        az aro hcp cluster external-auth create --resource-group MyResourceGroup --cluster-name MyCluster --name MyExternalAuth --issuer-url https://login.microsoftonline.com/<tenant-id>/v2.0 --issuer-audience <audience> --username-claim email --clients "[{client-id:<client-id>,component:{name:console,auth-client-namespace:openshift-console},type:Confidential}]"
+        az aro hcp cluster external-auth create --resource-group MyResourceGroup --cluster-name MyCluster --name MyExternalAuth --issuer-url https://login.microsoftonline.com/<tenant-id>/v2.0 --issuer-audience <audience> --username-claim email --client client-id=<client-id> component-name=console auth-client-namespace=openshift-console type=Confidential
     """
 
     _aaz_info = {
@@ -157,8 +157,9 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.clients = AAZListArg(
             options=["--clients"],
+            singular_options=["--client"],
             arg_group="Properties",
-            help="External Auth OIDC clients There must not be more than 20 entries and entries must have unique namespace/name pairs.",
+            help="External Auth OIDC clients. There must not be more than 20 entries and entries must have unique namespace/name pairs.",
             fmt=AAZListArgFormat(
                 max_length=20,
             ),
@@ -170,46 +171,40 @@ class Create(AAZCommand):
         _element = cls._args_schema.clients.Element
         _element.client_id = AAZStrArg(
             options=["client-id"],
-            help="External Auth client id The clientId must appear in the audience field of the TokenIssuerProfile.",
+            help="External Auth client id. The clientId must appear in the audience field of the TokenIssuerProfile.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
-        _element.component = AAZObjectArg(
-            options=["component"],
-            help="External Auth client component",
-            required=True,
-        )
-        _element.extra_scopes = AAZListArg(
-            options=["extra-scopes"],
-            help="external auth client scopes  This is useful if you have configured claim mappings that requires specific scopes to be requested beyond the standard OIDC scopes. When omitted, no additional scopes are requested.",
-        )
-        _element.type = AAZStrArg(
-            options=["type"],
-            help="Determines the OIDC provider client type.",
-            required=True,
-            enum={"Confidential": "Confidential", "Public": "Public"},
-        )
-
-        component = cls._args_schema.clients.Element.component
-        component.auth_client_namespace = AAZStrArg(
+        _element.auth_client_namespace = AAZStrArg(
             options=["auth-client-namespace"],
-            help="The namespace of the external Auth client This specifies the namespace in which the platform component being configured to use the identity provider as an authentication mode is running.  It is used in combination with name as a unique identifier.",
+            help="The namespace of the external Auth client. This specifies the namespace in which the platform component being configured to use the identity provider as an authentication mode is running.  It is used in combination with name as a unique identifier.",
             required=True,
             fmt=AAZStrArgFormat(
                 max_length=63,
                 min_length=1,
             ),
         )
-        component.name = AAZStrArg(
-            options=["name"],
-            help="The name of the external auth client  This specifies the name of the platform component being configured to use the identity provider as an authentication mode. It is used in combination with namespace as a unique identifier.",
+        _element.component_name = AAZStrArg(
+            options=["component-name"],
+            help="The name of the external auth client. This specifies the name of the platform component being configured to use the identity provider as an authentication mode. It is used in combination with namespace as a unique identifier.",
             required=True,
             fmt=AAZStrArgFormat(
                 max_length=256,
                 min_length=1,
             ),
+        )
+        _element.extra_scopes = AAZListArg(
+            options=["extra-scopes"],
+            singular_options=["extra-scope"],
+            help="External auth client scopes. This is useful if you have configured claim mappings that requires specific scopes to be requested beyond the standard OIDC scopes. When omitted, no additional scopes are requested.",
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="Determines the OIDC provider client type.",
+            required=True,
+            enum={"Confidential": "Confidential", "Public": "Public"},
         )
 
         extra_scopes = cls._args_schema.clients.Element.extra_scopes
@@ -400,14 +395,14 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.clients[]")
             if _elements is not None:
                 _elements.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("component", AAZObjectType, ".component", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("component", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("extraScopes", AAZListType, ".extra_scopes")
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             component = _builder.get(".properties.clients[].component")
             if component is not None:
                 component.set_prop("authClientNamespace", AAZStrType, ".auth_client_namespace", typ_kwargs={"flags": {"required": True}})
-                component.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                component.set_prop("name", AAZStrType, ".component_name", typ_kwargs={"flags": {"required": True}})
 
             extra_scopes = _builder.get(".properties.clients[].extraScopes")
             if extra_scopes is not None:
