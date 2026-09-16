@@ -41,7 +41,7 @@ class TestModelDeployment(unittest.TestCase):
             custom._construct_scaling_profile(
                 self.cmd, max_replicas=3, required=True)
 
-    def test_namespace_name_supports_short_alias(self):
+    def test_namespace_name_options_list(self):
         class ArgumentContext:
             def __init__(self, loader, command):
                 self.loader = loader
@@ -73,7 +73,148 @@ class TestModelDeployment(unittest.TestCase):
         namespace_argument = loader.arguments[
             "aimanager namespace modeldeployment"]["namespace_name"]
         self.assertEqual(
-            ["--namespace-name", "--ns"], namespace_argument["options_list"])
+            ["--namespace", "--ns"], namespace_argument["options_list"])
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    def test_list_single_namespace(self, _annotate):
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.return_value = ["d1"]
+
+        result = custom.list_modeldeployment(
+            self.cmd, client, "rg", "mgr", namespace_name="ns1")
+
+        self.assertEqual(["d1"], result)
+        client.list_by_ai_manager_namespace.assert_called_once_with("rg", "mgr", "ns1")
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_aggregates_across_namespaces(
+            self, cf_namespaces, _annotate):
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = [["d1"], ["d2", "d3"]]
+
+        result = custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+
+        self.assertEqual(["d1", "d2", "d3"], result)
+        namespaces_client.list_by_ai_manager.assert_called_once_with("rg", "mgr")
+        self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_skips_forbidden_namespaces(
+            self, cf_namespaces, _annotate):
+        from azure.core.exceptions import HttpResponseError
+
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        forbidden = HttpResponseError(message="Forbidden")
+        forbidden.status_code = 403
+
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = [forbidden, ["d2"]]
+
+        with self.assertLogs(custom.logger, level="WARNING") as logs:
+            result = custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+
+        self.assertEqual(["d2"], result)
+        # The full warning names the skipped namespace and the reason.
+        self.assertTrue(any(
+            "Skipping namespace 'ns1': not authorized to read its model deployments." in line
+            for line in logs.output))
+        self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_reraises_non_auth_errors(
+            self, cf_namespaces, _annotate):
+        from azure.core.exceptions import HttpResponseError
+
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.return_value = [SimpleNamespace(name="ns1")]
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        server_error = HttpResponseError(message="Boom")
+        server_error.status_code = 500
+
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = server_error
+
+        with self.assertRaises(HttpResponseError):
+            custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_propagates_namespace_list_unauthorized(
+            self, cf_namespaces, _annotate):
+        from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
+
+        unauthorized = HttpResponseError(message="Forbidden")
+        unauthorized.status_code = 403
+
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.side_effect = unauthorized
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        client = MagicMock()
+
+        # The caller cannot enumerate namespaces (permission layer 1): the error names the
+        # namespace-read requirement on the AI Manager and points at --namespace/--ns.
+        with self.assertRaises(UnauthorizedError) as ctx:
+            custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        recs = " ".join(ctx.exception.recommendations)
+        self.assertEqual(
+            "Listing model deployments without --namespace/--ns first lists namespaces, which "
+            "requires namespace read permission on AI Manager 'mgr'. Grant that permission, or "
+            "specify --namespace/--ns to list model deployments for a single namespace.",
+            recs)
+        client.list_by_ai_manager_namespace.assert_not_called()
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespace_all_forbidden_raises(
+            self, cf_namespaces, _annotate):
+        from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
+
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        forbidden = HttpResponseError(message="Forbidden")
+        forbidden.status_code = 403
+
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = [forbidden, forbidden]
+
+        # Namespaces list fine, but the caller lacks model deployment read on every one
+        # (permission layer 2): the error names the per-namespace model-deployment-read
+        # requirement. It must NOT suggest --namespace/--ns, since scoping to one namespace
+        # would fail too.
+        with self.assertRaises(UnauthorizedError) as ctx:
+            custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        recs = " ".join(ctx.exception.recommendations)
+        self.assertEqual(
+            "Not authorized to read model deployments in any namespace of AI Manager 'mgr'. "
+            "Ask for model deployment read access on a namespace of this AI Manager, or on the "
+            "AI Manager resource itself to cover all its namespaces.",
+            recs)
+        self.assertNotIn("--namespace", recs)
+        self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
