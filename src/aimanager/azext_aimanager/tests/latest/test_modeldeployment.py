@@ -127,8 +127,10 @@ class TestModelDeployment(unittest.TestCase):
             result = custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
 
         self.assertEqual(["d2"], result)
-        # A warning is emitted for the skipped, unauthorized namespace.
-        self.assertTrue(any("ns1" in line for line in logs.output))
+        # The full warning names the skipped namespace and the reason.
+        self.assertTrue(any(
+            "Skipping namespace 'ns1': not authorized to read its model deployments." in line
+            for line in logs.output))
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
     @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
@@ -173,8 +175,11 @@ class TestModelDeployment(unittest.TestCase):
         with self.assertRaises(UnauthorizedError) as ctx:
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
         recs = " ".join(ctx.exception.recommendations)
-        self.assertIn("namespace read permission", recs)
-        self.assertIn("--namespace/--ns", recs)
+        self.assertEqual(
+            "Listing model deployments without --namespace/--ns first lists namespaces, which "
+            "requires namespace read permission on AI Manager 'mgr'. Grant that permission, or "
+            "specify --namespace/--ns to list model deployments for a single namespace.",
+            recs)
         client.list_by_ai_manager_namespace.assert_not_called()
 
     @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
@@ -198,12 +203,17 @@ class TestModelDeployment(unittest.TestCase):
 
         # Namespaces list fine, but the caller lacks model deployment read on every one
         # (permission layer 2): the error names the per-namespace model-deployment-read
-        # requirement rather than returning an empty list.
+        # requirement. It must NOT suggest --namespace/--ns, since scoping to one namespace
+        # would fail too.
         with self.assertRaises(UnauthorizedError) as ctx:
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
-        recs = " ".join(ctx.exception.recommendations).lower()
-        self.assertIn("model deployment read", recs)
-        self.assertIn("--namespace/--ns", recs)
+        recs = " ".join(ctx.exception.recommendations)
+        self.assertEqual(
+            "Not authorized to read model deployments in any namespace of AI Manager 'mgr'. "
+            "Model deployment read permission is granted per namespace; ask for model "
+            "deployment read access on a namespace of this AI Manager.",
+            recs)
+        self.assertNotIn("--namespace", recs)
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
     @patch.object(custom, "sdk_no_wait")

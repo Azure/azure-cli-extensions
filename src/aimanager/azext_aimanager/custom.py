@@ -656,16 +656,17 @@ def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                     last_auth_error = ex
                     continue
                 raise
-        # Namespaces were listed, but the caller lacked model deployment read on every one:
-        # surface an actionable error rather than silently returning an empty list.
+        # Namespaces were listed, but the caller lacked model deployment read on every one.
+        # Surface an actionable error rather than silently returning an empty list. Note we do
+        # NOT suggest --namespace here: the caller can enumerate namespaces but is denied model
+        # deployment read on all of them, so scoping to a single namespace would fail too.
         if last_auth_error is not None and not any_readable:
             raise UnauthorizedError(
                 last_auth_error.message,
                 "Not authorized to read model deployments in any namespace of AI Manager "
                 "'{}'. Model deployment read permission is granted per namespace; ask for "
-                "access to a namespace, then use --namespace/--ns to list it.".format(
+                "model deployment read access on a namespace of this AI Manager.".format(
                     ai_manager_name))
-    return _annotate_model_ids(cmd, deployments)
     return _annotate_model_ids(cmd, deployments)
 
 

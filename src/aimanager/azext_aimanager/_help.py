@@ -280,7 +280,7 @@ helps['aimanager namespace modeldeployment list'] = """
         then listed per namespace, which requires model deployment read permission on each
         namespace resource — you may have this on some namespaces but not others. Namespaces you
         are not authorized to read model deployments in are skipped with a warning. To list a
-        single namespace you do have access to, specify --namespace/--ns.
+        single namespace you have model deployment read access to, specify --namespace/--ns.
     examples:
         - name: List model deployments in a namespace
           text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --namespace team-alpha
