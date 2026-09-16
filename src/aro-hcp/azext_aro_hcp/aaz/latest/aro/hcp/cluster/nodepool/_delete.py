@@ -48,7 +48,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-c", "--cluster-name"],
             help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
             required=True,
             id_part="name",

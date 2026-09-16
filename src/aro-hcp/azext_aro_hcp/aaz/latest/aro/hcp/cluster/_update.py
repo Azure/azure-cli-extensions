@@ -76,7 +76,7 @@ class Update(AAZCommand):
         _args_schema.max_nodes_total = AAZIntArg(
             options=["--max-nodes-total"],
             arg_group="Autoscaling",
-            help="maxNodesTotal is the maximum allowable number of nodes for the Autoscaler scale out to be operational. The autoscaler will not grow the cluster beyond this number. If omitted, the autoscaler will not have a maximum limit.",
+            help="maxNodesTotal is the maximum allowable number of nodes. The autoscaler will not grow the cluster beyond this number. If omitted, the autoscaler will not have a maximum limit.",
             nullable=True,
             fmt=AAZIntArgFormat(
                 minimum=0,
@@ -85,7 +85,7 @@ class Update(AAZCommand):
         _args_schema.max_pod_grace_period = AAZIntArg(
             options=["--max-pod-grace-period"],
             arg_group="Autoscaling",
-            help="maxPodGracePeriod is the maximum seconds to wait for graceful pod termination before scaling down a NodePool. The default is 600 seconds.",
+            help="maxPodGracePeriodSeconds is the maximum amount of time in seconds to wait for graceful pod termination before scaling down a NodePool.",
             nullable=True,
             fmt=AAZIntArgFormat(
                 minimum=0,
@@ -135,7 +135,7 @@ class Update(AAZCommand):
         _args_schema.node_drain_timeout = AAZIntArg(
             options=["--node-drain-timeout"],
             arg_group="Properties",
-            help={"short-summary": "nodeDrainTimeoutMinutes is the grace period for how long Pod Disruption Budget-protected workloads will be respected during any node draining operation. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted. This is especially relevant to cluster upgrades. Valid values are in minutes and from 0 to 10080 minutes (1 week). 0 means that the MachinePool can be drained without any time limitation. This is the value is used a default for all NodePools. It can be overridden by specifying nodeDrainTimeoutMinutes for a given NodePool", "long-summary": "Valid values are from 0 to 10080 minutes (1 week). 0 means that the NodePool can be drained without any time limitation.  If unset the cluster  value is used as a default."},
+            help={"short-summary": "nodeDrainTimeoutMinutes is the grace period for how long Pod Disruption Budget-protected workloads will be respected during any node draining operation. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted. This is especially relevant to cluster upgrades. Valid values are in minutes and from 0 to 10080 minutes (1 week). 0 means that the MachinePool can be drained without any time limitation. This value is used as a default for all NodePools. It can be overridden by specifying nodeDrainTimeoutMinutes for a given NodePool", "long-summary": "Valid values are from 0 to 10080 minutes (1 week). 0 means that the NodePool can be drained without any time limitation.  If unset the cluster  value is used as a default."},
             nullable=True,
             fmt=AAZIntArgFormat(
                 maximum=10080,

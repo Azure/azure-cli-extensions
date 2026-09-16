@@ -49,7 +49,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-c", "--cluster-name"],
             help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
             required=True,
             id_part="name",
@@ -100,7 +100,7 @@ class Update(AAZCommand):
         _args_schema.labels = AAZListArg(
             options=["--labels"],
             arg_group="Properties",
-            help="Kubernetes labels to propagate to the NodePool Nodes Note that when the labels are updated this is only applied to newly create nodes in the Nodepool, existing node labels remain unchanged.",
+            help="Kubernetes labels to propagate to the NodePool Nodes. Note that when the labels are updated this is only applied to newly create nodes in the NodePool, existing node labels remain unchanged.",
             nullable=True,
         )
         _args_schema.node_drain_timeout = AAZIntArg(
@@ -121,7 +121,7 @@ class Update(AAZCommand):
         _args_schema.taints = AAZListArg(
             options=["--taints"],
             arg_group="Properties",
-            help="Taints for the nodes",
+            help="Taints for the nodes.",
             nullable=True,
         )
 

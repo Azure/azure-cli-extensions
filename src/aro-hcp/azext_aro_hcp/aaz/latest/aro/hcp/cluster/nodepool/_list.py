@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List Azure Red Hat OpenShift with hosted control plane node pools by cluster
+    """List Azure Red Hat OpenShift with hosted control plane node pools
 
     :example: List node pools of a cluster
         az aro hcp cluster nodepool list --resource-group MyResourceGroup --cluster-name MyCluster
@@ -47,7 +47,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-c", "--cluster-name"],
             help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
             required=True,
             fmt=AAZStrArgFormat(

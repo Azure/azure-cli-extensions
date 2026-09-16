@@ -97,7 +97,7 @@ class Create(AAZCommand):
         _args_schema.max_nodes_total = AAZIntArg(
             options=["--max-nodes-total"],
             arg_group="Autoscaling",
-            help="maxNodesTotal is the maximum allowable number of nodes for the Autoscaler scale out to be operational. The autoscaler will not grow the cluster beyond this number. If omitted, the autoscaler will not have a maximum limit.",
+            help="maxNodesTotal is the maximum allowable number of nodes. The autoscaler will not grow the cluster beyond this number. If omitted, the autoscaler will not have a maximum limit.",
             fmt=AAZIntArgFormat(
                 minimum=0,
             ),
@@ -105,7 +105,7 @@ class Create(AAZCommand):
         _args_schema.max_pod_grace_period = AAZIntArg(
             options=["--max-pod-grace-period"],
             arg_group="Autoscaling",
-            help="maxPodGracePeriod is the maximum seconds to wait for graceful pod termination before scaling down a NodePool. The default is 600 seconds.",
+            help="maxPodGracePeriodSeconds is the maximum amount of time in seconds to wait for graceful pod termination before scaling down a NodePool.",
             fmt=AAZIntArgFormat(
                 minimum=0,
             ),
@@ -133,7 +133,7 @@ class Create(AAZCommand):
         _args_schema.base_domain_prefix = AAZStrArg(
             options=["--base-domain-prefix"],
             arg_group="DNS",
-            help="BaseDomainPrefix is the unique name of the cluster representing the OpenShift's cluster name. BaseDomainPrefix is the name that will appear in the cluster's DNS, provisioned cloud providers resources",
+            help="BaseDomainPrefix is a prefix used in cluster endpoint DNS names and the names of related Azure resources.",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z]([-a-z0-9]*[a-z0-9])?$",
                 max_length=15,
@@ -265,7 +265,7 @@ class Create(AAZCommand):
         _args_schema.managed_resource_group_name = AAZStrArg(
             options=["--managed-rg-name", "--managed-resource-group-name"],
             arg_group="Platform",
-            help="Resource group name to put cluster resources  If not specified then a unique name is generated from the following pattern  \"aro-hcp-\" + clusterName + \"-\" + UUID  where clusterName means the hcpOpenShiftClusters resource name (up to 45 characters) followed by a 16-byte universally unique identifier per RFC 4122.",
+            help="The name of the resource group to put cluster resources in. If not specified then a unique name is generated from the following pattern  \"aro-hcp-\" + clusterName + \"-\" + UUID  where clusterName means the hcpOpenShiftClusters resource name (up to 45 characters) followed by a 16-byte universally unique identifier per RFC 4122.",
         )
         _args_schema.nsg = AAZResourceIdArg(
             options=["--nsg"],
@@ -287,7 +287,7 @@ class Create(AAZCommand):
         _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="Platform",
-            help="The Azure resource ID of the worker subnet Note that a subnet cannot be reused between ARO-HCP Clusters.",
+            help="The Azure resource ID of the worker subnet. Note that a subnet cannot be reused between ARO-HCP Clusters.",
         )
         _args_schema.vnet_integration_subnet_id = AAZResourceIdArg(
             options=["--vnet-int-subnet-id", "--vnet-integration-subnet-id"],
@@ -346,7 +346,7 @@ class Create(AAZCommand):
         _args_schema.node_drain_timeout = AAZIntArg(
             options=["--node-drain-timeout"],
             arg_group="Properties",
-            help={"short-summary": "nodeDrainTimeoutMinutes is the grace period for how long Pod Disruption Budget-protected workloads will be respected during any node draining operation. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted. This is especially relevant to cluster upgrades. Valid values are in minutes and from 0 to 10080 minutes (1 week). 0 means that the MachinePool can be drained without any time limitation. This is the value is used a default for all NodePools. It can be overridden by specifying nodeDrainTimeoutMinutes for a given NodePool", "long-summary": "Valid values are from 0 to 10080 minutes (1 week). 0 means that the NodePool can be drained without any time limitation.  If unset the cluster  value is used as a default."},
+            help={"short-summary": "nodeDrainTimeoutMinutes is the grace period for how long Pod Disruption Budget-protected workloads will be respected during any node draining operation. After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted. This is especially relevant to cluster upgrades. Valid values are in minutes and from 0 to 10080 minutes (1 week). 0 means that the MachinePool can be drained without any time limitation. This value is used as a default for all NodePools. It can be overridden by specifying nodeDrainTimeoutMinutes for a given NodePool", "long-summary": "Valid values are from 0 to 10080 minutes (1 week). 0 means that the NodePool can be drained without any time limitation.  If unset the cluster  value is used as a default."},
             fmt=AAZIntArgFormat(
                 maximum=10080,
                 minimum=0,

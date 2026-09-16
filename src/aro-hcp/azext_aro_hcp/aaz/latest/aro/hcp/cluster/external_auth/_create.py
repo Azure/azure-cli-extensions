@@ -55,7 +55,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-c", "--cluster-name"],
             help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
             required=True,
             fmt=AAZStrArgFormat(
@@ -72,7 +72,7 @@ class Create(AAZCommand):
         _args_schema.validation_rules = AAZListArg(
             options=["--validation-rules"],
             arg_group="Claim",
-            help="The claim validation rules",
+            help="The claim validation rules.",
         )
 
         validation_rules = cls._args_schema.validation_rules
@@ -123,7 +123,7 @@ class Create(AAZCommand):
         _args_schema.prefix = AAZStrArg(
             options=["--prefix"],
             arg_group="Groups",
-            help="Prefix for the claim external profile If this is specified prefixPolicy will be set to \"Prefix\" by default",
+            help="Prefix for the claim external profile. If this is specified, prefixPolicy will be set to \"Prefix\" by default.",
         )
 
         # define Arg Group "Issuer"
@@ -132,7 +132,7 @@ class Create(AAZCommand):
         _args_schema.issuer_audience = AAZListArg(
             options=["--issuer-audience"],
             arg_group="Issuer",
-            help="This configures the acceptable audiences the JWT token, issued by the identity provider, must be issued to. At least one of the entries must match the 'aud' claim in the JWT token.  audiences must contain at least one entry and must not exceed ten entries.",
+            help="This configures the acceptable audiences for JWT tokens issued by the identity provider. At least one of the entries must match the 'aud' claim in the JWT token.",
             fmt=AAZListArgFormat(
                 max_length=10,
                 min_length=1,
@@ -141,7 +141,7 @@ class Create(AAZCommand):
         _args_schema.issuer_ca = AAZStrArg(
             options=["--issuer-ca"],
             arg_group="Issuer",
-            help="The issuer of the token  Certificate bundle to use to validate server certificates for the configured URL. It must be PEM encoded and when not specified, the system trust is used.",
+            help="The issuer of the token. Certificate bundle to use to validate server certificates for the configured URL. It must be PEM encoded and when not specified, the system trust is used.",
         )
         _args_schema.issuer_url = AAZStrArg(
             options=["--issuer-url"],
@@ -230,7 +230,7 @@ class Create(AAZCommand):
         _args_schema.username_prefix = AAZStrArg(
             options=["--username-prefix"],
             arg_group="Username",
-            help="Prefix for the claim external profile Must be set when the prefixPolicy field is set to 'Prefix' and must be unset otherwise.",
+            help="Prefix for the claim external profile. Must be set when the prefixPolicy field is set to 'Prefix' and must be unset otherwise.",
         )
         _args_schema.username_prefix_policy = AAZStrArg(
             options=["--username-prefix-policy"],

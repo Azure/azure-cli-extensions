@@ -50,7 +50,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-c", "--cluster-name"],
             help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
             required=True,
             fmt=AAZStrArgFormat(
@@ -141,7 +141,7 @@ class Create(AAZCommand):
         _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="Platform",
-            help="The Azure resource ID of the worker subnet Note that a subnet cannot be reused between ARO-HCP Clusters, however the same subnet can be used for NodePools of the same cluster.",
+            help="The Azure resource ID of the worker subnet. Note that a subnet cannot be reused between ARO-HCP Clusters.",
         )
         _args_schema.vm_size = AAZStrArg(
             options=["--vm-size"],
@@ -161,7 +161,7 @@ class Create(AAZCommand):
         _args_schema.labels = AAZListArg(
             options=["--labels"],
             arg_group="Properties",
-            help="Kubernetes labels to propagate to the NodePool Nodes Note that when the labels are updated this is only applied to newly create nodes in the Nodepool, existing node labels remain unchanged.",
+            help="Kubernetes labels to propagate to the NodePool Nodes. Note that when the labels are updated this is only applied to newly create nodes in the NodePool, existing node labels remain unchanged.",
         )
         _args_schema.node_drain_timeout = AAZIntArg(
             options=["--node-drain-timeout"],
@@ -179,7 +179,7 @@ class Create(AAZCommand):
         _args_schema.taints = AAZListArg(
             options=["--taints"],
             arg_group="Properties",
-            help="Taints for the nodes",
+            help="Taints for the nodes.",
         )
 
         labels = cls._args_schema.labels

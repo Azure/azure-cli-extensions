@@ -58,7 +58,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
+            options=["-c", "--cluster-name"],
             help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
             required=True,
             id_part="name",
@@ -76,7 +76,7 @@ class Update(AAZCommand):
         _args_schema.validation_rules = AAZListArg(
             options=["--validation-rules"],
             arg_group="Claim",
-            help="The claim validation rules",
+            help="The claim validation rules.",
             nullable=True,
         )
 
@@ -114,13 +114,32 @@ class Update(AAZCommand):
             ),
         )
 
+        # define Arg Group "Groups"
+
+        _args_schema = cls._args_schema
+        _args_schema.claim = AAZStrArg(
+            options=["--claim"],
+            arg_group="Groups",
+            help="Claim name of the external profile",
+            fmt=AAZStrArgFormat(
+                max_length=256,
+                min_length=1,
+            ),
+        )
+        _args_schema.prefix = AAZStrArg(
+            options=["--prefix"],
+            arg_group="Groups",
+            help="Prefix for the claim external profile. If this is specified, prefixPolicy will be set to \"Prefix\" by default.",
+            nullable=True,
+        )
+
         # define Arg Group "Issuer"
 
         _args_schema = cls._args_schema
         _args_schema.issuer_audience = AAZListArg(
             options=["--issuer-audience"],
             arg_group="Issuer",
-            help="This configures the acceptable audiences the JWT token, issued by the identity provider, must be issued to. At least one of the entries must match the 'aud' claim in the JWT token.  audiences must contain at least one entry and must not exceed ten entries.",
+            help="This configures the acceptable audiences for JWT tokens issued by the identity provider. At least one of the entries must match the 'aud' claim in the JWT token.",
             fmt=AAZListArgFormat(
                 max_length=10,
                 min_length=1,
@@ -129,7 +148,7 @@ class Update(AAZCommand):
         _args_schema.issuer_ca = AAZStrArg(
             options=["--issuer-ca"],
             arg_group="Issuer",
-            help="The issuer of the token  Certificate bundle to use to validate server certificates for the configured URL. It must be PEM encoded and when not specified, the system trust is used.",
+            help="The issuer of the token. Certificate bundle to use to validate server certificates for the configured URL. It must be PEM encoded and when not specified, the system trust is used.",
             nullable=True,
         )
         _args_schema.issuer_url = AAZStrArg(
@@ -140,31 +159,6 @@ class Update(AAZCommand):
 
         issuer_audience = cls._args_schema.issuer_audience
         issuer_audience.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Mappings"
-
-        _args_schema = cls._args_schema
-        _args_schema.groups = AAZObjectArg(
-            options=["--groups"],
-            arg_group="Mappings",
-            help="The claim mappings groups.",
-            nullable=True,
-        )
-
-        groups = cls._args_schema.groups
-        groups.claim = AAZStrArg(
-            options=["claim"],
-            help="Claim name of the external profile",
-            fmt=AAZStrArgFormat(
-                max_length=256,
-                min_length=1,
-            ),
-        )
-        groups.prefix = AAZStrArg(
-            options=["prefix"],
-            help="Prefix for the claim external profile If this is specified prefixPolicy will be set to \"Prefix\" by default",
             nullable=True,
         )
 
@@ -247,7 +241,7 @@ class Update(AAZCommand):
         _args_schema.username_prefix = AAZStrArg(
             options=["--username-prefix"],
             arg_group="Username",
-            help="Prefix for the claim external profile Must be set when the prefixPolicy field is set to 'Prefix' and must be unset otherwise.",
+            help="Prefix for the claim external profile. Must be set when the prefixPolicy field is set to 'Prefix' and must be unset otherwise.",
             nullable=True,
         )
         _args_schema.username_prefix_policy = AAZStrArg(
@@ -517,7 +511,7 @@ class Update(AAZCommand):
 
             mappings = _builder.get(".properties.claim.mappings")
             if mappings is not None:
-                mappings.set_prop("groups", AAZObjectType, ".groups")
+                mappings.set_prop("groups", AAZObjectType)
                 mappings.set_prop("username", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             groups = _builder.get(".properties.claim.mappings.groups")
