@@ -603,10 +603,71 @@ def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, name
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
-                         namespace_name):  # pylint: disable=unused-argument
-    deployments = client.list_by_ai_manager_namespace(
-        resource_group_name, ai_manager_name, namespace_name)
-    return _annotate_model_ids(cmd, list(deployments))
+                         namespace_name=None):  # pylint: disable=unused-argument
+    if namespace_name:
+        deployments = list(client.list_by_ai_manager_namespace(
+            resource_group_name, ai_manager_name, namespace_name))
+    else:
+        # No namespace given: list across all readable namespaces, mirroring
+        # `kubectl get pods --all-namespaces`. Two distinct permissions are involved:
+        #   1. Enumerating namespaces (list_by_ai_manager) requires namespace read on the
+        #      AI Manager resource. Without it, no namespaces can be listed at all.
+        #   2. Listing deployments in each namespace (list_by_ai_manager_namespace) requires
+        #      model deployment read on that namespace resource. The caller may have this on
+        #      some namespaces but not others.
+        # The model_deployments SDK has no cross-namespace list operation, so enumerate the
+        # AI Manager's namespaces once and fan out one call per namespace, aggregating results.
+        from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
+        from azext_aimanager._client_factory import cf_ai_manager_namespaces
+        namespaces_client = cf_ai_manager_namespaces(cmd.cli_ctx)
+
+        try:
+            namespaces = list(
+                namespaces_client.list_by_ai_manager(resource_group_name, ai_manager_name))
+        except HttpResponseError as ex:
+            # Permission layer 1: cannot enumerate namespaces on the AI Manager.
+            if ex.status_code in (401, 403):
+                raise UnauthorizedError(
+                    ex.message,
+                    "Listing model deployments without --namespace/--ns first lists namespaces, "
+                    "which requires namespace read permission on AI Manager '{}'. Grant that "
+                    "permission, or specify --namespace/--ns to list model deployments for a "
+                    "single namespace.".format(ai_manager_name))
+            raise
+
+        deployments = []
+        any_readable = False
+        last_auth_error = None
+        for ns in namespaces:
+            try:
+                deployments.extend(
+                    client.list_by_ai_manager_namespace(
+                        resource_group_name, ai_manager_name, ns.name))
+                any_readable = True
+            except HttpResponseError as ex:
+                # Permission layer 2: skip namespaces where the caller lacks model deployment
+                # read, so a partially-authorized caller still sees what they can read. Other
+                # errors propagate immediately.
+                if ex.status_code in (401, 403):
+                    logger.warning(
+                        "Skipping namespace '%s': not authorized to read its model deployments.",
+                        ns.name)
+                    last_auth_error = ex
+                    continue
+                raise
+        # Namespaces were listed, but the caller lacked model deployment read on every one.
+        # Surface an actionable error rather than silently returning an empty list. Note we do
+        # NOT suggest --namespace here: the caller can enumerate namespaces but is denied model
+        # deployment read on all of them, so scoping to a single namespace would fail too.
+        if last_auth_error is not None and not any_readable:
+            raise UnauthorizedError(
+                last_auth_error.message,
+                "Not authorized to read model deployments in any namespace of AI Manager "
+                "'{}'. Ask for model deployment read access on a namespace of this AI Manager, "
+                "or on the AI Manager resource itself to cover all its namespaces.".format(
+                    ai_manager_name))
+    return _annotate_model_ids(cmd, deployments)
 
 
 def _annotate_model_ids(cmd, deployments):

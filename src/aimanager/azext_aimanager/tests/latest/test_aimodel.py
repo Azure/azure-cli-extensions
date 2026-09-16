@@ -58,14 +58,14 @@ class TestAIModel(unittest.TestCase):
 
 class TestAIModelValidators(unittest.TestCase):
 
-    def test_valid_name(self):
+    def test_valid_name_aimodel(self):
         validate_ai_model_name(SimpleNamespace(ai_model_name="9806f0c862fdd920"))
 
-    def test_missing_name_is_allowed(self):
+    def test_missing_name_is_allowed_aimodel(self):
         validate_ai_model_name(SimpleNamespace(ai_model_name=None))
         validate_ai_model_name(SimpleNamespace())
 
-    def test_blank_name_is_rejected(self):
+    def test_blank_name_is_rejected_aimodel(self):
         with self.assertRaises(InvalidArgumentValueError):
             validate_ai_model_name(SimpleNamespace(ai_model_name="   "))
 
