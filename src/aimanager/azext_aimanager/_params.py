@@ -18,7 +18,6 @@ from azext_aimanager.constants import (
 from azext_aimanager._validators import (
     validate_ai_manager_name,
     validate_namespace_name,
-    validate_modeldeployment_list_scope,
     validate_model_deployment_name,
     validate_ai_model_name,
     validate_model_source_name,
@@ -132,12 +131,9 @@ def load_arguments(self, _):
     with self.argument_context('aimanager namespace modeldeployment list') as c:
         c.ignore('model_deployment_name')
         c.argument('namespace_name', options_list=['--namespace', '--ns'], required=False,
-                   validator=validate_modeldeployment_list_scope,
-                   help='The name of the AI Manager namespace. Mutually exclusive with '
-                        '``--all-namespaces``.')
-        c.argument('all_namespaces', options_list=['--all-namespaces', '-A'], action='store_true',
-                   help='List model deployments across all readable namespaces of the AI Manager. '
-                        'Mutually exclusive with ``--namespace``.')
+                   validator=validate_namespace_name,
+                   help='The name of the AI Manager namespace. If omitted, model deployments '
+                        'across all readable namespaces of the AI Manager are listed.')
 
     with self.argument_context('aimanager namespace modeldeployment add') as c:
         c.argument('model_resource_id', options_list=['--model-resource-id'], required=True,

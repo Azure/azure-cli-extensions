@@ -276,8 +276,8 @@ helps['aimanager namespace modeldeployment list'] = """
     examples:
         - name: List model deployments in a namespace
           text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --namespace team-alpha
-        - name: List model deployments across all readable namespaces
-          text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --all-namespaces
+        - name: List model deployments across all readable namespaces (omit --namespace)
+          text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager
 """
 
 helps['aimanager namespace modeldeployment delete'] = """

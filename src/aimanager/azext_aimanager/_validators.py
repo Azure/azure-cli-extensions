@@ -20,21 +20,6 @@ def validate_namespace_name(namespace):
     _validate_name(namespace, "namespace_name", "namespace name")
 
 
-def validate_modeldeployment_list_scope(namespace):
-    """Require exactly one of ``--namespace``/``--ns`` or ``--all-namespaces``/``-A`` when
-    listing model deployments."""
-    namespace_name = getattr(namespace, "namespace_name", None)
-    all_namespaces = getattr(namespace, "all_namespaces", False)
-    if namespace_name and all_namespaces:
-        raise InvalidArgumentValueError(
-            "Specify either --namespace/--ns or --all-namespaces/-A, not both.")
-    if not namespace_name and not all_namespaces:
-        raise InvalidArgumentValueError(
-            "Specify --namespace/--ns to list deployments in one namespace, "
-            "or --all-namespaces/-A to list across all readable namespaces.")
-    validate_namespace_name(namespace)
-
-
 def validate_model_deployment_name(namespace):
     _validate_name(namespace, "model_deployment_name", "model deployment name")
 
