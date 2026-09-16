@@ -576,6 +576,18 @@ costmanagement query:
     dataset_configuration:
       rule_exclusions:
       - option_length_too_long
+cu analyzer copy:
+  parameters:
+    destination_resource_group:
+      rule_exclusions:
+      - option_length_too_long
+      - parameter_should_not_end_in_resource_group
+    destination_subscription:
+      rule_exclusions:
+      - option_length_too_long
+    source_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 databox job create:
   parameters:
     resource_group_for_managed_disk:
