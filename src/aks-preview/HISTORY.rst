@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: Add `distributedaccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
 
 22.0.0b7
 +++++++++
