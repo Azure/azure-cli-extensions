@@ -120,7 +120,7 @@ def load_runbook_arguments(self, _):
             'depends_on_mapped_entities',
             options_list=['--depends-on-mapped-entities'], nargs='*',
             help='Mapped-entity dependencies, each as '
-                 '"<stepId>=<dependentEntity>:<waitsForEntity>,...". '
+                 '`<stepId>=<dependentEntity>:<waitsForEntity>,...`. '
                  'Requires a step with entities.')
         c.argument(
             'migration_entity_ids',
@@ -154,7 +154,7 @@ def load_runbook_arguments(self, _):
             'depends_on_mapped_entities',
             options_list=['--depends-on-mapped-entities'], nargs='*',
             help='Replace dependencies: mapped-entity dependencies, each as '
-                 '"<stepId>=<dependentEntity>:<waitsForEntity>,...". '
+                 '`<stepId>=<dependentEntity>:<waitsForEntity>,...`. '
                  'Requires a step with entities.')
 
     with self.argument_context(
