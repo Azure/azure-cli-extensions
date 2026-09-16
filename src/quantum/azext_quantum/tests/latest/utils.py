@@ -3,7 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import logging
 import sys
+
+
+logger = logging.getLogger(__name__)
 
 
 TEST_SUBS_DEFAULT = "1916d14f-6594-4756-955d-9b95970a73a8"
@@ -60,7 +64,7 @@ def run_cleanup_commands(test_case, cleanup_commands):
             test_case.cmd(command)
         except Exception as cleanup_error:  # pylint: disable=broad-except
             cleanup_errors.append(cleanup_error)
-            test_case.logger.warning("Failed to clean up %s: %s", description, cleanup_error)
+            logger.warning("Failed to clean up %s: %s", description, cleanup_error)
 
     if cleanup_errors and not test_failed:
         raise cleanup_errors[0]

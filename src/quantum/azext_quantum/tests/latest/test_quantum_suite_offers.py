@@ -65,7 +65,7 @@ def _usage(target_id=None, standard=None, high=None, last_modified_time=None,
 
 def _find_offer_with_target_quotas(offers):
     return next(
-        (item for item in offers if item.get('properties', {}).get('targetQuotas')),
+        (item for item in offers if (item.get('properties') or {}).get('targetQuotas')),
         None,
     )
 
@@ -486,11 +486,12 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
     def test_find_offer_with_target_quotas(self):
         offers = [
             {'properties': {}},
+            {'properties': None},
             {'properties': {'targetQuotas': []}},
             {'properties': {'providerId': 'provider-a', 'targetQuotas': [{'targetId': 'target-a'}]}},
         ]
 
-        self.assertIs(_find_offer_with_target_quotas(offers), offers[2])
+        self.assertIs(_find_offer_with_target_quotas(offers), offers[-1])
 
     def test_find_offer_with_target_quotas_returns_none(self):
         self.assertIsNone(_find_offer_with_target_quotas([

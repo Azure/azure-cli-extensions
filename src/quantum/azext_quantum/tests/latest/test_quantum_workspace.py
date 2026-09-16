@@ -17,7 +17,7 @@ from azure.cli.testsdk import (LiveScenarioTest, ScenarioTest, ResourceGroupPrep
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing, run_cleanup_commands
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing, run_cleanup_commands
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from ..._validators import validate_email, validate_workspace_user
@@ -44,7 +44,7 @@ def _get_v2_offer_candidates(offers, location):
     normalized_location = location.replace(' ', '').lower()
     candidates = []
     for offer in offers:
-        properties = offer.get('properties', {})
+        properties = offer.get('properties') or {}
         if properties.get('location', '').replace(' ', '').lower() != normalized_location:
             continue
         provider_id = properties.get('providerId')
@@ -237,8 +237,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
 class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     def test_run_cleanup_commands_attempts_all_commands(self):
-        test_case = Mock()
-        test_case.cmd.side_effect = [RuntimeError('first cleanup failed'), None]
+        test_case = SimpleNamespace(cmd=Mock(side_effect=[RuntimeError('first cleanup failed'), None]))
         cleanup_commands = [('first resource', 'first command'), ('second resource', 'second command')]
 
         with self.assertRaisesRegex(RuntimeError, 'first cleanup failed'):
@@ -317,6 +316,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     def test_get_v2_offer_candidates(self):
         offers = [
+            {'properties': None},
             {'properties': {
                 'providerId': 'wrong-location',
                 'location': 'westus',
