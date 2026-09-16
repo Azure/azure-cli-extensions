@@ -784,7 +784,7 @@ function collectComplex(box) {
     const o = {};
     box.querySelectorAll('.kv-row').forEach(r => {
       const k = r.querySelector('[data-kv="k"]').value.trim();
-      if (k) o[k] = r.querySelector('[data-kv="v"]').value;
+      if (k) o[k] = r.querySelector('[data-kv="v"]').value.trim();
     });
     return o;
   }
@@ -1002,6 +1002,7 @@ function bindInputs(scope) {
 
 // ---- edit + validate ------------------------------------------------------
 function coerce(raw, rule) {
+  if (typeof raw === 'string') raw = raw.trim();
   if (raw === '' || raw === '__inh__') return null;
   if (rule.type === 'boolean') return raw === 'true';
   if (rule.type === 'integer') { const n = parseInt(raw, 10); return Number.isNaN(n) ? raw : n; }
@@ -1081,19 +1082,15 @@ function sync() {
   const m = META;
   document.getElementById('json').textContent = JSON.stringify({ stepInputs: DOC.stepInputs }, null, 2);
   const base = m.inputsPath || '';
-  const baseName = base ? base.split(/[\\/]/).pop() : PARAM_FILE;
-  // Reflect where the file was actually saved. Browsers never expose a file's
-  // folder, so Path A can only use the full path when the picked name matches
-  // the CLI baseline; Path B assumes the Downloads folder.
+  // Before any save, point at the inputs.json written next to this page. After
+  // a save the browser never reveals the folder the user chose (even Chromium's
+  // File System Access API exposes only the file name), so show a placeholder
+  // folder with the real file name rather than a wrong default or a bare name.
   let filePath = base ? `"${base}"` : `./${PARAM_FILE}`;
   let hint = '';
-  if (saved && saved.mode === 'A') {
-    if (base && saved.name === baseName) { filePath = `"${base}"`; }
-    else { filePath = `"${saved.name}"`; hint = 'Your browser doesn\u2019t reveal the folder \u2014 use the full path to where you saved it.'; }
-  } else if (saved && saved.mode === 'B') {
-    if (m.downloadsPath) { const dl = m.downloadsPath, dlBase = dl.split(/[\\/]/).pop(); filePath = `"${dl.slice(0, dl.length - dlBase.length) + saved.name}"`; }
-    else { filePath = `"${saved.name}"`; }
-    hint = 'Assumes your Downloads folder \u2014 if the browser saved a numbered copy, update the file name.';
+  if (saved) {
+    filePath = `"<path you saved>/${saved.name || PARAM_FILE}"`;
+    hint = 'Replace <path you saved> with the folder you saved to \u2014 your browser doesn\u2019t reveal it.';
   }
   document.getElementById('cmd').textContent =
     `az migrate runbook parameter upload -g ${m.resourceGroup} -p ${m.project} -n ${m.runbook} --file ${filePath}`;

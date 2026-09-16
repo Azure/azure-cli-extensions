@@ -113,11 +113,11 @@ helps['migrate runbook definition show'] = """
           text: |
             az migrate runbook definition show -g myRg \\
               --project-name myProject -n myRunbook
-        - name: Show a single workstream in a runbook definition.
+        - name: Show a single step group in a runbook definition.
           text: |
             az migrate runbook definition show -g myRg \\
               --project-name myProject -n myRunbook \\
-              --workstream-id myWorkstream
+              --step-group-id myStepGroup
 """
 
 
@@ -166,24 +166,38 @@ helps['migrate runbook definition step add'] = """
     type: command
     short-summary: Add a step to the runbook definition.
     examples:
-        - name: Add a manual step to a workstream.
+        - name: Add a manual step to a step group.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Manual --step-name "Verify cutover" \\
-              --workstream-id workstream-0
-        - name: Add an approval step that depends on another step.
+              --step-group-id workstream-0
+        - name: Add an approval step that waits for a whole step.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Approval --step-name "Change approval" \\
-              --workstream-id workstream-0 --depends-on step0
+              --step-group-id workstream-0 --depends-on-whole-step step0
+        - name: Add an approval that waits per entity (same entity upstream).
+          text: |
+            az migrate runbook definition step add -g myRg \\
+              --project-name myProject -n myRunbook \\
+              --step-type Approval --step-name "Approve cutover" \\
+              --step-group-id workstream-0 --migration-entity-ids e1 e2 \\
+              --depends-on-per-entity prepare-1
+        - name: Add an approval with mapped-entity dependencies.
+          text: |
+            az migrate runbook definition step add -g myRg \\
+              --project-name myProject -n myRunbook \\
+              --step-type Approval --step-name "Approve" \\
+              --step-group-id workstream-0 --migration-entity-ids e1 e2 \\
+              --depends-on-mapped-entities "enable-1=e1:f1,e2:f2"
         - name: Add a manual step scoped to specific migration entities.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Manual --step-name "Post checks" \\
-              --workstream-id workstream-0 \\
+              --step-group-id workstream-0 \\
               --migration-entity-ids entity1 entity2
 """
 
@@ -192,12 +206,12 @@ helps['migrate runbook definition step update'] = """
     type: command
     short-summary: Update a step in the runbook definition.
     examples:
-        - name: Rename a step and change its dependencies.
+        - name: Rename a step and replace its dependencies.
           text: |
             az migrate runbook definition step update -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-id step1 --step-name "New name" \\
-              --depends-on step0
+              --depends-on-whole-step step0
 """
 
 
@@ -212,36 +226,36 @@ helps['migrate runbook definition step remove'] = """
 """
 
 
-helps['migrate runbook definition workstream'] = """
+helps['migrate runbook definition step-group'] = """
     type: group
-    short-summary: Manage workstreams in a runbook definition.
+    short-summary: Manage step groups in a runbook definition.
 """
 
 
-helps['migrate runbook definition workstream split'] = """
+helps['migrate runbook definition step-group split'] = """
     type: command
-    short-summary: Split a workstream into two workstreams.
+    short-summary: Split a step group into two step groups.
     examples:
-        - name: Move steps into a new workstream.
+        - name: Move steps into a new step group.
           text: |
-            az migrate runbook definition workstream split -g myRg \\
+            az migrate runbook definition step-group split -g myRg \\
               --project-name myProject -n myRunbook \\
-              --source-workstream-id ws1 \\
-              --new-workstream-name "Database tier" \\
+              --source-step-group-id ws1 \\
+              --new-step-group-name "Database tier" \\
               --step-ids step1 step2
 """
 
 
-helps['migrate runbook definition workstream merge'] = """
+helps['migrate runbook definition step-group merge'] = """
     type: command
-    short-summary: Merge two or more workstreams into a single workstream.
+    short-summary: Merge two or more step groups into a single step group.
     examples:
-        - name: Merge two workstreams.
+        - name: Merge two step groups.
           text: |
-            az migrate runbook definition workstream merge -g myRg \\
+            az migrate runbook definition step-group merge -g myRg \\
               --project-name myProject -n myRunbook \\
-              --source-workstream-ids ws1 ws2 \\
-              --new-workstream-name "Combined tier"
+              --source-step-group-ids ws1 ws2 \\
+              --new-step-group-name "Combined tier"
 """
 
 

@@ -6,12 +6,16 @@
 
 from enum import Enum
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     WAVE_ID_TEMPLATE,
     STEP_TYPE_APPROVAL,
     STEP_REF_BY_TYPE,
     STEP_WAITFOR_STEP,
+    STEP_WAITFOR_ENTITY,
+    STEP_WAITFOR_MAPPED,
     STEP_ACTION_APPROVE,
     STEP_ACTION_COMPLETE,
     ARTIFACT_DOWNLOAD_MODE_FILE,
@@ -70,28 +74,58 @@ def build_update_body(description=None):
     return {"properties": properties}
 
 
-def _depends_on_refs(depends_on):
-    """Map CLI ``--depends-on`` entries to write-model dependency objects.
+def _step_dep(step_id, wait_for):
+    return {"waitFor": wait_for, "stepId": step_id}
 
-    The AddStep/UpdateStep write model expects a list of
-    ``RunbookStepDependency`` objects ``{"waitFor": <string>, "stepId": <id>}``.
-    ``waitFor`` (the polymorphic discriminator) is a
-    ``RunbookStepDependencyMode`` string; a plain ``--depends-on <stepId>``
-    maps to a ``Step`` gate. Entries that are already dicts (e.g. carrying
-    ``entityPairs``) are passed through unchanged.
+
+def _mapped_dep(token):
+    """Parse a ``--depends-on-mapped-entities`` token into a dependency.
+
+    Token form: ``<stepId>=<dependentEntity>:<waitsForEntity>,...`` (e.g.
+    ``enable-1=e1:f1,e2:f2``); entity ids are bare GUIDs.
     """
-    refs = []
-    for entry in depends_on or []:
-        if isinstance(entry, dict):
-            refs.append(entry)
-        else:
-            refs.append(
-                {"waitFor": STEP_WAITFOR_STEP, "stepId": entry})
+    step_id, sep, pairs = token.partition('=')
+    step_id = step_id.strip()
+    if not step_id or sep != '=' or not pairs.strip():
+        raise InvalidArgumentValueError(
+            "Invalid --depends-on-mapped-entities value '%s'. Expected "
+            "'<stepId>=<dependentEntity>:<waitsForEntity>,...'." % token)
+    entity_pairs = []
+    for pair in pairs.split(','):
+        dependent, psep, waits_for = pair.partition(':')
+        dependent, waits_for = dependent.strip(), waits_for.strip()
+        if not dependent or psep != ':' or not waits_for:
+            raise InvalidArgumentValueError(
+                "Invalid entity pair '%s' in --depends-on-mapped-entities "
+                "'%s'. Expected '<dependentEntity>:<waitsForEntity>'."
+                % (pair, token))
+        entity_pairs.append(
+            {"dependentEntity": dependent, "waitsFor": waits_for})
+    return {"waitFor": STEP_WAITFOR_MAPPED, "stepId": step_id,
+            "entityPairs": entity_pairs}
+
+
+def build_step_dependencies(whole_step=None, per_entity=None,
+                            mapped_entities=None):
+    """Combine the three CLI dependency lists into a ``dependsOn`` list.
+
+    Returns ``None`` when none of the three flags were provided so
+    ``UpdateStep`` can send ``dependsOn: null`` and the service preserves the
+    step's existing dependencies. When any flag is provided the returned list
+    is the complete replacement (modes not supplied are dropped).
+    """
+    if whole_step is None and per_entity is None and mapped_entities is None:
+        return None
+    refs = [_step_dep(s, STEP_WAITFOR_STEP) for s in whole_step or []]
+    refs += [_step_dep(s, STEP_WAITFOR_ENTITY) for s in per_entity or []]
+    refs += [_mapped_dep(t) for t in mapped_entities or []]
     return refs
 
 
 def build_add_step_body(step_type, step_name, workstream_id,
-                        step_description=None, depends_on=None,
+                        step_description=None, depends_on_whole_step=None,
+                        depends_on_per_entity=None,
+                        depends_on_mapped_entities=None,
                         migration_entity_ids=None):
     """Build the AddStep POST body for a single definition step.
 
@@ -99,14 +133,19 @@ def build_add_step_body(step_type, step_name, workstream_id,
     the ``stepRef`` binding (Approval -> ``common.approval``, Manual ->
     ``common.manual``); the step is added to ``workstream_id``.
     ``entities`` (bare migration-entity GUIDs) is only carried by the
-    Approval step variant.
+    Approval step variant. ``dependsOn`` is the combined dependency list
+    (empty when no dependency flags are given — a new step has nothing to
+    preserve).
     """
+    deps = build_step_dependencies(
+        depends_on_whole_step, depends_on_per_entity,
+        depends_on_mapped_entities)
     body = {
         "workstreamId": workstream_id,
         "displayName": step_name,
         "description": step_description or "",
         "stepRef": STEP_REF_BY_TYPE.get(step_type, step_type),
-        "dependsOn": _depends_on_refs(depends_on),
+        "dependsOn": deps if deps is not None else [],
     }
     if step_type == STEP_TYPE_APPROVAL:
         body["entities"] = migration_entity_ids or []
@@ -114,15 +153,24 @@ def build_add_step_body(step_type, step_name, workstream_id,
 
 
 def build_update_step_body(step_id, step_name=None, step_description=None,
-                           depends_on=None):
-    """Build the UpdateStep POST body; only provided fields are sent."""
+                           depends_on_whole_step=None,
+                           depends_on_per_entity=None,
+                           depends_on_mapped_entities=None):
+    """Build the UpdateStep POST body.
+
+    ``dependsOn`` is always sent: the combined list when any dependency flag
+    is provided (a full replacement of the step's dependencies), or ``null``
+    when none are — the service preserves the existing dependencies for the
+    ``null`` case.
+    """
     body = {"stepId": step_id}
     if step_name is not None:
         body["displayName"] = step_name
     if step_description is not None:
         body["description"] = step_description
-    if depends_on is not None:
-        body["dependsOn"] = _depends_on_refs(depends_on)
+    body["dependsOn"] = build_step_dependencies(
+        depends_on_whole_step, depends_on_per_entity,
+        depends_on_mapped_entities)
     return body
 
 

@@ -443,7 +443,7 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         ]}
         rows = transformers.definition_table(definition)
         self.assertEqual([r["Step Id"] for r in rows], ["s1", "s2"])
-        self.assertEqual([r["Workstream Id"] for r in rows], ["w1", "w2"])
+        self.assertEqual([r["Step Group Id"] for r in rows], ["w1", "w2"])
         self.assertEqual(rows[0]["Step Name"], "Step One")
         self.assertEqual(rows[0]["Depends On"], "b\na")
         self.assertEqual(rows[0]["Configuration Status"], "Configured")
@@ -466,7 +466,7 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
         rows = transformers.definition_table(
             {"id": "w1", "steps": [{"id": "s1"}]})
         self.assertEqual([r["Step Id"] for r in rows], ["s1"])
-        self.assertEqual(rows[0]["Workstream Id"], "w1")
+        self.assertEqual(rows[0]["Step Group Id"], "w1")
 
     def test_single_step(self):
         rows = transformers.definition_table({"stepId": "s9"})
@@ -478,7 +478,7 @@ class RunbookDefinitionTransformerTests(unittest.TestCase):
             {"id": "w-empty", "displayName": "Unmapped", "steps": []},
         ]})
         self.assertEqual(
-            [r["Workstream Id"] for r in rows], ["w1", "w-empty"])
+            [r["Step Group Id"] for r in rows], ["w1", "w-empty"])
         empty = rows[1]
         self.assertEqual(empty["Step Id"], "")
         self.assertEqual(empty["Step Name"], "(no steps)")
@@ -589,6 +589,17 @@ class FilesTests(unittest.TestCase):
             "spec.json": '{"spec": {"workstreams": []}}',
             "inputs.json": '{"inputs": {"schema": {}}}',
             "system-derived-inputs.json": '{"inputs": {"schema": {}}}',
+        })
+        with self.assertRaises(CLIInternalError):
+            files.read_status_json(zip_bytes)
+
+    def test_read_status_json_zip_rejects_standalone_schema(self):
+        # A directory archive with a standalone schema.json (keyed by step
+        # type) and inputs.json but no executionStatus.json must not treat the
+        # schema as a status document (it has no positive status shape).
+        zip_bytes = _make_zip({
+            "schema.json": '{"vm.agentless.setup": {"applianceName": {}}}',
+            "inputs.json": '{"inputs": {"stepInputs": {}}}',
         })
         with self.assertRaises(CLIInternalError):
             files.read_status_json(zip_bytes)
@@ -834,7 +845,7 @@ class DefinitionCommandTests(unittest.TestCase):
                 return_value=zip_bytes) as dl:
             result = definition_cmds.show(
                 mock.Mock(), RG, PROJECT, RUNBOOK, workstream_id="w1")
-        dl.assert_called_once_with("https://blob/x")
+        dl.assert_called_once_with("https://blob/x", message=mock.ANY)
         project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
         self.client.post_action.assert_called_once_with(
             arm_ids.artifact_id(project, ARTIFACT), 'generateDownloadUrl',
@@ -910,7 +921,7 @@ class StepModelTests(unittest.TestCase):
     def test_build_add_step_body_approval(self):
         body = models.build_add_step_body(
             "Approval", "Approve", "ws1",
-            depends_on=["s0"], step_description="desc",
+            depends_on_whole_step=["s0"], step_description="desc",
             migration_entity_ids=["e1", "e2"])
         self.assertEqual(body, {
             "workstreamId": "ws1",
@@ -922,17 +933,44 @@ class StepModelTests(unittest.TestCase):
         })
 
     def test_build_update_step_body_minimal(self):
+        # dependsOn is always sent; null preserves the existing list.
         self.assertEqual(
-            models.build_update_step_body("s1"), {"stepId": "s1"})
+            models.build_update_step_body("s1"),
+            {"stepId": "s1", "dependsOn": None})
 
     def test_build_update_step_body_full(self):
         body = models.build_update_step_body(
             "s1", step_name="New", step_description="d",
-            depends_on=["s0"])
+            depends_on_whole_step=["s0"])
         self.assertEqual(body, {
             "stepId": "s1", "displayName": "New",
             "description": "d",
             "dependsOn": [{"waitFor": "Step", "stepId": "s0"}]})
+
+    def test_build_dependencies_none_when_no_flags(self):
+        self.assertIsNone(models.build_step_dependencies())
+
+    def test_build_dependencies_all_three_modes(self):
+        deps = models.build_step_dependencies(
+            whole_step=["s0"], per_entity=["p0"],
+            mapped_entities=["m0=e1:f1,e2:f2"])
+        self.assertEqual(deps, [
+            {"waitFor": "Step", "stepId": "s0"},
+            {"waitFor": "Entity", "stepId": "p0"},
+            {"waitFor": "MappedEntities", "stepId": "m0",
+             "entityPairs": [
+                 {"dependentEntity": "e1", "waitsFor": "f1"},
+                 {"dependentEntity": "e2", "waitsFor": "f2"}]},
+        ])
+
+    def test_build_dependencies_empty_flag_clears(self):
+        # A provided-but-empty flag yields [] (clear), not None (preserve).
+        self.assertEqual(models.build_step_dependencies(whole_step=[]), [])
+
+    def test_build_dependencies_mapped_bad_token_raises(self):
+        for bad in ("no-equals", "m0=e1", "m0=", "=e1:f1"):
+            with self.assertRaises(InvalidArgumentValueError):
+                models.build_step_dependencies(mapped_entities=[bad])
 
     def test_build_delete_step_body(self):
         self.assertEqual(
@@ -1006,8 +1044,14 @@ class StepCommandTests(unittest.TestCase):
                 mock.Mock(), RG, PROJECT, RUNBOOK, "s1", step_name="New")
         self.client.post_action.assert_called_once_with(
             self._runbook_id(), 'UpdateStep',
-            {"stepId": "s1", "displayName": "New"})
+            {"stepId": "s1", "displayName": "New", "dependsOn": None})
         self.assertEqual(result.get("stepId"), "s1")
+
+    def test_add_rejects_entity_modes_on_manual(self):
+        with self.assertRaises(InvalidArgumentValueError):
+            step_cmds.add(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "Manual", "S", "ws1",
+                depends_on_per_entity=["p0"])
 
     def test_remove_posts_delete_step(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1192,7 +1236,7 @@ class ExecutionCommandTests(unittest.TestCase):
         result = execution_cmds.start(mock.Mock(), RG, PROJECT, RUNBOOK)
         self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
-            self._runbook_id(), 'execute', no_wait=False)
+            self._runbook_id(), 'execute', no_wait=False, message=mock.ANY)
 
     def test_start_no_wait(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1324,6 +1368,19 @@ class ExecutionCommandTests(unittest.TestCase):
         execution_cmds.cancel(mock.Mock(), RG, PROJECT, RUNBOOK, "e1")
         _, args, _ = self.client.post_action.mock_calls[0]
         self.assertEqual(args[2]["action"], "Cancel")
+
+
+class ExecutionAutoViewTests(unittest.TestCase):
+
+    def test_open_execution_view_informs_and_watches(self):
+        # The auto-triggered view logs a message telling the user it is
+        # opening automatically, then launches the live (watch) view.
+        with mock.patch.object(execution_cmds, 'visualize') as vis, \
+                mock.patch.object(execution_cmds, 'logger') as log:
+            execution_cmds._open_execution_view(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "e9")
+        self.assertTrue(log.warning.called)
+        self.assertTrue(vis.call_args.kwargs.get('watch'))
 
 
 class ExecutionStepModelTests(unittest.TestCase):
@@ -1477,7 +1534,7 @@ class ParameterCommandTests(unittest.TestCase):
                     return_value=zip_bytes) as dl:
                 result = parameter_cmds.download(
                     mock.Mock(), RG, PROJECT, RUNBOOK, directory=tmp)
-            dl.assert_called_once_with("https://blob/x")
+            dl.assert_called_once_with("https://blob/x", message=mock.ANY)
             project = arm_ids.migrate_project_id(SUB, RG, PROJECT)
             self.client.post_action.assert_called_once_with(
                 arm_ids.artifact_id(project, ARTIFACT),
@@ -1963,9 +2020,11 @@ class ExecutionStatusParsingTests(unittest.TestCase):
     def test_execution_table_formats_depends_on(self):
         rows = transformers.execution_table(_STATUS_DOC)
         by_id = {row['Step Id']: row for row in rows}
+        # setup/network are in the same workstream as dataSync, so they show
+        # as bare step names (no workstream prefix).
         self.assertEqual(
             by_id['dataSync']['Depends On'],
-            'Web tier:Setup\nWeb tier:Network')
+            'Setup\nNetwork')
         self.assertEqual(by_id['setup']['Depends On'], '')
 
     def test_execution_table_workload_progress(self):
@@ -2165,6 +2224,7 @@ class ExecutionStatusParsingTests(unittest.TestCase):
                    "steps": [{
                        "stepId": "s1", "displayName": "Migration",
                        "status": "Succeeded", "affectedEntityGroups": ["g1"],
+                       "description": "Migrates the workloads.",
                        "entities": ["vm-01"], "entitiesCompleted": 1,
                        "entityExecutions": [
                            {"entity": "vm-01", "status": "Succeeded"}]}],
@@ -2179,6 +2239,9 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertIn('<span class="ent__nm">App Tier</span>', html_text)
         # The vague "Details" section is gone.
         self.assertNotIn('>Details<', html_text)
+        # The step description is surfaced in the execution detail pane.
+        self.assertIn(">Description<", html_text)
+        self.assertIn("Migrates the workloads.", html_text)
 
     def test_execution_render_pending_final_for_running_entity(self):
         doc = {"workstreams": [{
@@ -2462,6 +2525,49 @@ class VisualizeRendererTests(unittest.TestCase):
             visualize_renderer.render(graph)).group(1)
         self.assertNotEqual(first, second)
 
+    def test_spanning_edge_clears_intervening_node(self):
+        # A dependency that skips a column (a -> c over b) must route through
+        # the channel above the node row; otherwise b's box occludes it.
+        doc = {"workstreams": [{"id": "w", "displayName": "W", "steps": [
+            {"stepId": "a", "displayName": "A"},
+            {"stepId": "b", "displayName": "B", "dependsOn": ["a"]},
+            {"stepId": "c", "displayName": "C", "dependsOn": ["a", "b"]},
+        ]}]}
+        graph = visualize_graph.build_definition_graph(doc)
+        positions, _, _, _ = visualize_renderer._layout(graph)
+        html_text = visualize_renderer.render(graph)
+        node_w = visualize_renderer._NODE_W
+        node_h = visualize_renderer._NODE_H
+        ax, ay = positions["a"]
+        bx, by = positions["b"]
+        cx, _cy = positions["c"]
+        paths = re.findall(
+            r'<path class="edge" d="M([-\d.]+) ([-\d.]+) '
+            r'C([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+) '
+            r'([-\d.]+) ([-\d.]+)"', html_text)
+        span = next(
+            (list(map(float, p)) for p in paths
+             if abs(float(p[0]) - (ax + node_w)) < 1
+             and abs(float(p[6]) - cx) < 1), None)
+        self.assertIsNotNone(span, "a->c spanning edge path not found")
+        p0 = (span[0], span[1])
+        p1 = (span[2], span[3])
+        p2 = (span[4], span[5])
+        p3 = (span[6], span[7])
+        # Sample the cubic; anywhere it overlaps b's x-span it must be above
+        # b's box (cleared), never inside it.
+        for i in range(101):
+            t = i / 100.0
+            mt = 1 - t
+            x = (mt ** 3 * p0[0] + 3 * mt * mt * t * p1[0]
+                 + 3 * mt * t * t * p2[0] + t ** 3 * p3[0])
+            y = (mt ** 3 * p0[1] + 3 * mt * mt * t * p1[1]
+                 + 3 * mt * t * t * p2[1] + t ** 3 * p3[1])
+            if bx <= x <= bx + node_w:
+                self.assertLess(
+                    y, by,
+                    "spanning edge passes through the intervening node box")
+
 
 class VisualizeCommandTests(unittest.TestCase):
 
@@ -2660,7 +2766,7 @@ _REAL_DEFINITION = {
 
 # setup-1 is all-null (NotConfigured); prepareEntity-1 has the Appliance field
 # set but the per-entity field null (Partial (1/2)); migration-1 is fully set
-# (Configured); common.approval-1 has no required inputs (Configured).
+# (Configured); common.approval-1 takes no inputs (NA).
 _REAL_PARAMS = {
     "schema": {
         "vm.agentless.setup": {
@@ -2743,11 +2849,18 @@ class ConfigStatusTests(unittest.TestCase):
                 _real_step("vm.agentless.migration-1"), _REAL_PARAMS),
             "Configured")
 
-    def test_configured_when_no_required_inputs(self):
+    def test_na_when_no_required_inputs(self):
         self.assertEqual(
             config_status_mod.compute(
                 _real_step("common.approval-1"), _REAL_PARAMS),
-            "Configured")
+            "NA")
+
+    def test_na_for_approval_step_without_params(self):
+        # Approval/Manual gates are NA even with no parameters document.
+        self.assertEqual(
+            config_status_mod.compute(
+                _real_step("common.approval-1"), None),
+            "NA")
 
     def test_unknown_without_params(self):
         self.assertEqual(
@@ -2764,6 +2877,7 @@ class ConfigStatusTests(unittest.TestCase):
         self.assertEqual(
             statuses["vm.agentless.prepareEntity-1"], "Partial (1/2)")
         self.assertEqual(statuses["vm.agentless.migration-1"], "Configured")
+        self.assertEqual(statuses["common.approval-1"], "NA")
 
 
 class DefinitionGraphMergedDepsTests(unittest.TestCase):
@@ -2791,9 +2905,15 @@ class DefinitionTableRealShapeTests(unittest.TestCase):
         self.assertEqual(migration["Entities"], 2)
         self.assertEqual(migration["Applications"], 0)
         self.assertEqual(migration["Configuration Status"], "Configured")
-        self.assertIn(
-            "waveapp:Prepare Entity", migration["Depends On"])
-        self.assertIn("waveapp:Approval Gate", migration["Depends On"])
+        # migration depends on prepareEntity + approval, both in the SAME
+        # workstream (waveapp), so they render as bare step names.
+        self.assertIn("Prepare Entity", migration["Depends On"])
+        self.assertIn("Approval Gate", migration["Depends On"])
+        self.assertNotIn("waveapp:", migration["Depends On"])
+        # prepareEntity depends on setup in a DIFFERENT workstream
+        # (Initialization), so that reference keeps the workstream prefix.
+        prepare = by_id["vm.agentless.prepareEntity-1"]
+        self.assertEqual(prepare["Depends On"], "Initialization:Setup")
 
 
 class VisualizeGridTests(unittest.TestCase):
@@ -2815,12 +2935,12 @@ class VisualizeGridTests(unittest.TestCase):
             _REAL_DEFINITION, title="Def")
         html_text = visualize_renderer.render(graph, view=view)
         self.assertIn(
-            'Workstream: Initialization'
-            '<span class="id-badge" title="Workstream id">'
+            'Step group: Initialization'
+            '<span class="id-badge" title="Step group id">'
             'workstream-0</span> (1)', html_text)
         self.assertIn(
-            'Workstream: waveapp'
-            '<span class="id-badge" title="Workstream id">'
+            'Step group: waveapp'
+            '<span class="id-badge" title="Step group id">'
             'workstream-1</span> (3)', html_text)
         self.assertIn("NotConfigured", html_text)
         self.assertIn('data-view="grid"', html_text)
@@ -2879,7 +2999,8 @@ class VisualizeGridTests(unittest.TestCase):
             "workstreams": [
                 {"id": "w0", "displayName": "Init", "steps": [
                     {"stepId": "s1", "displayName": "Prepare",
-                     "stepRef": "vm.prep"},
+                     "stepRef": "vm.prep",
+                     "description": "Prepares the appliance."},
                     {"stepId": "s2", "displayName": "Migrate",
                      "stepRef": "vm.migrate", "entities": ["e1"],
                      "prerequisites": [{"stepId": "s1", "waitFor": "wholeStep"}],
@@ -2902,9 +3023,24 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertIn("VM-App01", html_text)
         self.assertIn("Prepare (Blocking)", html_text)
         self.assertIn("Prepare (Soft)", html_text)
+        # The step description is surfaced in the detail pane.
+        self.assertIn(">Description<", html_text)
+        self.assertIn("Prepares the appliance.", html_text)
         # Everything stays offline/self-contained.
         self.assertNotIn("https://", html_text)
         self.assertNotIn("http://", html_text)
+
+    def test_detail_pane_always_shows_description_section(self):
+        # The Description section is always present, even when the service
+        # sends an empty description (which it currently does for every step).
+        document = {"workstreams": [
+            {"id": "w0", "displayName": "Init", "steps": [
+                {"stepId": "s1", "displayName": "Prepare",
+                 "description": ""}]}]}
+        view = visualize_viewmodel.build_definition_view(document, title="Def")
+        graph = visualize_graph.build_definition_graph(document, title="Def")
+        html_text = visualize_renderer.render(graph, view=view)
+        self.assertIn(">Description<", html_text)
 
     def test_definition_grid_and_drawer_show_applications(self):
         document = {
@@ -2964,7 +3100,7 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertNotIn('&lt;rg&gt;', html_text)
         # ...but step/workstream tokens stay as placeholders.
         self.assertIn('--step-name &lt;stepName&gt;', html_text)
-        self.assertIn('--workstream-id &lt;workstream&gt;', html_text)
+        self.assertIn('--step-group-id &lt;step group&gt;', html_text)
 
     def test_help_chips_fill_execution_id(self):
         view = visualize_viewmodel.build_execution_view(_STATUS_DOC, title="X")
@@ -2992,10 +3128,10 @@ class VisualizeGridTests(unittest.TestCase):
         # the dependency edges + per-step info (stepRef sub-label).
         self.assertIn('class="lane"', html_text)
         self.assertIn(
-            'Workstream: Initialization'
+            'Step group: Initialization'
             '<tspan class="svg-id"> workstream-0</tspan> (1)', html_text)
         self.assertIn(
-            'Workstream: waveapp'
+            'Step group: waveapp'
             '<tspan class="svg-id"> workstream-1</tspan> (3)', html_text)
         self.assertIn('class="edge"', html_text)
         self.assertIn("vm.agentless.migration", html_text)
@@ -3016,8 +3152,8 @@ class VisualizeGridTests(unittest.TestCase):
         }
         graph = visualize_graph.build_definition_graph(document, title="Def")
         html_text = visualize_renderer.render(graph)
-        setup_at = html_text.find('Workstream: Setup')
-        cleanup_at = html_text.find('Workstream: Cleanup')
+        setup_at = html_text.find('Step group: Setup')
+        cleanup_at = html_text.find('Step group: Cleanup')
         self.assertNotEqual(setup_at, -1)
         self.assertNotEqual(cleanup_at, -1)
         self.assertLess(setup_at, cleanup_at)
@@ -3035,8 +3171,8 @@ class VisualizeGridTests(unittest.TestCase):
         ]}
         graph = visualize_graph.build_definition_graph(document, title="Def")
         html_text = visualize_renderer.render(graph)
-        self.assertLess(html_text.find('Workstream: First'),
-                        html_text.find('Workstream: Second'))
+        self.assertLess(html_text.find('Step group: First'),
+                        html_text.find('Step group: Second'))
         # Only step-to-step edges are drawn, in a single uniform style.
         self.assertIn('class="edge"', html_text)
 
@@ -3050,8 +3186,8 @@ class VisualizeGridTests(unittest.TestCase):
         graph = visualize_graph.build_definition_graph(document, title="Def")
         html_text = visualize_renderer.render(graph)
         # Cyclic workstream deps fall back to document order (no crash).
-        self.assertLess(html_text.find('Workstream: First'),
-                        html_text.find('Workstream: Second'))
+        self.assertLess(html_text.find('Step group: First'),
+                        html_text.find('Step group: Second'))
 
     def test_execution_grid_shows_progress_and_groups(self):
         view = visualize_viewmodel.build_execution_view(
@@ -3060,8 +3196,8 @@ class VisualizeGridTests(unittest.TestCase):
             _STATUS_DOC, title="Exec")
         html_text = visualize_renderer.render(graph, view=view)
         self.assertIn(
-            'Workstream: Web tier'
-            '<span class="id-badge" title="Workstream id">'
+            'Step group: Web tier'
+            '<span class="id-badge" title="Step group id">'
             'ws1</span> (4)', html_text)
         self.assertIn("1/2 completed", html_text)
         self.assertNotIn("https://", html_text)
@@ -3091,7 +3227,7 @@ class VisualizeWorkstreamIdTests(unittest.TestCase):
         html = self._render(document)
         # Grid header shows the workstream id as a greyish badge.
         self.assertIn(
-            '<span class="id-badge" title="Workstream id">ws-abc123</span>',
+            '<span class="id-badge" title="Step group id">ws-abc123</span>',
             html)
         # SVG band shows the same id as a muted tspan.
         self.assertIn('<tspan class="svg-id"> ws-abc123</tspan>', html)
@@ -3349,18 +3485,28 @@ class ConfigStatusBranchTests(unittest.TestCase):
             config_status_mod.compute({'stepId': 's'}, None),
             config_status_mod.UNKNOWN)
 
-    def test_compute_unknown_when_untracked(self):
+    def test_compute_untracked_no_schema_is_na(self):
+        # A step absent from stepInputs with no schema entry has no required
+        # inputs -> NA (nothing to configure), not Unknown.
         self.assertEqual(
             config_status_mod.compute(
                 {'stepId': 's', 'stepRef': 't'}, {'stepInputs': {}}),
-            config_status_mod.UNKNOWN)
+            config_status_mod.NOT_APPLICABLE)
+
+    def test_compute_untracked_with_required_is_not_configured(self):
+        self.assertEqual(
+            config_status_mod.compute(
+                {'stepId': 's', 'stepRef': 't'},
+                {'schema': {'t': {'a': {'required': True}}},
+                 'stepInputs': {}}),
+            config_status_mod.NOT_CONFIGURED)
 
     def test_compute_configured_when_no_required(self):
         self.assertEqual(
             config_status_mod.compute(
                 {'stepId': 's', 'stepRef': 't'},
                 {'stepInputs': {'s': {}}, 'schema': {}}),
-            config_status_mod.CONFIGURED)
+            config_status_mod.NOT_APPLICABLE)
 
     def test_compute_partial_and_not_configured(self):
         schema = {'t': {'a': {'required': True}, 'b': {'required': True}}}
@@ -3426,12 +3572,12 @@ class DepsBranchTests(unittest.TestCase):
             None,
             {'displayName': 'WS', 'steps': [
                 {'stepId': 's1', 'displayName': 'Step One'}]}]}})
-        self.assertEqual(labels['s1'], 'WS:Step One')
+        self.assertEqual(labels['s1'], (None, 'WS', 'Step One'))
 
     def test_dep_labels_flat_steps_no_workstream(self):
         labels = deps_mod.build_dep_labels(
             {'steps': [{'stepId': 's2', 'displayName': 'Solo'}]})
-        self.assertEqual(labels['s2'], 'Solo')
+        self.assertEqual(labels['s2'], (None, None, 'Solo'))
 
     def test_dep_labels_non_dict_document(self):
         self.assertEqual(deps_mod.build_dep_labels([1, 2]), {})

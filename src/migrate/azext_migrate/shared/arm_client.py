@@ -168,10 +168,16 @@ class ArmClient:
         try:
             start = _time.monotonic()
             attempt = 0
+            # Force the ARM token audience on every poll: the async-operation
+            # URL can be on a host send_raw_request cannot map to a resource
+            # (it then attaches no Authorization header and the poll 401s).
+            arm_resource = (
+                self.cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
             while True:
                 _time.sleep(delay)
                 attempt += 1
-                poll = send_raw_request(self.cmd.cli_ctx, 'GET', poll_url)
+                poll = send_raw_request(
+                    self.cmd.cli_ctx, 'GET', poll_url, resource=arm_resource)
                 if poll.status_code >= 400:
                     errors.raise_for_arm_error(poll)
                 body = self._json_or_none(poll) or {}
@@ -214,7 +220,12 @@ class ArmClient:
                 progress.end()
 
     def _begin(self, method, resource_id, body=None, no_wait=False,
-               final_get_id=None, return_final_poll=False):
+               final_get_id=None, return_final_poll=False, message=None):
+        # Optional human-readable lead-in, shown before the API/correlation-id
+        # log so users get context (e.g. "Generating runbook..."). Suppressed
+        # for quiet (secondary-step) LROs.
+        if message and not self.quiet_lro:
+            logger.warning('%s', message)
         response = self._send(method, resource_id, body)
         if no_wait:
             logger.warning(
@@ -273,7 +284,7 @@ class ArmClient:
             endpoint.scheme, endpoint.netloc,
             target.path, target.query, target.fragment))
 
-    def put(self, resource_id, body=None, no_wait=False):
+    def put(self, resource_id, body=None, no_wait=False, message=None):
         """PUT (create/generate/start) a resource, awaiting any LRO.
 
         On success the settled resource is re-read (a final GET on the same
@@ -281,24 +292,25 @@ class ArmClient:
         Succeeded``) rather than the initial accepted body.
         """
         return self._begin(
-            'PUT', resource_id, body, no_wait, final_get_id=resource_id)
+            'PUT', resource_id, body, no_wait, final_get_id=resource_id,
+            message=message)
 
     def patch(self, resource_id, body=None):
         """PATCH (update) a resource."""
         return self._json_or_none(self._send('PATCH', resource_id, body))
 
-    def delete(self, resource_id, no_wait=False):
+    def delete(self, resource_id, no_wait=False, message=None):
         """DELETE a resource, awaiting any LRO.
 
         Returns None: a completed delete has no resource to render (the
         initial 202 accepted body still shows the resource as InProgress,
         which is misleading), matching standard Azure CLI delete behaviour.
         """
-        self._begin('DELETE', resource_id, no_wait=no_wait)
+        self._begin('DELETE', resource_id, no_wait=no_wait, message=message)
 
     def post_action(self, resource_id, action_name, body=None,
                     no_wait=False, final_get=False,
-                    return_final_poll=False):
+                    return_final_poll=False, message=None):
         """POST {resourceId}/{action_name} with an optional JSON body.
 
         This is the workhorse for every action endpoint (AddStep,
@@ -316,4 +328,4 @@ class ArmClient:
         final_get_id = resource_id if final_get else None
         return self._begin(
             'POST', action_id, body, no_wait, final_get_id,
-            return_final_poll)
+            return_final_poll, message=message)

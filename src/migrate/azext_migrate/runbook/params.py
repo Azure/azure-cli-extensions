@@ -76,8 +76,8 @@ def load_runbook_arguments(self, _):
     with self.argument_context('migrate runbook definition show') as c:
         c.argument(
             'workstream_id',
-            options_list=['--workstream-id'],
-            help='Limit the output to a single workstream.')
+            options_list=['--step-group-id'],
+            help='Limit the output to a single step group.')
         c.argument(
             'step_id',
             options_list=['--step-id'],
@@ -100,15 +100,28 @@ def load_runbook_arguments(self, _):
             'step_name', options_list=['--step-name'], required=True,
             help='Display name for the step.')
         c.argument(
-            'workstream_id', options_list=['--workstream-id'],
+            'workstream_id', options_list=['--step-group-id'],
             required=True,
-            help='Id of the workstream to add the step to.')
+            help='Id of the step group to add the step to.')
         c.argument(
             'step_description', options_list=['--step-description'],
             help='Optional description for the step.')
         c.argument(
-            'depends_on', options_list=['--depends-on'], nargs='*',
-            help='Space-separated step ids this step depends on.')
+            'depends_on_whole_step',
+            options_list=['--depends-on-whole-step'], nargs='*',
+            help='Step ids this step waits for as a whole step '
+                 '(all entities).')
+        c.argument(
+            'depends_on_per_entity',
+            options_list=['--depends-on-per-entity'], nargs='*',
+            help='Step ids this step waits for per entity (the same entity '
+                 'in the upstream step). Requires a step with entities.')
+        c.argument(
+            'depends_on_mapped_entities',
+            options_list=['--depends-on-mapped-entities'], nargs='*',
+            help='Mapped-entity dependencies, each as '
+                 '"<stepId>=<dependentEntity>:<waitsForEntity>,...". '
+                 'Requires a step with entities.')
         c.argument(
             'migration_entity_ids',
             options_list=['--migration-entity-ids'], nargs='*',
@@ -127,8 +140,22 @@ def load_runbook_arguments(self, _):
             'step_description', options_list=['--step-description'],
             help='Updated description for the step.')
         c.argument(
-            'depends_on', options_list=['--depends-on'], nargs='*',
-            help='Space-separated step ids this step depends on.')
+            'depends_on_whole_step',
+            options_list=['--depends-on-whole-step'], nargs='*',
+            help='Replace dependencies: step ids this step waits for as a '
+                 'whole step. Omit all --depends-on-* flags to keep the '
+                 'existing dependencies unchanged.')
+        c.argument(
+            'depends_on_per_entity',
+            options_list=['--depends-on-per-entity'], nargs='*',
+            help='Replace dependencies: step ids this step waits for per '
+                 'entity. Requires a step with entities.')
+        c.argument(
+            'depends_on_mapped_entities',
+            options_list=['--depends-on-mapped-entities'], nargs='*',
+            help='Replace dependencies: mapped-entity dependencies, each as '
+                 '"<stepId>=<dependentEntity>:<waitsForEntity>,...". '
+                 'Requires a step with entities.')
 
     with self.argument_context(
             'migrate runbook definition step remove') as c:
@@ -137,32 +164,32 @@ def load_runbook_arguments(self, _):
             help='Id of the step to remove.')
 
     with self.argument_context(
-            'migrate runbook definition workstream split') as c:
+            'migrate runbook definition step-group split') as c:
         c.argument(
             'source_workstream_id',
-            options_list=['--source-workstream-id'], required=True,
-            help='Id of the workstream to split.')
+            options_list=['--source-step-group-id'], required=True,
+            help='Id of the step group to split.')
         c.argument(
             'new_workstream_name',
-            options_list=['--new-workstream-name'], required=True,
-            help='Display name for the new workstream.')
+            options_list=['--new-step-group-name'], required=True,
+            help='Display name for the new step group.')
         c.argument(
             'step_ids', options_list=['--step-ids'],
             nargs='+', required=True,
             help='Space-separated step ids to move into the new '
-                 'workstream.')
+                 'step group.')
 
     with self.argument_context(
-            'migrate runbook definition workstream merge') as c:
+            'migrate runbook definition step-group merge') as c:
         c.argument(
             'source_workstream_ids',
-            options_list=['--source-workstream-ids'], nargs='+',
+            options_list=['--source-step-group-ids'], nargs='+',
             required=True,
-            help='Space-separated ids of the workstreams to merge.')
+            help='Space-separated ids of the step groups to merge.')
         c.argument(
             'new_workstream_name',
-            options_list=['--new-workstream-name'], required=True,
-            help='Display name for the merged workstream.')
+            options_list=['--new-step-group-name'], required=True,
+            help='Display name for the merged step group.')
 
     with self.argument_context(
             'migrate runbook execution start') as c:

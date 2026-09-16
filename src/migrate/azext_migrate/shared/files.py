@@ -73,11 +73,13 @@ def extract_sas_url(response_body):
     return None
 
 
-def download_bytes(url):
+def download_bytes(url, message=None):
     """HTTP GET a self-authorizing https URL and return the raw bytes."""
     if not isinstance(url, str) or not url.lower().startswith('https://'):
         raise InvalidArgumentValueError(
             'The download URL must be an absolute https URL.')
+    if message:
+        logger.warning('%s', message)
     request = Request(url, method='GET')
     # The URL is a pre-signed blob SAS returned by ARM and validated above
     # to be https; no ARM token is attached.
@@ -117,18 +119,22 @@ def _looks_like_parameters(parsed):
         or 'schema' in parsed)
 
 
+# Top-level keys that positively identify an execution status document.
+_STATUS_KEYS = ('executionStatus', 'workstreams', 'steps', 'state', 'status')
+
+
 def _looks_like_status(parsed):
     """True when a parsed JSON document is an execution status document.
 
-    The per-execution download archive can also carry the definition
-    (wrapped in ``spec``) and the input parameters (``inputs`` / ``schema``
-    / ``stepInputs``); neither is a status document. A status document is
-    wrapped in ``executionStatus`` (or is a bare ``workstreams`` shape), so
-    it is anything that is a dict and is not the definition or parameters.
+    Identified by a *positive* shape (one of :data:`_STATUS_KEYS`) rather than
+    "anything that is not the definition or parameters", so an unrelated
+    member such as a standalone ``schema.json`` is never mistaken for status.
+    The parameters document (``inputs`` / ``schema`` / ``stepInputs``) is
+    excluded explicitly.
     """
-    return (isinstance(parsed, dict)
-            and 'spec' not in parsed
-            and not _looks_like_parameters(parsed))
+    if not isinstance(parsed, dict) or _looks_like_parameters(parsed):
+        return False
+    return any(key in parsed for key in _STATUS_KEYS)
 
 
 def _classify_archive(zip_bytes):

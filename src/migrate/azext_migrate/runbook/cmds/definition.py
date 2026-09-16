@@ -177,9 +177,11 @@ def _load_definition(cmd, resource_group_name, project_name, runbook_name,
     when this load is a secondary step of a larger command (e.g. re-reading
     the definition right after an edit).
     """
-    zip_bytes = files.download_bytes(_artifact_download_url(
-        cmd, resource_group_name, project_name, runbook_name,
-        mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY, quiet_lro=quiet_lro))
+    zip_bytes = files.download_bytes(
+        _artifact_download_url(
+            cmd, resource_group_name, project_name, runbook_name,
+            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY, quiet_lro=quiet_lro),
+        message=None if quiet_lro else 'Downloading the runbook definition...')
     spec = files.read_spec_json(zip_bytes)
     if spec is None:
         raise CLIInternalError(
@@ -233,9 +235,11 @@ def download(cmd, resource_group_name, project_name, runbook_name,
              destination=None):
     """Download the runbook definition/documentation files to disk."""
     destination = destination or os.getcwd()
-    zip_bytes = files.download_bytes(_artifact_download_url(
-        cmd, resource_group_name, project_name, runbook_name,
-        mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY))
+    zip_bytes = files.download_bytes(
+        _artifact_download_url(
+            cmd, resource_group_name, project_name, runbook_name,
+            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY),
+        message='Downloading the runbook definition files...')
     paths = files.extract_definition_files(zip_bytes, destination)
     result = []
     for path in paths:

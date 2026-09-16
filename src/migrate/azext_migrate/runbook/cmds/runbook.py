@@ -42,7 +42,9 @@ def generate(cmd, resource_group_name, project_name, runbook_name,
     project = _project_id(cmd, resource_group_name, project_name)
     resource_id = arm_ids.runbook_id(project, runbook_name)
     body = models.build_generate_body(models.wave_id(project, wave_name))
-    result = ArmClient(cmd).put(resource_id, body, no_wait=no_wait)
+    result = ArmClient(cmd).put(
+        resource_id, body, no_wait=no_wait,
+        message='Generating the runbook...')
     if not no_wait and not no_visualize:
         _open_definition_view(
             cmd, resource_group_name, project_name, runbook_name)

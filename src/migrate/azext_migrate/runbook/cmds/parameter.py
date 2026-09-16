@@ -37,9 +37,11 @@ def download(cmd, resource_group_name, project_name, runbook_name,
              directory=None):
     """Download the runbook parameters (inputs + schema) files to disk."""
     destination = directory or os.getcwd()
-    zip_bytes = files.download_bytes(_artifact_download_url(
-        cmd, resource_group_name, project_name, runbook_name,
-        mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY))
+    zip_bytes = files.download_bytes(
+        _artifact_download_url(
+            cmd, resource_group_name, project_name, runbook_name,
+            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY),
+        message='Downloading the runbook parameters...')
     paths = files.extract_parameter_files(zip_bytes, destination)
     result = []
     for path in paths:
@@ -102,9 +104,11 @@ def configure(cmd, resource_group_name=None, project_name=None,
         name = runbook_name or os.path.splitext(
             os.path.basename(from_file))[0]
     else:
-        zip_bytes = files.download_bytes(_artifact_download_url(
-            cmd, resource_group_name, project_name, runbook_name,
-            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY))
+        zip_bytes = files.download_bytes(
+            _artifact_download_url(
+                cmd, resource_group_name, project_name, runbook_name,
+                mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY),
+            message='Downloading the runbook parameters...')
         found = files.extract_parameters_file(zip_bytes)
         if not found:
             raise CLIInternalError(
@@ -130,19 +134,20 @@ def configure(cmd, resource_group_name=None, project_name=None,
         os.path.dirname(os.path.abspath(target)), param_file)
     files.write_text(inputs_path, json.dumps(inputs_root, indent=2))
     meta['inputsPath'] = inputs_path
-    # Best-effort Downloads path for browsers that can only download (no
-    # File System Access API); the page shows it in the upload command.
-    meta['downloadsPath'] = os.path.join(
-        os.path.expanduser('~'), 'Downloads', param_file)
     html_text = configure_renderer.render(
         inputs_root, spec_doc, meta, schema_doc)
     path = files.write_text(target, html_text)
     logger.warning('Runbook parameters editor saved to %s', path)
     logger.warning('Editable parameters file saved to %s', inputs_path)
+    # The browser "Save" writes to wherever the user picks (often Downloads),
+    # which the CLI cannot know here, so the shown upload path is a placeholder
+    # rather than the pre-written file (valid only if edited in place).
     logger.warning(
-        'After editing, upload with: az migrate runbook parameter upload '
-        '-g %s -p %s -n %s --file "%s"',
+        'After editing, click Save in the editor, then upload the file you '
+        'saved: az migrate runbook parameter upload -g %s -p %s -n %s '
+        '--file "%s". (Or edit %s directly and use that path.)',
         resource_group_name or '<resource-group>',
-        project_name or '<project>', name or '<runbook>', inputs_path)
+        project_name or '<project>', name or '<runbook>',
+        '<path to the file you saved>', inputs_path)
     files.open_in_browser(path, required=True)
     return {'path': path, 'inputsPath': inputs_path}

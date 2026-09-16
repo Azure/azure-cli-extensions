@@ -57,6 +57,7 @@ _DEFINITION_LEGEND = (
     ('Configured', '#6bb700'),
     ('Partial', '#ffaa44'),
     ('NotConfigured', '#d13438'),
+    ('NA', '#c8c6c4'),
     ('Unknown', '#8a8886'),
 )
 
@@ -198,7 +199,7 @@ def _svg(graph):
         parts.append(
             '<g class="lane">'
             '<rect x="%d" y="%d" width="%d" height="%d" rx="8"/>'
-            '<text x="%d" y="%d">Workstream: %s%s (%d)</text></g>'
+            '<text x="%d" y="%d">Step group: %s%s (%d)</text></g>'
             % (_MARGIN / 2, top, width - _MARGIN, band_height,
                _MARGIN / 2 + 12, top + 16,
                _esc(name or 'Ungrouped'), _id_tspan(ws_id), count))
@@ -210,10 +211,20 @@ def _svg(graph):
         tx, ty = positions[edge.target]
         x1, y1 = sx + _NODE_W, sy + _NODE_H / 2
         x2, y2 = tx, ty + _NODE_H / 2
-        midx = (x1 + x2) / 2
-        parts.append(
-            '<path class="edge" d="M%.1f %.1f C%.1f %.1f %.1f %.1f %.1f %.1f"/>'
-            % (x1, y1, midx, y1, midx, y2, x2, y2))
+        if x2 - x1 > _COL_GAP + 1:
+            # Multi-column edge: route through the clear channel just above
+            # the target row so intervening node boxes don't occlude it.
+            chan = ty - _ROW_GAP
+            parts.append(
+                '<path class="edge" d="M%.1f %.1f C%.1f %.1f %.1f %.1f '
+                '%.1f %.1f"/>'
+                % (x1, y1, x1 + _COL_GAP, chan, x2 - _COL_GAP, chan, x2, y2))
+        else:
+            midx = (x1 + x2) / 2
+            parts.append(
+                '<path class="edge" d="M%.1f %.1f C%.1f %.1f %.1f %.1f '
+                '%.1f %.1f"/>'
+                % (x1, y1, midx, y1, midx, y2, x2, y2))
 
     for node in graph.nodes:
         x, y = positions[node.id]
@@ -326,15 +337,15 @@ def _portal_grid(view):
             status_head, count_head)]
     index = 0
     for workstream in view.workstreams:
-        head = 'Workstream: %s%s (%d)' % (
+        head = 'Step group: %s%s (%d)' % (
             _esc(workstream.name or 'Ungrouped'),
-            _id_badge(workstream.id, 'Workstream id'),
+            _id_badge(workstream.id, 'Step group id'),
             len(workstream.steps))
         parts.append('<details class="ws-group" open>')
         parts.append('<summary class="group__head">%s</summary>' % head)
         if not workstream.steps:
             parts.append('<div class="row row--empty">'
-                         'No steps in this workstream.</div>')
+                         'No steps in this step group.</div>')
         for step in workstream.steps:
             parts.append(_grid_row(view.kind, index, step))
             index += 1
@@ -544,7 +555,8 @@ def _detail_html(workstream_name, step, kind):
     """Build the step detail-pane markup (shown in the side drawer)."""
     if kind == viewmodel.KIND_EXECUTION:
         overview = (
-            _field('Step ID', step.id)
+            _field('Description', step.description)
+            + _field('Step ID', step.id)
             + _status_field('Step status', step.status, 'NotStarted')
             + (_field('Status reason', step.status_reason)
                if step.status_reason else '')
@@ -580,7 +592,8 @@ def _detail_html(workstream_name, step, kind):
     else:
         entities = step.entity_names
         body = (
-            _field('Step type', step.step_ref)
+            _field('Description', step.description)
+            + _field('Step type', step.step_ref)
             + _field('Step ID', step.id)
             + _status_field('Configuration status', step.status, 'Unknown')
             + _chip_field('Entities (%d)' % len(entities), entities)
@@ -591,7 +604,7 @@ def _detail_html(workstream_name, step, kind):
         '<section class="detail">'
         '<header class="detail__head">'
         '<div><h2 class="detail__title">%s</h2>'
-        '<div class="detail__sub">Workstream: %s</div></div>'
+        '<div class="detail__sub">Step group: %s</div></div>'
         '<button type="button" class="detail__close" data-close '
         'aria-label="Close">&#10005;</button></header>'
         '<div class="detail__body">%s</div></section>'
@@ -619,20 +632,20 @@ _HELP_CHIPS = (
      'az migrate runbook execution start --resource-group <rg> '
      '--project-name <project> --runbook-name <runbook>'),
     ('&#65291;', 'Add a step',
-     'Adds a step to a workstream in the runbook definition.',
+     'Adds a step to a step group in the runbook definition.',
      'az migrate runbook definition step add --resource-group <rg> '
      '--project-name <project> --runbook-name <runbook> '
-     '--step-type <type> --step-name <stepName> --workstream-id <workstream>'),
-    ('&#8649;', 'Merge workstreams',
-     'Combines two workstreams into a single track.',
-     'az migrate runbook definition workstream merge --resource-group <rg> '
+     '--step-type <type> --step-name <stepName> --step-group-id <step group>'),
+    ('&#8649;', 'Merge step groups',
+     'Combines two step groups into a single track.',
+     'az migrate runbook definition step-group merge --resource-group <rg> '
      '--project-name <project> --runbook-name <runbook> '
-     '--source-workstream-ids <id1> <id2> --new-workstream-name <name>'),
-    ('&#9649;', 'Split a workstream',
-     'Splits a workstream into parallel tracks.',
-     'az migrate runbook definition workstream split --resource-group <rg> '
+     '--source-step-group-ids <id1> <id2> --new-step-group-name <name>'),
+    ('&#9649;', 'Split a step group',
+     'Splits a step group into parallel tracks.',
+     'az migrate runbook definition step-group split --resource-group <rg> '
      '--project-name <project> --runbook-name <runbook> '
-     '--source-workstream-id <id> --new-workstream-name <name> '
+     '--source-step-group-id <id> --new-step-group-name <name> '
      '--entities-to-move <entity1> <entity2>'),
     ('&#8635;', 'Refresh this view',
      'Regenerates the HTML from the latest runbook definition.',

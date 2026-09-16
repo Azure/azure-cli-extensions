@@ -67,12 +67,18 @@ STEP_REF_BY_TYPE = {
     STEP_TYPE_APPROVAL: "common.approval",
 }
 
+# Step refs that never take inputs (Manual/Approval gates); their
+# configuration status is "NA" regardless of the parameters document.
+INPUTLESS_STEP_REFS = frozenset(STEP_REF_BY_TYPE.values())
+
 # A step dependency in the AddStep/UpdateStep write model (service
 # ``RunbookStepDependency``) is ``{"waitFor": <string>, "stepId": <step-id>}``.
 # ``waitFor`` is the polymorphic discriminator (first key); its full enum is
 # ``Step``/``Entity``/``MappedEntities`` (the latter two carry an
 # ``entityPairs`` ``[{"dependentEntity", "waitsFor"}]`` list and are invalid
-# for Manual steps). The CLI ``--depends-on`` authors ``Step`` gates only.
+# for Manual steps). The CLI authors all three via --depends-on-whole-step
+# (Step), --depends-on-per-entity (Entity), and --depends-on-mapped-entities
+# (MappedEntities).
 # NOTE (F-verify 2026-08-28): the WRITE enum (``Step``/``Entity``/
 # ``MappedEntities``) is deliberately distinct from the READ projections the
 # service emits — spec.json uses ``wholeStep``/``sameEntity``/``mappedEntities``
@@ -80,6 +86,8 @@ STEP_REF_BY_TYPE = {
 # code maps those forms (see visualize/viewmodel ``_WAIT_FOR_LABELS``); do NOT
 # "align" this write value to a read form.
 STEP_WAITFOR_STEP = "Step"
+STEP_WAITFOR_ENTITY = "Entity"
+STEP_WAITFOR_MAPPED = "MappedEntities"
 
 
 class RunbookStatus(str, Enum):

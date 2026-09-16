@@ -59,7 +59,7 @@ def _step_rows(workstream, labels):
 
 def _empty_workstream_row(workstream_id):
     return OrderedDict([
-        ('Workstream Id', workstream_id),
+        ('Step Group Id', workstream_id),
         ('Step Id', ''),
         ('Step Name', '(no steps)'),
         ('Depends On', ''),
@@ -72,10 +72,11 @@ def _empty_workstream_row(workstream_id):
 def _step_row(step, workstream_id=None, labels=None):
     step = step or {}
     return OrderedDict([
-        ('Workstream Id', workstream_id),
+        ('Step Group Id', workstream_id),
         ('Step Id', step.get('stepId') or step.get('id')),
         ('Step Name', step.get('displayName') or step.get('stepName')),
-        ('Depends On', '\n'.join(dep_utils.label_deps(step, labels or {}))),
+        ('Depends On', '\n'.join(
+            dep_utils.label_deps(step, labels or {}, workstream_id))),
         ('Configuration Status', step.get('configurationStatus')),
         ('Entities', len(step.get('entities') or [])),
         ('Applications', len(step.get('affectedEntityGroups') or [])),
@@ -170,14 +171,15 @@ def _exec_step_rows(workstream, labels):
 def _exec_step_row(step, workstream_id=None, labels=None):
     step = step or {}
     return OrderedDict([
-        ('Workstream Id', workstream_id),
+        ('Step Group Id', workstream_id),
         ('Step Id', step.get('id') or step.get('stepId')),
         ('Step Name', step.get('displayName') or step.get('stepName')),
         ('Step Status',
          step.get('status') or step.get('stepStatus') or step.get('state')),
         ('Retries', _failed_attempts(step)),
         ('Details', _step_detail(step)),
-        ('Depends On', '\n'.join(dep_utils.label_deps(step, labels or {}))),
+        ('Depends On', '\n'.join(
+            dep_utils.label_deps(step, labels or {}, workstream_id))),
         ('Workload Progress', _workload_progress(step)),
     ])
 

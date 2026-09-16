@@ -94,6 +94,13 @@ behavior are updated in the SAME change and the suite is green.
 
 ## Domain facts to preserve
 
+- **Terminology: display "step group" = wire "workstream".** User-facing surfaces
+  (CLI command group `definition step-group`, params `--step-group-id` /
+  `--source-step-group-ids` / `--new-step-group-name`, table column `Step Group Id`,
+  HTML labels `Step group: …`) say "step group". The API bodies, `spec.json` /
+  `executionStatus.json` keys (`workstreams`, `workstreamId`), `-o json` output, and
+  all internal code/file names (`definition_workstream.py`, `class Workstream`,
+  `workstream_id` params) stay `workstream`. Rename only at the display + CLI-arg edges.
 - Downloaded runbook archive members (service renamed 2026-08-25):
   - `spec.json` → the **definition** (`{"spec": {...}}`).
   - `inputs.json` → the **parameters** (`{"inputs": {...}}`). `definition download`
@@ -107,10 +114,17 @@ behavior are updated in the SAME change and the suite is green.
   services, e.g. `rb-<name>-spec.json` vs `spec.json`). See `shared/files.py::_classify_archive`
   as the single source of truth. Only the derived-inputs exclusion and the File-mode download/upload
   **paths** (`inputs.json`, `executionStatus.json`; `runbook/constants.py`) are name-sensitive.
-- **UpdateStep/AddStep `dependsOn` write contract (verified against live service 2026-08-23):** each
-  entry is a System.Text.Json polymorphic `RunbookStepDependency`. The discriminator property is the
-  string `"waitFor"` (first key), one of `Step` / `Entity` / `MappedEntities` (`Entity` and
-  `MappedEntities` are invalid for Manual steps and carry an `entityPairs`
-  `[{"dependentEntity", "waitsFor"}]` list). A `--depends-on <stepId>` maps to
-  `{"waitFor": "Step", "stepId": "<id>"}`. See `models.py::_depends_on_refs`. The CLI authors `Step`
-  gates only; `Entity`/`MappedEntities` are passed through when a caller supplies a dict.
+- **UpdateStep/AddStep `dependsOn` write contract:** each entry is a polymorphic
+  `RunbookStepDependency`; the discriminator `"waitFor"` is one of `Step` / `Entity` /
+  `MappedEntities`. `Entity`/`MappedEntities` are invalid for Manual steps (only entity-bearing
+  steps, e.g. Approval); `MappedEntities` carries an `entityPairs`
+  `[{"dependentEntity", "waitsFor"}]` list, `Entity` carries none, `Step` carries none. The CLI
+  authors all three via `step add`/`step update` flags `--depends-on-whole-step` (Step),
+  `--depends-on-per-entity` (Entity), `--depends-on-mapped-entities`
+  (`<stepId>=<dep>:<up>,...` → MappedEntities). See `models.py::build_step_dependencies` /
+  `_mapped_dep`. **Replace vs preserve:** when any flag is given the combined list fully
+  **replaces** `dependsOn` (unspecified modes dropped); when none are given `build_step_dependencies`
+  returns `None` and `build_update_step_body` sends `dependsOn: null`, which the service treats as
+  **preserve existing** (AddStep sends `[]` instead — a new step has nothing to preserve). No
+  read-modify-write. Manual-step rejection is enforced client-side only on `add` (which knows the
+  step type); `update` defers to the service. Entity ids in pairs are bare GUIDs.

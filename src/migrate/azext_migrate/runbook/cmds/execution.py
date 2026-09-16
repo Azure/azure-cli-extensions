@@ -123,7 +123,9 @@ def start(cmd, resource_group_name, project_name, runbook_name,
     # execute mints the execution and returns its resource (name/id) in the
     # initial response body; the async-operation poll body is the wave
     # operation (a different GUID), so do NOT read the id from the poll.
-    result = client.post_action(resource_id, 'execute', no_wait=no_wait)
+    result = client.post_action(
+        resource_id, 'execute', no_wait=no_wait,
+        message='Starting the runbook execution...')
     execution_id = _execution_id_from_result(result)
     if execution_id:
         logger.warning(
@@ -165,6 +167,10 @@ def _open_execution_view(cmd, resource_group_name, project_name,
     Blocks in the watch loop until a terminal state or Ctrl+C; ``--no-wait``
     on ``start`` skips this and returns immediately.
     """
+    logger.warning(
+        "Automatically opening the live execution view for execution '%s'. "
+        "Re-run 'execution start' with '--no-wait' to skip this.",
+        execution_id)
     try:
         visualize(
             cmd, resource_group_name, project_name, runbook_name,

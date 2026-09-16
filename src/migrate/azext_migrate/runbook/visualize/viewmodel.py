@@ -51,7 +51,8 @@ class StepRow:
                  step_ref=None, entity_names=None, prereqs=None,
                  dep_details=None, entity_groups=None, status_reason=None,
                  error=None, retry_count=0, attempts=None,
-                 user_comment=None, outputs=None, started=None, ended=None):
+                 user_comment=None, outputs=None, started=None, ended=None,
+                 description=None):
         self.id = step_id
         self.name = name
         self.deps = deps or []
@@ -79,6 +80,8 @@ class StepRow:
         # Step run window (for the detail-pane overview).
         self.started = started
         self.ended = ended
+        # Free-form step description shown at the top of the detail pane.
+        self.description = description
 
 
 class Workstream:
@@ -232,7 +235,7 @@ def build_definition_view(document, title):
             rows.append(StepRow(
                 step_id=_step_id(step),
                 name=_step_name(step),
-                deps=dep_utils.label_deps(step, dep_labels),
+                deps=dep_utils.label_deps(step, dep_labels, ws_id),
                 status=status,
                 workloads=len(entity_ids),
                 step_ref=step.get('stepRef'),
@@ -240,7 +243,8 @@ def build_definition_view(document, title):
                               for eid in entity_ids],
                 prereqs=_dep_entries(step.get('prerequisites'), id_to_name),
                 dep_details=_dep_entries(step.get('dependsOn'), id_to_name),
-                entity_groups=_step_groups(step, group_map)))
+                entity_groups=_step_groups(step, group_map),
+                description=step.get('description')))
         workstreams.append(Workstream(name, rows, ws_id))
 
     step_total = sum(len(ws.steps) for ws in workstreams)
@@ -393,7 +397,7 @@ def build_execution_view(document, title):
             rows.append(StepRow(
                 step_id=_step_id(step),
                 name=_step_name(step),
-                deps=dep_utils.label_deps(step, dep_labels),
+                deps=dep_utils.label_deps(step, dep_labels, ws_id),
                 status=status,
                 workload_progress=_progress_text(step),
                 entities=entities,
@@ -405,7 +409,8 @@ def build_execution_view(document, title):
                 user_comment=step.get('userComment'),
                 outputs=_output_map(step.get('outputs')),
                 started=step.get('startTime'),
-                ended=step.get('endTime')))
+                ended=step.get('endTime'),
+                description=step.get('description')))
         workstreams.append(Workstream(name, rows, ws_id))
 
     summary = _execution_summary(root, status_counts)

@@ -69,7 +69,7 @@ def load_runbook_command_table(self):
             confirmation=True)
 
     with self.command_group(
-            'migrate runbook definition workstream',
+            'migrate runbook definition step-group',
             custom_command_type=runbook_cmds,
             is_preview=True) as g:
         g.custom_command(
