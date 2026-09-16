@@ -138,17 +138,3 @@ migrate runbook definition step update:
 migrate runbook execution:
     rule_exclusions:
         - require_wait_command_if_no_wait
-
-# LRO/action commands whose parameters are exercised by unit tests, not by
-# recorded scenario tests; excluded like the other migrate commands above.
-migrate runbook generate:
-    rule_exclusions:
-        - missing_parameter_test_coverage
-
-migrate runbook regenerate:
-    rule_exclusions:
-        - missing_parameter_test_coverage
-
-migrate runbook parameter upload:
-    rule_exclusions:
-        - missing_parameter_test_coverage
