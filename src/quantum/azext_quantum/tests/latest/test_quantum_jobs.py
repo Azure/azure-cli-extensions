@@ -6,10 +6,12 @@
 import json
 import os
 import pytest
-import random
+import shlex
+import tempfile
 import time
 import unittest
 import unittest.mock
+from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -17,7 +19,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError, ResourceNotFoundError as CliResourceNotFoundError
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, run_cleanup_commands
 from ...commands import transform_output
 from ...operations.job import (
     list_files,
@@ -444,121 +446,152 @@ class QuantumJobsScenarioTest(ScenarioTest):
     def test_submit(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
+        test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
         test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
 
-        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
-        
-        # Wait for role assignments to propagate so the new workspace can access the storage account
-        time.sleep(60)
-        
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
+        try:
+            self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
 
-        # Submit a job to Rigetti and look for SAS tokens in URIs in the output
-        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assert_not_contains_standard_sas_params(results["containerUri"])
-        self.assert_not_contains_standard_sas_params(results["inputDataUri"])
-        self.assert_not_contains_standard_sas_params(results["outputDataUri"])
+            # Wait for role assignments to propagate so the new workspace can access the storage account
+            time.sleep(60)
 
-        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-  
-        self.assert_contains_standard_sas_params(job["containerUri"])
-        self.assert_contains_standard_sas_params(job["inputDataUri"])
-        self.assert_contains_standard_sas_params(job["outputDataUri"])
+            self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
 
-        # Update the submitted job's name, priority, and tags, then confirm all three changes were applied
-        updated_job = self.cmd(f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json').get_output_in_json()
-        self.assertEqual(updated_job["name"], "Updated job name")
-        self.assertEqual(updated_job["priority"], "High")
-        self.assertEqual(updated_job["tags"], ["tag1", "tag2"])
+            # Submit a job to Rigetti and look for SAS tokens in URIs in the output
+            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assert_not_contains_standard_sas_params(results["containerUri"])
+            self.assert_not_contains_standard_sas_params(results["inputDataUri"])
+            self.assert_not_contains_standard_sas_params(results["outputDataUri"])
 
-        # Run a Quil pass-through job on Rigetti
-        results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("ro", results)
+            job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
 
-        # Run an IonQ Circuit pass-through job on IonQ
-        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params shots=100 content-type=application/json -o json").get_output_in_json()
-        self.assertIn("histogram", results)
+            self.assert_contains_standard_sas_params(job["containerUri"])
+            self.assert_contains_standard_sas_params(job["inputDataUri"])
+            self.assert_contains_standard_sas_params(job["outputDataUri"])
 
-        # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
-        results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
-        self.assertIn("rigetti", str(results))
+            # Update the submitted job's name, priority, and tags, then confirm all three changes were applied
+            updated_job = self.cmd(f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json').get_output_in_json()
+            self.assertEqual(updated_job["name"], "Updated job name")
+            self.assertEqual(updated_job["priority"], "High")
+            self.assertEqual(updated_job["tags"], ["tag1", "tag2"])
 
-        results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
-        self.assertIn("ionq.simulator", str(results))
+            files = self.cmd(f'az quantum job file list -j {results["id"]} -o json').get_output_in_json()
+            self.assertIsInstance(files, list)
+            self.assertTrue(files)
+            listed_file = files[0]
+            self.assertEqual(set(listed_file.keys()), {'name', 'size', 'lastModified'})
+            self.assertGreaterEqual(listed_file['size'], 0)
+            if listed_file['lastModified'] is not None:
+                datetime.fromisoformat(listed_file['lastModified'].replace('Z', '+00:00'))
+            file_name = listed_file['name']
+            with tempfile.TemporaryDirectory() as download_dir:
+                downloaded = self.cmd(
+                    f'az quantum job file download -j {results["id"]} -n {shlex.quote(file_name)} '
+                    f'--dest "{download_dir}" -o json'
+                ).get_output_in_json()
+                self.assertEqual(downloaded['name'], file_name)
+                self.assertTrue(os.path.isfile(downloaded['path']))
+                self.assertEqual(downloaded['size'], listed_file['size'])
+                self.assertEqual(os.path.getsize(downloaded['path']), listed_file['size'])
 
-        jobs_list = self.cmd("az quantum job list --top 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 1)
-    
-        jobs_list = self.cmd("az quantum job list --skip 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 2)
+            # Run a Quil pass-through job on Rigetti
+            results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assertIn("ro", results)
 
-        jobs_list = self.cmd("az quantum job list --orderby Target --top 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 1)
-        results = str(jobs_list)
-        self.assertIn("ionq", results)
-        self.assertTrue("rigetti" not in results)
+            # Run an IonQ Circuit pass-through job on IonQ
+            results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params shots=100 content-type=application/json -o json").get_output_in_json()
+            self.assertIn("histogram", results)
 
-        jobs_list = self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 2)
-        results = str(jobs_list)
-        self.assertIn("rigetti", results)
-        self.assertTrue("ionq" not in results)
+            # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
+            results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
+            self.assertIn("rigetti", str(results))
 
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+            results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
+            self.assertIn("ionq.simulator", str(results))
+
+            jobs_list = self.cmd("az quantum job list --top 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 1)
+
+            jobs_list = self.cmd("az quantum job list --skip 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 2)
+
+            jobs_list = self.cmd("az quantum job list --orderby Target --top 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 1)
+            results = str(jobs_list)
+            self.assertIn("ionq", results)
+            self.assertTrue("rigetti" not in results)
+
+            jobs_list = self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 2)
+            results = str(jobs_list)
+            self.assertIn("rigetti", results)
+            self.assertTrue("ionq" not in results)
+
+        finally:
+            run_cleanup_commands(self, [
+                ('temporary workspace',
+                 f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}'),
+                ('workspace defaults', 'az quantum workspace clear'),
+            ])
 
     @live_only()
     def test_submit_with_disabled_then_enabled_storage_key_access(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
+        test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
         test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited"
-        test_storage_temp = "e2etests" + str(random.randint(10000000, 99999999))
+        test_storage_temp = self.create_random_name(prefix='e2etests', length=24)
 
-        # Test that create workspace with not existing storage will create storage
-        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_temp} -r {test_provider_sku_list} --skip-autoadd")
+        try:
+            # Test that create workspace with not existing storage will create storage
+            self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_temp} -r {test_provider_sku_list} --skip-autoadd")
 
-        # Verify that access keys are disabled on the newly created storage account
-        storage_info = self.cmd(f"az storage account show -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
-        self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
+            # Verify that access keys are disabled on the newly created storage account
+            storage_info = self.cmd(f"az storage account show -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
+            self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
 
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
-        time.sleep(60) # wait for role assignments to propagate so the new workspace can access the storage account
+            self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
+            time.sleep(60) # wait for role assignments to propagate so the new workspace can access the storage account
 
-        # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)
-        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("id", results)
+            # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)
+            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assertIn("id", results)
 
-        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-        self.assert_contains_standard_sas_params(job["containerUri"])
-        self.assert_contains_standard_sas_params(job["inputDataUri"])
-        self.assert_contains_standard_sas_params(job["outputDataUri"])
-        self.assert_contains_user_delegation_sas_params(job["containerUri"])
-        self.assert_contains_user_delegation_sas_params(job["inputDataUri"])
-        self.assert_contains_user_delegation_sas_params(job["outputDataUri"])
+            job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+            self.assert_contains_standard_sas_params(job["containerUri"])
+            self.assert_contains_standard_sas_params(job["inputDataUri"])
+            self.assert_contains_standard_sas_params(job["outputDataUri"])
+            self.assert_contains_user_delegation_sas_params(job["containerUri"])
+            self.assert_contains_user_delegation_sas_params(job["inputDataUri"])
+            self.assert_contains_user_delegation_sas_params(job["outputDataUri"])
 
-        # Enable access keys on the storage account
-        updated = self.cmd(f"az storage account update -g {test_resource_group} -n {test_storage_temp} --allow-shared-key-access true -o json").get_output_in_json()
-        self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
+            # Enable access keys on the storage account
+            updated = self.cmd(f"az storage account update -g {test_resource_group} -n {test_storage_temp} --allow-shared-key-access true -o json").get_output_in_json()
+            self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
 
-        time.sleep(300) # wait for the cache to update
+            time.sleep(300) # wait for the cache to update
 
-        # Test that job submission works with enabled access keys on linked storage (/sasUri returns container-scoped Service SAS)
-        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("id", results)
+            # Test that job submission works with enabled access keys on linked storage (/sasUri returns container-scoped Service SAS)
+            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assertIn("id", results)
 
-        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-        self.assert_contains_standard_sas_params(job["containerUri"])
-        self.assert_contains_standard_sas_params(job["inputDataUri"])
-        self.assert_contains_standard_sas_params(job["outputDataUri"])
-        self.assert_not_contains_user_delegation_sas_params(job["containerUri"])
-        self.assert_not_contains_user_delegation_sas_params(job["inputDataUri"])
-        self.assert_not_contains_user_delegation_sas_params(job["outputDataUri"])
+            job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+            self.assert_contains_standard_sas_params(job["containerUri"])
+            self.assert_contains_standard_sas_params(job["inputDataUri"])
+            self.assert_contains_standard_sas_params(job["outputDataUri"])
+            self.assert_not_contains_user_delegation_sas_params(job["containerUri"])
+            self.assert_not_contains_user_delegation_sas_params(job["inputDataUri"])
+            self.assert_not_contains_user_delegation_sas_params(job["outputDataUri"])
 
-        # Clean up
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
-        self.cmd(f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes')
+        finally:
+            run_cleanup_commands(self, [
+                ('temporary workspace',
+                 f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}'),
+                ('temporary storage account',
+                 f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes'),
+                ('workspace defaults', 'az quantum workspace clear'),
+            ])
 
     def test_job_list_param_formating(self):
         # Validate filter query formatting for each param
