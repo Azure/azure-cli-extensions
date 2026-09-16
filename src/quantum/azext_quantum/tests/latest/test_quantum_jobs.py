@@ -449,6 +449,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
         test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
+        input_file = "src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil"
 
         try:
             self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
@@ -459,7 +460,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
 
             # Submit a job to Rigetti and look for SAS tokens in URIs in the output
-            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            results = self.cmd(f"az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file {input_file} --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
             self.assert_not_contains_standard_sas_params(results["containerUri"])
             self.assert_not_contains_standard_sas_params(results["inputDataUri"])
             self.assert_not_contains_standard_sas_params(results["outputDataUri"])
@@ -473,7 +474,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
             files = self.cmd(f'az quantum job file list -j {results["id"]} -o json').get_output_in_json()
             self.assertIsInstance(files, list)
             self.assertTrue(files)
-            listed_file = files[0]
+            input_file_name = os.path.basename(urlparse(results['inputDataUri']).path)
+            listed_file = next(
+                (item for item in files if item['name'] == input_file_name),
+                None,
+            )
+            self.assertIsNotNone(listed_file)
             self.assertEqual(set(listed_file.keys()), {'name', 'size', 'lastModified'})
             self.assertGreaterEqual(listed_file['size'], 0)
             if listed_file['lastModified'] is not None:
@@ -488,6 +494,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
                 self.assertTrue(os.path.isfile(downloaded['path']))
                 self.assertEqual(downloaded['size'], listed_file['size'])
                 self.assertEqual(os.path.getsize(downloaded['path']), listed_file['size'])
+                with open(input_file, 'rb') as expected_file, open(downloaded['path'], 'rb') as actual_file:
+                    self.assertEqual(actual_file.read(), expected_file.read())
 
             # Update the submitted job's name, priority, and tags, then confirm all three changes were applied
             updated_job = self.cmd(f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json').get_output_in_json()
