@@ -603,10 +603,19 @@ def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, name
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
-                         namespace_name):  # pylint: disable=unused-argument
-    deployments = client.list_by_ai_manager_namespace(
-        resource_group_name, ai_manager_name, namespace_name)
-    return _annotate_model_ids(cmd, list(deployments))
+                         namespace_name=None, all_namespaces=False):  # pylint: disable=unused-argument
+    if all_namespaces:
+        from azext_aimanager._client_factory import cf_ai_manager_namespaces
+        namespaces_client = cf_ai_manager_namespaces(cmd.cli_ctx)
+        deployments = []
+        for ns in namespaces_client.list_by_ai_manager(resource_group_name, ai_manager_name):
+            deployments.extend(
+                client.list_by_ai_manager_namespace(
+                    resource_group_name, ai_manager_name, ns.name))
+    else:
+        deployments = list(client.list_by_ai_manager_namespace(
+            resource_group_name, ai_manager_name, namespace_name))
+    return _annotate_model_ids(cmd, deployments)
 
 
 def _annotate_model_ids(cmd, deployments):

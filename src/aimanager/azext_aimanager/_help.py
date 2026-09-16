@@ -274,8 +274,10 @@ helps['aimanager namespace modeldeployment list'] = """
     type: command
     short-summary: List model deployments within an AI Manager namespace.
     examples:
-        - name: List model deployments
+        - name: List model deployments in a namespace
           text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --namespace team-alpha
+        - name: List model deployments across all readable namespaces
+          text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --all-namespaces
 """
 
 helps['aimanager namespace modeldeployment delete'] = """

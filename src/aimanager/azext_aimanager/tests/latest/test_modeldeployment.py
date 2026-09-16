@@ -75,6 +75,48 @@ class TestModelDeployment(unittest.TestCase):
         self.assertEqual(
             ["--namespace", "--ns"], namespace_argument["options_list"])
 
+    def test_list_scope_requires_namespace_or_all_namespaces(self):
+        from azext_aimanager._validators import validate_modeldeployment_list_scope
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_modeldeployment_list_scope(
+                SimpleNamespace(namespace_name=None, all_namespaces=False))
+
+    def test_list_scope_rejects_both_namespace_and_all_namespaces(self):
+        from azext_aimanager._validators import validate_modeldeployment_list_scope
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_modeldeployment_list_scope(
+                SimpleNamespace(namespace_name="ns1", all_namespaces=True))
+
+    def test_list_scope_accepts_single_namespace(self):
+        from azext_aimanager._validators import validate_modeldeployment_list_scope
+        validate_modeldeployment_list_scope(
+            SimpleNamespace(namespace_name="ns1", all_namespaces=False))
+
+    def test_list_scope_accepts_all_namespaces(self):
+        from azext_aimanager._validators import validate_modeldeployment_list_scope
+        validate_modeldeployment_list_scope(
+            SimpleNamespace(namespace_name=None, all_namespaces=True))
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_all_namespaces_aggregates_across_namespaces(
+            self, cf_namespaces, _annotate):
+        namespaces_client = MagicMock()
+        namespaces_client.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
+        cf_namespaces.return_value = namespaces_client
+        self.cmd.cli_ctx = MagicMock()
+
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = [["d1"], ["d2", "d3"]]
+
+        result = custom.list_modeldeployment(
+            self.cmd, client, "rg", "mgr", all_namespaces=True)
+
+        self.assertEqual(["d1", "d2", "d3"], result)
+        namespaces_client.list_by_ai_manager.assert_called_once_with("rg", "mgr")
+        self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
+
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
     def test_update_preserves_omitted_properties_and_uses_etag(
