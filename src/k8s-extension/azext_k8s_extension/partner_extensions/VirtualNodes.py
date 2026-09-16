@@ -39,9 +39,6 @@ ALLOWED_CONFIG_SETTINGS_KEYS = [
     "affinity",
     "zones",
     "nodeLabels",
-    "autoscaling.minSize",
-    "autoscaling.maxSize",
-    "autoscaling.enabled"
 ]
 
 
