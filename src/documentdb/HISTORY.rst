@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
+++++++
+* Stable release of the Azure DocumentDB extension.
+
 1.0.0b2
 +++++++
 * Rename ``az documentdb mongocluster user`` to ``entra-user``; the group only supports
