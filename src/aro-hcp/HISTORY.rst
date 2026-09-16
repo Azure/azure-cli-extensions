@@ -7,6 +7,9 @@ Release History
 ++++++
 * Reworks identity assignment for both `az aro hcp cluster create` and `az aro hcp cluster update`
 * Removes two unnecessary etcd encryption arguments; the arguments currently each only have a single valid value at the API level
+* Flattens `--groups` argument to `az aro hcp cluster external-auth update`
+* Flattens `--clients` argument to `az aro hcp cluster external-auth create` and `az aro hcp cluster external-auth update`
+* Improves argument descriptions
 
 1.0.0b3
 ++++++
