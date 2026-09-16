@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
+
 def cf_apr(cli_ctx, *_):
     del cli_ctx
     # Control-plane (ARM) client factory. The az command pipeline calls this
