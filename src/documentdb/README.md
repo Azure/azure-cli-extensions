@@ -88,8 +88,13 @@ az documentdb mongocluster replica list --source-cluster MyCluster -g MyResource
 az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup -l centralus \
     --source-cluster MyCluster
 
-# Promote a replica to primary (--source-cluster guards against promoting the wrong replica)
-az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --source-cluster MyCluster
+# Planned promotion waits for the replica to catch up before switching roles (Preview).
+az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
+    --source-cluster MyCluster --mode Switchover --promote-option Planned
+
+# Forced promotion switches immediately and can lose recent writes; use it for recovery only.
+az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
+    --source-cluster MyCluster --mode Switchover --promote-option Forced
 ```
 
 ### Point-in-time restore

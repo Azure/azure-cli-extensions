@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Add the Preview ``Planned`` replica promotion option, which waits for the replica
+  to catch up before switching roles to avoid data loss.
+
 1.0.0
 ++++++
 * Stable release of the Azure DocumentDB extension.

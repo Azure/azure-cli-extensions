@@ -304,8 +304,8 @@ class Restore(_MongoClusterCreate):
 class ReplicaPromote(_ReplicaPromote):
     """Promote a replica mongo cluster to a primary role.
 
-    :example: Promote a replica to primary.
-        az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --source-cluster MySourceCluster --mode Switchover --promote-option Forced
+    :example: Promote a caught-up replica to primary without data loss.
+        az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --source-cluster MySourceCluster --mode Switchover --promote-option Planned
     """
 
     # ``promote`` already exists as a generated command, so this wrapper adds a
