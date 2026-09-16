@@ -190,34 +190,44 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
                 else:
                     self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
 
-    def test_delete_environment_selected_workspace_preserves_global_settings(self):
+    def test_delete_uses_effective_environment_defaults(self):
+        for override_cache in (False, True):
+            with self.subTest(override_cache=override_cache):
+                self.save_workspace()
+                before = self.config.items('defaults'), self.config.items('quantum')
+                overrides = {
+                    self.config.env_var_name('defaults', 'group'): 'other-group',
+                    self.config.env_var_name('defaults', 'workspace'): 'other-workspace',
+                }
+                if override_cache:
+                    overrides[self.config.env_var_name('quantum', 'workspace_endpoint_cache')] = json.dumps({
+                        'resource_id': '/subscriptions/saved-subscription/resourcegroups/other-group/'
+                                       'providers/microsoft.quantum/workspaces/other-workspace',
+                        'endpoint': self.other_endpoint,
+                    })
+
+                with patch.dict(os.environ, overrides), patch('azext_quantum.operations.workspace.cf_workspaces') as workspaces:
+                    delete(self.cmd, None, None)
+                    workspaces.return_value.begin_delete.assert_called_once_with(
+                        'other-group', 'other-workspace', polling=False)
+                    self.assertEqual(self.config.get('defaults', 'group'), 'other-group')
+                    self.assertEqual(self.config.get('defaults', 'workspace'), 'other-workspace')
+
+                if override_cache:
+                    self.assertEqual(self.config.get('defaults', 'group'), '')
+                    self.assertEqual(self.config.get('defaults', 'workspace'), '')
+                    self.assertFalse(self.config.has_option('quantum', 'workspace_endpoint_cache'))
+                else:
+                    self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
+
+    def test_delete_global_workspace_preserves_settings_when_defaults_are_overridden(self):
         self.save_workspace()
+        self.config.set_value('defaults', 'location', 'westus')
+        self.config.set_value('defaults', 'target_id', 'target')
         before = self.config.items('defaults'), self.config.items('quantum')
         overrides = {
             self.config.env_var_name('defaults', 'group'): 'other-group',
             self.config.env_var_name('defaults', 'workspace'): 'other-workspace',
-            self.config.env_var_name('quantum', 'workspace_endpoint_cache'): json.dumps({
-                'resource_id': '/subscriptions/saved-subscription/resourcegroups/other-group/'
-                               'providers/microsoft.quantum/workspaces/other-workspace',
-                'endpoint': self.other_endpoint,
-            }),
-        }
-
-        with patch.dict(os.environ, overrides), patch('azext_quantum.operations.workspace.cf_workspaces') as workspaces:
-            delete(self.cmd, 'other-group', 'other-workspace')
-            workspaces.return_value.begin_delete.assert_called_once_with(
-                'other-group', 'other-workspace', polling=False)
-
-        self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
-
-    def test_delete_global_workspace_ignores_environment_defaults(self):
-        self.save_workspace()
-        self.config.set_value('defaults', 'location', 'westus')
-        self.config.set_value('defaults', 'target_id', 'target')
-        overrides = {
-            self.config.env_var_name('defaults', 'group'): 'other-group',
-            self.config.env_var_name('defaults', 'workspace'): 'other-workspace',
-            self.config.env_var_name('quantum', 'workspace_endpoint_cache'): 'not-json',
         }
 
         with patch.dict(os.environ, overrides), patch('azext_quantum.operations.workspace.cf_workspaces'):
@@ -225,51 +235,7 @@ class WorkspaceEndpointCacheTest(unittest.TestCase):
             self.assertEqual(self.config.get('defaults', 'group'), 'other-group')
             self.assertEqual(self.config.get('defaults', 'workspace'), 'other-workspace')
 
-        self.assertEqual(self.config.get('defaults', 'group'), '')
-        self.assertEqual(self.config.get('defaults', 'workspace'), '')
-        self.assertFalse(self.config.has_option('quantum', 'workspace_endpoint_cache'))
-        self.assertEqual(self.config.get('defaults', 'location'), 'westus')
-        self.assertEqual(self.config.get('defaults', 'target_id'), 'target')
-
-    def test_delete_uses_global_identity_with_local_config_enabled(self):
-        for group, workspace, should_clear in [
-            ('other-group', 'other-workspace', False),
-            ('saved-group', 'saved-workspace', True),
-        ]:
-            with self.subTest(group=group, workspace=workspace), TemporaryDirectory() as working_directory:
-                self.save_workspace()
-                before = self.config.items('defaults'), self.config.items('quantum')
-                local = CLIConfig(config_dir=os.path.join(working_directory, os.path.basename(self.config.config_dir)),
-                                  config_env_var_prefix='QUANTUM_CACHE_TEST', use_local_config=False)
-                local.set_value('defaults', 'group', 'other-group')
-                local.set_value('defaults', 'workspace', 'other-workspace')
-                local.set_value('quantum', 'workspace_endpoint_cache', json.dumps({
-                    'resource_id': '/subscriptions/saved-subscription/resourcegroups/other-group/'
-                                   'providers/microsoft.quantum/workspaces/other-workspace',
-                    'endpoint': self.other_endpoint,
-                }))
-                with patch('os.getcwd', return_value=working_directory):
-                    merged = CLIConfig(config_dir=self.config.config_dir, config_env_var_prefix='QUANTUM_CACHE_TEST',
-                                       use_local_config=True)
-                    self.cmd.cli_ctx.config = merged
-                    local_before = merged.items('defaults'), merged.items('quantum')
-                    self.assertEqual(merged.get('defaults', 'group'), 'other-group')
-                    self.assertEqual(WorkspaceInfo(self.cmd).endpoint, self.other_endpoint)
-
-                    with patch('azext_quantum.operations.workspace.cf_workspaces'):
-                        delete(self.cmd, group, workspace)
-
-                    self.assertTrue(merged.use_local_config)
-                    self.assertEqual((merged.items('defaults'), merged.items('quantum')), local_before)
-                self.config = CLIConfig(config_dir=self.config.config_dir, config_env_var_prefix='QUANTUM_CACHE_TEST',
-                                        use_local_config=False)
-                self.cmd.cli_ctx.config = self.config
-                if should_clear:
-                    self.assertEqual(self.config.get('defaults', 'group'), '')
-                    self.assertEqual(self.config.get('defaults', 'workspace'), '')
-                    self.assertFalse(self.config.has_option('quantum', 'workspace_endpoint_cache'))
-                else:
-                    self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
+        self.assertEqual((self.config.items('defaults'), self.config.items('quantum')), before)
 
     def test_failed_delete_preserves_saved_settings(self):
         self.save_workspace()

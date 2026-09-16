@@ -108,34 +108,6 @@ class WorkspaceInfo:
         endpoint = cache.get('endpoint')
         return endpoint if isinstance(endpoint, str) and endpoint else None
 
-    def is_global_default(self, cmd):
-        """
-        Return whether this workspace still matches the saved global default.
-
-        Deletion uses this check before clearing global settings. Both the persisted
-        group/name defaults and the identity saved by workspace set must match, so
-        defaults changed independently of workspace set are preserved.
-        """
-        from configparser import ConfigParser
-        from knack.config import CONFIG_FILE_ENCODING
-
-        # CLI config getters honor environment and directory-local overrides; even
-        # disabling local config still allows environment overrides. Cleanup writes
-        # only the global file, so use ConfigParser to read its persisted values directly.
-        config = ConfigParser(interpolation=None)
-        config.read(cmd.cli_ctx.config.config_path, encoding=CONFIG_FILE_ENCODING)
-        defaults_section = cmd.cli_ctx.config.defaults_section_name
-        if (config.get(defaults_section, 'group', fallback='').lower() != self.resource_group.lower() or
-                config.get(defaults_section, 'workspace', fallback='').lower() != self.name.lower()):
-            return False
-        # Group/name defaults do not identify a subscription. The cached resource ID
-        # records the full identity selected by workspace set.
-        try:
-            cache = json.loads(config.get('quantum', self._ENDPOINT_CACHE_KEY, fallback='{}'))
-        except ValueError:
-            return False
-        return isinstance(cache, dict) and cache.get('resource_id') == self._normalized_resource_id()
-
     def clear(self):
         self.subscription = ''
         self.resource_group = ''
@@ -592,7 +564,10 @@ def delete(cmd, resource_group_name, workspace_name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
-    if info.is_global_default(cmd):
+    default_ws = WorkspaceInfo(cmd)
+    if (info.endpoint and
+            (default_ws.resource_group or '').lower() == info.resource_group.lower() and
+            (default_ws.name or '').lower() == info.name.lower()):
         clear(cmd)
     # Get updated information from the affected workspace
     ws = client.get(info.resource_group, info.name)
