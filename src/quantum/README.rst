@@ -14,6 +14,38 @@ To learn more about quantum computing and Microsoft's Quantum Development Kit, v
 https://docs.microsoft.com/quantum/
 
 
+V2 workspaces and suite offers
+==============================
+
+Azure Quantum suite offers represent providers that use the V2 provider model. Suite-offer
+commands operate at subscription scope and do not require an Azure Quantum workspace.
+
+.. code-block::
+
+   az quantum suite-offer list -o table
+   az quantum suite-offer target list --provider-id MyProvider -o table
+   az quantum suite-offer quotas --provider-id MyProvider -o table
+
+V2 workspaces support per-target quota allocation. Use ``--workspace-kind V2`` when creating
+the workspace and ``--quota`` to allocate suite-offer quota to a provider target.
+
+.. code-block::
+
+   az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \
+       -a MyStorageAccountName -r "MyProvider/default" --skip-autoadd \
+       --workspace-kind V2 \
+       --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=500
+
+   az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -o table
+
+   az quantum workspace update -g MyResourceGroup -w MyWorkspace \
+       --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=1000
+
+.. note::
+   The ``--quota`` argument is supported only for V2 workspaces. The ``workspace quotas``
+   command also supports V1 workspaces and preserves their existing quota response format.
+
+
 Creating Q# programs for execution from the command line
 ========================================================
 
