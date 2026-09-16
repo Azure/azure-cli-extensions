@@ -41,7 +41,7 @@ class TestModelDeployment(unittest.TestCase):
             custom._construct_scaling_profile(
                 self.cmd, max_replicas=3, required=True)
 
-    def test_namespace_name_supports_short_alias(self):
+    def test_namespace_name_options_list(self):
         class ArgumentContext:
             def __init__(self, loader, command):
                 self.loader = loader
@@ -73,7 +73,7 @@ class TestModelDeployment(unittest.TestCase):
         namespace_argument = loader.arguments[
             "aimanager namespace modeldeployment"]["namespace_name"]
         self.assertEqual(
-            ["--namespace-name", "--ns"], namespace_argument["options_list"])
+            ["--namespace", "--ns"], namespace_argument["options_list"])
 
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
