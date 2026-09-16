@@ -56,8 +56,9 @@ def get_test_workspace_provider_sku_list():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_PROVIDER_SKU_LIST", TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST)
 
 
-def run_cleanup_commands(test_case, cleanup_commands):
-    test_failed = sys.exc_info()[0] is not None
+def run_cleanup_commands(test_case, cleanup_commands, test_failed=None):
+    if test_failed is None:
+        test_failed = sys.exc_info()[0] is not None
     cleanup_errors = []
     for description, command in cleanup_commands:
         try:

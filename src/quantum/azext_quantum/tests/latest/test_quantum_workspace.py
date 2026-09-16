@@ -55,7 +55,7 @@ def _get_v2_offer_candidates(offers, location):
             for quota in properties.get('targetQuotas') or []
             if quota.get('targetId')
             and quota.get('standardMinutesLifetime') is not None
-            and quota['standardMinutesLifetime'] >= 1
+            and quota['standardMinutesLifetime'] >= 2
         ]
         if target_ids:
             candidates.append((provider_id, target_ids))
@@ -171,7 +171,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             except AssertionError as error:
                 last_error = error
                 if attempt < attempts - 1:
-                    time.sleep(5)
+                    time.sleep(11)
         raise last_error
 
     def test_workspace_v2_create_destroy(self):
@@ -180,8 +180,8 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
         test_storage_account = get_test_workspace_storage()
         provider_id, target_id = self._get_v2_provider_and_target(test_location)
         test_provider_sku_list = f'{provider_id}/default'
-        create_quota = f'provider-id={provider_id} target-id={target_id} standard-minutes-lifetime=0'
-        update_quota = f'provider-id={provider_id} target-id={target_id} standard-minutes-lifetime=1'
+        create_quota = f'provider-id={provider_id} target-id={target_id} standard-minutes-lifetime=1'
+        update_quota = f'provider-id={provider_id} target-id={target_id} standard-minutes-lifetime=2'
         workspaces_to_cleanup = []
 
         try:
@@ -196,12 +196,12 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             ])
 
             self._wait_for_workspace_quota_limit(
-                test_resource_group, test_workspace_temp, provider_id, target_id, 0
+                test_resource_group, test_workspace_temp, provider_id, target_id, 1
             )
 
             self.cmd(f'az quantum workspace update -g {test_resource_group} -w {test_workspace_temp} --quota {update_quota} -o json')
             self._wait_for_workspace_quota_limit(
-                test_resource_group, test_workspace_temp, provider_id, target_id, 1
+                test_resource_group, test_workspace_temp, provider_id, target_id, 2
             )
 
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -261,6 +261,23 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         with self.assertRaisesRegex(ValueError, 'test failed'):
             fail_then_cleanup()
 
+    def test_run_cleanup_commands_honors_explicit_failure_state(self):
+        test_case = Mock()
+        test_case.cmd.side_effect = RuntimeError('cleanup failed')
+
+        run_cleanup_commands(
+            test_case,
+            [('resource', 'cleanup command')],
+            test_failed=True,
+        )
+
+        with self.assertRaisesRegex(RuntimeError, 'cleanup failed'):
+            run_cleanup_commands(
+                test_case,
+                [('resource', 'cleanup command')],
+                test_failed=False,
+            )
+
     @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
     def test_wait_for_workspace_quota_limit_succeeds_immediately(self, sleep_mock):
         test_case = Mock()
@@ -285,7 +302,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         )
 
         self.assertEqual(test_case.cmd.call_count, 2)
-        sleep_mock.assert_called_once_with(5)
+        sleep_mock.assert_called_once_with(11)
 
     @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
     def test_wait_for_workspace_quota_limit_raises_after_last_attempt(self, sleep_mock):
@@ -325,14 +342,14 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             {'properties': {
                 'providerId': 'no-capacity',
                 'location': 'East US',
-                'targetQuotas': [{'targetId': 'target-b', 'standardMinutesLifetime': 0}],
+                'targetQuotas': [{'targetId': 'target-b', 'standardMinutesLifetime': 1}],
             }},
             {'properties': {
                 'providerId': 'provider-a',
                 'location': 'eastus',
                 'targetQuotas': [
                     {'targetId': 'target-c', 'standardMinutesLifetime': None},
-                    {'targetId': 'target-d', 'standardMinutesLifetime': 1},
+                    {'targetId': 'target-d', 'standardMinutesLifetime': 2},
                 ],
             }},
         ]
@@ -417,6 +434,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
             workspaces_to_cleanup = []
+            test_completed = False
 
             def cleanup_workspaces():
                 cleanup_commands = [
@@ -425,7 +443,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                     for workspace_name in reversed(workspaces_to_cleanup)
                 ]
                 cleanup_commands.append(('workspace defaults', 'az quantum workspace clear'))
-                run_cleanup_commands(self, cleanup_commands)
+                run_cleanup_commands(self, cleanup_commands, test_failed=not test_completed)
 
             self.addCleanup(cleanup_workspaces)
 
@@ -519,7 +537,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             workspaces_to_cleanup.remove(test_workspace_temp)
 
             # Create a workspace with a maximum length name, but make sure the deployment name was truncated to a valid length
-            test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=52)
+            test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=53)
             workspaces_to_cleanup.append(test_workspace_temp)
             self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
@@ -531,6 +549,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Deleting")
             ])
             workspaces_to_cleanup.remove(test_workspace_temp)
+            test_completed = True
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
