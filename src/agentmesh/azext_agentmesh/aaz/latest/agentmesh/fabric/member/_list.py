@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh fabric member list",
 )
 class List(AAZCommand):
-    """List Member resources by AgentFabric
+    """List members in an Agent Mesh fabric
 
     :example: Members_ListByParent
         az agentmesh fabric member list --resource-group rgnetworksecurity --fabric-name testAIFabric

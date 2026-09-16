@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh fabric list",
 )
 class List(AAZCommand):
-    """List AgentFabric resources by subscription ID
+    """List Agent Mesh fabrics
 
     :example: AgentFabrics_ListBySubscription
         az agentmesh fabric list

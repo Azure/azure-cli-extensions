@@ -15,10 +15,13 @@ from azure.cli.core.aaz import *
     "agentmesh fabric member create",
 )
 class Create(AAZCommand):
-    """Create a Member
+    """Create a member in an Agent Mesh fabric
 
     :example: Members_CreateOrUpdate
         az agentmesh fabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember --location eastus --workload "{aci:{resource-id:/subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgnetworksecurity/providers/Microsoft.ContainerInstance/containerGroups/testContainerGroup}}"
+
+    :example: Members_CreateOrUpdate_AgentFabricSandbox
+        az agentmesh fabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name sandboxMember --location eastus --workload "{agent-fabric-sandbox:{image:{uri:'contoso.azurecr.io/agents/sandbox:1.0.0',digest:'sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae',pull-policy:IfNotPresent},resources:{cpu:2,memory:4Gi,disk:20Gi},agent-identity:{tenant-id:72f988bf-86f1-41af-91ab-2d7cd011db47,agent-id:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee},endpoints:[{name:http,port:8080}],domain:sandbox-member.testaifabric.contoso.com}}"
     """
 
     _aaz_info = {

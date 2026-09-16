@@ -70,6 +70,12 @@ COMMANDS = (
     ),
 )
 
+HELP_ONLY_COMMANDS = (
+    "agentmesh fabric wait",
+    "agentmesh fabric member wait",
+    "agentmesh policy-group wait",
+)
+
 REQUEST_SHAPES = (
     (
         "azext_agentmesh.aaz.latest.agentmesh.fabric._create",
@@ -137,6 +143,7 @@ class AgentmeshScenario(ScenarioTest):
             "agentmesh fabric member",
             "agentmesh policy-group",
             *(command for command, _, _ in COMMANDS),
+            *HELP_ONLY_COMMANDS,
         )
         for command in commands:
             try:

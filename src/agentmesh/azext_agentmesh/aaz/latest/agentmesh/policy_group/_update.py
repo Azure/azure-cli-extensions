@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh policy-group update",
 )
 class Update(AAZCommand):
-    """Update a PolicyGroup
+    """Update an Agent Mesh policy group's tags
 
     :example: PolicyGroups_Update
         az agentmesh policy-group update --resource-group rgnetworksecurity --name testPolicyGroup --tags "{env:production}"

@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a PolicyGroup
+    """Delete an Agent Mesh policy group
 
     :example: PolicyGroups_Delete
         az agentmesh policy-group delete --resource-group rgnetworksecurity --name testPolicyGroup

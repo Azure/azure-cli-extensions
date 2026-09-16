@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh fabric create",
 )
 class Create(AAZCommand):
-    """Create a AgentFabric
+    """Create an Agent Mesh fabric
 
     :example: AgentFabrics_CreateOrUpdate
         az agentmesh fabric create --resource-group rgnetworksecurity --name testAIFabric --default-policy-groups "[/subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgnetworksecurity/providers/Microsoft.NetworkSecurity/policyGroups/testPolicyGroup]" --trust-domain contoso.agentfabric --tags "{}" --location eastus

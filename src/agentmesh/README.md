@@ -45,7 +45,7 @@ az agentmesh fabric member create \
   --fabric-name myFabric \
   --member-name myMember \
   --location eastus \
-  --workload resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerInstance/containerGroups/myContainerGroup
+  --workload "{aci:{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerInstance/containerGroups/myContainerGroup}}"
 
 az agentmesh fabric member show \
   --resource-group myResourceGroup \

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh policy-group list",
 )
 class List(AAZCommand):
-    """List PolicyGroup resources by subscription ID
+    """List Agent Mesh policy groups
 
     :example: PolicyGroups_ListBySubscription
         az agentmesh policy-group list

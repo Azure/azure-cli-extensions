@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Member
+    """Delete a member from an Agent Mesh fabric
 
     :example: Members_Delete
         az agentmesh fabric member delete --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember

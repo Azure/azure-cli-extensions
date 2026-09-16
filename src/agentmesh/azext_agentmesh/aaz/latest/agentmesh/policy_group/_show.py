@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh policy-group show",
 )
 class Show(AAZCommand):
-    """Get a PolicyGroup
+    """Get an Agent Mesh policy group
 
     :example: PolicyGroups_Get
         az agentmesh policy-group show --resource-group rgnetworksecurity --name testPolicyGroup

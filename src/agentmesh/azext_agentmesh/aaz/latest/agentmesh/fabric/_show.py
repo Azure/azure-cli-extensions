@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh fabric show",
 )
 class Show(AAZCommand):
-    """Get a AgentFabric
+    """Get an Agent Mesh fabric
 
     :example: AgentFabrics_Get
         az agentmesh fabric show --resource-group rgnetworksecurity --name testAIFabric

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentmesh fabric member update",
 )
 class Update(AAZCommand):
-    """Update a Member
+    """Update an Agent Mesh fabric member's tags
 
     :example: Members_Update
         az agentmesh fabric member update --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember --tags "{environment:production}"
