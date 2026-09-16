@@ -16,6 +16,7 @@ HELP_COMMANDS = (
     ("apr", "registry", "list"),
     ("apr", "registry", "show"),
     ("apr", "registry", "update"),
+    ("apr", "registry", "wait"),
     ("apr", "repository"),
     ("apr", "repository", "create"),
     ("apr", "repository", "delete"),

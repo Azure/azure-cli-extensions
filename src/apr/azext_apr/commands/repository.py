@@ -111,7 +111,7 @@ def _confirm_mirror_sync(command_args):
             "Mirror sync removes repository packages that are not present upstream. Continue?"
         )
     except NoTTYException:
-        logger.warning("Unable to prompt for confirmation as no tty available. Use --yes.")
+        logger.warning("Unable to prompt for confirmation as no tty available. Use --confirm.")
         return False
 
 
