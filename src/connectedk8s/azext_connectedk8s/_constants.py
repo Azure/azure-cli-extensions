@@ -150,6 +150,7 @@ Pls_Resource_Not_Found = "pls-resource-not-found"
 Invalid_Argument_Fault_Type = "argument-validation-error"
 Load_Kubeconfig_Fault_Type = "kubeconfig-load-error"
 Read_ConfigMap_Fault_Type = "configmap-read-error"
+Create_ConfigMap_Fault_Type = "configmap-create-error"
 Get_ResourceProvider_Fault_Type = "resource-provider-fetch-error"
 Get_ConnectedCluster_Fault_Type = "connected-cluster-fetch-error"
 Create_ConnectedCluster_Fault_Type = "connected-cluster-create-error"
@@ -257,16 +258,122 @@ Proxy_Cert_Path_Does_Not_Exist_Error = (
 Get_Kubernetes_Infra_Fault_Type = "kubernetes-get-infrastructure-error"
 No_Param_Error = "No parameters were specified with update command. Please run az connectedk8s update --help to check parameters available for update"
 Gateway_ArmId_Is_Invalid = "The provided Gateway ArmID in --gateway-resource-id  {} is invalid. Please provide a valid Gateway ArmID."
-EnableProxy_Conflict_Error = "Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters"
+EnableProxy_Conflict_Error = "Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range, --proxy-cert and --add-proxy-bypass at the same time. Please run az connectedk8s update --help for more information about the parameters"
 
-# --proxy-skip-range keyword that expands to the Azure Arc private-link endpoints.
-Proxy_Skip_Range_Arc_Keyword = "arc"
-# Arc private-link endpoint host suffixes the "arc" keyword expands to.
-Arc_Private_Link_Endpoints = [
+# Arc service endpoint host suffixes that are bypassed when Arc bypass is requested.
+Arc_Service_Endpoints = [
     ".his.arc.azure.{cloud_based_domain}",
     ".dp.kubernetesconfiguration.azure.{cloud_based_domain}",
     ".guestconfiguration.azure.{cloud_based_domain}",
 ]
+
+# Keyword accepted by --add-proxy-bypass, which bypasses the proxy for the endpoints above.
+Proxy_Bypass_Arc_Keyword = "Arc"
+# Announces the Arc bypass, which is kept until cleared, and names the command that clears it.
+Proxy_Bypass_Arc_Applied_Message = (
+    "Bypassing the proxy for the Azure Arc service endpoints. This is kept when "
+    "--proxy-skip-range is changed later. Run 'az connectedk8s update -n <connected-cluster-name> "
+    "-g <resource-group-name> --clear-proxy-bypass Arc' to stop bypassing them."
+)
+# Names the carry-over, so keeping a bypass the command did not mention is not a surprise.
+Proxy_Bypass_Arc_Preserved_Warning = (
+    "Azure Arc service endpoints were found in the proxy skip range and have been "
+    "kept. Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
+    "--clear-proxy-bypass Arc' to stop bypassing them."
+)
+# Confirms the clear, so removing the bypass is announced just like applying it.
+Proxy_Bypass_Arc_Cleared_Message = (
+    "Removing the Azure Arc service endpoints from the proxy skip range, so the "
+    "proxy is no longer bypassed for them"
+)
+# Reports a clear that found nothing, so a no-op is not mistaken for a change.
+Proxy_Bypass_Arc_Nothing_To_Clear_Warning = (
+    "No Azure Arc service endpoints were found in the proxy skip range; there is "
+    "nothing to clear."
+)
+
+# Extension type accepted by --add-proxy-bypass, which makes that agent bypass the proxy.
+Proxy_Bypass_ContainerInsights_Extension_Type = "Microsoft.AzureMonitor.Containers"
+# Values accepted by --add-proxy-bypass and --clear-proxy-bypass.
+Proxy_Bypass_Enum_Values = [
+    Proxy_Bypass_Arc_Keyword,
+    Proxy_Bypass_ContainerInsights_Extension_Type,
+]
+# Rendered once for the error that lists what the flags accept.
+Proxy_Bypass_Allowed_Values = ", ".join(Proxy_Bypass_Enum_Values)
+# Lower-cased lookup, so a keyword is matched however the user typed it.
+Proxy_Bypass_Allowed_Keywords = frozenset(
+    value.lower() for value in Proxy_Bypass_Enum_Values
+)
+# Names the command that clears the Container Insights bypass, so each message says how to undo it.
+Proxy_Bypass_ContainerInsights_Clear = (
+    "Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
+    "--clear-proxy-bypass "
+    f"{Proxy_Bypass_ContainerInsights_Extension_Type}' to stop bypassing the proxy for "
+    "Container Insights."
+)
+
+# ConfigMap the Container Insights agent reads; ignore_proxy_settings here drives the proxy bypass.
+CI_ConfigMap_Name = "container-azm-ms-agentconfig"
+CI_ConfigMap_Namespace = "kube-system"
+# Data key holding the ama-logs agent settings that carry the proxy_config section.
+CI_ConfigMap_Agent_Settings_Key = "agent-settings"
+# Section that scopes ignore_proxy_settings; the setting has no effect in any other section.
+CI_ConfigMap_Proxy_Config_Section = "[agent_settings.proxy_config]"
+# Setting inside that section which drives the proxy bypass.
+CI_ConfigMap_Proxy_Bypass_Setting = "ignore_proxy_settings"
+# Setting line written to enable the bypass.
+CI_ConfigMap_Proxy_Bypass_Enabled = f'{CI_ConfigMap_Proxy_Bypass_Setting} = "true"'
+# Setting line written to withdraw the bypass; the agent then honours the proxy again.
+CI_ConfigMap_Proxy_Bypass_Disabled = f'{CI_ConfigMap_Proxy_Bypass_Setting} = "false"'
+# Section and setting written together when agent-settings has no proxy_config section yet.
+CI_ConfigMap_Proxy_Bypass_Block = (
+    f"{CI_ConfigMap_Proxy_Config_Section}\n    {CI_ConfigMap_Proxy_Bypass_Enabled}"
+)
+# Set when this CLI writes ignore_proxy_settings, so a later run can remove it.
+CI_ConfigMap_Proxy_Bypass_Annotation = "connectedk8s.arc.azure.com/proxy-bypass"
+# Prefix for the error raised when the bypass cannot be applied or removed.
+CI_ConfigMap_Error_Message = (
+    f"Unable to configure the '{CI_ConfigMap_Name}' ConfigMap that carries the Container Insights "
+    "proxy bypass: "
+)
+# Guidance for the most likely failure, which is no access to the ConfigMap.
+CI_ConfigMap_Unauthorized_Message = (
+    f"The user does not have the required privileges to update the '{CI_ConfigMap_Name}' "
+    f"ConfigMap in the '{CI_ConfigMap_Namespace}' namespace, which carries the Container "
+    f"Insights proxy bypass. Please ensure you have permissions to get, create and update "
+    f"ConfigMaps in the '{CI_ConfigMap_Namespace}' namespace."
+)
+# Carries the wording kubernetes_exception_handler used, so a missing resource still reads the same.
+CI_ConfigMap_Not_Found_Message = "The requested kubernetes resource was not found."
+# Removal failures stop the command, so the message says why and how to get past it.
+CI_ConfigMap_Removal_Error_Message = (
+    f"Unable to remove the Container Insights proxy bypass from the '{CI_ConfigMap_Name}' "
+    f"ConfigMap in the '{CI_ConfigMap_Namespace}' namespace, so Container Insights may still "
+    "be bypassing the proxy. The command stopped here without making any further changes; "
+    "run it again once the ConfigMap is reachable: "
+)
+# Reported when removal fails on a path that carries on, so the setting can still be on the cluster.
+CI_ConfigMap_Removal_Failed_Warning = (
+    f"Unable to remove the Container Insights proxy bypass from the '{CI_ConfigMap_Name}' "
+    f"ConfigMap in the '{CI_ConfigMap_Namespace}' namespace, so Container Insights may continue "
+    "to bypass the proxy."
+)
+# Names the rollback, so undoing the bypass is not mistaken for a requested change.
+CI_ConfigMap_Rollback_Warning = (
+    "Reverting the Container Insights proxy bypass applied by this command."
+)
+# Reported when an explicit clear finds no ConfigMap, so a no-op is not mistaken for a change.
+CI_ConfigMap_Nothing_To_Clear_Warning = (
+    f"No Container Insights proxy bypass was found in the '{CI_ConfigMap_Name}' ConfigMap in the "
+    f"'{CI_ConfigMap_Namespace}' namespace; there is nothing to clear."
+)
+# Reported when an explicit clear finds a setting this CLI did not add, so it is left untouched.
+CI_ConfigMap_Not_Managed_Warning = (
+    f"The '{CI_ConfigMap_Proxy_Bypass_Setting}' setting in the '{CI_ConfigMap_Name}' ConfigMap in "
+    f"the '{CI_ConfigMap_Namespace}' namespace was not added by this CLI, so it has been left "
+    "unchanged."
+)
 
 Manual_Upgrade_Called_In_Auto_Update_Enabled = (
     "Manual Upgrade was called while in auto_Update enabled mode"

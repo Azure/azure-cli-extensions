@@ -387,7 +387,7 @@ def test_error_catalog_contains_allocated_codes_and_fault_type_aliases():
     expected_codes = {
         *(f"AZK8S{code:04d}" for code in range(1, 4)),
         *(f"AZK8S{code:04d}" for code in range(100, 107)),
-        *(f"AZK8S{code:04d}" for code in range(200, 209)),
+        *(f"AZK8S{code:04d}" for code in range(200, 210)),
         *(f"AZK8S{code:04d}" for code in range(300, 310)),
         *(f"AZK8S{code:04d}" for code in range(400, 410)),
         *(f"AZK8S{code:04d}" for code in range(500, 516)),
@@ -460,7 +460,9 @@ def test_error_catalog_uses_proposed_exception_classes():
         "AZK8S0105": ArgumentUsageError,
         "AZK8S0106": InvalidArgumentValueError,
         "AZK8S0200": FileOperationError,
+        "AZK8S0201": ValidationError,
         "AZK8S0203": ValidationError,
+        "AZK8S0209": ValidationError,
         "AZK8S0403": ArgumentUsageError,
         "AZK8S0404": ArgumentUsageError,
         "AZK8S0405": ArgumentUsageError,

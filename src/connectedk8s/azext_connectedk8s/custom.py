@@ -57,10 +57,12 @@ from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._containerinsightsutils as containerinsightsutils
 import azext_connectedk8s._errors as errors
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s._validators as validators
 import azext_connectedk8s.clientproxyhelper._binaryutils as proxybinaryutils
 import azext_connectedk8s.clientproxyhelper._proxylogic as proxylogic
 import azext_connectedk8s.clientproxyhelper._utils as clientproxyutils
@@ -208,6 +210,7 @@ def create_connectedk8s(
     http_proxy: str = "",
     no_proxy: str = "",
     proxy_cert: str = "",
+    add_proxy_bypass: str = "",
     location: str | None = None,
     kube_config: str | None = None,
     kube_context: str | None = None,
@@ -293,10 +296,21 @@ def create_connectedk8s(
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    print(f"Step: {utils.get_utctimestring()}: Escape Proxy Settings, if passed in")
+    # no_proxy is about to be merged into and then escaped; the reconnect path further down
+    # needs the skip range exactly as the caller passed it.
+    requested_no_proxy = no_proxy
 
-    # Expand --proxy-skip-range service keywords (e.g. "Arc") before escaping.
-    no_proxy = expand_proxy_skip_range_keywords(cmd, no_proxy)
+    # Apply the Arc bypass before escaping, so the separator added here is escaped too.
+    if validators.has_proxy_bypass_keyword(
+        add_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
+    ):
+        print(
+            f"Step: {utils.get_utctimestring()}: "
+            f"{consts.Proxy_Bypass_Arc_Applied_Message}"
+        )
+        no_proxy = add_arc_proxy_skip_range_endpoints(cmd, no_proxy)
+
+    print(f"Step: {utils.get_utctimestring()}: Escape Proxy Settings, if passed in")
 
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
@@ -751,6 +765,45 @@ def create_connectedk8s(
                 logger.warning(consts.Cluster_Already_Onboarded_Error)
                 raise ArgumentUsageError(err_msg)
 
+            # connect does not take --clear-proxy-bypass.
+            clear_proxy_bypass = ""
+
+            # Re-resolve the skip range against the existing release. It was built
+            # from this run's arguments alone, so a reconnect that only adds the bypass
+            # would otherwise overwrite the skip range already on the cluster.
+            resolved_no_proxy = resolve_arc_proxy_bypass(
+                cmd,
+                requested_no_proxy,
+                add_proxy_bypass,
+                clear_proxy_bypass,
+                release_namespace,
+                kube_config,
+                kube_context,
+                helm_client_location,
+                announce_applied=False,
+            )
+            if resolved_no_proxy is not None:
+                no_proxy = escape_proxy_settings(resolved_no_proxy)
+                # Rebuild the settings from the resolved skip range, so the ARM payload and the
+                # agent configuration below both carry the bypass.
+                (
+                    configuration_settings,
+                    configuration_protected_settings,
+                    redacted_protected_values,
+                ) = add_config_protected_settings(
+                    http_proxy,
+                    https_proxy,
+                    no_proxy,
+                    proxy_cert,
+                    container_log_path,
+                    configuration_settings,
+                    configuration_protected_settings,
+                    no_proxy_explicit=True,
+                )
+                arc_agentry_configurations = generate_arc_agent_configuration(
+                    configuration_settings, configuration_protected_settings
+                )
+
             # Re-put connected cluster
             # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
             validate_existing_provisioned_cluster_for_reput(
@@ -785,6 +838,15 @@ def create_connectedk8s(
             )
             dp_request_payload = cc_poller.result()
             cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(cc_poller)
+
+            # Only touch the ConfigMap when Container Insights was named on this run.
+            if validators.has_proxy_bypass_keyword(
+                add_proxy_bypass, consts.Proxy_Bypass_ContainerInsights_Extension_Type
+            ):
+                containerinsightsutils.sync_container_insights_proxy_bypass_configmap(
+                    api_instance, True, cmd=cmd
+                )
+
             # Disabling cluster-connect if private link is getting enabled
             if enable_private_link is True:
                 disable_cluster_connect(
@@ -892,6 +954,10 @@ def create_connectedk8s(
         # else case
         logger.warning(
             "Cleaning up the stale arc agents present on the cluster before starting new onboarding."
+        )
+        # Check if an earlier instance left a Container Insights proxy bypass behind.
+        containerinsightsutils.remove_container_insights_proxy_bypass_configmap(
+            api_instance, cmd=cmd
         )
         _cleanup_stale_arc_agents(
             cmd,
@@ -1002,207 +1068,232 @@ def create_connectedk8s(
         arc_agent_profile,
     )
 
-    print(f"Step: {utils.get_utctimestring()}: Azure resource provisioning has begun.")
-    # Create connected cluster resource
-    put_cc_poller = create_cc_resource(
-        client, resource_group_name, cluster_name, cc, no_wait
-    )
-    dp_request_payload = put_cc_poller.result()
-    put_cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(put_cc_poller)
-
-    # Checking if custom locations rp is registered and fetching oid if it is registered
-    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(
-        cmd, cl_oid, subscription_id
-    )
-
-    # Associate gateway with connected cluster if enabled
-    if gateway is not None:
-        print(
-            f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
+    # Sync the ConfigMap before the cluster resource exists, so a failure leaves nothing
+    # behind in Azure. Only touch it when Container Insights was named on this run.
+    if validators.has_proxy_bypass_keyword(
+        add_proxy_bypass, consts.Proxy_Bypass_ContainerInsights_Extension_Type
+    ):
+        containerinsightsutils.sync_container_insights_proxy_bypass_configmap(
+            kube_client.CoreV1Api(), True, cmd=cmd
         )
 
-        try:
-            # Create the gateway-cluster association
-            utils.update_gateway_cluster_link(
-                cmd,
-                subscription_id,
-                resource_group_name,
-                cluster_name,
-                gateway_resource_id,
-            )
-            logger.info("Gateway-cluster link updated successfully")
+    print(f"Step: {utils.get_utctimestring()}: Azure resource provisioning has begun.")
+    # Create connected cluster resource
+    try:
+        put_cc_poller = create_cc_resource(
+            client, resource_group_name, cluster_name, cc, no_wait
+        )
+        dp_request_payload = put_cc_poller.result()
+        put_cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(
+            put_cc_poller
+        )
 
-        except Exception as e:
-            error_msg = f"Failed to create gateway-cluster association: {e!s}"
-            logger.error(error_msg)
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
-                summary="Failed to associate gateway with connected cluster",
-            )
-            raise ValidationError(
-                "Failed to associate gateway with connected cluster. "
-                "Please ensure that the gateway resource is valid and accessible, then try again."
-            ) from e
+        # Checking if custom locations rp is registered and fetching oid if it is registered
+        enable_custom_locations, custom_locations_oid = (
+            check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
+        )
 
-        try:
-            # Retrieve current connected cluster configuration
+        # Associate gateway with connected cluster if enabled
+        if gateway is not None:
             print(
-                f"Step: {utils.get_utctimestring()}: Updating Connected Cluster resource with Gateway configuration"
-            )
-            connected_cluster = client.get(resource_group_name, cluster_name)
-
-            # Generate updated payload with gateway configuration
-            cc = generate_reput_request_payload(
-                connected_cluster,
-                oidc_profile,
-                security_profile,
-                gateway,
-                arc_agentry_configurations,
-                arc_agent_profile,
+                f"Step: {utils.get_utctimestring()}: Associating Gateway with the Connected Cluster"
             )
 
-            # Update the connected cluster resource
-            reput_cc_poller = create_cc_resource(
-                client, resource_group_name, cluster_name, cc, False
-            )
-            dp_request_payload = reput_cc_poller.result()
-            put_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_poller)
+            try:
+                # Create the gateway-cluster association
+                utils.update_gateway_cluster_link(
+                    cmd,
+                    subscription_id,
+                    resource_group_name,
+                    cluster_name,
+                    gateway_resource_id,
+                )
+                logger.info("Gateway-cluster link updated successfully")
 
-            logger.info(
-                "Connected cluster resource updated successfully with gateway configuration"
-            )
+            except Exception as e:
+                error_msg = f"Failed to create gateway-cluster association: {e!s}"
+                logger.error(error_msg)
+                telemetry.set_exception(
+                    exception=e,
+                    fault_type=consts.GATEWAY_LINK_FAULT_TYPE,
+                    summary="Failed to associate gateway with connected cluster",
+                )
+                raise ValidationError(
+                    "Failed to associate gateway with connected cluster. "
+                    "Please ensure that the gateway resource is valid and accessible, then try again."
+                ) from e
 
-        except Exception as e:
-            error_msg = f"Failed to update connected cluster resource with gateway configuration: {e!s}"
-            logger.error(error_msg)
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Gateway_Cluster_Resource_Update_Failed_Fault_Type,
-                summary="Failed to update connected cluster resource with gateway configuration",
-            )
-            raise CLIInternalError(
-                "Failed to update the connected cluster resource with gateway configuration. "
-                "The gateway association may have been created, but the cluster resource update failed. "
-                "Please check the resource status and try again."
-            ) from e
+            try:
+                # Retrieve current connected cluster configuration
+                print(
+                    f"Step: {utils.get_utctimestring()}: Updating Connected Cluster resource with Gateway configuration"
+                )
+                connected_cluster = client.get(resource_group_name, cluster_name)
 
-    print(
-        f"Step: {utils.get_utctimestring()}: Azure resource provisioning has finished."
-    )
+                # Generate updated payload with gateway configuration
+                cc = generate_reput_request_payload(
+                    connected_cluster,
+                    oidc_profile,
+                    security_profile,
+                    gateway,
+                    arc_agentry_configurations,
+                    arc_agent_profile,
+                )
 
-    # Update arc agent configuration to include protected parameters in dp call
-    arc_agentry_configurations = generate_arc_agent_configuration(
-        configuration_settings, redacted_protected_values, is_dp_call=True
-    )
-    dp_request_payload.arc_agentry_configurations = arc_agentry_configurations
+                # Update the connected cluster resource
+                reput_cc_poller = create_cc_resource(
+                    client, resource_group_name, cluster_name, cc, False
+                )
+                dp_request_payload = reput_cc_poller.result()
+                put_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_poller)
 
-    # Perform DP health check
-    _ = utils.health_check_dp(cmd, config_dp_endpoint)
+                logger.info(
+                    "Connected cluster resource updated successfully with gateway configuration"
+                )
 
-    # Retrieving Helm chart OCI Artifact location
-    helm_values_dp = utils.get_helm_values(
-        cmd, config_dp_endpoint, release_train, connected_cluster=dp_request_payload
-    )
+            except Exception as e:
+                error_msg = f"Failed to update connected cluster resource with gateway configuration: {e!s}"
+                logger.error(error_msg)
+                telemetry.set_exception(
+                    exception=e,
+                    fault_type=consts.Gateway_Cluster_Resource_Update_Failed_Fault_Type,
+                    summary="Failed to update connected cluster resource with gateway configuration",
+                )
+                raise CLIInternalError(
+                    "Failed to update the connected cluster resource with gateway configuration. "
+                    "The gateway association may have been created, but the cluster resource update failed. "
+                    "Please check the resource status and try again."
+                ) from e
 
-    registry_path = os.getenv("HELMREGISTRY") or helm_values_dp["repositoryPath"]
+        print(
+            f"Step: {utils.get_utctimestring()}: Azure resource provisioning has finished."
+        )
 
-    if registry_path == "":
-        registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
+        # Update arc agent configuration to include protected parameters in dp call
+        arc_agentry_configurations = generate_arc_agent_configuration(
+            configuration_settings, redacted_protected_values, is_dp_call=True
+        )
+        dp_request_payload.arc_agentry_configurations = arc_agentry_configurations
 
-    # Get azure-arc agent version for telemetry
-    azure_arc_agent_version = registry_path.split(":")[1]
-    utils.add_connectedk8s_telemetry_event(
-        cmd,
-        {"Context.Default.AzureCLI.AgentVersion": azure_arc_agent_version},
-    )
+        # Perform DP health check
+        _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
-    # Get helm chart path
-    chart_path = utils.get_chart_path(
-        registry_path,
-        kube_config,
-        kube_context,
-        helm_client_location,
-        cmd=cmd,
-    )
+        # Retrieving Helm chart OCI Artifact location
+        helm_values_dp = utils.get_helm_values(
+            cmd, config_dp_endpoint, release_train, connected_cluster=dp_request_payload
+        )
 
-    helm_content_values = helm_values_dp["helmValuesContent"]
-    aad_identity_principal_id = put_cc_response.identity.principal_id
+        registry_path = os.getenv("HELMREGISTRY") or helm_values_dp["repositoryPath"]
 
-    # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
-    for helm_parameter, helm_value in helm_content_values.items():
-        if "redacted" in helm_value:
-            _, feature, protectedSetting = helm_value.split(":")
-            helm_content_values[helm_parameter] = configuration_protected_settings[
-                feature
-            ][protectedSetting]
-
-    print(
-        f"Step: {utils.get_utctimestring()}: Starting to install Azure arc agents on the Kubernetes cluster."
-    )
-
-    # Decide which onboarding flow to use. Stable agents below 1.35.3 still need
-    # the legacy flow (private key in helm values), because their helm chart
-    # always renders the privatekey secret from helm values and would zero it
-    # out on install otherwise. Newer agents (and any non-stable build) get the
-    # secure flow: we pre-create the namespace + secret directly via the
-    # Kubernetes API so the private key never appears in helm values.
-    use_secret_injection_flow = utils.should_use_secret_injection_flow(
-        release_train, azure_arc_agent_version
-    )
-    telemetry.add_extension_event(
-        "connectedk8s",
-        {
-            "Context.Default.AzureCLI.OnboardingFlow": (
-                "secret-injection"
-                if use_secret_injection_flow
-                else "helm-values-legacy"
-            )
-        },
-    )
-
-    if use_secret_injection_flow:
-        # Inject the private key BEFORE running helm so that the cluster always
-        # has the onboarding secret available - even if the subsequent helm
-        # install/CLI is interrupted - preventing a stuck-disconnected state.
-        try:
-            utils.inject_onboarding_private_key_secret(private_key_pem)
-        except Exception as e:
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.Inject_PrivateKey_Secret_Fault_Type,
-                summary="Failed to pre-create onboarding private key secret",
-            )
-            raise CLIInternalError(
-                "Failed to pre-create onboarding private key secret on the "
-                f"Kubernetes cluster: {e}"
+        if registry_path == "":
+            registry_path = utils.get_helm_registry(
+                cmd, config_dp_endpoint, release_train
             )
 
-    # Install azure-arc agents
-    utils.helm_install_release(
-        cmd.cli_ctx.cloud.endpoints.resource_manager,
-        chart_path,
-        kubernetes_distro,
-        kubernetes_infra,
-        location,
-        private_key_pem,
-        kube_config,
-        kube_context,
-        no_wait,
-        values_file,
-        azure_cloud,
-        enable_custom_locations,
-        custom_locations_oid,
-        helm_client_location,
-        enable_private_link,
-        arm_metadata,
-        helm_content_values,
-        registry_path,
-        aad_identity_principal_id,
-        onboarding_timeout,
-        inject_private_key_via_helm=not use_secret_injection_flow,
-        cmd=cmd,
-    )
+        # Get azure-arc agent version for telemetry
+        azure_arc_agent_version = registry_path.split(":")[1]
+        utils.add_connectedk8s_telemetry_event(
+            cmd,
+            {"Context.Default.AzureCLI.AgentVersion": azure_arc_agent_version},
+        )
+
+        # Get helm chart path
+        chart_path = utils.get_chart_path(
+            registry_path,
+            kube_config,
+            kube_context,
+            helm_client_location,
+            cmd=cmd,
+        )
+
+        helm_content_values = helm_values_dp["helmValuesContent"]
+        aad_identity_principal_id = put_cc_response.identity.principal_id
+
+        # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
+        for helm_parameter, helm_value in helm_content_values.items():
+            if "redacted" in helm_value:
+                _, feature, protectedSetting = helm_value.split(":")
+                helm_content_values[helm_parameter] = configuration_protected_settings[
+                    feature
+                ][protectedSetting]
+
+        print(
+            f"Step: {utils.get_utctimestring()}: Starting to install Azure arc agents on the Kubernetes cluster."
+        )
+
+        # Decide which onboarding flow to use. Stable agents below 1.35.3 still need
+        # the legacy flow (private key in helm values), because their helm chart
+        # always renders the privatekey secret from helm values and would zero it
+        # out on install otherwise. Newer agents (and any non-stable build) get the
+        # secure flow: we pre-create the namespace + secret directly via the
+        # Kubernetes API so the private key never appears in helm values.
+        use_secret_injection_flow = utils.should_use_secret_injection_flow(
+            release_train, azure_arc_agent_version
+        )
+        telemetry.add_extension_event(
+            "connectedk8s",
+            {
+                "Context.Default.AzureCLI.OnboardingFlow": (
+                    "secret-injection"
+                    if use_secret_injection_flow
+                    else "helm-values-legacy"
+                )
+            },
+        )
+
+        if use_secret_injection_flow:
+            # Inject the private key BEFORE running helm so that the cluster always
+            # has the onboarding secret available - even if the subsequent helm
+            # install/CLI is interrupted - preventing a stuck-disconnected state.
+            try:
+                utils.inject_onboarding_private_key_secret(private_key_pem)
+            except Exception as e:
+                telemetry.set_exception(
+                    exception=e,
+                    fault_type=consts.Inject_PrivateKey_Secret_Fault_Type,
+                    summary="Failed to pre-create onboarding private key secret",
+                )
+                raise CLIInternalError(
+                    "Failed to pre-create onboarding private key secret on the "
+                    f"Kubernetes cluster: {e}"
+                )
+
+        # Install azure-arc agents
+        utils.helm_install_release(
+            cmd.cli_ctx.cloud.endpoints.resource_manager,
+            chart_path,
+            kubernetes_distro,
+            kubernetes_infra,
+            location,
+            private_key_pem,
+            kube_config,
+            kube_context,
+            no_wait,
+            values_file,
+            azure_cloud,
+            enable_custom_locations,
+            custom_locations_oid,
+            helm_client_location,
+            enable_private_link,
+            arm_metadata,
+            helm_content_values,
+            registry_path,
+            aad_identity_principal_id,
+            onboarding_timeout,
+            inject_private_key_via_helm=not use_secret_injection_flow,
+            cmd=cmd,
+        )
+    except Exception:  # pylint: disable=broad-except
+        # Undo the bypass so a failed onboarding does not leave the cluster changed.
+        # raise_on_failure=False keeps the original error as the one the user sees.
+        if validators.has_proxy_bypass_keyword(
+            add_proxy_bypass, consts.Proxy_Bypass_ContainerInsights_Extension_Type
+        ):
+            logger.warning(consts.CI_ConfigMap_Rollback_Warning)
+            containerinsightsutils.remove_container_insights_proxy_bypass_configmap(
+                kube_client.CoreV1Api(), raise_on_failure=False, cmd=cmd
+            )
+        raise
 
     # Long Running Operation for Agent State
     # Agent state is used for feedback of workload identity extension installation
@@ -1408,42 +1499,108 @@ def escape_proxy_settings(proxy_setting: str | None) -> str:
 
 
 def get_arc_proxy_skip_range_endpoints(cmd: CLICommand) -> list[str]:
-    # Arc private-link data-plane hosts to bypass the proxy. Leading-dot form matches
+    # Arc service data-plane hosts to bypass the proxy. Leading-dot form matches
     # every region; suffix is derived so it works across public and sovereign clouds.
     cloud_based_domain = get_cloud_based_domain(cmd)
     return [
         endpoint.format(cloud_based_domain=cloud_based_domain)
-        for endpoint in consts.Arc_Private_Link_Endpoints
+        for endpoint in consts.Arc_Service_Endpoints
     ]
 
 
-def expand_proxy_skip_range_keywords(cmd: CLICommand, no_proxy: str) -> str:
-    # Replace the "Arc" keyword (case-insensitive) with the Arc private-link endpoints,
-    # keeping all other entries in order; returns the value unchanged if no keyword.
-    if not no_proxy:
-        return no_proxy
+def add_arc_proxy_skip_range_endpoints(cmd: CLICommand, no_proxy: str) -> str:
+    # Add the Arc endpoints to the skip range, leaving any already listed alone.
+    # Re-running changes nothing, so update can re-apply the bypass without duplicates.
+    entries = [entry.strip() for entry in no_proxy.split(",") if entry.strip()]
+    existing = {entry.lower() for entry in entries}
+    for endpoint in get_arc_proxy_skip_range_endpoints(cmd):
+        if endpoint.lower() not in existing:
+            entries.append(endpoint)
+            existing.add(endpoint.lower())
+    return ",".join(entries)
 
-    entries = no_proxy.split(",")
-    if not any(
-        entry.strip().lower() == consts.Proxy_Skip_Range_Arc_Keyword
-        for entry in entries
-    ):
-        return no_proxy
 
-    expanded: list[str] = []
-    seen: set[str] = set()
-    for entry in entries:
-        stripped = entry.strip()
-        if stripped.lower() == consts.Proxy_Skip_Range_Arc_Keyword:
-            for endpoint in get_arc_proxy_skip_range_endpoints(cmd):
-                if endpoint.lower() not in seen:
-                    seen.add(endpoint.lower())
-                    expanded.append(endpoint)
-        elif stripped and stripped.lower() not in seen:
-            seen.add(stripped.lower())
-            expanded.append(stripped)
+def has_arc_proxy_skip_range_endpoints(cmd: CLICommand, no_proxy: str) -> bool:
+    # Checking whether the Arc endpoints are present in the proxy skip range
+    entries = {entry.strip().lower() for entry in no_proxy.split(",")}
+    return any(
+        endpoint.lower() in entries
+        for endpoint in get_arc_proxy_skip_range_endpoints(cmd)
+    )
 
-    return ",".join(expanded)
+
+def remove_arc_proxy_skip_range_endpoints(cmd: CLICommand, no_proxy: str) -> str:
+    # Remove only the Arc endpoints, so entries the user added to the skip range survive.
+    # They are derived rather than stored, so matching on value is what identifies them.
+    removable = {
+        endpoint.lower() for endpoint in get_arc_proxy_skip_range_endpoints(cmd)
+    }
+    entries = [entry.strip() for entry in no_proxy.split(",") if entry.strip()]
+    return ",".join(entry for entry in entries if entry.lower() not in removable)
+
+
+def resolve_arc_proxy_bypass(
+    cmd: CLICommand,
+    no_proxy: str,
+    add_proxy_bypass: str,
+    clear_proxy_bypass: str,
+    release_namespace: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    announce_applied: bool = True,
+) -> str | None:
+    # --proxy-skip-range replaces the whole skip range, so re-apply the Arc bypass here or
+    # changing the skip range would drop the endpoints. Return None to leave the skip range
+    # alone, which keeps updates that say nothing about it untouched.
+    requested = validators.has_proxy_bypass_keyword(
+        add_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
+    )
+    cleared = validators.has_proxy_bypass_keyword(
+        clear_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
+    )
+    if not (cleared or requested or no_proxy):
+        return None
+
+    # The cluster's skip range is needed to merge the bypass into it or remove it from it.
+    current_no_proxy = ""
+    if cleared or not (requested and no_proxy):
+        # Read the skip range the agents run with today; helm returns it unescaped. It is
+        # the base when the bypass is added without a new skip range, so entries survive.
+        helm_values = get_all_helm_values(
+            cmd, release_namespace, kube_config, kube_context, helm_client_location
+        )
+        current_no_proxy = str(utils.flatten(helm_values).get("global.noProxy") or "")
+
+    if cleared:
+        # A new skip range replaces the old one, so remove the endpoints from that when
+        # given. Leave the skip range alone when neither source lists them, so clearing a
+        # cluster that never had the bypass does not start sending a proxy setting.
+        if not (
+            has_arc_proxy_skip_range_endpoints(cmd, current_no_proxy)
+            or has_arc_proxy_skip_range_endpoints(cmd, no_proxy)
+        ):
+            logger.warning(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
+            return None
+        print(
+            f"Step: {utils.get_utctimestring()}: "
+            f"{consts.Proxy_Bypass_Arc_Cleared_Message}"
+        )
+        return remove_arc_proxy_skip_range_endpoints(cmd, no_proxy or current_no_proxy)
+
+    if requested:
+        # Off for callers that already printed this message earlier in the same command.
+        if announce_applied:
+            print(
+                f"Step: {utils.get_utctimestring()}: "
+                f"{consts.Proxy_Bypass_Arc_Applied_Message}"
+            )
+    elif has_arc_proxy_skip_range_endpoints(cmd, current_no_proxy):
+        logger.warning(consts.Proxy_Bypass_Arc_Preserved_Warning)
+    else:
+        return None
+
+    return add_arc_proxy_skip_range_endpoints(cmd, no_proxy or current_no_proxy)
 
 
 def check_kube_connection() -> str:
@@ -2313,6 +2470,12 @@ def delete_connectedk8s(
     node_api_response = utils.validate_node_api_response(api_instance)
     is_arm64_cluster = check_arm64_node(node_api_response)
 
+    # Undo the bypass before anything is deleted, so a failure here stops the command
+    # instead of deboarding the cluster and leaving the setting behind.
+    containerinsightsutils.remove_container_insights_proxy_bypass_configmap(
+        api_instance, cmd=cmd
+    )
+
     # Check forced delete flag
     if force_delete:
         print(f"Step: {utils.get_utctimestring()}: Performing Force Delete")
@@ -2544,6 +2707,8 @@ def update_connected_cluster(
     http_proxy: str = "",
     no_proxy: str = "",
     proxy_cert: str = "",
+    add_proxy_bypass: str = "",
+    clear_proxy_bypass: str = "",
     disable_proxy: bool = False,
     kube_config: str | None = None,
     kube_context: str | None = None,
@@ -2581,14 +2746,15 @@ def update_connected_cluster(
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    # Expand --proxy-skip-range service keywords (e.g. "Arc") before escaping.
-    no_proxy = expand_proxy_skip_range_keywords(cmd, no_proxy)
-
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
 
     # Escaping comma, forward slash present in http proxy urls, needed for helm params.
     http_proxy = escape_proxy_settings(http_proxy)
+
+    # The Arc bypass is merged with the cluster's current skip range, which helm reports
+    # unescaped, so hold on to this value in the same form until that merge can run.
+    requested_no_proxy = no_proxy
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
@@ -2654,6 +2820,8 @@ def update_connected_cluster(
         and http_proxy == ""
         and no_proxy == ""
         and proxy_cert == ""
+        and add_proxy_bypass == ""
+        and clear_proxy_bypass == ""
         and not disable_proxy
     )
 
@@ -2702,7 +2870,7 @@ def update_connected_cluster(
         telemetry.set_user_fault()
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
-    if (https_proxy or http_proxy or no_proxy) and disable_proxy:
+    if (https_proxy or http_proxy or no_proxy or add_proxy_bypass) and disable_proxy:
         telemetry.set_exception(
             exception=consts.EnableProxy_Conflict_Error,
             fault_type=consts.Update_Proxy_Conflict_Fault_Type,
@@ -2733,6 +2901,38 @@ def update_connected_cluster(
         kube_context,
         helm_client_location,
     )
+
+    resolved_no_proxy = resolve_arc_proxy_bypass(
+        cmd,
+        requested_no_proxy,
+        add_proxy_bypass,
+        clear_proxy_bypass,
+        release_namespace,
+        kube_config,
+        kube_context,
+        helm_client_location,
+    )
+    if resolved_no_proxy is not None:
+        no_proxy = escape_proxy_settings(resolved_no_proxy)
+        # Rebuild the settings from the resolved skip range, so the ARM payload and the
+        # agent configuration below both carry the bypass.
+        (
+            configuration_settings,
+            configuration_protected_settings,
+            redacted_protected_values,
+        ) = add_config_protected_settings(
+            http_proxy,
+            https_proxy,
+            no_proxy,
+            proxy_cert,
+            container_log_path,
+            configuration_settings,
+            configuration_protected_settings,
+            no_proxy_explicit=True,
+        )
+        arc_agentry_configurations = generate_arc_agent_configuration(
+            configuration_settings, redacted_protected_values
+        )
 
     # Fetch Connected Cluster for agent version
     connected_cluster = client.get(resource_group_name, cluster_name)
@@ -2944,6 +3144,18 @@ def update_connected_cluster(
     # If we didn't see a terminal agent state, now's the time to throw an error.
     if not terminal_agent_state:
         raise _agent_state_timeout_error(cmd, "update")
+
+    # Touch the ConfigMap only after the update succeeds; update has no rollback path.
+    ci_requested = validators.has_proxy_bypass_keyword(
+        add_proxy_bypass, consts.Proxy_Bypass_ContainerInsights_Extension_Type
+    )
+    ci_cleared = validators.has_proxy_bypass_keyword(
+        clear_proxy_bypass, consts.Proxy_Bypass_ContainerInsights_Extension_Type
+    )
+    if ci_requested or ci_cleared:
+        containerinsightsutils.sync_container_insights_proxy_bypass_configmap(
+            kube_client.CoreV1Api(), ci_requested, cmd=cmd
+        )
 
     return connected_cluster
 
@@ -5222,6 +5434,7 @@ def add_config_protected_settings(
     container_log_path: str | None,
     configuration_settings: dict[str, Any] | None,
     configuration_protected_settings: dict[str, Any] | None,
+    no_proxy_explicit: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     redacted_protected_values: dict[str, Any] = {}
 
@@ -5236,14 +5449,15 @@ def add_config_protected_settings(
         configuration_settings.setdefault(
             "logging", {"container_log_path": container_log_path}
         )
-    if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
+    if any([https_proxy, http_proxy, no_proxy, proxy_cert, no_proxy_explicit]):
         configuration_protected_settings.setdefault("proxy", {})
         configuration_settings.setdefault("proxy", {})
         if https_proxy:
             configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
         if http_proxy:
             configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
-        if no_proxy:
+        # An emptied skip range still has to be sent, or the agents keep the old value.
+        if no_proxy or no_proxy_explicit:
             configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
         if proxy_cert:
             configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert

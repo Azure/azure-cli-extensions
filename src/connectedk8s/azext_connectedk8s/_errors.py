@@ -188,8 +188,9 @@ KUBECONFIG_LOAD_FAILED = _define(
 CONFIGMAP_READ_FAILED = _define(
     code="AZK8S0201",
     name="ConfigMapReadFailed",
-    description="Failed to read the Azure Arc ConfigMap.",
+    description="Failed to read the ConfigMap.",
     fault_type=consts.Read_ConfigMap_Fault_Type,
+    az_error_cls=ValidationError,
 )
 KUBERNETES_CONNECTIVITY_FAILED = _define(
     code="AZK8S0202",
@@ -233,6 +234,13 @@ KUBERNETES_CONFIGURATION_LOAD_FAILED = _define(
     name="KubernetesConfigurationLoadFailed",
     description="Failed to load the Kubernetes client configuration.",
     fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
+)
+CONFIGMAP_WRITE_FAILED = _define(
+    code="AZK8S0209",
+    name="ConfigMapWriteFailed",
+    description="Failed to {operation} the ConfigMap.",
+    fault_type=consts.Create_ConfigMap_Fault_Type,
+    az_error_cls=ValidationError,
 )
 
 # Network & Connectivity (AZK8S0300-AZK8S0399)
@@ -633,6 +641,7 @@ ALL_ERRORS: tuple[ArcError, ...] = (
     LINUX_NODE_NOT_FOUND,
     CLUSTER_ROLE_BINDING_CREATE_FORBIDDEN,
     KUBERNETES_CONFIGURATION_LOAD_FAILED,
+    CONFIGMAP_WRITE_FAILED,
     DATA_PLANE_HEALTH_CHECK_FAILED,
     DNS_NXDOMAIN,
     DNS_TIMEOUT,
