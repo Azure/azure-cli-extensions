@@ -273,6 +273,12 @@ helps['aimanager namespace modeldeployment show'] = """
 helps['aimanager namespace modeldeployment list'] = """
     type: command
     short-summary: List model deployments within an AI Manager namespace.
+    long-summary: >
+        If --namespace/--ns is omitted, model deployments are listed across all readable
+        namespaces of the AI Manager; this requires permission to read namespaces on the
+        specified AI Manager resource. Namespaces you are not authorized to read are skipped
+        with a warning. If you cannot read namespaces at all, specify --namespace/--ns to list
+        model deployments for one specific namespace instead.
     examples:
         - name: List model deployments in a namespace
           text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --namespace team-alpha

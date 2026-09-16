@@ -123,9 +123,12 @@ class TestModelDeployment(unittest.TestCase):
         client = MagicMock()
         client.list_by_ai_manager_namespace.side_effect = [forbidden, ["d2"]]
 
-        result = custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        with self.assertLogs(custom.logger, level="WARNING") as logs:
+            result = custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
 
         self.assertEqual(["d2"], result)
+        # A warning is emitted for the skipped, unauthorized namespace.
+        self.assertTrue(any("ns1" in line for line in logs.output))
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
     @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
@@ -153,6 +156,7 @@ class TestModelDeployment(unittest.TestCase):
     def test_list_without_namespace_propagates_namespace_list_unauthorized(
             self, cf_namespaces, _annotate):
         from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
 
         unauthorized = HttpResponseError(message="Forbidden")
         unauthorized.status_code = 403
@@ -164,9 +168,11 @@ class TestModelDeployment(unittest.TestCase):
 
         client = MagicMock()
 
-        # The caller cannot even enumerate namespaces, so the normal unauthorized error surfaces.
-        with self.assertRaises(HttpResponseError):
+        # The caller cannot even enumerate namespaces, so an actionable unauthorized error that
+        # points at --namespace/--ns is surfaced.
+        with self.assertRaises(UnauthorizedError) as ctx:
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        self.assertTrue(any("--namespace/--ns" in r for r in ctx.exception.recommendations))
         client.list_by_ai_manager_namespace.assert_not_called()
 
     @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
@@ -174,6 +180,7 @@ class TestModelDeployment(unittest.TestCase):
     def test_list_without_namespace_all_forbidden_raises(
             self, cf_namespaces, _annotate):
         from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
 
         namespaces_client = MagicMock()
         namespaces_client.list_by_ai_manager.return_value = [
@@ -188,9 +195,10 @@ class TestModelDeployment(unittest.TestCase):
         client.list_by_ai_manager_namespace.side_effect = [forbidden, forbidden]
 
         # Caller can enumerate namespaces but cannot read deployments in any of them: rather than
-        # returning an empty list, surface the normal unauthorized error.
-        with self.assertRaises(HttpResponseError):
+        # returning an empty list, surface an actionable unauthorized error.
+        with self.assertRaises(UnauthorizedError) as ctx:
             custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        self.assertTrue(any("--namespace/--ns" in r for r in ctx.exception.recommendations))
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
     @patch.object(custom, "sdk_no_wait")

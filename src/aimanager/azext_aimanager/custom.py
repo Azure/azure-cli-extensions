@@ -614,12 +614,30 @@ def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
         # returns a paged iterator we consume here) and fan out one list_by_ai_manager_namespace
         # call per namespace, aggregating the results.
         from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
         from azext_aimanager._client_factory import cf_ai_manager_namespaces
         namespaces_client = cf_ai_manager_namespaces(cmd.cli_ctx)
+
+        unauthorized_help = (
+            "Listing model deployments without --namespace/--ns requires permission to read "
+            "namespaces on AI Manager '{}'. If you cannot read namespaces, specify "
+            "--namespace/--ns to list model deployments for one specific namespace."
+        ).format(ai_manager_name)
+
+        try:
+            namespaces = list(
+                namespaces_client.list_by_ai_manager(resource_group_name, ai_manager_name))
+        except HttpResponseError as ex:
+            # The caller cannot even enumerate namespaces: surface an actionable error that
+            # points them at the per-namespace form.
+            if ex.status_code in (401, 403):
+                raise UnauthorizedError(ex.message, unauthorized_help)
+            raise
+
         deployments = []
         any_readable = False
         last_auth_error = None
-        for ns in namespaces_client.list_by_ai_manager(resource_group_name, ai_manager_name):
+        for ns in namespaces:
             try:
                 deployments.extend(
                     client.list_by_ai_manager_namespace(
@@ -630,14 +648,16 @@ def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                 # partially-authorized caller still sees the deployments they can read. Other
                 # errors propagate immediately.
                 if ex.status_code in (401, 403):
-                    logger.warning("Skipping namespace '%s': %s", ns.name, ex.message)
+                    logger.warning(
+                        "Skipping namespace '%s': not authorized to list its model deployments.",
+                        ns.name)
                     last_auth_error = ex
                     continue
                 raise
-        # If there were namespaces but the caller could read none of them, surface the normal
+        # If there were namespaces but the caller could read none of them, surface an actionable
         # unauthorized error rather than silently returning an empty list.
         if last_auth_error is not None and not any_readable:
-            raise last_auth_error
+            raise UnauthorizedError(last_auth_error.message, unauthorized_help)
     return _annotate_model_ids(cmd, deployments)
 
 
