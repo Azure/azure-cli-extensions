@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration solution-deployment",
+    "workload-orchestration-preview solution-deployment",
 )
 class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration solution-deployment helps to manage Solution Deployments
+    """workload-orchestration-preview solution-deployment helps to manage Solution Deployments
     """
     pass
 

@@ -37,5 +37,8 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,
-    package_data={'azext_migrate': ['azext_metadata.json']}
+    package_data={'azext_migrate': [
+        'azext_metadata.json',
+        'runbook/visualize/templates/*.tmpl',
+    ]}
 )

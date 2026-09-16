@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration diagnostic list",
+    "workload-orchestration-preview diagnostic list",
 )
 class List(AAZCommand):
     """List Diagnostics resources within an Azure subscription.
     :example: List Diagnostics by subscription
-        az workload-orchestration diagnostic list --subscription mySubscription
+        az workload-orchestration-preview diagnostic list --subscription mySubscription
     """
 
     _aaz_info = {

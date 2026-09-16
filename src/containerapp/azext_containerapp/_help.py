@@ -869,10 +869,22 @@ helps['containerapp env workload-profile set'] = """
 helps['containerapp env storage set'] = """
     type: command
     short-summary: Create or update a storage.
+    long-summary: |
+        AzureFile storage supports account key, Azure Key Vault secret, or managed identity authentication.
+        Before using Azure Files managed identity authentication with --azure-file-identity, assign the identity to the managed environment, enable Managed Identity for SMB on the storage account, and grant the identity the Storage File Data SMB MI Admin role (a235d3ee-5935-4cfb-8cc5-a3303ad5995e) at storage account scope.
     examples:
     - name: Create a azure file storage.
       text: |
           az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+    - name: Create an Azure Files storage using an account key stored in Azure Key Vault.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-name MyAccountName --azure-file-share-name MyShareName --azure-file-key-vault-secret-url https://MyVault.vault.azure.net/secrets/MyStorageAccountKey --azure-file-key-vault-identity MyIdentityResourceId
+    - name: Create an Azure Files storage using a user-assigned managed identity.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadWrite --azure-file-account-name MyAccountName --azure-file-share-name MyShareName --azure-file-identity MyIdentityResourceId
+    - name: Create an Azure Files storage using the system-assigned managed identity.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadWrite --azure-file-account-name MyAccountName --azure-file-share-name MyShareName --azure-file-identity system
     - name: Create a nfs azure file storage.
       text: |
           az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --storage-type NfsAzureFile --access-mode ReadOnly --server MyNfsServer.file.core.windows.net --file-share /MyNfsServer/MyShareName

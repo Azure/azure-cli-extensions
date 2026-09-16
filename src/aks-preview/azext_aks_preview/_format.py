@@ -612,3 +612,25 @@ def _aks_vm_sku_table_format(sku):
         ('restrictions', restrictions_summary),
         ('capabilities', capabilities_summary),
     ])
+
+
+def aks_alert_config_list_table_format(results):
+    """Format a list of alert configurations as summary results for display with "-o table". """
+    return [_get_alert_config_table_row(result) for result in results]
+
+
+def aks_alert_config_show_table_format(result):
+    """Format an alert configuration as summary results for display with "-o table". """
+    return _get_alert_config_table_row(result)
+
+
+def _get_alert_config_table_row(result):
+    """Extract information from an alert configuration for table display."""
+    properties = result.get('properties') or {}
+    notification = properties.get('notification') or {}
+    return OrderedDict([
+        ('name', result.get('name', '')),
+        ('mode', properties.get('mode', '')),
+        ('actionGroupId', notification.get('actionGroupId', '')),
+        ('provisioningState', properties.get('provisioningState', '')),
+    ])

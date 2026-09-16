@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster identity remove",
+    confirmation="Are you sure you want to perform this operation?",
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.

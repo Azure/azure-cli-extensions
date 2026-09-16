@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-07-15"],
         ]
     }
 
@@ -52,7 +52,7 @@ class Create(AAZCommand):
             help="The name of the Azure Arc PrivateLinkScope resource.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
 
@@ -61,7 +61,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Parameters",
-            help="Resource location",
+            help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -70,7 +70,7 @@ class Create(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
-            help="Resource tags",
+            help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
@@ -84,7 +84,26 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.",
             default="Disabled",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled", "SecuredByPerimeter": "SecuredByPerimeter"},
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.service_extensions = AAZListArg(
+            options=["--service-extensions"],
+            arg_group="Properties",
+            help="Enable private link validation for an Azure Arc Extension.",
+        )
+
+        service_extensions = cls._args_schema.service_extensions
+        service_extensions.Element = AAZObjectArg()
+
+        _element = cls._args_schema.service_extensions.Element
+        _element.service_extension_public_network_access = AAZStrArg(
+            options=["service-extension-public-network-access"],
+            help="The network access policy to determine if the specified Azure Arc Extension can use public Azure Arc Extension service endpoints.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _element.service_extension_type = AAZStrArg(
+            options=["service-extension-type"],
+            help="The name of the Azure Arc Extension.",
         )
         return cls._args_schema
 
@@ -153,7 +172,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -185,6 +204,16 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
+                properties.set_prop("serviceExtensions", AAZListType, ".service_extensions")
+
+            service_extensions = _builder.get(".properties.serviceExtensions")
+            if service_extensions is not None:
+                service_extensions.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.serviceExtensions[]")
+            if _elements is not None:
+                _elements.set_prop("serviceExtensionPublicNetworkAccess", AAZStrType, ".service_extension_public_network_access")
+                _elements.set_prop("serviceExtensionType", AAZStrType, ".service_extension_type")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -245,6 +274,9 @@ class Create(AAZCommand):
             properties.public_network_access = AAZStrType(
                 serialized_name="publicNetworkAccess",
             )
+            properties.service_extensions = AAZListType(
+                serialized_name="serviceExtensions",
+            )
 
             private_endpoint_connections = cls._schema_on_200_201.properties.private_endpoint_connections
             private_endpoint_connections.Element = AAZObjectType()
@@ -293,6 +325,17 @@ class Create(AAZCommand):
             )
             private_link_service_connection_state.status = AAZStrType(
                 flags={"required": True},
+            )
+
+            service_extensions = cls._schema_on_200_201.properties.service_extensions
+            service_extensions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.service_extensions.Element
+            _element.service_extension_public_network_access = AAZStrType(
+                serialized_name="serviceExtensionPublicNetworkAccess",
+            )
+            _element.service_extension_type = AAZStrType(
+                serialized_name="serviceExtensionType",
             )
 
             system_data = cls._schema_on_200_201.system_data

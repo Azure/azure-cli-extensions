@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "mongo-db",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage MongoDB
+    """Manage Mongo Db
     """
     pass
 

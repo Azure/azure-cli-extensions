@@ -17,14 +17,17 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """Retrieves relevant information about all Microsoft Connected Cache for Enterprise cache nodes under the Microsoft Connected Cache for Enterprise resource.
 
-    :example: List MCC Enterprise Cache Nodes Attached to a Resource
-        az mcc ent resource list --resource-group [MccResourceRgName]
+    :example: List every cache node attached to an MCC Enterprise resource
+        az mcc ent node list --mcc-resource-name MyMccResource --resource-group MyResourceGroup
+
+    :example: List cache nodes with the full set of details
+        az mcc ent node list --mcc-resource-name MyMccResource --resource-group MyResourceGroup --expand-output
     """
 
     _aaz_info = {
-        "version": "2024-11-30-preview",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}/enterprisemcccachenodes", "2026-06-01"],
         ]
     }
 
@@ -126,7 +129,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -228,6 +231,10 @@ class List(AAZCommand):
                 serialized_name="aggregatedStatusText",
                 flags={"read_only": True},
             )
+            additional_cache_node_properties.app_version_wsl = AAZStrType(
+                serialized_name="appVersionWsl",
+                flags={"read_only": True},
+            )
             additional_cache_node_properties.auto_update_applied_version = AAZStrType(
                 serialized_name="autoUpdateAppliedVersion",
                 flags={"read_only": True},
@@ -277,6 +284,18 @@ class List(AAZCommand):
                 serialized_name="cacheNodeStateShortText",
                 flags={"read_only": True},
             )
+            additional_cache_node_properties.container_os_build = AAZStrType(
+                serialized_name="containerOsBuild",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.container_os_edition = AAZStrType(
+                serialized_name="containerOsEdition",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.container_os_version = AAZStrType(
+                serialized_name="containerOsVersion",
+                flags={"read_only": True},
+            )
             additional_cache_node_properties.creation_method = AAZIntType(
                 serialized_name="creationMethod",
             )
@@ -284,8 +303,40 @@ class List(AAZCommand):
                 serialized_name="currentTlsCertificate",
                 flags={"read_only": True},
             )
+            additional_cache_node_properties.distro_os_build_wsl = AAZStrType(
+                serialized_name="distroOsBuildWsl",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.distro_os_edition_wsl = AAZStrType(
+                serialized_name="distroOsEditionWsl",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.distro_os_version_wsl = AAZStrType(
+                serialized_name="distroOsVersionWsl",
+                flags={"read_only": True},
+            )
             additional_cache_node_properties.drive_configuration = AAZListType(
                 serialized_name="driveConfiguration",
+            )
+            additional_cache_node_properties.host_os_build = AAZStrType(
+                serialized_name="hostOsBuild",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.host_os_edition = AAZStrType(
+                serialized_name="hostOsEdition",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.host_os_version = AAZStrType(
+                serialized_name="hostOsVersion",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.install_version_msix = AAZStrType(
+                serialized_name="installVersionMsix",
+                flags={"read_only": True},
+            )
+            additional_cache_node_properties.install_version_script = AAZStrType(
+                serialized_name="installVersionScript",
+                flags={"read_only": True},
             )
             additional_cache_node_properties.is_provisioned = AAZBoolType(
                 serialized_name="isProvisioned",
@@ -353,6 +404,10 @@ class List(AAZCommand):
             current_tls_certificate = cls._schema_on_200.value.Element.properties.additional_cache_node_properties.current_tls_certificate
             current_tls_certificate.action_required = AAZStrType(
                 serialized_name="actionRequired",
+                flags={"read_only": True},
+            )
+            current_tls_certificate.cert_type = AAZStrType(
+                serialized_name="certType",
                 flags={"read_only": True},
             )
             current_tls_certificate.certificate_file_name = AAZStrType(
@@ -510,6 +565,9 @@ class List(AAZCommand):
                 serialized_name="bgpLastReportedTime",
                 flags={"read_only": True},
             )
+            cache_node.bgp_network_interface = AAZStrType(
+                serialized_name="bgpNetworkInterface",
+            )
             cache_node.bgp_number_of_records = AAZIntType(
                 serialized_name="bgpNumberOfRecords",
                 flags={"read_only": True},
@@ -628,6 +686,18 @@ class List(AAZCommand):
                 serialized_name="maxAllowableProbability",
                 flags={"read_only": True},
             )
+            cache_node.open_firewall_port443 = AAZBoolType(
+                serialized_name="openFirewallPort443",
+            )
+            cache_node.open_firewall_port5000 = AAZBoolType(
+                serialized_name="openFirewallPort5000",
+            )
+            cache_node.open_firewall_port5001 = AAZBoolType(
+                serialized_name="openFirewallPort5001",
+            )
+            cache_node.open_firewall_port80 = AAZBoolType(
+                serialized_name="openFirewallPort80",
+            )
             cache_node.release_version = AAZIntType(
                 serialized_name="releaseVersion",
                 flags={"read_only": True},
@@ -643,6 +713,9 @@ class List(AAZCommand):
             cache_node.review_state_text = AAZStrType(
                 serialized_name="reviewStateText",
                 flags={"read_only": True},
+            )
+            cache_node.runtime_account_type = AAZStrType(
+                serialized_name="runtimeAccountType",
             )
             cache_node.should_migrate = AAZBoolType(
                 serialized_name="shouldMigrate",

@@ -30,6 +30,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2025-10-02-preview"
+MANAGED_ENVIRONMENT_STORAGE_API_VERSION = "2026-03-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_SESSION_POOL = 7200  # 2 hours for timeout
@@ -589,7 +590,7 @@ class DaprComponentResiliencyPreviewClient():
 
 
 class StoragePreviewClient(StorageClient):
-    api_version = PREVIEW_API_VERSION
+    api_version = MANAGED_ENVIRONMENT_STORAGE_API_VERSION
 
 
 class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):

@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template show",
+    "workload-orchestration-preview solution-template show",
 )
 class Show(AAZCommand):
     """Get a Solution Template Resource
     :example: Show a Solution Template
-        az workload-orchestration solution-template show -n mySolutionTemplate -g myResourceGroup 
+        az workload-orchestration-preview solution-template show -n mySolutionTemplate -g myResourceGroup 
     """
 
     _aaz_info = {

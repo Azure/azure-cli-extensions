@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from datetime import datetime
+from datetime import datetime, timezone
 from json import loads
 from re import match, search, findall
 from knack.log import get_logger
@@ -33,6 +33,13 @@ EXTENSION_NAME = 'vm-repair'
 
 
 def validate_create(cmd, namespace):
+    if namespace.disk_controller_type:
+        requested_controller = namespace.disk_controller_type.strip().lower()
+        valid_controllers = {'scsi': 'SCSI', 'nvme': 'NVMe'}
+        if requested_controller not in valid_controllers:
+            raise CLIError("--disk-controller-type must be 'SCSI' or 'NVMe'.")
+        namespace.disk_controller_type = valid_controllers[requested_controller]
+
     check_extension_version(EXTENSION_NAME)
 
     # Check if VM exists and is not classic VM
@@ -46,7 +53,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:
@@ -95,6 +102,10 @@ def validate_create(cmd, namespace):
 
 def validate_restore(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
+
+    # Fail before any network call: the two flags ask for opposite clean-up outcomes
+    if namespace.yes and namespace.no_cleanup:
+        raise CLIError('--yes and --no-cleanup cannot be used together. --yes deletes the repair resources without confirmation, --no-cleanup keeps them. Omit both to be prompted.')
 
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
@@ -400,7 +411,7 @@ def validate_repair_and_restore(cmd, namespace):
     logger.info('Repair VM name: %s', namespace.repair_vm_name)
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:

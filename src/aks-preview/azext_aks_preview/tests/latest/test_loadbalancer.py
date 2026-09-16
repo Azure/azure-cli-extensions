@@ -102,6 +102,49 @@ class TestLoadBalancer(unittest.TestCase):
         self.assertEqual(p.idle_timeout_in_minutes, 3600)
         self.assertEqual(p.backend_pool_type, "nodeIP")
 
+    def test_configure_ipv6_count_defaults_ipv4_count(self):
+        profile = self.load_balancer_models.ManagedClusterLoadBalancerProfile()
+
+        result = loadbalancer.configure_load_balancer_profile(
+            None,
+            2,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            profile,
+            self.load_balancer_models,
+        )
+
+        self.assertEqual(result.managed_outbound_i_ps.count, 1)
+        self.assertEqual(result.managed_outbound_i_ps.count_ipv6, 2)
+
+    def test_configure_ipv6_count_preserves_existing_zero_ipv4_count(self):
+        profile = self.load_balancer_models.ManagedClusterLoadBalancerProfile()
+        profile.managed_outbound_i_ps = (
+            self.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                count=0
+            )
+        )
+
+        result = loadbalancer.configure_load_balancer_profile(
+            None,
+            2,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            profile,
+            self.load_balancer_models,
+        )
+
+        self.assertEqual(result.managed_outbound_i_ps.count, 0)
+        self.assertEqual(result.managed_outbound_i_ps.count_ipv6, 2)
+
     def test_configure_load_balancer_profile_error(self):
         managed_outbound_ip_count = 5
         managed_outbound_ipv6_count = 3

@@ -6,4 +6,4 @@
 supported_datasource_types = ["AzureDisk", "AzureBlob", "AzureDataLakeStorage",
                               "AzureDatabaseForPostgreSQL", "AzureKubernetesService",
                               "AzureDatabaseForPostgreSQLFlexibleServer", "AzureDatabaseForMySQL",
-                              "AzureCosmosDB"]
+                              "AzureCosmosDB", "AzureElasticSAN"]
