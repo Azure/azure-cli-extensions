@@ -1,0 +1,148 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-cluster-rg/providers/Microsoft.ExtendedLocation/customLocations/mock-custom-location", "type": "CustomLocation"}, "location": "eastus", "properties": {"ipv4ConnectedPrefix": "10.20.0.0/24", "ipv6ConnectedPrefix": "2001:db8:20::/64", "networkId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-fabric-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/mock-l3-isolation-domain/internalNetworks/mock-internal-network", "securityRules": [{"description": "Allow management access", "direction": "Inbound", "ipv4Addresses": ["10.10.10.10/32"], "ipv6Addresses": ["2001:db8:10::10/128"], "port": "443"}]}, "tags": {"environment": "mock", "version": "1"}}'
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge create
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --extended-location --location --network-id
+        --ipv4-connected-prefix --ipv6-connected-prefix --security-rules --tags
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion?api-version=2026-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion","name":"Bastion","type":"microsoft.networkcloud/accessbridges","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-cluster-rg/providers/Microsoft.ExtendedLocation/customLocations/mock-custom-location","type":"CustomLocation"},"tags":{"environment":"mock","version":"1"},"properties":{"detailedStatus":"Running","detailedStatusMessage":"The access bridge is healthy.","endpoints":[{"fqdn":"bastion.mock.example.com","ipv4Address":"10.20.0.10","ipv6Address":"2001:db8:20::10","name":"VIP"},{"fqdn":"bastion-host.mock.example.com","ipv4Address":"10.20.0.11","ipv6Address":"2001:db8:20::11","name":"Host"}],"ipv4ConnectedPrefix":"10.20.0.0/24","ipv6ConnectedPrefix":"2001:db8:20::/64","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-fabric-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/mock-l3-isolation-domain/internalNetworks/mock-internal-network","protocol":"TCP","provisioningState":"Succeeded","securityRules":[{"description":"Allow management access","direction":"Inbound","ipv4Addresses":["10.10.10.10/32"],"ipv6Addresses":["2001:db8:10::10/128"],"port":"443"}]}}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      etag:
+      - '"mock-etag-1"'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"securityRules": [{"description": "Updated management access", "direction": "Inbound", "ipv4Addresses": ["10.10.20.0/24"], "ipv6Addresses": ["2001:db8:20::/64"], "port": "8443"}]}, "tags": {"environment": "mock", "version": "2"}}'
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge update
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --security-rules --tags
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion?api-version=2026-07-01
+  response:
+    body:
+      string: &updated_access_bridge '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion","name":"Bastion","type":"microsoft.networkcloud/accessbridges","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-cluster-rg/providers/Microsoft.ExtendedLocation/customLocations/mock-custom-location","type":"CustomLocation"},"tags":{"environment":"mock","version":"2"},"properties":{"detailedStatus":"Running","detailedStatusMessage":"The access bridge is healthy.","endpoints":[{"fqdn":"bastion.mock.example.com","ipv4Address":"10.20.0.10","ipv6Address":"2001:db8:20::10","name":"VIP"},{"fqdn":"bastion-host.mock.example.com","ipv4Address":"10.20.0.11","ipv6Address":"2001:db8:20::11","name":"Host"}],"ipv4ConnectedPrefix":"10.20.0.0/24","ipv6ConnectedPrefix":"2001:db8:20::/64","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-fabric-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/mock-l3-isolation-domain/internalNetworks/mock-internal-network","protocol":"TCP","provisioningState":"Succeeded","securityRules":[{"description":"Updated management access","direction":"Inbound","ipv4Addresses":["10.10.20.0/24"],"ipv6Addresses":["2001:db8:20::/64"],"port":"8443"}]}}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      etag:
+      - '"mock-etag-2"'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge wait
+      ParameterSetName:
+      - --name --resource-group --created
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion?api-version=2026-07-01
+  response:
+    body:
+      string: *updated_access_bridge
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge show
+      ParameterSetName:
+      - --name --resource-group
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion?api-version=2026-07-01
+  response:
+    body:
+      string: *updated_access_bridge
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge list
+      ParameterSetName:
+      - --resource-group
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges?api-version=2026-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion","name":"Bastion","type":"microsoft.networkcloud/accessbridges","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-cluster-rg/providers/Microsoft.ExtendedLocation/customLocations/mock-custom-location","type":"CustomLocation"},"tags":{"environment":"mock","version":"2"},"properties":{"detailedStatus":"Running","detailedStatusMessage":"The access bridge is healthy.","endpoints":[{"fqdn":"bastion.mock.example.com","ipv4Address":"10.20.0.10","ipv6Address":"2001:db8:20::10","name":"VIP"},{"fqdn":"bastion-host.mock.example.com","ipv4Address":"10.20.0.11","ipv6Address":"2001:db8:20::11","name":"Host"}],"ipv4ConnectedPrefix":"10.20.0.0/24","ipv6ConnectedPrefix":"2001:db8:20::/64","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-fabric-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/mock-l3-isolation-domain/internalNetworks/mock-internal-network","protocol":"TCP","provisioningState":"Succeeded","securityRules":[{"description":"Updated management access","direction":"Inbound","ipv4Addresses":["10.10.20.0/24"],"ipv6Addresses":["2001:db8:20::/64"],"port":"8443"}]}}]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge list
+      ParameterSetName:
+      - --top
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/accessBridges?$top=10&api-version=2026-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion","name":"Bastion","type":"microsoft.networkcloud/accessbridges","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-cluster-rg/providers/Microsoft.ExtendedLocation/customLocations/mock-custom-location","type":"CustomLocation"},"tags":{"environment":"mock","version":"2"},"properties":{"detailedStatus":"Running","detailedStatusMessage":"The access bridge is healthy.","endpoints":[{"fqdn":"bastion.mock.example.com","ipv4Address":"10.20.0.10","ipv6Address":"2001:db8:20::10","name":"VIP"},{"fqdn":"bastion-host.mock.example.com","ipv4Address":"10.20.0.11","ipv6Address":"2001:db8:20::11","name":"Host"}],"ipv4ConnectedPrefix":"10.20.0.0/24","ipv6ConnectedPrefix":"2001:db8:20::/64","networkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-fabric-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/mock-l3-isolation-domain/internalNetworks/mock-internal-network","protocol":"TCP","provisioningState":"Succeeded","securityRules":[{"description":"Updated management access","direction":"Inbound","ipv4Addresses":["10.10.20.0/24"],"ipv6Addresses":["2001:db8:20::/64"],"port":"8443"}]}}]}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkcloud accessbridge delete
+      ParameterSetName:
+      - --name --resource-group --yes
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mock-accessbridge-rg/providers/Microsoft.NetworkCloud/accessBridges/Bastion?api-version=2026-07-01
+  response:
+    body:
+      string: ''
+    headers: {}
+    status:
+      code: 204
+      message: No Content

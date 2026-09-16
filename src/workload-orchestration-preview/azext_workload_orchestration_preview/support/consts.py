@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Constants for the workload-orchestration support bundle feature."""
+"""Constants for the workload-orchestration-preview support bundle feature."""
 
 # Bundle defaults
 DEFAULT_TAIL_LINES = 1000

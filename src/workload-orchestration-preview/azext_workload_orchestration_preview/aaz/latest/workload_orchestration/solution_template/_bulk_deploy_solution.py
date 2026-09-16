@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template bulk-deploy",
+    "workload-orchestration-preview solution-template bulk-deploy",
 )
 class BulkDeploySolution(AAZCommand):
     """Post request for bulk deploy
     :example: Create a BulkDeploySolution
-              az workload-orchestration solution-template bulk-deploy --targets "@targets.json" --name "<solution-template-name>" --version "<solution-template-version>" -g <rg>
+              az workload-orchestration-preview solution-template bulk-deploy --targets "@targets.json" --name "<solution-template-name>" --version "<solution-template-version>" -g <rg>
     """
 
     _aaz_info = {

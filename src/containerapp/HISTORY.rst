@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+1.3.0b5
+++++++
+* 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity
+
 1.3.0b4
 ++++++
 * 'az containerapp env --environment-mode': Add environment mode to create and update commands

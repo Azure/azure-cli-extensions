@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-06-01-preview"],
         ]
     }
 
@@ -126,6 +126,11 @@ class Create(AAZCommand):
             singular_options=["--module", "--modules"],
             arg_group="Properties",
             help="Optional set of redis modules to enable in this database - modules can only be added at creation time.",
+        )
+        _args_schema.notify_keyspace_events = AAZStrArg(
+            options=["--notify-keyspace-events"],
+            arg_group="Properties",
+            help="Specifies which keyspace events should trigger notifications. Default is an empty string, meaning this feature is disabled. When enabled, at least 'K' (keyspace events) or 'E' (keyevent events) must be present. For example, 'AKE' enables all standard events. See https://redis.io/docs/latest/develop/use/keyspace-notifications/ for the complete list of event types.",
         )
         _args_schema.persistence = AAZObjectArg(
             options=["--persistence"],
@@ -258,7 +263,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01-preview",
                     required=True,
                 ),
             }
@@ -294,6 +299,7 @@ class Create(AAZCommand):
                 properties.set_prop("evictionPolicy", AAZStrType, ".eviction_policy")
                 properties.set_prop("geoReplication", AAZObjectType)
                 properties.set_prop("modules", AAZListType, ".mods")
+                properties.set_prop("notifyKeyspaceEvents", AAZStrType, ".notify_keyspace_events")
                 properties.set_prop("persistence", AAZObjectType, ".persistence")
                 properties.set_prop("port", AAZIntType, ".port")
 
@@ -383,6 +389,9 @@ class Create(AAZCommand):
                 serialized_name="geoReplication",
             )
             properties.modules = AAZListType()
+            properties.notify_keyspace_events = AAZStrType(
+                serialized_name="notifyKeyspaceEvents",
+            )
             properties.persistence = AAZObjectType()
             properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(

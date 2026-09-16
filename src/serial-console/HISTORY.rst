@@ -1,5 +1,9 @@
 Release History
 ===============
+1.0.0b5
+++++++
+* Decode binary WebSocket frames before printing serial console output.
+
 1.0.0b4
 ++++++
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM)

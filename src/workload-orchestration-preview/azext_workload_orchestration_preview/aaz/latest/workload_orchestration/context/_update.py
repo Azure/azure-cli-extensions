@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context update",
+    "workload-orchestration-preview context update",
 )
 class Update(AAZCommand):
     """Update Context Resource

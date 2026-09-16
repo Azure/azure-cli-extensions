@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2026-07-15"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Show(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -187,9 +187,8 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_schema_on_200.system_data)
+            _ShowHelper._build_schema_system_data_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
-            _ShowHelper._build_schema_record_string__read(_schema_on_200.tags)
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -251,7 +250,6 @@ class Show(AAZCommand):
                 serialized_name="detectedProperties",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_record_string__read(properties.detected_properties)
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"read_only": True},
@@ -397,11 +395,11 @@ class Show(AAZCommand):
 
             extensions_allow_list = cls._schema_on_200.properties.agent_configuration.extensions_allow_list
             extensions_allow_list.Element = AAZObjectType()
-            _ShowHelper._build_schema_configurationextension_read(extensions_allow_list.Element)
+            _ShowHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
 
             extensions_block_list = cls._schema_on_200.properties.agent_configuration.extensions_block_list
             extensions_block_list.Element = AAZObjectType()
-            _ShowHelper._build_schema_configurationextension_read(extensions_block_list.Element)
+            _ShowHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
 
             incoming_connections_ports = cls._schema_on_200.properties.agent_configuration.incoming_connections_ports
             incoming_connections_ports.Element = AAZStrType()
@@ -441,13 +439,16 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            detected_properties = cls._schema_on_200.properties.detected_properties
+            detected_properties.Element = AAZStrType()
+
             error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _ShowHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(error_details.Element)
+            _ShowHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
             extensions.Element = AAZObjectType()
-            _ShowHelper._build_schema_machineextensioninstanceview_read(extensions.Element)
+            _ShowHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
 
             firmware_profile = cls._schema_on_200.properties.firmware_profile
             firmware_profile.serial_number = AAZStrType(
@@ -549,9 +550,8 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(assigned_license.system_data)
+            _ShowHelper._build_schema_system_data_read(assigned_license.system_data)
             assigned_license.tags = AAZDictType()
-            _ShowHelper._build_schema_record_string__read(assigned_license.tags)
             assigned_license.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -600,6 +600,9 @@ class Show(AAZCommand):
                 serialized_name="programYear",
             )
 
+            tags = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.tags
+            tags.Element = AAZStrType()
+
             esu_keys = cls._schema_on_200.properties.license_profile.esu_profile.esu_keys
             esu_keys.Element = AAZObjectType()
 
@@ -629,7 +632,7 @@ class Show(AAZCommand):
             product_profile.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
+            _ShowHelper._build_schema_error_detail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -663,7 +666,7 @@ class Show(AAZCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
+            _ShowHelper._build_schema_error_detail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -738,24 +741,24 @@ class Show(AAZCommand):
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _ShowHelper._build_schema_patchsettings_read(linux_configuration.patch_settings)
+            _ShowHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
 
             windows_configuration = cls._schema_on_200.properties.os_profile.windows_configuration
             windows_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _ShowHelper._build_schema_patchsettings_read(windows_configuration.patch_settings)
+            _ShowHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
 
             service_statuses = cls._schema_on_200.properties.service_statuses
             service_statuses.extension_service = AAZObjectType(
                 serialized_name="extensionService",
             )
-            _ShowHelper._build_schema_servicestatus_read(service_statuses.extension_service)
+            _ShowHelper._build_schema_service_status_read(service_statuses.extension_service)
             service_statuses.guest_configuration_service = AAZObjectType(
                 serialized_name="guestConfigurationService",
             )
-            _ShowHelper._build_schema_servicestatus_read(service_statuses.guest_configuration_service)
+            _ShowHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
 
             storage_profile = cls._schema_on_200.properties.storage_profile
             storage_profile.disks = AAZListType(
@@ -800,9 +803,8 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_azure_resourcemanager_commontypes_systemdata_read(_element.system_data)
+            _ShowHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
-            _ShowHelper._build_schema_record_string__read(_element.tags)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -820,22 +822,32 @@ class Show(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            _ShowHelper._build_schema_machineextensioninstanceview_read(properties.instance_view)
+            _ShowHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _ShowHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _ShowHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
             )
+
+            protected_settings = cls._schema_on_200.resources.Element.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            settings = cls._schema_on_200.resources.Element.properties.settings
+            settings.Element = AAZAnyType()
+
+            tags = cls._schema_on_200.resources.Element.tags
+            tags.Element = AAZStrType()
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
@@ -843,149 +855,108 @@ class Show(AAZCommand):
 class _ShowHelper:
     """Helper class for Show"""
 
-    _schema_azure_resourcemanager_commontypes_errordetail_read = None
+    _schema_configuration_extension_read = None
 
     @classmethod
-    def _build_schema_azure_resourcemanager_commontypes_errordetail_read(cls, _schema):
-        if cls._schema_azure_resourcemanager_commontypes_errordetail_read is not None:
-            _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
-            _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
-            _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
-            _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
-            _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
+    def _build_schema_configuration_extension_read(cls, _schema):
+        if cls._schema_configuration_extension_read is not None:
+            _schema.publisher = cls._schema_configuration_extension_read.publisher
+            _schema.type = cls._schema_configuration_extension_read.type
             return
 
-        cls._schema_azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read = AAZObjectType(
+        cls._schema_configuration_extension_read = _schema_configuration_extension_read = AAZObjectType()
+
+        configuration_extension_read = _schema_configuration_extension_read
+        configuration_extension_read.publisher = AAZStrType(
+            flags={"read_only": True},
+        )
+        configuration_extension_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        _schema.publisher = cls._schema_configuration_extension_read.publisher
+        _schema.type = cls._schema_configuration_extension_read.type
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read
-        azure_resourcemanager_commontypes_errordetail_read.additional_info = AAZListType(
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
             serialized_name="additionalInfo",
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.code = AAZStrType(
+        error_detail_read.code = AAZStrType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.details = AAZListType(
+        error_detail_read.details = AAZListType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.message = AAZStrType(
+        error_detail_read.message = AAZStrType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.target = AAZStrType(
+        error_detail_read.target = AAZStrType(
             flags={"read_only": True},
         )
 
-        additional_info = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+        additional_info = _schema_error_detail_read.additional_info
         additional_info.Element = AAZObjectType()
 
-        _element = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info.Element
-        _element.info = AAZAnyType(
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        details = _schema_azure_resourcemanager_commontypes_errordetail_read.details
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
+        details = _schema_error_detail_read.details
         details.Element = AAZObjectType()
-        cls._build_schema_azure_resourcemanager_commontypes_errordetail_read(details.Element)
+        cls._build_schema_error_detail_read(details.Element)
 
-        _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
-        _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
-        _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
-        _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
-        _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
-    _schema_azure_resourcemanager_commontypes_systemdata_read = None
-
-    @classmethod
-    def _build_schema_azure_resourcemanager_commontypes_systemdata_read(cls, _schema):
-        if cls._schema_azure_resourcemanager_commontypes_systemdata_read is not None:
-            _schema.created_at = cls._schema_azure_resourcemanager_commontypes_systemdata_read.created_at
-            _schema.created_by = cls._schema_azure_resourcemanager_commontypes_systemdata_read.created_by
-            _schema.created_by_type = cls._schema_azure_resourcemanager_commontypes_systemdata_read.created_by_type
-            _schema.last_modified_at = cls._schema_azure_resourcemanager_commontypes_systemdata_read.last_modified_at
-            _schema.last_modified_by = cls._schema_azure_resourcemanager_commontypes_systemdata_read.last_modified_by
-            _schema.last_modified_by_type = cls._schema_azure_resourcemanager_commontypes_systemdata_read.last_modified_by_type
-            return
-
-        cls._schema_azure_resourcemanager_commontypes_systemdata_read = _schema_azure_resourcemanager_commontypes_systemdata_read = AAZObjectType(
-            flags={"read_only": True}
-        )
-
-        azure_resourcemanager_commontypes_systemdata_read = _schema_azure_resourcemanager_commontypes_systemdata_read
-        azure_resourcemanager_commontypes_systemdata_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        azure_resourcemanager_commontypes_systemdata_read.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        azure_resourcemanager_commontypes_systemdata_read.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        azure_resourcemanager_commontypes_systemdata_read.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        azure_resourcemanager_commontypes_systemdata_read.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        azure_resourcemanager_commontypes_systemdata_read.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.created_at = cls._schema_azure_resourcemanager_commontypes_systemdata_read.created_at
-        _schema.created_by = cls._schema_azure_resourcemanager_commontypes_systemdata_read.created_by
-        _schema.created_by_type = cls._schema_azure_resourcemanager_commontypes_systemdata_read.created_by_type
-        _schema.last_modified_at = cls._schema_azure_resourcemanager_commontypes_systemdata_read.last_modified_at
-        _schema.last_modified_by = cls._schema_azure_resourcemanager_commontypes_systemdata_read.last_modified_by
-        _schema.last_modified_by_type = cls._schema_azure_resourcemanager_commontypes_systemdata_read.last_modified_by_type
-
-    _schema_configurationextension_read = None
+    _schema_machine_extension_instance_view_read = None
 
     @classmethod
-    def _build_schema_configurationextension_read(cls, _schema):
-        if cls._schema_configurationextension_read is not None:
-            _schema.publisher = cls._schema_configurationextension_read.publisher
-            _schema.type = cls._schema_configurationextension_read.type
+    def _build_schema_machine_extension_instance_view_read(cls, _schema):
+        if cls._schema_machine_extension_instance_view_read is not None:
+            _schema.name = cls._schema_machine_extension_instance_view_read.name
+            _schema.status = cls._schema_machine_extension_instance_view_read.status
+            _schema.type = cls._schema_machine_extension_instance_view_read.type
+            _schema.type_handler_version = cls._schema_machine_extension_instance_view_read.type_handler_version
             return
 
-        cls._schema_configurationextension_read = _schema_configurationextension_read = AAZObjectType()
+        cls._schema_machine_extension_instance_view_read = _schema_machine_extension_instance_view_read = AAZObjectType()
 
-        configurationextension_read = _schema_configurationextension_read
-        configurationextension_read.publisher = AAZStrType(
-            flags={"read_only": True},
-        )
-        configurationextension_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        _schema.publisher = cls._schema_configurationextension_read.publisher
-        _schema.type = cls._schema_configurationextension_read.type
-
-    _schema_machineextensioninstanceview_read = None
-
-    @classmethod
-    def _build_schema_machineextensioninstanceview_read(cls, _schema):
-        if cls._schema_machineextensioninstanceview_read is not None:
-            _schema.name = cls._schema_machineextensioninstanceview_read.name
-            _schema.status = cls._schema_machineextensioninstanceview_read.status
-            _schema.type = cls._schema_machineextensioninstanceview_read.type
-            _schema.type_handler_version = cls._schema_machineextensioninstanceview_read.type_handler_version
-            return
-
-        cls._schema_machineextensioninstanceview_read = _schema_machineextensioninstanceview_read = AAZObjectType()
-
-        machineextensioninstanceview_read = _schema_machineextensioninstanceview_read
-        machineextensioninstanceview_read.name = AAZStrType()
-        machineextensioninstanceview_read.status = AAZObjectType()
-        machineextensioninstanceview_read.type = AAZStrType()
-        machineextensioninstanceview_read.type_handler_version = AAZStrType(
+        machine_extension_instance_view_read = _schema_machine_extension_instance_view_read
+        machine_extension_instance_view_read.name = AAZStrType()
+        machine_extension_instance_view_read.status = AAZObjectType()
+        machine_extension_instance_view_read.type = AAZStrType()
+        machine_extension_instance_view_read.type_handler_version = AAZStrType(
             serialized_name="typeHandlerVersion",
         )
 
-        status = _schema_machineextensioninstanceview_read.status
+        status = _schema_machine_extension_instance_view_read.status
         status.code = AAZStrType()
         status.display_status = AAZStrType(
             serialized_name="displayStatus",
@@ -994,101 +965,115 @@ class _ShowHelper:
         status.message = AAZStrType()
         status.time = AAZStrType()
 
-        _schema.name = cls._schema_machineextensioninstanceview_read.name
-        _schema.status = cls._schema_machineextensioninstanceview_read.status
-        _schema.type = cls._schema_machineextensioninstanceview_read.type
-        _schema.type_handler_version = cls._schema_machineextensioninstanceview_read.type_handler_version
+        _schema.name = cls._schema_machine_extension_instance_view_read.name
+        _schema.status = cls._schema_machine_extension_instance_view_read.status
+        _schema.type = cls._schema_machine_extension_instance_view_read.type
+        _schema.type_handler_version = cls._schema_machine_extension_instance_view_read.type_handler_version
 
-    _schema_patchsettings_read = None
+    _schema_patch_settings_read = None
 
     @classmethod
-    def _build_schema_patchsettings_read(cls, _schema):
-        if cls._schema_patchsettings_read is not None:
-            _schema.assessment_mode = cls._schema_patchsettings_read.assessment_mode
-            _schema.enable_hotpatching = cls._schema_patchsettings_read.enable_hotpatching
-            _schema.patch_mode = cls._schema_patchsettings_read.patch_mode
-            _schema.status = cls._schema_patchsettings_read.status
+    def _build_schema_patch_settings_read(cls, _schema):
+        if cls._schema_patch_settings_read is not None:
+            _schema.assessment_mode = cls._schema_patch_settings_read.assessment_mode
+            _schema.enable_hotpatching = cls._schema_patch_settings_read.enable_hotpatching
+            _schema.patch_mode = cls._schema_patch_settings_read.patch_mode
+            _schema.status = cls._schema_patch_settings_read.status
             return
 
-        cls._schema_patchsettings_read = _schema_patchsettings_read = AAZObjectType()
+        cls._schema_patch_settings_read = _schema_patch_settings_read = AAZObjectType()
 
-        patchsettings_read = _schema_patchsettings_read
-        patchsettings_read.assessment_mode = AAZStrType(
+        patch_settings_read = _schema_patch_settings_read
+        patch_settings_read.assessment_mode = AAZStrType(
             serialized_name="assessmentMode",
         )
-        patchsettings_read.enable_hotpatching = AAZBoolType(
+        patch_settings_read.enable_hotpatching = AAZBoolType(
             serialized_name="enableHotpatching",
         )
-        patchsettings_read.patch_mode = AAZStrType(
+        patch_settings_read.patch_mode = AAZStrType(
             serialized_name="patchMode",
         )
-        patchsettings_read.status = AAZObjectType(
+        patch_settings_read.status = AAZObjectType(
             flags={"read_only": True},
         )
 
-        status = _schema_patchsettings_read.status
+        status = _schema_patch_settings_read.status
         status.error = AAZObjectType(
             flags={"read_only": True},
         )
-        cls._build_schema_azure_resourcemanager_commontypes_errordetail_read(status.error)
+        cls._build_schema_error_detail_read(status.error)
         status.hotpatch_enablement_status = AAZStrType(
             serialized_name="hotpatchEnablementStatus",
         )
 
-        _schema.assessment_mode = cls._schema_patchsettings_read.assessment_mode
-        _schema.enable_hotpatching = cls._schema_patchsettings_read.enable_hotpatching
-        _schema.patch_mode = cls._schema_patchsettings_read.patch_mode
-        _schema.status = cls._schema_patchsettings_read.status
+        _schema.assessment_mode = cls._schema_patch_settings_read.assessment_mode
+        _schema.enable_hotpatching = cls._schema_patch_settings_read.enable_hotpatching
+        _schema.patch_mode = cls._schema_patch_settings_read.patch_mode
+        _schema.status = cls._schema_patch_settings_read.status
 
-    _schema_record_string__read = None
-
-    @classmethod
-    def _build_schema_record_string__read(cls, _schema):
-        if cls._schema_record_string__read is not None:
-            _schema.Element = cls._schema_record_string__read.Element
-            return
-
-        cls._schema_record_string__read = _schema_record_string__read = AAZDictType()
-
-        record_string__read = _schema_record_string__read
-        record_string__read.Element = AAZStrType()
-
-        _schema.Element = cls._schema_record_string__read.Element
-
-    _schema_record_unknown__read = None
+    _schema_service_status_read = None
 
     @classmethod
-    def _build_schema_record_unknown__read(cls, _schema):
-        if cls._schema_record_unknown__read is not None:
-            _schema.Element = cls._schema_record_unknown__read.Element
+    def _build_schema_service_status_read(cls, _schema):
+        if cls._schema_service_status_read is not None:
+            _schema.startup_type = cls._schema_service_status_read.startup_type
+            _schema.status = cls._schema_service_status_read.status
             return
 
-        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
+        cls._schema_service_status_read = _schema_service_status_read = AAZObjectType()
 
-        record_unknown__read = _schema_record_unknown__read
-        record_unknown__read.Element = AAZAnyType()
-
-        _schema.Element = cls._schema_record_unknown__read.Element
-
-    _schema_servicestatus_read = None
-
-    @classmethod
-    def _build_schema_servicestatus_read(cls, _schema):
-        if cls._schema_servicestatus_read is not None:
-            _schema.startup_type = cls._schema_servicestatus_read.startup_type
-            _schema.status = cls._schema_servicestatus_read.status
-            return
-
-        cls._schema_servicestatus_read = _schema_servicestatus_read = AAZObjectType()
-
-        servicestatus_read = _schema_servicestatus_read
-        servicestatus_read.startup_type = AAZStrType(
+        service_status_read = _schema_service_status_read
+        service_status_read.startup_type = AAZStrType(
             serialized_name="startupType",
         )
-        servicestatus_read.status = AAZStrType()
+        service_status_read.status = AAZStrType()
 
-        _schema.startup_type = cls._schema_servicestatus_read.startup_type
-        _schema.status = cls._schema_servicestatus_read.status
+        _schema.startup_type = cls._schema_service_status_read.startup_type
+        _schema.status = cls._schema_service_status_read.status
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Show"]

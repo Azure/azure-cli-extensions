@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "documentdb mongocluster",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Mongo Cluster
+    """Manage Azure DocumentDB mongo clusters.
     """
     pass
 

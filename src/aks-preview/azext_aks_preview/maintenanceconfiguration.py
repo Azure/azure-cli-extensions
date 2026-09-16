@@ -54,7 +54,17 @@ def getMaintenanceConfiguration(cmd, raw_parameters):
     if config_file is not None:
         mcr = get_file_json(config_file)
         logger.info(mcr)
-        return mcr
+        # The config file is authored in the flattened display shape (e.g. a top-level
+        # "maintenanceWindow" key, matching what `aks maintenanceconfiguration show` prints),
+        # but the generated SDK model requires the ARM wire shape with fields nested under
+        # "properties". Without this wrapping, the PUT body silently drops the flattened
+        # fields and the service rejects/ignores them.
+        MaintenanceConfiguration = cmd.get_models(
+            "MaintenanceConfiguration",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="maintenance_configurations"
+        )
+        return MaintenanceConfiguration({"properties": mcr})
 
     if maintenance_window_id is not None:
         return constructSharedMaintenanceConfiguration(cmd, raw_parameters)

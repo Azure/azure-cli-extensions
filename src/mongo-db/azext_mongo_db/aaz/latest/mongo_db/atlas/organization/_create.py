@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "mongo-db atlas organization create",
 )
 class Create(AAZCommand):
-    """Create an Azure resource that provisions a corresponding MongoDB Atlas organization
+    """Create a OrganizationResource
 
-    :example: Organizations_CreateOrUpdate
-        az mongo-db atlas organization create -name "MyOrganizationResourceName" --resource-group "MyResourceGroup" --location "eastus" --subscription "abcd1234-5678-90ab-cdef-12345678abcd"--user {"first-name":"John","last-name":"Doe","email-address":"test@email.com"}" --marketplace "{"subscription-id":"abcd1234-5678-90ab-cdef-12345678abcd","offer-details":{"publisher-id":"mongodb","offer-id":"mongodb_atlas_azure_native_prod","plan-id":"private_plan","plan-name":"Pay as You Go (Free) (Private)","term-unit":"P1M","term-id":"gmz7xq9ge3py"}}" --partner-properties "{"organization-name":"partner-org-name"}"
+    :example: Organizations_CreateOrUpdate_MaximumSet
+        az mongo-db atlas organization create \\ --resource-group {resource_group} \\ --name MongoDBCLITestOrg2 \\ --location eastus2 \\ --subscription {subscription} \\ --marketplace '{"subscription-id": "<marketplace_sub_id>", "offer-details": {"publisher-id": "mongodb", "offer-id": "mongodb_atlas_azure_native_prod", "plan-id": "private_plan", "plan-name": "Pay as You Go (Free) (Private)", "term-unit": "P1M", "term-id": "gmz7xq9ge3py"}}' \\ --user '{"first-name": "dummy", "last-name": "dummy", "email-address": "test@example.com"}' \\ --partner-properties '{"organization-name": "MongoDBCLITestOrg2"}'
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2026-03-01-preview"],
         ]
     }
 
@@ -56,7 +56,6 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Azure resource group in which MongoDB Atlas resource is created",
             required=True,
         )
 
@@ -293,7 +292,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-03-01-preview",
                     required=True,
                 ),
             }

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2026-07-15"],
         ]
     }
 
@@ -130,7 +130,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -256,7 +256,7 @@ class Wait(AAZWaitCommand):
             product_profile.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _WaitHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
+            _WaitHelper._build_schema_error_detail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -290,7 +290,7 @@ class Wait(AAZWaitCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _WaitHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
+            _WaitHelper._build_schema_error_detail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -330,60 +330,63 @@ class Wait(AAZWaitCommand):
 class _WaitHelper:
     """Helper class for Wait"""
 
-    _schema_azure_resourcemanager_commontypes_errordetail_read = None
+    _schema_error_detail_read = None
 
     @classmethod
-    def _build_schema_azure_resourcemanager_commontypes_errordetail_read(cls, _schema):
-        if cls._schema_azure_resourcemanager_commontypes_errordetail_read is not None:
-            _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
-            _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
-            _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
-            _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
-            _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read = AAZObjectType(
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read
-        azure_resourcemanager_commontypes_errordetail_read.additional_info = AAZListType(
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
             serialized_name="additionalInfo",
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.code = AAZStrType(
+        error_detail_read.code = AAZStrType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.details = AAZListType(
+        error_detail_read.details = AAZListType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.message = AAZStrType(
+        error_detail_read.message = AAZStrType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.target = AAZStrType(
+        error_detail_read.target = AAZStrType(
             flags={"read_only": True},
         )
 
-        additional_info = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+        additional_info = _schema_error_detail_read.additional_info
         additional_info.Element = AAZObjectType()
 
-        _element = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info.Element
-        _element.info = AAZAnyType(
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        details = _schema_azure_resourcemanager_commontypes_errordetail_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_azure_resourcemanager_commontypes_errordetail_read(details.Element)
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
-        _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
-        _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
-        _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
-        _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
-        _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
 
 __all__ = ["Wait"]

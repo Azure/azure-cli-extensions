@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (
 
 def load_arguments(self, _):
     project_name_type = CLIArgumentType(
-        options_list=['--project-name'],
+        options_list=['--project-name', '-p'],
         help='Name of the Azure Migrate project.',
         id_part='name'
     )

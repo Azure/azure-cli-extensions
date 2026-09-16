@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "documentdb",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Document Db
+    """Manage Azure DocumentDB clusters.
     """
     pass
 

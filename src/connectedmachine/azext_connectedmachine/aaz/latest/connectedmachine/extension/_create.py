@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-07-15"],
         ]
     }
 
@@ -63,6 +63,26 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "ExtensionParameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="ExtensionParameters",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="ExtensionParameters",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -152,6 +172,9 @@ class Create(AAZCommand):
         status.time = AAZDateTimeArg(
             options=["time"],
             help="The time of the status.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
 
         protected_settings = cls._args_schema.protected_settings
@@ -159,26 +182,6 @@ class Create(AAZCommand):
 
         settings = cls._args_schema.settings
         settings.Element = AAZAnyTypeArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -266,7 +269,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -389,14 +392,12 @@ class Create(AAZCommand):
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
-            _CreateHelper._build_schema_record_unknown__read(properties.protected_settings)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
             properties.settings = AAZDictType()
-            _CreateHelper._build_schema_record_unknown__read(properties.settings)
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -418,6 +419,12 @@ class Create(AAZCommand):
             status.level = AAZStrType()
             status.message = AAZStrType()
             status.time = AAZStrType()
+
+            protected_settings = cls._schema_on_200.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            settings = cls._schema_on_200.properties.settings
+            settings.Element = AAZAnyType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -447,21 +454,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    _schema_record_unknown__read = None
-
-    @classmethod
-    def _build_schema_record_unknown__read(cls, _schema):
-        if cls._schema_record_unknown__read is not None:
-            _schema.Element = cls._schema_record_unknown__read.Element
-            return
-
-        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
-
-        record_unknown__read = _schema_record_unknown__read
-        record_unknown__read.Element = AAZAnyType()
-
-        _schema.Element = cls._schema_record_unknown__read.Element
 
 
 __all__ = ["Create"]

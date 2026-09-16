@@ -40,7 +40,7 @@ def ml_batch_endpoint_show(cmd, resource_group_name, workspace_name, name):
 
     try:
         endpoint = ml_client.batch_endpoints.get(name=name)
-        return endpoint.dump()
+        return _dump_entity_with_warnings(endpoint)
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 

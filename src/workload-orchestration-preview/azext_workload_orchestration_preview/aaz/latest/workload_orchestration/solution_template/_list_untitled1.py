@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template list",
+    "workload-orchestration-preview solution-template list",
     is_preview=False,
 )
 class ListUntitled1(AAZCommand):
     """List by specified resource group
     :example: List Solution Templates
-        az workload-orchestration solution-template list -g myResourceGroup
+        az workload-orchestration-preview solution-template list -g myResourceGroup
     """
 
     _aaz_info = {

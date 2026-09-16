@@ -23,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands", "2026-07-15"],
         ]
     }
 
@@ -134,7 +134,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -206,7 +206,7 @@ class List(AAZCommand):
             properties.error_blob_managed_identity = AAZObjectType(
                 serialized_name="errorBlobManagedIdentity",
             )
-            _ListHelper._build_schema_runcommandmanagedidentity_read(properties.error_blob_managed_identity)
+            _ListHelper._build_schema_run_command_managed_identity_read(properties.error_blob_managed_identity)
             properties.error_blob_uri = AAZStrType(
                 serialized_name="errorBlobUri",
             )
@@ -217,7 +217,7 @@ class List(AAZCommand):
             properties.output_blob_managed_identity = AAZObjectType(
                 serialized_name="outputBlobManagedIdentity",
             )
-            _ListHelper._build_schema_runcommandmanagedidentity_read(properties.output_blob_managed_identity)
+            _ListHelper._build_schema_run_command_managed_identity_read(properties.output_blob_managed_identity)
             properties.output_blob_uri = AAZStrType(
                 serialized_name="outputBlobUri",
             )
@@ -275,11 +275,11 @@ class List(AAZCommand):
 
             parameters = cls._schema_on_200.value.Element.properties.parameters
             parameters.Element = AAZObjectType()
-            _ListHelper._build_schema_runcommandinputparameter_read(parameters.Element)
+            _ListHelper._build_schema_run_command_input_parameter_read(parameters.Element)
 
             protected_parameters = cls._schema_on_200.value.Element.properties.protected_parameters
             protected_parameters.Element = AAZObjectType()
-            _ListHelper._build_schema_runcommandinputparameter_read(protected_parameters.Element)
+            _ListHelper._build_schema_run_command_input_parameter_read(protected_parameters.Element)
 
             source = cls._schema_on_200.value.Element.properties.source
             source.command_id = AAZStrType(
@@ -292,7 +292,7 @@ class List(AAZCommand):
             source.script_uri_managed_identity = AAZObjectType(
                 serialized_name="scriptUriManagedIdentity",
             )
-            _ListHelper._build_schema_runcommandmanagedidentity_read(source.script_uri_managed_identity)
+            _ListHelper._build_schema_run_command_managed_identity_read(source.script_uri_managed_identity)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -323,49 +323,49 @@ class List(AAZCommand):
 class _ListHelper:
     """Helper class for List"""
 
-    _schema_runcommandinputparameter_read = None
+    _schema_run_command_input_parameter_read = None
 
     @classmethod
-    def _build_schema_runcommandinputparameter_read(cls, _schema):
-        if cls._schema_runcommandinputparameter_read is not None:
-            _schema.name = cls._schema_runcommandinputparameter_read.name
-            _schema.value = cls._schema_runcommandinputparameter_read.value
+    def _build_schema_run_command_input_parameter_read(cls, _schema):
+        if cls._schema_run_command_input_parameter_read is not None:
+            _schema.name = cls._schema_run_command_input_parameter_read.name
+            _schema.value = cls._schema_run_command_input_parameter_read.value
             return
 
-        cls._schema_runcommandinputparameter_read = _schema_runcommandinputparameter_read = AAZObjectType()
+        cls._schema_run_command_input_parameter_read = _schema_run_command_input_parameter_read = AAZObjectType()
 
-        runcommandinputparameter_read = _schema_runcommandinputparameter_read
-        runcommandinputparameter_read.name = AAZStrType(
+        run_command_input_parameter_read = _schema_run_command_input_parameter_read
+        run_command_input_parameter_read.name = AAZStrType(
             flags={"required": True},
         )
-        runcommandinputparameter_read.value = AAZStrType(
+        run_command_input_parameter_read.value = AAZStrType(
             flags={"required": True},
         )
 
-        _schema.name = cls._schema_runcommandinputparameter_read.name
-        _schema.value = cls._schema_runcommandinputparameter_read.value
+        _schema.name = cls._schema_run_command_input_parameter_read.name
+        _schema.value = cls._schema_run_command_input_parameter_read.value
 
-    _schema_runcommandmanagedidentity_read = None
+    _schema_run_command_managed_identity_read = None
 
     @classmethod
-    def _build_schema_runcommandmanagedidentity_read(cls, _schema):
-        if cls._schema_runcommandmanagedidentity_read is not None:
-            _schema.client_id = cls._schema_runcommandmanagedidentity_read.client_id
-            _schema.object_id = cls._schema_runcommandmanagedidentity_read.object_id
+    def _build_schema_run_command_managed_identity_read(cls, _schema):
+        if cls._schema_run_command_managed_identity_read is not None:
+            _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
+            _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
             return
 
-        cls._schema_runcommandmanagedidentity_read = _schema_runcommandmanagedidentity_read = AAZObjectType()
+        cls._schema_run_command_managed_identity_read = _schema_run_command_managed_identity_read = AAZObjectType()
 
-        runcommandmanagedidentity_read = _schema_runcommandmanagedidentity_read
-        runcommandmanagedidentity_read.client_id = AAZStrType(
+        run_command_managed_identity_read = _schema_run_command_managed_identity_read
+        run_command_managed_identity_read.client_id = AAZStrType(
             serialized_name="clientId",
         )
-        runcommandmanagedidentity_read.object_id = AAZStrType(
+        run_command_managed_identity_read.object_id = AAZStrType(
             serialized_name="objectId",
         )
 
-        _schema.client_id = cls._schema_runcommandmanagedidentity_read.client_id
-        _schema.object_id = cls._schema_runcommandmanagedidentity_read.object_id
+        _schema.client_id = cls._schema_run_command_managed_identity_read.client_id
+        _schema.object_id = cls._schema_run_command_managed_identity_read.object_id
 
 
 __all__ = ["List"]

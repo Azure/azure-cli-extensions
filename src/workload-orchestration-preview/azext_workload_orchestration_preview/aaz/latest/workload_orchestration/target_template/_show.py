@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration target-template show",
+    "workload-orchestration-preview target-template show",
 )
 class Show(AAZCommand):
     """Get a Target Template Resource

@@ -12,7 +12,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .test_definitions import (test_data_source, test_dashboard)
+from .test_definitions import (test_data_source, test_dashboard, test_dashboard_v2)
 from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -136,7 +136,7 @@ class AmgScenarioTest(ScenarioTest):
             time.sleep(120)
 
             self.cmd('grafana list -g {rg}')
-            count = len(self.cmd('grafana list').get_output_in_json())
+            count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
 
             self.cmd('grafana show -g {rg} -n {name}', checks=[
                 self.check('name', '{name}'),
@@ -227,7 +227,9 @@ class AmgScenarioTest(ScenarioTest):
 
             response_update = self.cmd('grafana dashboard update -g {rg} -n {name} --definition "{test_definition_update}" --overwrite true', checks=[
                 self.check("[slug]", "['{definition_slug}']")]).get_output_in_json()
-            self.assertTrue(response_update["version"] == response_create["version"] + 1)
+            # Grafana 13 stores classic dashboards in unified storage, so the legacy `version`
+            # field no longer strictly increments by 1 on each save; assert it does not regress.
+            self.assertTrue(response_update["version"] >= response_create["version"])
 
             response_list = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_list) > 0)
@@ -238,8 +240,67 @@ class AmgScenarioTest(ScenarioTest):
 
             # Close-out Instance
             self.cmd('grafana delete -g {rg} -n {name} --yes')
-            final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, count - 1)
+            final_count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
+            self.assertEqual(final_count, count - 1)
+
+
+    @AllowLargeResponse(size_kb=3072)
+    @ResourceGroupPreparer(name_prefix='cli_test_amg_v2', location='westcentralus')
+    def test_amg_dashboard_v2(self, resource_group):
+
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='clitestamgv2', length=23),
+            'location': 'westcentralus'
+        })
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+
+            # v2 ("dynamic dashboards") is served by the dashboard apiserver on Grafana 13+
+            self.cmd('grafana create -g {rg} -n {name} -l {location} -v 13', checks=[
+                self.check('name', '{name}')
+            ])
+            # Ensure RBAC changes are propagated for data-plane calls
+            time.sleep(120)
+
+            definition_name = test_dashboard_v2["spec"]["title"]
+            self.kwargs.update({
+                'definition': test_dashboard_v2,
+                'definition_name': definition_name,
+            })
+
+            # A v2-schema definition is routed to the dashboard apiserver and stored as v2 (not
+            # down-converted to the classic schema).
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --definition "{definition}" --title "{definition_name}"', checks=[
+                self.check('apiVersion', 'dashboard.grafana.app/v2'),
+                self.check('kind', 'Dashboard'),
+                self.check('spec.title', '{definition_name}')
+            ]).get_output_in_json()
+
+            self.kwargs.update({
+                'dashboard_uid': response_create['metadata']['name']
+            })
+
+            # show reads it back through the apiserver at v2 (the legacy read is lossy for v2)
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboard_uid}"', checks=[
+                self.check('apiVersion', 'dashboard.grafana.app/v2'),
+                self.check('spec.title', '{definition_name}')
+            ])
+
+            # a v2 dashboard is still discoverable through the classic listing
+            response_list = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
+            self.assertTrue(any(d.get('uid') == self.kwargs['dashboard_uid'] for d in response_list))
+
+            # updating a v2 definition upserts through the apiserver (PUT)
+            self.cmd('grafana dashboard update -g {rg} -n {name} --definition "{definition}" --overwrite true', checks=[
+                self.check('apiVersion', 'dashboard.grafana.app/v2'),
+                self.check('spec.title', '{definition_name}')
+            ])
+
+            self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{dashboard_uid}"')
+            response_delete = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
+            self.assertFalse(any(d.get('uid') == self.kwargs['dashboard_uid'] for d in response_delete))
+
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -389,8 +450,8 @@ class AmgScenarioTest(ScenarioTest):
             # Close-out Instance
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             self.cmd('grafana delete -g {rg} -n {name2} --yes')
-            final_count = len(self.cmd('grafana list').get_output_in_json())
-            self.assertTrue(final_count, 0)
+            final_count = len(self.cmd('grafana list -g {rg}').get_output_in_json())
+            self.assertEqual(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=10240)

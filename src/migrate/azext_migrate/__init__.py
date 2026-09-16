@@ -36,11 +36,16 @@ class MigrateCommandsLoader(AzCommandsLoader):
                 args=args
             )
         load_command_table(self, args)
+        from azext_migrate.runbook.commands import (
+            load_runbook_command_table)
+        load_runbook_command_table(self)
         return self.command_table
 
     def load_arguments(self, command):
         from azext_migrate._params import load_arguments
         load_arguments(self, command)
+        from azext_migrate.runbook.params import load_runbook_arguments
+        load_runbook_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = MigrateCommandsLoader
