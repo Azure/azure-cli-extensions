@@ -605,6 +605,10 @@ def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, name
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
                          namespace_name=None, all_namespaces=False):  # pylint: disable=unused-argument
     if all_namespaces:
+        # The model_deployments SDK has no cross-namespace list operation, so enumerate the
+        # AI Manager's namespaces once (list_by_ai_manager returns a paged iterator we consume
+        # here) and fan out one list_by_ai_manager_namespace call per namespace, aggregating
+        # the results.
         from azext_aimanager._client_factory import cf_ai_manager_namespaces
         namespaces_client = cf_ai_manager_namespaces(cmd.cli_ctx)
         deployments = []
