@@ -7,6 +7,9 @@ Release History
 ++++++
 * ``az aimanager namespace modeldeployment``: Rename the ``--namespace-name`` argument to
   the shorter ``--namespace``. The ``--ns`` alias is unchanged.
+* ``az aimanager modelsource``, ``az aimanager namespace`` and ``az aimanager namespace
+  modeldeployment``: Rename the ``--aimanager-name`` argument to the shorter ``--aimanager``.
+  The ``--manager`` and ``-m`` aliases are unchanged.
 
 1.5.3b1
 ++++++
