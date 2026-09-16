@@ -5,9 +5,9 @@ Release History
 
 1.0.0b27
 ++++++++++++++
-* [BREAKING CHANGE] ``az quantum workspace update`` no longer changes the saved default workspace. Use ``az quantum workspace set`` to save the default workspace.
-* Fixed ``az quantum workspace delete`` to clear saved defaults only when deleting the saved workspace, including subscription and case-insensitive name matching. Environment and local defaults no longer cause unrelated global settings to be cleared.
 * Fixed an issue where setting a default workspace with ``az quantum workspace set`` prevented commands from accessing other workspaces.
+* [BREAKING CHANGE] ``az quantum workspace update`` no longer changes the saved default workspace. Use ``az quantum workspace set`` to save the default workspace.
+* Fixed ``az quantum workspace delete`` clearing the saved default workspace in some cases where it wasn't the workspace that was deleted.
 
 1.0.0b26
 ++++++++++++++
