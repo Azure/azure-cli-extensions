@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool add`: Omit `nodeTaints` when `--node-taints` is not specified for FlexNodes pools, and reject explicitly empty values.
 
 22.0.0b7
 +++++++++

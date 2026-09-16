@@ -1344,6 +1344,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         vm_set_type = self.__raw_parameters.get("vm_set_type")
         if not vm_set_type or vm_set_type.lower() != CONST_FLEX_NODES.lower():
             return
+        if self.__raw_parameters.get("node_taints") == "":
+            raise InvalidArgumentValueError(
+                "--node-taints must contain at least one taint for FlexNodes pools."
+            )
         validate_flexnodes_options(
             self.cmd,
             self.__raw_parameters,
@@ -1813,6 +1817,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         vm_set_type = getattr(agentpool, "type_properties_type", getattr(agentpool, "type", None))
         if vm_set_type == CONST_FLEX_NODES:
+            if self.__raw_parameters.get("node_taints") is None:
+                agentpool.node_taints = None
             agentpool = self._keep_supported_flexnodes_properties(agentpool)
         return agentpool
 
