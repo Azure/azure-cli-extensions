@@ -193,6 +193,8 @@ CONST_CONTAINER_NETWORK_LOGS_ENABLED = "Enabled"
 CONST_CONTAINER_NETWORK_LOGS_DISABLED = "Disabled"
 # legacy omsagent addon config key, superseded by containerNetworkLogs on the AMP path
 CONST_MONITORING_ENABLE_RETINA_NETWORK_FLAGS = "enableRetinaNetworkFlags"
+# server-side default for azureMonitorProfile.containerInsights.syslogPort
+CONST_CONTAINER_INSIGHTS_DEFAULT_SYSLOG_PORT = 28330
 
 # virtual node
 CONST_VIRTUAL_NODE_ADDON_NAME = "aciConnector"

@@ -94,6 +94,12 @@ We are moving Azure Monitor Logs (Container Insights) onboarding off the legacy 
 | R3 | Do not expose `disableCustomMetrics` (removed from API) | P0 |
 | R4 | Add Prometheus-scraping + syslog-port controls to the AMP path | P0 |
 | R5 | Warn when the legacy auth flag is used with `enable-addons monitoring` | P0 |
+| R6 | Reject `--enable-azure-monitor-logs` on an already-onboarded cluster | P0 |
+| R7 | `--disable-azure-monitor-logs` resets `containerInsights` to defaults | P0 |
+| R8 | Reject `--enable-azure-monitor-logs` on service principal clusters | P0 |
+| R9 | Reject `--enable-azure-monitor-logs` on a legacy-auth onboarded cluster | P0 |
+| R10 | Confirm before disabling when OTLP logs & traces are on | P0 |
+| R11 | Every enable provisions the DCR and DCRA, before the cluster update | P0 |
 
 ### R0 — OTLP gRPC port overrides
 
@@ -212,6 +218,86 @@ az aks update -g <rg> -n <cluster> \
 
 - Warning shown once when the flag is explicitly provided; not shown when omitted.
 - Command completes successfully; resulting `useAADAuth` value is unchanged.
+
+### R6 — Reject re-onboarding an already-onboarded cluster
+
+`az aks enable-addons -a monitoring` fails when the addon is already enabled and tells the user to disable it first. The AMP path must behave the same way, so that a re-run cannot silently recreate a default workspace or re-provision DCR/DCE/DCRA artifacts and mask a mistake such as a mistyped `--workspace-resource-id`.
+
+- `az aks update --enable-azure-monitor-logs` errors when `containerInsights.enabled` is already `true` (or the legacy `omsagent` addon is enabled, which the RP mirrors into that field).
+- The error names `--disable-azure-monitor-logs` as the way to change the configuration.
+
+**Acceptance criteria**
+
+- Re-running the flag on an onboarded cluster errors, and errors *before* a default workspace is provisioned.
+- The flag still succeeds when `containerInsights.enabled` is `false` (a fresh enable, or a re-enable after a disable).
+- Changing the workspace requires a disable first.
+
+### R7 — `--disable-azure-monitor-logs` resets `containerInsights` to defaults
+
+The RP copies a `containerInsights` field from the request onto the cluster only when the field is present (`ApplyAzureMonitorProfileContainerInsights`), so any field left unset survives the disable and is silently inherited by the next enable.
+
+- Disabling writes the behavioural fields explicitly: `enabled=false`, `syslogPort=28330`, `disablePrometheusMetricsScraping=false`, `containerNetworkLogs="Disabled"`.
+- `logAnalyticsWorkspaceResourceId` is deliberately **not** blanked. It is a resource-id typed property, and the RP mirrors the AMP value into `addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID`; ARM then rejects every subsequent write of the cluster with `LinkedInvalidPropertyId`, breaking even updates unrelated to monitoring. The stale id is inert while `enabled` is false and the enable path always overwrites it with a freshly resolved workspace, so nothing is inherited.
+
+**Acceptance criteria**
+
+- The four behavioural fields are present in the PUT payload after a disable.
+- The workspace id remains a valid resource id (never `""`), and a later `az aks update` of any kind still succeeds.
+- A subsequent `--enable-azure-monitor-logs` starts from the defaults rather than inheriting the previous syslog port, scraping choice or CNL setting.
+
+### R11 — Every enable provisions the DCR and DCRA, before the cluster update
+
+Postprocessing previously ran only when the workspace changed, so a fresh enable — or a re-enable onto the same workspace after a disable removed the association — deployed the agent with no data collection rule attached and silently ingested nothing.
+
+Provisioning also has to happen *before* the cluster PUT, not in `postprocessing_after_mc_created`. The RP rolls out the `ama-logs` DaemonSet as part of the PUT, so creating the artifacts afterwards means the agent starts before the association exists. `dcr-config-parser.rb` then finds no configuration chunk, logs `Exception while parsing dcr : No JSON file found in the specified directory`, and mdsd backs off for several minutes before retrying; the agent ingests nothing for that window and is restarted by its own liveness probe once the configuration finally lands. `az aks enable-addons -a monitoring` creates the DCR/DCRA before its PUT, and this flag matches that ordering.
+
+- The enable path calls `ensure_container_insights_for_monitoring` directly, once the AMP profile has been fully built, since the guards above have already rejected the no-op cases.
+- `monitoring_addon_postprocessing_required` is therefore *not* set by the enable path; leaving it set would repeat the same work after the PUT.
+- `ensure_container_insights_for_monitoring` is idempotent and rewrites the DCR destination, so this also covers the workspace-change case.
+
+**Acceptance criteria**
+
+- After `--enable-azure-monitor-logs`, the cluster has a `ContainerInsightsExtension` DCRA pointing at an `MSCI-<region>-<cluster>` DCR whose destination is the resolved workspace.
+- The DCRA exists before the cluster update completes.
+- The agent logs no `Exception while parsing dcr` on first start and does not restart to pick up the configuration.
+- Disabling removes the association.
+
+### R8 — Reject `--enable-azure-monitor-logs` on service principal clusters
+
+The AMP profile has no shared-key/`useAADAuth` concept: the agent reaches the workspace with the cluster's managed identity, which a service principal cluster does not have.
+
+- Clusters whose `servicePrincipalProfile.clientId` is set to anything other than `msi` are rejected on both `az aks create` and `az aks update`.
+- A missing `servicePrincipalProfile` means managed identity and is allowed.
+
+**Acceptance criteria**
+
+- The rejection happens before a default workspace is provisioned.
+- The error points at `az aks update --enable-managed-identity` as the fix.
+
+### R9 — Reject `--enable-azure-monitor-logs` on a legacy-auth onboarded cluster
+
+A cluster onboarded with shared-key auth keeps that auth mode server-side, so the flag cannot be honoured as asked. Absent or empty `useAADAuth` counts as legacy, matching the RP's derivation.
+
+- Checked ahead of R6, so the actionable migration message wins for a legacy-auth cluster.
+- A *disabled* `omsagent` addon is a fresh onboarding as far as the RP is concerned and must not be blocked.
+
+**Acceptance criteria**
+
+- `useAADAuth` of `false`, `""` or absent on an enabled addon errors with a link to the managed-identity migration doc.
+- The rejection happens before a default workspace is provisioned.
+
+### R10 — Confirm before disabling when OTLP logs & traces are on
+
+OpenTelemetry logs and traces are collected by the Container Insights agent, so disabling Azure Monitor logs necessarily turns them off too.
+
+- Prompt for confirmation, defaulting to "no"; `--yes` skips the prompt.
+- Declining exits cleanly without tearing down the DCR/DCRA or modifying the profile.
+- Accepting disables `openTelemetryLogsAndTraces` and clears its HTTP and gRPC ports.
+
+**Acceptance criteria**
+
+- The prompt appears only when `openTelemetryLogsAndTraces.enabled` is true and `--yes` was not passed.
+- Declining leaves both `containerInsights` and `appMonitoring` untouched.
 
 ## 6. Target end-state (the two commands)
 

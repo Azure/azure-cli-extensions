@@ -197,7 +197,9 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "--enable-addons monitoring". Turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: |
+            Enables Log Analytics monitoring for the cluster through the Azure Monitor profile. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+            Requires the cluster to use a managed identity; clusters created with service principal authentication are not supported.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -1155,11 +1157,16 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks enable-addons -a monitoring". Enables Log Analytics monitoring for the cluster. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: |
+            Enables Log Analytics monitoring for the cluster through the Azure Monitor profile. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+            Requires the cluster to use a managed identity; clusters using service principal authentication are not supported.
+            Fails if Azure Monitor logs is already enabled on the cluster, or if the cluster was onboarded with legacy (non-managed-identity) authentication. To change the configuration, run "az aks update --disable-azure-monitor-logs" first.
         - name: --disable-azure-monitor-logs
           type: bool
           short-summary: Disable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks disable-addons -a monitoring". Disables Log Analytics monitoring for the cluster.
+          long-summary: |
+            Disables Log Analytics monitoring for the cluster, removes the data collection rule association, and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults. The workspace is left recorded on the profile but is unused while disabled, and is replaced on the next enable.
+            If OpenTelemetry logs and traces are enabled they are disabled as well, and confirmation is requested first unless "--yes" is specified.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.

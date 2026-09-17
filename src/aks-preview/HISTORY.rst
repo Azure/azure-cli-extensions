@@ -18,6 +18,12 @@ Pending
 * `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
 * Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
 * `az aks create` and `az aks update`: Reject `--outbound-type managedNATGatewayV2` with an actionable error directing to `--outbound-type managedNATGateway --outbound-type-sku StandardV2` (the GA-aligned shape); the legacy value is no longer accepted on the target api-version.
+* `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
+* `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
+* `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
+* `az aks update`: Fix `--enable-azure-monitor-logs` not creating the data collection rule and association unless the Log Analytics workspace changed, which left the agent running with no data collection rule attached so no logs were ingested.
+* `az aks update`: Create the data collection rule and association before the cluster update when enabling with `--enable-azure-monitor-logs`, matching `az aks enable-addons -a monitoring`. Provisioning them afterwards meant the agent started before the association existed and then stayed idle for several minutes before restarting once the configuration arrived.
+* `az aks update`: Declining the OpenTelemetry confirmation prompt for `--disable-azure-monitor-metrics` now leaves the cluster unchanged and exits without an error, matching every other confirmation prompt, instead of failing the command.
 
 22.0.0b6
 +++++++++
