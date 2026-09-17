@@ -9,7 +9,8 @@ Release History
   output, rendering an explicit ``True``/``False`` for every SKU. Previously the service
   omitted ``feasible`` for infeasible plans, so when every SKU was infeasible the column —
   the most useful one — disappeared entirely. Also add an ``InfeasibilityReason`` column
-  surfacing the per-plan reason code for infeasible SKUs.
+  surfacing the per-plan reason code (with the redundant ``InfeasibleCode_`` prefix stripped)
+  for infeasible SKUs.
 
 1.5.4b1
 ++++++

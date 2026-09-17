@@ -206,7 +206,7 @@ class TestCalculateCostTableFormat(unittest.TestCase):
             "vmSize": "Standard_NC4as_T4_v3",
             "vmsPerReplica": 2,
             "vmHourlyPrice": 0.526,
-            "infeasibilityReason": {"code": "InsufficientQuota", "message": "no quota"},
+            "infeasibilityReason": {"code": "InfeasibleCode_InsufficientQuota", "message": "no quota"},
         }
 
     def test_columns(self):
@@ -233,6 +233,12 @@ class TestCalculateCostTableFormat(unittest.TestCase):
         self.assertEqual(row["TotalHourlyPrice"], "")
         self.assertEqual(row["MaxAvailableReplicas"], "")
         self.assertEqual(row["InfeasibilityReason"], "InsufficientQuota")
+
+    def test_infeasibility_reason_without_prefix_passthrough(self):
+        # Codes not carrying the "InfeasibleCode_" prefix are surfaced unchanged.
+        plan = {"vmSize": "sku", "infeasibilityReason": {"code": "RegionUnavailable"}}
+        rows = calculate_cost_table_format({"plans": [plan]})
+        self.assertEqual(rows[0]["InfeasibilityReason"], "RegionUnavailable")
 
     def test_all_infeasible_keeps_feasible_column(self):
         rows = calculate_cost_table_format(

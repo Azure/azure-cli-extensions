@@ -132,6 +132,10 @@ def _calculate_cost_plan_row(plan):
     # Coerce it to an explicit bool here so the column is always populated and never dropped.
     feasible = bool(plan.get('feasible'))
     reason = plan.get('infeasibilityReason') or {}
+    # Reason codes come back prefixed (e.g. "InfeasibleCode_InsufficientQuota"); strip the
+    # redundant "InfeasibleCode_" prefix so the column stays short in "-o table" output.
+    reason_code = (reason.get('code') or '')
+    reason_code = reason_code[len('InfeasibleCode_'):] if reason_code.startswith('InfeasibleCode_') else reason_code
     return OrderedDict([
         ('VmSize', plan.get('vmSize', '')),
         ('Feasible', feasible),
@@ -140,7 +144,7 @@ def _calculate_cost_plan_row(plan):
         ('TotalHourlyPrice', plan.get('totalHourlyPrice', '')),
         ('MaxAvailableReplicas', plan.get('maxAvailableReplicas', '')),
         ('Quantization', plan.get('quantization', '')),
-        ('InfeasibilityReason', '' if feasible else reason.get('code', '')),
+        ('InfeasibilityReason', '' if feasible else reason_code),
     ])
 
 
