@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
 
 22.0.0b7
 +++++++++
