@@ -464,28 +464,25 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
     return backup_resource_group, backup_resource_group_name
 
 
-def _find_existing_backup_storage_account(storage_client, cluster_location):
+def _find_existing_backup_storage_account(storage_client, cluster_location, resource_group_name=None):
     """
-    Search for an existing AKS backup storage account in the subscription by tag.
+    Search for an existing AKS backup storage account in the requested scope by tag.
 
     Looks for storage accounts with tag: AKSAzureBackup = <location>
 
     Returns:
         tuple: (storage_account, resource_group_name) if found, (None, None) otherwise
     """
-    try:
-        # List all storage accounts in the subscription
-        for sa in storage_client.storage_accounts.list():
-            if sa.tags:
-                # Check if this SA has the AKS backup tag matching the location
-                tag_value = sa.tags.get(AKS_BACKUP_TAG_KEY)
-                if tag_value and tag_value.lower() == cluster_location.lower():
-                    # Parse resource group from the SA id
-                    sa_parts = parse_resource_id(sa.id)
-                    return sa, sa_parts['resource_group']
-    except Exception:  # pylint: disable=broad-exception-caught
-        # If we can't list storage accounts, we'll create a new one
-        pass
+    accounts = (
+        storage_client.storage_accounts.list_by_resource_group(resource_group_name)
+        if resource_group_name else storage_client.storage_accounts.list()
+    )
+    for sa in accounts:
+        if sa.tags:
+            tag_value = sa.tags.get(AKS_BACKUP_TAG_KEY)
+            if tag_value and tag_value.lower() == cluster_location.lower():
+                sa_parts = parse_resource_id(sa.id)
+                return sa, sa_parts['resource_group']
     return None, None
 
 
@@ -517,8 +514,10 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
                 cluster_name, cluster_resource_group_name)
     else:
         # Search for existing backup storage account with matching tag
-        logger.warning("Searching for existing AKS backup storage account in region %s...", cluster_location)
-        backup_storage_account, existing_rg = _find_existing_backup_storage_account(storage_client, cluster_location)
+        logger.warning("Searching for existing AKS backup storage account in resource group %s...",
+                       backup_resource_group_name)
+        backup_storage_account, existing_rg = _find_existing_backup_storage_account(
+            storage_client, cluster_location, backup_resource_group_name)
 
         if backup_storage_account:
             # Found existing storage account - reuse it
@@ -565,9 +564,9 @@ def _install_backup_extension(cmd, cluster_subscription_id,
                               cluster_resource_group_name, cluster_name,
                               backup_storage_account_name,
                               backup_storage_account_container_name,
-                              backup_resource_group_name,
                               backup_storage_account, yes=False):
     """Install backup extension on the cluster."""
+    storage_account_parts = parse_resource_id(backup_storage_account.id)
     backup_extension = _create_backup_extension(
         cmd,
         cluster_subscription_id,
@@ -575,8 +574,8 @@ def _install_backup_extension(cmd, cluster_subscription_id,
         cluster_name,
         backup_storage_account_name,
         backup_storage_account_container_name,
-        backup_resource_group_name,
-        cluster_subscription_id,
+        storage_account_parts["resource_group"],
+        storage_account_parts["subscription"],
         yes=yes)
 
     _check_and_assign_role(
@@ -810,7 +809,7 @@ def _setup_backup_vault(
         cluster_location, backup_resource_group_name, cluster_resource,
         backup_resource_group, resource_tags):
     """Create or use backup vault."""
-    from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as _BackupVaultCreate
+    from azext_dataprotection.manual.aaz_operations.backup_vault import AKSCreate as _BackupVaultCreate
 
     vault_rg = backup_resource_group_name
     if backup_strategy == 'Custom' and backup_vault_id:
@@ -1204,7 +1203,7 @@ def _setup_extension_and_storage(
             cmd, cluster_subscription_id,
             cluster_resource_group_name, cluster_name,
             sa_result[1], sa_result[2],
-            backup_resource_group_name, backup_storage_account,
+            backup_storage_account,
             yes=yes)
 
     return backup_storage_account

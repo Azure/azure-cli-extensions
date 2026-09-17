@@ -21,7 +21,8 @@ from azure.cli.core.aaz._client import AAZMgmtClient
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.cli.core.aaz.exceptions import AAZInvalidValueError
 from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
-from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as BackupVaultCreate
+from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as GeneratedBackupVaultCreate
+from azext_dataprotection.manual.aaz_operations.backup_vault import AKSCreate as BackupVaultCreate
 
 # Module under test
 from azext_dataprotection.manual.aks.aks_helper import (
@@ -38,6 +39,7 @@ from azext_dataprotection.manual.aks.aks_helper import (
     _generate_arm_id,
     _check_and_assign_role,
     _setup_storage_account,
+    _install_backup_extension,
     _find_existing_backup_resource_group,
     _find_existing_backup_storage_account,
     _check_existing_backup_instance,
@@ -366,6 +368,34 @@ class TestFindExistingBackupStorageAccount(unittest.TestCase):
         result_sa, _ = _find_existing_backup_storage_account(client, "eastus")
         self.assertIsNone(result_sa)
 
+    def test_scopes_discovery_to_resolved_backup_resource_group(self):
+        client = MagicMock()
+        client.storage_accounts.list.return_value = [self._make_sa("other-test-account", "eastus")]
+        client.storage_accounts.list_by_resource_group.return_value = []
+        result = _find_existing_backup_storage_account(client, "eastus", "owned-rg")
+        self.assertEqual(result, (None, None))
+        client.storage_accounts.list_by_resource_group.assert_called_once_with("owned-rg")
+        client.storage_accounts.list.assert_not_called()
+
+    def test_reuses_matching_account_in_requested_scope(self):
+        account = self._make_sa(
+            "owned", "EASTUS",
+            f"/subscriptions/{SUB_ID}/resourceGroups/owned-rg/providers/Microsoft.Storage/storageAccounts/owned",
+        )
+        client = MagicMock()
+        client.storage_accounts.list_by_resource_group.return_value = [account]
+        self.assertEqual(_find_existing_backup_storage_account(client, "eastus", "owned-rg"),
+                         (account, "owned-rg"))
+        client.storage_accounts.list.assert_not_called()
+
+    def test_discovery_errors_are_not_treated_as_missing_accounts(self):
+        client = MagicMock()
+        error = HttpResponseError("Cannot list storage accounts")
+        client.storage_accounts.list_by_resource_group.side_effect = error
+        with self.assertRaises(HttpResponseError) as raised:
+            _find_existing_backup_storage_account(client, "eastus", "owned-rg")
+        self.assertIs(raised.exception, error)
+
 
 # ---------------------------------------------------------------------------
 # _setup_storage_account
@@ -379,7 +409,7 @@ class TestSetupStorageAccount(unittest.TestCase):
         from azure.mgmt.storage.models import StorageAccountCreateParameters
 
         storage_client = MagicMock()
-        storage_client.storage_accounts.list.return_value = []
+        storage_client.storage_accounts.list_by_resource_group.return_value = []
         created_storage_account = MagicMock()
         created_storage_account.id = (
             f"/subscriptions/{SUB_ID}/resourceGroups/backup-rg"
@@ -415,6 +445,39 @@ class TestSetupStorageAccount(unittest.TestCase):
         self.assertEqual(storage_params.tags[AKS_BACKUP_TAG_KEY], "eastus")
         self.assertEqual(storage_params.tags["env"], "test")
         storage_client.blob_containers.create.assert_called_once()
+        storage_client.storage_accounts.list_by_resource_group.assert_called_once_with("backup-rg")
+        storage_client.storage_accounts.list.assert_not_called()
+
+    @patch("azext_dataprotection.manual.aks.aks_helper.get_mgmt_service_client")
+    def test_discovery_error_prevents_automatic_creation(self, mock_get_client):
+        client = mock_get_client.return_value
+        client.storage_accounts.list_by_resource_group.side_effect = HttpResponseError("Authorization failed")
+        with self.assertRaisesRegex(HttpResponseError, "Authorization failed"):
+            _setup_storage_account(
+                MagicMock(), SUB_ID, None, None, "backup-rg", LOCATION, CLUSTER_NAME, CLUSTER_RG, None)
+        client.storage_accounts.begin_create.assert_not_called()
+        client.blob_containers.create.assert_not_called()
+
+
+class TestInstallBackupExtension(unittest.TestCase):
+    @patch("azext_dataprotection.manual.aks.aks_helper._check_and_assign_role")
+    @patch("azext_dataprotection.manual.aks.aks_helper._create_backup_extension")
+    def test_uses_storage_account_resource_group_not_cluster_or_vault_group(self, create, assign_role):
+        cmd = MagicMock()
+        account = MagicMock(id=(
+            f"/subscriptions/{SUB_ID}/resourceGroups/storage-rg"
+            "/providers/Microsoft.Storage/storageAccounts/storage"
+        ))
+        extension = create.return_value
+        extension.aks_assigned_identity.principal_id = "extension-principal"
+        result = _install_backup_extension(
+            cmd, SUB_ID, CLUSTER_RG, CLUSTER_NAME, "storage", "container", account, yes=True)
+        self.assertIs(result, extension)
+        create.assert_called_once_with(
+            cmd, SUB_ID, CLUSTER_RG, CLUSTER_NAME, "storage", "container", "storage-rg", SUB_ID, yes=True)
+        assign_role.assert_called_once_with(
+            cmd, role="Storage Blob Data Contributor", assignee_object_id="extension-principal",
+            scope=account.id, identity_name="backup extension identity")
 
 
 # ---------------------------------------------------------------------------
@@ -628,6 +691,7 @@ class TestBackupVaultAAZ(unittest.TestCase):
                 request = self.transport.send.call_args.args[0]
                 self.assertEqual(request.method, "PUT")
                 self.assertIn(f"/subscriptions/{SUB_ID}/resourceGroups/{self.backup_rg}/", request.url)
+                self.assertIn("api-version=2025-07-01", request.url)
                 body = json.loads(request.body)
                 self.assertEqual(body["location"], LOCATION)
                 self.assertEqual(body["identity"], {"type": "SystemAssigned"})
@@ -650,6 +714,23 @@ class TestBackupVaultAAZ(unittest.TestCase):
             self._create({"type": "GeoRedundant"})
         self.transport.send.assert_not_called()
 
+    def test_general_vault_create_keeps_new_api_and_cost_management(self):
+        self.responses = [(200, self.vault)]
+        GeneratedBackupVaultCreate(cli_ctx=self.cmd.cli_ctx)(command_args={
+            "vault_name": self.vault_name,
+            "resource_group": self.backup_rg,
+            "subscription": SUB_ID,
+            "location": LOCATION,
+            "storage_setting": [{"type": "GeoRedundant", "datastore-type": "VaultStore"}],
+            "soft_delete_state": "AlwaysOn",
+            "cost_management_granularity": "ProtectedItemLevel",
+        }).result()
+        request = self.transport.send.call_args.args[0]
+        self.assertIn("api-version=2026-06-01", request.url)
+        props = json.loads(request.body)["properties"]
+        self.assertEqual(props["securitySettings"]["softDeleteSettings"]["state"], "AlwaysOn")
+        self.assertEqual(props["costManagementSettings"], {"granularityLevel": "ProtectedItemLevel"})
+
     def test_create_polls_until_service_reports_success(self):
         updating = dict(self.vault, properties={"provisioningState": "Updating"})
         self.responses = [(201, updating), (200, self.vault)]
@@ -658,7 +739,7 @@ class TestBackupVaultAAZ(unittest.TestCase):
         self.assertEqual([call.args[0].method for call in self.transport.send.call_args_list], ["PUT", "GET"])
 
     def test_create_follows_async_operation_for_all_storage_types(self):
-        resource_url = "https://management.azure.com" + self.vault["id"] + "?api-version=2026-06-01"
+        resource_url = "https://management.azure.com" + self.vault["id"] + "?api-version=2025-07-01"
         operation_url = "https://management.azure.com" + self.vault["id"] + "/operationStatus/test-operation"
         for storage_type in ["GeoRedundant", "ZoneRedundant", "LocallyRedundant"]:
             for initial_status in [201, 202]:
