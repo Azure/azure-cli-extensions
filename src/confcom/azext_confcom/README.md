@@ -768,7 +768,7 @@ A Windows-only, per-container list of registry changes that the container is per
 
 ## mapped_directories
 
-Backs the mapped_directory_mount/mapped_directory_unmount enforcement points (a dynamic ModifyGuestSettings VSMB-share hot-add on Windows). It is a list of directories the container group may mount, each with a `containerPath` (which actually refers to the path in the UVM) and an optional `readOnly` flag. There is no ARM property for it, so it is only settable through the `--input` JSON (`mappedDirectories`). The wiring and the list are emitted together only when the list is non-empty; an undeclared hot-add is denied by the framework either way.
+`mappedDirectories` is a Windows/C-WCOW-only, top-level `--input` field that authorizes specified dynamic VSMB mapped-directory operations in the utility VM. Each entry has a `containerPath` (the target path in the utility VM) and an optional `readOnly` flag. There is no corresponding ARM property. Generated Windows policies always include the `mapped_directory_mount` and `mapped_directory_unmount` enforcement bindings. If the field is omitted or empty, the generated allow-list is empty and no mapped-directory operation is authorized.
 
 ## Microsoft Azure CLI 'confcom acifragmentgen' Extension Examples
 

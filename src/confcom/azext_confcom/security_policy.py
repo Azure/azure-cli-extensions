@@ -150,12 +150,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         else:
             self._allow_registry_changes_dropping = False
 
-        # mapped_directories backs the mapped_directory_mount/unmount enforcement
-        # points (a dynamic ModifyGuestSettings VSMB-share hot-add on Windows).
-        # It has no ARM property and is settable only through the --input JSON.
-        # The wiring and this list are emitted together only when the list is
-        # non-empty (see _get_mapped_directory_rego); an undeclared hot-add is
-        # denied by the framework either way.
+        # mapped_directories is the top-level --input allow-list for dynamic
+        # VSMB mapped-directory operations in a Windows utility VM. Generated
+        # Windows policies always include the corresponding enforcement
+        # bindings; an omitted or empty list authorizes no such operations.
         self._mapped_directories = mapped_directories or []
 
         self.version = case_insensitive_dict_get(
