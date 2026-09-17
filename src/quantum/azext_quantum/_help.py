@@ -356,6 +356,8 @@ helps['quantum workspace'] = """
 helps['quantum workspace clear'] = """
     type: command
     short-summary: Clear the default Azure Quantum workspace.
+    long-summary: |
+        Clear the saved resource-group and workspace-name defaults. Other settings, including the default subscription, location, and target, are unchanged.
     examples:
       - name: Clear the default Azure Quantum workspace if previously set.
         text: |-
@@ -423,6 +425,12 @@ helps['quantum workspace quotas'] = """
 helps['quantum workspace set'] = """
     type: command
     short-summary: Select a default Azure Quantum workspace for future commands.
+    long-summary: |
+        Save the resource group and workspace name as persistent Azure CLI flag defaults. The resource-group default is shared with other Azure CLI commands. These settings persist across terminal sessions.
+
+        Explicit --resource-group and --workspace-name arguments override their respective defaults independently. Job commands targeting another workspace do not change the saved defaults.
+
+        This command does not change the default subscription or location. Use 'az quantum workspace clear' to clear the saved resource-group and workspace-name defaults.
     examples:
       - name: Set the default Azure Quantum workspace.
         text: |-

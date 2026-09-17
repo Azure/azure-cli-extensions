@@ -3,9 +3,15 @@
 Release History
 ===============
 
-1.0.0b28
+1.0.0b29
 ++++++++++++++
 * Clarified which suite-offer and workspace quota commands apply to V2 providers and workspaces.
+
+1.0.0b28
+++++++++++++++
+* Fixed an issue where setting a default workspace with ``az quantum workspace set`` prevented commands from accessing other workspaces.
+* [BREAKING CHANGE] ``az quantum workspace update`` no longer changes the saved default workspace. Use ``az quantum workspace set`` to save the default workspace.
+* Fixed ``az quantum workspace delete`` clearing the saved default workspace in some cases where it wasn't the workspace that was deleted.
 
 1.0.0b27
 ++++++++++++++

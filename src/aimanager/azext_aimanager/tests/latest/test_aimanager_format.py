@@ -81,14 +81,14 @@ class TestNamespaceTableFormat(unittest.TestCase):
             },
         }
 
-    def test_table_format_columns(self):
+    def test_table_format_columns_namespace(self):
         result = namespace_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
             ["Name", "ProvisioningState", "Age", "Labels"],
         )
 
-    def test_table_format_values(self):
+    def test_table_format_values_namespace(self):
         result = namespace_table_format(self._sample())
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "Succeeded")
@@ -96,21 +96,21 @@ class TestNamespaceTableFormat(unittest.TestCase):
         # Age is derived from a fixed 2020 timestamp, so it should be reported in days.
         self.assertIn("d", result["Age"])
 
-    def test_table_format_missing_fields(self):
+    def test_table_format_missing_fields_namespace(self):
         result = namespace_table_format({})
         self.assertEqual(result["Name"], "")
         self.assertEqual(result["ProvisioningState"], "")
         self.assertEqual(result["Age"], "")
         self.assertEqual(result["Labels"], "")
 
-    def test_table_format_null_properties(self):
+    def test_table_format_null_properties_namespace(self):
         result = namespace_table_format({"name": "ns1", "properties": None})
         self.assertEqual(result["Name"], "ns1")
         self.assertEqual(result["ProvisioningState"], "")
         self.assertEqual(result["Age"], "")
         self.assertEqual(result["Labels"], "")
 
-    def test_list_table_format(self):
+    def test_list_table_format_namespace(self):
         results = namespace_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["Name"], "ns1")
@@ -145,7 +145,7 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
             },
         }
 
-    def test_table_format_columns(self):
+    def test_table_format_columns_modeldeployment(self):
         result = modeldeployment_table_format(self._sample())
         self.assertEqual(
             list(result.keys()),
@@ -153,7 +153,7 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
              "Age", "ModelId", "Endpoint"],
         )
 
-    def test_table_format_values(self):
+    def test_table_format_values_modeldeployment(self):
         result = modeldeployment_table_format(self._sample())
         self.assertEqual(result["Namespace"], "ns1")
         self.assertEqual(result["Name"], "md1")
@@ -178,7 +178,7 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         self.assertEqual(result["ModelId"], "")
         self.assertEqual(result["Age"], "")
 
-    def test_list_table_format(self):
+    def test_list_table_format_modeldeployment(self):
         results = modeldeployment_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["ModelId"], "meta-llama/Llama-3-8B")

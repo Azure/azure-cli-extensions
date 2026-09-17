@@ -25,6 +25,7 @@ from azext_aks_preview._format import (
     aks_alert_config_show_table_format,
 )
 from azext_aks_preview._validators import validate_action_group_id
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import AlertConfiguration
 
 VALID_ACTION_GROUP_ID = (
     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg"
@@ -110,6 +111,7 @@ class TestAlertConfigTableFormat(unittest.TestCase):
 class TestAlertConfigAdd(unittest.TestCase):
     def _client(self):
         client = MagicMock()
+        client.get.side_effect = SdkResourceNotFoundError("nope")
         client.begin_create_or_update.return_value = "poller"
         return client
 
@@ -287,6 +289,22 @@ class TestAlertConfigUpdate(unittest.TestCase):
 
 
 class TestAlertConfigCustomWrappers(unittest.TestCase):
+    def test_add_rejects_missing_name_before_any_client_call(self):
+        for name in ("", None):
+            with self.subTest(name=name):
+                client = MagicMock()
+                client.get.return_value = AlertConfiguration({"value": []})
+
+                with self.assertRaisesRegex(
+                    RequiredArgumentMissingError,
+                    "Please specify --name for the alert configuration.",
+                ):
+                    aks_custom.aks_alert_config_add(
+                        None, client, "rg", "cluster", name, mode="Disabled"
+                    )
+
+                self.assertEqual(client.mock_calls, [])
+
     def test_delete_calls_begin_delete(self):
         client = MagicMock()
         aks_custom.aks_alert_config_delete(
@@ -319,15 +337,20 @@ class TestAlertConfigCustomWrappers(unittest.TestCase):
             aks_custom.aks_alert_config_add(
                 None, client, "rg", "cluster", "myalerts", mode="Managed"
             )
+        client.get.assert_called_once_with("rg", "cluster", "myalerts", headers={})
         client.begin_create_or_update.assert_not_called()
 
     def test_add_proceeds_when_config_absent(self):
-        client = MagicMock()
-        client.get.side_effect = SdkResourceNotFoundError("nope")
-        aks_custom.aks_alert_config_add(
-            None, client, "rg", "cluster", "myalerts", mode="Managed"
-        )
-        client.begin_create_or_update.assert_called_once()
+        for name in ("myalerts", "a", "a" * 63, "a-b_c"):
+            with self.subTest(name=name):
+                client = MagicMock()
+                client.get.side_effect = SdkResourceNotFoundError("nope")
+                aks_custom.aks_alert_config_add(
+                    None, client, "rg", "cluster", name, mode="Managed"
+                )
+                client.get.assert_called_once_with("rg", "cluster", name, headers={})
+                client.begin_create_or_update.assert_called_once()
+                self.assertEqual(client.begin_create_or_update.call_args[0][:3], ("rg", "cluster", name))
 
 
 if __name__ == "__main__":
