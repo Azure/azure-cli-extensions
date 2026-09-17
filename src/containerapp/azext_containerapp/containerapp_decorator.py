@@ -50,7 +50,7 @@ from knack.util import CLIError
 
 from msrest.exceptions import DeserializationError
 
-from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
+from ._clients import ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception, get_linker_client
 from ._models import (
     RegistryCredentials as RegistryCredentialsModel,
@@ -1255,7 +1255,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         environment_type = self.get_argument_environment_type()
         if not env and not environment_type:
-            return ManagedEnvironmentClient
+            return ManagedEnvironmentPreviewClient
 
         parsed_env = parse_resource_id(env)
 
