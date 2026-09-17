@@ -28,8 +28,12 @@ def get_acr_tasks_models(cli_ctx):
     tasks_resource_type = getattr(
         ResourceType,
         "MGMT_CONTAINERREGISTRYTASKS",
-        ResourceType.MGMT_CONTAINERREGISTRY)
-    return get_sdk(cli_ctx, tasks_resource_type, "models")
+        None)
+    if tasks_resource_type is not None:
+        return get_sdk(cli_ctx, tasks_resource_type, "models")
+
+    return ContainerRegistryManagementClient.models(
+        ACR_API_VERSION_2019_06_01_PREVIEW)
 
 
 def cf_acr(cli_ctx, *_) -> ContainerRegistryManagementClient:

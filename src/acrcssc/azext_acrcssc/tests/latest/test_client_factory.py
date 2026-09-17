@@ -104,21 +104,18 @@ class TestAcrTasksClientFactory(unittest.TestCase):
             mock.sentinel.tasks_resource_type,
             "models")
 
-    def test_task_models_fall_back_to_legacy_resource_type(self):
+    def test_task_models_match_legacy_client_api_version(self):
         resource_types = SimpleNamespace(
             MGMT_CONTAINERREGISTRY=mock.sentinel.legacy_resource_type)
 
         with mock.patch.object(_client_factory, "ResourceType", resource_types), \
                 mock.patch.object(
-                    _client_factory,
-                    "get_sdk",
+                    _client_factory.ContainerRegistryManagementClient,
+                    "models",
                     create=True,
-                    return_value=mock.sentinel.models) as get_sdk:
+                    return_value=mock.sentinel.models) as get_models:
             models = _client_factory.get_acr_tasks_models(mock.sentinel.cli_ctx)
 
         self.assertIs(models, mock.sentinel.models)
-        get_sdk.assert_called_once_with(
-            mock.sentinel.cli_ctx,
-            mock.sentinel.legacy_resource_type,
-            "models")
-
+        get_models.assert_called_once_with(
+            ACR_API_VERSION_2019_06_01_PREVIEW)
