@@ -17,7 +17,7 @@ from urllib.parse import urlparse, parse_qs
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError, ResourceNotFoundError as CliResourceNotFoundError
-from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as AzureResourceNotFoundError
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, run_cleanup_commands
 from ...commands import transform_output
@@ -37,6 +37,45 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
+
+    def _cmd_with_retry(self, command, retry_error_code, retries=3, delay=10):
+        for attempt in range(retries):
+            try:
+                return self.cmd(command)
+            except HttpResponseError as error:
+                error_code = getattr(getattr(error, 'error', None), 'code', None)
+                if (error_code != retry_error_code and f'({retry_error_code})' not in str(error)) \
+                        or attempt == retries - 1:
+                    raise
+                time.sleep(delay)
+
+    @unittest.mock.patch('azext_quantum.tests.latest.test_quantum_jobs.time.sleep')
+    def test_cmd_with_retry(self, mock_sleep):
+        command_result = unittest.mock.Mock()
+        transient_error = HttpResponseError('(StorageAccountInaccessible) transient error')
+        with unittest.mock.patch.object(
+                self, 'cmd', side_effect=[transient_error, transient_error, command_result]) as mock_cmd:
+            self.assertIs(
+                self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10),
+                command_result,
+            )
+        self.assertEqual(mock_cmd.call_count, 3)
+        self.assertEqual(mock_sleep.call_args_list, [unittest.mock.call(10), unittest.mock.call(10)])
+
+        mock_sleep.reset_mock()
+        with unittest.mock.patch.object(self, 'cmd', side_effect=transient_error) as mock_cmd:
+            with self.assertRaises(HttpResponseError):
+                self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10)
+        self.assertEqual(mock_cmd.call_count, 3)
+        self.assertEqual(mock_sleep.call_args_list, [unittest.mock.call(10), unittest.mock.call(10)])
+
+        mock_sleep.reset_mock()
+        non_retryable_error = HttpResponseError('(AuthorizationFailed) access denied')
+        with unittest.mock.patch.object(self, 'cmd', side_effect=non_retryable_error) as mock_cmd:
+            with self.assertRaises(HttpResponseError):
+                self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10)
+        mock_cmd.assert_called_once_with('az quantum job submit')
+        mock_sleep.assert_not_called()
 
     @live_only()
     def test_jobs(self):
@@ -454,13 +493,16 @@ class QuantumJobsScenarioTest(ScenarioTest):
         try:
             self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
 
-            # Wait for role assignments to propagate so the new workspace can access the storage account
-            time.sleep(60)
-
             self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
 
             # Submit a job to Rigetti and look for SAS tokens in URIs in the output
-            results = self.cmd(f"az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file {input_file} --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            # Poll while the new workspace's storage role assignment propagates.
+            results = self._cmd_with_retry(
+                f"az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file {input_file} --job-output-format rigetti.quil-results.v1 -o json",
+                retry_error_code='StorageAccountInaccessible',
+                retries=13,
+                delay=10,
+            ).get_output_in_json()
             self.assert_not_contains_standard_sas_params(results["containerUri"])
             self.assert_not_contains_standard_sas_params(results["inputDataUri"])
             self.assert_not_contains_standard_sas_params(results["outputDataUri"])
@@ -497,8 +539,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
                 with open(input_file, 'rb') as expected_file, open(downloaded['path'], 'rb') as actual_file:
                     self.assertEqual(actual_file.read(), expected_file.read())
 
-            # Update the submitted job's name, priority, and tags, then confirm all three changes were applied
-            updated_job = self.cmd(f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json').get_output_in_json()
+            # Update the submitted job's name, priority, and tags, then confirm all three changes were applied.
+            # The service occasionally returns a transient InternalError right after job creation; retry a few times.
+            updated_job = self._cmd_with_retry(
+                f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json',
+                retry_error_code='InternalError',
+            ).get_output_in_json()
             self.assertEqual(updated_job["name"], "Updated job name")
             self.assertEqual(updated_job["priority"], "High")
             self.assertEqual(updated_job["tags"], ["tag1", "tag2"])
