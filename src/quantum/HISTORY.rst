@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b28
+++++++++++++++
+* Clarified which suite-offer and workspace quota commands apply to V2 providers and workspaces.
+
 1.0.0b27
 ++++++++++++++
 * [BREAKING CHANGE] Renamed ``az quantum workspace user create/delete`` to ``add/remove`` and limited both commands to users identified by email address. The ``--assignee``, ``--assignee-object-id``, ``--assignee-principal-type``, and ``--role`` parameters are replaced by ``--email``.
