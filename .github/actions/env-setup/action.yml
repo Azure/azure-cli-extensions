@@ -48,6 +48,6 @@ runs:
         pip install --upgrade "git+https://github.com/Azure/azure-cli-dev-tools.git@bb196e370ef0c0c8fcb01ab2e73bf2db7b5821a2#egg=azdev"
         azdev --version
         cd ../
-        azdev setup -c azure-cli -r azure-cli-extensions --debug
+        azdev setup -c azure-cli -r k8s-extension --debug
         az --version
         pip list -v
