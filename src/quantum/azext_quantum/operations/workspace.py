@@ -73,7 +73,9 @@ _WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
 
 
 class WorkspaceInfo:
-    def __init__(self, cmd, resource_group_name=None, workspace_name=None, endpoint=None):
+    _ENDPOINT_CACHE_KEY = 'workspace_endpoint_cache'
+
+    def __init__(self, cmd, resource_group_name=None, workspace_name=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
@@ -88,7 +90,23 @@ class WorkspaceInfo:
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
-        self.endpoint = select_value('endpoint', endpoint)
+        self.endpoint = self._get_cached_endpoint(cmd)
+
+    def _normalized_resource_id(self):
+        return _get_workspace_resource_id(self).lower()
+
+    def _get_cached_endpoint(self, cmd):
+        value = cmd.cli_ctx.config.get('quantum', self._ENDPOINT_CACHE_KEY, None)
+        if not value:
+            return None
+        try:
+            cache = json.loads(value)
+        except ValueError:
+            return None
+        if not isinstance(cache, dict) or cache.get('resource_id') != self._normalized_resource_id():
+            return None
+        endpoint = cache.get('endpoint')
+        return endpoint if isinstance(endpoint, str) and endpoint else None
 
     def clear(self):
         self.subscription = ''
@@ -97,13 +115,22 @@ class WorkspaceInfo:
         self.endpoint = ''
 
     def save(self, cmd, endpoint=''):
+        """
+        Persist this workspace's group/name defaults in global CLI config.
+
+        Cache the supplied endpoint with the workspace identity, or remove the cache if empty.
+        Local configuration is left unchanged.
+        """
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        # Save in the global [defaults] section of the .azure\config file
-        with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
+        with ConfiguredDefaultSetter(cmd.cli_ctx.config, use_local_config=False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
-            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'endpoint', endpoint)
+            if endpoint:
+                cache = {'resource_id': self._normalized_resource_id(), 'endpoint': endpoint}
+                cmd.cli_ctx.config.set_value('quantum', self._ENDPOINT_CACHE_KEY, json.dumps(cache))
+            else:
+                cmd.cli_ctx.config.remove_option('quantum', self._ENDPOINT_CACHE_KEY)
 
 
 def _show_tip(msg):
@@ -537,10 +564,11 @@ def delete(cmd, resource_group_name, workspace_name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
-    curr_ws = WorkspaceInfo(cmd)
-    if (curr_ws.resource_group == info.resource_group and curr_ws.name == info.name):
-        curr_ws.clear()
-        curr_ws.save(cmd)
+    default_ws = WorkspaceInfo(cmd)
+    if (info.endpoint and
+            (default_ws.resource_group or '').lower() == info.resource_group.lower() and
+            (default_ws.name or '').lower() == info.name.lower()):
+        clear(cmd)
     # Get updated information from the affected workspace
     ws = client.get(info.resource_group, info.name)
     return ws
@@ -657,7 +685,7 @@ def _merge_workspace_quotas(workspace, usages, v1_quotas=None):
 
 def set(cmd, workspace_name, resource_group_name):
     """
-    Set the default Azure Quantum workspace.
+    Save resource-group and workspace-name defaults and the workspace's data-plane endpoint cache.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -719,7 +747,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
 
 def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, quota=None):
     """
-    Update the default Azure Quantum workspace.
+    Update the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -746,7 +774,6 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     lropoller = client.begin_create_or_update(info.resource_group, info.name, ws)
     if lropoller:
         ws = lropoller.result()
-        info.save(cmd, ws.properties.endpoint_uri)
     return ws
 
 
