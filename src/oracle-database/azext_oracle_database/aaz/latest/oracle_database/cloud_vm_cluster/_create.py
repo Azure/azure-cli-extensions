@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}", "2026-06-01"],
         ]
     }
 
@@ -69,7 +69,7 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.cloud_exadata_infrastructure_id = AAZStrArg(
+        _args_schema.cloud_exadata_infrastructure_id = AAZResourceIdArg(
             options=["--exa-infra-id", "--cloud-exadata-infrastructure-id"],
             arg_group="Properties",
             help="Cloud Exadata Infrastructure ID",
@@ -127,7 +127,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The domain name for the cloud VM cluster.",
         )
-        _args_schema.exascale_db_storage_vault_id = AAZStrArg(
+        _args_schema.exascale_db_storage_vault_id = AAZResourceIdArg(
             options=["--exascale-db-storage-vault-id"],
             arg_group="Properties",
             help="Exadata Database Storage Vault ID",
@@ -141,10 +141,12 @@ class Create(AAZCommand):
             options=["--hostname"],
             arg_group="Properties",
             help="The hostname for the cloud VM cluster.",
-            fmt=AAZStrArgFormat(
-                max_length=23,
-                min_length=1,
-            ),
+        )
+        _args_schema.is_accelerated_network_enabled = AAZBoolArg(
+            options=["--is-accelerated-network-enabled"],
+            arg_group="Properties",
+            help="Indicates if the Accelerated Networking feature is enabled or disabled for provisioning an Exadata VM cluster. The default value is: false.",
+            default=False,
         )
         _args_schema.is_local_backup_enabled = AAZBoolArg(
             options=["--local-backup-enabled", "--is-local-backup-enabled"],
@@ -169,6 +171,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The memory to be allocated in GBs.",
         )
+        _args_schema.network_anchor_id = AAZResourceIdArg(
+            options=["--network-anchor-id"],
+            arg_group="Properties",
+            help="Azure Network Anchor ID",
+        )
         _args_schema.nsg_cidrs = AAZListArg(
             options=["--nsg-cidrs"],
             arg_group="Properties",
@@ -178,6 +185,25 @@ class Create(AAZCommand):
             options=["--ocpu-count"],
             arg_group="Properties",
             help="The number of OCPU cores to enable on the cloud VM cluster. Only 1 decimal place is allowed for the fractional part.",
+        )
+        _args_schema.proximity_placement_group = AAZObjectArg(
+            options=["--proximity-placement-group"],
+            arg_group="Properties",
+            help="Proximity placement group settings",
+        )
+        _args_schema.reco_storage_percentage = AAZIntArg(
+            options=["--reco-storage-percentage"],
+            arg_group="Properties",
+            help="The percentage assigned to RECO storage (database redo logs, archive logs, and recovery manager backups). See [Storage Configuration](/Content/Database/Concepts/exaoverview.htm#Exadata) in the Exadata documentation for details on the impact of the configuration settings on storage.",
+            fmt=AAZIntArgFormat(
+                maximum=100,
+                minimum=0,
+            ),
+        )
+        _args_schema.resource_anchor_id = AAZResourceIdArg(
+            options=["--resource-anchor-id"],
+            arg_group="Properties",
+            help="Azure Resource Anchor ID",
         )
         _args_schema.scan_listener_port_tcp = AAZIntArg(
             options=["--scan-listener-port-tcp"],
@@ -189,12 +215,21 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The TCPS Single Client Access Name (SCAN) port. The default port is 2484.",
         )
+        _args_schema.sparse_storage_percentage = AAZIntArg(
+            options=["--sparse-storage-percentage"],
+            arg_group="Properties",
+            help="The percentage assigned to SPARSE storage (Exadata snapshots). See [Storage Configuration](/Content/Database/Concepts/exaoverview.htm#Exadata) in the Exadata documentation for details on the impact of the configuration settings on storage.",
+            fmt=AAZIntArgFormat(
+                maximum=100,
+                minimum=0,
+            ),
+        )
         _args_schema.ssh_public_keys = AAZListArg(
             options=["--ssh-public-keys"],
             arg_group="Properties",
             help="The public key portion of one or more key pairs used for SSH access to the cloud VM cluster.",
         )
-        _args_schema.subnet_id = AAZStrArg(
+        _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="Properties",
             help="Client subnet",
@@ -217,7 +252,7 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.vnet_id = AAZStrArg(
+        _args_schema.vnet_id = AAZResourceIdArg(
             options=["--vnet-id"],
             arg_group="Properties",
             help="VNET for network connectivity",
@@ -293,6 +328,23 @@ class Create(AAZCommand):
                 maximum=65535,
                 minimum=1,
             ),
+        )
+
+        proximity_placement_group = cls._args_schema.proximity_placement_group
+        proximity_placement_group.entity_type_intended_to_use = AAZStrArg(
+            options=["entity-type-intended-to-use"],
+            help="Entity type intended to use the proximity placement group",
+            required=True,
+            enum={"CloudExadataInfrastructure": "CloudExadataInfrastructure", "OtherProducts": "OtherProducts"},
+        )
+        proximity_placement_group.proximity_anchor_id = AAZStrArg(
+            options=["proximity-anchor-id"],
+            help="Proximity Anchor ID",
+        )
+        proximity_placement_group.proximity_placement_group_id = AAZStrArg(
+            options=["proximity-placement-group-id"],
+            help="Proximity placement group ID",
+            required=True,
         )
 
         ssh_public_keys = cls._args_schema.ssh_public_keys
@@ -400,7 +452,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -426,7 +478,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -445,14 +497,20 @@ class Create(AAZCommand):
                 properties.set_prop("exascaleDbStorageVaultId", AAZStrType, ".exascale_db_storage_vault_id")
                 properties.set_prop("giVersion", AAZStrType, ".gi_version", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("hostname", AAZStrType, ".hostname", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("isAcceleratedNetworkEnabled", AAZBoolType, ".is_accelerated_network_enabled")
                 properties.set_prop("isLocalBackupEnabled", AAZBoolType, ".is_local_backup_enabled")
                 properties.set_prop("isSparseDiskgroupEnabled", AAZBoolType, ".is_sparse_diskgroup_enabled")
                 properties.set_prop("licenseModel", AAZStrType, ".license_model")
                 properties.set_prop("memorySizeInGbs", AAZIntType, ".memory_size_in_gbs")
+                properties.set_prop("networkAnchorId", AAZStrType, ".network_anchor_id")
                 properties.set_prop("nsgCidrs", AAZListType, ".nsg_cidrs")
                 properties.set_prop("ocpuCount", AAZFloatType, ".ocpu_count")
+                properties.set_prop("proximityPlacementGroup", AAZObjectType, ".proximity_placement_group")
+                properties.set_prop("recoStoragePercentage", AAZIntType, ".reco_storage_percentage")
+                properties.set_prop("resourceAnchorId", AAZStrType, ".resource_anchor_id")
                 properties.set_prop("scanListenerPortTcp", AAZIntType, ".scan_listener_port_tcp")
                 properties.set_prop("scanListenerPortTcpSsl", AAZIntType, ".scan_listener_port_tcp_ssl")
+                properties.set_prop("sparseStoragePercentage", AAZIntType, ".sparse_storage_percentage")
                 properties.set_prop("sshPublicKeys", AAZListType, ".ssh_public_keys", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("systemVersion", AAZStrType, ".system_version")
@@ -483,6 +541,12 @@ class Create(AAZCommand):
             if destination_port_range is not None:
                 destination_port_range.set_prop("max", AAZIntType, ".max", typ_kwargs={"flags": {"required": True}})
                 destination_port_range.set_prop("min", AAZIntType, ".min", typ_kwargs={"flags": {"required": True}})
+
+            proximity_placement_group = _builder.get(".properties.proximityPlacementGroup")
+            if proximity_placement_group is not None:
+                proximity_placement_group.set_prop("entityTypeIntendedToUse", AAZStrType, ".entity_type_intended_to_use", typ_kwargs={"flags": {"required": True}})
+                proximity_placement_group.set_prop("proximityAnchorId", AAZStrType, ".proximity_anchor_id")
+                proximity_placement_group.set_prop("proximityPlacementGroupId", AAZStrType, ".proximity_placement_group_id", typ_kwargs={"flags": {"required": True}})
 
             ssh_public_keys = _builder.get(".properties.sshPublicKeys")
             if ssh_public_keys is not None:
@@ -521,7 +585,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -595,6 +661,9 @@ class Create(AAZCommand):
                 serialized_name="iormConfigCache",
                 flags={"read_only": True},
             )
+            properties.is_accelerated_network_enabled = AAZBoolType(
+                serialized_name="isAcceleratedNetworkEnabled",
+            )
             properties.is_local_backup_enabled = AAZBoolType(
                 serialized_name="isLocalBackupEnabled",
             )
@@ -623,6 +692,9 @@ class Create(AAZCommand):
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
             )
+            properties.network_anchor_id = AAZStrType(
+                serialized_name="networkAnchorId",
+            )
             properties.node_count = AAZIntType(
                 serialized_name="nodeCount",
                 flags={"read_only": True},
@@ -648,6 +720,15 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.proximity_placement_group = AAZObjectType(
+                serialized_name="proximityPlacementGroup",
+            )
+            properties.reco_storage_percentage = AAZIntType(
+                serialized_name="recoStoragePercentage",
+            )
+            properties.resource_anchor_id = AAZStrType(
+                serialized_name="resourceAnchorId",
+            )
             properties.scan_dns_name = AAZStrType(
                 serialized_name="scanDnsName",
                 flags={"read_only": True},
@@ -668,6 +749,9 @@ class Create(AAZCommand):
             )
             properties.shape = AAZStrType(
                 flags={"read_only": True},
+            )
+            properties.sparse_storage_percentage = AAZIntType(
+                serialized_name="sparseStoragePercentage",
             )
             properties.ssh_public_keys = AAZListType(
                 serialized_name="sshPublicKeys",
@@ -775,6 +859,19 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             destination_port_range.min = AAZIntType(
+                flags={"required": True},
+            )
+
+            proximity_placement_group = cls._schema_on_200_201.properties.proximity_placement_group
+            proximity_placement_group.entity_type_intended_to_use = AAZStrType(
+                serialized_name="entityTypeIntendedToUse",
+                flags={"required": True},
+            )
+            proximity_placement_group.proximity_anchor_id = AAZStrType(
+                serialized_name="proximityAnchorId",
+            )
+            proximity_placement_group.proximity_placement_group_id = AAZStrType(
+                serialized_name="proximityPlacementGroupId",
                 flags={"required": True},
             )
 

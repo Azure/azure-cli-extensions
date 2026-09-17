@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an Autonomous Database backup
+    """Delete a AutonomousDatabaseBackup
 
-    :example: Delete an Autonomous Database backup
-        az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name> --yes
+    :example: ADBS Backup Delete
+        az oracle-database autonomous-database backup delete --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2026-06-01"],
         ]
     }
 
@@ -48,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="Azure backup resource name. Use the final segment of the id returned by backup list, not the full Azure resource ID.",
+            help="AutonomousDatabaseBackup id",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -161,7 +161,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

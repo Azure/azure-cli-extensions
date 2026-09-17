@@ -15,30 +15,16 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database create",
 )
 class Create(AAZCommand):
-    """Create an Autonomous Database
+    """Create a AutonomousDatabase
 
-    Use one create mode option per request. The database type is inferred from --regular, --clone,
-    --clone-from-backup-timestamp, or --cross-region-disaster-recovery. Do not pass dataBaseType
-    directly. Clone and disaster recovery fields must be nested inside the matching create mode
-    option.
-
-    :example: Create an Autonomous Database
-        az oracle-database autonomous-database create --location <location> --autonomousdatabasename <name> --resource-group <resource_group> --subnet-id <subnet_id> --display-name <display_name> --compute-model ECPU --compute-count <compute_count> --data-storage-size-in-gbs <storage_size> --license-model <BringYourOwnLicense/LicenseIncluded> --db-workload OLTP --admin-password <password> --db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --regular
-
-    :example: Clone from an existing Autonomous Database
-        az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyCloneDB --display-name MyCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone clone-type=Full source=Database source-id=<source_autonomous_database_id>
-
-    :example: Clone from a backup timestamp
-        az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyBackupCloneDB --display-name MyBackupCloneDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 32 --license-model BringYourOwnLicense --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --clone-from-backup-timestamp clone-type=Full source=BackupFromTimestamp source-id=<source_autonomous_database_id> timestamp=2026-06-03T15:45:11.000Z use-latest-available-backup-time-stamp=false
-
-    :example: Create a cross-region disaster recovery peer
-        az oracle-database autonomous-database create --resource-group MyResourceGroup --location germanywestcentral --autonomousdatabasename MyCrossRegionPeerDB --display-name MyCrossRegionPeerDB --db-version 19c --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <destination_vnet_id> --subnet-id <destination_subnet_id> --cross-region-disaster-recovery remote-disaster-recovery-type=Adg source=CrossRegionDisasterRecovery source-id=<source_autonomous_database_id> source-location=eastus is-replicate-automatic-backups=true
+    :example: Create an Autonomous database
+        az oracle-database autonomous-database create --location <location> --autonomousdatabasename <name> --resource-group <resource_group> --subnet-id /<subnet_id> --display-name <display_name> --compute-model ECPU --compute-count <compute_count> --data-storage-size-in-gbs <storage_size> --license-model <BringYourOwnLicense/LicenseIncluded> --db-workload <OLTP> --admin-password <password> --db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <virtual network id> --regular
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}", "2026-06-01"],
         ]
     }
 
@@ -93,7 +79,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             blank={},
         )
-        _args_schema.admin_password = AAZStrArg(
+        _args_schema.admin_password = AAZPasswordArg(
             options=["--admin-password"],
             arg_group="Properties",
             help="Admin password.",
@@ -101,11 +87,11 @@ class Create(AAZCommand):
                 max_length=30,
                 min_length=12,
             ),
-            blank=AAZPromptInput(
+            blank=AAZPromptPasswordInput(
                 msg="Password:",
             ),
         )
-        _args_schema.autonomous_database_id = AAZStrArg(
+        _args_schema.autonomous_database_id = AAZResourceIdArg(
             options=["--autonomous-database-id"],
             arg_group="Properties",
             help="Autonomous Database ID",
@@ -116,10 +102,16 @@ class Create(AAZCommand):
             help="The maintenance schedule type of the Autonomous Database Serverless.",
             enum={"Early": "Early", "Regular": "Regular"},
         )
+        _args_schema.backup_destination = AAZStrArg(
+            options=["--backup-destination"],
+            arg_group="Properties",
+            help="Backup destination for auto and long-term backups. Existing backups stay in their original destination when this value changes.",
+            enum={"AZURE": "AZURE", "OCI": "OCI"},
+        )
         _args_schema.backup_retention_period_in_days = AAZIntArg(
             options=["--retention-days", "--backup-retention-period-in-days"],
             arg_group="Properties",
-            help="Retention period, in days, for long-term backups.",
+            help="Retention period, in days, for long-term backups",
         )
         _args_schema.character_set = AAZStrArg(
             options=["--character-set"],
@@ -136,7 +128,7 @@ class Create(AAZCommand):
             help="The compute amount (CPUs) available to the database.",
             fmt=AAZFloatArgFormat(
                 maximum=512.0,
-                minimum=0.1,
+                minimum=0.0,
             ),
         )
         _args_schema.compute_model = AAZStrArg(
@@ -180,7 +172,7 @@ class Create(AAZCommand):
         _args_schema.database_edition = AAZStrArg(
             options=["--database-edition"],
             arg_group="Properties",
-            help="The Oracle Database edition that applies to the Autonomous Database. Use this only with --license-model BringYourOwnLicense.",
+            help="The Oracle Database Edition that applies to the Autonomous databases.",
             enum={"EnterpriseEdition": "EnterpriseEdition", "StandardEdition": "StandardEdition"},
         )
         _args_schema.db_version = AAZStrArg(
@@ -196,7 +188,7 @@ class Create(AAZCommand):
             options=["--db-workload"],
             arg_group="Properties",
             help="The Autonomous Database workload type",
-            enum={"AJD": "AJD", "APEX": "APEX", "DW": "DW", "OLTP": "OLTP"},
+            enum={"AJD": "AJD", "APEX": "APEX", "DW": "DW", "LH": "LH", "OLTP": "OLTP"},
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
@@ -215,7 +207,7 @@ class Create(AAZCommand):
         _args_schema.is_auto_scaling_for_storage_enabled = AAZBoolArg(
             options=["--store-auto-scaling", "--is-auto-scaling-for-storage-enabled"],
             arg_group="Properties",
-            help="Indicates if auto scaling is enabled for the Autonomous Database storage. For clones from an existing database, this value must match the source database storage auto-scaling setting.",
+            help="Indicates if auto scaling is enabled for the Autonomous Database storage.",
         )
         _args_schema.is_local_data_guard_enabled = AAZBoolArg(
             options=["--local-data-guard", "--is-local-data-guard-enabled"],
@@ -247,6 +239,11 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
+        _args_schema.network_anchor_id = AAZResourceIdArg(
+            options=["--network-anchor-id"],
+            arg_group="Properties",
+            help="Azure Network Anchor ID",
+        )
         _args_schema.private_endpoint_ip = AAZStrArg(
             options=["--private-endpoint-ip"],
             arg_group="Properties",
@@ -257,17 +254,22 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The resource's private endpoint label.",
         )
+        _args_schema.resource_anchor_id = AAZResourceIdArg(
+            options=["--resource-anchor-id"],
+            arg_group="Properties",
+            help="Azure Resource Anchor ID",
+        )
         _args_schema.scheduled_operations_list = AAZListArg(
             options=["--scheduled-operations-list"],
             arg_group="Properties",
             help="The list of scheduled operations.",
         )
-        _args_schema.subnet_id = AAZStrArg(
+        _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="Properties",
             help="Client subnet",
         )
-        _args_schema.vnet_id = AAZStrArg(
+        _args_schema.vnet_id = AAZResourceIdArg(
             options=["--vnet-id"],
             arg_group="Properties",
             help="VNET for network connectivity",
@@ -276,6 +278,11 @@ class Create(AAZCommand):
             options=["--whitelisted-ips"],
             arg_group="Properties",
             help="The client IP access control list (ACL). This is an array of CIDR notations and/or IP addresses. Values should be separate strings, separated by commas. Example: ['1.1.1.1','1.1.1.0/24','1.1.2.25']",
+        )
+        _args_schema.zone = AAZStrArg(
+            options=["--zone"],
+            arg_group="Properties",
+            help="The logical zone where the Autonomous Database is provisioned.",
         )
 
         clone = cls._args_schema.clone
@@ -292,11 +299,10 @@ class Create(AAZCommand):
         )
         clone.source = AAZStrArg(
             options=["source"],
-            help="The source of the clone. Use Database when cloning directly from an existing Autonomous Database.",
-            required=True,
+            help="The source of the database.",
             enum={"BackupFromId": "BackupFromId", "BackupFromTimestamp": "BackupFromTimestamp", "CloneToRefreshable": "CloneToRefreshable", "CrossRegionDataguard": "CrossRegionDataguard", "CrossRegionDisasterRecovery": "CrossRegionDisasterRecovery", "Database": "Database", "None": "None"},
         )
-        clone.source_id = AAZStrArg(
+        clone.source_id = AAZResourceIdArg(
             options=["source-id"],
             help="The Azure ID of the Autonomous Database that was cloned to create the current Autonomous Database.",
             required=True,
@@ -311,22 +317,25 @@ class Create(AAZCommand):
         )
         clone_from_backup_timestamp.source = AAZStrArg(
             options=["source"],
-            help="The source of the clone. Use BackupFromTimestamp when cloning from a point-in-time backup.",
+            help="The source of the database.",
             required=True,
             enum={"BackupFromTimestamp": "BackupFromTimestamp"},
         )
-        clone_from_backup_timestamp.source_id = AAZStrArg(
+        clone_from_backup_timestamp.source_id = AAZResourceIdArg(
             options=["source-id"],
             help="The ID of the source Autonomous Database that you will clone to create a new Autonomous Database.",
             required=True,
         )
         clone_from_backup_timestamp.timestamp = AAZDateTimeArg(
             options=["timestamp"],
-            help="The timestamp specified for the point-in-time clone of the source Autonomous Database. The timestamp must be in the past and use RFC3339 UTC format, for example 2026-06-03T15:45:11.000Z. If the backup list shows only seconds, use .000Z for milliseconds.",
+            help="The timestamp specified for the point-in-time clone of the source Autonomous Database. The timestamp must be in the past.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         clone_from_backup_timestamp.use_latest_available_backup_time_stamp = AAZBoolArg(
             options=["use-latest-available-backup-time-stamp"],
-            help="Clone from the latest available backup timestamp instead of providing timestamp.",
+            help="Clone from latest available backup timestamp.",
         )
 
         cross_region_disaster_recovery = cls._args_schema.cross_region_disaster_recovery
@@ -346,14 +355,14 @@ class Create(AAZCommand):
             required=True,
             enum={"CrossRegionDisasterRecovery": "CrossRegionDisasterRecovery"},
         )
-        cross_region_disaster_recovery.source_id = AAZStrArg(
+        cross_region_disaster_recovery.source_id = AAZResourceIdArg(
             options=["source-id"],
             help="The Azure ID of the source Autonomous Database that will be used to create a new peer database for the DR association.",
             required=True,
         )
         cross_region_disaster_recovery.source_location = AAZStrArg(
             options=["source-location"],
-            help="The Azure region where the source Autonomous Database exists. The top-level --location value is the destination region for the new cross-region DR peer, and the --vnet-id and --subnet-id values must belong to that destination region.",
+            help="The name of the region where source Autonomous Database exists.",
         )
         cross_region_disaster_recovery.source_ocid = AAZStrArg(
             options=["source-ocid"],
@@ -448,17 +457,7 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        from azure.cli.core.azclierror import InvalidArgumentValueError
-
-        if has_value(self.ctx.args.clone_from_backup_timestamp) and has_value(self.ctx.args.database_edition):
-            license_model = None
-            if has_value(self.ctx.args.license_model):
-                license_model = self.ctx.args.license_model.to_serialized_data()
-
-            if license_model != "BringYourOwnLicense":
-                raise InvalidArgumentValueError(
-                    "--database-edition is valid only when --license-model BringYourOwnLicense is used."
-                )
+        pass
 
     @register_callback
     def post_operations(self):
@@ -532,7 +531,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -563,9 +562,10 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("adminPassword", AAZStrType, ".admin_password")
+                properties.set_prop("adminPassword", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("autonomousDatabaseId", AAZStrType, ".autonomous_database_id")
                 properties.set_prop("autonomousMaintenanceScheduleType", AAZStrType, ".autonomous_maintenance_schedule_type")
+                properties.set_prop("backupDestination", AAZStrType, ".backup_destination")
                 properties.set_prop("backupRetentionPeriodInDays", AAZIntType, ".backup_retention_period_in_days")
                 properties.set_prop("characterSet", AAZStrType, ".character_set")
                 properties.set_prop("computeCount", AAZFloatType, ".compute_count")
@@ -589,12 +589,15 @@ class Create(AAZCommand):
                 properties.set_prop("isPreviewVersionWithServiceTermsAccepted", AAZBoolType, ".is_preview_version_with_service_terms_accepted")
                 properties.set_prop("licenseModel", AAZStrType, ".license_model")
                 properties.set_prop("ncharacterSet", AAZStrType, ".ncharacter_set")
+                properties.set_prop("networkAnchorId", AAZStrType, ".network_anchor_id")
                 properties.set_prop("privateEndpointIp", AAZStrType, ".private_endpoint_ip")
                 properties.set_prop("privateEndpointLabel", AAZStrType, ".private_endpoint_label")
+                properties.set_prop("resourceAnchorId", AAZStrType, ".resource_anchor_id")
                 properties.set_prop("scheduledOperationsList", AAZListType, ".scheduled_operations_list")
                 properties.set_prop("subnetId", AAZStrType, ".subnet_id")
                 properties.set_prop("vnetId", AAZStrType, ".vnet_id")
                 properties.set_prop("whitelistedIps", AAZListType, ".whitelisted_ips")
+                properties.set_prop("zone", AAZStrType, ".zone")
                 properties.discriminate_by("dataBaseType", "Clone")
                 properties.discriminate_by("dataBaseType", "CloneFromBackupTimestamp")
                 properties.discriminate_by("dataBaseType", "CrossRegionDisasterRecovery")
@@ -716,6 +719,9 @@ class Create(AAZCommand):
                 serialized_name="availableUpgradeVersions",
                 flags={"read_only": True},
             )
+            properties.backup_destination = AAZStrType(
+                serialized_name="backupDestination",
+            )
             properties.backup_retention_period_in_days = AAZIntType(
                 serialized_name="backupRetentionPeriodInDays",
             )
@@ -824,6 +830,9 @@ class Create(AAZCommand):
             properties.ncharacter_set = AAZStrType(
                 serialized_name="ncharacterSet",
             )
+            properties.network_anchor_id = AAZStrType(
+                serialized_name="networkAnchorId",
+            )
             properties.next_long_term_backup_time_stamp = AAZStrType(
                 serialized_name="nextLongTermBackupTimeStamp",
                 flags={"read_only": True},
@@ -870,6 +879,9 @@ class Create(AAZCommand):
             properties.remote_disaster_recovery_configuration = AAZObjectType(
                 serialized_name="remoteDisasterRecoveryConfiguration",
                 flags={"read_only": True},
+            )
+            properties.resource_anchor_id = AAZStrType(
+                serialized_name="resourceAnchorId",
             )
             properties.role = AAZStrType()
             properties.scheduled_operations_list = AAZListType(
@@ -952,6 +964,7 @@ class Create(AAZCommand):
             properties.whitelisted_ips = AAZListType(
                 serialized_name="whitelistedIps",
             )
+            properties.zone = AAZStrType()
 
             apex_details = cls._schema_on_200_201.properties.apex_details
             apex_details.apex_version = AAZStrType(
@@ -1123,9 +1136,6 @@ class Create(AAZCommand):
             whitelisted_ips = cls._schema_on_200_201.properties.whitelisted_ips
             whitelisted_ips.Element = AAZStrType()
 
-            cls._schema_on_200_201.properties.data_base_type = AAZStrType(
-                serialized_name="dataBaseType",
-            )
             disc_clone = cls._schema_on_200_201.properties.discriminate_by("data_base_type", "Clone")
             disc_clone.is_reconnect_clone_enabled = AAZBoolType(
                 serialized_name="isReconnectCloneEnabled",

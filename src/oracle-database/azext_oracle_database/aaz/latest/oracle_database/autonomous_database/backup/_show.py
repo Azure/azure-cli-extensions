@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database backup show",
 )
 class Show(AAZCommand):
-    """Get an Autonomous Database backup
+    """Get a AutonomousDatabaseBackup
 
-    :example: Get an Autonomous Database backup
+    :example: Get ADBS Backup
         az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
-
-    :example: Get a backup using the Azure backup resource name/id returned by backup create or backup list
-        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_id>
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2026-06-01"],
         ]
     }
 
@@ -49,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="Azure backup resource name/id. Use the value returned by backup create or backup list.",
+            help="AutonomousDatabaseBackup id",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -74,6 +71,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        self.AutonomousDatabaseBackupsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -85,44 +83,10 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        from azure.cli.core.azclierror import ResourceNotFoundError
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-        target_backup_id = self.ctx.args.adbbackupid.to_serialized_data()
-        next_link = None
-        while True:
-            self.ctx.next_link = next_link if next_link else AAZUndefined
-            self.AutonomousDatabaseBackupsListByParent(ctx=self.ctx)()
-            backups = self.deserialize_output(self.ctx.vars.backup_list.value, client_flatten=True)
-            result = self._find_backup(backups, target_backup_id)
-            if result is not None:
-                return result
-
-            next_link = self.deserialize_output(self.ctx.vars.backup_list.next_link)
-            if not next_link:
-                break
-
-        raise ResourceNotFoundError("Backup '{}' could not be found.".format(target_backup_id))
-
-    @staticmethod
-    def _find_backup(backups, target_backup_id):
-        target = target_backup_id.lower()
-        for backup in backups:
-            backup_id = backup.get("id")
-            backup_name = backup.get("name")
-            properties = backup.get("properties") or {}
-            candidates = [
-                backup_id,
-                backup_id.rstrip("/").split("/")[-1] if backup_id else None,
-                backup_name,
-                backup.get("ocid"),
-                properties.get("ocid"),
-            ]
-            for candidate in candidates:
-                if candidate and candidate.lower() == target:
-                    return backup
-        return None
-
-    class AutonomousDatabaseBackupsListByParent(AAZHttpOperation):
+    class AutonomousDatabaseBackupsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -135,11 +99,8 @@ class Show(AAZCommand):
 
         @property
         def url(self):
-            if has_value(self.ctx.next_link):
-                return self.ctx.next_link
-
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/autonomousDatabases/{autonomousdatabasename}/autonomousDatabaseBackups",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/autonomousDatabases/{autonomousdatabasename}/autonomousDatabaseBackups/{adbbackupid}",
                 **self.url_parameters
             )
 
@@ -154,6 +115,10 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "adbbackupid", self.ctx.args.adbbackupid,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "autonomousdatabasename", self.ctx.args.autonomousdatabasename,
                     required=True,
@@ -171,12 +136,9 @@ class Show(AAZCommand):
 
         @property
         def query_parameters(self):
-            if has_value(self.ctx.next_link):
-                return {}
-
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -194,7 +156,7 @@ class Show(AAZCommand):
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
-                "backup_list",
+                "instance",
                 data,
                 schema_builder=self._build_schema_on_200
             )
@@ -209,35 +171,30 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.autonomous_database_ocid = AAZStrType(
                 serialized_name="autonomousDatabaseOcid",
+                flags={"read_only": True},
+            )
+            properties.backup_destination = AAZStrType(
+                serialized_name="backupDestination",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(
@@ -298,7 +255,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )

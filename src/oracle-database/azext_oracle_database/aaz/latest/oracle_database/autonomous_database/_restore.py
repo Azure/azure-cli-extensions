@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Restore(AAZCommand):
     """Restores an Autonomous Database based on the provided request parameters.
 
-    :example: Restore an Autonomous Database
-        az oracle-database autonomous-database restore --autonomousdatabasename <ADBS name> --resource-group <resource_group> --timestamp 2026-06-03T15:45:11.000Z
+    :example: Restore Autonomous database
+        az oracle-database autonomous-database restore --autonomousdatabasename <ADBS name> --resource-group <resource_group> --timestamp <timestamp>
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/restore", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/restore", "2026-06-01"],
         ]
     }
 
@@ -66,8 +66,11 @@ class Restore(AAZCommand):
         _args_schema.timestamp = AAZDateTimeArg(
             options=["--timestamp"],
             arg_group="Body",
-            help="The point in time to restore the database to. Use RFC3339 UTC format, for example 2026-06-03T15:45:11.000Z.",
+            help="The time to restore the database to.",
             required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         return cls._args_schema
 
@@ -152,7 +155,7 @@ class Restore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -240,6 +243,9 @@ class Restore(AAZCommand):
             properties.available_upgrade_versions = AAZListType(
                 serialized_name="availableUpgradeVersions",
                 flags={"read_only": True},
+            )
+            properties.backup_destination = AAZStrType(
+                serialized_name="backupDestination",
             )
             properties.backup_retention_period_in_days = AAZIntType(
                 serialized_name="backupRetentionPeriodInDays",
@@ -349,6 +355,9 @@ class Restore(AAZCommand):
             properties.ncharacter_set = AAZStrType(
                 serialized_name="ncharacterSet",
             )
+            properties.network_anchor_id = AAZStrType(
+                serialized_name="networkAnchorId",
+            )
             properties.next_long_term_backup_time_stamp = AAZStrType(
                 serialized_name="nextLongTermBackupTimeStamp",
                 flags={"read_only": True},
@@ -395,6 +404,9 @@ class Restore(AAZCommand):
             properties.remote_disaster_recovery_configuration = AAZObjectType(
                 serialized_name="remoteDisasterRecoveryConfiguration",
                 flags={"read_only": True},
+            )
+            properties.resource_anchor_id = AAZStrType(
+                serialized_name="resourceAnchorId",
             )
             properties.role = AAZStrType()
             properties.scheduled_operations_list = AAZListType(
@@ -477,6 +489,7 @@ class Restore(AAZCommand):
             properties.whitelisted_ips = AAZListType(
                 serialized_name="whitelistedIps",
             )
+            properties.zone = AAZStrType()
 
             apex_details = cls._schema_on_200.properties.apex_details
             apex_details.apex_version = AAZStrType(
@@ -648,9 +661,6 @@ class Restore(AAZCommand):
             whitelisted_ips = cls._schema_on_200.properties.whitelisted_ips
             whitelisted_ips.Element = AAZStrType()
 
-            cls._schema_on_200.properties.data_base_type = AAZStrType(
-                serialized_name="dataBaseType",
-            )
             disc_clone = cls._schema_on_200.properties.discriminate_by("data_base_type", "Clone")
             disc_clone.is_reconnect_clone_enabled = AAZBoolType(
                 serialized_name="isReconnectCloneEnabled",
