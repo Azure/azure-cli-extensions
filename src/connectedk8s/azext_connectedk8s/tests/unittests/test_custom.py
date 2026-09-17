@@ -242,6 +242,112 @@ def test_get_helm_client_location_reports_real_agc_not_installed_error(
     )
 
 
+def test_enable_features_reports_custom_locations_enable_failed(monkeypatch):
+    cmd = _cmd_without_arm_id()
+    connected_cluster = SimpleNamespace(kind=None, private_link_state="Disabled")
+    client = MagicMock()
+    client.get.return_value = connected_cluster
+    monkeypatch.setattr(
+        custom.utils, "validate_custom_token", MagicMock(return_value=(False, None))
+    )
+    monkeypatch.setattr(custom, "get_subscription_id", MagicMock(return_value="sub"))
+    monkeypatch.setattr(
+        custom,
+        "check_cl_registration_and_get_oid",
+        MagicMock(return_value=(False, "")),
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    with pytest.raises(custom.CLIInternalError) as raised:
+        custom.enable_features(
+            cmd,
+            client,
+            "resource-group",
+            "cluster",
+            ["custom-locations"],
+        )
+
+    assert str(raised.value).startswith("[AZK8S0700] CustomLocationsEnableFailed:")
+    _assert_standardized_telemetry(
+        mock_telemetry, custom.errors.CUSTOM_LOCATIONS_ENABLE_FAILED, False
+    )
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties[custom.consts.Connected_Cluster_Arm_Id_Telemetry_Property] == (
+        "/subscriptions/sub/resourceGroups/resource-group/providers/"
+        "Microsoft.Kubernetes/connectedClusters/cluster"
+    )
+
+
+def test_get_custom_locations_oid_reports_empty_result(monkeypatch):
+    cmd = _cmd_without_arm_id()
+    graph_client = MagicMock()
+    graph_client.service_principal_list.return_value = []
+    monkeypatch.setattr(
+        custom, "graph_client_factory", MagicMock(return_value=graph_client)
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    oid = custom.get_custom_locations_oid(cmd, None)
+
+    assert oid == ""
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties["Context.Default.AzureCLI.errorCode"] == "AZK8S0701"
+    assert (
+        properties["Context.Default.AzureCLI.errorFaultType"]
+        == custom.consts.Custom_Locations_OID_Fetch_Fault_Type_CLOid_None
+    )
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
+
+
+def test_get_custom_locations_oid_reports_exception_and_uses_manual_oid(monkeypatch):
+    cmd = _cmd_without_arm_id()
+    expected_error = RuntimeError("Microsoft Graph request failed")
+    monkeypatch.setattr(
+        custom, "graph_client_factory", MagicMock(side_effect=expected_error)
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    oid = custom.get_custom_locations_oid(cmd, "manual-oid")
+
+    assert oid == "manual-oid"
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties["Context.Default.AzureCLI.errorCode"] == "AZK8S0701"
+    assert (
+        properties["Context.Default.AzureCLI.errorFaultType"]
+        == custom.consts.Custom_Locations_OID_Fetch_Fault_Type_Exception
+    )
+    assert mock_telemetry.set_exception.call_args.kwargs["exception"] is expected_error
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
+
+
+def test_check_cl_registration_reports_standardized_error(monkeypatch):
+    cmd = _cmd_without_arm_id()
+    expected_error = RuntimeError("provider registration request failed")
+    monkeypatch.setattr(
+        custom, "resource_providers_client", MagicMock(side_effect=expected_error)
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    enabled, oid = custom.check_cl_registration_and_get_oid(cmd, None, "sub")
+
+    assert enabled is False
+    assert oid == ""
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties["Context.Default.AzureCLI.errorCode"] == "AZK8S0702"
+    assert mock_telemetry.set_exception.call_args.kwargs["exception"] is expected_error
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
+
+
 def create_node(
     provider_id: Optional[str] = None,
     labels: Optional[Dict[str, str]] = None,

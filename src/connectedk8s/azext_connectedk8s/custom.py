@@ -3751,12 +3751,13 @@ def enable_features(
             features.remove("custom-locations")
             logger.warning(consts.Custom_Location_Enable_Failed_warning)
             if len(features) == 0:
-                telemetry.set_exception(
-                    exception="Failed to enable 'custom-locations' feature",
-                    fault_type=consts.Custom_Locations_Enable_Failed_Fault_Type,
-                    summary="Custom locations enablement failed with no other features to enable",
+                raise utils.report_connectedk8s_error(
+                    cmd,
+                    errors.CUSTOM_LOCATIONS_ENABLE_FAILED,
+                    exception=Exception(
+                        "Custom locations enablement failed with no other features to enable"
+                    ),
                 )
-                raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
@@ -4797,10 +4798,10 @@ def check_cl_registration_and_get_oid(
             "Proceeding with helm install..."
         )
         logger.warning(warn_msg)
-        telemetry.set_exception(
+        utils.report_connectedk8s_diagnostic(
+            cmd,
+            errors.CUSTOM_LOCATIONS_REGISTRATION_CHECK_FAILED,
             exception=e,
-            fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
-            summary="Unable to fetch status of Custom Locations RP registration.",
         )
     return enable_custom_locations, custom_locations_oid
 
@@ -4835,10 +4836,11 @@ def get_custom_locations_oid(cmd: CLICommand, cl_oid: str | None) -> str:
                 "application used by Azure Arc service. Try enabling the feature by passing the "
                 "--custom-locations-oid parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID"
             )
-            telemetry.set_exception(
+            utils.report_connectedk8s_diagnostic(
+                cmd,
+                errors.CUSTOM_LOCATIONS_OID_FETCH_FAILED,
                 exception=Exception("Unable to fetch oid of custom locations app."),
                 fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_CLOid_None,
-                summary="Unable to fetch oid for custom locations app.",
             )
             # Return empty for OID
             return ""
@@ -4848,10 +4850,11 @@ def get_custom_locations_oid(cmd: CLICommand, cl_oid: str | None) -> str:
         # Encountered exeption while fetching OID, log error
         log_string = "Unable to fetch the Custom Location OID  with permissions set on this account. The account does not have sufficient permissions to fetch or validate the OID."
 
-        telemetry.set_exception(
+        utils.report_connectedk8s_diagnostic(
+            cmd,
+            errors.CUSTOM_LOCATIONS_OID_FETCH_FAILED,
             exception=e,
             fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
-            summary="Unable to fetch oid for custom locations app.",
         )
         # If Cl OID was input, use that
         if cl_oid:
