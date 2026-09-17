@@ -13117,7 +13117,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 8080,
             )
 
-        # R2: --enable-msi-auth-for-monitoring is rejected on the Azure Monitor logs path,
+        # --enable-msi-auth-for-monitoring is rejected on the Azure Monitor logs path,
         # which is managed-identity only.
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -20018,7 +20018,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
     # ------------------------------------------------------------------
-    # R4: Prometheus scraping and syslog port controls on the AMP path.
+    # Prometheus scraping and syslog port controls on the AMP path.
     # ------------------------------------------------------------------
 
     def _amp_enabled_mc(self):
@@ -20232,7 +20232,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(container_insights.disable_prometheus_metrics_scraping)
 
     # ------------------------------------------------------------------
-    # R3: disableCustomMetrics was removed from the API and must not resurface.
+    # disableCustomMetrics was removed from the API and must not resurface.
     # ------------------------------------------------------------------
     def test_disable_custom_metrics_is_not_part_of_container_insights(self):
         container_insights = (
@@ -20266,7 +20266,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
     # ------------------------------------------------------------------
-    # R0: OTLP gRPC ports are independent of the HTTP ports and default to unset.
+    # OTLP gRPC ports are independent of the HTTP ports and default to unset.
     # ------------------------------------------------------------------
     def test_opentelemetry_grpc_port_unset_leaves_server_default(self):
         dec = AKSPreviewManagedClusterCreateDecorator(

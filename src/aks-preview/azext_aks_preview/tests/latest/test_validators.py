@@ -2805,7 +2805,7 @@ if __name__ == "__main__":
 
 
 class ContainerInsightsSettingsNamespace(SimpleNamespace):
-    """Namespace for the R4 containerInsights tuning flags, with CLI defaults."""
+    """Namespace for the containerInsights tuning flags, with CLI defaults."""
 
     def __init__(self, **kwargs):
         defaults = {

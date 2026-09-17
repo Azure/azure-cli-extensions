@@ -909,7 +909,7 @@ class TestDcrTableReadinessRetry(unittest.TestCase):
 
 
 class TestLegacyMonitoringAuthDeprecation(unittest.TestCase):
-    """R5: warn when the legacy auth flag is used with enable-addons monitoring."""
+    """Warn when the legacy auth flag is used with enable-addons monitoring."""
 
     def _warn(self, value, addons="monitoring"):
         from azext_aks_preview.addonconfiguration import warn_on_legacy_monitoring_auth
@@ -948,7 +948,7 @@ class TestLegacyMonitoringAuthDeprecation(unittest.TestCase):
 
 
 class TestMonitoringArgumentRegistration(unittest.TestCase):
-    """Argument registration for R4 (containerInsights controls) and R5 (legacy auth warning)."""
+    """Argument registration for the containerInsights controls and the legacy auth warning."""
 
     def setUp(self):
         register_aks_preview_resource_type()
@@ -990,7 +990,7 @@ class TestMonitoringArgumentRegistration(unittest.TestCase):
             self.assertIn("--enable-azure-monitor-logs", message)
 
     def test_legacy_auth_flag_is_not_deprecated_on_create_and_update(self):
-        # R5 scopes the warning to the legacy addon commands.
+        # The deprecation is scoped to the legacy addon commands.
         for command_name in ("aks create", "aks update"):
             arguments = self._arguments(command_name)
             self.assertIsNone(
