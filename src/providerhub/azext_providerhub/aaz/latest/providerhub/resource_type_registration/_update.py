@@ -2961,7 +2961,7 @@ class Update(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("bucketSize", AAZStrType, ".bucket_size")
                 _elements.set_prop("interval", AAZStrType, ".interval")
-                _elements.set_prop("limit", AAZIntType, ".limit", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("limit", AAZIntType, ".limit")
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             required_features = _builder.get(".properties.throttlingRules[].requiredFeatures")
@@ -4118,9 +4118,7 @@ class _UpdateHelper:
             serialized_name="bucketSize",
         )
         _element.interval = AAZStrType()
-        _element.limit = AAZIntType(
-            flags={"required": True},
-        )
+        _element.limit = AAZIntType()
         _element.type = AAZStrType(
             flags={"required": True},
         )

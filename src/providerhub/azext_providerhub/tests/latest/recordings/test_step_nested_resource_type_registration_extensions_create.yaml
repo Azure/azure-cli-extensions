@@ -10,7 +10,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub resource-type-registration create
       Connection:
@@ -23,21 +23,21 @@ interactions:
       - --endpoints --regionality --routing-type --provider-namespace --enable-async-operation
         --template-deployment-options --resource-type
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees%2Fresourcetyperegistrations%2FnestedResourceType?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees%2Fresourcetyperegistrations%2FnestedResourceType?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"properties":{"name":"employees/nestedResourceType","routingType":"ProxyOnly","regionality":"Regional","endpoints":[{"kind":"Managed","extensions":[{"endpointUri":"https://contoso-test-extension-endpoint.com","extensionCategories":["ResourceReadValidate","ResourceDeletionValidate"]}],"apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly","ContinueDeploymentOnFailure"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/employees/resourceTypeRegistrations/nestedResourceType","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"employees/nestedResourceType","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T23:47:12.9041223Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-06T00:14:18.3760935Z"}}'
+      string: '{"properties":{"name":"employees/nestedResourceType","routingType":"ProxyOnly","regionality":"Regional","endpoints":[{"kind":"Managed","extensions":[{"endpointUri":"https://contoso-test-extension-endpoint.com","extensionCategories":["ResourceReadValidate","ResourceDeletionValidate"]}],"apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","throttlingRules":[{"action":"Private.VPTest/employees/nestedResourceType/write","metrics":[{"type":"NumberOfRequests","bucketSize":"XSmall"}]},{"action":"Private.VPTest/employees/nestedResourceType/read","metrics":[{"type":"NumberOfRequests","bucketSize":"XSmall"}]},{"action":"Private.VPTest/employees/nestedResourceType/delete","metrics":[{"type":"NumberOfRequests","bucketSize":"XSmall"}]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly","ContinueDeploymentOnFailure"]},"superScaleEnabled":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/employees/resourceTypeRegistrations/nestedResourceType","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"employees/nestedResourceType","kind":"Managed","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-16T22:15:45.503023Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-16T22:16:52.478721Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1179'
+      - '1579'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Jun 2024 00:14:22 GMT
+      - Wed, 16 Sep 2026 22:16:52 GMT
       expires:
       - '-1'
       pragma:
@@ -49,11 +49,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/740bdb4d-b870-4526-b296-dffe9e9035fc
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/0c2f07c2-23bf-46e0-b14e-05b84d37960b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: D7C9F166186F4B7DA31DDF30FCD6F545 Ref B: DM2AA1091214031 Ref C: 2024-06-06T00:14:18Z'
+      - 'Ref A: AC627ADB52EC48FBBD3E118AB498DB17 Ref B: SN4AA2022403047 Ref C: 2026-09-16T22:16:52Z'
     status:
       code: 200
       message: OK

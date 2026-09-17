@@ -143,31 +143,28 @@ class GenerateOperation(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZListType()
+            cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.Element
-            _element.contents = AAZListType()
-            _element.id = AAZStrType(
+            _schema_on_200.contents = AAZListType()
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            contents = cls._schema_on_200.Element.contents
+            contents = cls._schema_on_200.contents
             contents.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.Element.contents.Element
+            _element = cls._schema_on_200.contents.Element
             _element.action_type = AAZStrType(
                 serialized_name="actionType",
             )
@@ -182,7 +179,7 @@ class GenerateOperation(AAZCommand):
             )
             _element.origin = AAZStrType()
 
-            display = cls._schema_on_200.Element.contents.Element.display
+            display = cls._schema_on_200.contents.Element.display
             display.description = AAZStrType(
                 flags={"required": True},
             )
@@ -196,7 +193,7 @@ class GenerateOperation(AAZCommand):
                 flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
