@@ -7,7 +7,6 @@
 from azure.cli.core.commands import CliCommandType
 from azext_aimanager.constants import (
     AI_MODEL_TABLE_TRANSFORMER,
-    CALCULATE_COST_TABLE_TRANSFORMER,
 )
 from azext_aimanager._format import (
     aimanager_table_format,
@@ -16,6 +15,7 @@ from azext_aimanager._format import (
     namespace_list_table_format,
     modeldeployment_table_format,
     modeldeployment_list_table_format,
+    calculate_cost_table_format,
 )
 from azext_aimanager._client_factory import (
     cf_ai_managers,
@@ -105,4 +105,4 @@ def load_command_table(self, _):
         g.custom_command("list", "list_aimodel",
                          table_transformer=AI_MODEL_TABLE_TRANSFORMER)
         g.custom_command("calculate-cost", "calculate_aimodel_cost",
-                         table_transformer=CALCULATE_COST_TABLE_TRANSFORMER)
+                         table_transformer=calculate_cost_table_format)

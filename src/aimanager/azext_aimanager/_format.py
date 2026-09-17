@@ -122,3 +122,28 @@ def modeldeployment_table_format(result):
 def modeldeployment_list_table_format(results):
     """Format a list of model deployment resources for display with "-o table"."""
     return [modeldeployment_table_format(r) for r in results]
+
+
+def _calculate_cost_plan_row(plan):
+    """Format a single ``CalculateCostPlan`` for display with "-o table"."""
+    # ``feasible`` is the most important column, yet the service omits it for infeasible plans.
+    # With a JMESPath projection those cells render blank and — when every plan is infeasible —
+    # azure-cli drops the all-blank column entirely, hiding the answer the user most needs.
+    # Coerce it to an explicit bool here so the column is always populated and never dropped.
+    feasible = bool(plan.get('feasible'))
+    reason = plan.get('infeasibilityReason') or {}
+    return OrderedDict([
+        ('VmSize', plan.get('vmSize', '')),
+        ('Feasible', feasible),
+        ('VmsPerReplica', plan.get('vmsPerReplica', '')),
+        ('VmHourlyPrice', plan.get('vmHourlyPrice', '')),
+        ('TotalHourlyPrice', plan.get('totalHourlyPrice', '')),
+        ('MaxAvailableReplicas', plan.get('maxAvailableReplicas', '')),
+        ('Quantization', plan.get('quantization', '')),
+        ('InfeasibilityReason', '' if feasible else reason.get('code', '')),
+    ])
+
+
+def calculate_cost_table_format(result):
+    """Format a ``calculateCost`` response for display with "-o table"."""
+    return [_calculate_cost_plan_row(p) for p in (result.get('plans') or [])]
