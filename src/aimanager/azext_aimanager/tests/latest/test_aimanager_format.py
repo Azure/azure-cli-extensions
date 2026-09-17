@@ -251,6 +251,18 @@ class TestCalculateCostTableFormat(unittest.TestCase):
         self.assertEqual(calculate_cost_table_format({}), [])
         self.assertEqual(calculate_cost_table_format({"plans": None}), [])
 
+    def test_feasible_string_values_coerced_strictly(self):
+        # Defensive: if 'feasible' ever arrives as a JSON string, "false" must become False
+        # (bool("false") is True in Python), and "true" must become True.
+        false_row = calculate_cost_table_format(
+            {"plans": [{"vmSize": "s", "feasible": "false"}]}
+        )[0]
+        true_row = calculate_cost_table_format(
+            {"plans": [{"vmSize": "s", "feasible": "true"}]}
+        )[0]
+        self.assertIs(false_row["Feasible"], False)
+        self.assertIs(true_row["Feasible"], True)
+
 
 if __name__ == "__main__":
     unittest.main()

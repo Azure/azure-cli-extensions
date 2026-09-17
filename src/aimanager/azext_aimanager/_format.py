@@ -124,13 +124,26 @@ def modeldeployment_list_table_format(results):
     return [modeldeployment_table_format(r) for r in results]
 
 
+def _as_bool(value):
+    """Coerce a feasibility value to a strict bool.
+
+    The vendored SDK deserializes ``feasible`` as a real Python bool (``None`` when the
+    service omits it on an infeasible plan). This helper is defensive against a raw-dict
+    code path where the value could arrive as a JSON string: ``bool("false")`` is ``True``
+    in Python (any non-empty string is truthy), so strings are compared explicitly instead.
+    """
+    if isinstance(value, str):
+        return value.strip().lower() == 'true'
+    return bool(value)
+
+
 def _calculate_cost_plan_row(plan):
     """Format a single ``CalculateCostPlan`` for display with "-o table"."""
     # ``feasible`` is the most important column, yet the service omits it for infeasible plans.
     # With a JMESPath projection those cells render blank and — when every plan is infeasible —
     # azure-cli drops the all-blank column entirely, hiding the answer the user most needs.
     # Coerce it to an explicit bool here so the column is always populated and never dropped.
-    feasible = bool(plan.get('feasible'))
+    feasible = _as_bool(plan.get('feasible'))
     reason = plan.get('infeasibilityReason') or {}
     # Reason codes come back prefixed (e.g. "InfeasibleCode_InsufficientQuota"); strip the
     # redundant "InfeasibleCode_" prefix so the column stays short in "-o table" output.

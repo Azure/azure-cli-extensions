@@ -339,6 +339,9 @@ helps['aimanager model calculate-cost'] = """
         performance. Feasible plans are returned first, ordered by total hourly price ascending.
         No Azure or Kubernetes resources are provisioned by this command. Prices describe a single
         replica; multiply by the desired replica count, bounded by maxAvailableReplicas.
+        In table output, the Feasible column shows whether each SKU is deployable today; for
+        SKUs that are not, InfeasibilityReason gives the reason (e.g. InsufficientQuota,
+        RegionUnavailable, InefficientDeployment).
     examples:
         - name: Calculate the cost of deploying a model
           text: az aimanager model calculate-cost -l eastus2 -n 9806f0c862fdd920
