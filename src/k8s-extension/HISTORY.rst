@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.8.1
++++++++++++++++++++
+* Add WI validation and new allowed network policy setting for Microsoft.virtualnodes AKS Extension.
 
 1.8.0
 +++++++++++++++++++
