@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.4.3
+++++++
+Advisory warnings raised by a command are now also returned in its output, under a ``warnings`` key. Until now the only warning ``az vm repair create`` raises — that the repair VM size supports NVMe but not SCSI, so repair scripts which locate the attached OS disk by its SCSI model name will not find it — was written to the log and nowhere else. A script or portal experience driving the command received a success payload with no indication that the repair VM it just created is one several repair scripts cannot work on. The key is only present when a warning was raised, so existing output is unchanged otherwise.
+
 2.4.2
 ++++++
 Adding examples to ``az vm repair run -h`` for checking whether Windows and Linux guests are ready to boot from an NVMe controller. Both examples run the corresponding read-only readiness detector on the linked repair VM. The README now also lists which platform-migration scenarios the extension can currently help with, so that an unsupported combination is not mistaken for a supported one.

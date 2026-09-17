@@ -6372,18 +6372,6 @@ def aks_alert_config_add(
         no_wait=False
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
-    existing_alert_config = None
-    try:
-        existing_alert_config = client.get(resource_group_name, cluster_name, name, headers=headers)
-    except ResourceNotFoundError:
-        pass
-
-    if existing_alert_config:
-        raise ClientRequestError(
-            f"Alert configuration '{name}' already exists. "
-            "Please use 'az aks alert-config update' to update it."
-        )
-
     raw_parameters = locals()
     return aks_alert_config_add_internal(
         cmd,

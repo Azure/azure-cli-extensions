@@ -11,7 +11,7 @@ class AIManagerScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli-aimgr-', random_name_length=16, location='eastus2')
-    def test_aimanager(self):
+    def test_aimanager_crud(self):
         self.kwargs.update({
             'ai_manager_name': self.create_random_name(prefix='aim', length=12),
             'namespace_name': self.create_random_name(prefix='aimns', length=12),
