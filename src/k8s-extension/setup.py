@@ -36,7 +36,7 @@ DEPENDENCIES = [
     "azure-mgmt-network>=18.0.0",
 ]
 
-VERSION = "1.8.0"
+VERSION = "1.8.1"
 
 with open("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
