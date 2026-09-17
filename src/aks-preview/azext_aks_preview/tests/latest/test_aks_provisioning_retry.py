@@ -330,6 +330,46 @@ class TestTransientConflictRetry(AKSRetryTestCase):
 
 
 class TestAlreadyExistsConflictHandling(AKSRetryTestCase):
+    @patch.dict(os.environ, {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep")
+    @patch("azure.cli.testsdk.base.execute")
+    def test_metrics_create_recovery_completes_configuration_not_just_show(self, execute, _sleep):
+        instance = self._make_instance()
+        instance.cmd = lambda command, checks: instance._cmd_with_retry(command, checks, False)
+        recovery = "aks update -g rg -n cluster --enable-azure-monitor-metrics --enable-control-plane-metrics"
+        result = self._result({"azureMonitorProfile": {"metrics": {"controlPlane": {"enabled": True}}}})
+        execute.side_effect = [
+            CLIError("Another operation is in progress."),
+            CLIError("Cluster 'cluster' already exists."),
+            result,
+        ]
+        self.assertIs(instance._cmd_with_retried_create_recovery(
+            "aks create -g rg -n cluster", recovery,
+            checks=[JMESPathCheck("azureMonitorProfile.metrics.controlPlane.enabled", True)],
+        ), result)
+        execute.assert_called_with(instance.cli_ctx, recovery, expect_failure=False)
+        self.assertIsNone(instance._retried_create_recovery_command)
+
+    @patch.dict(os.environ, {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "3"})
+    @patch("time.sleep")
+    @patch("azure.cli.testsdk.base.execute")
+    def test_metrics_recovery_error_is_not_hidden(self, execute, _sleep):
+        instance = self._make_instance()
+        instance.cmd = lambda command, checks: instance._cmd_with_retry(command, checks or [], False)
+        error = CLIError("Permission denied")
+        execute.side_effect = [
+            CLIError("Another operation is in progress."),
+            CLIError("Cluster 'cluster' already exists."),
+            error,
+        ]
+        with self.assertRaises(CLIError) as raised:
+            instance._cmd_with_retried_create_recovery(
+                "aks create -g rg -n cluster", "aks update -g rg -n cluster --enable-control-plane-metrics",
+            )
+        self.assertIs(raised.exception, error)
+        self.assertEqual(execute.call_count, 3)
+        self.assertIsNone(instance._retried_create_recovery_command)
+
     def test_is_resource_already_exists_conflict_detects_message(self):
         instance = self._make_instance()
 
@@ -691,6 +731,78 @@ class TestAmbiguousLroStatusHandling(AKSRetryTestCase):
 
 
 class TestLiveScenarioRegressions(AKSRetryTestCase):
+    def test_backup_cleanup_keeps_scope_and_reversible_soft_delete_api(self):
+        instance = self._make_instance()
+        instance.kwargs.update({"backup_rg": "owned-rg", "vault_name": "owned-vault"})
+        instance.cmd = MagicMock(return_value=self._result([]))
+        instance._cleanup_backup("owned-vault")
+        first = instance.cmd.call_args_list[0]
+        self.assertIn("resource update --resource-group {backup_rg} --name {vault_name}", first.args[0])
+        self.assertIn("--resource-type Microsoft.DataProtection/backupVaults --api-version 2025-07-01", first.args[0])
+        self.assertIn("properties.securitySettings.softDeleteSettings.state=Off", first.args[0])
+        self.assertEqual(len(first.kwargs["checks"]), 2)
+
+    def test_control_plane_metrics_create_uses_workspace_and_explicit_recovery(self):
+        instance = self._make_instance()
+        instance.create_random_name = MagicMock(return_value="cluster")
+        instance.generate_ssh_keys = MagicMock(return_value="key")
+        instance._create_azure_monitor_workspace = MagicMock(return_value="/workspaces/dedicated")
+        instance._cmd_with_retried_create_recovery = MagicMock(side_effect=RuntimeError("stop at create"))
+        scenario = inspect.unwrap(instance.test_aks_create_with_control_plane_metrics)
+        with self.assertRaisesRegex(RuntimeError, "stop at create"):
+            scenario(instance, "rg", "westcentralus")
+        self.assertEqual(instance.kwargs["amw_id"], "/workspaces/dedicated")
+        call = instance._cmd_with_retried_create_recovery.call_args
+        for command in (call.args[0], call.kwargs["recovery_command"]):
+            self.assertIn("--azure-monitor-workspace-resource-id={amw_id}", command)
+            self.assertIn("--enable-azure-monitor-metrics", command)
+            self.assertIn("--enable-control-plane-metrics", command)
+
+    def test_kms_secret_reencryption_checks_remote_exit_status(self):
+        instance = self._make_instance()
+        instance.is_live = True
+        for exit_code in (0, 1, None):
+            with self.subTest(exit_code=exit_code):
+                result = self._result({"provisioningState": "Succeeded", "exitCode": exit_code})
+                instance.cmd = MagicMock(
+                    side_effect=lambda command, checks: result.assert_with_checks(checks)
+                )
+                if exit_code == 0:
+                    instance._reencrypt_kms_secrets()
+                else:
+                    with self.assertRaises(AssertionError):
+                        instance._reencrypt_kms_secrets()
+                command = instance.cmd.call_args.args[0]
+                self.assertIn("bash -o pipefail", command)
+                self.assertIn("kubectl get secrets --all-namespaces -o json | kubectl replace -f -", command)
+        instance.is_live = False
+        instance.cmd.reset_mock()
+        instance._reencrypt_kms_secrets()
+        instance.cmd.assert_not_called()
+
+    def test_both_private_kms_rotation_cases_reencrypt_before_updating_key(self):
+        for name in (
+            "test_aks_create_with_azurekeyvaultkms_private_key_vault",
+            "test_aks_create_with_azurekeyvaultkms_private_cluster_v1_private_key_vault",
+        ):
+            with self.subTest(name=name):
+                instance = self._make_instance()
+                instance.create_random_name = MagicMock(return_value="name")
+                instance.generate_ssh_keys = MagicMock(return_value="key")
+                instance._get_user_assigned_identity = MagicMock(return_value="/identity")
+                instance._get_principal_id_of_user_assigned_identity = MagicMock(return_value="principal")
+                instance._get_test_identity_object_id = MagicMock(return_value="test-principal")
+                instance.cmd = MagicMock(return_value=self._result({
+                    "id": "/vault", "key": {"kid": "key-version"},
+                }))
+                instance._reencrypt_kms_secrets = MagicMock(side_effect=RuntimeError("before rotation"))
+                scenario = inspect.unwrap(getattr(instance, name))
+                with self.assertRaisesRegex(RuntimeError, "before rotation"):
+                    scenario(instance, "rg", "westcentralus")
+                instance._reencrypt_kms_secrets.assert_called_once()
+                self.assertTrue(any(call.args[0].startswith("aks create ") for call in instance.cmd.call_args_list))
+                self.assertFalse(any(call.args[0].startswith("aks update ") for call in instance.cmd.call_args_list))
+
     def test_proxy_readiness_requires_success_marker_not_just_run_command_status(self):
         instance = self._make_instance()
         for message, ready in [
@@ -961,6 +1073,68 @@ class TestRefetchSettledResult(AKSRetryTestCase):
             "aks nodepool show --resource-group rg --cluster-name cluster --name pool",
             expect_failure=False,
         )
+
+
+class TestPrivateDnsRoleAssignmentRetry(AKSRetryTestCase):
+    ZONE = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/privateDnsZones/example"
+    COMMAND = f"aks create -g rg -n cluster --private-dns-zone={ZONE}"
+    ERROR = (
+        f"(ResourceMissingPermissionError) Permission to resource {ZONE}. "
+        "Check access result not allowed for action Microsoft.Network/privateDnsZones/read."
+    )
+
+    @patch.dict(os.environ, {"AZURE_CLI_TEST_OPERATION_MAX_RETRIES": "2"})
+    @patch("time.sleep")
+    @patch("azure.cli.testsdk.base.execute")
+    def test_retries_just_assigned_zone_and_preserves_bounded_failure(self, execute, sleep):
+        instance = self._make_instance()
+        instance._private_dns_role_assignment_scope = self.ZONE
+        error = CLIError(self.ERROR)
+        expected = self._result({"provisioningState": "Succeeded"})
+        execute.side_effect = [error, expected]
+        self.assertIs(instance._execute_with_transient_conflict_retry(self.COMMAND, False), expected)
+        sleep.assert_called_once()
+        execute.reset_mock(side_effect=True)
+        execute.side_effect = error
+        with self.assertRaises(CLIError) as raised:
+            instance._execute_with_transient_conflict_retry(self.COMMAND, False)
+        self.assertIs(raised.exception, error)
+        self.assertEqual(execute.call_count, 2)
+
+    def test_unrelated_permissions_commands_and_scopes_are_not_retryable(self):
+        for scope, command, message in (
+            (None, self.COMMAND, self.ERROR),
+            (self.ZONE + "-other", self.COMMAND, self.ERROR),
+            (self.ZONE, self.COMMAND + "-other", self.ERROR),
+            (self.ZONE, self.COMMAND.replace("aks create", "aks update"), self.ERROR),
+            (self.ZONE, self.COMMAND, self.ERROR.replace("example.", "example-other.")),
+            (self.ZONE, self.COMMAND, self.ERROR.replace("privateDnsZones/read", "privateDnsZones/write")),
+            (self.ZONE, self.COMMAND, self.ERROR.replace("ResourceMissingPermissionError", "AuthorizationFailed")),
+        ):
+            with self.subTest(scope=scope, command=command, message=message):
+                instance = self._make_instance()
+                instance._private_dns_role_assignment_scope = scope
+                self.assertFalse(instance._is_private_dns_role_assignment_pending(command, CLIError(message)))
+
+    def test_scope_is_case_insensitive_and_restored_after_failure(self):
+        instance = self._make_instance()
+        instance._private_dns_role_assignment_scope = self.ZONE.upper()
+        self.assertTrue(instance._is_private_dns_role_assignment_pending(self.COMMAND, CLIError(self.ERROR)))
+        instance.cmd = MagicMock(side_effect=CLIError("failed"))
+        with self.assertRaises(CLIError):
+            instance._cmd_with_private_dns_role_assignment_retry(self.COMMAND, self.ZONE)
+        self.assertEqual(instance._private_dns_role_assignment_scope, self.ZONE.upper())
+
+    @patch("azure.cli.testsdk.base.execute")
+    @patch("time.sleep")
+    def test_expected_failure_is_not_retried(self, sleep, execute):
+        instance = self._make_instance()
+        instance._private_dns_role_assignment_scope = self.ZONE
+        execute.side_effect = CLIError(self.ERROR)
+        with self.assertRaises(CLIError):
+            instance._execute_with_transient_conflict_retry(self.COMMAND, True)
+        execute.assert_called_once()
+        sleep.assert_not_called()
 
 
 if __name__ == "__main__":

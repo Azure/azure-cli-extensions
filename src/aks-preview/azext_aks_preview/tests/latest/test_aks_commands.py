@@ -256,6 +256,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ):
                     show_command = self._build_show_command_for_already_existing_resource(command)
                     if show_command is not None:
+                        recovery_command = getattr(self, "_retried_create_recovery_command", None)
+                        if recovery_command and re.match(r"^aks\s+create\b", command.strip()):
+                            logging.warning("Resuming metrics configuration after a retried cluster create.")
+                            return self._execute_with_transient_conflict_retry(recovery_command, False)
                         logging.warning(
                             "Resource already exists after a retried create/add; the earlier "
                             "attempt's async operation likely already succeeded server-side. "
@@ -292,7 +296,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                             return show_result
                 if (
                     expect_failure or
-                    not self._is_transient_operation_conflict(ex) or
+                    not (
+                        self._is_transient_operation_conflict(ex) or
+                        self._is_private_dns_role_assignment_pending(command, ex)
+                    ) or
                     attempt == max_retries - 1
                 ):
                     raise
@@ -308,6 +315,48 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 time.sleep(delay)
 
         raise AssertionError("unreachable")
+
+    def _cmd_with_retried_create_recovery(self, command, recovery_command, checks=None):
+        previous_command = getattr(self, "_retried_create_recovery_command", None)
+        self._retried_create_recovery_command = self._apply_kwargs(recovery_command)
+        try:
+            return self.cmd(command, checks=checks)
+        finally:
+            self._retried_create_recovery_command = previous_command
+
+    def _is_private_dns_role_assignment_pending(self, command, ex):
+        zone_id = getattr(self, "_private_dns_role_assignment_scope", None)
+        if not zone_id or not re.match(r"^aks\s+create\b", command.strip()):
+            return False
+        requested_zone = self._extract_cli_option(command, "--private-dns-zone")
+        message = str(ex).casefold()
+        return (
+            requested_zone is not None and requested_zone.casefold() == zone_id.casefold() and
+            "(resourcemissingpermissionerror)" in message and
+            f"resource {zone_id.casefold()}." in message and
+            "not allowed for action microsoft.network/privatednszones/read" in message
+        )
+
+    def _cmd_with_private_dns_role_assignment_retry(self, command, zone_id, checks=None):
+        # Only the caller that just granted this zone's role may retry propagation.
+        previous_scope = getattr(self, "_private_dns_role_assignment_scope", None)
+        self._private_dns_role_assignment_scope = zone_id
+        try:
+            return self.cmd(command, checks=checks)
+        finally:
+            self._private_dns_role_assignment_scope = previous_scope
+
+    def _reencrypt_kms_secrets(self):
+        if not self.is_live:
+            return
+        # Private-vault rotation requires every secret to use the current key first.
+        self.cmd(
+            "aks command invoke --resource-group={resource_group} --name={name} "
+            "--command \"bash -o pipefail -c "
+            "'kubectl get secrets --all-namespaces -o json | kubectl replace -f -'\" "
+            "--output json",
+            checks=[self.check("provisioningState", "Succeeded"), self.check("exitCode", 0)],
+        )
 
     def _refetch_settled_aks_result(self, resource_id, fallback_result):
         from azure.cli.testsdk.base import execute
@@ -10285,8 +10334,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-private-cluster --private-dns-zone={zone_id} --enable-managed-identity --assign-identity {identity_resource_id} "
             "--ssh-key-value={ssh_key_value}"
         )
-        self.cmd(
+        self._cmd_with_private_dns_role_assignment_retry(
             create_cmd,
+            zone_id,
             checks=[
                 self.exists("privateFqdn"),
                 self.exists("fqdnSubdomain"),
@@ -13821,6 +13871,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} "
             "-o json"
         )
+        self._reencrypt_kms_secrets()
         self.cmd(
             update_cmd,
             checks=[
@@ -14144,6 +14195,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} "
             "-o json"
         )
+        self._reencrypt_kms_secrets()
         self.cmd(
             update_cmd,
             checks=[
@@ -16430,12 +16482,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # 1. Disable immutability + soft-delete on the vault so that BIs
         #    with active recovery points can be force-deleted.
+        # Use the API that supports reversible soft delete, as AKS vault creation does.
         try:
             self.cmd(
-                "dataprotection backup-vault update "
-                "-g {backup_rg} --vault-name {vault_name} "
+                "resource update --resource-group {backup_rg} --name {vault_name} "
+                "--resource-type Microsoft.DataProtection/backupVaults --api-version 2025-07-01 "
                 "--set properties.securitySettings.immutabilitySettings.state=Disabled "
-                "properties.securitySettings.softDeleteSettings.state=Off"
+                "properties.securitySettings.softDeleteSettings.state=Off",
+                checks=[
+                    self.check("properties.securitySettings.immutabilitySettings.state", "Disabled"),
+                    self.check("properties.securitySettings.softDeleteSettings.state", "Off"),
+                ],
             )
         except Exception as ex:  # pylint: disable=broad-except
             logging.warning(
@@ -17399,19 +17456,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "node_vm_size": node_vm_size,
             }
         )
+        self.kwargs["amw_id"] = self._create_azure_monitor_workspace(resource_group_location)
 
         # create: --enable-azure-monitor-metrics + --enable-control-plane-metrics
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
-            "--enable-azure-monitor-metrics --enable-control-plane-metrics --output=json"
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics "
+            "--azure-monitor-workspace-resource-id={amw_id} --output=json"
         )
         # NOTE: ``--enable-control-plane-metrics`` on create is intentionally deferred to a
         # postprocessing PUT (after DCRA creation) to avoid scheduling the CCP pod before its
         # DCRA exists. The create response may therefore reflect the pre-flip state; assert
         # the final state via ``aks show`` after the cluster settles.
-        self.cmd(
+        self._cmd_with_retried_create_recovery(
             create_cmd,
+            recovery_command=(
+                "aks update --resource-group={resource_group} --name={name} "
+                "--enable-azure-monitor-metrics --enable-control-plane-metrics "
+                "--azure-monitor-workspace-resource-id={amw_id}"
+            ),
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("azureMonitorProfile.metrics.enabled", True),
