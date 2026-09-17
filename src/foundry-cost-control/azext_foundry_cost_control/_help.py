@@ -32,11 +32,7 @@ short-summary: Create a Cognitive Services account deployment.
 examples:
   - name: Create a deployment with a cost-control attachment
     text: |-
-      az cognitiveservices account deployment create --name my-account
-      --resource-group my-resource-group --deployment-name my-deployment
-      --model-name gpt-4.1 --model-version 2025-04-14 --model-format OpenAI
-      --sku-name GlobalStandard --sku-capacity 10
-      --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
+      az cognitiveservices account deployment create --name my-account --resource-group my-resource-group --deployment-name my-deployment --model-name gpt-4.1 --model-version 2025-04-14 --model-format OpenAI --sku-name GlobalStandard --sku-capacity 10 --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
 """
 
 helps["cognitiveservices account deployment update"] = """
@@ -45,12 +41,8 @@ short-summary: Update a Cognitive Services account deployment.
 examples:
   - name: Attach a cost control to an existing deployment
     text: |-
-      az cognitiveservices account deployment update --name my-account
-      --resource-group my-resource-group --deployment-name my-deployment
-      --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
+      az cognitiveservices account deployment update --name my-account --resource-group my-resource-group --deployment-name my-deployment --cost-control-ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/my-account/costControls/my-control
   - name: Remove the cost-control attachment
     text: |-
-      az cognitiveservices account deployment update --name my-account
-      --resource-group my-resource-group --deployment-name my-deployment
-      --cost-control-ids
+      az cognitiveservices account deployment update --name my-account --resource-group my-resource-group --deployment-name my-deployment --cost-control-ids
 """

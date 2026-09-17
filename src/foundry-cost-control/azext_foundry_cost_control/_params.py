@@ -83,7 +83,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         )
         context.argument(
             "cost_control_connections",
-            options_list=["--cost-control-connections"],
+            options_list=["--cost-control-connections", "--cc-connections"],
             type=_parse_cost_control_connections,
             help=(
                 "JSON object containing appInsightsConnectionId and/or "
@@ -92,7 +92,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         )
         context.argument(
             "clear_cost_control_connections",
-            options_list=["--clear-cost-control-connections"],
+            options_list=[
+                "--clear-cost-control-connections",
+                "--clear-cc-connections",
+            ],
             action="store_true",
             help="Remove the account-level cost-control connections.",
         )
@@ -142,6 +145,26 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=["--capacity", "--sku-capacity"],
             type=int,
             help="Capacity value of the Sku of Cognitive Services account/deployment.",
+        )
+
+    with self.argument_context(
+            "cognitiveservices account deployment",
+            arg_group="DeploymentModel") as context:
+        context.argument(
+            "model_name",
+            help="Cognitive Services account deployment model name.",
+        )
+        context.argument(
+            "model_format",
+            help="Cognitive Services account deployment model format.",
+        )
+        context.argument(
+            "model_version",
+            help="Cognitive Services account deployment model version.",
+        )
+        context.argument(
+            "model_source",
+            help="Cognitive Services account deployment model source.",
         )
 
     with self.argument_context(
