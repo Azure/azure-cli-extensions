@@ -1053,10 +1053,32 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     f"--secondary-network-interfaces: element at index {idx} "
                     f"must be a JSON object, got {type(item).__name__}."
                 )
+            public_ip_config = item.get("publicIPAddressConfiguration")
+            if public_ip_config is not None:
+                if not isinstance(public_ip_config, dict):
+                    raise InvalidArgumentValueError(
+                        "--secondary-network-interfaces: publicIPAddressConfiguration "
+                        f"at index {idx} must be a JSON object."
+                    )
+                ip_tags = public_ip_config.get("ipTags")
+                if ip_tags is not None:
+                    if not isinstance(ip_tags, list):
+                        raise InvalidArgumentValueError(
+                            "--secondary-network-interfaces: ipTags in "
+                            f"publicIPAddressConfiguration at index {idx} must be a JSON array."
+                        )
+                    for tag_idx, ip_tag in enumerate(ip_tags):
+                        if not isinstance(ip_tag, dict):
+                            raise InvalidArgumentValueError(
+                                "--secondary-network-interfaces: ipTags element at index "
+                                f"{tag_idx} in publicIPAddressConfiguration at index {idx} "
+                                "must be a JSON object."
+                            )
             result.append(self.models.AgentPoolNetworkInterface(
                 type=item.get("type"),
                 vnet_subnet_id=item.get("vnetSubnetId"),
                 enable_accelerated_networking=item.get("enableAcceleratedNetworking"),
+                public_ip_address_configuration=public_ip_config,
             ))
         return result
 

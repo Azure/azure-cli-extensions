@@ -1348,6 +1348,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].type, "Standard")
         self.assertEqual(result[0].vnet_subnet_id, "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1")
+        self.assertIsNone(result[0].public_ip_address_configuration)
 
         # invalid JSON - not a list
         ctx_3 = AKSPreviewAgentPoolContext(
@@ -1378,7 +1379,17 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         # @file input
         import tempfile
         import json
-        nics_data = [{"type": "Dynamic"}, {"type": "Standard", "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"}]
+        nics_data = [
+            {"type": "Dynamic"},
+            {
+                "type": "Standard",
+                "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1",
+                "publicIPAddressConfiguration": {
+                    "publicIPAddressVersion": "IPv4",
+                    "publicIPPrefixID": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/prefix1",
+                },
+            },
+        ]
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(nics_data, f)
             tmp_path = f.name
@@ -1398,9 +1409,114 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             self.assertIsNone(result[0].vnet_subnet_id)
             self.assertEqual(result[1].type, "Standard")
             self.assertEqual(result[1].vnet_subnet_id, "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1")
+            self.assertEqual(
+                result[1].as_dict()["publicIPAddressConfiguration"],
+                {
+                    "publicIPAddressVersion": "IPv4",
+                    "publicIPPrefixID": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/prefix1",
+                },
+            )
         finally:
             import os
             os.unlink(tmp_path)
+
+    def common_get_secondary_network_interfaces_with_public_ip_tags(self):
+        import json
+
+        ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "secondary_network_interfaces": json.dumps([{
+                    "type": "Standard",
+                    "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1",
+                    "enableAcceleratedNetworking": False,
+                    "publicIPAddressConfiguration": {
+                        "publicIPAddressVersion": "IPv4",
+                        "ipTags": [{
+                            "ipTagType": "RoutingPreference",
+                            "tag": "Internet",
+                        }],
+                    },
+                }]),
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+
+        self.assertEqual(
+            ctx.get_secondary_network_interfaces()[0].as_dict(),
+            {
+                "type": "Standard",
+                "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1",
+                "enableAcceleratedNetworking": False,
+                "publicIPAddressConfiguration": {
+                    "publicIPAddressVersion": "IPv4",
+                    "ipTags": [{
+                        "ipTagType": "RoutingPreference",
+                        "tag": "Internet",
+                    }],
+                },
+            },
+        )
+
+    def common_get_secondary_network_interfaces_allows_null_public_ip_fields(self):
+        ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "secondary_network_interfaces": [{
+                    "type": "Standard",
+                    "publicIPAddressConfiguration": None,
+                }, {
+                    "type": "Standard",
+                    "publicIPAddressConfiguration": {"ipTags": None},
+                }, {
+                    "type": "Standard",
+                    "publicIPAddressConfiguration": {},
+                }],
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+
+        result = ctx.get_secondary_network_interfaces()
+        self.assertIsNone(result[0].public_ip_address_configuration)
+        self.assertEqual(
+            result[1].as_dict()["publicIPAddressConfiguration"],
+            {"ipTags": None},
+        )
+        self.assertEqual(
+            result[2].as_dict()["publicIPAddressConfiguration"],
+            {},
+        )
+
+    def common_get_secondary_network_interfaces_rejects_malformed_public_ip_fields(self):
+        malformed_values = [
+            ({"publicIPAddressConfiguration": []}, "publicIPAddressConfiguration"),
+            ({"publicIPAddressConfiguration": {"ipTags": {}}}, "ipTags"),
+            ({"publicIPAddressConfiguration": {"ipTags": ["Internet"]}}, "ipTags"),
+        ]
+
+        for nested_fields, expected_error_field in malformed_values:
+            with self.subTest(nested_fields=nested_fields):
+                ctx = AKSPreviewAgentPoolContext(
+                    self.cmd,
+                    AKSAgentPoolParamDict({
+                        "secondary_network_interfaces": [{
+                            "type": "Standard",
+                            **nested_fields,
+                        }],
+                    }),
+                    self.models,
+                    DecoratorMode.CREATE,
+                    self.agentpool_decorator_mode,
+                )
+                with self.assertRaisesRegex(
+                    InvalidArgumentValueError,
+                    expected_error_field,
+                ):
+                    ctx.get_secondary_network_interfaces()
 
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(
@@ -1521,6 +1637,15 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_secondary_network_interfaces(self):
         self.common_get_secondary_network_interfaces()
+
+    def test_get_secondary_network_interfaces_with_public_ip_tags(self):
+        self.common_get_secondary_network_interfaces_with_public_ip_tags()
+
+    def test_get_secondary_network_interfaces_allows_null_public_ip_fields(self):
+        self.common_get_secondary_network_interfaces_allows_null_public_ip_fields()
+
+    def test_get_secondary_network_interfaces_rejects_malformed_public_ip_fields(self):
+        self.common_get_secondary_network_interfaces_rejects_malformed_public_ip_fields()
 
 
 class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
@@ -2149,6 +2274,62 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_2 = dec_2.set_up_agentpool_network_profile(agentpool_2)
         self.assertEqual(dec_agentpool_2.network_profile.dranet.mode, "Managed")
 
+    def common_construct_agentpool_profile_serializes_secondary_nic_public_ip(self):
+        import inspect
+        import json
+
+        from azext_aks_preview.custom import aks_agentpool_add
+
+        raw_param_dict = {
+            name: parameter.default
+            for name, parameter in inspect.signature(aks_agentpool_add).parameters.items()
+            if parameter.default is not parameter.empty
+        }
+        raw_param_dict.update({
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "test_nodepool_name",
+            "secondary_network_interfaces": json.dumps([{
+                "type": "Standard",
+                "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1",
+                "publicIPAddressConfiguration": {
+                    "publicIPAddressVersion": "IPv4",
+                    "ipTags": [{
+                        "ipTagType": "RoutingPreference",
+                        "tag": "Internet",
+                    }],
+                },
+            }]),
+        })
+        decorator = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        with patch(
+            "azext_aks_preview.agentpool_decorator.cf_agent_pools",
+            return_value=Mock(list=Mock(return_value=[])),
+        ):
+            payload = decorator.construct_agentpool_profile_preview().as_dict()
+
+        self.assertEqual(
+            payload["properties"]["networkProfile"]["secondaryNetworkInterfaces"],
+            [{
+                "type": "Standard",
+                "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1",
+                "publicIPAddressConfiguration": {
+                    "publicIPAddressVersion": "IPv4",
+                    "ipTags": [{
+                        "ipTagType": "RoutingPreference",
+                        "tag": "Internet",
+                    }],
+                },
+            }],
+        )
+
     def common_set_up_virtual_machines_profile(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
@@ -2592,6 +2773,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_managed_dranet(self):
         self.common_set_up_managed_dranet()
+
+    def test_construct_agentpool_profile_serializes_secondary_nic_public_ip(self):
+        self.common_construct_agentpool_profile_serializes_secondary_nic_public_ip()
 
     def test_set_up_virtual_machines_profile(self):
         self.common_set_up_virtual_machines_profile()
