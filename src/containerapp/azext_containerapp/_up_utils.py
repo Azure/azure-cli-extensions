@@ -59,7 +59,7 @@ from ._utils import (
     get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
-    list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env
+    list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env, is_acr_registry
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -514,7 +514,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
     def create_acr(self):
         registry_rg = self.resource_group
         url = self.registry_server
-        registry_name = url[: url.rindex(ACR_IMAGE_SUFFIX)]
+        parsed = urlparse(url)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
         location = "eastus"
         if self.env.location and self.env.location.lower() != "northcentralusstage":
             location = self.env.location
@@ -542,7 +543,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 _, stderr = process.communicate()
                 if process.returncode != 0:
                     docker_push_error = stderr.decode('utf-8')
-                    if not forced_acr_login and ".azurecr.io/" in image_name and "unauthorized" in docker_push_error:
+                    if not forced_acr_login and is_acr_registry(image_name) and "unauthorized" in docker_push_error:
                         # Couldn't push to ACR because the user isn't authenticated. Let's try to login to ACR and retrigger the docker push
                         logger.warning(f"The current user isn't authenticated to the {self.acr.name} ACR instance. Triggering an ACR login and retrying to push the image...")
                         # Logic to login to ACR
@@ -695,7 +696,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             raise ValidationError(f"Impossible to build the artifact file {source} with ACR Task. Please make sure that you use --source and target a directory, or if you want to build your artifact locally, please make sure Docker is running on your machine.")
 
         task_name = "cli_build_containerapp"
-        registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
+        parsed = urlparse(self.registry_server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0].lower()
         if not self.target_port:
             self.target_port = DEFAULT_PORT
         task_content = ACR_TASK_TEMPLATE.replace("{{image_name}}", image_name).replace("{{target_port}}", str(self.target_port))
@@ -751,7 +753,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 self.create_acr_if_needed()
             elif not registry_server:
                 raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source with a Dockerfile")
-            elif ACR_IMAGE_SUFFIX not in registry_server:
+            elif not is_acr_registry(registry_server):
                 raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source with a Dockerfile")
             self.image = self.registry_server + "/" + image_name_with_tag
             queue_acr_build(
@@ -777,7 +779,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.create_acr_if_needed()
         elif not registry_server:
             raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source or --artifact in this context")
-        elif ACR_IMAGE_SUFFIX not in registry_server:
+        elif not is_acr_registry(registry_server):
             raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source or --artifact in this context")
 
         # At this point in the logic, we know that the customer doesn't have a Dockerfile but has a container registry.
@@ -1083,7 +1085,7 @@ def _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, regist
             "--build_env_vars must be used with --source, --artifact, or --repo together"
         )
     _validate_source_artifact_args(source, artifact)
-    if repo and registry_server and "azurecr.io" in registry_server:
+    if repo and registry_server and is_acr_registry(registry_server):
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
         if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
@@ -1485,7 +1487,7 @@ def _get_env_and_group_from_log_analytics(
 
 
 def _get_acr_from_image(cmd, app):
-    if app.image is not None and "azurecr.io" in app.image:
+    if app.image is not None and is_acr_registry(app.image):
         app.registry_server = app.image.split("/")[
             0
         ]  # TODO what if this conflicts with registry_server param?
@@ -1503,7 +1505,7 @@ def _get_registry_from_app(app, source):
     containerapp_def = app.get()
     existing_registries = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
     if source:
-        existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
+        existing_registries = [r for r in existing_registries if is_acr_registry(r["server"])]
     if containerapp_def:
         if len(existing_registries) == 1:
             app.registry_server = existing_registries[0]["server"]
@@ -1515,7 +1517,8 @@ def _get_registry_from_app(app, source):
 
 
 def _get_acr_rg(app):
-    registry_name = app.registry_server[: app.registry_server.rindex(ACR_IMAGE_SUFFIX)]
+    parsed = urlparse(app.registry_server)
+    registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
     client = get_mgmt_service_client(
         app.cmd.cli_ctx, ContainerRegistryManagementClient
     ).registries
@@ -1551,7 +1554,7 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     registry_rg = None
     registry_name = None
     if app.registry_server:
-        if "azurecr.io" not in app.registry_server and source:
+        if not is_acr_registry(app.registry_server) and source:
             raise ValidationError(
                 "Cannot supply non-Azure registry when using --source."
             )
@@ -1579,7 +1582,7 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
 
 def _get_registry_details_without_get_creds(cmd, app: "ContainerApp", source):
     if app.registry_server:
-        if "azurecr.io" not in app.registry_server and source:
+        if not is_acr_registry(app.registry_server) and source:
             raise ValidationError(
                 "Cannot supply non-Azure registry when using --source."
             )
