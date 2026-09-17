@@ -44,7 +44,7 @@ def _get_cluster_resource(cli_ctx, cluster_id):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.core.profiles import ResourceType
     client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-    return client.resources.get_by_id(cluster_id, "2026-06-01")
+    return client.resources.get_by_id(cluster_id, "2026-06-15-preview")
 
 
 def _keep_only_args(args_schema, keep):
@@ -102,7 +102,10 @@ class UserAssign(_UserAssign):
         _build_identity_provider(self.ctx.args)
 
 
-@register_command("documentdb mongocluster reset-password")
+@register_command(
+    "documentdb mongocluster reset-password",
+    is_preview=True,
+)
 class ResetPassword(_MongoClusterUpdate):
     """Reset the administrator password of a mongo cluster.
 
@@ -142,7 +145,10 @@ class ResetPassword(_MongoClusterUpdate):
             args.admin_user = user_name
 
 
-@register_command("documentdb mongocluster replica create")
+@register_command(
+    "documentdb mongocluster replica create",
+    is_preview=True,
+)
 class ReplicaCreate(_MongoClusterCreate):
     """Create a read replica of an existing mongo cluster.
 
@@ -218,7 +224,10 @@ class ReplicaCreate(_MongoClusterCreate):
             return self.serialize_content(_content_value)
 
 
-@register_command("documentdb mongocluster restore")
+@register_command(
+    "documentdb mongocluster restore",
+    is_preview=True,
+)
 class Restore(_MongoClusterCreate):
     """Restore a mongo cluster to a new cluster from a point in time.
 

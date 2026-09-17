@@ -4,6 +4,10 @@ This is an extension to Azure CLI to manage **Azure DocumentDB**
 clusters (the `Microsoft.DocumentDB/mongoClusters` resource) under the
 `az documentdb mongocluster` command group.
 
+Version `1.1.0b1` is a Beta release generated against the
+`2026-06-15-preview` management API. The Preview API adds planned replica
+promotion while retaining the existing command surface.
+
 ## How to install ##
 
 ```bash
