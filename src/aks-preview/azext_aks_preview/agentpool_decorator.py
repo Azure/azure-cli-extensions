@@ -1374,7 +1374,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         return agentpool
 
     def _keep_supported_flexnodes_properties(self, agentpool: AgentPool) -> AgentPool:
-        """Keep only properties supported by FlexNodes pools."""
+        """Keep only properties supported by FlexNodes pools and remove defaulted values."""
         supported_properties = {
             "name",
             "orchestrator_version",
@@ -1390,6 +1390,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         for property_name in properties._attr_to_rest_field:  # pylint: disable=protected-access
             if property_name not in supported_properties:
                 setattr(agentpool, property_name, None)
+
+        if self.__raw_parameters.get("node_taints") is None:
+            agentpool.node_taints = None
 
         upgrade_settings = agentpool.upgrade_settings
         if upgrade_settings is not None:
@@ -1817,8 +1820,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         vm_set_type = getattr(agentpool, "type_properties_type", getattr(agentpool, "type", None))
         if vm_set_type == CONST_FLEX_NODES:
-            if self.__raw_parameters.get("node_taints") is None:
-                agentpool.node_taints = None
             agentpool = self._keep_supported_flexnodes_properties(agentpool)
         return agentpool
 
