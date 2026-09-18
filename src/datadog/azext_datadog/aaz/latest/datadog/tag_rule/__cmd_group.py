@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "datadog tag-rule",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Provides a set of commands to manage tag rules for Datadog monitor resources, allowing you to control which Azure resources are monitored based on their tags.

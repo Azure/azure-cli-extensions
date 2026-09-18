@@ -34,10 +34,11 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_machineextension')
     def test_machine_and_extension(self):
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
-            'location': 'westus2',
-            'customScriptName': 'custom-test',
+            'machine': 'LAPTOP-4GNU2K3H',
+            'rg': 'yao_test',
+            'location': 'eastus',
+            'customScriptName': 'testextension',
+            'publisher': 'Microsoft.Azure.NetworkWatcher',
         })
 
         self.cmd('az connectedmachine show -n {machine} -g {rg}', checks=[
@@ -61,7 +62,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--settings "{{\\"commandToExecute\\":\\"powershell.exe ls\\"}}"',
                 checks=[
-                    self.check('name', '{customScriptName}'),
+                    self.check('name', 'testextension'),
                     self.check('properties.typeHandlerVersion', '1.4.2798.3'),
         ])
 
@@ -76,7 +77,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}"',
                 checks=[
-                    self.check('name', '{customScriptName}'),
+                    self.check('name', 'testextension'),
                     self.check('properties.typeHandlerVersion', '1.4.2798.3')
         ])
 
@@ -111,7 +112,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}"',
                 checks=[
-                    self.check('name', '{customScriptName}'),
+                    self.check('name', 'testextension'),
                     self.check('properties.enableAutomaticUpgrade', False),
                     self.check('properties.provisioningState', 'Succeeded'),
                     self.check('properties.settings.commandToExecute', 'dir')
@@ -133,6 +134,17 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 checks=[
                     self.check('status', 'Succeeded')
         ])
+
+        # List all extension publishers based on the location
+        self.cmd('az connectedmachine extension publisher list '
+                '--location "{location}"',
+                checks=[])
+
+        # List all extension types based on location and publisher
+        self.cmd('az connectedmachine extension type list '
+                '--location "{location}" '
+                '--publisher "{publisher}"',
+                checks=[])
 
         self.cmd('az connectedmachine extension delete -y '
                 '--name "{customScriptName}" '

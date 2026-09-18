@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor get-billing-info",
+    is_preview=True,
 )
 class GetBillingInfo(AAZCommand):
     """Get marketplace and organization info mapped to the given monitor.
@@ -22,9 +23,9 @@ class GetBillingInfo(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-11",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/getbillinginfo", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/getbillinginfo", "2025-12-26-preview"],
         ]
     }
 
@@ -125,7 +126,7 @@ class GetBillingInfo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -177,6 +178,9 @@ class GetBillingInfo(AAZCommand):
             )
             marketplace_saas_info.marketplace_subscription_id = AAZStrType(
                 serialized_name="marketplaceSubscriptionId",
+            )
+            marketplace_saas_info.offer_id = AAZStrType(
+                serialized_name="offerId",
             )
             marketplace_saas_info.subscribed = AAZBoolType()
 

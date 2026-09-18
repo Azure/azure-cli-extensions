@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
+import os
 import unittest
 from types import SimpleNamespace
 
@@ -185,3 +187,203 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
+
+    def test_add_maintenance_configuration_with_window_id(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        window_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+            "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": window_id,
+        }
+
+        result = mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertEqual(result.maintenance_window_id, window_id)
+        self.assertIsNone(result.time_in_week)
+        self.assertIsNone(result.maintenance_window)
+
+    def test_add_maintenance_configuration_with_window_id_for_default_config(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        window_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+            "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "default",
+            "maintenance_window_id": window_id,
+        }
+
+        result = mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertEqual(result.maintenance_window_id, window_id)
+
+    def test_add_maintenance_configuration_window_id_conflicts_with_schedule(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": (
+                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+                "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+            ),
+            "schedule_type": "Daily",
+            "interval_days": 2,
+        }
+
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--maintenance-window-id", str(cm.exception))
+        self.assertIn("--schedule-type", str(cm.exception))
+        self.assertIn("--interval-days", str(cm.exception))
+
+    def test_add_maintenance_configuration_window_id_conflicts_with_default_schedule(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "default",
+            "maintenance_window_id": (
+                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+                "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+            ),
+            "weekday": "Monday",
+            "start_hour": 1,
+        }
+
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--weekday", str(cm.exception))
+        self.assertIn("--start-hour", str(cm.exception))
+
+    def test_add_maintenance_configuration_window_id_conflicts_with_config_file(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "config_file": "./test.json",
+            "maintenance_window_id": (
+                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+                "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+            ),
+        }
+
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--maintenance-window-id", str(cm.exception))
+        self.assertIn("--config-file", str(cm.exception))
+
+    def test_add_maintenance_configuration_with_empty_window_id(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": "   ",
+        }
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--maintenance-window-id", str(cm.exception))
+
+    def test_add_maintenance_configuration_with_empty_string_window_id(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": "",
+        }
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            mc.getMaintenanceConfiguration(cmd, raw_parameters)
+        self.assertIn("--maintenance-window-id", str(cm.exception))
+
+    def test_update_internal_passes_window_id_to_client(self):
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        window_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_rg/"
+            "providers/Microsoft.ContainerService/maintenanceWindows/myWindow"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "maintenance_window_id": window_id,
+        }
+
+        captured = {}
+
+        class FakeClient:
+            def create_or_update(self, resource_group_name, resource_name, config_name, parameters):
+                captured["resource_group_name"] = resource_group_name
+                captured["resource_name"] = resource_name
+                captured["config_name"] = config_name
+                captured["parameters"] = parameters
+                return parameters
+
+        result = mc.aks_maintenanceconfiguration_update_internal(cmd, FakeClient(), raw_parameters)
+
+        self.assertEqual(captured["resource_group_name"], "test_rg")
+        self.assertEqual(captured["resource_name"], "test_cluster")
+        self.assertEqual(captured["config_name"], "aksManagedAutoUpgradeSchedule")
+        self.assertEqual(captured["parameters"].maintenance_window_id, window_id)
+        self.assertEqual(result.maintenance_window_id, window_id)
+
+    def test_config_file_is_wrapped_under_properties_for_wire_serialization(self):
+        """Regression test: --config-file JSON is authored in the flattened display
+        shape (top-level "maintenanceWindow", matching `aks maintenanceconfiguration
+        show` output), but the generated SDK model only exposes the flattened
+        attributes through its "properties" field. Without wrapping, the PUT body
+        drops the flattened fields entirely and the service rejects the request.
+        """
+        register_aks_preview_resource_type()
+        cli_ctx = MockCLI()
+        cmd = MockCmd(cli_ctx)
+        config_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "data", "maintenancewindow.json"
+        )
+        raw_parameters = {
+            "resource_group_name": "test_rg",
+            "cluster_name": "test_cluster",
+            "config_name": "aksManagedAutoUpgradeSchedule",
+            "config_file": config_file,
+        }
+
+        result = mc.getMaintenanceConfiguration(cmd, raw_parameters)
+
+        # The flattened accessor must resolve through the wrapped "properties" field.
+        self.assertIsNotNone(result.maintenance_window)
+        self.assertEqual(result.maintenance_window.duration_hours, 4)
+        self.assertEqual(result.maintenance_window.utc_offset, "-08:00")
+        self.assertEqual(result.maintenance_window.schedule.absolute_monthly.interval_months, 3)
+
+        # The wire payload sent to the service must nest the fields under "properties",
+        # not leave them flattened at the top level.
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks._utils.model_base import SdkJSONEncoder
+        serialized = json.loads(json.dumps(result, cls=SdkJSONEncoder, exclude_readonly=True))
+        self.assertIn("properties", serialized)
+        self.assertIn("maintenanceWindow", serialized["properties"])
+        self.assertNotIn("maintenanceWindow", serialized)

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-12-26-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
@@ -198,6 +198,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
             )
+            properties.marketplace_offer_details = AAZObjectType(
+                serialized_name="marketplaceOfferDetails",
+            )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
                 flags={"read_only": True},
@@ -209,6 +212,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.saa_s_data = AAZObjectType(
+                serialized_name="saaSData",
+            )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
             )
@@ -219,6 +225,19 @@ class Wait(AAZWaitCommand):
             datadog_organization_properties.name = AAZStrType()
             datadog_organization_properties.resource_collection = AAZBoolType(
                 serialized_name="resourceCollection",
+            )
+
+            marketplace_offer_details = cls._schema_on_200.properties.marketplace_offer_details
+            marketplace_offer_details.offer_id = AAZStrType(
+                serialized_name="offerId",
+            )
+            marketplace_offer_details.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+            )
+
+            saa_s_data = cls._schema_on_200.properties.saa_s_data
+            saa_s_data.saa_s_resource_id = AAZStrType(
+                serialized_name="saaSResourceId",
             )
 
             user_info = cls._schema_on_200.properties.user_info

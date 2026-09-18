@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context site-reference show",
+    "workload-orchestration-preview context site-reference show",
 )
 class Show(AAZCommand):
     """Get Site Reference Resource
     :example: Show a Site Reference
-        az workload-orchestration context site-reference show -n mySiteReference -g myResourceGroup --context-name myContext
+        az workload-orchestration-preview context site-reference show -n mySiteReference -g myResourceGroup --context-name myContext
     """
 
     _aaz_info = {

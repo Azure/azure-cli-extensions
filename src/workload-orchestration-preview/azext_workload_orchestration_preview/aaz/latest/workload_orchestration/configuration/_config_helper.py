@@ -430,7 +430,7 @@ class ConfigurationHelper:
                     break
             
             if not hierarchy_found:
-                raise CLIInternalError(f"Config template '{template_name}' is not linked to hierarchy: {hierarchy_id_str}. Please link the config template to this hierarchy first using the 'az workload-orchestration config-template link' command.")
+                raise CLIInternalError(f"Config template '{template_name}' is not linked to hierarchy: {hierarchy_id_str}. Please link the config template to this hierarchy first using the 'az workload-orchestration-preview config-template link' command.")
                 
         except CLIInternalError:
             # Re-raise CLI errors as-is

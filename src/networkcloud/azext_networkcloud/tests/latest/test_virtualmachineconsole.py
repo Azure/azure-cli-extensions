@@ -118,7 +118,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud virtualmachine console delete --resource-group {resourceGroup} "
-        "--virtual-machine-name {virtualMachineName}",
+        "--virtual-machine-name {virtualMachineName} --yes",
         checks=checks,
     )
 

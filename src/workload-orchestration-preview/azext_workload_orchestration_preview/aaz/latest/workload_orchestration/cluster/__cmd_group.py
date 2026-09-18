@@ -10,7 +10,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration cluster",
+    "workload-orchestration-preview cluster",
 )
 class __CMDGroup(AAZCommandGroup):
     """Prepare an Arc-connected Kubernetes cluster for Workload Orchestration."""

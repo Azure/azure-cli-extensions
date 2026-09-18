@@ -13,12 +13,12 @@ from azure.cli.core.azclierror import CLIInternalError as CLIError
 
 
 @register_command(
-    "workload-orchestration context create",
+    "workload-orchestration-preview context create",
 )
 class Create(AAZCommand):
     """Create Context Resource
     :example: Create Context Resource
-        az workload-orchestration context create -g MyResourceGroup -n MyContext --location eastus --capabilities '[{"description":"description","name":"name"}]' --hierarchies '[{"description":"description","name":"name"}]'
+        az workload-orchestration-preview context create -g MyResourceGroup -n MyContext --location eastus --capabilities '[{"description":"description","name":"name"}]' --hierarchies '[{"description":"description","name":"name"}]'
     """
 
     _aaz_info = {
@@ -179,7 +179,7 @@ class Create(AAZCommand):
             from azext_workload_orchestration_preview.common.utils import invoke_cli_command, CmdProxy
             cmd_proxy = CmdProxy(self.ctx.cli_ctx)
             invoke_cli_command(cmd_proxy, [
-                "workload-orchestration", "context", "site-reference", "create",
+                "workload-orchestration-preview", "context", "site-reference", "create",
                 "-g", rg,
                 "--context-name", context_name,
                 "--site-reference-name", ref_name,

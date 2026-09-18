@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "mongo-db atlas organization list",
 )
 class List(AAZCommand):
-    """List all Azure resources representing MongoDB Atlas organizations under the current subscription
+    """List OrganizationResource resources by subscription ID
 
-    :example: Organizations_ListBySubscription
-        az mongo-db atlas organization list --subscription "abcd1234-5678-90ab-cdef-12345678abcd" --resource-group "MyResourceGroup"
+    :example: Organizations_ListBySubscription_MaximumSet
+        az mongo-db atlas organization list \\ --subscription {subscription} \\ --resource-group {resource_group}
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/mongodb.atlas/organizations", "2025-06-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/mongodb.atlas/organizations", "2026-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations", "2026-03-01-preview"],
         ]
     }
 
@@ -46,9 +46,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Azure resource group in which MongoDB Atlas resource is created",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -114,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-03-01-preview",
                     required=True,
                 ),
             }
@@ -363,7 +361,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-03-01-preview",
                     required=True,
                 ),
             }

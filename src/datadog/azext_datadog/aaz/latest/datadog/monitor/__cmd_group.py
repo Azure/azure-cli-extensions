@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "datadog monitor",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Provides a set of commands to manage Datadog monitor resources in your Azure subscription, enabling integration and observability of your Azure resources through Datadog.

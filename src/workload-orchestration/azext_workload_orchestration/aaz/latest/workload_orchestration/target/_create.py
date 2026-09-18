@@ -170,29 +170,81 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        # Resolve context_id from CLI config if not provided
+        # Resolve context_id if not provided: CLI config → Azure Resource Graph.
         if not self.ctx.args.context_id:
-            self._resolve_context_id_from_config()
+            self._resolve_context_id()
 
-    def _resolve_context_id_from_config(self):
-        """Resolve context_id from CLI config if not already set."""
-        try:
-            context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+    def _resolve_context_id(self):
+        """Resolve context_id when not passed on the command line.
+
+        Resolution order:
+          1. CLI config (set via ``context set`` / ``context use``).
+          2. Azure Resource Graph — find an existing (non-terminal) Context in
+             the tenant. When resolved this way, cache it in CLI config so
+             subsequent commands skip the query.
+        """
+        context_id = self._context_id_from_config()
+        if not context_id:
+            context_id = self._context_id_from_arg()
             if context_id:
-                self.ctx.args.context_id = context_id
-            else:
-                raise CLIInternalError(
-                    "No context-id was provided, and no default context is set. "
-                    "Please provide the --context-id argument "
-                    "or set a default context using 'az workload-orchestration context use'."
-                )
-        except configparser.NoSectionError as e:
-            logger.debug("Config section 'workload_orchestration' not found: %s", e)
+                # Cache the ARG-resolved context (id, name, rg) in CLI config so
+                # subsequent commands skip the query and stay consistent with
+                # 'context set' / 'context use' / 'init'.
+                try:
+                    from azext_workload_orchestration.common.utils import (
+                        set_current_context_config,
+                    )
+                    set_current_context_config(self.ctx.cli_ctx, context_id)
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.debug("Failed to cache context in config: %s", e)
+        if not context_id:
             raise CLIInternalError(
                 "No context-id was provided, and no default context is set. "
                 "Please provide the --context-id argument "
                 "or set a default context using 'az workload-orchestration context use'."
             )
+        self.ctx.args.context_id = context_id
+
+    def _context_id_from_config(self):
+        """Return the context_id stored in CLI config, or None."""
+        try:
+            return self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id') or None
+        except (configparser.NoSectionError, configparser.NoOptionError) as e:
+            logger.debug("context_id not found in CLI config: %s", e)
+            return None
+
+    def _context_id_from_arg(self):
+        """Look up an existing Context via Azure Resource Graph, or return None.
+        """
+        import json
+        from azure.cli.core.util import send_raw_request
+
+        query = (
+            'resources '
+            '| where type =~ "microsoft.edge/contexts" '
+            'and isnotnull(properties) '
+            'and properties.provisioningState !in ("Cancelled", "Failed", "Deleting") '
+            '| project id'
+        )
+        body = {
+            "query": query,
+            "options": {"resultFormat": "objectArray"},
+        }
+        endpoint = self.ctx.cli_ctx.cloud.endpoints.resource_manager.rstrip("/")
+        url = f"{endpoint}/providers/Microsoft.ResourceGraph/resources?api-version=2022-10-01"
+        try:
+            resp = send_raw_request(
+                self.ctx.cli_ctx, "POST", url, body=json.dumps(body)
+            )
+            rows = resp.json().get("data", []) or []
+        except Exception as e:  # pylint: disable=broad-except
+            logger.debug("Resource Graph query for context failed: %s", e)
+            return None
+
+        if not rows:
+            return None
+        first = rows[0]
+        return first.get("id") if isinstance(first, dict) else None
 
     @register_callback
     def post_operations(self):

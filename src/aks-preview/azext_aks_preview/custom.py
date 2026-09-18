@@ -55,6 +55,7 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_NODE_PROVISIONING_STATE_SUCCEEDED,
     CONST_DEFAULT_NODE_OS_TYPE,
+    CONST_FLEX_NODES,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
@@ -70,6 +71,7 @@ from azext_aks_preview._helpers import (
     get_k8s_extension_module,
     get_monitoring_addon_key,
     get_nodepool_snapshot_by_snapshot_id,
+    get_user_supplied_argument_options,
     print_or_merge_credentials,
     process_message_for_run_command,
     check_is_monitoring_addon_enabled,
@@ -78,6 +80,7 @@ from azext_aks_preview._helpers import (
     raise_validation_error_if_extension_type_not_in_allow_list,
     get_extension_in_allow_list,
     uses_kubelogin_devicecode,
+    validate_flexnodes_options,
     which,
 )
 from azext_aks_preview._podidentity import (
@@ -128,8 +131,14 @@ from azext_aks_preview.managednamespace import (
     aks_managed_namespace_update,
 )
 from azext_aks_preview.machine import (
+    add_flexnode_machine,
     add_machine,
+    update_flexnode_machine,
     update_machine,
+)
+from azext_aks_preview.alertconfiguration import (
+    aks_alert_config_add_internal,
+    aks_alert_config_update_internal,
 )
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
@@ -239,6 +248,41 @@ def _ssl_context():
             return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 
     return ssl.create_default_context()
+
+
+# The Log Analytics workspace's default output tables (e.g. the ContainerInsights solution
+# tables) can take a short while to finish provisioning right after the workspace itself, or
+# its association with the ContainerInsights solution, reports "Succeeded". During that window
+# a Data Collection Rule (DCR) PUT referencing those tables can fail synchronously with
+# "InvalidOutputTable" even though the workspace is otherwise ready.
+_DCR_TABLE_READINESS_MAX_RETRY_TIMES = 5
+_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS = 15
+
+
+def _create_or_update_dcr_with_table_readiness_retry(resources, dcr_resource_id, api_version, body):
+    """
+    Create/update a Data Collection Rule (DCR), applying a bounded backoff-and-retry
+    specifically for the known-transient "InvalidOutputTable" readiness error described above.
+    Any other error keeps the pre-existing immediate-retry policy (up to 3 attempts, no delay)
+    and is re-raised unchanged once that bound is exhausted.
+    """
+    _MAX_RETRY_TIMES = 3
+    error = None
+    readiness_retries = 0
+    attempt = 0
+    while True:
+        try:
+            resources.begin_create_or_update_by_id(dcr_resource_id, api_version, body)
+            return
+        except (CLIError, HttpResponseError) as e:
+            error = e
+            if "InvalidOutputTable" in str(e) and readiness_retries < _DCR_TABLE_READINESS_MAX_RETRY_TIMES:
+                readiness_retries += 1
+                time.sleep(_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS)
+                continue
+            attempt += 1
+            if attempt >= _MAX_RETRY_TIMES:
+                raise error
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
@@ -576,26 +620,12 @@ def ensure_container_insights_for_monitoring_preview(
             )
 
             resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
-            for _ in range(3):
-                try:
-                    if enable_syslog:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_with_syslog)
-                        )
-                    else:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_without_syslog)
-                        )
-                    error = None
-                    break
-                except (CLIError, HttpResponseError) as e:
-                    error = e
-            else:
-                raise error
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources,
+                dcr_resource_id,
+                "2022-06-01",
+                json.loads(dcr_creation_body_with_syslog) if enable_syslog else json.loads(dcr_creation_body_without_syslog),
+            )
 
         if create_dcra:
             # only create or delete the association between the DCR and cluster
@@ -898,7 +928,8 @@ def aks_maintenanceconfiguration_add(
     duration_hours=None,
     utc_offset=None,
     start_date=None,
-    start_time=None
+    start_time=None,
+    maintenance_window_id=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
@@ -931,7 +962,8 @@ def aks_maintenanceconfiguration_update(
     duration_hours=None,
     utc_offset=None,
     start_date=None,
-    start_time=None
+    start_time=None,
+    maintenance_window_id=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
@@ -1223,6 +1255,7 @@ def aks_create(
     nat_gateway_managed_outbound_ipv6_count=None,
     nat_gateway_outbound_ip_ids=None,
     nat_gateway_outbound_ip_prefix_ids=None,
+    nat_gateway_sku=None,
     outbound_type=None,
     network_plugin=None,
     network_plugin_mode=None,
@@ -1326,6 +1359,7 @@ def aks_create(
     enable_ultra_ssd=False,
     enable_fips_image=False,
     enable_fips=False,
+    enable_node_hardening=False,
     kubelet_config=None,
     linux_os_config=None,
     host_group_id=None,
@@ -1396,9 +1430,11 @@ def aks_create(
     # opentelemetry parameters
     enable_opentelemetry_metrics=False,
     opentelemetry_metrics_port=None,
+    opentelemetry_metrics_port_grpc=None,
     disable_opentelemetry_metrics=False,
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
+    opentelemetry_logs_traces_port_grpc=None,
     disable_opentelemetry_logs=False,
     # metrics profile
     enable_cost_analysis=False,
@@ -1511,6 +1547,7 @@ def aks_update(
     nat_gateway_managed_outbound_ipv6_count=None,
     nat_gateway_outbound_ip_ids=None,
     nat_gateway_outbound_ip_prefix_ids=None,
+    nat_gateway_sku=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
@@ -1612,6 +1649,8 @@ def aks_update(
     disable_image_integrity=False,
     enable_fips=False,
     disable_fips=False,
+    enable_node_hardening=False,
+    disable_node_hardening=False,
     enable_service_account_image_pull=False,
     disable_service_account_image_pull=False,
     service_account_image_pull_default_managed_identity_id=None,
@@ -1639,9 +1678,11 @@ def aks_update(
     # opentelemetry parameters
     enable_opentelemetry_metrics=False,
     opentelemetry_metrics_port=None,
+    opentelemetry_metrics_port_grpc=None,
     disable_opentelemetry_metrics=False,
     enable_opentelemetry_logs=False,
     opentelemetry_logs_port=None,
+    opentelemetry_logs_traces_port_grpc=None,
     disable_opentelemetry_logs=False,
     enable_vpa=False,
     disable_vpa=False,
@@ -1720,6 +1761,10 @@ def aks_update(
     node_disruption_policy=None,
     # control plane scaling
     control_plane_scaling_size=None,
+    # hosted system (Managed System Pool)
+    enable_hosted_system=False,
+    system_node_subnet_id=None,
+    node_subnet_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2013,6 +2058,9 @@ def aks_upgrade(cmd,
             if agent_pool_profile.mode == CONST_NODEPOOL_MODE_MACHINES:
                 logger.warning("Skipping node image upgrade for agent pool '%s': Machines mode pools do not support node image version upgrade.", agent_pool_profile.name)
                 continue
+            if agent_pool_profile.type == CONST_FLEX_NODES:
+                logger.warning("Skipping node image upgrade for FlexNodes pool '%s'.", agent_pool_profile.name)
+                continue
             agent_pool_client = cf_agent_pools(cmd.cli_ctx)
             _upgrade_single_nodepool_image_version(
                 True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
@@ -2268,9 +2316,11 @@ def aks_agentpool_add(
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     enable_managed_gpu=False,
+    managed_gpu_driver_mode=None,
     skip_gpu_driver_install=False,
     gpu_driver=None,
     driver_type=None,
@@ -2352,9 +2402,11 @@ def aks_agentpool_update(
     # extensions
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=False,
+    managed_gpu_driver_mode=None,
     os_sku=None,
     ssh_access=None,
     yes=False,
@@ -2370,6 +2422,7 @@ def aks_agentpool_update(
     # local DNS
     localdns_config=None,
     node_vm_size=None,
+    zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
     # crg
@@ -2461,6 +2514,7 @@ def aks_agentpool_upgrade(cmd,
                           yes=False,
                           if_match=None,
                           if_none_match=None):
+    raw_parameters = locals().copy()
     AgentPoolUpgradeSettings = cmd.get_models(
         "AgentPoolUpgradeSettings",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2509,8 +2563,10 @@ def aks_agentpool_upgrade(cmd,
             "--undrainable-node-behavior/--max-unavailable/--max-blocked-nodes/"
             "--upgrade-strategy/--drain-batch-size/--drain-timeout-bg/--batch-soak-duration/--final-soak-duration'."
         )
-
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if node_image_only:
+        if instance.type_properties_type == CONST_FLEX_NODES:
+            raise ClientRequestError("Node image-only upgrade is not supported for FlexNodes pools.")
         return _upgrade_single_nodepool_image_version(no_wait,
                                                       client,
                                                       resource_group_name,
@@ -2518,6 +2574,15 @@ def aks_agentpool_upgrade(cmd,
                                                       nodepool_name,
                                                       snapshot_id)
 
+    if instance.type_properties_type == CONST_FLEX_NODES:
+        validate_flexnodes_options(
+            cmd,
+            raw_parameters,
+            {
+                "kubernetes_version": "--kubernetes-version",
+                "max_unavailable": "--max-unavailable",
+            },
+        )
     # load model CreationData, for nodepool snapshot
     CreationData = cmd.get_models(
         "CreationData",
@@ -2534,8 +2599,6 @@ def aks_agentpool_upgrade(cmd,
         creationData = CreationData(
             source_resource_id=snapshot_id
         )
-
-    instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
     if kubernetes_version != '' or instance.orchestrator_version == kubernetes_version:
         msg = "The new kubernetes version is the same as the current kubernetes version."
@@ -2577,7 +2640,11 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.max_blocked_nodes = max_blocked_nodes
 
     # Blue-green upgrade settings
-    if not instance.upgrade_settings_blue_green:
+    blue_green_settings = (drain_batch_size, drain_timeout_bg, batch_soak_duration, final_soak_duration)
+    if not instance.upgrade_settings_blue_green and (
+        instance.type_properties_type != CONST_FLEX_NODES
+        or any(setting is not None for setting in blue_green_settings)
+    ):
         instance.upgrade_settings_blue_green = AgentPoolBlueGreenUpgradeSettings()
 
     if drain_batch_size:
@@ -2628,6 +2695,27 @@ def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
     """Get rollback versions for a nodepool."""
     upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
     return upgrade_profile.recently_used_versions
+
+
+def aks_agentpool_get_bootstrap_data(cmd,
+                                     client,
+                                     resource_group_name,
+                                     cluster_name,
+                                     nodepool_name):
+    """Get bootstrap data for a FlexNodes pool."""
+    ListBootstrapDataRequest = cmd.get_models(
+        "ListBootstrapDataRequest",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+    result = client.list_bootstrap_data(
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        ListBootstrapDataRequest(),
+        logging_enable=False,
+    )
+    return result.as_dict()
 
 
 def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
@@ -3236,10 +3324,14 @@ def aks_machine_add(
     node_public_ip_tags=None,
     vm_size=None,
     kubernetes_version=None,
+    labels=None,
+    node_taints=None,
+    max_pods=None,
     no_wait=False,
     spot_max_price=float("nan"),
     enable_ultra_ssd=False,
     eviction_policy=None,
+    capacity_reservation_group=None,
 ):
     existedMachine = None
     try:
@@ -3252,11 +3344,36 @@ def aks_machine_add(
             f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
         )
 
+    raw_parameters = locals().copy()
+    agentpool = cf_agent_pools(cmd.cli_ctx).get(resource_group_name, cluster_name, nodepool_name)
+    if agentpool.type_properties_type == CONST_FLEX_NODES:
+        validate_flexnodes_options(
+            cmd,
+            raw_parameters,
+            {
+                "kubernetes_version": "--kubernetes-version",
+                "labels": "--labels",
+                "max_pods": "--max-pods",
+                "node_taints": "--node-taints",
+            },
+        )
+        return add_flexnode_machine(cmd, client, raw_parameters, no_wait)
+
+    supplied_options = get_user_supplied_argument_options(cmd)
+    flexnode_only_options = [
+        option for name, option in supplied_options.items()
+        if name in {"labels", "node_taints", "max_pods"}
+    ]
+    if flexnode_only_options:
+        raise InvalidArgumentValueError(
+            "The following options on 'az aks machine add' are only supported for FlexNode machines: {}."
+            .format(", ".join(sorted(flexnode_only_options)))
+        )
+
     if isnan(spot_max_price):
         spot_max_price = -1
 
-    # DO NOT MOVE: get all the original parameters and save them as a dictionary
-    raw_parameters = locals()
+    raw_parameters["spot_max_price"] = spot_max_price
     return add_machine(cmd, client, raw_parameters, no_wait)
 
 
@@ -3271,6 +3388,7 @@ def aks_machine_update(
     tags=None,
     node_taints=None,
     labels=None,
+    kubernetes_version=None,
     no_wait=False,
 ):
     existedMachine = None
@@ -3284,6 +3402,20 @@ def aks_machine_update(
     if existedMachine:
         # DO NOT MOVE: get all the original parameters and save them as a dictionary
         raw_parameters = locals()
+        if existedMachine.properties is not None and existedMachine.properties.hardware is None:
+            validate_flexnodes_options(
+                cmd,
+                raw_parameters,
+                {
+                    "kubernetes_version": "--kubernetes-version",
+                    "labels": "--labels",
+                    "node_taints": "--node-taints",
+                },
+            )
+            return update_flexnode_machine(cmd, client, raw_parameters, existedMachine, no_wait)
+        if kubernetes_version is not None:
+            raise InvalidArgumentValueError(
+                "--kubernetes-version on 'az aks machine update' is only supported for FlexNode machines.")
         return update_machine(client, raw_parameters, existedMachine, no_wait)
 
 
@@ -5876,7 +6008,88 @@ def aks_loadbalancer_rebalance_nodes(
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
 
-def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, kubeconfig_path=None, yes=False):
+def aks_bastion_enable(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    no_wait=False,
+    aks_custom_headers=None,
+    bastion_sku=None,
+    bastion_public_ip=None,
+    bastion_scale_units=None,
+):
+    from azext_aks_preview.managedbastion import (
+        update_managed_bastion_profile,
+    )
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return update_managed_bastion_profile(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        no_wait=no_wait,
+        aks_custom_headers=headers,
+        enabled=True,
+        enabling=True,
+        bastion_sku=bastion_sku,
+        bastion_public_ip=bastion_public_ip,
+        bastion_scale_units=bastion_scale_units,
+    )
+
+
+def aks_bastion_disable(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    no_wait=False,
+    aks_custom_headers=None,
+):
+    from azext_aks_preview.managedbastion import (
+        update_managed_bastion_profile,
+    )
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return update_managed_bastion_profile(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        no_wait=no_wait,
+        aks_custom_headers=headers,
+        enabled=False
+    )
+
+
+def aks_bastion_update(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    no_wait=False,
+    aks_custom_headers=None,
+    bastion_sku=None,
+    bastion_scale_units=None,
+):
+    from azext_aks_preview.managedbastion import (
+        update_managed_bastion_profile,
+    )
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return update_managed_bastion_profile(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        no_wait=no_wait,
+        aks_custom_headers=headers,
+        enabled=True,
+        require_enabled=True,
+        bastion_sku=bastion_sku,
+        bastion_scale_units=bastion_scale_units,
+    )
+
+
+def aks_bastion_tunnel(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, kubeconfig_path=None, yes=False):
     import asyncio
     import tempfile
 
@@ -5904,6 +6117,12 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         mc = client.get(resource_group_name, name)
         mc_id = mc.id
         nrg = mc.node_resource_group
+
+        # Use managed bastion if not explicitly provided
+        if not bastion and mc.network_profile and mc.network_profile.bastion_profile and mc.network_profile.bastion_profile.enabled:
+            logger.info("using managed bastion with id: %s", mc.network_profile.bastion_profile.bastion_id)
+            bastion = mc.network_profile.bastion_profile.bastion_id
+
         bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg], subscription_id)
         port = aks_bastion_get_local_port(port)
 
@@ -6138,3 +6357,90 @@ def aks_prepared_image_specification_version_show(cmd, client, resource_group_na
 
 def aks_prepared_image_specification_version_list(cmd, client, resource_group_name, pis_name):
     return client.list_versions(resource_group_name, pis_name)
+
+
+# Alert configuration commands
+def aks_alert_config_add(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    existing_alert_config = None
+    try:
+        existing_alert_config = client.get(resource_group_name, cluster_name, name, headers=headers)
+    except ResourceNotFoundError:
+        pass
+
+    if existing_alert_config:
+        raise ClientRequestError(
+            f"Alert configuration '{name}' already exists. "
+            "Please use 'az aks alert-config update' to update it."
+        )
+
+    raw_parameters = locals()
+    return aks_alert_config_add_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_update(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    raw_parameters = locals()
+    return aks_alert_config_update_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_delete(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        cluster_name,
+        name,
+        headers=headers,
+    )
+
+
+def aks_alert_config_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
+
+
+def aks_alert_config_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.get(resource_group_name, cluster_name, name, headers=headers)

@@ -10,10 +10,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration hierarchy",
+    "workload-orchestration-preview hierarchy",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage workload-orchestration hierarchies (Site + Configuration + ConfigurationReference)."""
+    """Manage workload-orchestration-preview hierarchies (Site + Configuration + ConfigurationReference)."""
     pass
 
 

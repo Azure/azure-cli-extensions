@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+$refresh<title>$title</title>
+<style>
+  :root {
+    color-scheme: light;
+    --azure-blue: #0078d4;
+    --bg: #faf9f8;
+    --surface: #ffffff;
+    --panel: #ffffff;
+    --border: #edebe9;
+    --border-strong: #e1dfdd;
+    --ink: #201f1e;
+    --muted: #605e5c;
+    --edge: #c8c6c4;
+    --node: #ffffff;
+    --link: #0067b8;
+    --accent: #2899f5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+  }
+  header {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  header h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+  header .meta { color: var(--muted); font-size: 13px; }
+
+  /* Metadata strip (definition) */
+  .tab-meta {
+    display: flex; flex-wrap: wrap; gap: 18px 32px;
+    padding: 14px 28px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .tab-meta .meta {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0; max-width: 100%;
+  }
+  .meta__label {
+    color: var(--muted); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .4px;
+  }
+  .meta__value {
+    font-weight: 600; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; max-width: 460px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 12px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted); }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; display: block; }
+  .canvas { padding: 24px 28px; overflow: auto; }
+  svg { display: block; }
+
+  /* SVG workstream swimlanes */
+  .lane rect { fill: #f6f6f5; stroke: var(--border-strong); stroke-width: 1; }
+  .lane text { fill: var(--muted); font-size: 12px; font-weight: 600; }
+  .node rect { fill: var(--node); stroke: var(--edge); stroke-width: 1; }
+  .node text { fill: var(--ink); font-size: 13px; }
+  .node .sub { fill: var(--muted); font-size: 11px; }
+  .svg-id { fill: var(--muted); font-size: 10px; font-weight: 400; }
+  .edge { stroke: #b3b0ad; stroke-width: 1.5; fill: none; }
+  .empty { color: var(--muted); padding: 40px 0; text-align: center; }
+  .status-Succeeded rect,
+  .status-Completed rect,
+  .status-Configured rect { stroke: #2da44e; stroke-width: 2; }
+  .status-Failed rect,
+  .status-NotConfigured rect { stroke: #d13438; stroke-width: 2; }
+  .status-Running rect,
+  .status-InProgress rect { stroke: var(--accent); stroke-width: 2; }
+  .status-Blocked rect,
+  .status-Paused rect,
+  .status-Partial rect,
+  .status-AwaitingApproval rect { stroke: #e3a008; stroke-width: 2; }
+  .status-NotStarted rect { stroke: #c8c6c4; stroke-width: 1; }
+
+  /* Grid / diagram toggle */
+  .hidden { display: none !important; }
+  .tabs { display: flex; gap: 8px; padding: 12px 28px 0; }
+  .tab {
+    font: inherit; font-size: 13px; cursor: pointer;
+    padding: 6px 14px; border-radius: 6px 6px 0 0;
+    border: 1px solid var(--border-strong); border-bottom: none;
+    background: transparent; color: var(--muted);
+  }
+  .tab.is-active { background: var(--surface); color: var(--ink); }
+
+  /* Summary cards */
+  .summary {
+    display: flex; flex-wrap: wrap; gap: 12px; padding: 16px 28px 4px;
+  }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; min-width: 92px;
+  }
+  .stat__n { display: block; font-size: 20px; font-weight: 600; }
+  .stat__l { display: block; font-size: 12px; color: var(--muted); }
+
+  .view { padding: 8px 28px 32px; }
+
+  /* Definition grid (portal-style: header + workstream groups + rows) */
+  .grid {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; overflow: hidden;
+  }
+  .grid__head, .grid .row {
+    display: grid;
+    grid-template-columns: minmax(320px, 2fr) 180px minmax(160px, 1.4fr) 100px;
+    align-items: center; gap: 12px; padding: 10px 16px;
+  }
+  .grid__head {
+    font-weight: 600; color: var(--muted); font-size: 12px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .group__head {
+    padding: 12px 16px; font-weight: 600; background: #f3f2f1;
+    border-bottom: 1px solid var(--border); font-size: 15px; margin: 0;
+  }
+  /* Collapsible workstream group (native details/summary) */
+  .ws-group { border-bottom: 1px solid var(--border-strong); }
+  .ws-group:last-child { border-bottom: 0; }
+  summary.group__head {
+    cursor: pointer; list-style: none; user-select: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  summary.group__head::-webkit-details-marker { display: none; }
+  summary.group__head::before {
+    content: '\25B8'; color: var(--muted); font-size: 12px;
+    transition: transform 0.15s ease;
+  }
+  .ws-group[open] > summary.group__head::before { transform: rotate(90deg); }
+  summary.group__head:hover { background: #eceae8; }
+  summary.group__head:focus-visible {
+    outline: 2px solid var(--azure-blue); outline-offset: -2px;
+  }
+  .grid .row { border-bottom: 1px solid var(--border); }
+  .grid .row:hover { background: #f3f9fd; }
+  .grid .row--empty { display: block; color: var(--muted); }
+  .cell-step { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .row__ico { font-size: 12px; color: var(--azure-blue); }
+  .row__name { color: var(--link); font-weight: 600; }
+  .row__ref {
+    color: var(--muted); font-size: 11px; background: #f3f2f1;
+    padding: 1px 6px; border-radius: 3px; white-space: nowrap;
+  }
+  .id-badge {
+    color: var(--muted); font-size: 10px; background: #ecebe9;
+    font-family: Consolas, "Courier New", monospace;
+    padding: 1px 6px; border-radius: 3px; margin-left: 6px;
+    white-space: nowrap; vertical-align: middle;
+  }
+  .col-count { text-align: right; color: var(--link); font-weight: 600; }
+  .col-dep { color: var(--muted); }
+
+  /* Execution cards */
+  .group { padding: 12px 0; }
+  .cards {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .card__title { font-size: 14px; font-weight: 600; }
+  .card__id {
+    font-size: 11px; color: var(--muted); margin-bottom: 10px;
+    word-break: break-all;
+  }
+  .card .row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin: 6px 0; font-size: 12px;
+  }
+  .card .row .k { color: var(--muted); flex: none; }
+  .card .row .v { text-align: right; }
+  .card .row .v.muted { color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+  .chip {
+    background: #f3f2f1; border: 1px solid var(--border-strong);
+    border-radius: 10px; padding: 1px 8px; font-size: 11px;
+  }
+  .pill {
+    display: inline-block; border-radius: 10px; padding: 2px 10px;
+    font-size: 11px; font-weight: 600; background: #f3f2f1; color: var(--muted);
+  }
+  .entities { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .epill {
+    border-radius: 8px; padding: 1px 7px; font-size: 10px;
+    background: #f3f2f1; color: var(--muted);
+  }
+  .bar {
+    height: 6px; border-radius: 3px; background: #edebe9;
+    overflow: hidden; margin: 4px 0 2px;
+  }
+  .bar span { display: block; height: 100%; background: var(--accent); }
+
+  /* Status colours shared by grid pills and per-entity pills */
+  .pill.status-Completed, .pill.status-Succeeded, .pill.status-Configured,
+  .epill.status-Completed, .epill.status-Succeeded, .epill.status-Configured {
+    background: #dff6dd; color: #0e700e;
+  }
+  .pill.status-InProgress, .pill.status-Running,
+  .epill.status-InProgress, .epill.status-Running {
+    background: #cfe4fa; color: #004e8c;
+  }
+  .pill.status-Partial, .pill.status-Blocked, .pill.status-Paused,
+  .pill.status-AwaitingApproval, .epill.status-Partial,
+  .epill.status-Blocked, .epill.status-Paused,
+  .epill.status-AwaitingApproval {
+    background: #fff4ce; color: #8a6a00;
+  }
+  .pill.status-Failed, .pill.status-NotConfigured,
+  .epill.status-Failed, .epill.status-NotConfigured {
+    background: #fde7e9; color: #a4262c;
+  }
+
+  /* Azure brand bar */
+  .azure-bar {
+    display: flex; align-items: center; gap: 10px;
+    height: 48px; padding: 0 20px; background: #0c2c54; color: #fff;
+  }
+  .azure-bar__logo { font-size: 20px; line-height: 1; }
+  .azure-bar__brand { font-size: 15px; font-weight: 600; letter-spacing: .2px; }
+
+  /* Clickable definition rows */
+  .grid .row[data-step] { cursor: pointer; }
+  .grid .row[data-step]:focus-visible {
+    outline: 2px solid var(--azure-blue); outline-offset: -2px;
+  }
+
+  /* CLI help bar + popover */
+  .how-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+    padding: 12px 28px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .how-bar__label { color: var(--muted); font-size: 12px; }
+  .how-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .how-chip {
+    font: inherit; font-size: 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 14px; color: var(--link);
+    border: 1px solid var(--border-strong); background: #f3f9fd;
+  }
+  .how-chip:hover { background: #e5f1fb; }
+  .how-chip__ico { font-size: 11px; }
+  .how-pop {
+    position: absolute; z-index: 40; max-width: 460px; display: none;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: 8px; padding: 14px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  }
+  .how-pop.is-open { display: block; }
+  .how-pop__title { font-weight: 600; margin-bottom: 4px; }
+  .how-pop__desc { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  .how-pop__cmd {
+    display: block; background: #201f1e; color: #f3f2f1;
+    border-radius: 6px; padding: 10px 12px; font-size: 12px;
+    font-family: Consolas, "Courier New", monospace;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .how-pop__copy {
+    font: inherit; font-size: 12px; cursor: pointer; margin-top: 10px;
+    padding: 4px 12px; border-radius: 6px; color: var(--link);
+    border: 1px solid var(--border-strong); background: #f3f9fd;
+  }
+
+  /* Step detail drawer */
+  .drawer-scrim {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, .32);
+    display: none; z-index: 50;
+  }
+  .drawer-scrim.is-open { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: 420px;
+    max-width: 92vw; background: var(--surface); z-index: 51;
+    border-left: 1px solid var(--border-strong);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, .18);
+    transform: translateX(100%); transition: transform .18s ease;
+    overflow-y: auto;
+  }
+  .drawer.is-open { transform: translateX(0); }
+  .detail__head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--border);
+  }
+  .detail__title { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+  .detail__sub { color: var(--muted); font-size: 12px; }
+  .detail__close {
+    font: inherit; font-size: 15px; cursor: pointer; line-height: 1;
+    border: none; background: transparent; color: var(--muted); padding: 4px;
+  }
+  .detail__body { padding: 18px 20px; display: flex;
+    flex-direction: column; gap: 16px; }
+  .field__label {
+    color: var(--muted); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .4px; margin-bottom: 4px;
+  }
+  .field__value { word-break: break-word; }
+  .detail__body .chips { justify-content: flex-start; }
+</style>
+</head>
+<body>
+<header class="azure-bar">
+  <span class="azure-bar__logo">&#128216;</span>
+  <span class="azure-bar__brand">Azure Migrate Runbook Viewer</span>
+</header>
+<header>
+  <h1>$title</h1>
+  <div class="meta">$summary &middot; generated $generated</div>
+</header>
+$meta
+$help
+$toggle
+$summary_cards
+$legend
+<div id="grid" class="view$grid_hidden">
+$grid
+</div>
+<div id="diagram" class="view$diagram_hidden">
+<div class="canvas">
+$svg
+</div>
+</div>
+$details
+<div class="how-pop" id="howPop" role="dialog" aria-label="CLI command">
+  <div class="how-pop__title" id="howPopTitle"></div>
+  <div class="how-pop__desc" id="howPopDesc"></div>
+  <code class="how-pop__cmd" id="howPopCmd"></code>
+  <button type="button" class="how-pop__copy" id="howPopCopy">Copy command</button>
+</div>
+<div class="drawer-scrim" id="drawerScrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Step detail"></aside>
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.tab');
+  var views = {
+    grid: document.getElementById('grid'),
+    diagram: document.getElementById('diagram')
+  };
+  function show(name) {
+    for (var key in views) {
+      if (views[key]) { views[key].classList.toggle('hidden', key !== name); }
+    }
+    tabs.forEach(function (tab) {
+      tab.classList.toggle(
+        'is-active', tab.getAttribute('data-view') === name);
+    });
+  }
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      show(tab.getAttribute('data-view'));
+    });
+  });
+
+  // Step detail drawer.
+  var drawer = document.getElementById('drawer');
+  var scrim = document.getElementById('drawerScrim');
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+    scrim.classList.remove('is-open');
+  }
+  function openDrawer(index) {
+    var src = document.getElementById('detail-' + index);
+    if (!src) { return; }
+    drawer.innerHTML = src.innerHTML;
+    drawer.classList.add('is-open');
+    scrim.classList.add('is-open');
+    var close = drawer.querySelector('[data-close]');
+    if (close) { close.addEventListener('click', closeDrawer); }
+  }
+  scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') { closeDrawer(); hidePop(); }
+  });
+  var rows = document.querySelectorAll('.row[data-step]');
+  rows.forEach(function (row) {
+    var index = row.getAttribute('data-step');
+    row.addEventListener('click', function () { openDrawer(index); });
+    row.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openDrawer(index);
+      }
+    });
+  });
+
+  // CLI help popover.
+  var pop = document.getElementById('howPop');
+  var popTitle = document.getElementById('howPopTitle');
+  var popDesc = document.getElementById('howPopDesc');
+  var popCmd = document.getElementById('howPopCmd');
+  var popCopy = document.getElementById('howPopCopy');
+  function hidePop() { pop.classList.remove('is-open'); }
+  function showPop(chip) {
+    popTitle.textContent = chip.getAttribute('data-title') || '';
+    popDesc.textContent = chip.getAttribute('data-desc') || '';
+    popCmd.textContent = chip.getAttribute('data-cmd') || '';
+    pop.classList.add('is-open');
+    var box = chip.getBoundingClientRect();
+    var top = box.bottom + window.scrollY + 8;
+    var left = box.left + window.scrollX;
+    var maxLeft = window.scrollX + document.documentElement.clientWidth
+      - pop.offsetWidth - 12;
+    if (left > maxLeft) { left = Math.max(window.scrollX + 12, maxLeft); }
+    pop.style.top = top + 'px';
+    pop.style.left = left + 'px';
+  }
+  document.querySelectorAll('.how-chip').forEach(function (chip) {
+    chip.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (pop.classList.contains('is-open')
+          && popCmd.textContent === chip.getAttribute('data-cmd')) {
+        hidePop();
+      } else {
+        showPop(chip);
+      }
+    });
+  });
+  popCopy.addEventListener('click', function () {
+    var text = popCmd.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text);
+    } else {
+      var area = document.createElement('textarea');
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand('copy'); } catch (err) { /* ignore */ }
+      document.body.removeChild(area);
+    }
+    popCopy.textContent = 'Copied';
+    setTimeout(function () { popCopy.textContent = 'Copy command'; }, 1200);
+  });
+  document.addEventListener('click', function (event) {
+    if (!pop.contains(event.target)
+        && !event.target.closest('.how-chip')) {
+      hidePop();
+    }
+  });
+})();
+</script>
+</body>
+</html>
