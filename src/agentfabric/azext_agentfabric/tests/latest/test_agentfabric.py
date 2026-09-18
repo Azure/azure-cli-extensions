@@ -177,8 +177,9 @@ class AgentfabricScenario(ScenarioTest):
             for example in examples:
                 tokens = shlex.split(example)
                 self.assertEqual(tokens[:2], ["az", "agentfabric"], example)
+                escaped_example = example.replace("{", "{{").replace("}", "}}")
                 try:
-                    self.cmd(f"{example} --help")
+                    self.cmd(f"{escaped_example} --help")
                 except SystemExit as ex:
                     self.assertEqual(ex.code, 0, f"Example failed to parse: {example}")
 
