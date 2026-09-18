@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.8.1
++++++++++++++++++++
+* Add Fleet support for Kubernetes extension and cluster-scoped extension type commands.
+
 1.8.0
 +++++++++++++++++++
 * Migrate Extensions api-version to 2025-03-01 and bump extension version to 1.8.0.
