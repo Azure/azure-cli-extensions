@@ -12,6 +12,7 @@ from azext_aimanager._format import (
     namespace_list_table_format,
     modeldeployment_table_format,
     modeldeployment_list_table_format,
+    calculate_cost_table_format,
 )
 
 
@@ -182,6 +183,85 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         results = modeldeployment_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["ModelId"], "meta-llama/Llama-3-8B")
+
+
+class TestCalculateCostTableFormat(unittest.TestCase):
+    """Test cases for 'az aimanager model calculate-cost' table output formatting."""
+
+    def _feasible_plan(self):
+        return {
+            "vmSize": "Standard_NC24ads_A100_v4",
+            "feasible": True,
+            "vmsPerReplica": 1,
+            "vmHourlyPrice": 3.673,
+            "totalHourlyPrice": 3.673,
+            "maxAvailableReplicas": 9,
+            "quantization": "fp16",
+        }
+
+    def _infeasible_plan(self):
+        # The service omits 'feasible', 'totalHourlyPrice' and 'maxAvailableReplicas'
+        # for infeasible plans, and adds an infeasibilityReason.
+        return {
+            "vmSize": "Standard_NC4as_T4_v3",
+            "vmsPerReplica": 2,
+            "vmHourlyPrice": 0.526,
+            "infeasibilityReason": {"code": "InfeasibleCode_InsufficientQuota", "message": "no quota"},
+        }
+
+    def test_columns(self):
+        rows = calculate_cost_table_format({"plans": [self._feasible_plan()]})
+        self.assertEqual(
+            list(rows[0].keys()),
+            ["VmSize", "Feasible", "VmsPerReplica", "VmHourlyPrice",
+             "TotalHourlyPrice", "MaxAvailableReplicas", "Quantization",
+             "InfeasibilityReason"],
+        )
+
+    def test_feasible_row_values(self):
+        rows = calculate_cost_table_format({"plans": [self._feasible_plan()]})
+        row = rows[0]
+        self.assertIs(row["Feasible"], True)
+        self.assertEqual(row["TotalHourlyPrice"], 3.673)
+        self.assertEqual(row["InfeasibilityReason"], "")
+
+    def test_infeasible_row_always_shows_feasible_false(self):
+        # Regression: even when 'feasible' is absent, the column must be populated as False.
+        rows = calculate_cost_table_format({"plans": [self._infeasible_plan()]})
+        row = rows[0]
+        self.assertIs(row["Feasible"], False)
+        self.assertEqual(row["TotalHourlyPrice"], "")
+        self.assertEqual(row["MaxAvailableReplicas"], "")
+        self.assertEqual(row["InfeasibilityReason"], "InsufficientQuota")
+
+    def test_infeasibility_reason_without_prefix_passthrough(self):
+        # Codes not carrying the "InfeasibleCode_" prefix are surfaced unchanged.
+        plan = {"vmSize": "sku", "infeasibilityReason": {"code": "RegionUnavailable"}}
+        rows = calculate_cost_table_format({"plans": [plan]})
+        self.assertEqual(rows[0]["InfeasibilityReason"], "RegionUnavailable")
+
+    def test_all_infeasible_keeps_feasible_column(self):
+        rows = calculate_cost_table_format(
+            {"plans": [self._infeasible_plan(), self._infeasible_plan()]}
+        )
+        self.assertEqual(len(rows), 2)
+        self.assertTrue(all("Feasible" in r and r["Feasible"] is False for r in rows))
+
+    def test_empty_or_missing_plans(self):
+        self.assertEqual(calculate_cost_table_format({}), [])
+        self.assertEqual(calculate_cost_table_format({"plans": None}), [])
+
+    def test_feasible_string_values_coerced_strictly(self):
+        # Defensive: if 'feasible' ever arrives as a JSON string, "false" must become False
+        # (bool("false") is True in Python), and "true" must become True.
+        false_row = calculate_cost_table_format(
+            {"plans": [{"vmSize": "s", "feasible": "false"}]}
+        )[0]
+        true_row = calculate_cost_table_format(
+            {"plans": [{"vmSize": "s", "feasible": "true"}]}
+        )[0]
+        self.assertIs(false_row["Feasible"], False)
+        self.assertIs(true_row["Feasible"], True)
 
 
 if __name__ == "__main__":
