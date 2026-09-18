@@ -216,6 +216,61 @@ helps['quantum job update'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-tags tag1 tag2
 """
 
+helps['quantum suite-offer'] = """
+    type: group
+    short-summary: View Azure Quantum suite offers available to the subscription.
+"""
+
+helps['quantum suite-offer list'] = """
+    type: command
+    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider ID, name, company, and location.
+    examples:
+      - name: List all suite offers available to the current subscription.
+        text: |-
+            az quantum suite-offer list -o table
+      - name: List the provider ID and location of each available suite offer.
+        text: |-
+            az quantum suite-offer list --query "[].{provider:properties.providerId, location:properties.location}" -o table
+"""
+
+helps['quantum suite-offer quotas'] = """
+    type: command
+    short-summary: View quota allocations and their consumed usages for a suite offer in the current subscription.
+    long-summary: |
+        Returns the v2 quota allocations (limits) for each target of the suite offer together
+        with the consumed usages. Each entry reports the allocated and used standard and high priority
+        minutes. Table output converts these values to hours. Missing usage values are returned as 0.
+    examples:
+      - name: View the quota usages for a suite offer.
+        text: |-
+            az quantum suite-offer quotas --provider-id MyProvider -o table
+      - name: View the raw quota usage details for a suite offer.
+        text: |-
+            az quantum suite-offer quotas -p MyProvider
+"""
+
+helps['quantum suite-offer target'] = """
+    type: group
+    short-summary: List targets available through an Azure Quantum suite offer.
+"""
+
+helps['quantum suite-offer target list'] = """
+    type: command
+    short-summary: List the targets and their status available through a suite offer, without requiring a workspace.
+    long-summary: |
+        Returns each target exposed by the suite offer together with its current
+        availability and overall average queue time. Standard- and High-priority average queue times
+        are also returned when supplied by the provider. Data is resolved directly from the data plane
+        without requiring an Azure Quantum workspace.
+    examples:
+      - name: List the targets available in a suite offer.
+        text: |-
+            az quantum suite-offer target list --provider-id MyProvider -o table
+      - name: List the raw target status details for a suite offer.
+        text: |-
+            az quantum suite-offer target list -p MyProvider
+"""
+
 helps['quantum offerings'] = """
     type: group
     short-summary: Manage provider offerings for Azure Quantum.
@@ -300,6 +355,8 @@ helps['quantum workspace'] = """
 helps['quantum workspace clear'] = """
     type: command
     short-summary: Clear the default Azure Quantum workspace.
+    long-summary: |
+        Clear the saved resource-group and workspace-name defaults. Other settings, including the default subscription, location, and target, are unchanged.
     examples:
       - name: Clear the default Azure Quantum workspace if previously set.
         text: |-
@@ -352,16 +409,26 @@ helps['quantum workspace list'] = """
 
 helps['quantum workspace quotas'] = """
     type: command
-    short-summary: List the quotas for the given (or current) Azure Quantum workspace.
+    short-summary: List quota allocations and consumed usages for an Azure Quantum workspace.
+    long-summary: |
+        Preserves the existing quota dimension response for v1 providers. For v2 providers, returns
+        separate StandardMinutesLifetime and HighMinutesLifetime rows for each target, with targetId,
+        limit, and utilization reported in minutes. Missing allocation or usage values are returned as 0.
     examples:
-      - name: List the quota information of a specified Azure Quantum workspace. If a default workspace has been set, the -g and -w parameters are not required.
+      - name: View quota allocations and usages for the given (or current) workspace. If a default workspace has been set, the -g and -w parameters are not required.
         text: |-
-            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace
+            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -o table
 """
 
 helps['quantum workspace set'] = """
     type: command
     short-summary: Select a default Azure Quantum workspace for future commands.
+    long-summary: |
+        Save the resource group and workspace name as persistent Azure CLI flag defaults. The resource-group default is shared with other Azure CLI commands. These settings persist across terminal sessions.
+
+        Explicit --resource-group and --workspace-name arguments override their respective defaults independently. Job commands targeting another workspace do not change the saved defaults.
+
+        This command does not change the default subscription or location. Use 'az quantum workspace clear' to clear the saved resource-group and workspace-name defaults.
     examples:
       - name: Set the default Azure Quantum workspace.
         text: |-
@@ -423,39 +490,34 @@ helps['quantum workspace user list'] = """
             az quantum workspace user list -g MyResourceGroup -w MyWorkspace --include-inherited false
 """
 
-helps['quantum workspace user create'] = """
+helps['quantum workspace user add'] = """
     type: command
-    short-summary: Grant a user, group, or service principal access to an Azure Quantum workspace.
+    short-summary: Grant a user access to an Azure Quantum workspace.
     long-summary: >-
-        Assigns the 'Quantum Workspace Data Contributor' role (by default) at the scope of the given
-        (or current) Azure Quantum workspace.
+      Assigns the 'Quantum Workspace Data Contributor' role at the scope of the given
+      (or current) Azure Quantum workspace. If the user already has the
+      'Quantum Workspace Data Contributor' or 'Quantum Workspace Owner' role at the workspace,
+      including access inherited from the resource group or subscription, the command returns an
+      existing assignment without creating a new one.
     examples:
-      - name: Grant a user access to a workspace using their sign-in name.
+      - name: Grant a user access to a workspace using their email address.
         text: |-
-            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee user@contoso.com
-      - name: Grant a user access to a workspace using their object id.
-        text: |-
-            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000
-      - name: Grant a group access to a workspace using its object id and principal type.
-        text: |-
-            az quantum workspace user create -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000 --assignee-principal-type Group
+            az quantum workspace user add -g MyResourceGroup -w MyWorkspace \\
+                --email user@contoso.com
 """
 
-helps['quantum workspace user delete'] = """
+helps['quantum workspace user remove'] = """
     type: command
-    short-summary: Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    short-summary: Remove a user's access to an Azure Quantum workspace.
+    long-summary: >-
+      Removes the 'Quantum Workspace Data Contributor' and 'Quantum Workspace Owner' role assignments
+      scoped directly to the given (or current) Azure Quantum workspace. Role assignments inherited
+      from the resource group or subscription must be removed at that scope.
     examples:
-      - name: Remove a user's access to a workspace using their sign-in name.
+      - name: Remove a user's access to a workspace using their email address.
         text: |-
-            az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
-                --assignee user@contoso.com
-      - name: Remove a user's access to a workspace using their object id.
-        text: |-
-            az quantum workspace user delete -g MyResourceGroup -w MyWorkspace \\
-                --assignee-object-id 00000000-0000-0000-0000-000000000000
+            az quantum workspace user remove -g MyResourceGroup -w MyWorkspace \\
+                --email user@contoso.com
 """
 
 helps['quantum workspace keys list'] = """

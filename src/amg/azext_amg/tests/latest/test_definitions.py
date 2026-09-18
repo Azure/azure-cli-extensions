@@ -54,6 +54,42 @@ test_dashboard = {
     }
 }
 
+# A Grafana v2 ("dynamic dashboards") resource, used to exercise the dashboard apiserver path.
+# metadata.name is pinned so recordings are deterministic.
+test_dashboard_v2 = {
+    "apiVersion": "dashboard.grafana.app/v2",
+    "kind": "Dashboard",
+    "metadata": {
+        "name": "clitestv2dash"
+    },
+    "spec": {
+        "title": "Test V2 Dashboard",
+        "description": "",
+        "cursorSync": "Off",
+        "liveNow": False,
+        "preload": False,
+        "editable": True,
+        "links": [],
+        "tags": [],
+        "annotations": [],
+        "variables": [],
+        "elements": {},
+        "layout": {
+            "kind": "GridLayout",
+            "spec": {"items": []}
+        },
+        "timeSettings": {
+            "from": "now-6h",
+            "to": "now",
+            "autoRefresh": "",
+            "autoRefreshIntervals": [],
+            "timezone": "browser",
+            "hideTimepicker": False,
+            "fiscalYearStartMonth": 0
+        }
+    }
+}
+
 test_dashboard_with_datasource = {
     "dashboard": {
         "annotations": {

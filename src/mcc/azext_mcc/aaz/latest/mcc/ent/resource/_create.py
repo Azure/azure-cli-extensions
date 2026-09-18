@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Creates a Microsoft Connected Cache for Enterprise resource with specified create parameters.
 
-    :example: Create MCC Enterprise Resource
-        az mcc ent resource create --mcc-resource-name [MccResourceName] --location [AzureGeoLocation] --resource-group [MccResourceRgName]
+    :example: Create an MCC Enterprise resource
+        az mcc ent resource create --mcc-resource-name MyMccResource --location westus --resource-group MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-11-30-preview",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers/{}", "2026-06-01"],
         ]
     }
 
@@ -93,6 +93,9 @@ class Create(AAZCommand):
         additional_customer_properties.customer_entitlement_expiration = AAZDateTimeArg(
             options=["customer-entitlement-expiration"],
             help="Customer resource entitlement expiration date string.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         additional_customer_properties.customer_entitlement_sku_guid = AAZStrArg(
             options=["customer-entitlement-sku-guid"],
@@ -287,7 +290,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

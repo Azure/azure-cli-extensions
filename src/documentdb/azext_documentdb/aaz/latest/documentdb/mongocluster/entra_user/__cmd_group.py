@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "documentdb mongocluster microsoft-entra-user",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Microsoft Entra ID users on a mongo cluster.

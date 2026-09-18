@@ -8394,6 +8394,60 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             True,
         )
 
+    def test_set_up_os_disk_full_caching(self):
+        # not set, default agent pool profile should not be modified
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool_profile_1],
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_os_disk_full_caching(mc_1)
+        ground_truth_agentpool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agentpool_profile_1],
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # --enable-osdisk-full-caching should set the flag on the default agent pool profile
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_os_disk_full_caching": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool_profile_2],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_os_disk_full_caching(mc_2)
+        ground_truth_agentpool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_os_disk_full_caching=True,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agentpool_profile_2],
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_set_up_static_egress_gateway(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -10744,6 +10798,26 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         ground_truth_mc_1.network_profile.nat_gateway_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_nat_gateway_profile_rejects_nat_params_on_non_nat_outbound(self):
+        # --outbound-type-sku / V2 params build a NAT gateway profile, so they must be rejected on a
+        # loadBalancer cluster when the outbound type is not being switched to managedNATGateway.
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"nat_gateway_sku": "StandardV2"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_1.update_nat_gateway_profile(mc_1)
 
     def test_update_outbound_type(self):
         # default value in `aks_update`

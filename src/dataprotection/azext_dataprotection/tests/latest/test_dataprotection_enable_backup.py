@@ -438,5 +438,108 @@ class TestCheckExistingBackupInstance(unittest.TestCase):
         self.assertIsNone(_check_existing_backup_instance(client, CLUSTER_ID, CLUSTER_NAME))
 
 
+# ---------------------------------------------------------------------------
+# _find_existing_backup_vault
+# ---------------------------------------------------------------------------
+class TestFindExistingBackupVault(unittest.TestCase):
+    """Tests for tag-based backup vault discovery, scoped to a resource group."""
+
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
+    def test_finds_matching_vault_in_subscription(self, mock_list_cls):
+        vault = {"name": "aksbkp-eastus", "tags": {AKS_BACKUP_TAG_KEY: "eastus"}}
+        mock_list_cls.return_value = MagicMock(return_value=[vault])
+        from azext_dataprotection.manual.aks.aks_helper import _find_existing_backup_vault
+        result = _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus")
+        self.assertEqual(result["name"], "aksbkp-eastus")
+
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
+    def test_returns_none_when_no_tag_match(self, mock_list_cls):
+        vault = {"name": "other-vault", "tags": {"env": "prod"}}
+        mock_list_cls.return_value = MagicMock(return_value=[vault])
+        from azext_dataprotection.manual.aks.aks_helper import _find_existing_backup_vault
+        result = _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus")
+        self.assertIsNone(result)
+
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
+    def test_returns_none_on_exception(self, mock_list_cls):
+        mock_list_cls.return_value = MagicMock(side_effect=Exception("API error"))
+        from azext_dataprotection.manual.aks.aks_helper import _find_existing_backup_vault
+        result = _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus", "my-backup-rg")
+        self.assertIsNone(result)
+
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
+    def test_scopes_list_call_to_explicit_backup_resource_group(self, mock_list_cls):
+        """Passing backup_resource_group_name must be forwarded to the AAZ
+        List command as ``resource_group`` so discovery never crosses into
+        another run's/parallel test's resource group and vault."""
+        list_instance = MagicMock(return_value=[])
+        mock_list_cls.return_value = list_instance
+        from azext_dataprotection.manual.aks.aks_helper import _find_existing_backup_vault
+        _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus", "my-backup-rg")
+        _, kwargs = list_instance.call_args
+        command_args = kwargs.get("command_args") or list_instance.call_args[0][0]
+        self.assertEqual(command_args.get("resource_group"), "my-backup-rg")
+        self.assertEqual(command_args.get("subscription"), SUB_ID)
+
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
+    def test_omits_resource_group_when_not_provided(self, mock_list_cls):
+        list_instance = MagicMock(return_value=[])
+        mock_list_cls.return_value = list_instance
+        from azext_dataprotection.manual.aks.aks_helper import _find_existing_backup_vault
+        _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus")
+        _, kwargs = list_instance.call_args
+        command_args = kwargs.get("command_args") or list_instance.call_args[0][0]
+        self.assertNotIn("resource_group", command_args)
+
+
+# ---------------------------------------------------------------------------
+# _wait_for_backup_vault_ready
+# ---------------------------------------------------------------------------
+class TestWaitForBackupVaultReady(unittest.TestCase):
+    """Tests for bounded polling of a newly-created vault's provisioning state."""
+
+    @patch("time.sleep", return_value=None)
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.Show")
+    def test_returns_immediately_when_succeeded(self, mock_show_cls, _mock_sleep):
+        vault = {"name": "v1", "properties": {"provisioningState": "Succeeded"}}
+        mock_show_cls.return_value = MagicMock(return_value=vault)
+        from azext_dataprotection.manual.aks.aks_helper import _wait_for_backup_vault_ready
+        result = _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=5, interval_seconds=0)
+        self.assertEqual(result["properties"]["provisioningState"], "Succeeded")
+        mock_show_cls.return_value.assert_called_once()
+
+    @patch("time.sleep", return_value=None)
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.Show")
+    def test_retries_until_terminal_state(self, mock_show_cls, _mock_sleep):
+        show_instance = MagicMock(side_effect=[
+            {"name": "v1", "properties": {"provisioningState": "Updating"}},
+            {"name": "v1", "properties": {"provisioningState": "Succeeded"}},
+        ])
+        mock_show_cls.return_value = show_instance
+        from azext_dataprotection.manual.aks.aks_helper import _wait_for_backup_vault_ready
+        result = _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=5, interval_seconds=0)
+        self.assertEqual(result["properties"]["provisioningState"], "Succeeded")
+        self.assertEqual(show_instance.call_count, 2)
+
+    @patch("time.sleep", return_value=None)
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.Show")
+    def test_raises_on_failed_terminal_state(self, mock_show_cls, _mock_sleep):
+        mock_show_cls.return_value = MagicMock(
+            return_value={"name": "v1", "properties": {"provisioningState": "Failed"}})
+        from azext_dataprotection.manual.aks.aks_helper import _wait_for_backup_vault_ready
+        with self.assertRaises(InvalidArgumentValueError):
+            _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=3, interval_seconds=0)
+
+    @patch("time.sleep", return_value=None)
+    @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.Show")
+    def test_gives_up_after_bounded_retries(self, mock_show_cls, _mock_sleep):
+        mock_show_cls.return_value = MagicMock(
+            return_value={"name": "v1", "properties": {"provisioningState": "Updating"}})
+        from azext_dataprotection.manual.aks.aks_helper import _wait_for_backup_vault_ready
+        result = _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=3, interval_seconds=0)
+        self.assertEqual(result["properties"]["provisioningState"], "Updating")
+        self.assertEqual(mock_show_cls.return_value.call_count, 3)
+
+
 if __name__ == "__main__":
     unittest.main()
