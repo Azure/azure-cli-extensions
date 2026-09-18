@@ -99,7 +99,7 @@ class Join(AAZCommand):
         # define Arg Group "Metadata"
 
         _args_schema = cls._args_schema
-        _args_schema.member_resource_id = AAZResourceIdArg(
+        _args_schema.member_resource_id = AAZStrArg(
             options=["--member-resource-id"],
             arg_group="Metadata",
             help="Managed cluster Resource ID",
@@ -162,7 +162,7 @@ class Join(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AppLinkMembersCreateOrUpdate(ctx=self.ctx)()
+        yield self.AppLinkMembersCreateOrReplace(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -177,7 +177,7 @@ class Join(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AppLinkMembersCreateOrUpdate(AAZHttpOperation):
+    class AppLinkMembersCreateOrReplace(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
