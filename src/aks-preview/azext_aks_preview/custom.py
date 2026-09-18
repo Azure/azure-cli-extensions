@@ -2485,7 +2485,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
     # When --use-patch-api is set, scale a VMSS node pool via the preview PATCH agent
     # pool API, which scales to the target count without a full reconciliation.
     # VirtualMachines node pools are not supported yet and keep using the PUT API.
-if use_patch_api and instance.type_properties_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+    if use_patch_api and instance.type_properties_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
         return _aks_agentpool_scale_patch(
             cmd,
             client,
