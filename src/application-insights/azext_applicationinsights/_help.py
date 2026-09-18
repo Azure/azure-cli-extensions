@@ -130,10 +130,10 @@ helps['monitor app-insights query'] = """
         short-summary: >
           Time offset of the query range, in ##d##h format.
         long-summary: >
-          Can be used with either --start-time or --end-time. If used with --start-time, then
-          the end time will be calculated by adding the offset. If used with --end-time (default), then
-          the start time will be calculated by subtracting the offset. If --start-time and --end-time are
-          provided, then --offset will be ignored.
+          Can be used with either --start-time or --end-time. If used with --start-time, the end
+          time is calculated by adding the offset. If used with --end-time, the start time is
+          calculated by subtracting the offset. If --start-time and --end-time are provided,
+          --offset is ignored. If no time arguments are provided, all available data is queried.
     examples:
       - name: Execute a simple query over past 1 hour and 30 minutes.
         text: |
