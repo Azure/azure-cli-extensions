@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -140,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -222,7 +222,13 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.delete_retention_policy = AAZObjectType(
+                serialized_name="deleteRetentionPolicy",
+            )
             properties.encryption = AAZStrType()
+            properties.encryption_in_transit = AAZBoolType(
+                serialized_name="encryptionInTransit",
+            )
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
             )
@@ -242,6 +248,14 @@ class Show(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            delete_retention_policy = cls._schema_on_200.properties.delete_retention_policy
+            delete_retention_policy.policy_state = AAZStrType(
+                serialized_name="policyState",
+            )
+            delete_retention_policy.retention_period_days = AAZIntType(
+                serialized_name="retentionPeriodDays",
             )
 
             encryption_properties = cls._schema_on_200.properties.encryption_properties
