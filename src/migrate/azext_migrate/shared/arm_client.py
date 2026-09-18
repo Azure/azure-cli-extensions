@@ -7,6 +7,7 @@
 import json as _json
 import re as _re
 import time as _time
+from urllib.parse import urlsplit, urlunsplit
 
 from knack.log import get_logger
 
@@ -63,13 +64,17 @@ class ArmClient:
     """
 
     def __init__(self, cmd, api_version=RUNBOOKS_API_VERSION,
-                 rewrite_poll_api_version=True):
+                 rewrite_poll_api_version=True, quiet_lro=False):
         self.cmd = cmd
         self.api_version = api_version
         # Runbook create/delete LROs are polled via the waveOperations type
         # at a different api-version; artifact LROs are polled at their own
         # async-operation URI as-is, so callers can opt out of the rewrite.
         self.rewrite_poll_api_version = rewrite_poll_api_version
+        # When an LRO is a secondary step of a larger command (e.g. re-reading
+        # the definition right after an edit), the caller sets quiet_lro so it
+        # does not announce a second "long-running operation" / progress bar.
+        self.quiet_lro = quiet_lro
 
     def _url(self, resource_id):
         endpoint = self.cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -132,59 +137,95 @@ class ArmClient:
                        else 'Location')
         poll_url = response.headers.get(header_name)
         result = self._json_or_none(response)
+        correlation_id = (response.headers.get('x-ms-correlation-request-id')
+                          or response.headers.get('x-ms-request-id') or '')
+        corr = (" [correlation id %s]" % correlation_id
+                if correlation_id else '')
         if response.status_code not in (201, 202) or not poll_url:
-            logger.info(
-                "%s '%s' completed synchronously (HTTP %s).",
-                method, resource_id, response.status_code)
+            if not self.quiet_lro:
+                # warning (not info) so it shows at default verbosity.
+                logger.warning(
+                    "%s '%s' completed%s.", method, resource_id, corr)
+            else:
+                logger.debug(
+                    "%s '%s' completed synchronously (HTTP %s).",
+                    method, resource_id, response.status_code)
             return self._finalize(result, final_get_id)
         if self.rewrite_poll_api_version:
             poll_url = _rewrite_poll_api_version(poll_url)
-        op_ref = poll_url.split('?', 1)[0]
         delay = _poll_delay(response)
-        logger.warning(
-            "%s '%s' is a long-running operation (HTTP %s). Tracking via "
-            "'%s' header: %s. First status check in %ss "
-            "(use --no-wait to skip).",
-            method, resource_id, response.status_code, header_name,
-            op_ref, delay)
-        logger.info("Full async-operation poll URL: %s", poll_url)
-        start = _time.monotonic()
-        attempt = 0
-        while True:
-            _time.sleep(delay)
-            attempt += 1
-            poll = send_raw_request(self.cmd.cli_ctx, 'GET', poll_url)
-            if poll.status_code >= 400:
-                errors.raise_for_arm_error(poll)
-            body = self._json_or_none(poll) or {}
-            status = body.get('status') or ''
-            elapsed = int(_time.monotonic() - start)
-            norm = status.lower()
-            if poll.status_code in (200, 204) and not status:
-                logger.warning(
-                    "%s '%s' completed (elapsed %ss, %s poll(s)).",
-                    method, resource_id, elapsed, attempt)
-                if return_final_poll and not final_get_id:
-                    return body
-                return self._finalize(result, final_get_id)
-            if norm == _TERMINAL_SUCCESS:
-                logger.warning(
-                    "%s '%s' succeeded (elapsed %ss, %s poll(s)).",
-                    method, resource_id, elapsed, attempt)
-                if return_final_poll and not final_get_id:
-                    return body
-                return self._finalize(result, final_get_id)
-            if norm in _TERMINAL_FAILURE:
-                errors.raise_for_async_operation(body)
-            delay = _poll_delay(poll)
+        if not self.quiet_lro:
+            # warning (not info) so it shows at default verbosity.
             logger.warning(
-                "%s '%s' still running: status=%s (elapsed %ss, "
-                "poll #%s, next check in %ss).",
-                method, resource_id, status or '(none)', elapsed,
-                attempt, delay)
+                "%s '%s': long-running operation started%s.",
+                method, resource_id, corr)
+        # Full operation-status URL is verbose; keep it to --debug only.
+        logger.debug("Async-operation poll URL: %s", poll_url)
+        progress = (None if self.quiet_lro
+                    else self.cmd.cli_ctx.get_progress_controller())
+        if progress:
+            progress.begin()
+        try:
+            start = _time.monotonic()
+            attempt = 0
+            # Force the ARM token audience on every poll: the async-operation
+            # URL can be on a host send_raw_request cannot map to a resource
+            # (it then attaches no Authorization header and the poll 401s).
+            arm_resource = (
+                self.cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
+            while True:
+                _time.sleep(delay)
+                attempt += 1
+                poll = send_raw_request(
+                    self.cmd.cli_ctx, 'GET', poll_url, resource=arm_resource)
+                if poll.status_code >= 400:
+                    errors.raise_for_arm_error(poll)
+                body = self._json_or_none(poll) or {}
+                status = body.get('status') or ''
+                elapsed = int(_time.monotonic() - start)
+                norm = status.lower()
+                if poll.status_code in (200, 204) and not status:
+                    logger.info(
+                        "%s '%s' completed (elapsed %ss, %s poll(s)).",
+                        method, resource_id, elapsed, attempt)
+                    if return_final_poll and not final_get_id:
+                        return body
+                    return self._finalize(result, final_get_id)
+                if norm == _TERMINAL_SUCCESS:
+                    logger.info(
+                        "%s '%s' succeeded (elapsed %ss, %s poll(s)).",
+                        method, resource_id, elapsed, attempt)
+                    if return_final_poll and not final_get_id:
+                        return body
+                    return self._finalize(result, final_get_id)
+                if norm in _TERMINAL_FAILURE:
+                    errors.raise_for_async_operation(body)
+                delay = _poll_delay(poll)
+                # Single, in-place status line: the progress controller
+                # rewrites the same terminal line each poll on a TTY (one
+                # concise line per attempt on non-TTY / piped output).
+                if progress:
+                    progress.add(
+                        message='%s: check #%s, %s; next retry in %ss '
+                                '(elapsed %ss)' % (
+                                    method, attempt, status or 'running',
+                                    delay, elapsed))
+                logger.debug(
+                    "%s '%s' still running: status=%s (elapsed %ss, "
+                    "poll #%s, next check in %ss).",
+                    method, resource_id, status or '(none)', elapsed,
+                    attempt, delay)
+        finally:
+            if progress:
+                progress.end()
 
     def _begin(self, method, resource_id, body=None, no_wait=False,
-               final_get_id=None, return_final_poll=False):
+               final_get_id=None, return_final_poll=False, message=None):
+        # Optional human-readable lead-in, shown before the API/correlation-id
+        # log so users get context (e.g. "Generating runbook..."). Suppressed
+        # for quiet (secondary-step) LROs.
+        if message and not self.quiet_lro:
+            logger.warning('%s', message)
         response = self._send(method, resource_id, body)
         if no_wait:
             logger.warning(
@@ -222,10 +263,28 @@ class ArmClient:
                 errors.raise_for_arm_error(response)
             body = response.json()
             items.extend(body.get('value', []))
-            url = body.get('nextLink')
+            url = self._arm_next_link(body.get('nextLink'))
         return items
 
-    def put(self, resource_id, body=None, no_wait=False):
+    def _arm_next_link(self, next_link):
+        """Route a paging nextLink back through the ARM endpoint.
+
+        Some Migrate collection APIs return a nextLink pointing at an
+        internal backend host; called directly it 500s because the
+        ARM-injected partition-key header (ResourceUniqueId) is missing.
+        Swap the scheme+host for the resource-manager endpoint, preserving
+        the path and query (the continuationToken).
+        """
+        if not next_link:
+            return next_link
+        endpoint = urlsplit(
+            self.cmd.cli_ctx.cloud.endpoints.resource_manager.rstrip('/'))
+        target = urlsplit(next_link)
+        return urlunsplit((
+            endpoint.scheme, endpoint.netloc,
+            target.path, target.query, target.fragment))
+
+    def put(self, resource_id, body=None, no_wait=False, message=None):
         """PUT (create/generate/start) a resource, awaiting any LRO.
 
         On success the settled resource is re-read (a final GET on the same
@@ -233,24 +292,25 @@ class ArmClient:
         Succeeded``) rather than the initial accepted body.
         """
         return self._begin(
-            'PUT', resource_id, body, no_wait, final_get_id=resource_id)
+            'PUT', resource_id, body, no_wait, final_get_id=resource_id,
+            message=message)
 
     def patch(self, resource_id, body=None):
         """PATCH (update) a resource."""
         return self._json_or_none(self._send('PATCH', resource_id, body))
 
-    def delete(self, resource_id, no_wait=False):
+    def delete(self, resource_id, no_wait=False, message=None):
         """DELETE a resource, awaiting any LRO.
 
         Returns None: a completed delete has no resource to render (the
         initial 202 accepted body still shows the resource as InProgress,
         which is misleading), matching standard Azure CLI delete behaviour.
         """
-        self._begin('DELETE', resource_id, no_wait=no_wait)
+        self._begin('DELETE', resource_id, no_wait=no_wait, message=message)
 
     def post_action(self, resource_id, action_name, body=None,
                     no_wait=False, final_get=False,
-                    return_final_poll=False):
+                    return_final_poll=False, message=None):
         """POST {resourceId}/{action_name} with an optional JSON body.
 
         This is the workhorse for every action endpoint (AddStep,
@@ -268,4 +328,4 @@ class ArmClient:
         final_get_id = resource_id if final_get else None
         return self._begin(
             'POST', action_id, body, no_wait, final_get_id,
-            return_final_poll)
+            return_final_poll, message=message)

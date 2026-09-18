@@ -228,5 +228,40 @@ class RunbookExecutionLiveScenario(ScenarioTest):
             '--execution-id {execution}')
 
 
+@live_only()
+class RunbookRegenerateAndParameterLiveScenario(ScenarioTest):
+    """regenerate re-provisions the runbook; parameter upload pushes a SAS
+    blob (not recorder-interceptable). Also exercises the --no-wait/
+    --no-visualize automation flags on generate/regenerate."""
+
+    def test_regenerate_and_parameter_upload(self):
+        import json
+        import os
+        import tempfile
+        self.kwargs.update({
+            'rg': PROJECT_RG,
+            'project': PROJECT_NAME,
+            'wave': WAVE_NAME,
+            'name': self.create_random_name('cli-rb-', 20),
+        })
+        self.cmd(
+            'migrate runbook generate -g {rg} --project-name {project} '
+            '-n {name} --wave-name {wave} --no-wait --no-visualize')
+        self.cmd(
+            'migrate runbook regenerate -g {rg} --project-name {project} '
+            '-n {name} --no-wait --no-visualize')
+        params_path = os.path.join(tempfile.mkdtemp(), 'inputs.json')
+        with open(params_path, 'w', encoding='utf-8') as handle:
+            json.dump({"inputs": {}}, handle)
+        self.kwargs['file'] = params_path
+        self.cmd(
+            'migrate runbook parameter upload -g {rg} '
+            '--project-name {project} --runbook-name {name} '
+            '--file "{file}"')
+        self.cmd(
+            'migrate runbook delete -g {rg} --project-name {project} '
+            '-n {name} --yes')
+
+
 if __name__ == '__main__':
     unittest.main()
