@@ -72,7 +72,8 @@ def warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addons):
     """
     if enable_msi_auth_for_monitoring is not False:
         return
-    if "monitoring" not in (addons or ""):
+    requested_addons = {addon.strip().lower() for addon in (addons or "").split(",")}
+    if "monitoring" not in requested_addons:
         return
     logger.warning(
         "--enable-msi-auth-for-monitoring false configures Container Insights with legacy shared "
@@ -111,7 +112,6 @@ def enable_addons(
     ampls_resource_id=None,
     enable_high_log_scale_mode=False,
 ):
-    warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addons)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
     msi_auth = False

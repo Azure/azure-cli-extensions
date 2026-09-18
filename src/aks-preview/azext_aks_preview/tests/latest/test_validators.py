@@ -2800,10 +2800,6 @@ class TestValidateOsSku(unittest.TestCase):
         self.assertIn("Windows2025", node_os_skus_update)
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class ContainerInsightsSettingsNamespace(SimpleNamespace):
     """Namespace for the containerInsights tuning flags, with CLI defaults."""
 
@@ -2879,3 +2875,7 @@ class TestValidateContainerInsightsSettings(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_container_insights_settings_for_update(namespace)
         self.assertIn("--disable-azure-monitor-logs", str(cm.exception))
+
+
+if __name__ == "__main__":
+    unittest.main()

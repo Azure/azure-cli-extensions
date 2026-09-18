@@ -935,6 +935,14 @@ class TestLegacyMonitoringAuthDeprecation(unittest.TestCase):
         self._warn(False, addons="azure-policy").assert_not_called()
         self._warn(False, addons=None).assert_not_called()
 
+    def test_silent_for_addon_names_that_merely_contain_monitoring(self):
+        # A substring check would misfire on these, so the list is matched token by token.
+        self._warn(False, addons="monitoring-preview").assert_not_called()
+        self._warn(False, addons="notmonitoring").assert_not_called()
+
+    def test_tolerates_whitespace_and_casing_in_the_addon_list(self):
+        self._warn(False, addons=" azure-policy , Monitoring ").assert_called_once()
+
     def test_warns_when_monitoring_is_one_of_several_addons(self):
         self._warn(False, addons="azure-policy,monitoring").assert_called_once()
 
@@ -945,6 +953,48 @@ class TestLegacyMonitoringAuthDeprecation(unittest.TestCase):
         for value in (True, False, None):
             with patch("azext_aks_preview.addonconfiguration.logger"):
                 self.assertIsNone(warn_on_legacy_monitoring_auth(value, "monitoring"))
+
+
+class TestAddonUpdateLegacyAuthWarning(unittest.TestCase):
+    """`aks addon update` must judge the warning on the value the user actually supplied."""
+
+    def _run(self, supplied_value, client_id):
+        from azext_aks_preview import custom
+
+        instance = Mock()
+        instance.service_principal_profile.client_id = client_id
+        instance.addon_profiles = {"omsagent": Mock(enabled=True, config={})}
+        client = Mock()
+        client.get.return_value = instance
+
+        with patch.object(custom, "warn_on_legacy_monitoring_auth") as warn, patch.object(
+            custom, "enable_addons", return_value=instance
+        ) as enable:
+            custom.aks_addon_update(
+                cmd=Mock(),
+                client=client,
+                resource_group_name="rg",
+                name="cluster",
+                addon="monitoring",
+                enable_msi_auth_for_monitoring=supplied_value,
+            )
+        return warn, enable
+
+    def test_omitted_flag_is_silent_on_a_service_principal_cluster(self):
+        # Service principal clusters cannot use managed identity auth, so the command forces the
+        # flag to False. That rewrite must not be mistaken for the user opting into shared keys.
+        warn, enable = self._run(None, client_id="a-service-principal")
+        warn.assert_called_once_with(None, "monitoring")
+        self.assertIs(enable.call_args.kwargs["enable_msi_auth_for_monitoring"], False)
+
+    def test_explicitly_disabling_still_warns(self):
+        warn, _ = self._run(False, client_id="a-service-principal")
+        warn.assert_called_once_with(False, "monitoring")
+
+    def test_omitted_flag_defaults_to_managed_identity_on_msi_clusters(self):
+        warn, enable = self._run(None, client_id="msi")
+        warn.assert_called_once_with(None, "monitoring")
+        self.assertIs(enable.call_args.kwargs["enable_msi_auth_for_monitoring"], True)
 
 
 class TestMonitoringArgumentRegistration(unittest.TestCase):

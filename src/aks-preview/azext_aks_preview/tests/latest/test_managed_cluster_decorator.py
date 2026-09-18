@@ -5,6 +5,9 @@
 
 import datetime
 import importlib
+import json
+import os
+import tempfile
 import unittest
 from unittest import mock
 from unittest.mock import Mock, patch
@@ -6002,6 +6005,43 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx.attach_mc(mc)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_allows_disable_when_amp_profile_says_disabled(
+        self,
+    ):
+        """An explicit Disabled on the Azure Monitor profile outranks the stale legacy mirror.
+
+        The legacy ``enableRetinaNetworkFlags`` addon config key is a server-side mirror of the
+        Azure Monitor profile, so it still reports the previous value while an update is in
+        flight. Disabling container network logs and high log scale mode in one command must not
+        be rejected on the strength of that stale value.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_high_log_scale_mode": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    container_network_logs=CONST_CONTAINER_NETWORK_LOGS_DISABLED,
+                )
+            ),
+        )
+        ctx.attach_mc(mc)
+        self.assertFalse(ctx.get_enable_high_log_scale_mode())
 
     def test_get_enable_high_log_scale_mode_update_monitoring_camelcase_key(self):
         """Test auto-enable HLSM in update mode when monitoring uses camelCase 'omsAgent' key."""
@@ -16979,6 +17019,56 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
 
+    def test_update_disable_cnl_and_hlsm_together_is_not_rejected(self):
+        """Disabling container network logs and high log scale mode in one command must work.
+
+        Regression test: the legacy ``enableRetinaNetworkFlags`` addon config key mirrors the
+        Azure Monitor profile server-side, so it still reads "True" for a cluster that has
+        container network logs on. Once ``--disable-container-network-logs`` has written
+        Disabled to the profile, the high log scale mode guard must read that value rather than
+        the stale mirror, otherwise the pair of flags can never be used together.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_container_network_logs": True,
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                        "enableRetinaNetworkFlags": "True",
+                    },
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    container_network_logs=CONST_CONTAINER_NETWORK_LOGS_ENABLED,
+                )
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+
+        self.assertEqual(
+            dec_mc.azure_monitor_profile.container_insights.container_network_logs,
+            CONST_CONTAINER_NETWORK_LOGS_DISABLED,
+        )
+        # The DCR still has to be rewritten to drop the high-scale and flow log streams.
+        self.assertTrue(
+            dec.context.get_intermediate(
+                "monitoring_addon_postprocessing_required", default_value=False
+            )
+        )
+
     def test_update_enable_cnl_with_azure_monitor_logs_on_cluster(self):
         """Test enabling CNL on update when monitoring was enabled via enable_azure_monitor_logs on existing cluster."""
         dec = AKSPreviewManagedClusterUpdateDecorator(
@@ -20776,6 +20866,271 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         prompt_mock.assert_not_called()
         self.assertFalse(mc.azure_monitor_profile.container_insights.enabled)
+
+
+class AKSPreviewCoreMonitoringFixPortsTestCase(unittest.TestCase):
+    """Ports of the Azure Monitor fixes made in azure-cli core.
+
+    The aks-preview extension shadows the core acs module for `az aks`, and implements the whole
+    Azure Monitor logs feature itself, so fixes made in core do not reach anyone with the
+    extension installed unless they are ported here too.
+    """
+
+    def setUp(self):
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+        self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+        self.client = MockClient()
+
+    def _write_settings(self, payload):
+        handle = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        json.dump(payload, handle)
+        handle.close()
+        self.addCleanup(os.unlink, handle.name)
+        return handle.name
+
+    def test_data_collection_settings_size_is_measured_on_the_contents(self):
+        # The getter returns the file path, so a check against the path length can never fire.
+        # An oversized file has to be rejected on the size of what gets serialized into the DCR.
+        oversized = self._write_settings({"namespaces": ["n" * 20000]})
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"data_collection_settings": oversized}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            ctx.get_data_collection_settings()
+        self.assertIn("--data-collection-settings is too large", str(cm.exception))
+        # The path itself is far below the limit, which is why the original check never triggered.
+        self.assertLess(len(oversized), 10000)
+
+    def test_data_collection_settings_of_normal_size_are_accepted(self):
+        path = self._write_settings({"interval": "1m"})
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"data_collection_settings": path}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx.get_data_collection_settings(), path)
+
+    def _flags_trigger_dcr_reprovisioning(self, raw_params):
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd, self.client, raw_params, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"}
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                )
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec.update_azure_monitor_logs_settings(mc)
+        return dec.context.get_intermediate(
+            "monitoring_addon_postprocessing_required", default_value=False
+        )
+
+    def test_syslog_and_dcr_carried_flags_reprovision_the_data_collection_rule(self):
+        # These three only reach the cluster through the DCR, so without re-provisioning the
+        # command reports success while the agent keeps using the previous rule.
+        self.assertTrue(self._flags_trigger_dcr_reprovisioning({"enable_syslog": True}))
+        self.assertTrue(self._flags_trigger_dcr_reprovisioning({"ampls_resource_id": "/amp/ls/id"}))
+
+    def test_agent_side_settings_do_not_reprovision_the_data_collection_rule(self):
+        # The syslog port and the scraping toggle never appear in the DCR.
+        self.assertFalse(self._flags_trigger_dcr_reprovisioning({"syslog_port": 28330}))
+        self.assertFalse(self._flags_trigger_dcr_reprovisioning({}))
+
+    def test_no_reprovisioning_while_enabling_or_disabling_azure_monitor_logs(self):
+        # Enabling provisions the DCR inline before the PUT, and disabling has just torn it down.
+        self.assertFalse(
+            self._flags_trigger_dcr_reprovisioning(
+                {"enable_syslog": True, "enable_azure_monitor_logs": True}
+            )
+        )
+        self.assertFalse(
+            self._flags_trigger_dcr_reprovisioning(
+                {"enable_syslog": True, "disable_azure_monitor_logs": True}
+            )
+        )
+
+    def _mc_with_logs_and_otlp(self):
+        return self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"}
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                metrics=self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=True),
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    open_telemetry_metrics=(
+                        self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+                            enabled=True
+                        )
+                    ),
+                    open_telemetry_logs_and_traces=(
+                        self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
+                            enabled=True
+                        )
+                    ),
+                ),
+            ),
+        )
+
+    def test_declining_the_metrics_prompt_aborts_before_the_logs_cleanup_runs(self):
+        """Regression test: both confirmations are collected before anything is deleted.
+
+        --disable-azure-monitor-logs deletes the DCR and DCRA from Azure before the cluster PUT,
+        and it runs from update_addon_profiles, well before the metrics profile is touched. If the
+        metrics question were still asked from its own handler, declining it would abort with the
+        logs collection resources already gone but Container Insights still enabled.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_azure_monitor_logs": True, "disable_azure_monitor_metrics": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self._mc_with_logs_and_otlp()
+        dec.context.attach_mc(mc)
+
+        # Say yes to the logs question, no to the metrics one.
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n", side_effect=[True, False]
+        ) as prompt, patch.object(
+            dec, "_disable_azure_monitor_logs"
+        ) as disable_logs, patch.object(
+            dec.client, "get"
+        ) as client_get:
+            with self.assertRaises(DecoratorEarlyExitException):
+                dec.update_addon_profiles(mc)
+
+        self.assertEqual(prompt.call_count, 2)
+        # Nothing was torn down: neither the cleanup handler nor the ARM read that precedes it ran.
+        disable_logs.assert_not_called()
+        client_get.assert_not_called()
+
+    def test_each_disable_question_is_asked_exactly_once(self):
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_azure_monitor_logs": True, "disable_azure_monitor_metrics": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self._mc_with_logs_and_otlp()
+        dec.context.attach_mc(mc)
+
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n", return_value=True
+        ) as prompt:
+            dec.confirm_monitoring_disables(mc)
+            # The handlers still call the confirmation helpers, which must now be no-ops.
+            dec._confirm_disable_azure_monitor_logs(mc)
+            dec._confirm_disable_azure_monitor_metrics(mc)
+
+        self.assertEqual(prompt.call_count, 2)
+
+    def test_opentelemetry_port_cannot_be_set_while_disabling_the_receiver(self):
+        # Disabling clears the ports, so a port supplied alongside would be accepted and then
+        # silently dropped. The cluster has the receivers already on, so the "must also be
+        # enabled" error cannot fire and the disable guard is the only thing under test.
+        cases = [
+            ("get_opentelemetry_metrics_port", "opentelemetry_metrics_port",
+             "disable_opentelemetry_metrics", "--opentelemetry-metrics-port-http",
+             "--disable-opentelemetry-metrics"),
+            ("get_opentelemetry_metrics_port_grpc", "opentelemetry_metrics_port_grpc",
+             "disable_opentelemetry_metrics", "--opentelemetry-metrics-port-grpc",
+             "--disable-opentelemetry-metrics"),
+            ("get_opentelemetry_logs_port", "opentelemetry_logs_port",
+             "disable_opentelemetry_logs", "--opentelemetry-logs-traces-port-http",
+             "--disable-opentelemetry-logs-traces"),
+            ("get_opentelemetry_logs_traces_port_grpc", "opentelemetry_logs_traces_port_grpc",
+             "disable_opentelemetry_logs", "--opentelemetry-logs-traces-port-grpc",
+             "--disable-opentelemetry-logs-traces"),
+        ]
+        for getter, port_param, disable_param, port_flag, disable_flag in cases:
+            with self.subTest(getter=getter):
+                ctx = AKSPreviewManagedClusterContext(
+                    self.cmd,
+                    AKSManagedClusterParamDict({port_param: 4318, disable_param: True}),
+                    self.models,
+                    decorator_mode=DecoratorMode.UPDATE,
+                )
+                ctx.attach_mc(self._mc_with_logs_and_otlp())
+                with self.assertRaises(InvalidArgumentValueError) as cm:
+                    getattr(ctx, getter)()
+                message = str(cm.exception)
+                self.assertIn(port_flag, message)
+                self.assertIn(disable_flag, message)
+
+    def test_opentelemetry_port_alone_is_accepted_on_an_enabled_cluster(self):
+        # Guard against over-rejecting: a port update on its own must still go through.
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"opentelemetry_metrics_port": 4318}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        ctx.attach_mc(self._mc_with_logs_and_otlp())
+        self.assertEqual(ctx.get_opentelemetry_metrics_port(), 4318)
+
+    def test_a_port_only_update_reaches_the_cluster(self):
+        """aks-preview already implements core's port-only update; this locks the behaviour in.
+
+        Supplying just a port flag, with no --enable-opentelemetry-* alongside it, must actually
+        change the port on an already-enabled receiver rather than being parsed and dropped.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"opentelemetry_metrics_port": 4318, "opentelemetry_logs_port": 4319},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
+                    open_telemetry_metrics=(
+                        self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
+                            enabled=True, http_port=1111
+                        )
+                    ),
+                    open_telemetry_logs_and_traces=(
+                        self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
+                            enabled=True, http_port=2222
+                        )
+                    ),
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        # An OpenTelemetry metrics port legitimately drives the Prometheus prerequisite path,
+        # which talks to ARM; the port plumbing is what is under test here.
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.ensure_azure_monitor_profile_prerequisites"
+        ), patch.object(
+            dec.context, "get_subscription_id", return_value="test_sub_id"
+        ):
+            dec.update_azure_monitor_profile(mc)
+
+        app_monitoring = mc.azure_monitor_profile.app_monitoring
+        self.assertEqual(app_monitoring.open_telemetry_metrics.http_port, 4318)
+        self.assertEqual(app_monitoring.open_telemetry_logs_and_traces.http_port, 4319)
+        # The receivers stay on: a port change must not alter the enabled state.
+        self.assertTrue(app_monitoring.open_telemetry_metrics.enabled)
+        self.assertTrue(app_monitoring.open_telemetry_logs_and_traces.enabled)
 
 
 if __name__ == "__main__":

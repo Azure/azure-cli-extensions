@@ -3543,6 +3543,10 @@ def aks_addon_enable(
     ampls_resource_id=None,
     enable_high_log_scale_mode=None
 ):
+    # Warn with the value the user supplied. aks_addon_update normalizes an omitted flag to False
+    # on service principal clusters, so the shared helper cannot tell "not supplied" from
+    # "explicitly false" by the time it runs.
+    warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addon)
     return enable_addons(
         cmd,
         client,
@@ -3601,6 +3605,9 @@ def aks_addon_update(
     ampls_resource_id=None,
     enable_high_log_scale_mode=None
 ):
+    # Warn before the service principal normalization below turns an omitted flag into False,
+    # which would otherwise warn users who never passed --enable-msi-auth-for-monitoring.
+    warn_on_legacy_monitoring_auth(enable_msi_auth_for_monitoring, addon)
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
 
