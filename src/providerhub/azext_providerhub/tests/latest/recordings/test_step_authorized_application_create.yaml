@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub authorized-application create
       Connection:
@@ -17,21 +17,21 @@ interactions:
       ParameterSetName:
       - -n --data-authorizations --provider-namespace
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"properties":{"providerNamespace":"Private.VPTest","dataAuthorizations":[{"role":"ServiceOwner"}],"provisioningState":"NotSpecified"},"name":"8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-06T16:58:32.8885415Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-06T16:58:32.8885415Z"}}'
+      string: '{"properties":{"providerNamespace":"Private.VPTest","dataAuthorizations":[{"role":"ServiceOwner","resourceTypes":[]}],"provisioningState":"NotSpecified","excludeApplicationIdFromManifest":false},"name":"8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-16T21:59:32.8613605Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-16T21:59:32.8613605Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '423'
+      - '465'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Jun 2024 16:58:37 GMT
+      - Wed, 16 Sep 2026 21:59:33 GMT
       expires:
       - '-1'
       pragma:
@@ -43,11 +43,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/4980e186-c01a-4b28-a5cd-674d1f01c64f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/b709c3ca-ff10-48f7-9ac2-7410f03b71db
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
       x-msedge-ref:
-      - 'Ref A: 410EAB5469D24BB3A57790A8144A98B3 Ref B: CH1AA2020616011 Ref C: 2024-06-06T16:58:31Z'
+      - 'Ref A: A459C4DEFF9E4E91BEC2CAAA1C06B11C Ref B: SN4AA2022403029 Ref C: 2026-09-16T21:59:32Z'
     status:
       code: 200
       message: OK
@@ -57,7 +59,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub authorized-application create
       Connection:
@@ -65,21 +67,21 @@ interactions:
       ParameterSetName:
       - -n --data-authorizations --provider-namespace
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"properties":{"providerNamespace":"Private.VPTest","dataAuthorizations":[{"role":"ServiceOwner","resourceTypes":[]}],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","type":"Microsoft.ProviderHub/providerRegistrations/authorizedApplications","name":"8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-06T16:58:32.8885415Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-06T16:58:32.8885415Z"}}'
+      string: '{"properties":{"providerNamespace":"Private.VPTest","dataAuthorizations":[{"role":"ServiceOwner","resourceTypes":[]}],"provisioningState":"Succeeded","excludeApplicationIdFromManifest":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/authorizedApplications/8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","type":"Microsoft.ProviderHub/providerRegistrations/authorizedApplications","name":"8b51e6a7-7814-42bd-aa17-3fb1837b3b7a","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-16T21:59:32.8613605Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-16T21:59:32.8613605Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '703'
+      - '726'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Jun 2024 16:58:38 GMT
+      - Wed, 16 Sep 2026 21:59:34 GMT
       expires:
       - '-1'
       pragma:
@@ -91,9 +93,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/499f4eb9-e4e5-484f-ba80-b5862905493b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/f267ec90-63a3-403c-8b29-4e8b72c188a6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: E0594BF48D524893BD21087EE3B5ED0F Ref B: CH1AA2020616011 Ref C: 2024-06-06T16:58:37Z'
+      - 'Ref A: 8BCE984281DC4360A5AEFCB25D9D8092 Ref B: SN4AA2022403019 Ref C: 2026-09-16T21:59:34Z'
     status:
       code: 200
       message: OK
