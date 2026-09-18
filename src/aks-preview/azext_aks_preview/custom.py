@@ -2462,6 +2462,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
                         cluster_name,
                         nodepool_name,
                         node_count=3,
+                        use_patch_api=False,
                         no_wait=False,
                         aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2479,6 +2480,22 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
             raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
     else:
         instance.count = new_node_count  # pylint: disable=no-member
+
+    # By default scale via the PUT agent pool API (begin_create_or_update).
+    # When --use-patch-api is set, scale a VMSS node pool via the preview PATCH agent
+    # pool API, which scales to the target count without a full reconciliation.
+    # VirtualMachines node pools are not supported yet and keep using the PUT API.
+    if use_patch_api and instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            headers=headers,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -2486,6 +2503,42 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         instance,
+        headers=headers,
+    )
+
+
+def _aks_agentpool_scale_patch(cmd,
+                               client,
+                               resource_group_name,
+                               cluster_name,
+                               nodepool_name,
+                               instance,
+                               headers=None,
+                               no_wait=False):
+    """Scale a VMSS agent pool via the dedicated PATCH agent pool API.
+
+    Sends only the already-updated target count on ``instance`` so the pool scales
+    without triggering a full agent pool reconciliation.
+    """
+    AgentPoolUpdate = cmd.get_models(
+        "AgentPoolUpdate",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+    AgentPoolUpdateProperties = cmd.get_models(
+        "AgentPoolUpdateProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+
+    parameters = AgentPoolUpdate(properties=AgentPoolUpdateProperties(count=instance.count))
+    return sdk_no_wait(
+        no_wait,
+        client.begin_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        parameters,
         headers=headers,
     )
 
