@@ -14,6 +14,16 @@ This is an extension to Azure CLI to manage MulticloudConnector resources.
       arc-multicloud generate-aws-template --connector-id pnxcfjidglabnwxit --solution-types "[{solution-type:hjyownzpfxwiufmd,solution-settings:{}}]"
   ```
 
+- Create a PublicCloudConnector for GCP
+    ```bash
+        arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name gcpConnector --gcp-cloud-profile "{project-properties:{project-number:123456789123,project-id:my-project},organization-properties:{organization-id:123456789123,management-project-number:123456789124,management-project-id:my-management-project}}" --host-type GCP --tags "{}" --location eastus
+    ```
+
+- GenerateGcpTemplate
+  ```bash
+      arc-multicloud generate-gcp-template --connector-id pnxcfjidglabnwxit --gcp-template-format terraform --solution-types "[{solution-type:hjyownzpfxwiufmd,solution-settings:{}}]"
+  ```
+
 - Test allowed permissions of a PublicCloudConnector
     ```bash
         arc-multicloud public-cloud-connector test-permission --resource-group rgpublicCloud --name sjuahmnojgachluzcbhxhwkxwugbsi
