@@ -2667,11 +2667,14 @@ helps['aks nodepool add'] = """
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
         - name: --secondary-network-interfaces --secondary-nics
           type: string
-          short-summary: Secondary network interface configurations as a JSON string or `@filename`.
+          short-summary: Create-only secondary network interface configurations as inline JSON or `@filename`.
           long-summary: |-
             Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
-            Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
             Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
+            A Standard NIC can include publicIPAddressConfiguration. Setting publicIPAddressVersion to "IPv4" enables public IP allocation for that NIC.
+            Within publicIPAddressConfiguration, optionally specify either ipTags or publicIPPrefixID. These properties are mutually exclusive.
+            Inline example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true,"publicIPAddressConfiguration":{"publicIPAddressVersion":"IPv4","ipTags":[{"ipTagType":"RoutingPreference","tag":"Internet"}]}}]'
+            To load the same JSON array from a file, use `@filename`.
         - name: --enable-managed-dranet
           type: bool
           short-summary: Enable Managed DRANET on the node pool.
