@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks enable-addons`, `az aks disable-addons` and `az aks update`: Keep Container Insights monitoring and container network log settings consistent with the legacy monitoring addon when updating clusters.
 
 22.0.0b8
 +++++++++

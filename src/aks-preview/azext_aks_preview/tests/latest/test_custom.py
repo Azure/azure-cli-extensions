@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
 import unittest
 from unittest.mock import Mock, patch
 
@@ -229,6 +230,76 @@ class TestCustomCommand(unittest.TestCase):
             )
         except Exception as e:
             self.assertNotIn("NoneType", str(type(e)))
+
+
+class TestMonitoringProfileConsistency(unittest.TestCase):
+    @staticmethod
+    def _cluster():
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks import models
+
+        return models.ManagedCluster(
+            location="westus2",
+            addon_profiles={"omsagent": models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={"enableRetinaNetworkFlags": "true", "useAADAuth": "true"},
+            )},
+            azure_monitor_profile=models.ManagedClusterAzureMonitorProfile(
+                container_insights=models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True, container_network_logs="Enabled",
+                ),
+                metrics=models.ManagedClusterAzureMonitorProfileMetrics(enabled=True),
+            ),
+        )
+
+    @staticmethod
+    def _wire_properties(cluster):
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
+
+        class RequestCaptured(Exception):
+            pass
+
+        with ContainerServiceClient(Mock(), "sub") as client:
+            with patch.object(client._client._pipeline, "run", side_effect=RequestCaptured) as send:
+                try:
+                    client.managed_clusters.begin_create_or_update("rg", "cluster", cluster)
+                except RequestCaptured:
+                    return json.loads(send.call_args.args[0].body)["properties"]
+        raise AssertionError("The preview SDK did not construct the managed cluster PUT")
+
+    def test_disable_and_reenable_monitoring_updates_both_wire_profiles(self):
+        from azext_aks_preview.custom import _update_addons
+
+        register_aks_preview_resource_type()
+        cmd = MockCmd(MockCLI())
+        cluster = self._cluster()
+        workspace = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.OperationalInsights/workspaces/workspace"
+        for enable in (False, True):
+            with self.subTest(enable=enable):
+                _update_addons(cmd, cluster, "sub", "rg", "cluster", "monitoring", enable,
+                               workspace_resource_id=workspace)
+                payload = self._wire_properties(cluster)
+                insights = payload["azureMonitorProfile"]["containerInsights"]
+                self.assertEqual(insights["enabled"], enable)
+                self.assertEqual(payload["addonProfiles"]["omsagent"]["enabled"], enable)
+                self.assertNotEqual(insights.get("containerNetworkLogs"), "Enabled")
+                if enable:
+                    self.assertEqual(insights["logAnalyticsWorkspaceResourceId"], workspace)
+                self.assertTrue(payload["azureMonitorProfile"]["metrics"]["enabled"])
+
+    def test_disable_flow_logs_updates_both_wire_profiles(self):
+        from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
+
+        register_aks_preview_resource_type()
+        cluster = self._cluster()
+        decorator = AKSPreviewManagedClusterUpdateDecorator(
+            MockCmd(MockCLI()), Mock(), {"disable_container_network_logs": True}, CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        decorator.context.attach_mc(cluster)
+        decorator.update_monitoring_profile_flow_logs(cluster)
+        payload = self._wire_properties(cluster)
+        self.assertEqual(payload["azureMonitorProfile"]["containerInsights"]["containerNetworkLogs"], "Disabled")
+        self.assertEqual(payload["addonProfiles"]["omsagent"]["config"]["enableRetinaNetworkFlags"].lower(), "false")
+        self.assertTrue(payload["azureMonitorProfile"]["metrics"]["enabled"])
 
 
 class TestAksAgentPoolGetBootstrapData(unittest.TestCase):

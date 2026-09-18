@@ -119,6 +119,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         return (
             "Another operation is in progress" in message or
             "Operation is not allowed because there's an in-progress" in message or
+            "AKSOperationPreempted" in message or
             "in-progress PutExtensionAddonHandler.PUT operation" in message or
             "is in Updating state, please wait for it to succeed" in message or
             "ProvisioningState of extension: Updating" in message or
@@ -255,6 +256,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ):
                     show_command = self._build_show_command_for_already_existing_resource(command)
                     if show_command is not None:
+                        recovery_command = getattr(self, "_retried_create_recovery_command", None)
+                        if recovery_command and re.match(r"^aks\s+create\b", command.strip()):
+                            logging.warning("Resuming metrics configuration after a retried cluster create.")
+                            return self._execute_with_transient_conflict_retry(recovery_command, False)
                         logging.warning(
                             "Resource already exists after a retried create/add; the earlier "
                             "attempt's async operation likely already succeeded server-side. "
@@ -291,7 +296,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                             return show_result
                 if (
                     expect_failure or
-                    not self._is_transient_operation_conflict(ex) or
+                    not (
+                        self._is_transient_operation_conflict(ex) or
+                        self._is_private_dns_role_assignment_pending(command, ex)
+                    ) or
                     attempt == max_retries - 1
                 ):
                     raise
@@ -307,6 +315,48 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 time.sleep(delay)
 
         raise AssertionError("unreachable")
+
+    def _cmd_with_retried_create_recovery(self, command, recovery_command, checks=None):
+        previous_command = getattr(self, "_retried_create_recovery_command", None)
+        self._retried_create_recovery_command = self._apply_kwargs(recovery_command)
+        try:
+            return self.cmd(command, checks=checks)
+        finally:
+            self._retried_create_recovery_command = previous_command
+
+    def _is_private_dns_role_assignment_pending(self, command, ex):
+        zone_id = getattr(self, "_private_dns_role_assignment_scope", None)
+        if not zone_id or not re.match(r"^aks\s+create\b", command.strip()):
+            return False
+        requested_zone = self._extract_cli_option(command, "--private-dns-zone")
+        message = str(ex).casefold()
+        return (
+            requested_zone is not None and requested_zone.casefold() == zone_id.casefold() and
+            "(resourcemissingpermissionerror)" in message and
+            f"resource {zone_id.casefold()}." in message and
+            "not allowed for action microsoft.network/privatednszones/read" in message
+        )
+
+    def _cmd_with_private_dns_role_assignment_retry(self, command, zone_id, checks=None):
+        # Only the caller that just granted this zone's role may retry propagation.
+        previous_scope = getattr(self, "_private_dns_role_assignment_scope", None)
+        self._private_dns_role_assignment_scope = zone_id
+        try:
+            return self.cmd(command, checks=checks)
+        finally:
+            self._private_dns_role_assignment_scope = previous_scope
+
+    def _reencrypt_kms_secrets(self):
+        if not self.is_live:
+            return
+        # Private-vault rotation requires every secret to use the current key first.
+        self.cmd(
+            "aks command invoke --resource-group={resource_group} --name={name} "
+            "--command \"bash -o pipefail -c "
+            "'kubectl get secrets --all-namespaces -o json | kubectl replace -f -'\" "
+            "--output json",
+            checks=[self.check("provisioningState", "Succeeded"), self.check("exitCode", 0)],
+        )
 
     def _refetch_settled_aks_result(self, resource_id, fallback_result):
         from azure.cli.testsdk.base import execute
@@ -398,6 +448,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             result.assert_with_checks(other_checks)
 
         return result
+
+    def _reimage_nodepool(self, resource_group, cluster_name, nodepool_name):
+        self.cmd(
+            f"aks nodepool upgrade --resource-group {resource_group} --cluster-name {cluster_name} "
+            f"--name {nodepool_name} --node-image-only --yes",
+            checks=[self.is_empty()],
+        )
+        # The upgradeNodeImageVersion action returns no resource body.
+        self.cmd(
+            f"aks nodepool show --resource-group {resource_group} --cluster-name {cluster_name} "
+            f"--name {nodepool_name}",
+            checks=[self.check("provisioningState", "Succeeded")],
+        )
 
     def _create_log_analytics_workspace(self, resource_group_location):
         workspace_name = self.create_random_name("clilaw", 16)
@@ -494,8 +557,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             return self.cmd(cmd, checks=checks)
         except Exception as ex:  # pylint: disable=broad-except
             message = str(ex)
-            if "ManagedSystem" in message and re.search(
-                r"not (?:whitelisted|allowed|enabled|supported|available|registered)",
+            if "managedsystem" in message.lower() and re.search(
+                r"not (?:whitelisted|allowed|enabled|supported|available|registered)"
+                r"|only supports? whitelisted subscriptions",
                 message,
                 re.IGNORECASE,
             ):
@@ -560,12 +624,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 )
             raise
 
-    def _cmd_or_skip_if_feature_unavailable(self, cmd, feature_name, checks=None):
-        """Run a command that depends on a preview feature unlocked via `--aks-custom-headers`.
+    def _cmd_or_skip_if_feature_unavailable(self, cmd, feature_name, checks=None, feature_aliases=()):
+        """Run a command that requires a preview feature in the test environment.
 
         Some `AKSHTTPCustomFeatures` preview flags additionally require the test
         subscription to be on a service-side allowlist; the header alone is not
-        sufficient to unlock them (mirrors the verified behavior seen for the
+        sufficient to unlock them or make them available in every region (mirrors the behavior seen for the
         `ManagedSystem` agent pool mode preview). If the service rejects the request
         because this subscription isn't enrolled, skip with a precise reason instead
         of failing the test; any other failure (e.g. a real CLI/service regression)
@@ -575,15 +639,33 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             return self.cmd(cmd, checks=checks)
         except Exception as ex:  # pylint: disable=broad-except
             message = str(ex)
-            if feature_name.lower() in message.lower() and re.search(
-                r"not (?:whitelisted|allowed|enabled|supported|available|registered)",
+            feature_matches = any(
+                name.lower() in message.lower() for name in (feature_name, *feature_aliases)
+            )
+            if feature_matches and re.search(
+                r"not (?:yet )?(?:whitelisted|allowed|enabled|supported|available|registered)",
                 message,
                 re.IGNORECASE,
             ):
                 self.skipTest(
-                    f"This subscription is not enrolled for the {feature_name} preview "
-                    f"despite the aks-custom-headers override: {message}"
+                    f"The {feature_name} preview is unavailable in this test environment: {message}"
                 )
+            raise
+
+    def _cmd_or_skip_if_region_unavailable(self, command, location, checks=None, vm_size=None):
+        try:
+            return self.cmd(command, checks=checks)
+        except (CLIError, HttpResponseError) as ex:
+            message = str(ex).lower()
+            expected_location = location.replace(" ", "").lower()
+            if f"'{expected_location}'" not in message:
+                raise
+            if vm_size is None:
+                unavailable = "(availabilityzonenotsupported)" in message
+            else:
+                unavailable = "(vmsizenotsupported)" in message and f"'{vm_size.lower()}'" in message
+            if unavailable:
+                self.skipTest(f"Required test capability is unavailable in {location}: {ex}")
             raise
 
     def _get_lts_version(self, location):
@@ -928,8 +1010,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nat-gateway-managed-outbound-ip-count 2 "
             "--ssh-key-value={ssh_key_value}"
         )
-        self.cmd(
+        self._cmd_or_skip_if_feature_unavailable(
             create_cmd,
+            "managedNATGatewayV2",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.outboundType", "managedNATGateway"),
@@ -9860,6 +9943,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    def _wait_for_http_proxy(self):
+        script = (
+            "timeout 600 cloud-init status --wait && systemctl is-active --quiet squid && "
+            "curl -fsSL --connect-timeout 10 --max-time 30 --retry 2 --retry-connrefused "
+            "-x http://cli-proxy-vm:3128/ https://mcr.microsoft.com/v2/ -o /dev/null && "
+            "curl -fsSL --connect-timeout 10 --max-time 30 --retry 2 --retry-connrefused "
+            "-x https://cli-proxy-vm:3129/ https://mcr.microsoft.com/v2/ -o /dev/null && "
+            "echo AKS_PROXY_READY"
+        )
+        self.cmd(
+            "vm run-command invoke --resource-group={resource_group} --name cli-proxy-vm "
+            f'--command-id RunShellScript --scripts "{script}" -o json',
+            checks=[self.check("contains(join('', value[].message), `\"\\nAKS_PROXY_READY\\n\"`)", True)],
+        )
+
     def _setup_http_proxy_cluster(self, resource_group, _resource_group_location, aks_name):
         """Shared setup for the http-proxy tests below: create a VNet/subnet,
         a proxy VM (with cloud-init that stands up an actual HTTP(S) proxy),
@@ -9873,8 +9971,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         sequentially in a single live test run. Factoring the common
         VNet/VM/initial-create steps into this helper lets each of those
         follow-on scenarios (update / disable / re-enable) run as its own
-        independent live test, each well under the 1-hour live-test budget,
-        without dropping any of the original coverage.
+        independent live test. Verify the proxy before starting the cluster
+        so broken bootstrap/egress does not consume the full test timeout.
         """
         self.kwargs.update(
             {
@@ -9910,7 +10008,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_vm_cmd = 'vm create \
             --resource-group={resource_group} \
             --name=cli-proxy-vm \
-            --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+            --image Canonical:ubuntu-24_04-lts:server:latest \
             --ssh-key-values @{ssh_key_value} \
             --public-ip-address "" \
             --custom-data {custom_data_path} \
@@ -9931,6 +10029,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert subnet_id is not None
 
         self.cmd(create_vm_cmd)
+        self._wait_for_http_proxy()
 
         self.kwargs.update(
             {
@@ -9966,8 +10065,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # scenario is split below into three focused live tests that share the
     # ``_setup_http_proxy_cluster`` helper above. This preserves the exact
     # same assertions/coverage (initial create, config update, disable,
-    # re-enable) while keeping each individual test comfortably within the
-    # live-test time budget and letting them run in parallel (separate
+    # re-enable) while letting them run in parallel (separate
     # per-test resource groups).
     #
     # this case relatively frequently requires updating the corresponding recording file after network/virtualnetwork
@@ -10236,8 +10334,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-private-cluster --private-dns-zone={zone_id} --enable-managed-identity --assign-identity {identity_resource_id} "
             "--ssh-key-value={ssh_key_value}"
         )
-        self.cmd(
+        self._cmd_with_private_dns_role_assignment_retry(
             create_cmd,
+            zone_id,
             checks=[
                 self.exists("privateFqdn"),
                 self.exists("fqdnSubdomain"),
@@ -10923,7 +11022,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-vm-size Standard_D2s_v3 --zones 1 2 3 --enable-ultra-ssd "
             "--ssh-key-value={ssh_key_value}"
         )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
+        self._cmd_or_skip_if_region_unavailable(
+            create_cmd, resource_group_location, checks=[self.check("provisioningState", "Succeeded")]
+        )
 
         # delete
         self.cmd(
@@ -13770,6 +13871,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} "
             "-o json"
         )
+        self._reencrypt_kms_secrets()
         self.cmd(
             update_cmd,
             checks=[
@@ -14093,6 +14195,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} "
             "-o json"
         )
+        self._reencrypt_kms_secrets()
         self.cmd(
             update_cmd,
             checks=[
@@ -15960,8 +16063,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} "
             "--node-count=1 --ssh-key-value={ssh_key_value} --zones {zones}"
         )
-        self.cmd(
+        self._cmd_or_skip_if_region_unavailable(
             create_cmd,
+            resource_group_location,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].availabilityZones[0]", "1"),
@@ -16378,12 +16482,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # 1. Disable immutability + soft-delete on the vault so that BIs
         #    with active recovery points can be force-deleted.
+        # Use the API that supports reversible soft delete, as AKS vault creation does.
         try:
             self.cmd(
-                "dataprotection backup-vault update "
-                "-g {backup_rg} --vault-name {vault_name} "
+                "resource update --resource-group {backup_rg} --name {vault_name} "
+                "--resource-type Microsoft.DataProtection/backupVaults --api-version 2025-07-01 "
                 "--set properties.securitySettings.immutabilitySettings.state=Disabled "
-                "properties.securitySettings.softDeleteSettings.state=Off"
+                "properties.securitySettings.softDeleteSettings.state=Off",
+                checks=[
+                    self.check("properties.securitySettings.immutabilitySettings.state", "Disabled"),
+                    self.check("properties.securitySettings.softDeleteSettings.state", "Off"),
+                ],
             )
         except Exception as ex:  # pylint: disable=broad-except
             logging.warning(
@@ -17347,19 +17456,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "node_vm_size": node_vm_size,
             }
         )
+        self.kwargs["amw_id"] = self._create_azure_monitor_workspace(resource_group_location)
 
         # create: --enable-azure-monitor-metrics + --enable-control-plane-metrics
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
-            "--enable-azure-monitor-metrics --enable-control-plane-metrics --output=json"
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics "
+            "--azure-monitor-workspace-resource-id={amw_id} --output=json"
         )
         # NOTE: ``--enable-control-plane-metrics`` on create is intentionally deferred to a
         # postprocessing PUT (after DCRA creation) to avoid scheduling the CCP pod before its
         # DCRA exists. The create response may therefore reflect the pre-flip state; assert
         # the final state via ``aks show`` after the cluster settles.
-        self.cmd(
+        self._cmd_with_retried_create_recovery(
             create_cmd,
+            recovery_command=(
+                "aks update --resource-group={resource_group} --name={name} "
+                "--enable-azure-monitor-metrics --enable-control-plane-metrics "
+                "--azure-monitor-workspace-resource-id={amw_id}"
+            ),
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("azureMonitorProfile.metrics.enabled", True),
@@ -21735,7 +21851,9 @@ spec:
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
                 self.check("networkProfile.advancedNetworking.security.enabled", True),
                 self.check("addonProfiles.omsagent.enabled", True),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+                self.check(
+                    "contains(['True', 'true'], addonProfiles.omsagent.config.enableRetinaNetworkFlags)", True
+                ),
             ],
         ).get_output_in_json()
 
@@ -21760,7 +21878,9 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
+                self.check(
+                    "contains(['False', 'false'], addonProfiles.omsagent.config.enableRetinaNetworkFlags)", True
+                ),
             ],
         )
 
@@ -21770,7 +21890,9 @@ spec:
             enable_cmd_update,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+                self.check(
+                    "contains(['True', 'true'], addonProfiles.omsagent.config.enableRetinaNetworkFlags)", True
+                ),
             ],
         )
 
@@ -22802,8 +22924,7 @@ spec:
 
         # update (currently makes a PUT no-op)
         update_cmd = (
-            "aks applicationloadbalancer update --resource-group={resource_group} --name={aks_name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ApplicationLoadBalancerPreview"
+            "aks applicationloadbalancer update --resource-group={resource_group} --name={aks_name}"
         )
 
         self.cmd(
@@ -24333,11 +24454,7 @@ spec:
 
         # reimage the existing nodepool so nodes pick up the Cache-based bootstrap artifacts
         # while they still have outbound network access
-        reimage_nodepool_cmd = (
-            "aks nodepool upgrade --resource-group {resource_group} --cluster-name {aks_name_2} "
-            "--name nodepool1 --node-image-only --yes"
-        )
-        self.cmd(reimage_nodepool_cmd, checks=[self.check("provisioningState", "Succeeded")])
+        self._reimage_nodepool(resource_group, aks_name_2, "nodepool1")
 
         # wait for the cluster to settle after the reimage before removing outbound access
         wait_after_reimage_cmd = (
@@ -25003,6 +25120,7 @@ spec:
         self._cmd_or_skip_if_feature_unavailable(
             enable_cmd,
             "ManagedBastion",
+            feature_aliases=("bastionProfile",),
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.bastionProfile.enabled", True),
@@ -25097,6 +25215,7 @@ spec:
         self._cmd_or_skip_if_feature_unavailable(
             enable_cmd,
             "ManagedBastion",
+            feature_aliases=("bastionProfile",),
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.bastionProfile.enabled", True),
@@ -25923,9 +26042,6 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        # eastus is capacity-constrained for standard_dc16ads_cc_v5 (verified live:
-        # "SkuNotAvailable ... Following SKUs have failed for Capacity Restrictions");
-        # eastus2 has capacity for this confidential-compute SKU.
         random_name_length=17, name_prefix="clitest", location="eastus2"
     )
     def test_aks_jwtauthenticator_cmds(self, resource_group, resource_group_location):
@@ -25935,13 +26051,8 @@ spec:
         aks_name = self.create_random_name('cliakstest', 16)
         jwt_auth_name = self.create_random_name('jwt', 10)
 
-        # The confidential-compute SKU below is only verified to have capacity in eastus2.
-        # A compliance-mandated AZURE_CLI_TEST_FORCE_RESOURCE_GROUP_LOCATION override always
-        # wins for the resource group's own location (by design, regardless of
-        # preserve_default_location), but an AKS cluster can be created in a different region
-        # than its resource group. Pin the cluster's --location explicitly to the
-        # capacity-verified region so this test keeps passing under a forced resource-group
-        # location instead of failing with SkuNotAvailable.
+        # Keep the confidential-compute requirement; subscription availability is checked
+        # explicitly rather than replacing this SKU with an ordinary VM.
         cluster_location = "eastus2"
 
         self.kwargs.update({
@@ -25959,9 +26070,10 @@ spec:
             "--vm-set-type=VirtualMachines --node-count 1 --vm-size standard_dc16ads_cc_v5 "
             "--enable-managed-identity --ssh-key-value={ssh_key_value} "
         )
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
+        self._cmd_or_skip_if_region_unavailable(
+            create_cmd, cluster_location, vm_size="standard_dc16ads_cc_v5",
+            checks=[self.check('provisioningState', 'Succeeded')],
+        )
 
         add_jwt_cmd = (
             "aks jwtauthenticator add --resource-group={resource_group} --cluster-name={name} "
