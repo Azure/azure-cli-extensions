@@ -767,6 +767,13 @@ class ContainerImage:
         return mounts
 
     def _populate_policy_json_elements(self, omit_id: bool = False) -> Dict[str, Any]:
+        # dedup exec_processes to work around https://github.com/microsoft/hcsshim/pull/2935
+        exec_processes = []
+        # Dictionaries are unhashable, so can't list(set(...))
+        for exec_process in self._exec_processes:
+            if exec_process not in exec_processes:
+                exec_processes.append(exec_process)
+
         elements = {
             config.POLICY_FIELD_CONTAINERS_NAME: self.get_name(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS: self._layers,
@@ -774,7 +781,7 @@ class ContainerImage:
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS: self._get_environment_rules(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_WORKINGDIR: self._workingDir,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS: self._get_mounts_json(),
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_EXEC_PROCESSES: self._exec_processes,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_EXEC_PROCESSES: exec_processes,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES: self._signals,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS: self._allow_stdio_access,
         }

@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.1.1
++++++
+
+* Added de-duping of exec_processes in the generated policies so same command used in two probes results in one exec_processes entry
+
 2.1.0
 +++++
 * Add command for generating container policy definitions from radius application templates
