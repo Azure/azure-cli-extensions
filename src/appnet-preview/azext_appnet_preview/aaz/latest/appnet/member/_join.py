@@ -26,9 +26,9 @@ class Join(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-08-01-preview",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.applink/applinks/{}/applinkmembers/{}", "2025-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.applink/applinks/{}/applinkmembers/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -87,10 +87,19 @@ class Join(AAZCommand):
             help="Delegated Subnet to AppLink.",
         )
 
+        # define Arg Group "ConnectivityProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.network_name = AAZStrArg(
+            options=["--network-name"],
+            arg_group="ConnectivityProfile",
+            help="Name of the network for the Application Network member.",
+        )
+
         # define Arg Group "Metadata"
 
         _args_schema = cls._args_schema
-        _args_schema.member_resource_id = AAZResourceIdArg(
+        _args_schema.member_resource_id = AAZStrArg(
             options=["--member-resource-id"],
             arg_group="Metadata",
             help="Managed cluster Resource ID",
@@ -153,7 +162,7 @@ class Join(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AppLinkMembersCreateOrUpdate(ctx=self.ctx)()
+        yield self.AppLinkMembersCreateOrReplace(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -168,7 +177,7 @@ class Join(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AppLinkMembersCreateOrUpdate(AAZHttpOperation):
+    class AppLinkMembersCreateOrReplace(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -236,7 +245,7 @@ class Join(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01-preview",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -275,6 +284,7 @@ class Join(AAZCommand):
             connectivity_profile = _builder.get(".properties.connectivityProfile")
             if connectivity_profile is not None:
                 connectivity_profile.set_prop("eastWestGateway", AAZObjectType)
+                connectivity_profile.set_prop("network", AAZStrType, ".network_name")
                 connectivity_profile.set_prop("privateConnect", AAZObjectType)
 
             east_west_gateway = _builder.get(".properties.connectivityProfile.eastWestGateway")
@@ -371,6 +381,7 @@ class Join(AAZCommand):
             connectivity_profile.east_west_gateway = AAZObjectType(
                 serialized_name="eastWestGateway",
             )
+            connectivity_profile.network = AAZStrType()
             connectivity_profile.private_connect = AAZObjectType(
                 serialized_name="privateConnect",
             )
