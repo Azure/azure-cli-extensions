@@ -202,6 +202,8 @@ from azext_aks_preview._validators import (
     validate_azure_keyvault_kms_key_vault_resource_id,
     validate_azure_monitor_and_opentelemetry_for_create,
     validate_azure_monitor_and_opentelemetry_for_update,
+    validate_container_insights_settings_for_create,
+    validate_container_insights_settings_for_update,
     validate_azure_monitor_logs_and_enable_addons,
     validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
@@ -323,6 +325,31 @@ def _deprecate_option(c, target, redirect):
     deprecated = c.deprecate(target=target, redirect=redirect)
     if deprecated is not None:
         deprecated.__class__ = _SizedDeprecated
+    return deprecated
+
+
+def _legacy_monitoring_auth_message(_deprecated):
+    """Build the deprecation message for --enable-msi-auth-for-monitoring."""
+    return (
+        "Argument '--enable-msi-auth-for-monitoring' has been deprecated and will be removed in a "
+        "future release. Container Insights onboarding is moving to the Azure Monitor profile, "
+        "which supports managed identity authentication only. Use 'az aks create' or "
+        "'az aks update' with '--enable-azure-monitor-logs' instead."
+    )
+
+
+def _deprecate_legacy_monitoring_auth(c):
+    """Deprecate --enable-msi-auth-for-monitoring on the legacy addon commands.
+
+    knack only invokes a deprecated argument's action when the option is actually present on the
+    command line, so the warning is emitted once on explicit use and never for the default value.
+
+    ArgumentsContext.deprecate() overwrites any message_func it is given with its own generic
+    text, so the custom message is attached to the returned object instead.
+    """
+    deprecated = c.deprecate(target="--enable-msi-auth-for-monitoring")
+    if deprecated is not None:
+        deprecated._get_message = _legacy_monitoring_auth_message  # pylint: disable=protected-access
     return deprecated
 
 
@@ -908,6 +935,12 @@ def load_arguments(self, _):
         c.argument("data_collection_settings", is_preview=True)
         c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("ampls_resource_id", is_preview=True)
+        c.argument("syslog_port",
+                   type=int,
+                   is_preview=True,
+                   validator=validate_container_insights_settings_for_create)
+        c.argument("enable_prometheus_metrics_scraping", action="store_true", is_preview=True)
+        c.argument("disable_prometheus_metrics_scraping", action="store_true", is_preview=True)
         c.argument("aci_subnet_name")
         c.argument("appgw_name", arg_group="Application Gateway")
         c.argument("appgw_subnet_cidr", arg_group="Application Gateway")
@@ -1864,6 +1897,20 @@ def load_arguments(self, _):
         c.argument("ampls_resource_id",
                    is_preview=True,
                    help="Resource ID of the Azure Monitor Private Link Scope to associate with the cluster")
+        c.argument("syslog_port",
+                   type=int,
+                   is_preview=True,
+                   validator=validate_container_insights_settings_for_update,
+                   help="Host port used by the Azure Monitor agent to collect syslog. "
+                        "Defaults to 28330 when unset.")
+        c.argument("enable_prometheus_metrics_scraping",
+                   action="store_true",
+                   is_preview=True,
+                   help="Enable Prometheus metrics scraping by the Azure Monitor agent")
+        c.argument("disable_prometheus_metrics_scraping",
+                   action="store_true",
+                   is_preview=True,
+                   help="Disable Prometheus metrics scraping by the Azure Monitor agent")
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
                    is_preview=True,
@@ -3139,6 +3186,7 @@ def load_arguments(self, _):
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
             is_preview=True,
+            deprecate_info=_deprecate_legacy_monitoring_auth(c),
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
@@ -3196,6 +3244,7 @@ def load_arguments(self, _):
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
             is_preview=True,
+            deprecate_info=_deprecate_legacy_monitoring_auth(c),
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
@@ -3236,6 +3285,7 @@ def load_arguments(self, _):
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
             is_preview=True,
+            deprecate_info=_deprecate_legacy_monitoring_auth(c),
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)

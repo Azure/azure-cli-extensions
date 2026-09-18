@@ -908,5 +908,180 @@ class TestDcrTableReadinessRetry(unittest.TestCase):
         self.assertEqual(self.mock_sleep.call_count, 1)
 
 
+class TestLegacyMonitoringAuthDeprecation(unittest.TestCase):
+    """Warn when the legacy auth flag is used with enable-addons monitoring."""
+
+    def _warn(self, value, addons="monitoring"):
+        from azext_aks_preview.addonconfiguration import warn_on_legacy_monitoring_auth
+
+        with patch("azext_aks_preview.addonconfiguration.logger") as mock_logger:
+            warn_on_legacy_monitoring_auth(value, addons)
+            return mock_logger.warning
+
+    def test_warns_when_opting_into_shared_key_auth(self):
+        warning = self._warn(False)
+        warning.assert_called_once()
+        message = warning.call_args[0][0]
+        self.assertIn("managed identity", message.lower())
+        self.assertIn("--enable-azure-monitor-logs", message)
+        self.assertIn("container-insights-authentication", message)
+
+    def test_silent_when_flag_omitted(self):
+        # The CLI default is True, so an omitted flag must not warn.
+        self._warn(None).assert_not_called()
+        self._warn(True).assert_not_called()
+
+    def test_silent_for_non_monitoring_addons(self):
+        self._warn(False, addons="azure-policy").assert_not_called()
+        self._warn(False, addons=None).assert_not_called()
+
+    def test_silent_for_addon_names_that_merely_contain_monitoring(self):
+        # A substring check would misfire on these, so the list is matched token by token.
+        self._warn(False, addons="monitoring-preview").assert_not_called()
+        self._warn(False, addons="notmonitoring").assert_not_called()
+
+    def test_tolerates_whitespace_and_casing_in_the_addon_list(self):
+        self._warn(False, addons=" azure-policy , Monitoring ").assert_called_once()
+
+    def test_warns_when_monitoring_is_one_of_several_addons(self):
+        self._warn(False, addons="azure-policy,monitoring").assert_called_once()
+
+    def test_does_not_change_the_auth_value(self):
+        # The warning is advisory only: useAADAuth handling is untouched.
+        from azext_aks_preview.addonconfiguration import warn_on_legacy_monitoring_auth
+
+        for value in (True, False, None):
+            with patch("azext_aks_preview.addonconfiguration.logger"):
+                self.assertIsNone(warn_on_legacy_monitoring_auth(value, "monitoring"))
+
+
+class TestAddonUpdateLegacyAuthWarning(unittest.TestCase):
+    """`aks addon update` must judge the warning on the value the user actually supplied."""
+
+    def _run(self, supplied_value, client_id):
+        from azext_aks_preview import custom
+
+        instance = Mock()
+        instance.service_principal_profile.client_id = client_id
+        instance.addon_profiles = {"omsagent": Mock(enabled=True, config={})}
+        client = Mock()
+        client.get.return_value = instance
+
+        with patch.object(custom, "warn_on_legacy_monitoring_auth") as warn, patch.object(
+            custom, "enable_addons", return_value=instance
+        ) as enable:
+            custom.aks_addon_update(
+                cmd=Mock(),
+                client=client,
+                resource_group_name="rg",
+                name="cluster",
+                addon="monitoring",
+                enable_msi_auth_for_monitoring=supplied_value,
+            )
+        return warn, enable
+
+    def test_omitted_flag_is_silent_on_a_service_principal_cluster(self):
+        # Service principal clusters cannot use managed identity auth, so the command forces the
+        # flag to False. That rewrite must not be mistaken for the user opting into shared keys.
+        warn, enable = self._run(None, client_id="a-service-principal")
+        warn.assert_called_once_with(None, "monitoring")
+        self.assertIs(enable.call_args.kwargs["enable_msi_auth_for_monitoring"], False)
+
+    def test_explicitly_disabling_still_warns(self):
+        warn, _ = self._run(False, client_id="a-service-principal")
+        warn.assert_called_once_with(False, "monitoring")
+
+    def test_omitted_flag_defaults_to_managed_identity_on_msi_clusters(self):
+        warn, enable = self._run(None, client_id="msi")
+        warn.assert_called_once_with(None, "monitoring")
+        self.assertIs(enable.call_args.kwargs["enable_msi_auth_for_monitoring"], True)
+
+
+class TestMonitoringArgumentRegistration(unittest.TestCase):
+    """Argument registration for the containerInsights controls and the legacy auth warning."""
+
+    def setUp(self):
+        register_aks_preview_resource_type()
+
+    def _arguments(self, command_name):
+        """Return the argument settings registered for a command scope.
+
+        load_arguments() resolves argument scopes against the command currently being invoked, so
+        the loader needs an invocation carrying the command string and an argparse action registry.
+        """
+        import argparse
+
+        from azure.cli.core.mock import DummyCli
+
+        class _Invocation:
+            def __init__(self, command_string):
+                self.data = {"command_string": command_string}
+                self.parser = argparse.ArgumentParser()
+
+        cli_ctx = DummyCli()
+        cli_ctx.invocation = _Invocation(command_name)
+        loader = ContainerServiceCommandsLoader(cli_ctx)
+        loader.load_command_table(command_name.split())
+        loader.command_table[command_name].load_arguments()
+        loader.load_arguments(command_name)
+        return {
+            dest: arg.settings
+            for dest, arg in loader.argument_registry.arguments.get(command_name, {}).items()
+        }
+
+    def test_legacy_auth_flag_is_deprecated_on_addon_commands(self):
+        for command_name in ("aks enable-addons", "aks addon enable", "aks addon update"):
+            arguments = self._arguments(command_name)
+            deprecate_info = arguments["enable_msi_auth_for_monitoring"].get("deprecate_info")
+            self.assertIsNotNone(deprecate_info, command_name)
+            message = deprecate_info.message
+            self.assertIn("deprecated", message)
+            self.assertIn("managed identity", message)
+            self.assertIn("--enable-azure-monitor-logs", message)
+
+    def test_legacy_auth_flag_is_not_deprecated_on_create_and_update(self):
+        # The deprecation is scoped to the legacy addon commands.
+        for command_name in ("aks create", "aks update"):
+            arguments = self._arguments(command_name)
+            self.assertIsNone(
+                arguments["enable_msi_auth_for_monitoring"].get("deprecate_info"), command_name
+            )
+
+    def test_deprecation_fires_only_when_the_flag_is_supplied(self):
+        # knack invokes a deprecated argument's action only when the option is on the command
+        # line, so the default value must never produce a warning.
+        import argparse
+
+        arguments = self._arguments("aks enable-addons")
+        action_cls = arguments["enable_msi_auth_for_monitoring"].get("action")
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "--enable-msi-auth-for-monitoring",
+            dest="enable_msi_auth_for_monitoring",
+            action=action_cls,
+            default=True,
+        )
+
+        namespace = parser.parse_args([])
+        self.assertEqual(getattr(namespace, "_argument_deprecations", []), [])
+        self.assertTrue(namespace.enable_msi_auth_for_monitoring)
+
+        namespace = parser.parse_args(["--enable-msi-auth-for-monitoring", "false"])
+        self.assertEqual(len(getattr(namespace, "_argument_deprecations", [])), 1)
+        # The deprecation machinery warns without altering the parsed value.
+        self.assertFalse(namespace.enable_msi_auth_for_monitoring)
+
+    def test_container_insights_controls_registered_on_create_and_update(self):
+        for command_name in ("aks create", "aks update"):
+            arguments = self._arguments(command_name)
+            for dest in (
+                "syslog_port",
+                "enable_prometheus_metrics_scraping",
+                "disable_prometheus_metrics_scraping",
+            ):
+                self.assertIn(dest, arguments, f"{dest} missing from {command_name}")
+            self.assertIsNotNone(arguments["syslog_port"].get("validator"), command_name)
+
+
 if __name__ == '__main__':
     unittest.main()
