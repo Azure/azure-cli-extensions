@@ -51,7 +51,7 @@ class Create(AAZCommand):
             help="The name of the Redis Enterprise database access policy assignment.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9-]{1,60}$",
             ),
         )
         _args_schema.cluster_name = AAZStrArg(
