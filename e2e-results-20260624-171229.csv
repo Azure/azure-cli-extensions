@@ -1,0 +1,46 @@
+"SNo","TestCase","Description","Command","ExpectedResult","ActualResult","Status","Duration"
+"1.1","Install extension","Install from .whl file","az extension add --source ...whl --yes","Extension installs successfully","Installed successfully","PASS","46.6s"
+"1.2","Verify extension listed","Confirm version 1.0.0b3 in list","az extension list -o table","provisionedmachine 1.0.0b3","N                   V
+------------------  -------
+provisionedmachine  1.0.0b3","PASS","9.1s"
+"1.3","Help text - group","No implementation details leaked","az provisionedmachine -h","Manage provisioned machine resources","Group help correct","PASS","2.1s"
+"1.4","Help text - command","Shows all 4 params + examples","az provisionedmachine ssh-cert-create -h","--vault-name, --resource-id, --cert-path, --private-key-path","All params present","PASS","2.4s"
+"1.5","Uninstall and reinstall","Clean cycle","remove + add + help","All succeed","Cycle succeeded","PASS","42.1s"
+"2.1","Invalid resource ID - random string","Reject non-ARM","ssh-cert-create --resource-id ""invalid-string""","not a valid ARM resource ID","Rejected","PASS","2.6s"
+"2.2","Invalid resource ID - missing /subscriptions","Reject incomplete ARM","ssh-cert-create --resource-id ""/resourceGroups/...""","not a valid ARM resource ID","Rejected","PASS","2.4s"
+"2.3","Invalid resource ID - empty","Reject empty string","ssh-cert-create --resource-id """"","Error about empty/required","Rejected","PASS","2.2s"
+"2.4","Invalid resource ID - deleted/non-existent machine","Resource doesn't exist","ssh-cert-create --resource-id "".../edgeMachines/deletedMachine123""","Resource not found or PIM error","Rejected non-existent machine","PASS","4.3s"
+"2.5","Reader role on Provisioned Machine","Deactivate all, assign Reader, verify cert","Isolate Reader role, ssh-cert-create","Certificate generated with role=Provisioned Machine Reader","Admin role still active! Priority conflict. Got: C:\Users\PUSRIV~1\AppData\Local\Temp\azssh_pm_eoinohw0\id_rsa.pem-cert.pub:
+        Type: ssh-rsa-cert-v01@openssh.com user certificate
+        Public key: RSA-CERT SHA256:7D9qoei6K0e9OGvLYmSbjAisMH1Om3gV7+cQKj3vIdY
+        Signing CA: RSA SHA256:j","FAIL","102.9s"
+"2.6","Admin role on Provisioned Machine","Deactivate all, assign Admin, verify cert","Isolate Admin role, ssh-cert-create","Certificate generated with role=Provisioned Machine Admin","Certificate generated with role=Provisioned Machine Admin","PASS","790.5s"
+"2.7","Contributor role on Provisioned Machine","Deactivate all, assign Contributor, verify cert","Isolate Contributor role, ssh-cert-create","Certificate generated with role=Provisioned Machine Contributor","Admin role still active! Priority conflict. Got: C:\Users\PUSRIV~1\AppData\Local\Temp\azssh_pm_ykbtjdf7\id_rsa.pem-cert.pub:
+        Type: ssh-rsa-cert-v01@openssh.com user certificate
+        Public key: RSA-CERT SHA256:F/7WKL+W6qsckjC0Uyg4CdrZaDAlLyfjsT/ofLJDJe8
+        Signing CA: RSA SHA256:j","FAIL","412.2s"
+"2.8","No role on Provisioned Machine","User has no PM roles on resource","ssh-cert-create on resource with no PM roles","No Provisioned Machine role found","Rejected - no PM role","PASS","3.2s"
+"2.9","Invalid vault name - starts with digit","Reject '1vault'","ssh-cert-create --vault-name ""1vault""","not a valid Key Vault name","Rejected","PASS","2.4s"
+"2.10","Invalid vault name - special chars","Reject 'vault_name!'","ssh-cert-create --vault-name ""vault_name!""","not a valid Key Vault name","Rejected","PASS","2.4s"
+"2.11","Missing --vault-name","Required param","ssh-cert-create --resource-id [RID]","required: --vault-name","Required","PASS","2.3s"
+"2.12","Missing --resource-id","Required param","ssh-cert-create --vault-name test","required: --resource-id","Required","PASS","2.2s"
+"3.1","Not logged in","Run after az logout","az logout && ssh-cert-create","Error: az login required","Correctly requires login","PASS","15.0s"
+"3.2","Wrong tenant","Login to Microsoft tenant, test against ALCS resource","az login --tenant msft && ssh-cert-create","Auth error or resource not found","Correctly failed with wrong tenant","PASS","16.0s"
+"3.3","Direct (non-PIM) role assignment","Assign direct role, verify cert works, remove assignment","Direct role assignment on /subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/ar-sff-rg/providers/Microsoft.AzureStackHCI/edgeMachines/aurosffeus16062026B","Cert generated with direct role, then cleaned up","Cert gen failed with direct role: ERROR: Your PIM activation on resource '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/ar-sff-rg/providers/Microsoft.AzureStackHCI/edgeMachines/aurosffeus16062026B' has expired or been deactivated. Please re-activate your PIM-eligible role and re","FAIL","287.7s"
+"3.4","No role assignment at all","Use resource where user has no roles","ssh-cert-create on unrelated resource","No role / not found","Correctly rejected","PASS","3.2s"
+"4.1","Non-existent vault","Vault DNS doesn't resolve","ssh-cert-create --vault-name ""nonExistentVault123""","Unable to connect to Key Vault","Correctly failed - vault not found","PASS","10.6s"
+"4.2","Vault exists but CA key missing","No deviceId-ssh-ca key in vault","ssh-cert-create with wrong vault","Key not found in vault","Correctly failed - key missing or no PIM","PASS","2.9s"
+"4.3","No KV access permissions","User lacks Key Get/Sign","ssh-cert-create with no-access vault","Access denied","Correctly failed - no KV access","PASS","7.7s"
+"5.1","Successful cert generation (default paths)","Happy path","ssh-cert-create --vault-name remote-ssh-poc1","JSON with privateKeyPath + certificatePath","Certificate generated","PASS","8.3s"
+"5.2","Inspect generated certificate","Verify principals and extensions","ssh-keygen -L -f [cert]","username=[alias] role=Provisioned Machine Admin permit-pty","Cert valid","PASS","0.1s"
+"5.3","Multiple consecutive generations","Each creates new temp dir","ssh-cert-create x3","3 different directories","3 unique directories created","PASS","30.3s"
+"5.4","Private key is RSA-4096","Confirm key strength","ssh-keygen -l -f [key]","4096 SHA256:... (RSA)","RSA-4096 confirmed","PASS","0.1s"
+"5.5","Custom output paths (both)","Both --cert-path and --private-key-path","ssh-cert-create --private-key-path ... --cert-path ...","Files at custom locations","Both files at custom paths","PASS","11.4s"
+"5.6","Custom --private-key-path only","Only key path customized","ssh-cert-create --private-key-path ...","Key at custom, cert in temp","Key at custom path, cert in temp","PASS","11.0s"
+"5.7","Custom --cert-path only","Only cert path customized","ssh-cert-create --cert-path ...","Cert at custom, key in temp","Cert at custom path, key in temp","PASS","18.9s"
+"5.8","Custom path - non-existent directory","Dir does not exist","ssh-cert-create --private-key-path C:\nonexistent\folder\key","Directory does not exist","Correctly rejected non-existent dir","PASS","2.6s"
+"6.1","SSH with generated certificate","Full login using cert","ssh -p 2222 pusrivastava_jit@localhost","whoami returns pusrivastava_jit","SSH failed: ssh: connect to host localhost port 2222: Connection refused
+","FAIL","4.2s"
+"6.2","SSH with expired certificate","PIM window is PT5M - run script again after expiry to test","","","SKIPPED - PIM window is PT5M - run script again after expiry to test","SKIP","0s"
+"6.3","SSH with wrong OS user","Login as non-existent user","ssh -p 2222 wronguser@localhost","Permission denied","Correctly rejected wrong user","PASS","4.1s"
+"6.4","SSH without certificate (key only)","Key alone not authorized","ssh -p 2222 (no cert)","Permission denied","Correctly rejected - key only, no cert","PASS","4.2s"
