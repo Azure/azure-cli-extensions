@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* Add `az aks operation list` to list historical or active (`--active-only`) operations on a cluster (`--resource-group` and `--name`) or on a node pool (`--nodepool-name`).
 
 22.0.0b8
 +++++++++
