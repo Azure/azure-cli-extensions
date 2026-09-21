@@ -2043,7 +2043,7 @@ class TestValidateEnableDistributedAccelerator(unittest.TestCase):
             )
         err = (
             '--storage-pool-name cannot be used with '
-            '--enable-azure-container-storage distributedaccelerator. '
+            '--enable-azure-container-storage distributedAccelerator. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
@@ -2057,7 +2057,7 @@ class TestValidateEnableDistributedAccelerator(unittest.TestCase):
             )
         err = (
             '--container-storage-version cannot be used with '
-            '--enable-azure-container-storage distributedaccelerator. '
+            '--enable-azure-container-storage distributedAccelerator. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
@@ -2106,7 +2106,7 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
             )
         err = (
             '--storage-pool-name cannot be used with '
-            '--disable-azure-container-storage distributedaccelerator. '
+            '--disable-azure-container-storage distributedAccelerator. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
@@ -2120,7 +2120,7 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
             )
         err = (
             '--container-storage-version cannot be used with '
-            '--disable-azure-container-storage distributedaccelerator. '
+            '--disable-azure-container-storage distributedAccelerator. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
