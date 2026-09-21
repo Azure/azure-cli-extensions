@@ -457,7 +457,17 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+
+        if has_value(self.ctx.args.clone_from_backup_timestamp) and has_value(self.ctx.args.database_edition):
+            license_model = None
+            if has_value(self.ctx.args.license_model):
+                license_model = self.ctx.args.license_model.to_serialized_data()
+
+            if license_model != "BringYourOwnLicense":
+                raise InvalidArgumentValueError(
+                    "--database-edition is valid only when --license-model BringYourOwnLicense is used."
+                )
 
     @register_callback
     def post_operations(self):
@@ -1136,6 +1146,7 @@ class Create(AAZCommand):
             whitelisted_ips = cls._schema_on_200_201.properties.whitelisted_ips
             whitelisted_ips.Element = AAZStrType()
 
+            cls._schema_on_200_201.properties.data_base_type = AAZStrType(serialized_name="dataBaseType")
             disc_clone = cls._schema_on_200_201.properties.discriminate_by("data_base_type", "Clone")
             disc_clone.is_reconnect_clone_enabled = AAZBoolType(
                 serialized_name="isReconnectCloneEnabled",

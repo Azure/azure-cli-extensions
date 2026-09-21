@@ -11,13 +11,13 @@ import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleResourceAnchorScenarioTest(ScenarioTest):
-    @live_only()
+    # @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'resource_group': 'azCliTest',
-            'resource_anchor_name': 'AzureCliTestMi',
+            'resource_group': 'AzClitets2026',
+            'resource_anchor_name': 'AzCliTest2026',
             'location': 'global',
         })
 

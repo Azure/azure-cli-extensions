@@ -1193,6 +1193,7 @@ class _UpdateHelper:
         whitelisted_ips = _schema_autonomous_database_read.properties.whitelisted_ips
         whitelisted_ips.Element = AAZStrType()
 
+        _schema_autonomous_database_read.properties.data_base_type = AAZStrType(serialized_name="dataBaseType")
         disc_clone = _schema_autonomous_database_read.properties.discriminate_by("data_base_type", "Clone")
         disc_clone.is_reconnect_clone_enabled = AAZBoolType(
             serialized_name="isReconnectCloneEnabled",

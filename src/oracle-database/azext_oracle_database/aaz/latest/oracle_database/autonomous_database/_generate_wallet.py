@@ -18,7 +18,7 @@ class GenerateWallet(AAZCommand):
     """Generate wallet action on Autonomous Database
 
     :example: Generate Wallet
-        az oracle-database autonomous-database generate-wallet --autonomousdatabasename <ADBS name> --resource-group <resource_group> --password <password> --is-regional True
+        az oracle-database autonomous-database generate-wallet --autonomousdatabasename <ADBS name> --resource-group <resource_group> --password <password> --is-regional True --file wallet-<ADBS name>.zip
     """
 
     _aaz_info = {
@@ -57,6 +57,10 @@ class GenerateWallet(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.file = AAZStrArg(
+            options=["--file", "-f"],
+            help="Local file path to save the generated wallet zip. Defaults to wallet-{autonomousdatabasename}.zip.",
         )
 
         # define Arg Group "Body"
@@ -102,7 +106,40 @@ class GenerateWallet(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        import base64
+        import os
+        import tempfile
+        from azure.cli.core.azclierror import FileOperationError, ValidationError
+
+        wallet_files = result.get("walletFiles") or result.get("wallet_files")
+        if not wallet_files:
+            raise ValidationError("No walletFiles content returned from the API.")
+
+        try:
+            wallet_zip = base64.b64decode(wallet_files, validate=True)
+        except Exception as ex:
+            raise ValidationError("Failed to decode walletFiles as base64 content: {}".format(str(ex)))
+
+        file_path = self.ctx.args.file.to_serialized_data() if self.ctx.args.file else None
+        if not file_path:
+            autonomous_database_name = self.ctx.args.autonomousdatabasename.to_serialized_data()
+            file_path = "wallet-{}.zip".format(autonomous_database_name)
+
+        target_directory = os.path.dirname(os.path.abspath(file_path))
+        try:
+            fd, temporary_path = tempfile.mkstemp(prefix=".wallet-", suffix=".tmp", dir=target_directory)
+            with os.fdopen(fd, "wb") as wallet_file:
+                wallet_file.write(wallet_zip)
+            os.replace(temporary_path, file_path)
+        except Exception as ex:
+            try:
+                if "temporary_path" in locals() and os.path.exists(temporary_path):
+                    os.unlink(temporary_path)
+            except OSError:
+                pass
+            raise FileOperationError("Failed to save wallet file: {}".format(str(ex)))
+
+        return {"file": file_path, "message": "Wallet saved to: {}".format(file_path)}
 
     class AutonomousDatabasesGenerateWallet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"

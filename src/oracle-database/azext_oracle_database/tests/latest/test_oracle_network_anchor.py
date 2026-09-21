@@ -12,17 +12,17 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleNetworkAnchorScenarioTest(ScenarioTest):
-    @live_only()
+    # @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'resource_group': 'azCliTest',
-            'network_anchor_name': 'AzureCliTestM',
+            'resource_group': 'AzClitets2026',
+            'network_anchor_name': 'AzCliNA2026',
             'location': 'eastus',
-            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azCliTest/providers/Oracle.Database/resourceAnchors/AzureCliTestMi',
-            'subnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated',
+            'resource_anchor_id': '/subscriptions/3b3aa069-da96-41b6-b5aa-6f20dd9db826/resourceGroups/AzClitets2026/providers/Oracle.Database/resourceAnchors/azCli2026RAi',
+            'subnet_id': '/subscriptions/3b3aa069-da96-41b6-b5aa-6f20dd9db826/resourceGroups/AzClitets2026/providers/Microsoft.Network/virtualNetworks/azCliVnet2026/subnets/default2',
             'zone': '2',
         })
 
