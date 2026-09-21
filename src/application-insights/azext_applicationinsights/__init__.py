@@ -7,6 +7,11 @@ from azure.cli.core import AzCommandsLoader
 
 from azext_applicationinsights._help import helps  # pylint: disable=unused-import
 
+try:
+    from azext_applicationinsights import _breaking_change  # noqa: F401 pylint: disable=unused-import
+except ImportError:
+    pass
+
 
 class ApplicationInsightsCommandsLoader(AzCommandsLoader):
 
