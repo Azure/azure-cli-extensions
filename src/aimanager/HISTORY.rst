@@ -44,12 +44,12 @@ Release History
   ``Age``, ``ModelId`` (human-readable, resolved from the model) and ``Endpoint`` columns.
 
 1.5.2b2
-++++++
++++++++
 * ``az aimanager namespace modeldeployment``: Accept ``--ns`` as an alias of
   ``--namespace-name``.
 
 1.5.2b1
-++++++
++++++++
 * Refactor validation code to make the name validators consistent
 
 1.5.1
@@ -71,11 +71,11 @@ Release History
   ``--manager`` and ``-m`` as aliases of ``--aimanager-name``.
 
 1.4.0
-++++++
++++++++
 * Mark ``az aimanager`` command groups as preview.
 
 1.3.0
-++++++
++++++++
 * Add ``az aimanager model`` commands (``show``, ``list`` and ``calculate-cost``) to browse the
   regional AI model catalog and estimate the cost of deploying a model.
 * Add ``az aimanager modelsource`` commands (``add``, ``update``, ``list``, ``show``,

@@ -39,8 +39,8 @@ def load_arguments(self, _):
             c.argument('tags', arg_type=tags_type, help='The tags to set to the AI Manager.')
             c.argument('delete_policy', arg_type=get_enum_type(DELETE_POLICIES),
                        help='Delete options of the AI Manager. Defaults to Delete.')
-            c.argument('request_headers', options_list=['--custom-headers'],
-                       help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+            c.extra('custom_headers', options_list=['--custom-headers'],
+                    help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
@@ -56,7 +56,7 @@ def load_arguments(self, _):
                    help='Overwrite any existing cluster entry with the same name.')
         c.argument('context_name',
                    help='If specified, overwrite the default context name.')
-        c.argument('request_headers', options_list=['--custom-headers'], help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+        c.extra('custom_headers', options_list=['--custom-headers'], help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager modelsource') as c:
         c.argument('ai_manager_name', options_list=['--aimanager', '--manager', '-m'],
@@ -81,8 +81,8 @@ def load_arguments(self, _):
             c.argument('token',
                        help='Access token used by the platform to authenticate to the source. '
                             'Optional for public sources such as ungated Hugging Face models.')
-            c.argument('request_headers', options_list=['--custom-headers'],
-                       help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+            c.extra('custom_headers', options_list=['--custom-headers'],
+                    help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager namespace') as c:
         c.argument('ai_manager_name', options_list=['--aimanager', '--manager', '-m'],
@@ -98,8 +98,8 @@ def load_arguments(self, _):
                        help='Space-separated labels (key=value) applied to the Kubernetes namespace.')
             c.argument('annotations', nargs='*', validator=validate_annotations,
                        help='Space-separated annotations (key=value) applied to the Kubernetes namespace.')
-            c.argument('request_headers', options_list=['--custom-headers'],
-                       help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+            c.extra('custom_headers', options_list=['--custom-headers'],
+                    help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager namespace get-credentials') as c:
         c.argument('path', options_list=['--file', '-f'],
@@ -108,12 +108,12 @@ def load_arguments(self, _):
                    help='Overwrite any existing cluster entry with the same name.')
         c.argument('context_name',
                    help='If specified, overwrite the default context name.')
-        c.argument('request_headers', options_list=['--custom-headers'], help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+        c.extra('custom_headers', options_list=['--custom-headers'], help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     for scope in ['aimanager namespace list-accesskeys', 'aimanager namespace rotate-accesskeys']:
         with self.argument_context(scope) as c:
-            c.argument('request_headers', options_list=['--custom-headers'],
-                       help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+            c.extra('custom_headers', options_list=['--custom-headers'],
+                    help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager namespace modeldeployment') as c:
         c.argument('ai_manager_name', options_list=['--aimanager', '--manager', '-m'],
@@ -154,8 +154,8 @@ def load_arguments(self, _):
                        help='Maximum autoscale replica count.')
             c.argument('overrides', nargs='*', validator=validate_overrides,
                        help='Space-separated experimental deployment overrides (key=value).')
-            c.argument('request_headers', options_list=['--custom-headers'],
-                       help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+            c.extra('custom_headers', options_list=['--custom-headers'],
+                    help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager model') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=True,
