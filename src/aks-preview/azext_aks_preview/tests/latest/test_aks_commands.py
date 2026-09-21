@@ -22612,6 +22612,63 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_scale_with_patch_api(
+        self, resource_group, resource_group_location
+    ):
+        """Scale a VMSS node pool using the preview PATCH agent pool API (--use-patch-api)."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create a single-node VMSS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} -c 1 "
+            "--node-vm-size Standard_DS2_v2 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # scale the VMSS pool up via the PATCH agent pool API
+        self.cmd(
+            "aks nodepool scale --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 -c 2 --use-patch-api",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("count", 2),
+            ],
+        )
+
+        # scale the VMSS pool back down via the PATCH agent pool API
+        self.cmd(
+            "aks nodepool scale --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 -c 1 --use-patch-api",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("count", 1),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="uksouth"
     )
     def test_aks_create_with_app_routing_enabled(
