@@ -56,8 +56,7 @@ def load_arguments(self, _):
                    help='Overwrite any existing cluster entry with the same name.')
         c.argument('context_name',
                    help='If specified, overwrite the default context name.')
-        c.argument('request_headers', options_list=['--custom-headers'],
-               help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+        c.argument('request_headers', options_list=['--custom-headers'], help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     with self.argument_context('aimanager modelsource') as c:
         c.argument('ai_manager_name', options_list=['--aimanager', '--manager', '-m'],
@@ -109,8 +108,7 @@ def load_arguments(self, _):
                    help='Overwrite any existing cluster entry with the same name.')
         c.argument('context_name',
                    help='If specified, overwrite the default context name.')
-        c.argument('request_headers', options_list=['--custom-headers'],
-               help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
+        c.argument('request_headers', options_list=['--custom-headers'], help='Comma-separated key=value pairs to specify custom headers, this is mainly for internal testing.')
 
     for scope in ['aimanager namespace list-accesskeys', 'aimanager namespace rotate-accesskeys']:
         with self.argument_context(scope) as c:
