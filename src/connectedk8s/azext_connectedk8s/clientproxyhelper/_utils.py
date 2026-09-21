@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=too-many-positional-arguments
 from __future__ import annotations
 
 import base64
@@ -47,7 +48,16 @@ def check_if_port_is_open(port: int) -> bool:
         for tup in connections:
             if int(tup[3][1]) == port:  # type: ignore[misc]
                 return True
-    except Exception as e:
+    except (
+        AccessDenied,
+        NoSuchProcess,
+        ZombieProcess,
+        OSError,
+        IndexError,
+        TypeError,
+        ValueError,
+    ) as e:
+        # Port inspection can fail when the process table is transient or inaccessible.
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Port_Check_Fault_Type,
@@ -79,33 +89,41 @@ def make_api_call_with_retries(
     summary: str,
     cli_error: str,
     clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> requests.Response:
+    headers = (
+        {consts.Correlation_Request_Id_Header: correlation_id}
+        if correlation_id
+        else None
+    )
     for i in range(consts.API_CALL_RETRIES):
         try:
-            response = requests.request(method, uri, json=data, verify=tls_verify)
+            response = requests.request(
+                method, uri, json=data, verify=tls_verify, headers=headers
+            )
             return response
-        except Exception as e:
+        except requests.RequestException as e:
+            # Retry transient request failures while clientproxy is still coming up.
             time.sleep(5)
             if i != consts.API_CALL_RETRIES - 1:
-                pass
-            else:
-                telemetry.set_exception(
-                    exception=e, fault_type=fault_type, summary=summary
-                )
-                close_subprocess_and_raise_cli_error(
-                    clientproxy_process, cli_error + str(e)
-                )
+                continue
+            telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
+            close_subprocess_and_raise_cli_error(
+                clientproxy_process, cli_error + str(e)
+            )
 
     assert False
 
 
 def fetch_pop_publickey_kid(
-    api_server_port: int, clientproxy_process: Popen[bytes]
+    api_server_port: int,
+    clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> str:
     poppublickey_uri = f"https://localhost:{api_server_port}/identity/poppublickey"
     # Needed to prevent skip tls warning from printing to the console
     original_stderr = sys.stderr
-    with open(os.devnull, "w") as f:
+    with open(os.devnull, "w", encoding="utf-8") as f:
         sys.stderr = f
 
         get_publickey_response = make_api_call_with_retries(
@@ -117,6 +135,7 @@ def fetch_pop_publickey_kid(
             "Failed to fetch public key info from clientproxy",
             "Failed to fetch public key info from client proxy",
             clientproxy_process,
+            correlation_id=correlation_id,
         )
 
     sys.stderr = original_stderr
@@ -132,6 +151,7 @@ def fetch_and_post_at_to_csp(
     tenant_id: str,
     kid: str,
     clientproxy_process: Popen[bytes],
+    correlation_id: str | None = None,
 ) -> tuple[requests.Response, int]:
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode("utf-8")).decode(
@@ -152,7 +172,9 @@ def fetch_and_post_at_to_csp(
             consts.KAP_1P_Server_App_Scope, data=token_data
         )
         jwtToken = accessToken.token
-    except Exception as e:
+    # Token acquisition may raise multiple provider-specific exceptions.
+    # Keep one boundary for consistent CLI error mapping.
+    except Exception as e:  # pylint: disable=broad-exception-caught
         telemetry.set_exception(
             exception=e,
             fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
@@ -171,7 +193,7 @@ def fetch_and_post_at_to_csp(
     post_at_uri = f"https://localhost:{api_server_port}/identity/at"
     # Needed to prevent skip tls warning from printing to the console
     original_stderr = sys.stderr
-    with open(os.devnull, "w") as f:
+    with open(os.devnull, "w", encoding="utf-8") as f:
         sys.stderr = f
         post_at_response = make_api_call_with_retries(
             post_at_uri,
@@ -182,6 +204,7 @@ def fetch_and_post_at_to_csp(
             "Failed to post access token to client proxy",
             "Failed to post access token to client proxy",
             clientproxy_process,
+            correlation_id=correlation_id,
         )
 
     sys.stderr = original_stderr
@@ -241,5 +264,6 @@ def check_process(processName: str) -> bool:
             if proc.name().startswith(processName):
                 return True
         except (NoSuchProcess, AccessDenied, ZombieProcess):
+            # Process handle may become stale or inaccessible during iteration; continue scanning.
             pass
     return False

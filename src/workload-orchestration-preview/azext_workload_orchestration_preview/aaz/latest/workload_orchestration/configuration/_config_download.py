@@ -15,15 +15,15 @@ from ._config_helper import ConfigurationHelper
 
 
 @register_command(
-    "workload-orchestration configuration download",
+    "workload-orchestration-preview configuration download",
     is_preview=False,
 )
 class Download(AAZCommand):
     """Download configurations available at specified hierarchical entity
     :example: Download configuration
-              az workload-orchestration configuration download --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration-preview configuration download --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name template1 --version 1.0.0
     :example: Download a Solution Template Configuration  
-              az workload-orchestration configuration download --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration-preview configuration download --hierarchy-id "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     """
 
     _aaz_info = {

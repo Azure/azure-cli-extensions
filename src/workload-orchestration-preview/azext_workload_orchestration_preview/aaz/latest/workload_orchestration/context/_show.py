@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context show",
+    "workload-orchestration-preview context show",
 )
 class Show(AAZCommand):
     """Get Context Resource
     :example: Show a Context
-        az workload-orchestration context show -n myContext -g myResourceGroup
+        az workload-orchestration-preview context show -n myContext -g myResourceGroup
     """
 
     _aaz_info = {

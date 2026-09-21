@@ -48,7 +48,7 @@ def step_rotate_certificate_scenario1(test, checks=None):
 
 
 def step_rotate_certificate_scenario2(test, checks=None):
-    """nf rotate password operation"""
+    """nf rotate certificate operation"""
     if checks is None:
         checks = []
     test.cmd(

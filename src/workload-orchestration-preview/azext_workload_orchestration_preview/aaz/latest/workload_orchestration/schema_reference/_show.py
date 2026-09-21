@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema-reference show",
+    "workload-orchestration-preview schema-reference show",
 )
 class Show(AAZCommand):
     """Get a Schema Reference Resource

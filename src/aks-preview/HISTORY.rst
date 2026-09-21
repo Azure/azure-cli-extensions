@@ -11,6 +11,74 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
+* `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
+
+22.0.0b8
++++++++++
+* `az aks nodepool add`: Omit `nodeTaints` when `--node-taints` is not specified for FlexNodes pools, and reject explicitly empty values.
+
+22.0.0b7
++++++++++
+* `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
+* `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
+* `az aks kollect` and `az aks kanalyze`: Fix compatibility with the keyword-only credential SDK parameters.
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
+* Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
+* `az aks create` and `az aks update`: Reject `--outbound-type managedNATGatewayV2` with an actionable error directing to `--outbound-type managedNATGateway --outbound-type-sku StandardV2` (the GA-aligned shape); the legacy value is no longer accepted on the target api-version.
+
+22.0.0b6
++++++++++
+* `az aks nodepool add/update`: Add preview `--enable-managed-dranet` to enable Managed DRANET on a node pool.
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
+* Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
+* `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+* `az aks create` and `az aks update`: Add `--outbound-type-sku` to select the managed NAT gateway SKU (`Standard` or `StandardV2`) with `--outbound-type managedNATGateway`, the GA shape of NAT Gateway V2. `StandardV2` supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+* `az aks create`, `az aks update`: Add `--enable-node-hardening` to enable cluster-level node hardening and `--disable-node-hardening` (update only) to disable it. Applies hardened defaults for soft eviction thresholds, kube-reserved, and system-reserved on Linux node pools. Requires AFEC registration `Microsoft.ContainerService/CustomNodeConfigPreview`.
+
+22.0.0b5
++++++++++
+* Vendor new SDK and bump API version to `2026-06-02-preview`.
+
+22.0.0b4
++++++++++
+* `az aks nodepool update`: Add preview `--zones`/`-z` support for migrating a regional node pool to automatic zone placement with `--zones auto`. Other availability zone changes are subject to service restrictions. Omitted zones remain unchanged, and the option can be combined with `--node-vm-size`.
+
+22.0.0b3
++++++++++
+* `az aks update`: Relax the bring-your-own VNet subnet validation for converting non-HOBO to HOBO Automatic cluster. `--apiserver-subnet-id` is no longer required, and `--system-node-subnet-id` can be supplied on its own; omitted subnets keep their current networking. `--enable-hosted-system` is still required to request the conversion, and `--node-subnet-id` still requires `--system-node-subnet-id`.
+
+22.0.0b2
+++++++++
+* `az aks update`: Fix load balancer options such as `--load-balancer-backend-pool-type` being silently ignored on clusters whose `outboundType` is not `loadBalancer` (for example `userDefinedRouting` or a NAT gateway). Passing `--outbound-type` to switch away from `loadBalancer` now only drops the load balancer outbound settings instead of the whole load balancer profile, so options requested in the same command are still applied.
+
+22.0.0b1
+++++++++
+* [BREAKING CHANGE]: `az aks bastion`: This command does not connect to Azure Bastion anymore. A new subcommand is introduced for this purpose: `az aks bastion tunnel`. The `az aks bastion` command is now used to manage Azure Bastion resources for AKS clusters.
+* `az aks bastion tunnel`: Connect to Azure Bastion for AKS clusters. All the parameters from old `az aks bastion` are supported.
+* `az aks bastion enable`: Enable managed Azure Bastion for AKS clusters.
+* `az aks bastion disable`: Disable managed Azure Bastion for AKS clusters.
+* `az aks bastion update`: Update managed Azure Bastion for AKS clusters.
+
+21.0.0b17
++++++++++
+* `az aks update`: Add parameters `--enable-hosted-system`, `--system-node-subnet-id` and `--node-subnet-id` to support converting an existing Automatic cluster to a Managed System Pool cluster, optionally with BYO VNet.
+
+21.0.0b16
++++++++++
+* `az aks nodepool add`: Add preview support for creating FlexNodes pools with `--vm-set-type FlexNodes`.
+* `az aks nodepool get-bootstrap-data`: Add preview support for retrieving FlexNodes bootstrap data.
+* `az aks nodepool update`: Add preview support for updating FlexNodes labels, taints, and `maxUnavailable`.
+* `az aks nodepool upgrade`: Add Kubernetes version upgrade support for FlexNodes pools. Node image-only upgrades are not supported.
+* `az aks machine add/update` and `az aks nodepool delete-machines`: Add FlexNode machine lifecycle support.
+
+21.0.0b15
++++++++++
+* `az aks create` and `az aks update`: Add `--opentelemetry-metrics-port-grpc` and `--opentelemetry-logs-traces-port-grpc` (preview) to configure the gRPC ports for OpenTelemetry metrics and logs/traces collection, in addition to the existing HTTP/protobuf ports.
+* `az aks create` and `az aks update`: Rename the OpenTelemetry parameters, keeping the previous names as deprecated aliases: `--opentelemetry-metrics-port` -> `--opentelemetry-metrics-port-http`, `--opentelemetry-logs-port` -> `--opentelemetry-logs-traces-port-http`, `--enable-opentelemetry-logs` -> `--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs` -> `--disable-opentelemetry-logs-traces`.
+* `az aks update`: Fix the OpenTelemetry logs and traces parameters (`--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs-traces`, `--opentelemetry-logs-traces-port-http`, `--opentelemetry-logs-traces-port-grpc`) incorrectly triggering Azure Monitor Workspace (Prometheus) onboarding. Only Azure Monitor metrics and OpenTelemetry metrics parameters do so now.
 
 21.0.0b14
 +++++++++
@@ -31,7 +99,7 @@ Pending
 * Vendor new SDK and bump API version to `2026-05-02-preview`.
 
 21.0.0b10
-++++++++
++++++++++
 * `az aks create`: Add parameters `--system-node-subnet-id`, `--node-subnet-id` and `--enable-hosted-system` to support BYO VNet for Automatic Managed System Pool clusters.
 
 21.0.0b9

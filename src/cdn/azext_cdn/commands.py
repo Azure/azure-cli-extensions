@@ -68,6 +68,9 @@ def load_command_table(self, _):
     from .custom.custom_cdn import CDNProfileList
     self.command_table['cdn profile list'] = CDNProfileList(loader=self)
 
+    from .custom.custom_cdn import CDNProfileMigrationCommit
+    self.command_table['cdn profile-migration commit'] = CDNProfileMigrationCommit(loader=self)
+
     from azext_cdn.aaz.latest.cdn.endpoint import Show
     self.command_table['cdn endpoint rule show'] = Show(loader=self)
     self.command_table['cdn endpoint rule condition show'] = Show(loader=self)

@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema remove-version",
+    "workload-orchestration-preview schema remove-version",
 )
 class RemoveVersion(AAZCommand):
     """Remove Schema Version Resource
     :example: Remove a Schema Version
-        az workload-orchestration schema remove-version -n mySchema -g myResourceGroup --version 1.0
+        az workload-orchestration-preview schema remove-version -n mySchema -g myResourceGroup --version 1.0
     """
 
     _aaz_info = {

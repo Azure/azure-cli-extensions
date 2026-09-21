@@ -3,6 +3,45 @@
 Release History
 ===============
 
+1.0.0b28
+++++++++++++++
+* Fixed an issue where setting a default workspace with ``az quantum workspace set`` prevented commands from accessing other workspaces.
+* [BREAKING CHANGE] ``az quantum workspace update`` no longer changes the saved default workspace. Use ``az quantum workspace set`` to save the default workspace.
+* Fixed ``az quantum workspace delete`` clearing the saved default workspace in some cases where it wasn't the workspace that was deleted.
+
+1.0.0b27
+++++++++++++++
+* [BREAKING CHANGE] Renamed ``az quantum workspace user create/delete`` to ``add/remove`` and limited both commands to users identified by email address. The ``--assignee``, ``--assignee-object-id``, ``--assignee-principal-type``, and ``--role`` parameters are replaced by ``--email``.
+
+1.0.0b26
+++++++++++++++
+* Added the ``az quantum suite-offer quotas`` command to view quota allocations merged with their consumed usages for a suite offer in the subscription.
+* Added the ``az quantum suite-offer target list`` command to list the targets, availability, and overall, Standard, and High average queue times available through a suite offer, without requiring a workspace.
+* Updated the ``az quantum workspace quotas`` command to include v2 target quota allocations and usages while preserving the existing response fields for v1 workspaces.
+* Added always-on validation for V2 workspace target quota allocations on create and update, allowing requested Standard and High values between current workspace usage and suite target allocation, inclusive.
+
+1.0.0b25
+++++++++++++++
+* Added the ``az quantum suite-offer list`` command to list the suite offers available to the subscription, including provider, location, and subscription-level quota allocations.
+
+1.0.0b24
++++++++++++++++
+* Added the ``az quantum workspace user list`` command to list the users with access to an Azure Quantum workspace.
+
+1.0.0b23
+++++++++++++++
+* Added ``--quota`` support to ``az quantum workspace create`` and ``az quantum workspace update`` for managing V2 provider target quota allocations.
+* Updated control plane related commands to use API version 2026-06-15-preview.
+
+1.0.0b22
++++++++++++++++
+* Added the ``az quantum job file list`` command to list the files stored in a job's output storage container.
+* Added the ``az quantum job file download`` command to download a file from a job's output storage container.
+
+1.0.0b21
+++++++++++++++
+* Added the ``az quantum job update`` command to update a submitted job's name, priority, and tags.
+
 1.0.0b20
 +++++++++++++++
 * Added the ``az quantum workspace user create`` and ``az quantum workspace user delete`` commands to manage user access to an Azure Quantum workspace.

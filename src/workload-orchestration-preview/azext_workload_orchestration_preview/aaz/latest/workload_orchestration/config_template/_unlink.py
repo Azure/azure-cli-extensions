@@ -11,12 +11,12 @@
 from azure.cli.core.aaz import *
 
 @register_command(
-    "workload-orchestration config-template unlink",
+    "workload-orchestration-preview config-template unlink",
 )
 class Unlink(AAZCommand):
     """Unlink a Config Template from hierarchies
     :example: Unlink a Config Template from hierarchies
-        az workload-orchestration config-template unlink -g rg1 -n configTemplatename --hierarchy-ids "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --context-id "context123"
+        az workload-orchestration-preview config-template unlink -g rg1 -n configTemplatename --hierarchy-ids "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --context-id "context123"
     """
 
     _aaz_info = {

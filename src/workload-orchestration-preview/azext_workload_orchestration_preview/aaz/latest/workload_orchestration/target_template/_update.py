@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration target-template update",
+    "workload-orchestration-preview target-template update",
 )
 class Update(AAZCommand):
     """Update a Target Template Resource

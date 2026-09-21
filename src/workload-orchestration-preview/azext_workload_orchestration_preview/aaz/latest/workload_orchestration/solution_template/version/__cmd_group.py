@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration solution-template version",
+    "workload-orchestration-preview solution-template version",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage solution template versions in workload orchestration.

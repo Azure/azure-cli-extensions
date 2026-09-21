@@ -1,0 +1,99 @@
+.. :changelog:
+
+Release History
+===============
+
+1.5.5b1
+++++++
+* ``az aimanager model calculate-cost``: Always show the ``Feasible`` column in ``-o table``
+  output, rendering an explicit ``True``/``False`` for every SKU. Previously the service
+  omitted ``feasible`` for infeasible plans, so when every SKU was infeasible the column —
+  the most useful one — disappeared entirely. Also add an ``InfeasibilityReason`` column
+  surfacing the per-plan reason code (with the redundant ``InfeasibleCode_`` prefix stripped)
+  for infeasible SKUs.
+
+1.5.4b1
+++++++
+* ``az aimanager namespace modeldeployment``: Rename the ``--namespace-name`` argument to
+  the shorter ``--namespace``. The ``--ns`` alias is unchanged.
+* ``az aimanager modelsource``, ``az aimanager namespace`` and ``az aimanager namespace
+  modeldeployment``: Rename the ``--aimanager-name`` argument to the shorter ``--aimanager``.
+  The ``--manager`` and ``-m`` aliases are unchanged.
+* ``az aimanager namespace modeldeployment list``: Make ``--namespace``/``--ns`` optional.
+  When omitted, model deployments are listed across the namespaces of the AI Manager
+  (mirroring ``kubectl get pods --all-namespaces``). This first lists namespaces (requires
+  namespace read on the AI Manager) and then lists deployments per namespace (requires model
+  deployment read for each namespace, granted on the namespace or inherited from the AI
+  Manager). Namespaces the caller cannot read model deployments in
+  are skipped with a per-namespace warning; if namespaces cannot be listed at all, or the
+  caller lacks access to every one, an actionable error explains the specific permission
+  needed and suggests ``--namespace``/``--ns`` for a single namespace.
+
+1.5.3b1
+++++++
+* ``az aimanager list`` and ``az aimanager show``: Improve ``-o table`` output. Drop the
+  ``ETag`` column and add a ``ProvisioningState`` column.
+* ``az aimanager namespace list`` and ``az aimanager namespace show``: Improve ``-o table``
+  output with ``Name``, ``ProvisioningState``, ``Age`` and ``Labels`` columns.
+* ``az aimanager namespace modeldeployment list`` and ``show``: Improve ``-o table`` output
+  with ``Namespace``, ``Name``, ``ProvisioningState``, ``Replicas`` (current/desired),
+  ``Age``, ``ModelId`` (human-readable, resolved from the model) and ``Endpoint`` columns.
+
+1.5.2b2
++++++++
+* ``az aimanager namespace modeldeployment``: Accept ``--ns`` as an alias of
+  ``--namespace-name``.
+
+1.5.2b1
++++++++
+* Refactor validation code to make the name validators consistent
+
+1.5.1
+++++++
+* ``az aimanager create`` and ``az aimanager namespace add``: When the caller role grant is
+  skipped under ``--no-wait``, the warning now prints the exact ``az role assignment create``
+  commands to grant the roles manually, instead of suggesting a re-run.
+
+1.5.0
+++++++
+* ``az aimanager create`` and ``az aimanager namespace add``: On success, grant the caller the
+  built-in ``Azure AIManager Contributor`` and ``Azure AIManager and namespace RBAC Reader``
+  roles on the new resource (best-effort; requires Owner or User Access Administrator). Skipped
+  with ``--no-wait``.
+
+1.4.1
+++++++
+* ``az aimanager modelsource`` and ``az aimanager namespace modeldeployment``: Accept
+  ``--manager`` and ``-m`` as aliases of ``--aimanager-name``.
+
+1.4.0
++++++++
+* Mark ``az aimanager`` command groups as preview.
+
+1.3.0
++++++++
+* Add ``az aimanager model`` commands (``show``, ``list`` and ``calculate-cost``) to browse the
+  regional AI model catalog and estimate the cost of deploying a model.
+* Add ``az aimanager modelsource`` commands (``add``, ``update``, ``list``, ``show``,
+  ``delete`` and ``wait``) to manage the model sources of an AI Manager.
+* ``az aimanager namespace``: Add ``list-accesskeys`` and ``rotate-accesskeys`` commands to
+  read and rotate the namespace LLM gateway API keys.
+* ``az aimanager namespace``: Accept ``--aimanager-name`` as an alias of ``--manager``/``-m``
+  for consistency with ``az aimanager namespace modeldeployment``.
+
+1.2.0
+++++++
+* Add ``az aimanager namespace modeldeployment`` commands to add, update, list, show, delete,
+  and wait for model deployments.
+
+1.1.0
+++++++
+* ``az aimanager``: Add ``get-credentials`` command to retrieve the AI Manager kubeconfig.
+* ``az aimanager namespace``: Add ``get-credentials`` command to retrieve the namespace kubeconfig.
+
+1.0.0
+++++++
+* Initial release.
+* ``az aimanager``: Add ``create``, ``update``, ``list``, ``show``, ``delete`` and
+  ``namespace add/update/list/show/delete`` commands for AI Manager, backed by the vendored
+  ``azure-mgmt-containerserviceaimanager`` SDK.

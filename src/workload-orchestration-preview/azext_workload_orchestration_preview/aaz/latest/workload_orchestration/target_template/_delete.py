@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration target-template delete",
+    "workload-orchestration-preview target-template delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):

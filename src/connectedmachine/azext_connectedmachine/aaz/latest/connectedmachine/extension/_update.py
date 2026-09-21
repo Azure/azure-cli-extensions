@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2026-07-15"],
         ]
     }
 
@@ -66,6 +66,21 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "ExtensionParameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="ExtensionParameters",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
         )
 
         # define Arg Group "Properties"
@@ -174,6 +189,9 @@ class Update(AAZCommand):
             options=["time"],
             help="The time of the status.",
             nullable=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
 
         protected_settings = cls._args_schema.protected_settings
@@ -183,21 +201,6 @@ class Update(AAZCommand):
 
         settings = cls._args_schema.settings
         settings.Element = AAZAnyTypeArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
             nullable=True,
         )
         return cls._args_schema
@@ -284,7 +287,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -315,95 +318,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
-            )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            properties.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            properties.protected_settings = AAZDictType(
-                serialized_name="protectedSettings",
-            )
-            _UpdateHelper._build_schema_record_unknown__read(properties.protected_settings)
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record_unknown__read(properties.settings)
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            instance_view = cls._schema_on_200.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            status = cls._schema_on_200.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_machine_extension_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -475,7 +390,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -518,95 +433,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
-            )
-            properties.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            properties.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            properties.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            properties.protected_settings = AAZDictType(
-                serialized_name="protectedSettings",
-            )
-            _UpdateHelper._build_schema_record_unknown__read(properties.protected_settings)
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.publisher = AAZStrType()
-            properties.settings = AAZDictType()
-            _UpdateHelper._build_schema_record_unknown__read(properties.settings)
-            properties.type = AAZStrType()
-            properties.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            instance_view = cls._schema_on_200.properties.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            status = cls._schema_on_200.properties.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_machine_extension_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -677,20 +504,122 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_record_unknown__read = None
+    _schema_machine_extension_read = None
 
     @classmethod
-    def _build_schema_record_unknown__read(cls, _schema):
-        if cls._schema_record_unknown__read is not None:
-            _schema.Element = cls._schema_record_unknown__read.Element
+    def _build_schema_machine_extension_read(cls, _schema):
+        if cls._schema_machine_extension_read is not None:
+            _schema.id = cls._schema_machine_extension_read.id
+            _schema.location = cls._schema_machine_extension_read.location
+            _schema.name = cls._schema_machine_extension_read.name
+            _schema.properties = cls._schema_machine_extension_read.properties
+            _schema.system_data = cls._schema_machine_extension_read.system_data
+            _schema.tags = cls._schema_machine_extension_read.tags
+            _schema.type = cls._schema_machine_extension_read.type
             return
 
-        cls._schema_record_unknown__read = _schema_record_unknown__read = AAZDictType()
+        cls._schema_machine_extension_read = _schema_machine_extension_read = AAZObjectType()
 
-        record_unknown__read = _schema_record_unknown__read
-        record_unknown__read.Element = AAZAnyType()
+        machine_extension_read = _schema_machine_extension_read
+        machine_extension_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        machine_extension_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        machine_extension_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        machine_extension_read.properties = AAZObjectType()
+        machine_extension_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        machine_extension_read.tags = AAZDictType()
+        machine_extension_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-        _schema.Element = cls._schema_record_unknown__read.Element
+        properties = _schema_machine_extension_read.properties
+        properties.auto_upgrade_minor_version = AAZBoolType(
+            serialized_name="autoUpgradeMinorVersion",
+        )
+        properties.enable_automatic_upgrade = AAZBoolType(
+            serialized_name="enableAutomaticUpgrade",
+        )
+        properties.force_update_tag = AAZStrType(
+            serialized_name="forceUpdateTag",
+        )
+        properties.instance_view = AAZObjectType(
+            serialized_name="instanceView",
+        )
+        properties.protected_settings = AAZDictType(
+            serialized_name="protectedSettings",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.publisher = AAZStrType()
+        properties.settings = AAZDictType()
+        properties.type = AAZStrType()
+        properties.type_handler_version = AAZStrType(
+            serialized_name="typeHandlerVersion",
+        )
+
+        instance_view = _schema_machine_extension_read.properties.instance_view
+        instance_view.name = AAZStrType()
+        instance_view.status = AAZObjectType()
+        instance_view.type = AAZStrType()
+        instance_view.type_handler_version = AAZStrType(
+            serialized_name="typeHandlerVersion",
+        )
+
+        status = _schema_machine_extension_read.properties.instance_view.status
+        status.code = AAZStrType()
+        status.display_status = AAZStrType(
+            serialized_name="displayStatus",
+        )
+        status.level = AAZStrType()
+        status.message = AAZStrType()
+        status.time = AAZStrType()
+
+        protected_settings = _schema_machine_extension_read.properties.protected_settings
+        protected_settings.Element = AAZAnyType()
+
+        settings = _schema_machine_extension_read.properties.settings
+        settings.Element = AAZAnyType()
+
+        system_data = _schema_machine_extension_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_machine_extension_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_machine_extension_read.id
+        _schema.location = cls._schema_machine_extension_read.location
+        _schema.name = cls._schema_machine_extension_read.name
+        _schema.properties = cls._schema_machine_extension_read.properties
+        _schema.system_data = cls._schema_machine_extension_read.system_data
+        _schema.tags = cls._schema_machine_extension_read.tags
+        _schema.type = cls._schema_machine_extension_read.type
 
 
 __all__ = ["Update"]
