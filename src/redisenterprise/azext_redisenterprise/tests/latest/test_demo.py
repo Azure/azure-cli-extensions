@@ -83,7 +83,7 @@ def call_scenario1(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
        # test.check("zones", ["1", "2", "3"]),
@@ -138,7 +138,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_scenario1(self, rg):
         call_scenario1(self, rg)
         calc_coverage(__file__)
@@ -162,7 +162,7 @@ def call_scenario2(test):
     step_create(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("zones", None),
@@ -174,7 +174,7 @@ def call_scenario2(test):
     step_show(test,checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("zones", None),
@@ -233,7 +233,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_scenario2(self):
         call_scenario2(self)
         calc_coverage(__file__)
@@ -295,9 +295,9 @@ class Redisenterprisescenario3Test(ScenarioTest):
             'database': 'default',
         }) 
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg31-', key='rg31', parameter_name='rg31',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     @AllowLargeResponse(size_kb=9999)
     def test_redisenterprise_scenario3(self):
         call_scenario3(self)
@@ -320,7 +320,7 @@ def call_scenario4(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         test.check("minimumTlsVersion", "1.2"),
@@ -390,7 +390,7 @@ class Redisenterprisescenario4Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg4-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_scenario4(self, rg):
         call_scenario4(self, rg)
         calc_coverage(__file__)
@@ -490,7 +490,7 @@ class Redisenterprisescenario5Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg5-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_scenario5(self, rg):
         call_scenario5(self, rg)
         calc_coverage(__file__)
@@ -526,7 +526,7 @@ def call_scenario6(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B10"),
         test.check("tags.tag1", "value1"),
         # test.check("zones", ["1", "2", "3"]),
@@ -584,7 +584,7 @@ class Redisenterprisescenario6Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_scenario6(self, rg):
         call_scenario6(self, rg)
         calc_coverage(__file__)
@@ -625,7 +625,7 @@ def call_scenario7(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B5"),
         test.check("sku.capacity", None),
         test.check("zones", None),
@@ -677,7 +677,7 @@ class Redisenterprisescenario7Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg7-', key='rg', parameter_name='rg',
-                           location='centraluseuap', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     def test_redisenterprise_scenario7(self, rg):
         call_scenario7(self, rg)
         calc_coverage(__file__)

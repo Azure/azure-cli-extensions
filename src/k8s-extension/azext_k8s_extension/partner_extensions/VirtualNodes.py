@@ -29,6 +29,7 @@ ACI_SUBNET_PREFIX = 16
 RELEASE_NAMESPACE = "vn-system"  # release unique namespace
 ACI_SUBNET_NAME = "virtualnodes-aci-subnet"
 ACI_DELEGATION_SERVICE_NAME = "Microsoft.ContainerInstance/containerGroups"
+NODEPOOL_IDENTITY_FALLBACK_ENABLED = "false"
 ALLOWED_CONFIG_SETTINGS_KEYS = [
     "replicaCount",
     "admissionControllerReplicaCount",
@@ -84,6 +85,7 @@ class VirtualNodes(DefaultExtension):
         if configuration_settings is None:
             configuration_settings = {}
         validate_configuration(configuration_settings, configuration_protected_settings, extension_type)
+        check_aks_cluster_workload_identity_config(cluster)
         validate_node_pools(cmd, cluster)
         check_aks_cluster_network_config(cluster)
 
@@ -144,6 +146,7 @@ def validate_configuration(configuration_settings, configuration_protected_setti
     validate_allowed_keys(configuration_protected_settings, extension_type)
 
     configuration_settings["aciSubnetName"] = ACI_SUBNET_NAME
+    configuration_settings["nodePoolIdentityFallbackEnabled"] = NODEPOOL_IDENTITY_FALLBACK_ENABLED
 
 
 def validate_node_pools(cmd, cluster):
@@ -177,9 +180,9 @@ def check_aks_cluster_network_config(cluster):
             "This cluster does not meet the requirements."
         )
 
-    if policy != "calico":
+    if policy not in ("calico", "none"):
         raise InvalidArgumentValueError(
-            f"Calico network policy is not enabled for this AKS cluster. "
+            "Microsoft.Virtualnodes extension requires the AKS cluster network policy to be 'calico' or 'none'. "
             f"It is instead: {network_profile.network_policy}."
         )
 
@@ -196,6 +199,16 @@ def check_aks_cluster_network_config(cluster):
                 f"('{cluster.node_resource_group}'), but agent pool '{pool.name}' uses a subnet in resource group "
                 f"'{parsed.get('resource_group')}'. BYO VNETs outside the node resource group are not supported."
             )
+
+
+def check_aks_cluster_workload_identity_config(cluster):
+    security_profile = getattr(cluster, "security_profile", None)
+    workload_identity = getattr(security_profile, "workload_identity", None)
+    if not getattr(workload_identity, "enabled", False):
+        raise InvalidArgumentValueError(
+            "Azure Workload Identity must be enabled on the AKS cluster before installing "
+            "the Microsoft.virtualnodes extension."
+        )
 
 
 def add_and_delegate_aci_subnet(cmd, cluster, resource_group_name):
