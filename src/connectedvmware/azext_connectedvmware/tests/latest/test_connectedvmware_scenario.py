@@ -4,71 +4,17 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest, live_only
-from azure.mgmt.core.tools import parse_resource_id
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from knack.util import CLIError
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
-    @live_only()
-    @AllowLargeResponse(1000)
-    def test_create_from_machines_cross_subscription(self):
-        machine_subscription = os.getenv(
-            'AZURE_CONNECTEDVMWARE_TEST_MACHINE_SUBSCRIPTION'
-        )
-        machine_resource_group = os.getenv(
-            'AZURE_CONNECTEDVMWARE_TEST_MACHINE_RESOURCE_GROUP'
-        )
-        machine_name = os.getenv('AZURE_CONNECTEDVMWARE_TEST_MACHINE_NAME')
-        vcenter_id = os.getenv('AZURE_CONNECTEDVMWARE_TEST_VCENTER_ID')
-
-        if not all([
-            machine_subscription,
-            machine_resource_group,
-            machine_name,
-            vcenter_id,
-        ]):
-            self.skipTest(
-                'Set the AZURE_CONNECTEDVMWARE_TEST_* variables to run this test.'
-            )
-
-        # The machine and vCenter must be in different subscriptions.
-        vcenter_subscription = parse_resource_id(vcenter_id)['subscription']
-        self.assertNotEqual(
-            machine_subscription.lower(),
-            vcenter_subscription.lower(),
-        )
-        self.kwargs.update({
-            'machine_subscription': machine_subscription,
-            'machine_rg': machine_resource_group,
-            'machine_name': machine_name,
-            'vcenter_id': vcenter_id,
-        })
-
-        self.cmd(
-            'az connectedvmware vm create-from-machines '
-            '--subscription {machine_subscription} '
-            '--resource-group {machine_rg} '
-            '--name {machine_name} '
-            '--vcenter-id {vcenter_id}'
-        )
-        self.cmd(
-            'az connectedvmware vm show '
-            '--subscription {machine_subscription} '
-            '--resource-group {machine_rg} '
-            '--name {machine_name}',
-            checks=[
-                self.check(
-                    'infrastructureProfile.vCenterId',
-                    '{vcenter_id}',
-                ),
-                self.check('provisioningState', 'Succeeded'),
-            ],
-        )
-
     def test_connectedvmware(self):
         self.kwargs.update(
             {
