@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks nodepool add`: Support public IP configuration on secondary network interfaces, including mutually exclusive IP tags or a public IP prefix.
 
 22.0.0b8
 +++++++++

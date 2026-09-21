@@ -2550,8 +2550,12 @@ def load_arguments(self, _):
         c.argument(
             'secondary_network_interfaces',
             options_list=['--secondary-network-interfaces', '--secondary-nics'],
-            help='Secondary network interface configurations as a JSON string or `@filename` to load from a file. '
-                 'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
+            help='Create-only secondary network interface configurations as inline JSON or `@filename`. '
+                 'For a Standard NIC, set publicIPAddressConfiguration.publicIPAddressVersion to "IPv4" '
+                 'to allocate a public IP, with either ipTags or publicIPPrefixID, but not both. '
+                 'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet",'
+                 '"publicIPAddressConfiguration":{"publicIPAddressVersion":"IPv4",'
+                 '"ipTags":[{"ipTagType":"RoutingPreference","tag":"Internet"}]}}]\'',
             is_preview=True,
         )
         c.argument(
