@@ -56,6 +56,9 @@ class TestModelDeployment(unittest.TestCase):
             def argument(self, name, *args, **kwargs):
                 self.loader.arguments.setdefault(self.command, {})[name] = kwargs
 
+            def extra(self, name, *args, **kwargs):
+                self.argument(name, *args, **kwargs)
+
             def ignore(self, *_):
                 pass
 
