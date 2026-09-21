@@ -859,7 +859,7 @@ def perform_enable_distributed_accelerator(
             logger.warning(
                 "Please retry enabling distributed accelerator by running "
                 "`az aks update` along with "
-                "`--enable-azure-container-storage distributedaccelerator`"
+                "`--enable-azure-container-storage distributedAccelerator`"
             )
         except Exception as delete_ex:  # pylint: disable=broad-except
             raise UnknownError(

@@ -17033,7 +17033,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
             "--node-count 3 --enable-managed-identity "
-            "--enable-azure-container-storage distributedaccelerator --output=json"
+            "--enable-azure-container-storage distributedAccelerator --output=json"
         )
 
         self.cmd(
@@ -17096,7 +17096,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable distributed accelerator
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--enable-azure-container-storage distributedaccelerator'
+                     '--enable-azure-container-storage distributedAccelerator'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -17125,7 +17125,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: disable distributed accelerator
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--disable-azure-container-storage distributedaccelerator'
+                     '--disable-azure-container-storage distributedAccelerator'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])

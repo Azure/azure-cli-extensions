@@ -6813,7 +6813,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
             # Distributed accelerator is enabled/disabled independently of the storage
-            # pool flow. Disable happens explicitly (`distributedaccelerator`) or
+            # pool flow. Disable happens explicitly (`distributedAccelerator`) or
             # implicitly on a full teardown (bare `--disable...` or `all`).
             dc_enable_requested = is_distributed_accelerator_requested(enable_azure_container_storage_param)
             dc_disable_requested_explicit = is_distributed_accelerator_requested(disable_azure_container_storage_param)
