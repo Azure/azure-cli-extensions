@@ -23,6 +23,7 @@ from azure.cli.core.azclierror import (
     ValidationError,
 )
 
+import azext_connectedk8s._constants as consts
 import azext_connectedk8s._errors as errors_module
 import azext_connectedk8s._utils as utils_module
 from azext_connectedk8s._errors import ArcError
@@ -34,8 +35,10 @@ from azext_connectedk8s._utils import (
     _resolve_helm_timeout_classification,
     build_helm_timeout_report,
     check_cluster_DNS,
+    check_cluster_outbound_connectivity,
     get_advanced_helm_timeout_fault_type,
     get_mcr_path,
+    health_check_dp,
     is_helm_timeout_error,
     process_helm_error_detail,
     redact_sensitive_fields_from_string,
@@ -1251,13 +1254,14 @@ if __name__ == "__main__":
 
 
 class TestCheckClusterDNS:
-    def _run(self, dns_log):
+    def _run(self, dns_log, cmd=None):
         diagnoser_output = []
         result, _ = check_cluster_DNS(
             dns_log,
             os.path.join(os.path.dirname(__file__), "tmp_dns"),
             False,
             diagnoser_output,
+            cmd,
         )
         return result, diagnoser_output
 
@@ -1265,19 +1269,19 @@ class TestCheckClusterDNS:
         log = "DNS Result: ** server can't find kubernetes.default.svc.cluster.local: NXDOMAIN"
         result, diag = self._run(log)
         assert result == "Failed"
-        assert "type=NXDOMAIN" in diag[0]
+        assert diag[0].startswith("[AZK8S0301]")
 
     def test_servfail_detected(self):
         log = "DNS Result: ;; Got SERVFAIL reply from 10.96.0.10\n** server can't find kubernetes.default.dns.podman: SERVFAIL"
         result, diag = self._run(log)
         assert result == "Failed"
-        assert "type=SERVFAIL" in diag[0]
+        assert diag[0].startswith("[AZK8S0303]")
 
     def test_timeout_detected(self):
         log = "DNS Result: ;; connection timed out; no servers could be reached"
         result, diag = self._run(log)
         assert result == "Failed"
-        assert "type=no-servers-reachable" in diag[0]
+        assert diag[0].startswith("[AZK8S0304]")
 
     def test_passed(self):
         log = (
@@ -1286,3 +1290,174 @@ class TestCheckClusterDNS:
         result, diag = self._run(log)
         assert result == "Passed"
         assert diag == []
+
+    @pytest.mark.parametrize(
+        "dns_log, expected_code, expected_fault_type",
+        [
+            (
+                "DNS Result: server can't find example.invalid: NXDOMAIN",
+                "AZK8S0301",
+                "prediagnostics-dns-nxdomain",
+            ),
+            (
+                "DNS Result: connection timed out while resolving example.com",
+                "AZK8S0302",
+                "prediagnostics-dns-timeout",
+            ),
+            (
+                "DNS Result: server returned SERVFAIL for example.com",
+                "AZK8S0303",
+                "prediagnostics-dns-servfail",
+            ),
+            (
+                "DNS Result: no servers could be reached",
+                "AZK8S0304",
+                "prediagnostics-dns-no-servers-reachable",
+            ),
+            (
+                "DNS Result: communications error to 10.0.0.10#53",
+                "AZK8S0305",
+                "prediagnostics-dns-communications-error",
+            ),
+        ],
+    )
+    def test_failure_emits_specific_structured_error(
+        self, monkeypatch, dns_log, expected_code, expected_fault_type
+    ):
+        cmd = SimpleNamespace(cli_ctx=SimpleNamespace(data={}))
+        mock_telemetry = MagicMock()
+        monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
+
+        result, diagnoser_output = self._run(dns_log, cmd)
+
+        assert result == consts.Diagnostic_Check_Failed
+        assert diagnoser_output[0].startswith(f"[{expected_code}]")
+        _, properties = mock_telemetry.add_extension_event.call_args.args
+        assert properties[consts.Telemetry_Error_Code_Key] == expected_code
+        assert properties[consts.Telemetry_Error_Fault_Type_Key] == expected_fault_type
+        assert (
+            mock_telemetry.set_exception.call_args.kwargs["fault_type"]
+            == expected_fault_type
+        )
+        mock_telemetry.add_extension_event.assert_called_once()
+        mock_telemetry.set_exception.assert_called_once()
+
+
+def _run_outbound_check(monkeypatch, log):
+    cmd = SimpleNamespace(cli_ctx=SimpleNamespace(data={}))
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
+    result, _ = check_cluster_outbound_connectivity(
+        log,
+        os.path.join(os.path.dirname(__file__), "tmp_outbound"),
+        False,
+        [],
+        cmd=cmd,
+    )
+    return result, mock_telemetry
+
+
+def test_cluster_connect_failure_emits_azk8s0307_and_remains_nonfatal(monkeypatch):
+    result, mock_telemetry = _run_outbound_check(
+        monkeypatch,
+        "Response Code - Outbound Network Connectivity Check for Cluster Connect : "
+        "https://example.invalid : 000  "
+        "Outbound Network Connectivity Check for MCR Repo URL Result : mcr.microsoft.com : 200",
+    )
+
+    assert result == consts.Diagnostic_Check_Passed
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0307"
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_called_once()
+
+
+def test_onboarding_failure_emits_azk8s0306_and_fails_check(monkeypatch):
+    result, mock_telemetry = _run_outbound_check(
+        monkeypatch,
+        "Response Code - Outbound Network Connectivity Check for Cluster Connect : "
+        "https://example.com : 200  "
+        "Outbound Network Connectivity Check for MCR Repo URL Result : mcr.microsoft.com : 000",
+    )
+
+    assert result == consts.Diagnostic_Check_Failed
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0306"
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_called_once()
+
+
+def test_non2xx_response_emits_informational_azk8s0308(monkeypatch):
+    result, mock_telemetry = _run_outbound_check(
+        monkeypatch,
+        "Response Code - Outbound Network Connectivity Check for Cluster Connect : "
+        "https://example.com : 404  "
+        "Outbound Network Connectivity Check for MCR Repo URL Result : mcr.microsoft.com : 200",
+    )
+
+    assert result == consts.Diagnostic_Check_Passed
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0308"
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
+
+
+def test_data_plane_health_failure_raises_azk8s0300(monkeypatch):
+    cmd = SimpleNamespace(
+        cli_ctx=SimpleNamespace(
+            cloud=SimpleNamespace(
+                endpoints=SimpleNamespace(active_directory_resource_id="resource")
+            )
+        )
+    )
+    response = SimpleNamespace(status_code=503)
+    monkeypatch.setattr(
+        utils_module, "send_request_with_retries", lambda *_args, **_kwargs: response
+    )
+
+    class ExpectedError(Exception):
+        pass
+
+    def report_error(report_cmd, error, **context):
+        assert report_cmd is cmd
+        assert error is errors_module.DATA_PLANE_HEALTH_CHECK_FAILED
+        assert "HTTP 503" in context["details"]
+        return ExpectedError(error.format(details=context["details"]))
+
+    monkeypatch.setattr(utils_module, "report_connectedk8s_error", report_error)
+
+    with pytest.raises(ExpectedError, match="AZK8S0300"):
+        health_check_dp(cmd, "https://example.com")
+
+
+def test_data_plane_health_transport_failure_raises_azk8s0300(monkeypatch):
+    cmd = SimpleNamespace(
+        cli_ctx=SimpleNamespace(
+            cloud=SimpleNamespace(
+                endpoints=SimpleNamespace(active_directory_resource_id="resource")
+            )
+        )
+    )
+    transport_error = RuntimeError("connection timed out")
+
+    def fail_request(*_args, **_kwargs):
+        raise transport_error
+
+    monkeypatch.setattr(utils_module, "send_request_with_retries", fail_request)
+
+    class ExpectedError(Exception):
+        pass
+
+    def report_error(report_cmd, error, **context):
+        assert report_cmd is cmd
+        assert error is errors_module.DATA_PLANE_HEALTH_CHECK_FAILED
+        assert "connection timed out" in context["details"]
+        return ExpectedError(error.format(details=context["details"]))
+
+    monkeypatch.setattr(utils_module, "report_connectedk8s_error", report_error)
+
+    with pytest.raises(ExpectedError, match="AZK8S0300"):
+        health_check_dp(cmd, "https://example.com")

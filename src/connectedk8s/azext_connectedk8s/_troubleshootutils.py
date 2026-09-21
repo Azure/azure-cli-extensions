@@ -1124,6 +1124,7 @@ def check_diagnoser_container(
                 filepath_with_timestamp,
                 storage_space_available,
                 diagnoser_output,
+                cmd,
             )
             outbound_connectivity_check, storage_space_available = (
                 azext_utils.check_cluster_outbound_connectivity(

@@ -979,6 +979,7 @@ def check_cluster_DNS(
     filepath_with_timestamp: str,
     storage_space_available: bool,
     diagnoser_output: list[str],
+    cmd: CLICommand | None = None,
 ) -> tuple[str, bool]:
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
@@ -994,30 +995,33 @@ def check_cluster_DNS(
             or "communications error" in formatted_dns_log
             or "timed out" in formatted_dns_log
         ):
-            # Determine specific DNS failure type for telemetry
-            dns_error_type = "unknown"
+            dns_error = errors.DNS_TIMEOUT
+            # Prefer specific DNS responses when one log contains multiple signals.
             if "NXDOMAIN" in formatted_dns_log:
-                dns_error_type = "NXDOMAIN"
+                dns_error = errors.DNS_NXDOMAIN
             elif "SERVFAIL" in formatted_dns_log:
-                dns_error_type = "SERVFAIL"
+                dns_error = errors.DNS_SERVFAIL
             elif "no servers could be reached" in formatted_dns_log:
-                dns_error_type = "no-servers-reachable"
+                dns_error = errors.DNS_NO_SERVERS_REACHABLE
             elif (
                 "connection timed out" in formatted_dns_log
                 or "timed out" in formatted_dns_log
             ):
-                dns_error_type = "timeout"
+                dns_error = errors.DNS_TIMEOUT
             elif "communications error" in formatted_dns_log:
-                dns_error_type = "communications-error"
+                dns_error = errors.DNS_COMMUNICATIONS_ERROR
 
-            logger.warning(
-                "Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS "
-                "issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n"
+            details = (
+                "Review Kubernetes DNS debugging guidance at "
+                "https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/."
             )
-            diagnoser_output.append(
-                f"Error: DNS resolution failed (type={dns_error_type}). "
-                "For details visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n"
+            message = report_connectedk8s_diagnostic(
+                cmd,
+                dns_error,
+                details=details,
             )
+            logger.warning(message)
+            diagnoser_output.append(message)
             if storage_space_available:
                 dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
                 with open(dns_check_path, "w+", encoding="utf-8") as dns:
@@ -1025,11 +1029,6 @@ def check_cluster_DNS(
                         formatted_dns_log
                         + "\nWe found an issue with the DNS resolution on your cluster."
                     )
-            telemetry.set_exception(
-                exception=Exception("DNS resolution check failed in the cluster"),
-                fault_type=consts.DNS_Check_Failed,
-                summary="DNS check failed in the cluster",
-            )
             return consts.Diagnostic_Check_Failed, storage_space_available
 
         if storage_space_available:
@@ -1086,7 +1085,7 @@ def check_cluster_DNS(
 
 # pylint: disable=too-many-return-statements
 # Outbound connectivity check returns different results based on connection state
-def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,too-many-nested-blocks
+def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,too-many-nested-blocks,too-many-locals
     outbound_connectivity_check_log: str,
     filepath_with_timestamp: str,
     storage_space_available: bool,
@@ -1115,13 +1114,19 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
             )
 
             if Cluster_Connect_Precheck_Endpoint_response_code != "000":
-                # Emit informational telemetry for 4xx/5xx (e.g., proxy block)
+                # An HTTP response proves network reachability, even when it is 4xx/5xx.
                 if Cluster_Connect_Precheck_Endpoint_response_code.startswith(
                     ("4", "5")
                 ):
-                    add_connectedk8s_telemetry_event(
+                    details = (
+                        f"Endpoint {Cluster_Connect_Precheck_Endpoint_Url} returned HTTP "
+                        f"{Cluster_Connect_Precheck_Endpoint_response_code}; target=cluster-connect."
+                    )
+                    report_connectedk8s_diagnostic(
                         cmd,
-                        {
+                        errors.OUTBOUND_ENDPOINT_NON2XX,
+                        details=details,
+                        telemetry_properties={
                             consts.Telemetry_Onboarding_Error_Type_Key: consts.Outbound_Connectivity_Non2xx_Response_Type,
                             consts.Telemetry_Onboarding_Error_Message_Key: (
                                 f"endpoint={Cluster_Connect_Precheck_Endpoint_Url}; "
@@ -1147,21 +1152,22 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                             "passed successfully."
                         )
             else:
+                details = (
+                    f"Endpoint {Cluster_Connect_Precheck_Endpoint_Url} returned no HTTP response. "
+                    "This only affects the cluster-connect feature."
+                )
+                message = report_connectedk8s_diagnostic(
+                    cmd,
+                    errors.CLUSTER_CONNECT_OUTBOUND_CONNECTIVITY_FAILED,
+                    details=details,
+                    user_fault=True,
+                )
                 logger.warning(
-                    "The outbound network connectivity check has failed for the "
-                    "endpoint - %s\n"
+                    "%s\n"
                     'This will affect the "cluster-connect" feature. If you are planning to use '
                     '"cluster-connect" functionality, please ensure outbound connectivity to the '
                     "above endpoint.\n",
-                    Cluster_Connect_Precheck_Endpoint_Url,
-                )
-                telemetry.set_user_fault()
-                telemetry.set_exception(
-                    exception=Exception(
-                        "Outbound network connectivity check failed for the Cluster Connect endpoint"
-                    ),
-                    fault_type=consts.Outbound_Connectivity_Check_Failed_For_Cluster_Connect,
-                    summary="Outbound network connectivity check failed for the Cluster Connect precheck endpoint",
+                    message,
                 )
                 if storage_space_available:
                     cluster_connect_outbound_connectivity_check_path = os.path.join(
@@ -1190,13 +1196,20 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
 
             # Validating if outbound connectiivty is working or not and displaying proper result
             if Onboarding_Precheck_Endpoint_outbound_connectivity_response != "000":
-                # Emit informational telemetry for 4xx/5xx (e.g., proxy block)
+                # An HTTP response proves network reachability, even when it is 4xx/5xx.
                 if Onboarding_Precheck_Endpoint_outbound_connectivity_response.startswith(
                     ("4", "5")
                 ):
-                    add_connectedk8s_telemetry_event(
+                    details = (
+                        "The onboarding endpoint returned HTTP "
+                        f"{Onboarding_Precheck_Endpoint_outbound_connectivity_response}; "
+                        "target=onboarding."
+                    )
+                    report_connectedk8s_diagnostic(
                         cmd,
-                        {
+                        errors.OUTBOUND_ENDPOINT_NON2XX,
+                        details=details,
+                        telemetry_properties={
                             consts.Telemetry_Onboarding_Error_Type_Key: consts.Outbound_Connectivity_Non2xx_Response_Type,
                             consts.Telemetry_Onboarding_Error_Message_Key: (
                                 f"code={Onboarding_Precheck_Endpoint_outbound_connectivity_response}; "
@@ -1230,9 +1243,6 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                 + consts.Doc_Quick_Start_Outbound_Proxy_Url
                 + " \n"
             )
-            logger.warning(outbound_connectivity_failed_warning_message)
-            telemetry.set_user_fault()
-
             # Extract failed endpoint URLs for telemetry diagnostics
             failed_endpoints: list[str] = []
             failed_endpoint_details: list[str] = []
@@ -1262,6 +1272,21 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                 )
             else:
                 diagnoser_output.append(outbound_connectivity_failed_warning_message)
+            details = (
+                "; ".join(failed_endpoint_details)
+                if failed_endpoint_details
+                else "The onboarding endpoint returned no HTTP response."
+            )
+            message = report_connectedk8s_diagnostic(
+                cmd,
+                errors.ONBOARDING_OUTBOUND_CONNECTIVITY_FAILED,
+                details=(
+                    f"{details} Review network requirements at "
+                    f"{consts.Doc_Network_Requirements_Url}."
+                ),
+                user_fault=True,
+            )
+            logger.warning(message)
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(
                     filepath_with_timestamp,
@@ -1276,13 +1301,6 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                         + "\nWe found an issue with Outbound network connectivity from the cluster "
                         "required for onboarding."
                     )
-            telemetry.set_exception(
-                exception=Exception(
-                    "Outbound network connectivity check failed for onboarding"
-                ),
-                fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding,
-                summary="Outbound network connectivity check for onboarding failed in the cluster",
-            )
             return consts.Diagnostic_Check_Failed, storage_space_available
 
         if outbound_connectivity_check_for == "troubleshoot":
@@ -1295,11 +1313,17 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                 return consts.Diagnostic_Check_Incomplete, storage_space_available
 
             if outbound_connectivity_response != "000":
-                # Emit informational telemetry for 4xx/5xx (e.g., proxy block)
+                # An HTTP response proves network reachability, even when it is 4xx/5xx.
                 if outbound_connectivity_response.startswith(("4", "5")):
-                    add_connectedk8s_telemetry_event(
+                    details = (
+                        f"The troubleshoot endpoint returned HTTP {outbound_connectivity_response}; "
+                        "target=troubleshoot."
+                    )
+                    report_connectedk8s_diagnostic(
                         cmd,
-                        {
+                        errors.OUTBOUND_ENDPOINT_NON2XX,
+                        details=details,
+                        telemetry_properties={
                             consts.Telemetry_Onboarding_Error_Type_Key: consts.Outbound_Connectivity_Non2xx_Response_Type,
                             consts.Telemetry_Onboarding_Error_Message_Key: (
                                 f"code={outbound_connectivity_response}; "
@@ -1607,25 +1631,34 @@ def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
     if os.getenv("AZURE_ACCESS_TOKEN"):
         headers = [f"Authorization=Bearer {os.getenv('AZURE_ACCESS_TOKEN')}"]
     # Sending request with retries
-    r = send_request_with_retries(
-        cmd.cli_ctx,
-        "post",
-        chart_location_url,
-        headers=headers,
-        fault_type=consts.DP_Health_Check_Fault_Type,
-        summary="Error while performing DP health check",
-        uri_parameters=uri_parameters,
-        resource=resource,
-    )
+    try:
+        r = send_request_with_retries(
+            cmd.cli_ctx,
+            "post",
+            chart_location_url,
+            headers=headers,
+            fault_type=consts.DP_Health_Check_Fault_Type,
+            summary="Error while performing DP health check",
+            uri_parameters=uri_parameters,
+            resource=resource,
+        )
+    # Normalize every exhausted-retry/transport failure to the public DP error code.
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        raise report_connectedk8s_error(
+            cmd,
+            errors.DATA_PLANE_HEALTH_CHECK_FAILED,
+            details=f"The request to the data-plane health endpoint failed: {e}",
+        ) from e
     if r.status_code == 200:
         return True
 
-    telemetry.set_exception(
-        exception=Exception("Error while performing DP health check"),
-        fault_type=consts.DP_Health_Check_Fault_Type,
-        summary="Error while performing DP health check",
+    exception = Exception(f"Data-plane endpoint returned HTTP {r.status_code}")
+    raise report_connectedk8s_error(
+        cmd,
+        errors.DATA_PLANE_HEALTH_CHECK_FAILED,
+        exception=exception,
+        details=f"The data-plane endpoint returned HTTP {r.status_code}.",
     )
-    raise CLIInternalError("Error while performing DP health check")
 
 
 def update_gateway_cluster_link(
