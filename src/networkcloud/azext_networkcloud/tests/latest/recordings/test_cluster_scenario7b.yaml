@@ -454,8 +454,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"clusterLocation": "Foo Datacenter, Floor 3, Aisle 9, Rack
-      2"}, "tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container"}}}'
     headers:
       Accept:
       - application/json
@@ -466,12 +467,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '127'
+      - '424'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --cluster-location --tags --resource-group --analytics-output-settings
-        --command-output-settings
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: PATCH
@@ -529,7 +529,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --cluster-location --tags --resource-group
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -575,7 +575,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --cluster-location --tags --resource-group
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -621,7 +621,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --cluster-location --tags --resource-group
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -660,8 +660,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"runtimeProtectionConfiguration": {"enforcementLevel":
-      "OnDemand"}}}'
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "encryptionPublicKey": "somepublickey", "providerConfiguration": {"provider":
+      "OpenBao", "authenticationMethod": "AppRole"}, "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container"}}}'
     headers:
       Accept:
       - application/json
@@ -672,11 +674,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '84'
+      - '549'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --runtime-protection
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: PATCH
@@ -734,7 +736,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --runtime-protection
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -780,7 +782,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --runtime-protection
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -826,7 +828,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --runtime-protection
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -865,8 +867,13 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"secretArchive": {"keyVaultId": "TestKeyVaultId", "useKeyVault":
-      "True"}}}'
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "encryptionPublicKey": "somepublickey", "providerConfiguration": {"provider":
+      "OpenBao", "applicationRoleId": "edge-credentials-role", "authenticationMethod":
+      "AppRole", "authenticationMountPath": "approle", "keyValueVersion": "V2",
+      "mountPath": "kv", "namespace": "edge-credentials", "pathTemplate": "azure-local/{namespace}/{name}"},
+      "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container"}}}'
     headers:
       Accept:
       - application/json
@@ -877,11 +884,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '90'
+      - '760'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --secret-archive
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: PATCH
@@ -939,7 +946,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --secret-archive
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -985,7 +992,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --secret-archive
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1031,7 +1038,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --secret-archive
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1070,9 +1077,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"updateStrategy": {"maxUnavailable": 4, "strategyType":
-      "Rack", "thresholdType": "CountSuccess", "thresholdValue": 4, "waitTimeMinutes":
-      10}}}'
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "encryptionPublicKey": "somepublickey", "providerConfiguration": {"provider":
+      "HashiCorpVault", "authenticationMethod": "AppRole"}, "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container"}}}'
     headers:
       Accept:
       - application/json
@@ -1083,11 +1091,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '158'
+      - '556'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --update-strategy
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: PATCH
@@ -1145,7 +1153,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --update-strategy
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1191,7 +1199,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --update-strategy
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1237,7 +1245,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --update-strategy
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1276,8 +1284,13 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CM-simdev-2419515-syolgoayu23tq/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-syolgoayu23tq-aks-cp":
-      {}}}, "tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    body: '{"properties": {"secretArchiveSettings": {"associatedIdentity": {"identityType":
+      "UserAssignedIdentity", "userAssignedIdentityResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CM-simdev-2444489-5ortjre5carf2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sim-cluster-mgr-5ortjre5carf2-aks-cp"},
+      "encryptionPublicKey": "somepublickey", "providerConfiguration": {"provider":
+      "HashiCorpVault", "applicationRoleId": "edge-credentials-role", "authenticationMethod":
+      "AppRole", "authenticationMountPath": "approle", "keyValueVersion": "V2",
+      "mountPath": "secret", "namespace": "edge-credentials", "pathTemplate": "azure-local/{namespace}/{name}"},
+      "vaultUri": "https://myaccount.blob.core.windows.net/mycontainer?restype=container"}}}'
     headers:
       Accept:
       - application/json
@@ -1288,11 +1301,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '316'
+      - '771'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group --mi-user-assigned --tags
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: PATCH
@@ -1350,7 +1363,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --mi-user-assigned --tags
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1396,7 +1409,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --mi-user-assigned --tags
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET
@@ -1442,7 +1455,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --resource-group --mi-user-assigned --tags
+      - --name --resource-group --sa-settings
       User-Agent:
       - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.12 (Linux-6.5.0-1024-azure-x86_64-with-glibc2.35)
     method: GET

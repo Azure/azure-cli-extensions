@@ -714,7 +714,8 @@ def step_update_secret_archive_settings_scenario3_open_bao_required_only(
         "identity-type={identityType} "
         "vault-uri={containerUrl} "
         "encryption-public-key='somepublickey' "
-        "provider-configuration={prividerConfigOpenBaoBasic}"
+        "provider={secretArchiveProviderOpenBao} "
+        "authentication-method={secretArchiveAuthenticationMethod}"
     )
 
 
@@ -730,7 +731,14 @@ def step_update_secret_archive_settings_scenario3_open_bao_all_params(
         "identity-type={identityType} "
         "vault-uri={containerUrl} "
         "encryption-public-key='somepublickey' "
-        "provider-configuration={prividerConfigOpenBaoFull}"
+        "provider={secretArchiveProviderOpenBao} "
+        "authentication-method={secretArchiveAuthenticationMethod} "
+        "authentication-mount-path={secretArchiveAuthenticationMountPath} "
+        "application-role-id={secretArchiveApplicationRoleId} "
+        "mount-path={secretArchiveOpenBaoMountPath} "
+        "key-value-version={secretArchiveKeyValueVersion} "
+        "namespace={secretArchiveNamespace} "
+        "path-template={secretArchivePathTemplate}"
     )
 
 
@@ -746,7 +754,8 @@ def step_update_secret_archive_settings_scenario3_hashicorp_required_only(
         "identity-type={identityType} "
         "vault-uri={containerUrl} "
         "encryption-public-key='somepublickey' "
-        "provider-configuration={prividerConfigHashiCorpBasic}"
+        "provider={secretArchiveProviderHashiCorp} "
+        "authentication-method={secretArchiveAuthenticationMethod}"
     )
 
 
@@ -762,7 +771,14 @@ def step_update_secret_archive_settings_scenario3_hashicorp_all_params(
         "identity-type={identityType} "
         "vault-uri={containerUrl} "
         "encryption-public-key='somepublickey' "
-        "provider-configuration={prividerConfigHashiCorpFull}"
+        "provider={secretArchiveProviderHashiCorp} "
+        "authentication-method={secretArchiveAuthenticationMethod} "
+        "authentication-mount-path={secretArchiveAuthenticationMountPath} "
+        "application-role-id={secretArchiveApplicationRoleId} "
+        "mount-path={secretArchiveHashiCorpMountPath} "
+        "key-value-version={secretArchiveKeyValueVersion} "
+        "namespace={secretArchiveNamespace} "
+        "path-template={secretArchivePathTemplate}"
     )
 
 
@@ -778,7 +794,9 @@ def step_update_secret_archive_settings_scenario3_cyberark_required_only(
         "identity-type={identityType} "
         "vault-uri={containerUrl} "
         "encryption-public-key='somepublickey' "
-        "provider-configuration={prividerConfigCyberArkBasic}"
+        "provider={secretArchiveProviderCyberArk} "
+        "application-id={secretArchiveCyberArkApplicationId} "
+        "safe-name={secretArchiveCyberArkSafeName}"
     )
 
 
@@ -794,7 +812,11 @@ def step_update_secret_archive_settings_scenario3_cyberark_all_params(
         "identity-type={identityType} "
         "vault-uri={containerUrl} "
         "encryption-public-key='somepublickey' "
-        "provider-configuration={prividerConfigCyberArkFull}"
+        "provider={secretArchiveProviderCyberArk} "
+        "application-id={secretArchiveCyberArkApplicationId} "
+        "safe-name={secretArchiveCyberArkSafeName} "
+        "object-name-template={secretArchiveCyberArkObjectNameTemplate} "
+        "folder-name={secretArchiveCyberArkFolderName}"
     )
 
 
@@ -1003,23 +1025,50 @@ class ClusterScenarioTest(ScenarioTest):
                 "additionalActions": CONFIG.get("CLUSTER", "inspect_actions"),
                 "filterDevices": CONFIG.get("CLUSTER", "filter_devices"),
                 "rotateCredential": CONFIG.get("CLUSTER", "rotate_credential"),
-                "prividerConfigOpenBaoBasic": CONFIG.get(
-                    "CLUSTER", "privider_config_open_bao_basic"
+                "secretArchiveProviderOpenBao": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_open_bao"
                 ),
-                "prividerConfigOpenBaoFull": CONFIG.get(
-                    "CLUSTER", "privider_config_open_bao_full"
+                "secretArchiveProviderHashiCorp": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_hashi_corp"
                 ),
-                "prividerConfigHashiCorpBasic": CONFIG.get(
-                    "CLUSTER", "privider_config_hashi_corp_basic"
+                "secretArchiveProviderCyberArk": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_cyber_ark"
                 ),
-                "prividerConfigHashiCorpFull": CONFIG.get(
-                    "CLUSTER", "privider_config_hashi_corp_full"
+                "secretArchiveAuthenticationMethod": CONFIG.get(
+                    "CLUSTER", "secret_archive_authentication_method"
                 ),
-                "prividerConfigCyberArkBasic": CONFIG.get(
-                    "CLUSTER", "privider_config_cyber_ark_basic"
+                "secretArchiveAuthenticationMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_authentication_mount_path"
                 ),
-                "prividerConfigCyberArkFull": CONFIG.get(
-                    "CLUSTER", "privider_config_cyber_ark_full"
+                "secretArchiveApplicationRoleId": CONFIG.get(
+                    "CLUSTER", "secret_archive_application_role_id"
+                ),
+                "secretArchiveOpenBaoMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_open_bao_mount_path"
+                ),
+                "secretArchiveHashiCorpMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_hashi_corp_mount_path"
+                ),
+                "secretArchiveKeyValueVersion": CONFIG.get(
+                    "CLUSTER", "secret_archive_key_value_version"
+                ),
+                "secretArchiveNamespace": CONFIG.get(
+                    "CLUSTER", "secret_archive_namespace"
+                ),
+                "secretArchivePathTemplate": CONFIG.get(
+                    "CLUSTER", "secret_archive_path_template"
+                ),
+                "secretArchiveCyberArkApplicationId": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_application_id"
+                ),
+                "secretArchiveCyberArkSafeName": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_safe_name"
+                ),
+                "secretArchiveCyberArkObjectNameTemplate": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_object_name_template"
+                ),
+                "secretArchiveCyberArkFolderName": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_folder_name"
                 ),
             }
         )
