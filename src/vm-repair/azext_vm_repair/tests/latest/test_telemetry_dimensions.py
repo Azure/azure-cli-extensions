@@ -73,6 +73,25 @@ class TelemetryDimensionTests(unittest.TestCase):
 
     @patch.object(telemetry.tc, 'flush')
     @patch.object(telemetry.tc, 'track_event')
+    def test_quality_dimensions_present(self, track_event, _):
+        telemetry._track_run_command_telemetry(
+            self.logger, 'vm repair run', {}, 'SUCCESS', '', '', '', 1.0,
+            'subscription', {}, 'run-id', 'ERROR', 'script failed', 0.5,
+            invocation_id='invocation-id', failure_owner='REPAIR_SCRIPT',
+            has_diagnostic=True, warning_count=2,
+            warning_codes=['FIRST_WARNING', 'SECOND_WARNING'],
+            script_source='PREVIEW')
+
+        properties = track_event.call_args.args[1]
+        self.assertEqual('invocation-id', properties['invocation_id'])
+        self.assertEqual('REPAIR_SCRIPT', properties['failure_owner'])
+        self.assertTrue(properties['has_diagnostic'])
+        self.assertEqual(2, properties['warning_count'])
+        self.assertEqual('["FIRST_WARNING", "SECOND_WARNING"]', properties['warning_codes'])
+        self.assertEqual('PREVIEW', properties['script_source'])
+
+    @patch.object(telemetry.tc, 'flush')
+    @patch.object(telemetry.tc, 'track_event')
     def test_no_customer_content(self, track_event, _):
         self._track_generic(**RESOURCE_DIMENSIONS)
 
@@ -118,6 +137,9 @@ class TelemetryDimensionTests(unittest.TestCase):
         helper.error_message = ''
         helper.error_stack_trace = ''
         helper.return_dict = {}
+        helper.warnings = ['advisory warning']
+        helper.warning_codes = ['ADVISORY_WARNING']
+        helper.invocation_id = 'invocation-id'
         helper.is_verbose = True
         helper.script = script_data()
         helper.os_family = 'linux'
@@ -130,8 +152,49 @@ class TelemetryDimensionTests(unittest.TestCase):
         gc.collect()
 
         track_run.assert_called_once()
+        self.assertEqual('invocation-id', track_run.call_args.kwargs['invocation_id'])
+        self.assertIsNone(track_run.call_args.kwargs['failure_owner'])
+        self.assertFalse(track_run.call_args.kwargs['has_diagnostic'])
+        self.assertEqual(1, track_run.call_args.kwargs['warning_count'])
+        self.assertEqual(['ADVISORY_WARNING'], track_run.call_args.kwargs['warning_codes'])
+        self.assertEqual('DEFAULT', track_run.call_args.kwargs['script_source'])
         track_generic.assert_not_called()
         track_repair_and_restore.assert_not_called()
+
+    @patch('azext_vm_repair.command_helper_class.get_subscription_id', return_value='subscription')
+    @patch('azext_vm_repair.command_helper_class._track_run_command_telemetry')
+    def test_run_script_failure_is_owned_by_repair_script(self, track_run, _):
+        helper = command_helper.__new__(command_helper)
+        helper.start_time = 0
+        helper.logger = self.logger
+        helper.cmd = Mock()
+        helper.command_name = 'vm repair run'
+        helper.command_params = {'run_id': 'linux-alar2', 'preview': 'preview-url'}
+        helper.status = 'SUCCESS'
+        helper.message = ''
+        helper.error_message = ''
+        helper.error_stack_trace = ''
+        helper.return_dict = {}
+        helper.warnings = []
+        helper.warning_codes = []
+        helper.invocation_id = 'invocation-id'
+        helper.is_verbose = True
+        helper.script = script_data()
+        helper.script.run_id = 'linux-alar2'
+        helper.script.status = 'ERROR'
+        helper.script.output = 'script failed'
+        helper.os_family = None
+        helper.vm_size = None
+        helper.disk_controller_type = None
+        helper.repair_vm_disk_controller_type = None
+        helper.hyperv_generation = None
+
+        del helper
+        gc.collect()
+
+        self.assertEqual('REPAIR_SCRIPT', track_run.call_args.kwargs['failure_owner'])
+        self.assertTrue(track_run.call_args.kwargs['has_diagnostic'])
+        self.assertEqual('PREVIEW', track_run.call_args.kwargs['script_source'])
 
 
 class SourceResourceContextTests(unittest.TestCase):

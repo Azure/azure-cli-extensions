@@ -21,6 +21,7 @@ class TestCommandHelper(command_helper):
         self.status = ''
         self.return_dict = {}
         self.warnings = []
+        self.warning_codes = []
 
     def __del__(self):
         pass
@@ -47,7 +48,9 @@ class ReturnedWarningsTest(unittest.TestCase):
     def test_warnings_are_returned_when_raised(self):
         helper = self._helper()
         helper.warnings.append('The repair VM size only supports NVMe.')
+        helper.warning_codes.append('REPAIR_VM_NVME_ONLY')
         self.assertEqual(['The repair VM size only supports NVMe.'], helper.init_return_dict()['warnings'])
+        self.assertEqual(['REPAIR_VM_NVME_ONLY'], helper.return_dict['warning_codes'])
 
     def test_returned_warnings_are_a_copy(self):
         helper = self._helper()
@@ -107,6 +110,7 @@ class NestedCommandWarningsTest(unittest.TestCase):
             'copied_disk_name': 'disk-copy',
             'repair_resource_group': 'repair-rg',
             'warnings': ['create warning'],
+            'warning_codes': ['CREATE_WARNING'],
         }
         with mock.patch('azext_vm_repair.custom.get_vm', side_effect=RuntimeError('telemetry unavailable')), \
                 mock.patch('azext_vm_repair.custom._check_existing_rg', return_value=False), \
@@ -119,6 +123,7 @@ class NestedCommandWarningsTest(unittest.TestCase):
     def test_repair_and_restore_propagates_create_warnings(self):
         result = self._run_nested_command(custom.repair_and_restore)
         self.assertEqual(['create warning'], result['warnings'])
+        self.assertEqual(['CREATE_WARNING'], result['warning_codes'])
 
     def test_repair_button_propagates_create_and_deprecation_warnings(self):
         result = self._run_nested_command(custom.repair_button, button_command='fstab', yes=True)

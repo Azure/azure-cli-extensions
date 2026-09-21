@@ -8,6 +8,7 @@
 import logging
 import timeit
 import inspect
+import uuid
 from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -48,6 +49,9 @@ class command_helper:
         # Command name
         self.command_name = command_name
 
+        # Correlates this command invocation without recording resource identity.
+        self.invocation_id = str(uuid.uuid4())
+
         # Init script data if command is vm repair run
         if command_name == VM_REPAIR_RUN_COMMAND:
             self.script = script_data()
@@ -59,6 +63,7 @@ class command_helper:
         # Advisory messages that also went to the log. Returned so a caller can act on them without
         # parsing stderr, which is where they would otherwise only exist.
         self.warnings = []
+        self.warning_codes = []
 
         # Return error message
         self.error_message = ''
@@ -98,12 +103,30 @@ class command_helper:
             self.cmd.cli_ctx.get_progress_controller().end()
         # Track telemetry data
         elapsed_time = timeit.default_timer() - self.start_time
+        script_failed = self.command_name == VM_REPAIR_RUN_COMMAND and self.script.status == STATUS_ERROR
+        command_failed = self.status == STATUS_ERROR
+        failure_owner = 'REPAIR_SCRIPT' if script_failed else ('VM_REPAIR_COMMAND' if command_failed else None)
+        diagnostic = self.script.output if script_failed else '{} {} {}'.format(
+            self.message, self.error_message, self.error_stack_trace)
+        has_diagnostic = bool(diagnostic and diagnostic.strip())
+        script_source = None
         if self.command_name == VM_REPAIR_RUN_COMMAND:
-            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time, self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation)
+            script_source = 'CUSTOM' if self.command_params.get('custom_script_file') else (
+                'PREVIEW' if self.command_params.get('preview') else 'DEFAULT')
+        quality_dimensions = {
+            'invocation_id': self.invocation_id,
+            'failure_owner': failure_owner,
+            'has_diagnostic': has_diagnostic,
+            'warning_count': len(self.warnings),
+            'warning_codes': self.warning_codes,
+            'script_source': script_source
+        }
+        if self.command_name == VM_REPAIR_RUN_COMMAND:
+            _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time, self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation, **quality_dimensions)
         elif self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
-            _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation)
+            _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation, **quality_dimensions)
         else:
-            _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation)
+            _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.os_family, self.vm_size, self.disk_controller_type, self.repair_vm_disk_controller_type, self.hyperv_generation, **quality_dimensions)
 
     def set_resource_context(self, os_family=None, vm_size=None, disk_controller_type=None,
                              repair_vm_disk_controller_type=None, hyperv_generation=None):
@@ -137,6 +160,7 @@ class command_helper:
         self.return_dict["message"] = self.message
         if self.warnings:
             self.return_dict["warnings"] = list(self.warnings)
+            self.return_dict["warning_codes"] = list(self.warning_codes)
         if not self.is_status_success():
             self.return_dict["error_message"] = self.error_message
             if self.error_message:
