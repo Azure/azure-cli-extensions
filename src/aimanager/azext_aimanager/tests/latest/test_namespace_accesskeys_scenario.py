@@ -31,7 +31,7 @@ class NamespaceAccessKeysScenarioTest(ScenarioTest):
         service_client = MagicMock()
         service_client.ai_manager_namespaces = operations
 
-        command_prefix = 'aimanager namespace {} -g rg --aimanager-name manager -n namespace'
+        command_prefix = 'aimanager namespace {} -g rg --aimanager manager -n namespace'
 
         with patch('azext_aimanager._client_factory.get_aimanager_client',
                    return_value=service_client):
@@ -59,9 +59,9 @@ class NamespaceAccessKeysScenarioTest(ScenarioTest):
             operations.list_access_keys.assert_called_with(
                 'rg', 'manager', 'namespace', headers={})
 
-            # --aks-custom-headers is parsed and forwarded to the request
+            # --custom-headers is parsed and forwarded to the request
             self.cmd(
-                command_prefix.format('list-accesskeys') + ' --aks-custom-headers a=1,b=2',
+                command_prefix.format('list-accesskeys') + ' --custom-headers a=1,b=2',
                 checks=[self.check('primaryKey', 'primary-key-value')])
 
         operations.list_access_keys.assert_called_with(
