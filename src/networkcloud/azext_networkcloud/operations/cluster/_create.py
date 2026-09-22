@@ -14,7 +14,10 @@ from azure.cli.core.aaz import register_callback
 from ..common_analyticsoutputsettings import AnalyticsOutputSettings
 from ..common_commandoutputsettings import CommandOutputSettings
 from ..common_managedidentity import ManagedIdentity
-from ..common_secretarchivesettings import SecretArchiveSettings
+from ..common_secretarchivesettings import (
+    SecretArchiveSettings,
+    SecretArchiveSettingsContent,
+)
 
 
 class Create(_Create):
@@ -23,7 +26,8 @@ class Create(_Create):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        return ManagedIdentity.build_arguments_schema(args_schema)
+        args_schema = ManagedIdentity.build_arguments_schema(args_schema)
+        return SecretArchiveSettings.build_arguments_schema(args_schema)
 
     @register_callback
     def pre_operations(self):
@@ -31,3 +35,8 @@ class Create(_Create):
         CommandOutputSettings.pre_operations_create(self.ctx.args)
         AnalyticsOutputSettings.pre_operations_create(self.ctx.args)
         SecretArchiveSettings.pre_operations_create(self.ctx.args)
+
+    class ClustersCreateOrUpdate(
+        SecretArchiveSettingsContent, _Create.ClustersCreateOrUpdate
+    ):
+        """Serialize the flat secret archive provider configuration."""
