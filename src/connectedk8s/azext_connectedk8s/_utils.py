@@ -2952,5 +2952,39 @@ def add_agc_endpoint_overrides(
             f"systemDefaultValues.clusteridentityoperator.his_endpoint_override=https://gbl.his.arc.azure.{endpoint_suffix}/discovery?location={location}&api-version=1.1-preview",
             "--set",
             f"systemDefaultValues.image.repository=mcr.microsoft.{cloud_suffix}",
+            "--set",
+            f"systemDefaultValues.MsiAdapterArtifactImageRegistry=mcr.microsoft.{cloud_suffix}",
         ]
     )
+
+
+def get_agc_proxy_cloud_config(
+    cloud_name: str, arm_metadata: dict[str, Any]
+) -> dict[str, str]:
+    logger.debug("Adding AGC cloudConfig for proxy scenario.")
+
+    arm_metadata_endpoint_array = (
+        arm_metadata["authentication"]["loginEndpoint"].strip("/").split(".")
+    )
+    if len(arm_metadata_endpoint_array) < 4:
+        raise CLIInternalError("Unexpected loginEndpoint format for AGC")
+
+    endpoint_suffix = (
+        arm_metadata_endpoint_array[2] + "." + arm_metadata_endpoint_array[3]
+    )
+    if cloud_name.lower() == "usnat":
+        if len(arm_metadata_endpoint_array) < 5:
+            raise CLIInternalError("Unexpected loginEndpoint format for AGC")
+        endpoint_suffix = (
+            arm_metadata_endpoint_array[2]
+            + "."
+            + arm_metadata_endpoint_array[3]
+            + "."
+            + arm_metadata_endpoint_array[4]
+        )
+
+    return {
+        "resourceManagerEndpoint": arm_metadata["resourceManager"],
+        "serviceBusEndpointSuffix": f"servicebus.cloudapi.{endpoint_suffix}",
+        "activeDirectoryEndpoint": arm_metadata["authentication"]["loginEndpoint"],
+    }
