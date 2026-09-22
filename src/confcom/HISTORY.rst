@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.4.0
++++++
+* Add MacOS support for Linux-container policy generation
+
 2.3.0
 +++++
 * Add an option to include the kube-proxy image-attached fragment in Linux VN2 policies
@@ -25,7 +29,6 @@ Release History
 +++++
 
 * Added de-duping of exec_processes in the generated policies so same command used in two probes results in one exec_processes entry
-* Add MacOS support for Linux-container policy generation
 
 2.1.0
 +++++
