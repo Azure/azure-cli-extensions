@@ -28,13 +28,23 @@ _binaries_dir = get_binaries_dir()
 _dmverity_vhd_binaries = {
     "Linux": {
         "path": _binaries_dir / "dmverity-vhd",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.1/dmverity-vhd",
-        "sha256": "a75eb11f3ad3058bfdef0b5cf0bf64c1bef714a2afa054f3e242932d25d9e57d",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd",
+        "sha256": "0f10df304f9a4b77a371aba2f500cd7a19cb547bca5e9cd2b921803f5e67080f",
     },
     "Windows": {
         "path": _binaries_dir / "dmverity-vhd.exe",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.1/dmverity-vhd.exe",
-        "sha256": "5e371f86a2b552e5e69759421a81a26a07450dc404c1c88a08a4f983322598a2",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd.exe",
+        "sha256": "c3652fb1a4ce1155c388e0e2f7db6b2b985e0ad6da7db062ce82a00bb2b6b6f8",
+    },
+    "Darwin-arm64": {
+        "path": _binaries_dir / "dmverity-vhd-darwin-arm64",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd-darwin-arm64",
+        "sha256": "e7174315c8df15ceb59120d720b63cb62f7cbd1ec6cb3b13436370da72c792be",
+    },
+    "Darwin-amd64": {
+        "path": _binaries_dir / "dmverity-vhd-darwin-amd64",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd-darwin-amd64",
+        "sha256": "4cb5a2970030b120370afd03b25b12605343fd098c4ce539f9f117a17fc2112d",
     },
 }
 
@@ -69,10 +79,15 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                     "32-bit Windows is not supported."
                 )
         elif host_os == "Darwin":
-            eprint("The extension for MacOS has not been implemented.")
+            if machine == "arm64":
+                DEFAULT_LIB += "-darwin-arm64"
+            elif machine in ("x86_64", "amd64"):
+                DEFAULT_LIB += "-darwin-amd64"
+            else:
+                eprint(f"Unsupported MacOS architecture: {machine}.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows and Linux"
+                "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
             )
 
         self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")

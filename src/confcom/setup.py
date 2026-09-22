@@ -69,12 +69,16 @@ setup(
     package_data={
         "azext_confcom": [
             "azext_metadata.json",
-            "bin/dmverity-vhd.exe",  # windows for ACI
-            "bin/dmverity-vhd",  # linux for ACI
-            "bin/genpolicy-windows.exe",  # windows for AKS
-            "bin/genpolicy-linux",  # linux for AKS
-            "bin/sign1util.exe",  # windows for cose tool
-            "bin/sign1util",  # linux for cose tool
+            "bin/dmverity-vhd.exe",  # Windows for ACI
+            "bin/dmverity-vhd",  # Linux for ACI
+            "bin/dmverity-vhd-darwin-arm64",  # Apple Silicon for ACI
+            "bin/dmverity-vhd-darwin-amd64",  # Intel Mac for ACI
+            "bin/genpolicy-windows.exe",  # Windows for AKS
+            "bin/genpolicy-linux",  # Linux for AKS
+            "bin/sign1util.exe",  # Windows for cose tool
+            "bin/sign1util",  # Linux for cose tool
+            "bin/sign1util-darwin-arm64",  # Apple Silicon for cose tool
+            "bin/sign1util-darwin-amd64",  # Intel Mac for cose tool
             "data/*",
         ]
     },
